@@ -71,7 +71,7 @@ const JwtLogin = () => {
             <div className="p-8 flex justify-center items-center h-full">
               <img
                 className="w-200"
-                src="/assets/images/illustrations/dreamer.svg"
+                src="/assets/images/breathecode.small.png"
                 alt=""
               />
             </div>
