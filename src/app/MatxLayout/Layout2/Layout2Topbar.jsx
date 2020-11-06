@@ -71,7 +71,7 @@ const Layout2Topbar = () => {
         <div className="flex items-center h-full">
           <img
             className="h-32"
-            src="/assets/images/logo.svg"
+            src="/assets/images/logo.png"
             alt="company-logo"
           />
           <span className={clsx("font-medium text-24 mx-4", classes.brandText)}>
