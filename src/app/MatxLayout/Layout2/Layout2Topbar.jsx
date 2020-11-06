@@ -74,9 +74,6 @@ const Layout2Topbar = () => {
             src="/assets/images/logo.png"
             alt="company-logo"
           />
-          <span className={clsx("font-medium text-24 mx-4", classes.brandText)}>
-            Matx
-          </span>
         </div>
         <div className="mx-auto"></div>
         <div className="flex items-center">

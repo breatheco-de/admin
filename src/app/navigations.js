@@ -8,8 +8,8 @@ export const navigations = [
   },
   {
     name: "Growth",
-    path: "/dashboard/analytics",
-    icon: "dashboard",
+    path: "/dashboard/analytics-2",
+    icon: "show_chart",
   },
 //   {
 //     name: "Inventory Management",
@@ -27,12 +27,12 @@ export const navigations = [
     children: [
       {
         name: "Cohorts",
-        path: "/pages/customer-list",
+        path: "/admin/cohorts",
         iconText: "CL",
       },
       {
         name: "Students",
-        path: "/pages/view-customer",
+        path: "/admin/students",
         iconText: "VC",
       },
       {
@@ -68,226 +68,6 @@ export const navigations = [
     name: "Certificates",
     icon: "card_membership",
     children: [
-    ],
-  },
-  {
-    name: "Help Center",
-    icon: "help",
-    children: [
-      {
-        name: "FAQ 1",
-        path: "/pages/faq-1",
-        iconText: "F1",
-      },
-      {
-        name: "FAQ 2",
-        path: "/pages/faq-2",
-        iconText: "F2",
-      },
-    ],
-  },
-  {
-    name: "User List",
-    icon: "people",
-    children: [
-      {
-        name: "User List 1",
-        path: "/pages/user-list-1",
-        iconText: "U1",
-      },
-      {
-        name: "User List 2",
-        path: "/pages/user-list-2",
-        iconText: "U2",
-      },
-      {
-        name: "User List 3",
-        path: "/pages/user-list-3",
-        iconText: "U3",
-      },
-      {
-        name: "User List 4",
-        path: "/pages/user-list-4",
-        iconText: "U3",
-      },
-    ],
-  },
-  {
-    name: "Forms",
-    icon: "description",
-
-    children: [
-      {
-        name: "Order Form",
-        path: "/forms/order-form",
-        iconText: "OF",
-      },
-      {
-        name: "Invoice Form",
-        path: "/forms/invoice-form",
-        iconText: "IF",
-      },
-      {
-        name: "Property Listing Form",
-        path: "/forms/property-listing-form",
-        iconText: "PF",
-      },
-      {
-        name: "Basic",
-        path: "/forms/basic",
-        iconText: "B",
-      },
-      {
-        name: "Editor",
-        path: "/forms/editor",
-        iconText: "E",
-      },
-      {
-        name: "Upload",
-        path: "/forms/upload",
-        iconText: "U",
-      },
-      {
-        name: "Wizard",
-        path: "/forms/wizard",
-        iconText: "W",
-      },
-    ],
-  },
-  {
-    name: "Matx List",
-    icon: "list",
-
-    children: [
-      {
-        name: "Infinite Scroll",
-        path: "/infinite-scroll",
-        iconText: "I",
-      },
-      {
-        name: "List",
-        path: "/matx-list",
-        iconText: "L",
-      },
-    ],
-  },
-  {
-    name: "Certificates",
-    icon: "security",
-    children: [
-      {
-        name: "Sign in",
-        iconText: "SI",
-        path: "/session/signin",
-      },
-      {
-        name: "Sign up",
-        iconText: "SU",
-        path: "/session/signup",
-      },
-      {
-        name: "Forgot Password",
-        iconText: "FP",
-        path: "/session/forgot-password",
-      },
-      {
-        name: "Error",
-        iconText: "404",
-        path: "/session/404",
-      },
-    ],
-  },
-  {
-    name: "Left Sidebar Card",
-    path: "/page-layouts/Left-sidebar-card",
-    icon: "vertical_split",
-  },
-  {
-    name: "User Profile",
-    path: "/page-layouts/user-profile",
-    icon: "person",
-  },
-
-  {
-    label: "Apps",
-    type: "label",
-  },
-  {
-    name: "Ecommerce",
-    icon: "shopping_basket",
-
-    children: [
-      {
-        name: "Shop",
-        path: "/ecommerce/shop",
-        iconText: "S",
-      },
-      {
-        name: "Cart",
-        path: "/ecommerce/cart",
-        iconText: "C",
-      },
-      {
-        name: "Checkout",
-        path: "/ecommerce/checkout",
-        iconText: "CO",
-      },
-    ],
-  },
-  {
-    name: "Scrum Board",
-    icon: "group_work",
-    path: "/scrum-board/c5d7498bbcb84d81fc7454448871ac6a6e",
-  },
-  {
-    name: "Invoice Builder",
-    icon: "receipt",
-    path: "/invoice/list",
-  },
-  {
-    name: "Calendar",
-    icon: "date_range",
-    path: "/calendar",
-  },
-  {
-    name: "Chat",
-    icon: "chat",
-    path: "/chat",
-  },
-  {
-    name: "Inbox",
-    icon: "inbox",
-    path: "/inbox",
-  },
-  {
-    name: "Todo",
-    icon: "center_focus_strong",
-    path: "/todo/list",
-  },
-  {
-    label: "Tables",
-    type: "label",
-  },
-  {
-    name: "CRUD Table",
-    icon: "format_list_bulleted",
-    path: "/crud-table",
-  },
-  {
-    name: "Data Table",
-    icon: "table_view",
-
-    children: [
-      {
-        name: "Simple Mui Table",
-        path: "/data-table/simple-mui-table",
-        iconText: "T1",
-      },
-      {
-        name: "Expandable Mui Table",
-        path: "/data-table/expandable-mui-table",
-        iconText: "T2",
-      },
     ],
   },
   {
@@ -413,47 +193,5 @@ export const navigations = [
         iconText: "S",
       },
     ],
-  },
-  {
-    name: "Map",
-    icon: "add_location",
-    path: "/map",
-  },
-  {
-    label: "Charts",
-    type: "label",
-  },
-  {
-    name: "Charts",
-    icon: "trending_up",
-
-    children: [
-      {
-        name: "Echarts",
-        path: "/charts/echarts",
-        iconText: "E",
-      },
-      // {
-      //   name: "Recharts",
-      //   path: "/charts/recharts",
-      //   iconText: "R",
-      // },
-      {
-        name: "React Vis",
-        path: "/charts/react-vis",
-        iconText: "R",
-      },
-      {
-        name: "Victory Chart",
-        path: "/charts/victory-charts",
-        iconText: "V",
-      },
-    ],
-  },
-  {
-    name: "Documentation",
-    icon: "launch",
-    type: "extLink",
-    path: "http://demos.ui-lib.com/matx-react-doc/",
   },
 ];

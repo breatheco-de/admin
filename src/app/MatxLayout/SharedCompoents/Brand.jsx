@@ -22,16 +22,7 @@ const Brand = ({ children }) => {
   return (
     <div className={clsx("flex items-center justify-between", classes.brand)}>
       <div className="flex items-center">
-        {/* <img src="/assets/images/logo.png" alt="company-logo" /> */}
-        <MatxLogo className="" />
-        <span
-          className={clsx({
-            "text-18 ml-2 font-medium sidenavHoverShow": true,
-            [classes.hideOnCompact]: mode === "compact",
-          })}
-        >
-          Matx
-        </span>
+        <img src="/assets/images/logo.png" alt="company-logo" />
       </div>
       <div
         className={clsx({

@@ -18,30 +18,6 @@ const pagesRoutes = [
     component: React.lazy(() => import("./user-list/UserList4")),
   },
   {
-    path: "/pages/faq-1",
-    component: React.lazy(() => import("./faq/Faq1")),
-  },
-  {
-    path: "/pages/faq-2",
-    component: React.lazy(() => import("./faq/Faq2")),
-  },
-  {
-    path: "/pages/customer-list",
-    component: React.lazy(() => import("./customers/CustomerList")),
-  },
-  {
-    path: "/pages/new-customer",
-    component: React.lazy(() =>
-      import("./customers/customer-form/CustomerForm")
-    ),
-  },
-  {
-    path: "/pages/view-customer",
-    component: React.lazy(() =>
-      import("./customers/customer-viewer/CustomerViewer")
-    ),
-  },
-  {
     path: "/pages/product-list",
     component: React.lazy(() => import("./products/ProductList")),
   },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import Axios from "axios";
+import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { Avatar, Grow, Icon, IconButton, TextField } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -10,7 +10,7 @@ const CustomerList = () => {
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    Axios.get("/api/user/all").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST+"/v1/admissions/cohort").then(({ data }) => {
       if (isAlive) setUserList(data);
     });
     return () => setIsAlive(false);
@@ -18,45 +18,29 @@ const CustomerList = () => {
 
   const columns = [
     {
+      name: "id", // field name in the row object
+      label: "ID", // column title that will be shown in table
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "slug", // field name in the row object
+      label: "Slug", // column title that will be shown in table
+      options: {
+        filter: true,
+      },
+    },
+    {
       name: "name", // field name in the row object
       label: "Name", // column title that will be shown in table
       options: {
         filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          let user = userList[dataIndex];
-
-          return (
-            <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.imgUrl} />
-              <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.name}</h5>
-                <small className="text-muted">{user?.email}</small>
-              </div>
-            </div>
-          );
-        },
       },
     },
     {
-      name: "address",
-      label: "Address",
-      options: {
-        filter: true,
-        // customBodyRenderLite: (dataIndex) => (
-        //   <span className="ellipsis">{userList[dataIndex].address}</span>
-        // ),
-      },
-    },
-    {
-      name: "company",
-      label: "Company",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "balance",
-      label: "Balance",
+      name: "created_at",
+      label: "Created At",
       options: {
         filter: true,
       },
@@ -90,15 +74,15 @@ const CustomerList = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: "Pages", path: "/pages" },
-            { name: "Customer List" },
+            { name: "Admin", path: "/" },
+            { name: "Students" },
           ]}
         />
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
           <MUIDataTable
-            title={"All Customers"}
+            title={"All Students"}
             data={userList}
             columns={columns}
             options={{

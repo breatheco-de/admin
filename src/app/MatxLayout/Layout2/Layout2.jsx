@@ -7,7 +7,6 @@ import Footer from "../SharedCompoents/Footer";
 import Layout2Navbar from "./Layout2Navbar";
 import Layout2Topbar from "./Layout2Topbar";
 import Scrollbar from "react-perfect-scrollbar";
-import SecondarySidebar from "../SharedCompoents/SecondarySidebar/SecondarySidebar";
 import { renderRoutes } from "react-router-config";
 import { useTheme } from "@material-ui/styles";
 import clsx from "clsx";
@@ -88,7 +87,6 @@ const Layout2 = () => {
 
         {settings.footer.show && settings.footer.fixed && <Footer />}
       </div>
-      {settings.secondarySidebar.show && <SecondarySidebar />}
     </Fragment>
   );
 };

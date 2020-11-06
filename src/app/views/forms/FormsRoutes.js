@@ -22,16 +22,6 @@ const formsRoutes = [
     component: React.lazy(() => import("./order-form/OrderForm")),
   },
   {
-    path: "/forms/property-listing-form",
-    component: React.lazy(() => import("./PropertyListingForm")),
-  },
-  {
-    path: "/forms/customer-form",
-    component: React.lazy(() =>
-      import("../pages/customers/customer-form/CustomerForm")
-    ),
-  },
-  {
     path: "/forms/invoice-form",
     component: React.lazy(() => import("./invoice-form/InvoiceForm")),
   },
