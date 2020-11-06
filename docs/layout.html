@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title> Layout | MatX React Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./assets/vendor/bootstrap/css/bootstrap.min.css"
+    />
+ 
+    <link rel="stylesheet" href="./assets/css/doc.min.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="doc-header"></div>
+
+      <div class="doc-content clearfix">
+        <div class="doc-content__sidebar"></div>
+
+        <div class="doc-content__body">
+          <h1 class="doc-section-title" id="layout"> 
+            Layout 
+            <a href="#layout" class="section-link"></a>
+          </h1>
+          <p class="text-lead">
+            Layout is controlled by settings object <code>MatxLayoutSettings</code> inside <code>app/MatxLayout/settings.js</code>
+          </p>
+
+          <h3 class="doc-section-title" id="MatxLayoutSettings"> 
+            MatxLayoutSettings 
+            <a href="#MatxLayoutSettings" class="section-link"></a>
+          </h3>
+
+          <div class="copy-code">
+            <button
+              class="btn btn-sm btn-primary btn-clipboard"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Copy to clipboard"
+            >
+              Copy
+            </button>
+          </div>
+          <code
+            class="code"
+            data-code='
+export const MatxLayoutSettings = {
+
+  activeLayout: "layout1", // layout1, layout2
+  activeTheme: "purple", 
+  perfectScrollbar: true,
+
+  themes: themes,
+  layout1Settings,
+  layout2Settings,
+
+  // Footer options
+  footer: {
+    show: true,
+    fixed: false,
+    theme: "slate"
+  }
+
+};
+            '>
+          </code>
+          <p><strong>activeLayout</strong>: Main layout. (e.g. <code>layout1, layout2</code>)</p>
+          <p><strong>activeTheme</strong>: Main theme color. All valid theme colors are available inside <code>app/MatxLayout/MatxTheme/themeColors.js</code>. 
+          New theme color can be defined inside <code>themeColors.js</code></p>
+          <p><strong>layout1Settings</strong>: You will only modify this if you are using <code>layout1</code> as <code>activeLayout</code>
+          (variable location: <code>app/MatxLayout/Layout1/Layout1Settings.js</code>) </p>
+          
+          <p><strong>layout2Settings</strong>: You will only modify this if you are using <code>layout2</code> as <code>activeLayout</code>
+            (variable location: <code>app/MatxLayout/Layout2/Layout2Settings.js</code>) </p>
+            <p><strong>footer</strong>: Options for footer display, position, & theme</p>
+
+
+        </div>
+        <div class="doc-content__secondary-sidebar">
+          <ul>
+            <li><a href="#layout">Layout</a>
+              <ul>
+                <li><a href="#MatxLayoutSettings">MatxLayoutSettings</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <script src="./assets/vendor/jquery-3.4.1.min.js"></script>
+    <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    <script src="./assets/vendor/feather.min.js"></script>
+    <script src="./assets/vendor/clipboard.min.js"></script>
+
+    <script src="./assets/js/es5/doc.min.js"></script>
+    <script src="./assets/js/es5/header.min.js"></script>
+    <script src="./assets/js/es5/sidebar.min.js"></script>
+  </body>
+</html>

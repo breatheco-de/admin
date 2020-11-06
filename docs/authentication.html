@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Authentication | Matx React Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./assets/vendor/bootstrap/css/bootstrap.min.css"
+    />
+ 
+    <link rel="stylesheet" href="./assets/css/doc.min.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="doc-header">
+        
+      </div>
+
+      <div class="doc-content clearfix" >
+        <div class="doc-content__sidebar">
+        </div>
+
+        <div class="doc-content__body">
+          
+
+          <h1 class="doc-section-title" id="Authentication">
+            Authentication
+          </h1>
+
+          <p>
+            JWT authentication is implemented. You need to implement REST api in <code>jwtAuthService</code>.
+          </p>
+
+          <p>Auth guard protects each route. See <a href="routing.html#authGuard">Auth Guard documentation</a></p>
+
+          <p><code>LoginActions.js</code> & <code>UserActions.js</code> wraps jwt authentication methods & dispatch actions. 
+            These are also can be customized as your need</p>
+  
+          
+              <code class="code" lang="javascript" data-code='//LoginActions.js
+
+export function loginWithEmailAndPassword({ email, password }) {
+  return dispatch => {
+    jwtAuthService
+      .loginWithEmailAndPassword(email, password)
+      .then(user => {
+        
+        dispatch(setUserData(user));
+
+        history.push({
+          pathname: "/"
+        });
+
+        return dispatch({
+          type: LOGIN_SUCCESS
+        });
+
+      })
+      .catch(error => {
+
+        return dispatch({
+          type: LOGIN_ERROR,
+          payload: error
+        });
+
+      });
+  };
+}
+            '>
+              </code>
+          
+
+        <div class="doc-content__secondary-sidebar">
+          <ul>
+              <li><a href="#Authentication">Authentication</a></li>
+              <!-- <li>
+                <ul>
+                  <li><a href="#import">Import</a></li>
+                  <li><a href="#uses">Uses</a></li>
+                </ul>
+              </li> -->
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="./assets/vendor/jquery-3.4.1.min.js"></script>
+    <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    <script src="./assets/vendor/feather.min.js"></script>
+    <script src="./assets/vendor/clipboard.min.js"></script>
+
+    <script src="./assets/js/es5/doc.min.js"></script>
+    <script src="./assets/js/es5/header.min.js"></script>
+    <script src="./assets/js/es5/sidebar.min.js"></script>
+  </body>
+</html>

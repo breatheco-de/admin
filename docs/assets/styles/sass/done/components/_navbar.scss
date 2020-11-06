@@ -1,0 +1,50 @@
+.navbar {
+  padding-top: $navbar-padding-base;
+  padding-bottom: $navbar-padding-base;
+  transition: all .4s ease-in;
+
+  &.main-navbar {
+    padding-top: 24px;
+  }
+  &.on-scroll {
+    padding-top: $navbar-padding-base !important;
+  }
+}
+
+
+.navbar-nav {
+  font-size: $font-size-base * .75;
+  .nav-item {
+    .nav-link {
+      text-transform: uppercase;
+      i {
+        font-size: $font-size-base;
+        padding: 0 $spacing-xs;
+      }
+    }
+    .feather {
+      height: 18px;
+      width: 18px;
+    }
+  }
+}
+.navbar-dark {
+  .nav-item {
+    .nav-link {
+      color: $white;
+      &:hover {
+        // color: $heading-color;
+      }
+    }
+  }
+}
+.navbar-light {
+  .nav-item {
+    .nav-link {
+      color: $body-color;
+      &:hover {
+        // color: $heading-color;
+      }
+    }
+  }
+}

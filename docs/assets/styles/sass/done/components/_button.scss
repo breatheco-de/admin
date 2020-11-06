@@ -1,0 +1,66 @@
+html [type="button"],
+.btn[type="button"] {
+  -webkit-appearance: none !important;
+}
+.btn {
+  // Button Base Styles
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $button-font-weight;
+  font-size: $button-font-size;
+  letter-spacing: $button-letter-specing;
+  text-transform: $button-text-transform;
+  padding: $button-padding;
+
+  @include transition-all();
+  
+  @include button-colors();
+  @include button-socials();
+  @include button-sizes();
+  @include button-icon-style();
+  @include button-link();
+  
+  &.rounded,
+  &.btn-rounded {
+    border-radius: $button-rounded-radius !important;
+  }
+  &.semi-rounded,
+  &.btn-semi-rounded {
+    border-radius: $button-semi-rounded-radius !important;
+  }
+
+  &.move-up {
+    &:hover,
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
+  &:not(:last-child) {
+    margin-right: .5rem;
+  }
+}
+
+.btn-group {
+  .btn {
+    transform: none !important;
+  }
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  @include button-icon-style();
+  
+  .icon,
+  i,
+  [class^="ti-"],
+  [class*=" ti-"],
+  .feather {
+    margin: 0;
+  }
+}

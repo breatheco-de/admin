@@ -1,0 +1,27 @@
+@function rem($px) {
+  @return #{$px/16}rem;
+}
+
+$font-family-heading: 'Roboto', sans-serif;
+$font-family-base: 'Roboto', sans-serif;
+$font-size-base: 1rem;
+$font-weight-base: 400;
+
+$line-height-base: 1.5;
+$line-height-text: 1.7;
+$line-height-heading: 1.25;
+
+$letter-spacing-base: rem(.3);
+$letter-spacing-title: rem(.5);
+
+$spacer: 1rem !default;
+
+// Acive colors
+$component-active-color: $white !default;
+$component-active-bg: $primary-active !default;
+
+// Style anchor elements.
+$link-color: $primary !default;
+$link-decoration: none !default;
+$link-hover-color: $primary-active !default;
+$link-hover-decoration: underline !default;

@@ -1,0 +1,134 @@
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: $font-family-base;
+}
+p {
+  font-weight: $font-weight-light;
+  line-height: $line-height-text;
+}
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5
+h6, .h6 {
+  font-weight: $font-weight-normal;
+  color: $heading-color;
+  line-height: $line-height-heading;
+}
+
+
+h1,
+.h1 {
+  font-size: $font-size-h1;
+  margin-bottom: $spacing-sm;
+
+  small {
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+}
+h2,
+.h2 {
+  font-size: $font-size-h2;
+  margin-bottom: $spacing-sm;
+}
+h3,
+.h3 {
+  font-size: $font-size-h3;
+  margin-bottom: $spacing-sm;
+  line-height: 1.4em;
+}
+h4,
+.h4 {
+  font-size: $font-size-h4;
+  line-height: 1.45em;
+  margin-bottom: $spacing-sm;
+}
+h5,
+.h5 {
+  font-size: $font-size-h5;
+  line-height: 1.4em;
+  margin-bottom: $spacing-sm;
+}
+h6,
+.h6 {
+  font-size: $font-size-h6;
+  margin-bottom: $spacing-sm;
+}
+
+.display-1 {
+  font-size: $font-size-display-1;
+  font-weight: $font-weight-semi;
+}
+.display-2 {
+  font-size: $font-size-display-2;
+  font-weight: $font-weight-semi;
+}
+.display-3 {
+  font-size: $font-size-display-3;
+  font-weight: $font-weight-semi;
+}
+.display-4 {
+  font-size: $font-size-display-4;
+  font-weight: $font-weight-semi;
+}
+
+.heading {
+  font-size: $font-size-heading;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-title;
+}
+.heading-title {
+  font-size: $font-size-heading-title;
+  font-weight: $font-weight-semi;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-title;
+}
+.lead {
+  font-size: $font-size-lead;
+  font-weight: $font-weight-light;
+}
+
+.blockquote {
+  font-size: $font-size-blockquote;
+  // font-style: italic;
+
+  &-footer {
+    font-weight: $font-weight-bold;
+    color: $text-muted-color;
+  }
+  @each $name, $value in $theme-colors {
+    &.blockquote-#{$name} {
+      color: $value !important;
+      .blockquote-footer {
+        color: lighten($value, 4);
+      }
+    }
+  }
+}
+
+// Font size
+@for $i from 10 through 78 {
+  .text-#{$i} {
+    font-size: #{$i}px;
+  }
+}
+
+.text-muted {
+  color: $text-muted-color !important;
+}
+
+small {
+  font-size: 80%;
+}
+.text-small {
+  font-size: $font-size-sm;
+}
+.font-weight-semi {
+  font-weight: $font-weight-semi;
+}

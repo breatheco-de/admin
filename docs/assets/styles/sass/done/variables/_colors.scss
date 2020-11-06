@@ -1,0 +1,122 @@
+/*
+  Color Inventory
+*/
+$solid-colors: (
+    "blue": #4A90E2,
+    "dark-blue": #3930d8,
+    "midnight-blue": #0C0C3C,
+    "indigo": #3F51B5,
+    "dark-purple": #322740,
+    "purple": #7367F0,
+    "pink": #CB3066,
+    "red": #F14004,
+    "orange": #e97d23,
+    "yellow": #F8E71C,
+    "green": #28C76E,
+    "teal": #20c997,
+    "cyan": #9c27b0,
+    "gray": #2d2d33,
+    "slate-gray": #405365
+);
+
+$gradient-colors: (
+  gradient-purple-indigo: (
+    "start-color": #663399,
+    "end-color": #33214b
+  ),
+  gradient-black-blue: (
+    'start-color' : #004e92,
+      'end-color' : #000428
+  ),
+  gradient-black-gray: (
+    'start-color' : #404040,
+      'end-color' : #000000
+  ),
+  gradient-steel-gray: (
+    'start-color' : #616d86,
+      'end-color' : #1F1C2C
+  )
+);
+
+$blue:    map-get($solid-colors, 'blue') !default;
+$dark-blue:    map-get($solid-colors, 'dark-blue') !default;
+$indigo:  map-get($solid-colors, 'indigo') !default;
+$purple:  map-get($solid-colors, 'purple') !default;
+$pink:    map-get($solid-colors, 'pink') !default;
+$red:     map-get($solid-colors, 'red') !default;
+$orange:  map-get($solid-colors, 'orange') !default;
+$yellow:  map-get($solid-colors, 'yellow') !default;
+$green:   map-get($solid-colors, 'green') !default;
+$teal:    map-get($solid-colors, 'teal') !default;
+$cyan:    map-get($solid-colors, 'cyan') !default;
+
+// Generate gray base form purple
+$gray-base: desaturate($purple, 72);
+
+$white:    #fff !default;
+$gray-100: lighten($gray-base, 36) !default;
+// $gray-200: lighten($gray-base, 28) !default;
+$gray-200: #f9f9f9 !default;
+$gray-300: lighten($gray-base, 20) !default;
+$gray-400: lighten($gray-base, 8)  !default;
+$gray-500: $gray-base !default;
+$gray-600: darken($gray-base, 8)  !default;
+$gray-700: darken($gray-base, 20) !default;
+$gray-800: darken($gray-base, 28) !default;
+$gray-900: darken($gray-base, 36) !default;
+$black:    darken(desaturate($purple, 50), 40) !default;
+
+
+$primary:       $purple !default;
+$secondary:     $gray-800 !default;
+$success:       $green !default;
+$info:          $blue !default;
+$warning:       $orange !default;
+$danger:        $red !default;
+$light:         $gray-500 !default;
+$dark:          $gray-900 !default;
+
+
+$theme-colors: (
+  primary: $primary,
+  secondary: $secondary,
+  success: $success,
+  info: $info,
+  warning: $warning,
+  danger: $danger,
+  light: $light,
+  dark: $dark
+) !default;
+
+
+$social-colors: (
+  facebook: rgb(55, 101, 201),
+  google: rgb(236, 65, 44),
+  twitter: rgb(3, 159, 245)
+);
+
+$facebook: map-get($social-colors, 'facebook');
+$google: map-get($social-colors, 'google');
+$twitter: map-get($social-colors, 'twitter');
+
+
+
+/* 
+  Color Design Tokens 
+*/
+$body-bg: $white;
+$body-color: darken(desaturate($purple, 60), 30) !default;;
+$heading-color: $black;
+$text-muted-color: $gray-600;
+
+$primary-active: darken($primary, 10);
+$primary-dark: darken($primary, 15);
+
+// Background
+$background-light: $gray-200;
+
+// Border
+$border-color: $gray-300;
+$border-color-light: $gray-200;
+$border-color-dark: $gray-400;
+$border-color-black: $gray-600;

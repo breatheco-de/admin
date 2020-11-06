@@ -1,0 +1,144 @@
+.form-control {
+  @include input();
+  @include input-placeholder($gray-800, .6);
+}
+
+.input-group {
+  border-radius: $input-default-radius;
+  &.has-success,
+  &.has-error,
+  &.has-warning {
+    position: relative;
+    overflow: hidden;
+    @include input-state-icon();
+  }
+
+  &.has-success {
+    &::after {
+      content: "\e64c";
+      color: $success;
+      // background: rgba($success, .14);
+    }
+  }
+  &.has-error {
+    &::after {
+      content: "\e646";
+      color: $danger;
+      // background: rgba($danger, .14);
+    }
+  }
+  &.has-warning {
+    &::after {
+      content: "\e646";
+      color: $warning;
+      // background: rgba($warning, .14);
+    }
+  }
+  
+  @include icons {
+    color: $input-icon-color;
+  }
+  @include input-group-light-bg();
+  @include rounded-input();
+  @include input-group-focus();
+  @include transition-all();
+}
+
+.input-group-text {
+  @include input-group-icon();
+  .input-group-prepend & {
+    padding-right: 1px !important;
+  }
+}
+
+
+.custom-checkbox, 
+.custom-radio {
+  @include custom-checkbox(); 
+}
+.custom-checkbox {
+  .custom-control-label {
+    &::before {
+      border-radius: 2px;
+    }
+  }
+}
+// Disabled
+input[disabled]+.custom-control-label::before {
+  opacity: .25;
+}
+
+// SWITCH
+.switch {
+  position: relative;
+  display: inline-block;
+  padding-left: $switch-padding-left;
+  height: $switch-height;
+  span:not(.slider) {
+    position: relative;
+    top: -2px;
+    cursor: pointer;
+  }
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    width: $switch-slider-width;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: $switch-slider-radius;
+    background-color: $switch-slider-bg;
+    @include transition-all();
+  }
+  // Slider Handle
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: $switch-handle-height;
+    width: $switch-handle-width;
+    left: -.125rem;
+    bottom: -.25rem;
+    background-color: $body-bg;
+    border-radius: $border-radius-circle;
+    @include shadow-button();
+    @include transition-all();
+  }
+  input:checked + .slider {
+    background-color: $primary;
+  }
+  input:focus + .slider {
+    box-shadow: 0 0 1px $primary;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX($switch-handle-checked-position);
+    -ms-transform: translateX($switch-handle-checked-position);
+    transform: translateX($switch-handle-checked-position);
+  }
+}
+
+@each $name, $value in $theme-colors {
+  .switch-#{$name} {
+    input:checked + .slider {
+      background-color: $value;
+    }
+    input:focus + .slider {
+      box-shadow: 0 0 1px $value;
+    }
+  }
+}
+
+// Switch Disabled
+input[disabled]+.slider,
+input[disabled]+.slider {
+  opacity: .4;
+  &::before {
+    background-color: $switch-handle-disabled-color;
+    @include shadow-button-color($gray-500);
+  }
+}

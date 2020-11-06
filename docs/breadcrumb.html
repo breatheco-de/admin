@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Breadcrumb | Matx React Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./assets/vendor/bootstrap/css/bootstrap.min.css"
+    />
+ 
+    <link rel="stylesheet" href="./assets/css/doc.min.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="doc-header">
+        
+      </div>
+
+      <div class="doc-content clearfix" >
+        <div class="doc-content__sidebar">
+        </div>
+
+        <div class="doc-content__body">
+          
+
+          <h1 class="doc-section-title" id="breadcrumb">
+            Breadcrumb
+          </h1>
+
+          <h2 class="doc-section-title" id="import">
+                Import
+             </h2>
+
+          <p class="lead">
+              You need to import <i>Breadcrumb</i>
+              from <code>matx</code><br>or use the statement below
+              <br>
+              <code>import {Breadcrumb} from "matx";</code>
+          </p>
+          
+          <h2 class="doc-section-title" id="uses">
+            Uses
+          </h2>
+          <p>
+              1. For multiple routing segments (output will be <code>Sales| Home-Icon/Dashboar/Sales</code>)
+              <code class="code" lang="xml" data-code='
+<Breadcrumb 
+      routeSegments={[
+      { name: "Dashboard", path: "/dashboard" },
+      { name: "Sales" }
+      ]} 
+/>
+            '>
+              </code>
+              <br>
+              2. For single routing segment (output will be <code>Sales| Home-Icon/Sales</code>)
+              <code class="code" lang="xml" data-code='
+<Breadcrumb 
+      routeSegments={[
+      { name: "Sales" }
+      ]} 
+/>
+            '>
+              </code>
+          </p>
+          <br>
+          
+
+        <div class="doc-content__secondary-sidebar">
+          <ul>
+              <li><a href="#breadcrumb">Breadcrumb</a></li>
+              <li>
+                <ul>
+                  <li><a href="#import">Import</a></li>
+                  <li><a href="#uses">Uses</a></li>
+                </ul>
+              </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="./assets/vendor/jquery-3.4.1.min.js"></script>
+    <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    <script src="./assets/vendor/feather.min.js"></script>
+    <script src="./assets/vendor/clipboard.min.js"></script>
+
+    <script src="./assets/js/es5/doc.min.js"></script>
+    <script src="./assets/js/es5/header.min.js"></script>
+    <script src="./assets/js/es5/sidebar.min.js"></script>
+  </body>
+</html>

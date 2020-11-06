@@ -1,0 +1,68 @@
+@mixin shadow-1dp() {
+  box-shadow: shadow-1dp($shadow-black-color);
+}
+
+@mixin shadow-2dp() {
+  box-shadow: shadow-2dp($shadow-black-color);
+}
+
+@mixin shadow-3dp() {
+  box-shadow: shadow-3dp($shadow-black-color);
+}
+
+@mixin shadow-4dp() {
+  box-shadow: shadow-4dp($shadow-black-color);
+}
+
+@mixin shadow-6dp() {
+  box-shadow: shadow-6dp($shadow-black-color);
+}
+
+@mixin shadow-8dp() {
+  box-shadow: shadow-8dp($shadow-black-color);
+}
+
+@mixin shadow-16dp() {
+  box-shadow: shadow-16dp($shadow-black-color);
+}
+
+@mixin shadow-24dp() {
+  box-shadow: shadow-24dp($shadow-black-color);
+}
+
+@mixin shadow-1dp-color($color) {
+  box-shadow: shadow-1dp($color);
+}
+@mixin shadow-2dp-color($color) {
+  box-shadow: shadow-2dp($color);
+}
+@mixin shadow-3dp-color($color) {
+  box-shadow: shadow-3dp($color);
+}
+@mixin shadow-4dp-color($color) {
+  box-shadow: shadow-4dp($color);
+}
+@mixin shadow-6dp-color($color) {
+  box-shadow: shadow-6dp($color);
+}
+@mixin shadow-8dp-color($color) {
+  box-shadow: shadow-8dp($color);
+}
+
+@mixin shadow-16dp-color($color) {
+  box-shadow: shadow-16dp($color);
+}
+
+@mixin shadow-24dp-color($color) {
+  box-shadow: shadow-24dp($color);
+}
+
+@mixin shadow-button() {
+  box-shadow: shadow-button($shadow-button-color);
+}
+@mixin shadow-button-hover() {
+  box-shadow: shadow-button-hover($shadow-button-color);
+}
+@mixin shadow-button-color($color) {
+  box-shadow: shadow-button($color);
+}
