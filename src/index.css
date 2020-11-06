@@ -1,0 +1,11 @@
+@import "~perfect-scrollbar/css/perfect-scrollbar.css";
+
+/* @media print {
+  .ps {
+    overflow: scroll !important;
+    overflow-anchor: none;
+    -ms-overflow-style: none;
+    touch-action: auto;
+    -ms-touch-action: auto;
+  }
+} */

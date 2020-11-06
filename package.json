@@ -65,6 +65,7 @@
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "react-scripts build && gh-pages -d build"
   },
   "eslintConfig": {
