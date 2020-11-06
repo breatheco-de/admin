@@ -22,16 +22,16 @@ export const navigations = [
   },
  
   {
-    name: "Cohorts",
+    name: "Admin",
     icon: "school",
     children: [
       {
-        name: "Customer List",
+        name: "Cohorts",
         path: "/pages/customer-list",
         iconText: "CL",
       },
       {
-        name: "View Customer",
+        name: "Students",
         path: "/pages/view-customer",
         iconText: "VC",
       },

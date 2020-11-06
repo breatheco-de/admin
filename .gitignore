@@ -26,3 +26,8 @@ yarn-error.log*
 
 # Don't ignore .env files
 !.env.example
+
+
+# Don't ignore gitpod files
+!.gitignore
+!.gitpod.Dockerfile
