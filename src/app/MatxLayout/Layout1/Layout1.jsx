@@ -82,7 +82,7 @@ const Layout1 = () => {
               </ThemeProvider>
             )}
             <div className="relative flex-grow">
-              <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
+              <MatxSuspense loadbar={true}>{renderRoutes(routes)}</MatxSuspense>
             </div>
             {settings.footer.show && !settings.footer.fixed && <Footer />}
           </Scrollbar>
@@ -96,7 +96,7 @@ const Layout1 = () => {
               </ThemeProvider>
             )}
             <div className="relative flex-grow">
-              <MatxSuspense>{renderRoutes(routes)}</MatxSuspense>
+              <MatxSuspense loadbar={true}>{renderRoutes(routes)}</MatxSuspense>
             </div>
             {settings.footer.show && !settings.footer.fixed && <Footer />}
           </div>

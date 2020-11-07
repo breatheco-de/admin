@@ -4,14 +4,30 @@ import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { Avatar, Grow, Icon, IconButton, TextField } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import { MatxLoading } from "matx";
+var relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
+const stageColors = {
+    'INACTIVE': 'bg-gray',
+    'PREWORK': 'bg-secondary',
+    'STARTED': 'text-white bg-warning',
+    'FINAL_PROJECT': 'text-white bg-error',
+    'ENDED': 'text-white bg-green',
+    'DELETED': 'light-gray',
+}
 
 const CustomerList = () => {
   const [isAlive, setIsAlive] = useState(true);
-  const [userList, setUserList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get(process.env.REACT_APP_API_HOST+"/v1/admissions/cohort").then(({ data }) => {
-      if (isAlive) setUserList(data);
+      setIsLoading(true);
+      axios.get(process.env.REACT_APP_API_HOST+"/v1/admissions/cohort").then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) setItems(data);
     });
     return () => setIsAlive(false);
   }, [isAlive]);
@@ -25,24 +41,66 @@ const CustomerList = () => {
       },
     },
     {
+      name: "stage", // field name in the row object
+      label: "Stage", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+            let item = items[dataIndex];
+
+            return (
+                <div className="flex items-center">
+                    <div className="ml-3">
+                        <small className={"border-radius-4 px-2 pt-2px "+stageColors[item?.stage]}>{item?.stage}</small><br />
+                        {
+                            ((dayjs().isBefore(dayjs(item?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item?.stage))  || 
+                            (dayjs().isAfter(dayjs(item?.ending_date)) && !['ENDED', 'DELETED'].includes(item?.stage)))  && 
+                                <small className="text-warning pb-2px"><Icon>error</Icon>Out of sync</small>
+                        }
+                    </div>
+                </div>
+            );
+        },
+      },
+    },
+    {
       name: "slug", // field name in the row object
       label: "Slug", // column title that will be shown in table
       options: {
         filter: true,
+        customBodyRenderLite: i => {
+            let item = items[i];
+            return (
+                <div className="flex items-center">
+                    <div className="ml-3">
+                        <h5 className="my-0 text-15">{item?.name}</h5>
+                        <small className="text-muted">{item?.slug}</small>
+                    </div>
+                </div>
+            );
+        },
       },
     },
     {
-      name: "name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: "kickoff_date",
+      label: "Kickoff Date",
       options: {
         filter: true,
+        customBodyRenderLite: i => 
+            <div className="flex items-center">
+                <div className="ml-3">
+                    <h5 className="my-0 text-15">{dayjs(items[i].kickoff_date).format("MM-DD-YYYY")}</h5>
+                    <small className="text-muted">{dayjs(items[i].kickoff_date).fromNow()}</small>
+                </div>
+            </div>
       },
     },
     {
-      name: "created_at",
-      label: "Created At",
+      name: "certificate",
+      label: "Certificate",
       options: {
         filter: true,
+        customBodyRenderLite: i => items[i].certificate?.name
       },
     },
     {
@@ -53,7 +111,7 @@ const CustomerList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to="/pages/new-customer">
+            <Link to={"/admin/cohorts/"+items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -81,9 +139,10 @@ const CustomerList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
+            {isLoading && <MatxLoading />}
           <MUIDataTable
             title={"All Students"}
-            data={userList}
+            data={items}
             columns={columns}
             options={{
               filterType: "textField",
