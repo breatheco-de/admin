@@ -47,10 +47,10 @@ const InvoiceCustomer = () => {
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={4} sm={4} xs={12}>
                   Cohort Slug
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={8} sm={8} xs={12}>
                   <TextField
                     label="Slug"
                     name="cohortSlug"
@@ -61,31 +61,15 @@ const InvoiceCustomer = () => {
                     onChange={handleChange}
                   />
                 </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Invoice#
+                <Grid item md={3} sm={4} xs={12}>
+                  Start date
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Invoice No"
-                    name="invoiceNo"
-                    size="small"
-                    variant="outlined"
-                    defaultValue="INV-000001"
-                    value={values.invoiceNo}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  StartDate
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
                         className="m-2"
                         margin="none"
-                        label="Invoice Date"
+                        label="Date"
                         inputVariant="outlined"
                         type="text"
                         size="small"
@@ -97,15 +81,15 @@ const InvoiceCustomer = () => {
                     </MuiPickersUtilsProvider>
                     
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
-                  Eng Date
+                <Grid item md={3} sm={4} xs={12}>
+                  End date
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
                         className="m-2"
                         margin="none"
-                        label="Invoice Date"
+                        label="Date"
                         inputVariant="outlined"
                         type="text"
                         size="small"
@@ -117,13 +101,13 @@ const InvoiceCustomer = () => {
                     </MuiPickersUtilsProvider>
                     
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={3} sm={4} xs={12}>
                   Language
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
                     <TextField
                       className="m-2 min-w-188"
-                      label="Terms"
+                      label="Language"
                       name="terms"
                       size="small"
                       variant="outlined"
@@ -139,7 +123,7 @@ const InvoiceCustomer = () => {
                     </TextField>
                     
                 </Grid>
-                <Button className="w-100" color="primary" variant="contained" type="submit">
+                <Button  color="primary" variant="contained" type="submit">
                   Save Cohort Details
                 </Button>
             </Grid>
