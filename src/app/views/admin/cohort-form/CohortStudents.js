@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -18,6 +18,7 @@ import {
 } from "@material-ui/core";
 import { format } from "date-fns";
 import clsx from "clsx";
+import axios from "../../../../axios";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -26,10 +27,25 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const InvoiceOverview = () => {
+const CohortStudents = ({slug}) => {
     const classes = useStyles();
     const [ chooseOpen, setChooseOpen ] = useState(false);
+    const [ student, setStudent] = useState({
+        role:"",
+        finantial_status: "",
+        educational_status: ""
+    })
+    useEffect(()=> {
+        
+    }, [])
 
+    const changeStudentStatus = (e) => {
+
+    }
+    
+    const getCohortStudents = () => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/user?cohort=${slug}`)
+    } 
   return (
     <Card className="p-4">
       <div className="mb-4 flex justify-between items-center">
@@ -89,7 +105,7 @@ const InvoiceOverview = () => {
                   <TextField
                     className="min-w-100"
                     label="Finantial Status"
-                    name="finaltialStatus"
+                    name="finantial_status"
                     size="small"
                     variant="outlined"
                     value={s.finantial_status}
@@ -106,10 +122,11 @@ const InvoiceOverview = () => {
                   <TextField
                     className="min-w-100"
                     label="Educational Status"
-                    name="educationalStatus"
+                    name="educational_status"
                     size="small"
                     variant="outlined"
                     value={s.educational_status}
+                    onChange={(e) => console.log(e.target.value)}
                     select
                   >
                     {['ACTIVE','POSTPONED','SUSPENDED','GRADUATED','DROPPED'].map((item, ind) => (
@@ -228,4 +245,4 @@ const ChooseRoleDialog = ({ onClose, selectedValue, ...other }) =>
       </List>
     </Dialog>;
 
-export default InvoiceOverview;
+export default CohortStudents;
