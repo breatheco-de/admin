@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import axios from "../../../../axios";
 import { Alert, AlertTitle } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -132,12 +133,11 @@ const CohortDetails = ({ slug, endDate, startDate, lang, id }) => {
                                     </TextField>
 
                                 </Grid>
-                                {msg.alert ? <Grid item md={12} sm={8} xs={12}>
-                                        <Alert severity={msg.type} onClose={() => setMsg({ alert: false, type: "", text: "" })}>
-                                            <AlertTitle>{msg.type.toUpperCase()}</AlertTitle>
-                                            {"This is an error                             "}
-                                        </Alert>
-                                </Grid> : ""}
+                                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={6000} onClose={() => setMsg({alert:false, text:"", type:""})}>
+                                    <Alert onClose={() => setMsg({alert:false, text:"", type:""})} severity={msg.type}>
+                                        This is a message
+                                    </Alert>
+                                </Snackbar> : ""}
                                 <Button color="primary" variant="contained" type="submit">
                                     Save Cohort Details
                                     </Button>

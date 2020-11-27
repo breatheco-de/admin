@@ -23,6 +23,7 @@ const Cohort = () => {
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
+                console.log(data.id)
             })
             .catch(error => console.log(error));
     }
@@ -51,7 +52,10 @@ const Cohort = () => {
                     />
                 </Grid>
                 <Grid item md={8} xs={12}>
-                    <CohortStudents slug={slug} />
+                    <CohortStudents 
+                    slug={slug} 
+                    id={cohort.id} 
+                    />
                 </Grid>
             </Grid>
         </div>
