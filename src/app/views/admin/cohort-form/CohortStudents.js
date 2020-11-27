@@ -24,7 +24,7 @@ import axios from "../../../../axios";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import AsyncAutocomplete from "../../material-kit/auto-complete/AsyncAutocomplete";
+import AsyncAutocomplete from "./AsyncAutocomplete";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     avatar: {
