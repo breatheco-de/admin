@@ -2,7 +2,6 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
-import utilitiesRoutes from "./views/utilities/UtilitiesRoutes";
 
 import adminRoutes from "./views/admin/routes";
 
@@ -31,7 +30,6 @@ const routes = [
   ...dashboardRoutes,
   ...adminRoutes,
   ...materialRoutes,
-  ...utilitiesRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,
   ...pagesRoutes,

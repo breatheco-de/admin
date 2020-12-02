@@ -28,17 +28,17 @@ export const navigations = [
       {
         name: "Cohorts",
         path: "/admin/cohorts",
-        iconText: "CL",
+        iconText: "CO",
       },
       {
         name: "Students",
         path: "/admin/students",
-        iconText: "VC",
+        iconText: "STU",
       },
       {
-        name: "New Customer",
-        path: "/pages/new-customer",
-        iconText: "NC",
+        name: "Staff",
+        path: "/admin/staff",
+        iconText: "STA",
       },
     ],
   },

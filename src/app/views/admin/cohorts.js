@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -130,12 +130,22 @@ const CustomerList = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
+      <div className="flex flex-wrap justify-between mb-6">
+        <div>
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/" },
-            { name: "Students" },
+            { name: "Cohorts" },
           ]}
         />
+        </div>
+
+        <div className="">
+          <Button variant="contained" color="primary">
+            Add new cohort
+          </Button>
+        </div>
+      </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
