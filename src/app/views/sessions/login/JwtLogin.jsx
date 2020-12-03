@@ -153,7 +153,7 @@ const JwtLogin = () => {
                 </div>
                 <Button
                   className="text-primary"
-                  onClick={() => history.push("/session/forgot-password")}
+                  onClick={() => window.location.href=`${process.env.REACT_APP_API_HOST}/v1/auth/password/reset`}
                 >
                   Forgot password?
                 </Button>
