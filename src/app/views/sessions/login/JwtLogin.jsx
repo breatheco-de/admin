@@ -36,9 +36,16 @@ const JwtLogin = () => {
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({email: "", password: ''});
   const [message, setMessage] = useState('');
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const classes = useStyles();
+
+  React.useEffect(() => {
+      if(user){
+          if(!user.role) history.push("/session/choose");
+          else history.push("/");
+      } 
+  },[user])
 
   const handleChange = ({ target: { name, value } }) => {
     let temp = { ...userInfo };
@@ -144,12 +151,14 @@ const JwtLogin = () => {
                     )}
                   </div>
                   <span className="mr-2 ml-5">or</span>
-                  <Button
-                    className="capitalize"
-                    onClick={() => history.push("/session/signup")}
-                  >
-                    Sign up
-                  </Button>
+                    <Button
+                        onClick={() => window.location.href=`${process.env.REACT_APP_API_HOST}/v1/auth/github?url=${window.location.href}`}
+                        variant="contained"
+                        className={classes.socialButton}
+                    >
+                        <img style={{ height: "20px", marginRight: "5px" }} src="/assets/images/logos/github.svg" alt="" />
+                        With Github
+                    </Button>
                 </div>
                 <Button
                   className="text-primary"

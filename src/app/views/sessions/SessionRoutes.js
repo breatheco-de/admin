@@ -1,6 +1,7 @@
 import JwtLogin from "./login/JwtLogin.jsx";
 import NotFound from "./NotFound";
 import JwtRegister from "./register/JwtRegister";
+import Choose from "./Choose";
 
 const sessionRoutes = [
   {
@@ -14,6 +15,10 @@ const sessionRoutes = [
   {
     path: "/session/404",
     component: NotFound,
+  },
+  {
+    path: "/session/choose",
+    component: Choose,
   },
 ];
 

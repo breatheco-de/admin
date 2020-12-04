@@ -130,8 +130,6 @@ const Layout1Topbar = () => {
             <MatxSearchBox />
 
             <NotificationBar />
-            <NotificationBar2 />
-            <ShoppingCart />
 
             <MatxMenu
               menuButton={
@@ -145,6 +143,12 @@ const Layout1Topbar = () => {
                 </div>
               }
             >
+              <MenuItem>
+                    <p>
+                      Hi <strong>{user.first_name}</strong>
+                    </p>
+                    <small>{user.academy?.name}: {user.role}</small>
+              </MenuItem>
               <MenuItem>
                 <Link className={classes.menuItem} to="/">
                   <Icon> home </Icon>

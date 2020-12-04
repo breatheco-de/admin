@@ -1,46 +1,53 @@
 import React, { 
-  // useContext, 
+  useContext, 
   useEffect, 
   useState 
 } from "react";
 import { Redirect, useLocation } from "react-router-dom";
-// import AppContext from "app/appContext";
+import AppContext from "app/appContext";
 import useAuth from "app/hooks/useAuth";
 
-// const getUserRoleAuthStatus = (pathname, user, routes) => {
-//   const matched = routes.find((r) => r.path === pathname);
+const getUserRoleAuthStatus = (pathname, user, routes) => {
+  const matched = routes.find((r) => r.path === pathname);
 
-//   const authenticated =
-//     matched && matched.auth && matched.auth.length
-//       ? matched.auth.includes(user.role)
-//       : true;
-//   console.log(matched, user);
-//   return authenticated;
-// };
+  const authenticated =
+    matched && matched.auth && matched.auth.length
+      ? matched.auth.includes(user.role)
+      : true;
+  console.log("matched and user: ", matched, user);
+  return authenticated;
+};
 
 const AuthGuard = ({ children }) => {
   const {
     isAuthenticated,
-    // user
+    user
   } = useAuth();
 
-  const [previouseRoute, setPreviousRoute] = useState(null);
   const { pathname } = useLocation();
 
-  // const { routes } = useContext(AppContext);
-  // const isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, routes);
-  // let authenticated = isAuthenticated && isUserRoleAuthenticated;
+  const { routes } = useContext(AppContext);
+  const isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, routes);
+  let authenticated = isAuthenticated && isUserRoleAuthenticated;
 
   // IF YOU NEED ROLE BASED AUTHENTICATION,
   // UNCOMMENT ABOVE TWO LINES, getUserRoleAuthStatus METHOD AND user VARIABLE
   // COMMENT OUT BELOW LINE
-  let authenticated = isAuthenticated;
+//   let authenticated = isAuthenticated;
 
-  useEffect(() => {
-    if (previouseRoute !== null) setPreviousRoute(pathname);
-  }, [pathname, previouseRoute]);
+  const previouseRoute = isAuthenticated ? pathname : null;
 
-  if (authenticated) return <>{children}</>;
+  if(typeof user.academy !== "object"){
+    return (
+      <Redirect
+        to={{
+          pathname: "/session/choose",
+          state: { redirectUrl: previouseRoute },
+        }}
+      />
+    );
+  }
+  else if (authenticated) return <>{children}</>;
   else {
     return (
       <Redirect

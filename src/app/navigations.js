@@ -17,13 +17,9 @@ export const navigations = [
 //     icon: "dashboard",
 //   },
   {
-    label: "Pages",
-    type: "label",
-  },
- 
-  {
     name: "Admin",
     icon: "school",
+    auth: authRoles.contry_manager,
     children: [
       {
         name: "Cohorts",

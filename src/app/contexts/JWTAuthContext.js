@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useReducer } from "react";
 import axios from "axios.js";
+import { setUserData } from "../redux/actions/UserActions.js";
 import { MatxLoading } from "matx";
 
 const initialState = {
@@ -46,6 +47,15 @@ const reducer = (state, action) => {
         ...state,
         isAuthenticated: true,
         user,
+      };
+    }
+    case "CHOOSE": {
+      const { role, academy } = action.payload;
+
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: {...state.user, role, academy },
       };
     }
     case "LOGOUT": {
@@ -95,8 +105,13 @@ export const AuthProvider = ({ children }) => {
     }
     
     const res2 = await axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
+    if(!res2.data || res2.data.roles.length == 0) throw Error("You are not a staff member from any academy")
+    else if(res2.data.roles.length === 1){
+        res2.data.role = res2.data.roles[0];
+        res2.data.academy = res2.data.roles[0].academy;
+    }
     
-
+    setUserData(res2.data);
     dispatch({
       type: "LOGIN",
       payload: {
@@ -115,7 +130,7 @@ export const AuthProvider = ({ children }) => {
     const { token, user } = response.data;
 
     setSession(token);
-    
+    setUserData(user);
     dispatch({
       type: "REGISTER",
       payload: {
@@ -129,32 +144,42 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: "LOGOUT" });
   };
 
+  const choose = ({role, academy}) => {
+        setUserData({ ...state.user, role, academy });
+        dispatch({ type: "CHOOSE", payload: {role, academy} });
+  };
+
   useEffect(() => {
     (async () => {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
 
         if (accessToken && await isValidToken(accessToken)) {
-          setSession(accessToken);
+            setSession(accessToken);
 
-          const response = await axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
-          const user = response.data;
+            const response = await axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
+            let user = response.data;
+            if(!user || user.roles.length == 0) throw Error("You are not a staff member from any academy")
+            else if(user.roles.length === 1){
+                user.role = user.roles[0];
+                user.academy = user.roles[0].academy;
+            }
 
-          dispatch({
-            type: "INIT",
-            payload: {
-              isAuthenticated: true,
-              user,
-            },
-          });
+            dispatch({
+                type: "INIT",
+                payload: {
+                isAuthenticated: true,
+                user,
+                },
+            });
         } else {
-          dispatch({
-            type: "INIT",
-            payload: {
-              isAuthenticated: false,
-              user: null,
-            },
-          });
+            dispatch({
+                type: "INIT",
+                payload: {
+                isAuthenticated: false,
+                user: null,
+                },
+            });
         }
       } catch (err) {
         console.error(err);
@@ -181,6 +206,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         register,
+        choose,
       }}
     >
       {children}
