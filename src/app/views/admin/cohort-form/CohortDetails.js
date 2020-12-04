@@ -25,9 +25,10 @@ const CohortDetails = ({ slug, endDate, startDate, lang, id }) => {
     const classes = useStyles();
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const onSubmit = (values) => {
+        console.log(values)
         axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}`, values)
             .then((data) => console.log(data))
-            .catch(error => setMsg({ alert: true, type: "error", text: error }))
+            .catch(error =>{console.log(error);  setMsg({ alert: true, type: "error", text: error.details })})
     }
     return (
         <Card className="p-4">
@@ -135,7 +136,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, id }) => {
                                 </Grid>
                                 {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={6000} onClose={() => setMsg({alert:false, text:"", type:""})}>
                                     <Alert onClose={() => setMsg({alert:false, text:"", type:""})} severity={msg.type}>
-                                        This is a message
+                                        {msg.text}
                                     </Alert>
                                 </Snackbar> : ""}
                                 <Button color="primary" variant="contained" type="submit">

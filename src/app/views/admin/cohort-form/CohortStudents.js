@@ -40,6 +40,7 @@ const CohortStudents = ({ slug, id }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [studenList, setStudentsList] = useState([]);
+    const [currentStd, setCurrentStd] = useState("");
     useEffect(() => {
         getCohortStudents();
     }, [])
@@ -52,7 +53,12 @@ const CohortStudents = ({ slug, id }) => {
             educational_status: studenList[i].educational_status
         }
         axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${studentId}`, { ...s_status, [name]: value })
-            .then((data) => data)
+            .then((data) => {
+                console.log(data)
+            if(data.status >= 200){ 
+                setMsg({ alert: true, type: "success", text: "User status updated" });
+                getCohortStudents();
+            }else setMsg({ alert: true, type: "error", text: "Could not update user status" })})
             .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
     }
 
@@ -63,13 +69,21 @@ const CohortStudents = ({ slug, id }) => {
                 setIsLoading(false);
                 data.length < 1 ? setMsg({ alert: true, type: "error", text: "This Cohort is empty or doesn´t exist" }) : setStudentsList(data)
             })
-            .catch(error => console.log(error))
+            .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
     }
 
-    const deleteUserFromCohort = (userId) => {
-        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${userId}`)
-        .then(data => data)
-        .catch(error => error)
+    const deleteUserFromCohort = () => {
+        console.log(currentStd)
+        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd}`)
+        .then((data) =>{ 
+            if(data.status == 204){ 
+                setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
+                getCohortStudents();
+            }
+            else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
+        })
+        .catch(error =>setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
+        setOpenDialog(false);
     }
     return (
         <Card className="p-4">
@@ -86,7 +100,7 @@ const CohortStudents = ({ slug, id }) => {
                     <Button onClick={() =>setOpenDialog(false)} color="primary">
                         Disagree
                     </Button>
-                    <Button  color="primary" autoFocus >
+                    <Button  color="primary" autoFocus onClick={() => deleteUserFromCohort()}>
                         Agree
                     </Button>
                 </DialogActions>
@@ -170,7 +184,7 @@ const CohortStudents = ({ slug, id }) => {
                                 </Grid>
                                 <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                                     <div className="flex justify-end items-center">
-                                        <IconButton onClick={() => setOpenDialog(true)}>
+                                        <IconButton onClick={() =>{setCurrentStd(s.user.id); setOpenDialog(true);}}>
                                             <Icon fontSize="small">delete</Icon>
                                         </IconButton>
                                     </div>
@@ -179,7 +193,7 @@ const CohortStudents = ({ slug, id }) => {
                         </div>
                     ))}
                 </div>
-                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={10000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
                     <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
                         {msg.text}
                     </Alert>

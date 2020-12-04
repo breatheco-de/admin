@@ -23,7 +23,7 @@ const Cohort = () => {
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
-                console.log(data.id)
+                console.log(data)
             })
             .catch(error => console.log(error));
     }
