@@ -40,7 +40,9 @@ const CohortStudents = ({ slug, id }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [studenList, setStudentsList] = useState([]);
-    const [currentStd, setCurrentStd] = useState("");
+    const [currentStd, setCurrentStd] = useState({});
+    const [openRoleDialog, setRoleDialog] = useState(false);
+
     useEffect(() => {
         getCohortStudents();
     }, [])
@@ -55,10 +57,11 @@ const CohortStudents = ({ slug, id }) => {
         axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${studentId}`, { ...s_status, [name]: value })
             .then((data) => {
                 console.log(data)
-            if(data.status >= 200){ 
-                setMsg({ alert: true, type: "success", text: "User status updated" });
-                getCohortStudents();
-            }else setMsg({ alert: true, type: "error", text: "Could not update user status" })})
+                if (data.status >= 200) {
+                    setMsg({ alert: true, type: "success", text: "User status updated" });
+                    getCohortStudents();
+                } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+            })
             .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
     }
 
@@ -72,21 +75,37 @@ const CohortStudents = ({ slug, id }) => {
             .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
     }
 
+    const addUserToCohort = (user_id) => {
+        axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user`, {
+            user:user_id,
+            role:"STUDENT",
+            finantial_status:null,
+            educational_status:"ACTIVE"
+        }).then((data) => {
+            if(data.status >= 200){
+                setMsg({ alert: true, type: "success", text: "User added successfully" });
+                getCohortStudents();
+            }else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+        })
+        .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+    } 
+
     const deleteUserFromCohort = () => {
         console.log(currentStd)
-        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd}`)
-        .then((data) =>{ 
-            if(data.status == 204){ 
-                setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
-                getCohortStudents();
-            }
-            else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
-        })
-        .catch(error =>setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
+        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd.id}`)
+            .then((data) => {
+                if (data.status == 204) {
+                    setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
+                    getCohortStudents();
+                }
+                else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
+            })
+            .catch(error => setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
         setOpenDialog(false);
     }
     return (
         <Card className="p-4">
+            {/* This Dialog opens the modal to delete the user in the cohort */}
             <Dialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
@@ -97,10 +116,10 @@ const CohortStudents = ({ slug, id }) => {
                     Are you sure you want to delete this user from cohort {slug.toUpperCase()}?
                 </DialogTitle>
                 <DialogActions>
-                    <Button onClick={() =>setOpenDialog(false)} color="primary">
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
                         Disagree
                     </Button>
-                    <Button  color="primary" autoFocus onClick={() => deleteUserFromCohort()}>
+                    <Button color="primary" autoFocus onClick={() => deleteUserFromCohort()}>
                         Agree
                     </Button>
                 </DialogActions>
@@ -115,17 +134,14 @@ const CohortStudents = ({ slug, id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AsyncAutocomplete />
-                <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre">
-                    Add to cohort
-                </Button>
+                <AsyncAutocomplete addUserToCohort={addUserToCohort}/>
             </div>
 
             <div className="overflow-auto">
                 {isLoading && <MatxLoading />}
                 <div className="min-w-600">
                     {studenList.map((s, i) => (
-                        <div key={s.id} className="py-4">
+                        <div key={i} className="py-4">
                             <Grid container alignItems="center">
                                 <Grid item lg={6} md={6} sm={6} xs={6}>
                                     <div className="flex">
@@ -141,7 +157,10 @@ const CohortStudents = ({ slug, id }) => {
                                                 <span className="font-medium">{s.created_at}</span>
                                             </p>
                                             <p className="mt-0 mb-6px text-13">
-                                                <small onClick={() => setChooseOpen(true)} className={"border-radius-4 px-2 pt-2px bg-secondary"}>student</small>
+                                                <small onClick={() => {
+                                                    setRoleDialog(true);
+                                                    setCurrentStd({ id: s.user.id, positionInArray: i })
+                                                    }} className={"border-radius-4 px-2 pt-2px bg-secondary"} style={{ cursor: "pointer" }}>{s.role}</small>
                                             </p>
                                         </div>
                                     </div>
@@ -157,7 +176,7 @@ const CohortStudents = ({ slug, id }) => {
                                         onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
                                         select
                                     >
-                                        {['FULLY_PAID', 'UP_TO_DATE', 'LATE', 'N/D'].map((item, ind) => (
+                                        {['FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item, ind) => (
                                             <MenuItem value={item} key={item}>
                                                 {item}
                                             </MenuItem>
@@ -175,7 +194,7 @@ const CohortStudents = ({ slug, id }) => {
                                         onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
                                         select
                                     >
-                                        {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', 'N/D'].map((item, ind) => (
+                                        {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''].map((item, ind) => (
                                             <MenuItem value={item} key={item}>
                                                 {item}
                                             </MenuItem>
@@ -184,7 +203,10 @@ const CohortStudents = ({ slug, id }) => {
                                 </Grid>
                                 <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                                     <div className="flex justify-end items-center">
-                                        <IconButton onClick={() =>{setCurrentStd(s.user.id); setOpenDialog(true);}}>
+                                        <IconButton onClick={() => {
+                                            setCurrentStd({ id: s.user.id, positionInArray: i });
+                                            setOpenDialog(true);
+                                        }}>
                                             <Icon fontSize="small">delete</Icon>
                                         </IconButton>
                                     </div>
@@ -199,33 +221,31 @@ const CohortStudents = ({ slug, id }) => {
                     </Alert>
                 </Snackbar> : ""}
             </div>
-            <ChooseRoleDialog
-                // selectedValue={selectedValue}
-                open={chooseOpen}
-                onClose={(newRole) => setChooseOpen(false)}
-            />
+            {/* This Dialog opens the modal for the user role in the cohort */}
+            <Dialog
+                onClose={() => setRoleDialog(false)}
+                open={openRoleDialog}
+                aria-labelledby="simple-dialog-title"
+            >
+                <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
+                <List>
+                    {['TEACHER', 'ASISTANT', 'STUDENT'].map((role, i) => (
+                        <ListItem
+                            button
+                            onClick={() => {
+                                changeStudentStatus(role, "role", currentStd.id, currentStd.positionInArray);
+                                setRoleDialog(false)
+                            }}
+                            key={i}
+                        >
+                            <ListItemText primary={role} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Dialog>
         </Card>
     );
 };
 
-const ChooseRoleDialog = ({ onClose, selectedValue, ...other }) =>
-    <Dialog
-        onClose={() => onClose(null)}
-        aria-labelledby="simple-dialog-title"
-        {...other}
-    >
-        <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
-        <List>
-            {['TEACHER', 'ASISTANT', 'STUDENT'].map(role => (
-                <ListItem
-                    button
-                    onClick={() => onClose(role)}
-                    key={role}
-                >
-                    <ListItemText primary={role} />
-                </ListItem>
-            ))}
-        </List>
-    </Dialog>;
 
 export default CohortStudents;

@@ -5,13 +5,10 @@ import {
     KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { Formik } from "formik";
-import { Link } from "react-router-dom";
-import { Rating } from "@material-ui/lab";
 import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import axios from "../../../../axios";
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert} from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -21,15 +18,8 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
 }));
 
-const CohortDetails = ({ slug, endDate, startDate, lang, id }) => {
-    const classes = useStyles();
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-    const onSubmit = (values) => {
-        console.log(values)
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}`, values)
-            .then((data) => console.log(data))
-            .catch(error =>{console.log(error);  setMsg({ alert: true, type: "error", text: error.details })})
-    }
+const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
+    
     return (
         <Card className="p-4">
             <div className="mb-4 flex justify-between items-center">
@@ -134,11 +124,6 @@ const CohortDetails = ({ slug, endDate, startDate, lang, id }) => {
                                     </TextField>
 
                                 </Grid>
-                                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={6000} onClose={() => setMsg({alert:false, text:"", type:""})}>
-                                    <Alert onClose={() => setMsg({alert:false, text:"", type:""})} severity={msg.type}>
-                                        {msg.text}
-                                    </Alert>
-                                </Snackbar> : ""}
                                 <Button color="primary" variant="contained" type="submit">
                                     Save Cohort Details
                                     </Button>

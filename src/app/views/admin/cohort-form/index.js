@@ -5,17 +5,17 @@ import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";
 import axios from "../../../../axios";
+import { Alert} from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [snackOpen, setSnackOpen] = useState(false);
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [cohort, setCohort] = useState({})
     useEffect(() => {
         getCohort();
     }, [])
-
-    const handleClose = () => setSnackOpen(true);
 
     const getCohort = () => {
         setIsLoading(true);
@@ -26,6 +26,20 @@ const Cohort = () => {
                 console.log(data)
             })
             .catch(error => console.log(error));
+    }
+    const onSubmit = (values) => {
+        console.log(values)
+        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}`, {...values, certificate: cohort.certificate.id})
+            .then((data) =>{ 
+                if(data.status <= 200){
+                    getCohort();
+                    setMsg({ alert: true, type: "success", text: "Cohort details updated successfully"});
+                } else setMsg({ alert: true, type: "error", text: "Could not update cohort details"});
+            })
+            .catch(error =>{
+                console.log(error);  
+                setMsg({ alert: true, type: "error", text: error.details })
+            })
     }
 
     return (
@@ -49,6 +63,7 @@ const Cohort = () => {
                     endDate={cohort.ending_date} 
                     startDate={cohort.kickoff_date}
                     id={cohort.id}
+                    onSubmit={onSubmit}
                     />
                 </Grid>
                 <Grid item md={8} xs={12}>
@@ -57,6 +72,11 @@ const Cohort = () => {
                     id={cohort.id} 
                     />
                 </Grid>
+                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({alert:false, text:"", type:""})}>
+                                    <Alert onClose={() => setMsg({alert:false, text:"", type:""})} severity={msg.type}>
+                                        {msg.text}
+                                    </Alert>
+                                </Snackbar> : ""}
             </Grid>
         </div>
     );

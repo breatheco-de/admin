@@ -1,18 +1,16 @@
 // *https://www.registers.service.gov.uk/registers/country/use-the-api*
-import fetch from "cross-fetch";
 import React from "react";
-import { TextField, CircularProgress } from "@material-ui/core";
+import { TextField, CircularProgress,Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "./useDebounce";
 import axios from "../../../../axios";
 
-export default function AsyncAutocomplete() {
+export default function AsyncAutocomplete({addUserToCohort}) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
-  // API search results
-  const [results, setResults] = React.useState([]);
+  const [select, setSelect] = React.useState("");
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
@@ -20,11 +18,13 @@ export default function AsyncAutocomplete() {
       setLoading(true)
       axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
       .then(({data}) => {
-          setLoading(false)
+          setLoading(false);
           setOptions(data);
+          console.log(data)
         })
       .catch(error => console.log(error))
   }
+
 
   React.useEffect(() => {
     if (debouncedSearchTerm) {
@@ -37,8 +37,8 @@ export default function AsyncAutocomplete() {
 
 
   return (
+      <>
     <Autocomplete
-      multiple
       id="asynchronous-demo"
       style={{width:"100%"}}
       open={open}
@@ -49,6 +49,7 @@ export default function AsyncAutocomplete() {
         setOpen(false);
       }}
       getOptionSelected={(option, value) => {
+          setSelect(value.id);
           return option.first_name === value.first_name
         }}
       getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
@@ -75,5 +76,9 @@ export default function AsyncAutocomplete() {
         />
       )}
     />
+    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(select)}>
+        Add to cohort
+    </Button>
+    </>
   );
 }
