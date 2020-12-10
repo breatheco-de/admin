@@ -61,7 +61,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
                                 </Grid>
                                 <Grid item md={3} sm={4} xs={12}>
                                     Start date
-                </Grid>
+                                </Grid>
                                 <Grid item md={9} sm={8} xs={12}>
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                         <KeyboardDatePicker
@@ -81,7 +81,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
                                 </Grid>
                                 <Grid item md={3} sm={4} xs={12}>
                                     End date
-                </Grid>
+                                </Grid>
                                 <Grid item md={9} sm={8} xs={12}>
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                         <KeyboardDatePicker
