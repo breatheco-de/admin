@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Button, Icon } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
@@ -61,6 +61,12 @@ const Cohort = () => {
                         </div>
                     </div>
                     {isLoading && <MatxLoading />}
+                    <DowndownMenu options={options} icon="more_horiz">
+                        <Button>
+                            <Icon>playlist_add</Icon>
+                            Additional Actions
+                        </Button>
+                    </DowndownMenu>
                 </div>
                 <Grid container spacing={3}>
                     <Grid item md={4} xs={12}>
@@ -79,27 +85,13 @@ const Cohort = () => {
                             id={cohort.id}
                         />
                     </Grid>
-                    {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                            {msg.text}
-                        </Alert>
-                    </Snackbar> : ""}
                 </Grid>
+                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                        {msg.text}
+                    </Alert>
+                </Snackbar> : ""}
             </div>
-            <DowndownMenu options={options} icon="more_horiz">
-                <Button>
-                    <Icon>playlist_add</Icon>
-                Additional Actions
-            </Button>
-            </DowndownMenu>
-            <Grid container spacing={3}>
-                <Grid item md={4} xs={12}>
-                    <CohortDetails slug={slug} />
-                </Grid>
-                <Grid item md={8} xs={12}>
-                    <CohortStudents slug={slug} />
-                </Grid>
-            </Grid>
         </>
     );
 };
