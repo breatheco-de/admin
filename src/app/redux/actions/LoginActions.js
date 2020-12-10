@@ -1,6 +1,5 @@
 import jwtAuthService from "../../services/jwtAuthService";
 import { setUserData } from "./UserActions";
-import history from "history.js";
 
 export const LOGIN_ERROR = "LOGIN_ERROR";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IconButton, Icon, Button, Grid } from "@material-ui/core";
-import { Link, useParams } from "react-router-dom";
+import { Grid } from "@material-ui/core";
+import {  useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";

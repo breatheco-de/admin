@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Divider, Card, Grid, TextField, Button, MenuItem } from "@material-ui/core";
 import {
     MuiPickersUtilsProvider,
@@ -7,11 +7,8 @@ import {
 import { Formik } from "formik";
 import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
-import axios from "../../../../axios";
-import { Alert} from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+makeStyles(({ palette, ...theme }) => ({
     avatar: {
         border: "4px solid rgba(var(--body), 0.03)",
         boxShadow: theme.shadows[3],
@@ -126,7 +123,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
                                 </Grid>
                                 <Button color="primary" variant="contained" type="submit">
                                     Save Cohort Details
-                                    </Button>
+                                </Button>
                             </Grid>
                         </form>
                     )}

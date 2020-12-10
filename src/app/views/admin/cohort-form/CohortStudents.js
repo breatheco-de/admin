@@ -16,12 +16,11 @@ import {
     MenuItem,
     DialogActions,
     IconButton,
-    DialogContentText,
 } from "@material-ui/core";
 import { format } from "date-fns";
 import clsx from "clsx";
 import axios from "../../../../axios";
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import AsyncAutocomplete from "./AsyncAutocomplete";
@@ -35,7 +34,6 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const CohortStudents = ({ slug, id }) => {
     const classes = useStyles();
-    const [chooseOpen, setChooseOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
@@ -94,7 +92,7 @@ const CohortStudents = ({ slug, id }) => {
         console.log(currentStd)
         axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd.id}`)
             .then((data) => {
-                if (data.status == 204) {
+                if (data.status === 204) {
                     setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
                     getCohortStudents();
                 }
