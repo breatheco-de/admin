@@ -60,7 +60,10 @@ const CohortStudents = ({ slug, id }) => {
                     getCohortStudents();
                 } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
             })
-            .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+            .catch(error => {
+                setMsg({ alert: true, type: "error", text: error.details || error.role[0] });
+                console.log(error)
+            })
     }
 
     const getCohortStudents = () => {
@@ -85,7 +88,10 @@ const CohortStudents = ({ slug, id }) => {
                 getCohortStudents();
             }else setMsg({ alert: true, type: "error", text: "Could not update user status" })
         })
-        .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+        .catch(error => {
+            console.log(error)
+            setMsg({ alert: true, type: "error", text: error.details });
+        })
     } 
 
     const deleteUserFromCohort = () => {

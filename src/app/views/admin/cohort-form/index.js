@@ -37,14 +37,14 @@ const Cohort = () => {
         console.log(values)
         axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
             .then((data) => {
+                console.log(data)
                 if (data.status <= 200) {
-                    getCohort();
                     setMsg({ alert: true, type: "success", text: "Cohort details updated successfully" });
                 } else setMsg({ alert: true, type: "error", text: "Could not update cohort details" });
             })
             .catch(error => {
                 console.log(error);
-                setMsg({ alert: true, type: "error", text: error.details })
+                setMsg({ alert: true, type: "error", text: error.details || "Cohort slug already exist" })
             })
     }
 
