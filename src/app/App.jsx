@@ -1,5 +1,4 @@
 import "../index.css";
-import "../fake-db";
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Provider } from "react-redux";

@@ -30,5 +30,6 @@ yarn-error.log*
 
 # Don't ignore gitpod files
 !.gitignore
+!.gitpod.yml
 !.gitpod.Dockerfile
 .vercel

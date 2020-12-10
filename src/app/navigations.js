@@ -17,28 +17,24 @@ export const navigations = [
 //     icon: "dashboard",
 //   },
   {
-    label: "Pages",
-    type: "label",
-  },
- 
-  {
     name: "Admin",
     icon: "school",
+    auth: authRoles.contry_manager,
     children: [
       {
         name: "Cohorts",
         path: "/admin/cohorts",
-        iconText: "CL",
+        iconText: "CO",
       },
       {
         name: "Students",
         path: "/admin/students",
-        iconText: "VC",
+        iconText: "STU",
       },
       {
-        name: "New Customer",
-        path: "/pages/new-customer",
-        iconText: "NC",
+        name: "Staff",
+        path: "/admin/staff",
+        iconText: "STA",
       },
     ],
   },

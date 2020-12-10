@@ -1,7 +1,7 @@
 import JwtLogin from "./login/JwtLogin.jsx";
 import NotFound from "./NotFound";
-import ForgotPassword from "./ForgotPassword";
 import JwtRegister from "./register/JwtRegister";
+import Choose from "./Choose";
 
 const sessionRoutes = [
   {
@@ -13,12 +13,12 @@ const sessionRoutes = [
     component: JwtLogin,
   },
   {
-    path: "/session/forgot-password",
-    component: ForgotPassword,
-  },
-  {
     path: "/session/404",
     component: NotFound,
+  },
+  {
+    path: "/session/choose",
+    component: Choose,
   },
 ];
 

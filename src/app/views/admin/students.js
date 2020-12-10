@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const CustomerList = () => {
@@ -10,7 +10,7 @@ const CustomerList = () => {
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    axios.get(process.env.REACT_APP_API_HOST+"/v1/admissions/cohort/user").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user").then(({ data }) => {
       if (isAlive) setUserList(data);
     });
     return () => setIsAlive(false);
@@ -49,21 +49,22 @@ const CustomerList = () => {
       label: " ",
       options: {
         filter: false,
-        customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="flex-grow"></div>
-            <Link to="/pages/new-customer">
-              <IconButton>
-                <Icon>edit</Icon>
-              </IconButton>
-            </Link>
-            <Link to="/pages/view-customer">
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
-              </IconButton>
-            </Link>
-          </div>
-        ),
+        customBodyRenderLite: (dataIndex) => {
+            let item = userList[dataIndex];
+            return <div className="flex items-center">
+                <div className="flex-grow"></div>
+                <Link to={`/admin/students/${item.id}`}>
+                    <IconButton>
+                        <Icon>edit</Icon>
+                    </IconButton>
+                </Link>
+                <Link to="/pages/view-customer">
+                    <IconButton>
+                        <Icon>arrow_right_alt</Icon>
+                    </IconButton>
+                </Link>
+            </div>
+        },
       },
     },
   ];
@@ -71,12 +72,24 @@ const CustomerList = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        <Breadcrumb
-          routeSegments={[
-            { name: "Admin", path: "/" },
-            { name: "Students" },
-          ]}
-        />
+      <div className="flex flex-wrap justify-between mb-6">
+        <div>
+            <Breadcrumb
+            routeSegments={[
+                { name: "Admin", path: "/" },
+                { name: "Students" },
+            ]}
+            />
+        </div>
+
+        <div className="">
+        <Link to={`/admin/students/new`}>
+            <Button variant="contained" color="primary">
+                Add new student
+            </Button>
+        </Link>
+        </div>
+      </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
