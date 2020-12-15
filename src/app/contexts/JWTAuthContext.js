@@ -95,7 +95,6 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     
     try{
-
         const res1 = await axios.post(process.env.REACT_APP_API_HOST+"/v1/auth/login/", { email, password });
         setSession(res1.data.token);
     }
@@ -152,7 +151,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        const accessToken = window.localStorage.getItem("accessToken");
+        let accessToken = null;
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if(token) accessToken = token;
+        else accessToken = window.localStorage.getItem("accessToken");
 
         if (accessToken && await isValidToken(accessToken)) {
             setSession(accessToken);
