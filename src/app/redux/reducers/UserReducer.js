@@ -2,6 +2,7 @@ import {
   SET_USER_DATA,
   REMOVE_USER_DATA,
   USER_LOGGED_OUT,
+  GET_USERS
 } from "../actions/UserActions";
 
 const initialState = {};

@@ -70,6 +70,7 @@ const CohortStudents = ({ slug, id }) => {
         setIsLoading(true);
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${slug}`)
             .then(({ data }) => {
+                console.log(data);
                 setIsLoading(false);
                 data.length < 1 ? setMsg({ alert: true, type: "error", text: "This Cohort is empty or doesn´t exist" }) : setStudentsList(data)
             })
@@ -151,7 +152,7 @@ const CohortStudents = ({ slug, id }) => {
                                     <div className="flex">
                                         <Avatar
                                             className={clsx("h-full w-full mb-6", classes.avatar)}
-                                            src={s.profile?.avatar_url}
+                                            src={ ""}
                                         />
                                         <div className="flex-grow">
                                             <h6 className="mt-0 mb-0 text-15 text-primary">
@@ -233,7 +234,7 @@ const CohortStudents = ({ slug, id }) => {
             >
                 <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
                 <List>
-                    {['TEACHER', 'ASISTANT', 'STUDENT'].map((role, i) => (
+                    {['TEACHER', 'ASSISTANT', 'STUDENT'].map((role, i) => (
                         <ListItem
                             button
                             onClick={() => {

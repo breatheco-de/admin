@@ -12,7 +12,8 @@ const RootReducer = combineReducers({
   scrumboard: ScrumBoardReducer,
   notifications: NotificationReducer,
   ecommerce: EcommerceReducer,
-  navigations: NavigationReducer
+  navigations: NavigationReducer,
+  cohorts: CohortReducer
 });
 
 export default RootReducer;

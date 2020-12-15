@@ -44,7 +44,7 @@ const Cohort = () => {
             })
             .catch(error => {
                 console.log(error);
-                setMsg({ alert: true, type: "error", text: error.details || "Cohort slug already exist" })
+                setMsg({ alert: true, type: "error", text: error.details || "Unknown problem when updating the cohort" })
             })
     }
 

@@ -16,7 +16,6 @@ makeStyles(({ palette, ...theme }) => ({
 }));
 
 const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
-    
     return (
         <Card className="p-4">
             <div className="mb-4 flex justify-between items-center">
