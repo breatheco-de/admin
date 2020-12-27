@@ -10,14 +10,14 @@ const options = [
   { label: "Open student profile", value: "student_profile" },
 ];
 
-const Invoice2 = () => {
-    const { slug } = useParams();
+const Student = () => {
+    const { std_id } = useParams();
 
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">Ben Peterson</h3>
+          <h3 className="mt-0 mb-4 font-medium text-28">Ben Peterson{std_id}</h3>
           <div className="flex">
               Member since: August 23rd, 2016
           </div>
@@ -33,14 +33,14 @@ const Invoice2 = () => {
 
       <Grid container spacing={3}>
         <Grid item md={4} xs={12}>
-          <StudentDetails slug={slug} />
+          <StudentDetails std_id={std_id} />
         </Grid>
         <Grid item md={8} xs={12}>
-          <StudentCohorts slug={slug} />
+          <StudentCohorts std_id={std_id} />
         </Grid>
       </Grid>
     </div>
   );
 };
 
-export default Invoice2;
+export default Student;

@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Button, Icon } from "@material-ui/core";
+import {
+    Grid,
+    Icon,
+    List,
+    ListItem,
+    ListItemText,
+    DialogTitle,
+    Dialog,
+    Button,
+} from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
@@ -18,6 +27,7 @@ const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
+    const [stageDialog, setStageDialog] = useState(false) 
     const [cohort, setCohort] = useState({})
     useEffect(() => {
         getCohort();
@@ -33,7 +43,7 @@ const Cohort = () => {
             })
             .catch(error => console.log(error));
     }
-    const onSubmit = (values) => {
+    const updateCohort = (values) => {
         console.log(values)
         axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
             .then((data) => {
@@ -55,7 +65,7 @@ const Cohort = () => {
                     <div>
                         <h3 className="mt-0 mb-4 font-medium text-28">Cohort: {slug}</h3>
                         <div className="flex">
-                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3">
+                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3" onClick={()=> setStageDialog(true)} style={{ cursor: "pointer" }}>
                                 {cohort && cohort.stage}
                             </div>
                         </div>
@@ -76,7 +86,7 @@ const Cohort = () => {
                             endDate={cohort.ending_date}
                             startDate={cohort.kickoff_date}
                             id={cohort.id}
-                            onSubmit={onSubmit}
+                            onSubmit={updateCohort}
                         />
                     </Grid>
                     <Grid item md={8} xs={12}>
@@ -92,6 +102,34 @@ const Cohort = () => {
                     </Alert>
                 </Snackbar> : ""}
             </div>
+            <Dialog
+                onClose={() => setStageDialog(false)}
+                open={stageDialog}
+                aria-labelledby="simple-dialog-title"
+            >
+                <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
+                <List>
+                    {['ACTIVE', 'INACTIVE', 'PREWORK', 'FINAL_PROJECT','ENDED' ].map((stage, i) => (
+                        <ListItem
+                            button
+                            onClick={() => {
+                                updateCohort({
+                                    stage: stage, 
+                                    slug:cohort.slug, 
+                                    name:cohort.name, 
+                                    language:cohort.language, 
+                                    kickoff_date:cohort.kickoff_date,
+                                    ending_date: cohort.ending_date
+                                });
+                                setStageDialog(false)
+                            }}
+                            key={i}
+                        >
+                            <ListItemText primary={stage} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Dialog>
         </>
     );
 };

@@ -3,9 +3,9 @@ import React from "react";
 import { TextField, CircularProgress,Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "./useDebounce";
-import axios from "../../../../axios";
+import axios from "../../../../../axios";
 
-export default function AsyncAutocomplete({addUserToCohort}) {
+export default function AsyncAutocomplete({addUserToCohort, cohort_id}) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -76,7 +76,7 @@ export default function AsyncAutocomplete({addUserToCohort}) {
         />
       )}
     />
-    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(select)}>
+    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id,select)}>
         Add to cohort
     </Button>
     </>

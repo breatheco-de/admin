@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -18,24 +18,37 @@ import {
 } from "@material-ui/core";
 import { format } from "date-fns";
 import clsx from "clsx";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
+import axios from "../../../../axios";
+import { MatxLoading } from "matx";
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
-  avatar: {
-    border: "4px solid rgba(var(--body), 0.03)",
-    boxShadow: theme.shadows[3],
-  },
-}));
-
-const InvoiceOverview = () => {
-    const classes = useStyles();
+const InvoiceOverview = ({std_id}) => {
     const [ chooseOpen, setChooseOpen ] = useState(false);
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+    const [isLoading, setIsLoading] = useState(false);
+    const [stdCohorts, setStdCohorts] = useState([]);
+
+    useEffect(() => {
+      getCohorts();
+    }, [])
+
+    const getCohorts = () => {
+      setIsLoading(true);
+      axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?users=${std_id}`)
+          .then(({ data }) => {
+              setIsLoading(false);
+              data.length < 1 ? setMsg({ alert: true, type: "error", text: "This Cohort is empty or doesn´t exist" }) : setStdCohorts(data)
+          })
+          .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+    }
 
   return (
     <Card className="p-4">
+      {isLoading && <MatxLoading />}
       <div className="mb-4 flex justify-between items-center">
         <h4 className="m-0 font-medium">Cohorts</h4>
       </div>
-
       <Divider className="mb-6" />
 
       <div className="flex mb-6">
@@ -59,7 +72,7 @@ const InvoiceOverview = () => {
 
       <div className="overflow-auto">
         <div className="min-w-600">
-          {dummyStudents.map((s) => (
+          {stdCohorts.map((s) => (
             <div key={s.id} className="py-4">
               <Grid container alignItems="center">
                 <Grid item lg={4} md={4} sm={6} xs={6}>
@@ -129,6 +142,11 @@ const InvoiceOverview = () => {
             open={chooseOpen}
             onClose={(newRole) => setChooseOpen(false)}
         />
+              {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                        {msg.text}
+                    </Alert>
+                </Snackbar> : ""}
     </Card>
   );
 };

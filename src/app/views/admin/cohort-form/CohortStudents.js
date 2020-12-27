@@ -23,7 +23,8 @@ import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import AsyncAutocomplete from "./AsyncAutocomplete";
+import AsyncAutocomplete from "./cohort-utils/Autocomplete";
+import {useSelector, useDispatch} from "react-redux";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -40,7 +41,9 @@ const CohortStudents = ({ slug, id }) => {
     const [studenList, setStudentsList] = useState([]);
     const [currentStd, setCurrentStd] = useState({});
     const [openRoleDialog, setRoleDialog] = useState(false);
-
+    // Redux actions and store
+    const {status} = useSelector(state => state.cohorts);
+    console.log(status);
     useEffect(() => {
         getCohortStudents();
     }, [])
@@ -139,7 +142,7 @@ const CohortStudents = ({ slug, id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AsyncAutocomplete addUserToCohort={addUserToCohort}/>
+                <AsyncAutocomplete addUserToCohort={addUserToCohort} cohort_id={id}/>
             </div>
 
             <div className="overflow-auto">
@@ -151,8 +154,8 @@ const CohortStudents = ({ slug, id }) => {
                                 <Grid item lg={6} md={6} sm={6} xs={6}>
                                     <div className="flex">
                                         <Avatar
-                                            className={clsx("h-full w-full mb-6", classes.avatar)}
-                                            src={ ""}
+                                            className={clsx("h-full w-full mb-6 mr-2", classes.avatar)}
+                                            src={s.user.profile != undefined ? s.user.profile.avatar_url: ""}
                                         />
                                         <div className="flex-grow">
                                             <h6 className="mt-0 mb-0 text-15 text-primary">

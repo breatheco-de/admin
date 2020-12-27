@@ -1,27 +1,40 @@
-
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Formik } from "formik";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
+import axios from "../../../../axios";
 import {
   Grid,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Card,
   Divider,
   TextField,
   MenuItem,
-  Tabs,
-  Tab,
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
 const CustomerForm = () => {
+  const [cert, setCert] = useState([]);
+  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
-    const handleSubmit = async (values, { isSubmitting }) => {
-    console.log(values);
+  const postCohort = (values) => {
+     axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,values)
+      .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
+      .catch(error => setMsg({ 
+        alert: true, 
+        type: "error", 
+        text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cohort fields"
+       }))
   };
+
+  const getCertificates = () => {
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
+    .then(({data}) => setCert(data))
+    .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
+  }
+  useEffect(() =>{
+    getCertificates();
+  }, [])
 
   return (
     <div className="m-sm-30">
@@ -36,13 +49,13 @@ const CustomerForm = () => {
 
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add a New Customer</h4>
+          <h4 className="m-0">Add a New Cohort</h4>
         </div>
         <Divider className="mb-2" />
 
         <Formik
           initialValues={initialValues}
-          onSubmit={handleSubmit}
+          onSubmit={(values) => postCohort(values)}
           enableReinitialize={true}
         >
           {({
@@ -58,177 +71,92 @@ const CustomerForm = () => {
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
-                <Grid item md={2} sm={4} xs={12}>
-                  Customer Type
+              <Grid item md={2} sm={4} xs={12}>
+                  Cohort Name
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <FormControl component="fieldset">
-                    <RadioGroup
-                      row
-                      name="customerType"
-                      value={values.customerType}
-                      onChange={handleChange}
-                    >
-                      <FormControlLabel
-                        className="h-20 mr-6"
-                        label="Business"
-                        value="business"
-                        control={<Radio size="small" color="secondary" />}
-                      />
-                      <FormControlLabel
-                        className="h-20"
-                        label="Individual"
-                        value="individual"
-                        control={<Radio size="small" color="secondary" />}
-                      />
-                    </RadioGroup>
-                  </FormControl>
+                  <TextField
+                    label="Cohort Name"
+                    name="name"
+                    size="small"
+                    variant="outlined"
+                    value={values.name}
+                    onChange={handleChange}
+                  />
                 </Grid>
-
                 <Grid item md={2} sm={4} xs={12}>
-                  Primary Contact
+                  Cohort Slug
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    label="Cohort Slug"
+                    name="slug"
+                    size="small"
+                    variant="outlined"
+                    value={values.slug}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Certificate
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <TextField
                       className="m-2 min-w-188"
-                      label="Salutation"
-                      name="salutation"
+                      label="Certificate"
+                      name="certificate"
                       size="small"
                       variant="outlined"
                       select
-                      value={values.salutation || ""}
+                      value={values.certificate || ""}
                       onChange={handleChange}
                     >
-                      {salutationList.map((item, ind) => (
-                        <MenuItem value={item} key={item}>
-                          {item}
+                      {cert.map((item, ind) => (
+                        <MenuItem value={item.id} key={item.name}>
+                          {item.name}
                         </MenuItem>
                       ))}
                     </TextField>
-                    <TextField
-                      className="m-2"
-                      label="First Name"
-                      name="firstName"
-                      size="small"
-                      variant="outlined"
-                      value={values.firstName}
-                      onChange={handleChange}
-                    />
-                    <TextField
-                      className="m-2"
-                      label="Last Name"
-                      name="lastName"
-                      size="small"
-                      variant="outlined"
-                      value={values.lastName}
-                      onChange={handleChange}
-                    />
                   </div>
                 </Grid>
-
                 <Grid item md={2} sm={4} xs={12}>
-                  Primary Contact
+                  Kick off date
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                    label="Company Name"
-                    name="companyName"
+                    name="kickoff_date"
                     size="small"
+                    type="datetime-local"
                     variant="outlined"
-                    value={values.companyName}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Customer Display Name
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Display Name"
-                    name="displayName"
-                    size="small"
-                    variant="outlined"
-                    value={values.displayName}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Customer Email
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Customer Email"
-                    name="email"
-                    size="small"
-                    type="email"
-                    variant="outlined"
-                    value={values.email}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Customer Phone
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <div className="flex flex-wrap m--2">
-                    <TextField
-                      className="m-2"
-                      label="Work Phone"
-                      name="workPhone"
-                      size="small"
-                      variant="outlined"
-                      value={values.workPhone}
-                      onChange={handleChange}
-                    />
-                    <TextField
-                      className="m-2"
-                      label="Mobile"
-                      name="mobile"
-                      size="small"
-                      variant="outlined"
-                      value={values.mobile}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Website
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Website"
-                    name="website"
-                    size="small"
-                    type="email"
-                    variant="outlined"
-                    value={values.website}
+                    value={values.kickoff_date}
                     onChange={handleChange}
                   />
                 </Grid>
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
-                  Submit
+                  Create
                 </Button>
               </div>
             </form>
           )}
         </Formik>
+        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                        {msg.text}
+                    </Alert>
+                </Snackbar> : ""}
       </Card>
     </div>
   );
 };
 
-const salutationList = ["Mr.", "Mrs.", "Ms.", "Miss.", "Dr."];
-const tabList = ["Other Details", "Address", "Contact Persons"];
-
 const initialValues = {
-  customerType: "",
+  name: "",
+  slug:"",
+  certificate:"",
+  kickoff_date:""
 };
 
 export default CustomerForm;
