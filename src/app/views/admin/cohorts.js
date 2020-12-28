@@ -146,6 +146,19 @@ const CustomerList = () => {
                 Add new cohort
               </Button>
           </Link>
+          <Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
+              <Button variant="contained" color="primary">
+                Add new cohort
+              </Button>
+          </Link><Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
+              <Button variant="contained" color="primary">
+                Add new cohort
+              </Button>
+          </Link><Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
+              <Button variant="contained" color="primary">
+                Add new cohort
+              </Button>
+          </Link>
           </div>
         </div>
       </div>
