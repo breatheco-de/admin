@@ -32,8 +32,13 @@ const routes = [
     },
     {
         path: "/admin/staff",
-        component: React.lazy(() => import("./staff")),
+        component: React.lazy(() => import("./staff-form/NewStaff")),
     },
+    {
+        path: "/admin/staff/new",
+        exact: true,
+        component: React.lazy(() => import("./staff-form/NewStaff")),
+    }
 ];
 
 export default routes;
