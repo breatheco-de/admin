@@ -53,7 +53,7 @@ const CustomerList = () => {
             let item = userList[dataIndex];
             return <div className="flex items-center">
                 <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.id}`}>
+                <Link to={`/admin/students/${item.id}/${item.first_name} ${item.last_name}`}>
                     <IconButton>
                         <Icon>edit</Icon>
                     </IconButton>
@@ -93,7 +93,7 @@ const CustomerList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          <MUIDataTable
+        <MUIDataTable
             title={"All Students"}
             data={userList}
             columns={columns}

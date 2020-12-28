@@ -11,9 +11,10 @@ import {
   Button,
   Card,
 } from "@material-ui/core";
-import { getAllUser, deleteUser } from "./TableService";
-import MemberEditorDialog from "./MemberEditorDialog";
+//import { getAllUser, deleteUser } from "./TableService";
+//import MemberEditorDialog from "./MemberEditorDialog";
 import { Breadcrumb, ConfirmationDialog } from "matx";
+import { Link } from "react-router-dom";
 import shortid from "shortid";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -64,15 +65,15 @@ const CrudTable = () => {
   };
 
   const handleConfirmationResponse = () => {
-    deleteUser(user).then(() => {
-      handleDialogClose();
-    });
+    //deleteUser(user).then(() => {
+    //  handleDialogClose();
+    //});
   };
 
   const updatePageData = () => {
-    getAllUser().then(({ data }) => {
-      setUserList(data);
-    });
+    //getAllUser().then(({ data }) => {
+    //  setUserList(data);
+    //});
   };
 
   useEffect(() => {
@@ -84,15 +85,11 @@ const CrudTable = () => {
       <div className="mb-sm-30">
         <Breadcrumb routeSegments={[{ name: "CRUD Table" }]} />
       </div>
-
-      <Button
-        className="mb-4"
-        variant="contained"
-        color="primary"
-        onClick={() => setShouldOpenEditorDialog(true)}
-      >
-        Add New Member
+      <Link>
+        <Button className="mb-4" variant="contained" color="primary">
+          Add New Member
       </Button>
+      </Link>
       <Card className="w-full overflow-auto" elevation={6}>
         <Table
           className={clsx("whitespace-pre min-w-750", classes.productTable)}
@@ -128,10 +125,10 @@ const CrudTable = () => {
                         active
                       </small>
                     ) : (
-                      <small className="rounded bg-light-gray elevation-z3 px-2 py-2px">
-                        inactive
-                      </small>
-                    )}
+                        <small className="rounded bg-light-gray elevation-z3 px-2 py-2px">
+                          inactive
+                        </small>
+                      )}
                   </TableCell>
                   <TableCell className="px-0 border-none">
                     <IconButton
@@ -168,13 +165,13 @@ const CrudTable = () => {
           onChangeRowsPerPage={({ target: { value } }) => setRowsPerPage(value)}
         />
 
-        {shouldOpenEditorDialog && (
-          <MemberEditorDialog
+        {/*shouldOpenEditorDialog && (
+            <MemberEditorDialog
             handleClose={handleDialogClose}
             open={shouldOpenEditorDialog}
             uid={uid}
           />
-        )}
+        )*/}
         {shouldOpenConfirmationDialog && (
           <ConfirmationDialog
             open={shouldOpenConfirmationDialog}

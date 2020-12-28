@@ -99,7 +99,6 @@ const CohortStudents = ({ slug, id }) => {
     } 
 
     const deleteUserFromCohort = () => {
-        console.log(currentStd)
         axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd.id}`)
             .then((data) => {
                 if (data.status === 204) {
@@ -132,6 +131,7 @@ const CohortStudents = ({ slug, id }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
+            {/* This Dialog opens the modal to delete the user in the cohort */}
             <div className="mb-4 flex justify-between items-center">
                 <h4 className="m-0 font-medium">Cohort Members</h4>
                 <div className="text-muted text-13 font-medium">

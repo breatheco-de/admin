@@ -11,13 +11,13 @@ const options = [
 ];
 
 const Student = () => {
-    const { std_id } = useParams();
+    const { std_id, name } = useParams();
 
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">Ben Peterson{std_id}</h3>
+          <h3 className="mt-0 mb-4 font-medium text-28">{name}</h3>
           <div className="flex">
               Member since: August 23rd, 2016
           </div>
@@ -33,7 +33,7 @@ const Student = () => {
 
       <Grid container spacing={3}>
         <Grid item md={4} xs={12}>
-          <StudentDetails std_id={std_id} />
+          <StudentDetails std_id={std_id} name={name}/>
         </Grid>
         <Grid item md={8} xs={12}>
           <StudentCohorts std_id={std_id} />
