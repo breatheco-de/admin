@@ -142,7 +142,7 @@ const CohortStudents = ({ slug, id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AsyncAutocomplete addUserToCohort={addUserToCohort} cohort_id={id}/>
+                <AsyncAutocomplete addUserTo={addUserToCohort} cohort_id={id} button_label={"Add to Cohort"}/>
             </div>
 
             <div className="overflow-auto">

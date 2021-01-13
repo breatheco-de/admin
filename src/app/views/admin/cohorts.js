@@ -146,19 +146,6 @@ const CustomerList = () => {
                 Add new cohort
               </Button>
           </Link>
-          <Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
-                Add new cohort
-              </Button>
-          </Link><Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
-                Add new cohort
-              </Button>
-          </Link><Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
-                Add new cohort
-              </Button>
-          </Link>
           </div>
         </div>
       </div>
@@ -166,7 +153,7 @@ const CustomerList = () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Students"}
+            title={"All Cohorts"}
             data={items}
             columns={columns}
             options={{

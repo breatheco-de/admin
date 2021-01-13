@@ -2,15 +2,20 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
+import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 const CustomerList = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user").then(({ data }) => {
+
+      setIsLoading(false);
       if (isAlive) setUserList(data);
     });
     return () => setIsAlive(false);
@@ -18,7 +23,7 @@ const CustomerList = () => {
 
   const columns = [
     {
-      name: "name", // field name in the row object
+      name: "first_name", // field name in the row object
       label: "Name", // column title that will be shown in table
       options: {
         filter: true,
@@ -93,6 +98,7 @@ const CustomerList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
+        {isLoading && <MatxLoading />}
         <MUIDataTable
             title={"All Students"}
             data={userList}

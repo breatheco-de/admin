@@ -5,7 +5,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "./useDebounce";
 import axios from "../../../../../axios";
 
-export default function AsyncAutocomplete({addUserToCohort, cohort_id}) {
+export default function AsyncAutocomplete({addUserTo, cohort_id, button_label, ...rest}) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -76,8 +76,8 @@ export default function AsyncAutocomplete({addUserToCohort, cohort_id}) {
         />
       )}
     />
-    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id,select)}>
-        Add to cohort
+    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserTo(cohort_id,select)}>
+        {button_label}
     </Button>
     </>
   );
