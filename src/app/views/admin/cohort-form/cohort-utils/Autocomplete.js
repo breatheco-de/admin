@@ -2,7 +2,7 @@
 import React from "react";
 import { TextField, CircularProgress,Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import useDebounce from "./useDebounce";
+import useDebounce from "../../../../hooks/useDebounce";
 import axios from "../../../../../axios";
 
 export default function AsyncAutocomplete({addUserTo, cohort_id, button_label, ...rest}) {

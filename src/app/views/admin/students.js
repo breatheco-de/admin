@@ -14,7 +14,7 @@ const CustomerList = () => {
   useEffect(() => {
     setIsLoading(true);
     axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user").then(({ data }) => {
-
+      console.log(data)
       setIsLoading(false);
       if (isAlive) setUserList(data);
     });
