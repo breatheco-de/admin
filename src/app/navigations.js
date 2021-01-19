@@ -11,11 +11,11 @@ export const navigations = [
     path: "/dashboard/analytics-2",
     icon: "show_chart",
   },
-//   {
-//     name: "Inventory Management",
-//     path: "/dashboard/inventory-management",
-//     icon: "dashboard",
-//   },
+  //   {
+  //     name: "Inventory Management",
+  //     path: "/dashboard/inventory-management",
+  //     icon: "dashboard",
+  //   },
   {
     name: "Admin",
     icon: "school",
@@ -62,9 +62,8 @@ export const navigations = [
   },
   {
     name: "Certificates",
+    path: "/certificates",
     icon: "card_membership",
-    children: [
-    ],
   },
   {
     label: "Components",

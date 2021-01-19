@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
 import adminRoutes from "./views/admin/routes";
+import certificatesRoutes from "./views/certificates/certificatesRoutes"
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
@@ -32,6 +33,7 @@ const routes = [
   ...pageLayoutRoutes,
   ...ListRoute,
   ...pagesRoutes,
+  ...certificatesRoutes,
   ...redirectRoute,
   ...errorRoute,
 ];
