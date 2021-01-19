@@ -145,6 +145,7 @@ export const AuthProvider = ({ children }) => {
 
   const choose = ({role, academy}) => {
         setUserData({ ...state.user, role, academy });
+        axios.defaults.headers.common['Academy'] = academy.id;
         dispatch({ type: "CHOOSE", payload: {role, academy} });
   };
 

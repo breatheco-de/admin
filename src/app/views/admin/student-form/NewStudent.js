@@ -37,7 +37,8 @@ const NewStudent = () => {
                 console.log(error)
                 setMsg({ alert: true, type: "error", text: "Errror"})
             })
-  } 
+  }
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
