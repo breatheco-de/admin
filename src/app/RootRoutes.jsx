@@ -6,7 +6,6 @@ import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 import adminRoutes from "./views/admin/routes";
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
-import formsRoutes from "./views/forms/FormsRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
 import ListRoute from "./views/list/ListRoute";
 

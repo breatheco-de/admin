@@ -5,6 +5,7 @@ import ScrumBoardReducer from "./ScrumBoardReducer";
 import NotificationReducer from "./NotificationReducer";
 import EcommerceReducer from "./EcommerceReducer";
 import NavigationReducer from "./NavigationReducer";
+import CohortReducer from "./CohortReducer";
 
 const RootReducer = combineReducers({
   user: UserReducer,
@@ -12,7 +13,8 @@ const RootReducer = combineReducers({
   scrumboard: ScrumBoardReducer,
   notifications: NotificationReducer,
   ecommerce: EcommerceReducer,
-  navigations: NavigationReducer
+  navigations: NavigationReducer,
+  cohorts: CohortReducer
 });
 
 export default RootReducer;

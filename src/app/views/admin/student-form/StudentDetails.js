@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   Divider,
-  Icon,
   Table,
   TableBody,
   TableCell,
@@ -12,15 +11,14 @@ import {
   TextField,
 } from "@material-ui/core";
 
-const CustomerInfo = () => {
+const StudentDetails = ({name}) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
-        <h5 className="mt-4 mb-2">Ben Peterson</h5>
-        <small className="text-muted">CEO, Brack Ltd.</small>
+        <h5 className="mt-4 mb-2">{name}</h5>
+        <small className="text-muted">Student</small>
       </div>
-
       <Divider />
       <Table className="mb-4">
         <TableBody>
@@ -58,8 +56,8 @@ const CustomerInfo = () => {
         </TableBody>
       </Table>
 
-      <div className="flex-column items-start px-4">
-        <Button className="w-100" color="primary" variant="contained" type="submit">
+      <div className="flex-column items-start px-4 mb-4">
+        <Button color="primary" variant="contained" type="submit">
             Save Student Details
         </Button>
       </div>
@@ -86,4 +84,4 @@ const customerInfo = [
     },
 ];
 
-export default CustomerInfo;
+export default StudentDetails;

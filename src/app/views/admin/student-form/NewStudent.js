@@ -1,31 +1,51 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
+import { Alert, AlertTitle } from '@material-ui/lab';
+import axios from "../../../../axios";
 import {
   Grid,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Card,
   Divider,
   TextField,
-  MenuItem,
-  Tabs,
-  Tab,
-  Button,
+  Button
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import { ProfileForm } from "./student-utils/ProfileForm";
+import Autocomplete from "./student-utils/Autocomplete";
+import Snackbar from '@material-ui/core/Snackbar';
 
-const CustomerForm = () => {
+const NewStudent = () => {
+  const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
+  const [showForm, setShowForm] = useState({
+    show: false,
+    data: {
+      first_name:"",
+      last_name:"",
+      email:"",
+      address:"",
+      phone:"",
+      invite:false,
+    }
+  });
 
-    const handleSubmit = async (values, { isSubmitting }) => {
-    console.log(values);
-  };
-
+  const addUserToAcademy = (user_id) => {
+    const academy_id = localStorage.getItem("academy_id");
+    console.log(user_id)
+    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`,{ role:"student", user: user_id})
+            .then(data => setMsg({ alert: true, type: "success", text: "Added"}))
+            .catch(error => {
+                console.log(error)
+                setMsg({ alert: true, type: "error", text: "Errror"})
+            })
+  } 
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
+      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                        {msg.text}
+                    </Alert>
+                </Snackbar> : ""}
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },
@@ -34,115 +54,23 @@ const CustomerForm = () => {
           ]}
         />
       </div>
-
       <Card elevation={3}>
         <div className="flex p-4">
           <h4 className="m-0">Add a New Student</h4>
         </div>
-        <Divider className="mb-2" />
-
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          enableReinitialize={true}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            setSubmitting,
-            setFieldValue,
-          }) => (
-            <form className="p-4" onSubmit={handleSubmit}>
-              <Grid container spacing={3} alignItems="center">
-                <Grid item md={2} sm={4} xs={12}>
-                  Name
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <div className="flex flex-wrap m--2">
-                    <TextField
-                      className="m-2 min-w-188"
-                      label="First Name"
-                      name="first_name"
-                      size="small"
-                      variant="outlined"
-                      value={values.firstName}
-                      onChange={handleChange}
-                    />
-                    <TextField
-                      className="m-2"
-                      label="Last Name"
-                      name="lastName"
-                      size="small"
-                      variant="outlined"
-                      value={values.lastName}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Github URL
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    name="github"
-                    size="small"
-                    variant="outlined"
-                    value={values.github}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Phone number
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Phone number"
-                    name="phone"
-                    size="small"
-                    variant="outlined"
-                    value={values.phoneNumner}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item md={2} sm={4} xs={12}>
-                  Customer Email
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Customer Email"
-                    name="email"
-                    size="small"
-                    type="email"
-                    variant="outlined"
-                    value={values.email}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-              </Grid>
-              <div className="mt-6">
-                <Button color="primary" variant="contained" type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          )}
-        </Formik>
+        <Divider className="mb-2 flex" />
+        <div className="m-3">
+          <Alert severity="success">
+            <AlertTitle>On Adding a new student</AlertTitle>
+              You can search for current users or create a new one
+        </Alert>
+        </div>
+        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy}/>
+        {showForm.show ? <ProfileForm  initialValues={showForm.data}/> : ""}
       </Card>
     </div>
   );
 };
 
-const initialValues = {
-  customerType: "",
-};
 
-export default CustomerForm;
+export default NewStudent;

@@ -3,6 +3,7 @@ import history from "history.js";
 export const SET_USER_DATA = "USER_SET_DATA";
 export const REMOVE_USER_DATA = "USER_REMOVE_DATA";
 export const USER_LOGGED_OUT = "USER_LOGGED_OUT";
+export const GET_USERS = "GET_USERS";
 
 export function setUserData(user) {
   return dispatch => {

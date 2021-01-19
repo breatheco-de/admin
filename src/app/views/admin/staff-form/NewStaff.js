@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
-const CustomerForm = () => {
+const NewStaff = () => {
   const [cert, setCert] = useState([]);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
@@ -46,10 +46,9 @@ const CustomerForm = () => {
           ]}
         />
       </div>
-
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add a New Cohort</h4>
+          <h4 className="m-0">Add a Staff Member</h4>
         </div>
         <Divider className="mb-2" />
 
@@ -159,4 +158,4 @@ const initialValues = {
   kickoff_date:""
 };
 
-export default CustomerForm;
+export default NewStaff;
