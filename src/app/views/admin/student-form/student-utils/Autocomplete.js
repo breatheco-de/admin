@@ -37,9 +37,9 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                         setOpen(false)
                         e.stopPropagation();
                         showForm({
-                            show:true,
-                            data:{
-                                first_name:params.inputValue
+                            show: true,
+                            data: {
+                                first_name: params.inputValue
                             }
                         });
                     }}

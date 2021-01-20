@@ -13,28 +13,28 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
-const CustomerForm = () => {
+import StudentAutoComplete from "./certificates-utils/StudentAutoComplete";
+import CohortAutoComplete from "./certificates-utils/CohortAutoComplete";
+
+
+const NewCertificate = () => {
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [cert, setCert] = useState([]);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+    const [showForm, setShowForm] = useState({
+        show: false,
+        data: {
+            student: "",
+            academy: "",
+            specialty: "",
+            cohort: "",
+            signed_by: "",
+        }
+    });
 
-    const postCohort = (values) => {
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`, values)
-            .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
-            .catch(error => setMsg({
-                alert: true,
-                type: "error",
-                text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cohort fields"
-            }))
-    };
-
-    const getCertificates = () => {
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
-            .then(({ data }) => setCert(data))
-            .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+    const postCerfiticate = () => {
+        console.log("New Certificate")
     }
-    useEffect(() => {
-        getCertificates();
-    }, [])
+
 
     return (
         <div className="m-sm-30">
@@ -55,7 +55,7 @@ const CustomerForm = () => {
 
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={(values) => postCohort(values)}
+                    onSubmit={(values) => postCerfiticate(values)}
                     enableReinitialize={true}
                 >
                     {({
@@ -72,21 +72,20 @@ const CustomerForm = () => {
                             <form className="p-4" onSubmit={handleSubmit}>
                                 <Grid container spacing={3} alignItems="center">
                                     <Grid item md={2} sm={4} xs={12}>
-                                        User
-                </Grid>
+                                        Cohort
+                                    </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
-                                        <TextField
-                                            label="User"
-                                            name="name"
-                                            size="small"
-                                            variant="outlined"
-                                            value={values.name}
-                                            onChange={handleChange}
-                                        />
+                                        <CohortAutoComplete />
+                                    </Grid>
+                                    <Grid item md={2} sm={4} xs={12}>
+                                        Student
+                                    </Grid>
+                                    <Grid item md={10} sm={8} xs={12}>
+                                        <StudentAutoComplete />
                                     </Grid>
                                     <Grid item md={2} sm={4} xs={12}>
                                         Academy
-                </Grid>
+                                    </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
                                         <div className="flex flex-wrap m--2">
                                             <TextField
@@ -99,17 +98,12 @@ const CustomerForm = () => {
                                                 value={values.certificate || ""}
                                                 onChange={handleChange}
                                             >
-                                                {cert.map((item, ind) => (
-                                                    <MenuItem value={item.id} key={item.name}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
                                             </TextField>
                                         </div>
                                     </Grid>
                                     <Grid item md={2} sm={4} xs={12}>
                                         Specialty
-                </Grid>
+                                    </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
                                         <div className="flex flex-wrap m--2">
                                             <TextField
@@ -130,32 +124,10 @@ const CustomerForm = () => {
                                             </TextField>
                                         </div>
                                     </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
-                                        Cohort
-                </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <div className="flex flex-wrap m--2">
-                                            <TextField
-                                                className="m-2 min-w-188"
-                                                label="Cohort"
-                                                name="certificate"
-                                                size="small"
-                                                variant="outlined"
-                                                select
-                                                value={values.certificate || ""}
-                                                onChange={handleChange}
-                                            >
-                                                {cert.map((item, ind) => (
-                                                    <MenuItem value={item.id} key={item.name}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>
-                                        </div>
-                                    </Grid>
+
                                     <Grid item md={2} sm={4} xs={12}>
                                         Layout
-                </Grid>
+                                    </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
                                         <div className="flex flex-wrap m--2">
                                             <TextField
@@ -168,11 +140,7 @@ const CustomerForm = () => {
                                                 value={values.certificate || ""}
                                                 onChange={handleChange}
                                             >
-                                                {cert.map((item, ind) => (
-                                                    <MenuItem value={item.id} key={item.name}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
+
                                             </TextField>
                                         </div>
                                     </Grid>
@@ -189,8 +157,19 @@ const CustomerForm = () => {
                                             onChange={handleChange}
                                         />
                                     </Grid>
-                                    
-
+                                    <Grid item md={2} sm={4} xs={12}>
+                                        Signed by Role
+                                    </Grid>
+                                    <Grid item md={10} sm={8} xs={12}>
+                                        <TextField
+                                            label=""
+                                            name="name"
+                                            size="small"
+                                            variant="outlined"
+                                            value={values.name}
+                                            onChange={handleChange}
+                                        />
+                                    </Grid>
                                 </Grid>
                                 <div className="mt-6">
                                     <Button color="primary" variant="contained" type="submit">
@@ -217,4 +196,4 @@ const initialValues = {
     kickoff_date: ""
 };
 
-export default CustomerForm;
+export default NewCertificate;

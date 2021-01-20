@@ -19,34 +19,34 @@ const NewStudent = () => {
   const [showForm, setShowForm] = useState({
     show: false,
     data: {
-      first_name:"",
-      last_name:"",
-      email:"",
-      address:"",
-      phone:"",
-      invite:false,
+      first_name: "",
+      last_name: "",
+      email: "",
+      address: "",
+      phone: "",
+      invite: false,
     }
   });
 
   const addUserToAcademy = (user_id) => {
     const academy_id = localStorage.getItem("academy_id");
     console.log(user_id)
-    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`,{ role:"student", user: user_id})
-            .then(data => setMsg({ alert: true, type: "success", text: "Added"}))
-            .catch(error => {
-                console.log(error)
-                setMsg({ alert: true, type: "error", text: "Errror"})
-            })
+    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`, { role: "student", user: user_id })
+      .then(data => setMsg({ alert: true, type: "success", text: "Added" }))
+      .catch(error => {
+        console.log(error)
+        setMsg({ alert: true, type: "error", text: "Errror" })
+      })
   }
-  
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
+        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+            {msg.text}
+          </Alert>
+        </Snackbar> : ""}
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },
@@ -63,11 +63,11 @@ const NewStudent = () => {
         <div className="m-3">
           <Alert severity="success">
             <AlertTitle>On Adding a new student</AlertTitle>
-              You can search for current users or create a new one
+            You can search for current users or create a new one
         </Alert>
         </div>
-        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy}/>
-        {showForm.show ? <ProfileForm  initialValues={showForm.data}/> : ""}
+        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy} />
+        {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ""}
       </Card>
     </div>
   );

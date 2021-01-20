@@ -27,6 +27,8 @@ const CustomerForm = () => {
        }))
   };
 
+  console.log("cert:", cert)
+
   const getCertificates = () => {
     axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
     .then(({data}) => setCert(data))
