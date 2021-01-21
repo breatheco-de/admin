@@ -19,20 +19,30 @@ import CohortAutoComplete from "./certificates-utils/CohortAutoComplete";
 
 const NewCertificate = () => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-    const [cert, setCert] = useState([]);
-    const [showForm, setShowForm] = useState({
-        show: false,
-        data: {
-            student: "",
-            academy: "",
-            specialty: "",
-            cohort: "",
-            signed_by: "",
-        }
-    });
+    const [academy, setAcademy] = useState([]);
+    const [specialties, setSpecialties] = useState([]);
 
-    const postCerfiticate = () => {
-        console.log("New Certificate")
+    const searchTerm = "santiago-part-time-10";
+
+    const getAcademy = (searchTerm) => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${searchTerm}`)
+            .then(({ data }) => setAcademy(data.academy.name))
+            .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+    };
+    console.log("academy:", academy)
+    useEffect(() => {
+        const getSpecialties = () => {
+            axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
+                .then(({ data }) => setSpecialties(data))
+                .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+        };
+
+        getAcademy(searchTerm);
+        getSpecialties();
+    }, [])
+
+    const postCerfiticate = (values) => {
+        console.log("New Certificate", values)
     }
 
 
@@ -70,6 +80,7 @@ const NewCertificate = () => {
                         setFieldValue,
                     }) => (
                             <form className="p-4" onSubmit={handleSubmit}>
+
                                 <Grid container spacing={3} alignItems="center">
                                     <Grid item md={2} sm={4} xs={12}>
                                         Cohort
@@ -91,13 +102,15 @@ const NewCertificate = () => {
                                             <TextField
                                                 className="m-2 min-w-188"
                                                 label="Academy"
-                                                name="certificate"
+                                                name="academy"
                                                 size="small"
                                                 variant="outlined"
                                                 select
-                                                value={values.certificate || ""}
+                                                value={values.academy || ""}
                                                 onChange={handleChange}
                                             >
+                                                <MenuItem value={academy}>{academy}
+                                                </MenuItem>
                                             </TextField>
                                         </div>
                                     </Grid>
@@ -109,15 +122,15 @@ const NewCertificate = () => {
                                             <TextField
                                                 className="m-2 min-w-188"
                                                 label="Specialty"
-                                                name="certificate"
+                                                name="specialty"
                                                 size="small"
                                                 variant="outlined"
                                                 select
-                                                value={values.certificate || ""}
+                                                value={values.specialty || ""}
                                                 onChange={handleChange}
                                             >
-                                                {cert.map((item, ind) => (
-                                                    <MenuItem value={item.id} key={item.name}>
+                                                {specialties.map((item, ind) => (
+                                                    <MenuItem value={item.name} key={item.name}>
                                                         {item.name}
                                                     </MenuItem>
                                                 ))}
@@ -133,14 +146,16 @@ const NewCertificate = () => {
                                             <TextField
                                                 className="m-2 min-w-188"
                                                 label="Layout"
-                                                name="certificate"
+                                                name="layout"
                                                 size="small"
                                                 variant="outlined"
                                                 select
-                                                value={values.certificate || ""}
+                                                value={values.layout || ""}
                                                 onChange={handleChange}
                                             >
-
+                                                <MenuItem >
+                                                    {"default"}
+                                                </MenuItem>
                                             </TextField>
                                         </div>
                                     </Grid>
@@ -150,10 +165,10 @@ const NewCertificate = () => {
                                     <Grid item md={10} sm={8} xs={12}>
                                         <TextField
                                             label=""
-                                            name="name"
+                                            name="signed_by"
                                             size="small"
                                             variant="outlined"
-                                            value={values.name}
+                                            value={values.signed_by}
                                             onChange={handleChange}
                                         />
                                     </Grid>
@@ -163,10 +178,10 @@ const NewCertificate = () => {
                                     <Grid item md={10} sm={8} xs={12}>
                                         <TextField
                                             label=""
-                                            name="name"
+                                            name="signed_by_role"
                                             size="small"
                                             variant="outlined"
-                                            value={values.name}
+                                            value={values.signed_by_role}
                                             onChange={handleChange}
                                         />
                                     </Grid>
@@ -190,10 +205,13 @@ const NewCertificate = () => {
 };
 
 const initialValues = {
-    name: "",
-    slug: "",
-    certificate: "",
-    kickoff_date: ""
+    cohort: "",
+    student: "",
+    academy: "",
+    specialty: "",
+    layout: "default",
+    signed_by: "",
+    signed_by_role: "",
 };
 
 export default NewCertificate;
