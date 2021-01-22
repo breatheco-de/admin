@@ -36,6 +36,11 @@ export const navigations = [
         path: "/admin/staff",
         iconText: "STA",
       },
+      {
+        name: "Invites",
+        path: "/admin/invites",
+        iconText: "STA",
+      },
     ],
   },
   {

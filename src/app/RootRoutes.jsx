@@ -7,7 +7,6 @@ import adminRoutes from "./views/admin/routes";
 import eventsRoutes from "./views/events/routes";
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
-import formsRoutes from "./views/forms/FormsRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
 import ListRoute from "./views/list/ListRoute";
 

@@ -2,23 +2,31 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
+import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-const CustomerList = () => {
+const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const academy_id = localStorage.getItem("academy_id");
   useEffect(() => {
-    axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user").then(({ data }) => {
-      if (isAlive) setUserList(data);
+    setIsLoading(true);
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`).then(({ data }) => {
+      console.log(data)
+      setIsLoading(false);
+      if (isAlive){
+        let filterUserNull = data.filter(item => item.user !== null)
+        setUserList(filterUserNull)
+      };
     });
     return () => setIsAlive(false);
   }, [isAlive]);
 
   const columns = [
     {
-      name: "name", // field name in the row object
+      name: "first_name", // field name in the row object
       label: "Name", // column title that will be shown in table
       options: {
         filter: true,
@@ -27,10 +35,10 @@ const CustomerList = () => {
 
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.imgUrl} />
+              <Avatar className="w-48 h-48" src={user.user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{user.user?.first_name} {user.user?.last_name}</h5>
+                <small className="text-muted">{user.user?.email}</small>
               </div>
             </div>
           );
@@ -53,7 +61,7 @@ const CustomerList = () => {
             let item = userList[dataIndex];
             return <div className="flex items-center">
                 <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.id}`}>
+                <Link to={`/admin/students/${item.user.id}/${item.user.first_name} ${item.user.last_name}`}>
                     <IconButton>
                         <Icon>edit</Icon>
                     </IconButton>
@@ -93,7 +101,8 @@ const CustomerList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          <MUIDataTable
+        {isLoading && <MatxLoading />}
+        <MUIDataTable
             title={"All Students"}
             data={userList}
             columns={columns}
@@ -149,4 +158,4 @@ const CustomerList = () => {
   );
 };
 
-export default CustomerList;
+export default Students;

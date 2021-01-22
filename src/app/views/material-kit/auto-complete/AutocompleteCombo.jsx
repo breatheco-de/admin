@@ -45,6 +45,7 @@ const AutocompleteCombo = () => {
   const [value, setValue] = React.useState(null);
 
   const handleChange = (event, newValue) => {
+    console.log(value)
     if (newValue && newValue.inputValue) {
       setValue({
         label: newValue.inputValue
@@ -55,6 +56,7 @@ const AutocompleteCombo = () => {
   };
 
   const filterOptions = (options, params) => {
+    console.log(value)
     const filtered = filter(options, params);
     if (params.inputValue !== "") {
       filtered.push({

@@ -47,8 +47,9 @@ export default function AsyncAutocomplete() {
 
   return (
     <Autocomplete
+      multiple
       id="asynchronous-demo"
-      className="w-300"
+      style={{width:"100%"}}
       open={open}
       onOpen={() => {
         setOpen(true);
@@ -63,7 +64,7 @@ export default function AsyncAutocomplete() {
       renderInput={params => (
         <TextField
           {...params}
-          label="Asynchronous"
+          label="Search users"
           fullWidth
           variant="outlined"
           InputProps={{
