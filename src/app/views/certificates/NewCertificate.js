@@ -21,6 +21,8 @@ const NewCertificate = () => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [academy, setAcademy] = useState([]);
     const [specialties, setSpecialties] = useState([]);
+    const [selectedStudent, setSelectedStudent] = React.useState({});
+    const [selectedCohort, setSelectedCohort] = React.useState({});
 
     const searchTerm = "santiago-part-time-10";
 
@@ -41,10 +43,19 @@ const NewCertificate = () => {
         getSpecialties();
     }, [])
 
+    // Generate student certificate
     const postCerfiticate = (values) => {
-        console.log("New Certificate", values)
-    }
-
+        axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}/student/${selectedStudent}`, values, {
+            headers: {
+                "Academy": "4"
+            }
+        }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
+            .catch(error => setMsg({
+                alert: true,
+                type: "error",
+                text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cerficate fields"
+            }))
+    };
 
     return (
         <div className="m-sm-30">
@@ -86,13 +97,14 @@ const NewCertificate = () => {
                                         Cohort
                                     </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
-                                        <CohortAutoComplete />
+                                        <CohortAutoComplete setSelectedCohort={setSelectedCohort} />
                                     </Grid>
                                     <Grid item md={2} sm={4} xs={12}>
                                         Student
                                     </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
-                                        <StudentAutoComplete />
+                                        <StudentAutoComplete setSelectedStudent={setSelectedStudent}
+                                        />
                                     </Grid>
                                     <Grid item md={2} sm={4} xs={12}>
                                         Academy
@@ -205,8 +217,6 @@ const NewCertificate = () => {
 };
 
 const initialValues = {
-    cohort: "",
-    student: "",
     academy: "",
     specialty: "",
     layout: "default",

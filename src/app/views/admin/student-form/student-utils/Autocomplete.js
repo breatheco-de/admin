@@ -79,6 +79,7 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                 onClose={() => {
                     setOpen(false);
                 }}
+
                 filterOptions={filterOptions}
                 getOptionSelected={(option, value) => {
                     setSelectedValue(option.id);

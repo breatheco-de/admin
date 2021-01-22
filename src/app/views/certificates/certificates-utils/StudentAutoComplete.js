@@ -5,14 +5,14 @@ import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete
 import useDebounce from "../../../hooks/useDebounce";
 import axios from "../../../../axios";
 
-export default function StudentAutoComplete({ addUserTo, cohort_id, button_label, showForm, ...rest }) {
+export default function StudentAutoComplete({ addUserTo, cohort_id, button_label, showForm, setSelectedStudent, ...rest }) {
     const filter = createFilterOptions();
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [value, setValue] = React.useState("");
-    const [selectedValue, setSelectedValue] = React.useState({});
+
     // Searching status (whether there is pending API request)
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -25,6 +25,7 @@ export default function StudentAutoComplete({ addUserTo, cohort_id, button_label
             })
             .catch(error => console.log(error))
     }
+
 
     const filterOptions = (options, params) => {
         const filtered = filter(options, params);
@@ -80,7 +81,7 @@ export default function StudentAutoComplete({ addUserTo, cohort_id, button_label
             }}
             filterOptions={filterOptions}
             getOptionSelected={(option, value) => {
-                setSelectedValue(option.id);
+                setSelectedStudent(option.id);
                 return option.first_name === value.first_name
             }}
             getOptionLabel={option => `${option.first_name}`}

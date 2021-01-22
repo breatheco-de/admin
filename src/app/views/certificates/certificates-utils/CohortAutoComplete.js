@@ -10,7 +10,7 @@ function sleep(delay = 0) {
     });
 }
 
-export default function Asynchronous() {
+export default function Asynchronous({ setSelectedCohort }) {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const loading = open && options.length === 0;
@@ -53,7 +53,10 @@ export default function Asynchronous() {
             onClose={() => {
                 setOpen(false);
             }}
-            getOptionSelected={(option, value) => option.name === value.name}
+            getOptionSelected={(option, value) => {
+                setSelectedCohort(option.id)
+                return option.name === value.name
+            }}
             getOptionLabel={(option) => option.name}
             options={options}
             loading={loading}
