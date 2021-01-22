@@ -18,7 +18,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const Settings = () => {
+const EventSettings = () => {
   const classes = useStyles();
 
   return (
@@ -155,4 +155,4 @@ const initialValues = {
   name: "Miami Dade XV",
 };
 
-export default Settings;
+export default EventSettings;

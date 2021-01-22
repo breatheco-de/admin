@@ -60,6 +60,28 @@ export const navigations = [
     children: [
     ],
   },
+
+  {
+    name: "Events & Workshops",
+    icon: "event",
+    children: [
+      {
+        name: "Settings",
+        path: "/events/settings",
+        iconText: "OL",
+      },
+      {
+        name: "Event List",
+        path: "/events/list",
+        iconText: "OL",
+      },
+      {
+        name: "Attendies",
+        path: "/events/attendies",
+        iconText: "OL",
+      },
+    ],
+  },
   {
     name: "Certificates",
     icon: "card_membership",
