@@ -7,7 +7,7 @@ import {
     Checkbox,
     FormControlLabel
 } from "@material-ui/core";
-import axios from "../../../../../axios";
+import BC from "../../../../services/breathecode";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -17,8 +17,7 @@ export const ProfileForm = ({initialValues}) => {
 
     const postAcademyStudentProfile = (values) => {
         console.log(values)
-        const academy_id = localStorage.getItem("academy_id");
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`, { ...values })
+        BC.auth().addStudent({ ...values })
             .then(data => setMsg({ alert: true, type: "success", text: data.statusText}))
             .catch(error => {
                 console.log(error)

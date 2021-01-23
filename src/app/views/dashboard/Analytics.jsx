@@ -17,7 +17,7 @@ const Analytics = () => {
     <Fragment>
       <div className="pb-24 pt-7 px-8 bg-primary">
         <div className="card-title capitalize text-white mb-4 text-white-secondary">
-          Last 12 months sales
+          Leads week by week
         </div>
         <ModifiedAreaChart
           height="280px"

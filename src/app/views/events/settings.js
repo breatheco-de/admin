@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import { Alert, AlertTitle } from '@material-ui/lab';
-import axios from "../../../../axios";
+import axios from "../../../axios";
 import {
   Grid,
   Card,
@@ -11,41 +11,15 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { AddEventbriteOrganization } from "./forms/AddEventbriteOrganization";
-import Snackbar from '@material-ui/core/Snackbar';
+import { WebhookInfo } from "./forms/WebhookInfo";
+import { Organizers } from "./forms/Organizers";
+import { Venues } from "./forms/Venues";
 
 const EventSettings = () => {
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-  const [showForm, setShowForm] = useState({
-    show: false,
-    data: {
-      first_name:"",
-      last_name:"",
-      email:"",
-      address:"",
-      phone:"",
-      invite:false,
-    }
-  });
 
-  const addUserToAcademy = (user_id) => {
-    const academy_id = localStorage.getItem("academy_id");
-    console.log(user_id)
-    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`,{ role:"student", user: user_id})
-            .then(data => setMsg({ alert: true, type: "success", text: "Added"}))
-            .catch(error => {
-                console.log(error)
-                setMsg({ alert: true, type: "error", text: "Errror"})
-            })
-  }
-  
-  return (
+    return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },
@@ -67,6 +41,16 @@ const EventSettings = () => {
         </div>
         <AddEventbriteOrganization />
       </Card>
+
+      <Grid container spacing={3} className="mt-4">
+        <Grid item md={7} xs={12}>
+          <WebhookInfo />
+        </Grid>
+        <Grid item md={5} xs={12}>
+          <Organizers className="mt-4" />
+          <Venues className="mt-4" />
+        </Grid>
+      </Grid>
     </div>
   );
 };
