@@ -54,7 +54,7 @@ export default function Asynchronous({ setSelectedCohort }) {
                 setOpen(false);
             }}
             getOptionSelected={(option, value) => {
-                setSelectedCohort(option.id)
+                setSelectedCohort({ id: option.id, slug: option.slug })
                 return option.name === value.name
             }}
             getOptionLabel={(option) => option.name}

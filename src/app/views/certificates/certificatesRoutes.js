@@ -7,7 +7,7 @@ const certificatesRoutes = [
         component: React.lazy(() => import("./Certificates")),
     },
     {
-        path: "/certificates/new",
+        path: "/certificates/new/:type",
         exact: true,
         component: React.lazy(() => import("./NewCertificate")),
     },

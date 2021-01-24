@@ -5,20 +5,31 @@ import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete
 import useDebounce from "../../../hooks/useDebounce";
 import axios from "../../../../axios";
 
-export default function StudentAutoComplete({ addUserTo, cohort_id, button_label, showForm, setSelectedStudent, ...rest }) {
+export default function StudentAutoComplete({ addUserTo, cohort_id, button_label, showForm, setSelectedStudent, selectedCohort, ...rest }) {
     const filter = createFilterOptions();
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [value, setValue] = React.useState("");
+    const { slug } = selectedCohort;
 
     // Searching status (whether there is pending API request)
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-    const searchUsers = (searchTerm) => {
+    // const searchUsers = (searchTerm) => {
+    //     setLoading(true)
+    //     axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
+    //         .then(({ data }) => {
+    //             setLoading(false);
+    //             setOptions(data);
+    //         })
+    //         .catch(error => console.log(error))
+    // }
+
+    const searchUsers = () => {
         setLoading(true)
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${slug}&roles=STUDENT`)
             .then(({ data }) => {
                 setLoading(false);
                 setOptions(data);

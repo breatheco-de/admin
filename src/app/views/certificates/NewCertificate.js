@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
+import { useParams } from "react-router-dom";
 import axios from "../../../axios";
 import {
     Grid,
@@ -18,13 +19,16 @@ import CohortAutoComplete from "./certificates-utils/CohortAutoComplete";
 
 
 const NewCertificate = () => {
+    const { type } = useParams();
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [academy, setAcademy] = useState([]);
     const [specialties, setSpecialties] = useState([]);
     const [selectedStudent, setSelectedStudent] = React.useState({});
     const [selectedCohort, setSelectedCohort] = React.useState({});
 
+
     const searchTerm = "santiago-part-time-10";
+    console.log("chortslug:", selectedCohort)
 
     const getAcademy = (searchTerm) => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${searchTerm}`)
@@ -43,27 +47,38 @@ const NewCertificate = () => {
         getSpecialties();
     }, [])
 
-    // Generate student certificate
+    // Generate student certificate or all certificates
     const postCerfiticate = (values) => {
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}/student/${selectedStudent}`, values, {
-            headers: {
-                "Academy": "4"
-            }
-        }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
-            .catch(error => setMsg({
-                alert: true,
-                type: "error",
-                text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cerficate fields"
-            }))
+        // One specific certificate
+        if (type === "single") {
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}/student/${selectedStudent}`, values, {
+                headers: {
+                    "Academy": "4"
+                }
+            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
+            // .catch(error => setMsg({
+            //     alert: true,
+            //     type: "error",
+            //     text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cerficate fields"
+            // }))
+        } if (type === "all") {
+            //all certificates
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}`, values, {
+                headers: {
+                    "Academy": "4"
+                }
+            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
+        }
     };
 
     return (
+
         <div className="m-sm-30">
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
                         { name: "Certificates", path: "/certificates" },
-                        { name: "New Certificate" },
+                        { name: type === "single" ? "New Certificate" : "All Certificates" },
                     ]}
                 />
             </div>
@@ -91,7 +106,6 @@ const NewCertificate = () => {
                         setFieldValue,
                     }) => (
                             <form className="p-4" onSubmit={handleSubmit}>
-
                                 <Grid container spacing={3} alignItems="center">
                                     <Grid item md={2} sm={4} xs={12}>
                                         Cohort
@@ -99,13 +113,15 @@ const NewCertificate = () => {
                                     <Grid item md={10} sm={8} xs={12}>
                                         <CohortAutoComplete setSelectedCohort={setSelectedCohort} />
                                     </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
-                                        Student
+                                    {type === "single" &&
+                                        <>
+                                            <Grid item md={2} sm={4} xs={12}>
+                                                Student
                                     </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <StudentAutoComplete setSelectedStudent={setSelectedStudent}
-                                        />
-                                    </Grid>
+                                            <Grid item md={10} sm={8} xs={12}>
+                                                <StudentAutoComplete setSelectedStudent={setSelectedStudent} selectedCohort={selectedCohort}
+                                                />
+                                            </Grid></>}
                                     <Grid item md={2} sm={4} xs={12}>
                                         Academy
                                     </Grid>
@@ -165,8 +181,7 @@ const NewCertificate = () => {
                                                 value={values.layout || ""}
                                                 onChange={handleChange}
                                             >
-                                                <MenuItem >
-                                                    {"default"}
+                                                <MenuItem value={"default"}>{"default"}
                                                 </MenuItem>
                                             </TextField>
                                         </div>
@@ -219,7 +234,7 @@ const NewCertificate = () => {
 const initialValues = {
     academy: "",
     specialty: "",
-    layout: "default",
+    layout: "",
     signed_by: "",
     signed_by_role: "",
 };

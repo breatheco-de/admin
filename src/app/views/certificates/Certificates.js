@@ -105,9 +105,14 @@ const Certificates = () => {
                     </div>
 
                     <div className="">
-                        <Link to="/certificates/new" color="primary" className="btn btn-primary">
+                        <Link to="/certificates/new/single" color="primary" className="btn btn-primary">
+                            <Button style={{ marginRight: 5 }} variant="contained" color="primary">
+                                Add studend certificate
+                            </Button>
+                        </Link>
+                        <Link to="/certificates/new/all" color="primary" className="btn btn-primary">
                             <Button variant="contained" color="primary">
-                                Add new Certificate
+                                Add all Certificates
                             </Button>
                         </Link>
                     </div>
