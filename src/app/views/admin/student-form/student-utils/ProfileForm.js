@@ -7,7 +7,7 @@ import {
     Checkbox,
     FormControlLabel
 } from "@material-ui/core";
-import axios from "../../../../../axios";
+import BC from "../../../../services/breathecode";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import {AutocompleteCohorts} from "../../../../components/AutocompleteCohorts";

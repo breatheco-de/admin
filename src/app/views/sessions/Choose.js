@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios.js";
 import {
   Card,
   Grid,
@@ -34,6 +35,7 @@ const Choose = () => {
 
       if(role && role != ""){
         choose({ role, academy });
+        axios.defaults.headers.common['Academy'] = academy.id;
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }
