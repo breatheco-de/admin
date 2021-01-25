@@ -16,6 +16,7 @@ import { Breadcrumb } from "matx";
 
 import StudentAutoComplete from "./certificates-utils/StudentAutoComplete";
 import CohortAutoComplete from "./certificates-utils/CohortAutoComplete";
+import ResponseDialog from "./ResponseDialog"
 
 
 const NewCertificate = () => {
@@ -25,6 +26,7 @@ const NewCertificate = () => {
     const [specialties, setSpecialties] = useState([]);
     const [selectedStudent, setSelectedStudent] = React.useState({});
     const [selectedCohort, setSelectedCohort] = React.useState({});
+    const [openDialog, setOpenDialog] = React.useState(false);
 
     const getAcademy = (searchTerm) => {
         if (searchTerm !== undefined) {
@@ -70,13 +72,18 @@ const NewCertificate = () => {
                 headers: {
                     "Academy": "4"
                 }
-            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificates added successfully" }))
+            }).then((data) =>
+            setOpenDialog(true)
+                // setMsg({ alert: true, type: "success", text: "Certificates added successfully" }))
+
+            )
         }
     };
 
     return (
 
         <div className="m-sm-30">
+            <ResponseDialog setOpenDialog={setOpenDialog} openDialog={openDialog} />
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
