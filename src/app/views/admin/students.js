@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -10,17 +12,24 @@ const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const academy_id = localStorage.getItem("academy_id");
+  //TODO: Show errors with the response 
+   
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`).then(({ data }) => {
-      console.log(data)
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`)
+    .then(({ data }) => {
+      console.log(data);
       setIsLoading(false);
       if (isAlive){
         let filterUserNull = data.filter(item => item.user !== null)
         setUserList(filterUserNull)
       };
-    });
+    }).catch(error => {
+      setIsLoading(false);
+      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
+    })
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -31,14 +40,13 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let user = userList[dataIndex];
-
+          let { user } = userList[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user.user?.imgUrl} />
+              <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user.user?.first_name} {user.user?.last_name}</h5>
-                <small className="text-muted">{user.user?.email}</small>
+                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
+                <small className="text-muted">{user?.email}</small>
               </div>
             </div>
           );
@@ -79,6 +87,11 @@ const Students = () => {
 
   return (
     <div className="m-sm-30">
+      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+          {msg.text}
+        </Alert>
+      </Snackbar> : ""}
       <div className="mb-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
         <div>
