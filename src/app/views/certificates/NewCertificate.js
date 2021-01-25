@@ -26,32 +26,34 @@ const NewCertificate = () => {
     const [selectedStudent, setSelectedStudent] = React.useState({});
     const [selectedCohort, setSelectedCohort] = React.useState({});
 
-
-    const searchTerm = "santiago-part-time-10";
-    console.log("chortslug:", selectedCohort)
-
     const getAcademy = (searchTerm) => {
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${searchTerm}`)
-            .then(({ data }) => setAcademy(data.academy.name))
+        if (searchTerm !== undefined) {
+            axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${searchTerm}`)
+                .then(({ data }) => setAcademy(data.academy.name))
+                .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+        }
+    };
+
+    const getSpecialties = () => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
+            .then(({ data }) => setSpecialties(data))
             .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
     };
-    console.log("academy:", academy)
-    useEffect(() => {
-        const getSpecialties = () => {
-            axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
-                .then(({ data }) => setSpecialties(data))
-                .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
-        };
 
-        getAcademy(searchTerm);
+    useEffect(() => {
+        getAcademy(selectedCohort.slug);
+    }, [selectedCohort])
+
+    useEffect(() => {
         getSpecialties();
     }, [])
 
     // Generate student certificate or all certificates
     const postCerfiticate = (values) => {
+        const { id } = selectedCohort
         // One specific certificate
         if (type === "single") {
-            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}/student/${selectedStudent}`, values, {
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${id}/student/${selectedStudent}`, values, {
                 headers: {
                     "Academy": "4"
                 }
@@ -63,11 +65,12 @@ const NewCertificate = () => {
             // }))
         } if (type === "all") {
             //all certificates
-            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}`, values, {
+
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${id}`, values, {
                 headers: {
                     "Academy": "4"
                 }
-            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
+            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificates added successfully" }))
         }
     };
 
