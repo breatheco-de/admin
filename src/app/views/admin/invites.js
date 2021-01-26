@@ -3,7 +3,7 @@ import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
@@ -13,7 +13,7 @@ const Students = () => {
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-    const academy_id = localStorage.getItem("academy_id");
+
     useEffect(() => {
         setIsLoading(true);
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=country_manager,student&status=invited`).then(({ data }) => {
