@@ -24,21 +24,10 @@ const NewStudent = () => {
       email:"",
       address:"",
       phone:"",
-      invite:false,
+      cohort:""
     }
   });
 
-  const addUserToAcademy = (user_id) => {
-    const academy_id = localStorage.getItem("academy_id");
-    console.log(user_id)
-    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`,{ role:"student", user: user_id})
-            .then(data => setMsg({ alert: true, type: "success", text: "Added"}))
-            .catch(error => {
-                console.log(error)
-                setMsg({ alert: true, type: "error", text: "Errror"})
-            })
-  }
-  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -66,7 +55,7 @@ const NewStudent = () => {
               You can search for current users or create a new one
         </Alert>
         </div>
-        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy}/>
+        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} />
         {showForm.show ? <ProfileForm  initialValues={showForm.data}/> : ""}
       </Card>
     </div>

@@ -8,20 +8,28 @@ import {
     FormControlLabel
 } from "@material-ui/core";
 import BC from "../../../../services/breathecode";
+import axios from "../../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
+import {AutocompleteCohorts} from "../../../../components/AutocompleteCohorts";
 
 
 export const ProfileForm = ({initialValues}) => {
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+    const [cohortId, setCohortId] = useState(null);
 
     const postAcademyStudentProfile = (values) => {
-        console.log(values)
-        BC.auth().addStudent({ ...values })
-            .then(data => setMsg({ alert: true, type: "success", text: data.statusText}))
+        const requestValues = cohortId !== "" ? { ...values, cohort: cohortId, invite: true } : { ...values, invite: true }
+        const academy_id = localStorage.getItem("academy_id");
+        axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`, requestValues)
+            .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ?"Student created successfuly" : data.statusText}))
             .catch(error => {
                 console.log(error)
-                setMsg({ alert: true, type: "error", text: error.detail || `${error.first_name[0]}: First Name` || error.email[0] || error.phone[0]})
+                let resKeys = Object.keys({...values, cohort: cohortId});
+                resKeys.forEach(item => {
+                    if(Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0]});
+                    else if(error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail: "Unknown error, check fields"})
+                })
             })
     }
 
@@ -58,6 +66,7 @@ export const ProfileForm = ({initialValues}) => {
                                 label="First Name"
                                 name="first_name"
                                 size="small"
+                                required
                                 variant="outlined"
                                 value={values.first_name}
                                 onChange={handleChange}
@@ -67,6 +76,7 @@ export const ProfileForm = ({initialValues}) => {
                                 label="Last Name"
                                 name="last_name"
                                 size="small"
+                                required
                                 variant="outlined"
                                 value={values.last_name}
                                 onChange={handleChange}
@@ -81,6 +91,7 @@ export const ProfileForm = ({initialValues}) => {
                             label="Phone number"
                             name="phone"
                             size="small"
+                            required
                             variant="outlined"
                             value={values.phone}
                             onChange={handleChange}
@@ -109,22 +120,17 @@ export const ProfileForm = ({initialValues}) => {
                             name="email"
                             size="small"
                             type="email"
+                            required
                             variant="outlined"
                             value={values.email}
                             onChange={handleChange}
                         />
                     </Grid>
+                    <Grid item md={2} sm={4} xs={12}>
+                        Cohort
+                    </Grid>
                     <Grid item md={10} sm={8} xs={12}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    name="invite"
-                                    onChange={handleChange}
-                                    color="primary"
-                                />
-                            }
-                            label="Invite student to Breathecode"
-                        />
+                        <AutocompleteCohorts setState={setCohortId} placeholder="Cohort" size="small" width="30%"/>
                     </Grid>
                 </Grid>
                 <div className="mt-6">

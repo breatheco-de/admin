@@ -97,22 +97,25 @@ const InvoiceOverview = ({ std_id }) => {
     setOpenDialog(false);
   }
   const addUserToCohort = (cohort_id) => {
-    console.log(cohort_id)
-    axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
-      user: std_id,
-      role: "STUDENT",
-      finantial_status: null,
-      educational_status: "ACTIVE"
-    }).then((data) => {
-      if (data.status >= 200) {
-        setMsg({ alert: true, type: "success", text: "User added successfully" });
-        getStudentCohorts();
-      } else setMsg({ alert: true, type: "error", text: "Could not add user to cohort" })
-    })
-      .catch(error => {
-        console.log(error)
-        setMsg({ alert: true, type: "error", text: error.details });
+    if (!cohort_id) setMsg({ alert: true, type: "warning", text: "Select a cohort" });
+    else {
+      axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
+        user: std_id,
+        role: "STUDENT",
+        finantial_status: null,
+        educational_status: "ACTIVE"
+      }).then((data) => {
+        if (data.status >= 200) {
+          setMsg({ alert: true, type: "success", text: "User added successfully" });
+          getStudentCohorts();
+        } else setMsg({ alert: true, type: "error", text: "Could not add user to cohort" })
       })
+        .catch(error => {
+          console.log(error)
+          setMsg({ alert: true, type: "error", text: error.details });
+        })
+    }
+
   }
 
   return (

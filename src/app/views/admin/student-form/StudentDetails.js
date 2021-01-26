@@ -23,7 +23,7 @@ const StudentDetails = ({ name, std_id }) => {
     axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student/${std_id}`, { ...values })
         .then(data => {
           console.log(data)
-          setMsg({ alert: true, type: "success", text: data.statusText || "User updated"})
+          setMsg({ alert: true, type: "success", text: "User profile updated successfully"})
       })
         .catch(error => {
             console.log(error)

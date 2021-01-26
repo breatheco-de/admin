@@ -15,7 +15,7 @@ makeStyles(({ palette, ...theme }) => ({
     },
 }));
 
-const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
+const CohortDetails = ({ slug, endDate, startDate, language, onSubmit }) => {
     return (
         <Card className="p-4">
             <div className="mb-4 flex justify-between items-center">
@@ -25,7 +25,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
             <Formik
                 initialValues={{
                     slug: slug,
-                    lang: lang,
+                    language: language,
                     ending_date: endDate,
                     kickoff_date: startDate
                 }}
@@ -52,6 +52,7 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
                                     <TextField
                                         label="Slug"
                                         name="slug"
+                                        disabled
                                         size="small"
                                         variant="outlined"
                                         value={values.slug}
@@ -105,10 +106,10 @@ const CohortDetails = ({ slug, endDate, startDate, lang, onSubmit }) => {
                                     <TextField
                                         className="m-2 min-w-188"
                                         label="Language"
-                                        name="lang"
+                                        name="language"
                                         size="small"
                                         variant="outlined"
-                                        value={values.lang}
+                                        value={values.language}
                                         onChange={handleChange}
                                         select
                                     >
