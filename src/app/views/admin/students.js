@@ -13,12 +13,11 @@ const Students = () => {
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-  const academy_id = localStorage.getItem("academy_id");
   //TODO: Show errors with the response 
    
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`)
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`)
     .then(({ data }) => {
       console.log(data);
       setIsLoading(false);

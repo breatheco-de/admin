@@ -6,6 +6,7 @@ import React, {
 import { Redirect, useLocation } from "react-router-dom";
 import AppContext from "app/appContext";
 import useAuth from "app/hooks/useAuth";
+import axios from "axios.js";
 
 const getUserRoleAuthStatus = (pathname, user, routes) => {
   const matched = routes.find((r) => r.path === pathname);
@@ -16,6 +17,7 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
       : true;
   console.log("matched and user: ", matched, user);
   localStorage.setItem("academy_id", user ? (user.academy ? user.academy.id : "") : "");
+  axios.defaults.headers.common['Academy'] = user ? (user.academy ? user.academy.id : "") : "";
   return authenticated;
 };
 

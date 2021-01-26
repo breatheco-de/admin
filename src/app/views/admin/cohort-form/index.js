@@ -46,7 +46,7 @@ const Cohort = () => {
     const updateCohort = (values) => {
         console.log(values);
         console.log(cohort.id)
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
+        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
             .then((data) => {
                 console.log(data);
                 if (data.status <= 200) {

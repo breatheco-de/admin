@@ -16,7 +16,7 @@ const Students = () => {
     const academy_id = localStorage.getItem("academy_id");
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member?roles=country_manager,student&status=invited`).then(({ data }) => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=country_manager,student&status=invited`).then(({ data }) => {
             console.log(data)
             setIsLoading(false);
             if (isAlive) {

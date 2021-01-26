@@ -19,9 +19,8 @@ export const ProfileForm = ({initialValues}) => {
     const [cohortId, setCohortId] = useState(null);
 
     const postAcademyStudentProfile = (values) => {
-        const requestValues = cohortId !== "" ? { ...values, cohort: cohortId, invite: true } : { ...values, invite: true }
-        const academy_id = localStorage.getItem("academy_id");
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student`, requestValues)
+        const requestValues = cohortId !== "" ? { ...values, cohort: cohortId, invite: true } : { ...values, invite: true };
+        axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`, requestValues)
             .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ?"Student created successfuly" : data.statusText}))
             .catch(error => {
                 console.log(error)

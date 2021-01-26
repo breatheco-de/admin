@@ -22,9 +22,8 @@ const NewStaff = () => {
 
   const postMember = () => {
     console.log(user, role)
-    const academy_id = localStorage.getItem("academy_id");
     if(user !== null && role !== null) {
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`, {user: user.id, role:role})
+      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, {user: user.id, role:role})
       .then((data) => {
         if(data.status === 201) setMsg({ alert: true, type: "success", text: "Member added successfully" }); 
         else setMsg({ alert: true, type: "success", text: data.statusText });
