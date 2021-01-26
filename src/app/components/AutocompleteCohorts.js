@@ -21,7 +21,7 @@ export const AutocompleteCohorts = ({buttonLabel, addTo, setState, placeholder, 
 
     const getAllCohorts = () => {
         setLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)
           .then(({ data }) => {
             console.log(data);
             setAllCohorts(data);
