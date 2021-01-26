@@ -52,21 +52,25 @@ const NewCertificate = () => {
         getSpecialties();
     }, [])
 
-    // Generate student certificate or all certificates
+
     const postCerfiticate = (values) => {
         const { id } = selectedCohort
         // One specific certificate
         if (type === "single") {
+            
             axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${id}/student/${selectedStudent}`, values, {
                 headers: {
                     "Academy": "4"
                 }
-            }).then((data) => setMsg({ alert: true, type: "success", text: "Certificate added successfully" }))
-            // .catch(error => setMsg({
-            //     alert: true,
-            //     type: "error",
-            //     text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cerficate fields"
-            // }))
+            }).then((data) => {
+                
+                setMsg({ alert: true, type: "success", text: "Certificate added successfully" })
+            })
+                .catch(error => console.log(error) || setMsg({
+                    alert: true,
+                    type: "error",
+                    text: error.detail || "Unknown error, check cerficate fields"
+                }))
         } if (type === "all") {
             //all certificates
             setIsLoading(true)
@@ -78,10 +82,12 @@ const NewCertificate = () => {
                 setResponseData(data)
                 setIsLoading(false)
                 setOpenDialog(true)
-                // setMsg({ alert: true, type: "success", text: "Certificates added successfully" }))
-            })
 
-            
+            }).catch(error => setMsg({
+                alert: true,
+                type: "error",
+                text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cerficate fields"
+            }))
         }
     };
 
