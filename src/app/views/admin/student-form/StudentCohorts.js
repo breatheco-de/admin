@@ -75,7 +75,7 @@ const InvoiceOverview = ({ std_id }) => {
 
   const getAllCohorts = () => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/`)
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)
       .then(({ data }) => {
         console.log(data);
         setAllCohorts(data);
