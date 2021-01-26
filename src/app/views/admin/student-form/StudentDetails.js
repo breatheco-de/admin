@@ -19,8 +19,7 @@ const StudentDetails = ({ name, std_id }) => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const updateStudentProfile = (values) => {
     console.log(values)
-    const academy_id = localStorage.getItem("academy_id");
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/student/${std_id}`, { ...values })
+    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${std_id}`, { ...values })
         .then(data => {
           console.log(data)
           setMsg({ alert: true, type: "success", text: "User profile updated successfully"})
