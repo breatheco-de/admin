@@ -35,7 +35,7 @@ const Cohort = () => {
 
     const getCohort = () => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${slug}`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${slug}`)
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
