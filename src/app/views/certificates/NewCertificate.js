@@ -27,6 +27,8 @@ const NewCertificate = () => {
     const [selectedStudent, setSelectedStudent] = React.useState({});
     const [selectedCohort, setSelectedCohort] = React.useState({});
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [responseData, setResponseData] = React.useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     const getAcademy = (searchTerm) => {
         if (searchTerm !== undefined) {
@@ -67,23 +69,26 @@ const NewCertificate = () => {
             // }))
         } if (type === "all") {
             //all certificates
-
+            setIsLoading(true)
             axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${id}`, values, {
                 headers: {
                     "Academy": "4"
                 }
-            }).then((data) =>
-            setOpenDialog(true)
+            }).then((data) => {
+                setResponseData(data)
+                setIsLoading(false)
+                setOpenDialog(true)
                 // setMsg({ alert: true, type: "success", text: "Certificates added successfully" }))
+            })
 
-            )
+            
         }
     };
 
     return (
 
         <div className="m-sm-30">
-            <ResponseDialog setOpenDialog={setOpenDialog} openDialog={openDialog} />
+            <ResponseDialog setOpenDialog={setOpenDialog} openDialog={openDialog} responseData={responseData} isLoading={isLoading} />
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[

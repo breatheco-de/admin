@@ -14,9 +14,11 @@ const Certificates = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([]);
 
+    console.log("certificates:", items)
+
     useEffect(() => {
         setIsLoading(true);
-        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/42", {
+        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/41", {
             headers: {
                 "Academy": "4"
             }
