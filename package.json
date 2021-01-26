@@ -63,7 +63,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "docs": "python -m http.server 9000 --directory ./docs",

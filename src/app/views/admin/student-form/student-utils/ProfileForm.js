@@ -3,11 +3,9 @@ import { Formik } from "formik";
 import {
     Grid,
     TextField,
-    Button,
-    Checkbox,
-    FormControlLabel
+    Button
 } from "@material-ui/core";
-import BC from "../../../../services/breathecode";
+
 import axios from "../../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -19,6 +17,7 @@ export const ProfileForm = ({initialValues}) => {
     const [cohortId, setCohortId] = useState(null);
 
     const postAcademyStudentProfile = (values) => {
+        console.log(cohortId)
         const requestValues = cohortId !== "" ? { ...values, cohort: cohortId, invite: true } : { ...values, invite: true };
         axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`, requestValues)
             .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ?"Student created successfuly" : data.statusText}))
