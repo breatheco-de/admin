@@ -45,7 +45,7 @@ const MatxVerticalNav = () => {
   const classes = useStyles();
 
   const renderLevels = (data) => {
-    return data.map((item, index) => {
+    return data.filter(item => settings.beta || (!settings.beta && item.beta != true)).map((item, index) => {
       if (item.type === "label")
         return (
           <p

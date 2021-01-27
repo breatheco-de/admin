@@ -6,6 +6,7 @@ import {
   Avatar,
   useMediaQuery,
   Hidden,
+  Switch,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
@@ -90,6 +91,14 @@ const Layout1Topbar = () => {
     );
   };
 
+  const updateSettings = (_settings) => {
+    dispatch(
+      setLayoutSettings(
+        merge({}, settings, _settings)
+      )
+    );
+  };
+
   const handleSidebarToggle = () => {
     let { layout1Settings } = settings;
     let mode;
@@ -113,7 +122,7 @@ const Layout1Topbar = () => {
             </IconButton>
 
             <div className="hide-on-mobile">
-              <IconButton>
+              {/* <IconButton>
                 <Icon>mail_outline</Icon>
               </IconButton>
 
@@ -123,13 +132,22 @@ const Layout1Topbar = () => {
 
               <IconButton>
                 <Icon>star_outline</Icon>
+              </IconButton> */}
+
+              <IconButton>
+                <Switch
+                    onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}
+                    checked={settings.beta}
+                    color="secondary"
+                    size="small"
+                />
               </IconButton>
             </div>
           </div>
           <div className="flex items-center">
-            <MatxSearchBox />
+            {/* <MatxSearchBox />
 
-            <NotificationBar />
+            <NotificationBar /> */}
 
             <MatxMenu
               menuButton={
