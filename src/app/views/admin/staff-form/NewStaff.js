@@ -21,8 +21,8 @@ const NewStaff = () => {
   const [role, setRole] = useState(null);
 
   const postMember = () => {
-    console.log(user, role)
-    if(user !== null && role !== null) {
+    
+    if(user && user !== null && role  && role !== null) {
       axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, {user: user.id, role:role})
       .then((data) => {
         if(data.status === 201) setMsg({ alert: true, type: "success", text: "Member added successfully" }); 
