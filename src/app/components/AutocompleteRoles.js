@@ -9,11 +9,10 @@ import {
     CircularProgress
   } from "@material-ui/core";
 
-export const AutocompleteRoles = ({buttonLabel, addTo, setState, placeholder, size, width}) => {
+export const AutocompleteRoles = ({onChange, placeholder, size, width,value}) => {
     const [allRoles, setAllRoles] = useState([]);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [select, setSelect] = useState("");
 
     useEffect(() => {
         getAllRoles();
@@ -36,6 +35,7 @@ export const AutocompleteRoles = ({buttonLabel, addTo, setState, placeholder, si
           id="asynchronous-demo"
           style={{ width: width }}
           open={open}
+          value={value}
           onOpen={() => {
             setOpen(true);
           }}
@@ -43,10 +43,11 @@ export const AutocompleteRoles = ({buttonLabel, addTo, setState, placeholder, si
             setOpen(false);
           }}
           size={size}
-          getOptionSelected={(option, value) => {
-            setSelect(value.id);
-            setState(value.slug);
-            return option.name === value.name
+          onChange={(e, newValue) => {
+            allRoles.filter((item) => {
+              return newValue === "" || item.name.includes(newValue) || item.slug.includes(newValue)
+            }).map(item => `${item.name}`)
+            onChange(newValue);
           }}
           getOptionLabel={option => `${option.name}`}
           options={allRoles}
@@ -57,11 +58,6 @@ export const AutocompleteRoles = ({buttonLabel, addTo, setState, placeholder, si
               label={placeholder || "Search Role"}
               fullWidth
               variant="outlined"
-              onChange={({ target: { value } }) => {
-                allRoles.filter((item) => {
-                  return value === "" || item.name.includes(value) || item.slug.includes(value)
-                }).map(item => `${item.name}`)
-              }}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
@@ -76,9 +72,6 @@ export const AutocompleteRoles = ({buttonLabel, addTo, setState, placeholder, si
             />
           )}
         />
-        {buttonLabel ? <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addTo(select)}>
-          {buttonLabel}
-        </Button> : ""}
       </div>
     )
 } 
