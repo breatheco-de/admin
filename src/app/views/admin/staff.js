@@ -1,87 +1,123 @@
 import React, { useState, useEffect } from "react";
-import {
-  IconButton,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Icon,
-  TablePagination,
-  Button,
-  Card,
-} from "@material-ui/core";
-//import { getAllUser, deleteUser } from "./TableService";
-//import MemberEditorDialog from "./MemberEditorDialog";
-import { Breadcrumb, ConfirmationDialog } from "matx";
+import { Breadcrumb } from "matx";
+import axios from "../../../axios";
+import MUIDataTable from "mui-datatables";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
+import { MatxLoading } from "matx";
+import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import shortid from "shortid";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import dayjs from "dayjs";
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
-  productTable: {
-    "& thead": {
-      "& th:first-child": {
-        paddingLeft: 16,
-      },
-    },
-    "& td": {
-      borderBottom: "none",
-    },
-    "& td:first-child": {
-      paddingLeft: "16px !important",
-    },
-  },
-}));
+let relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
 
-const CrudTable = () => {
-  const [uid, setUid] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
-  const [user, setUser] = useState(null);
+const Staff = () => {
+  const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
-  const [shouldOpenEditorDialog, setShouldOpenEditorDialog] = useState(false);
-  const [
-    shouldOpenConfirmationDialog,
-    setShouldOpenConfirmationDialog,
-  ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
-  const classes = useStyles();
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleDialogClose = () => {
-    setShouldOpenEditorDialog(false);
-    setShouldOpenConfirmationDialog(false);
-    updatePageData();
-  };
-
-  const handleDeleteUser = (user) => {
-    setUser(user);
-    setShouldOpenConfirmationDialog(true);
-  };
-
-  const handleConfirmationResponse = () => {
-    //deleteUser(user).then(() => {
-    //  handleDialogClose();
-    //});
-  };
-
-  const updatePageData = () => {
-    //getAllUser().then(({ data }) => {
-    //  setUserList(data);
-    //});
-  };
+  const getAcademyMembers = () => {
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)
+      .then((res) => {
+        const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
+        res.status === 200 ?
+          (axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=${roles.join()}&status=active`)
+            .then(({ data }) => {
+              console.log(data);
+              setIsLoading(false);
+              if (isAlive) {
+                let filterUserNull = data.filter(item => item.user !== null)
+                setUserList(filterUserNull)
+              };
+            }).catch(error => {
+              setIsLoading(false);
+              setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read members" });
+            })) : setMsg({ alert: true, type: "error", text: "An error ocurred" });
+      })
+      .catch(error => console.log(error))
+  }
 
   useEffect(() => {
-    updatePageData();
-  }, []);
+    setIsLoading(true);
+    getAcademyMembers();
+    return () => setIsAlive(false);
+  }, [isAlive]);
+
+  const columns = [
+    {
+      name: "first_name", // field name in the row object
+      label: "Name", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let { user } = userList[dataIndex];
+          return (
+            <div className="flex items-center">
+              <Avatar className="w-48 h-48" src={user?.imgUrl} />
+              <div className="ml-3">
+                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
+                <small className="text-muted">{user?.email}</small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: "created_at",
+      label: "Created At",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+            </div>
+          </div>
+      },
+    },
+    {
+      name: "role",
+      label: "Role",
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex]
+          
+          return <small className={"border-radius-4 px-2 pt-2px bg-green text-white"}>{item.role.name.toUpperCase()}</small>
+        }
+      },
+    },
+    {
+      name: "action",
+      label: " ",
+      options: {
+        filter: false,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex];
+          return <div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Link to={`/admin/staff/${item.user.id}`}>
+              <IconButton>
+                <Icon>edit</Icon>
+              </IconButton>
+            </Link>
+          </div>
+        },
+      },
+    },
+  ];
 
   return (
     <div className="m-sm-30">
+      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+          {msg.text}
+        </Alert>
+      </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
@@ -96,105 +132,62 @@ const CrudTable = () => {
           <div className="">
             <Link to={`/admin/staff/new`}>
               <Button variant="contained" color="primary">
-                Add new staff
+                Add new staff member
             </Button>
             </Link>
           </div>
         </div>
       </div>
-      <Card className="w-full overflow-auto" elevation={6}>
-        <Table
-          className={clsx("whitespace-pre min-w-750", classes.productTable)}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Age</TableCell>
-              <TableCell>Balance</TableCell>
-              <TableCell>Company</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userList
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((user, index) => (
-                <TableRow hover key={shortid.generate()}>
-                  <TableCell className="px-0" align="left">
-                    {user.name}
-                  </TableCell>
-                  <TableCell className="px-0" align="left">
-                    {user.age}
-                  </TableCell>
-                  <TableCell className="px-0">${user.balance}</TableCell>
-                  <TableCell className="px-0" align="left">
-                    {user.company}
-                  </TableCell>
-                  <TableCell className="px-0">
-                    {user.isActive ? (
-                      <small className="rounded bg-primary elevation-z3 text-white px-2 py-2px">
-                        active
-                      </small>
-                    ) : (
-                        <small className="rounded bg-light-gray elevation-z3 px-2 py-2px">
-                          inactive
-                        </small>
-                      )}
-                  </TableCell>
-                  <TableCell className="px-0 border-none">
-                    <IconButton
-                      onClick={() => {
-                        setUid(user.id);
-                        setShouldOpenEditorDialog(true);
+      <div className="overflow-auto">
+        <div className="min-w-750">
+          {isLoading && <MatxLoading />}
+          <MUIDataTable
+            title={"All Students"}
+            data={userList}
+            columns={columns}
+            options={{
+              filterType: "textField",
+              responsive: "standard",
+              elevation: 0,
+              rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customSearchRender: (
+                searchText,
+                handleSearch,
+                hideSearch,
+                options
+              ) => {
+                return (
+                  <Grow appear in={true} timeout={300}>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      onChange={({ target: { value } }) => handleSearch(value)}
+                      InputProps={{
+                        style: {
+                          paddingRight: 0,
+                        },
+                        startAdornment: (
+                          <Icon className="mr-2" fontSize="small">
+                            search
+                          </Icon>
+                        ),
+                        endAdornment: (
+                          <IconButton onClick={hideSearch}>
+                            <Icon fontSize="small">clear</Icon>
+                          </IconButton>
+                        ),
                       }}
-                    >
-                      <Icon color="primary">edit</Icon>
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteUser(user)}>
-                      <Icon color="error">delete</Icon>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-
-        <TablePagination
-          className="px-4"
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={userList?.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            "aria-label": "Previous Page",
-          }}
-          nextIconButtonProps={{
-            "aria-label": "Next Page",
-          }}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={({ target: { value } }) => setRowsPerPage(value)}
-        />
-
-        {/*shouldOpenEditorDialog && (
-            <MemberEditorDialog
-            handleClose={handleDialogClose}
-            open={shouldOpenEditorDialog}
-            uid={uid}
+                    />
+                  </Grow>
+                );
+              },
+            }}
           />
-        )*/}
-        {shouldOpenConfirmationDialog && (
-          <ConfirmationDialog
-            open={shouldOpenConfirmationDialog}
-            onConfirmDialogClose={handleDialogClose}
-            onYesClick={handleConfirmationResponse}
-            text="Are you sure to delete?"
-          />
-        )}
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default CrudTable;
+export default Staff;

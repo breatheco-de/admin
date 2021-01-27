@@ -21,9 +21,9 @@ export const AutocompleteRoles = ({onChange, placeholder, size, width,value}) =>
     const getAllRoles = () => {
         setLoading(true);
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)
-          .then(({ data }) => {
+          .then((data) => {
             console.log(data);
-            setAllRoles(data);
+            setAllRoles(data.data);
             setLoading(false);
           })
           .catch(error => console.log(error))

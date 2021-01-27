@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
-const CustomerForm = () => {
+const NewCohort = () => {
   const [cert, setCert] = useState([]);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
@@ -161,4 +161,4 @@ const initialValues = {
   kickoff_date:""
 };
 
-export default CustomerForm;
+export default NewCohort;
