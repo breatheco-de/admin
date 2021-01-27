@@ -17,7 +17,7 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
 
     const searchUsers = (searchTerm) => {
         setLoading(true)
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)
             .then(({ data }) => {
                 setLoading(false);
                 setOptions(data);

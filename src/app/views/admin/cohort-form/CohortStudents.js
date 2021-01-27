@@ -24,6 +24,8 @@ import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import AsyncAutocomplete from "./cohort-utils/Autocomplete";
+import {AutocompleteUsers} from "../../../components/AutocompleteUsers";
+
 
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -33,7 +35,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
 }));
 
-const CohortStudents = ({ slug, id }) => {
+const CohortStudents = ({ slug, cohort_id }) => {
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
@@ -41,6 +43,7 @@ const CohortStudents = ({ slug, id }) => {
     const [studenList, setStudentsList] = useState([]);
     const [currentStd, setCurrentStd] = useState({});
     const [openRoleDialog, setRoleDialog] = useState(false);
+    const [user, setUser] =useState(null)
     // Redux actions and store
 
     useEffect(() => {
@@ -54,7 +57,7 @@ const CohortStudents = ({ slug, id }) => {
             finantial_status: studenList[i].finantial_status,
             educational_status: studenList[i].educational_status
         }
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${studentId}`, { ...s_status, [name]: value })
+        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user/${studentId}`, { ...s_status, [name]: value })
             .then((data) => {
                 console.log(data)
                 if (data.status >= 200) {
@@ -80,7 +83,7 @@ const CohortStudents = ({ slug, id }) => {
     }
 
     const addUserToCohort = (user_id) => {
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user`, {
+        axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
             user:user_id,
             role:"STUDENT",
             finantial_status:null,
@@ -98,7 +101,7 @@ const CohortStudents = ({ slug, id }) => {
     } 
 
     const deleteUserFromCohort = () => {
-        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${id}/user/${currentStd.id}`)
+        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user/${currentStd.id}`)
             .then((data) => {
                 if (data.status === 204) {
                     setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
@@ -141,7 +144,12 @@ const CohortStudents = ({ slug, id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AsyncAutocomplete addUserTo={addUserToCohort} cohort_id={id} button_label={"Add to Cohort"}/>
+                <AutocompleteUsers onChange={(user)=> setUser(user)} width={"100%"} asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}>
+                    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id, user.id)}>
+                        Add to cohort
+                    </Button>
+                </AutocompleteUsers>
+                
             </div>
 
             <div className="overflow-auto">

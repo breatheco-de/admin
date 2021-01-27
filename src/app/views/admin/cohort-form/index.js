@@ -93,7 +93,7 @@ const Cohort = () => {
                     <Grid item md={8} xs={12}>
                         <CohortStudents
                             slug={slug}
-                            id={cohort.id}
+                            cohort_id={cohort.id}
                         />
                     </Grid>
                 </Grid>
