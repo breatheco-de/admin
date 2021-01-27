@@ -10,7 +10,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const StatCards = () => {
+const StatCards = ({ metrics }) => {
   const classes = useStyles();
 
   return (
@@ -23,8 +23,8 @@ const StatCards = () => {
           <div className="flex items-center">
             <Icon className={classes.icon}>group</Icon>
             <div className="ml-3">
-              <small className="text-muted">New Leads</small>
-              <h6 className="m-0 mt-1 text-primary font-medium">3050</h6>
+              <small className="text-muted">{metrics[0].label}</small>
+              <h6 className="m-0 mt-1 text-primary font-medium">{metrics[0].value}</h6>
             </div>
           </div>
           <Tooltip title="View Details" placement="top">
