@@ -4,21 +4,20 @@ import { TextField, CircularProgress, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "../hooks/useDebounce";
 import axios from "../../axios";
+import { Children } from "react";
 
-export  function AutocompleteUsers({ buttonLabel,addTo, cohort_id, setState, button_label,size, width, ...rest }) {
+export  function AutocompleteUsers({ cohort_id, setState, button_label,size, width,onChange,value,asyncSearch,children, ...rest }) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [select, setSelect] = React.useState("");
-  const [value, setValue] = React.useState(null);
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
   const searchUsers = (searchTerm) => {
     setLoading(true)
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)
-      .then(({ data }) => {
+    asyncSearch(searchTerm).then(({ data }) => {
         setLoading(false);
         setOptions(data);
         console.log(data)
@@ -48,8 +47,7 @@ export  function AutocompleteUsers({ buttonLabel,addTo, cohort_id, setState, but
         onClose={() => setOpen(false)}
         value={value}
         onChange={(e, newValue) => {
-            setValue(newValue);
-            setState(newValue);
+            onChange(newValue);
         }}
         getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
         options={options}
@@ -75,9 +73,7 @@ export  function AutocompleteUsers({ buttonLabel,addTo, cohort_id, setState, but
           />
         )}
       />
-      {buttonLabel ? <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addTo(select)}>
-          {buttonLabel}
-        </Button> : ""}
+      {children}
     </>
   );
 }
