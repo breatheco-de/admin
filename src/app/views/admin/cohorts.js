@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
+
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -22,13 +25,17 @@ const CustomerList = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
+  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/admissions/cohort").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST + "/v1/admissions/academy/cohort").then(({ data }) => {
       setIsLoading(false);
       if (isAlive) setItems(data);
-    });
+    }).catch(error => {
+      setIsLoading(false);
+      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required"});
+    })
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -129,6 +136,11 @@ const CustomerList = () => {
 
   return (
     <div className="m-sm-30">
+      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                    {msg.text}
+                </Alert>
+            </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>

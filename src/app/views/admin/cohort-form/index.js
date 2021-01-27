@@ -19,7 +19,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import DowndownMenu from "../../../components/DropdownMenu"
 
 const options = [
-    { label: "Change cohort stage", value: "change_stage" },
+    { label: "Change cohort stage", value: "stage" },
     { label: "Cohort Detailed Report", value: "cohort_deport" },
 ];
 
@@ -35,7 +35,7 @@ const Cohort = () => {
 
     const getCohort = () => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${slug}`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${slug}`)
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
@@ -44,10 +44,11 @@ const Cohort = () => {
             .catch(error => console.log(error));
     }
     const updateCohort = (values) => {
-        console.log(values)
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
+        console.log(values);
+        console.log(cohort.id)
+        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
             .then((data) => {
-                console.log(data)
+                console.log(data);
                 if (data.status <= 200) {
                     setMsg({ alert: true, type: "success", text: "Cohort details updated successfully" });
                 } else setMsg({ alert: true, type: "error", text: "Could not update cohort details" });
@@ -71,7 +72,7 @@ const Cohort = () => {
                         </div>
                     </div>
                     {isLoading && <MatxLoading />}
-                    <DowndownMenu options={options} icon="more_horiz">
+                    <DowndownMenu options={options} icon="more_horiz" onSelect={({value})=>setStageDialog(value === "stage" ?true : false)}>
                         <Button>
                             <Icon>playlist_add</Icon>
                             Additional Actions
@@ -82,7 +83,7 @@ const Cohort = () => {
                     <Grid item md={4} xs={12}>
                         <CohortDetails
                             slug={slug}
-                            lang={cohort.lang || "en"}
+                            language={cohort.language || "en"}
                             endDate={cohort.ending_date}
                             startDate={cohort.kickoff_date}
                             id={cohort.id}
@@ -92,7 +93,7 @@ const Cohort = () => {
                     <Grid item md={8} xs={12}>
                         <CohortStudents
                             slug={slug}
-                            id={cohort.id}
+                            cohort_id={cohort.id}
                         />
                     </Grid>
                 </Grid>
@@ -121,6 +122,7 @@ const Cohort = () => {
                                     kickoff_date:cohort.kickoff_date,
                                     ending_date: cohort.ending_date
                                 });
+                                setCohort({...cohort, stage:stage})
                                 setStageDialog(false)
                             }}
                             key={i}

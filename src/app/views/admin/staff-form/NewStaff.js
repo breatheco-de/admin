@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -12,37 +12,42 @@ import {
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import { AutocompleteUsers } from "../../../components/AutocompleteUsers";
+import { AutocompleteRoles } from "../../../components/AutocompleteRoles";
 
 const NewStaff = () => {
-  const [cert, setCert] = useState([]);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
 
-  const postCohort = (values) => {
-     axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,values)
-      .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
-      .catch(error => setMsg({ 
-        alert: true, 
-        type: "error", 
-        text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cohort fields"
-       }))
+  const postMember = () => {
+    if(user && user !== null && role  && role !== null) {
+      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, {user: user.id, role:role})
+      .then((data) => {
+        if(data.status === 201) setMsg({ alert: true, type: "success", text: "Member added successfully" }); 
+        else setMsg({ alert: true, type: "success", text: data.statusText });
+    })
+      .catch(error =>{ 
+        console.log(error);
+        setMsg({
+        alert: true,
+        type: "error",
+        text: error.detail || "Unknown error, check fields"
+      })})
+    } else setMsg({
+      alert: true,
+      type: "error",
+      text: "Role and User cannot be empty"
+    })
+    
   };
-
-  const getCertificates = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
-    .then(({data}) => setCert(data))
-    .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
-  }
-  useEffect(() =>{
-    getCertificates();
-  }, [])
-
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: "Pages", path: "/pages" },
-            { name: "New Customer" },
+            { name: "Admin", path: "/admin/staff" },
+            { name: "New Staff" },
           ]}
         />
       </div>
@@ -54,7 +59,7 @@ const NewStaff = () => {
 
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => postCohort(values)}
+          onSubmit={(values) => postMember()}
           enableReinitialize={true}
         >
           {({
@@ -70,82 +75,32 @@ const NewStaff = () => {
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
-              <Grid item md={2} sm={4} xs={12}>
-                  Cohort Name
+                <Grid item md={2} sm={4} xs={12}>
+                  User
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Cohort Name"
-                    name="name"
-                    size="small"
-                    variant="outlined"
-                    value={values.name}
-                    onChange={handleChange}
-                  />
+                  <AutocompleteUsers onChange={(user) => setUser(user)} size={"small"} width={"50%"} value={user} asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}/>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Cohort Slug
+                  Role
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Cohort Slug"
-                    name="slug"
-                    size="small"
-                    variant="outlined"
-                    value={values.slug}
-                    onChange={handleChange}
-                  />
-                </Grid>
-                <Grid item md={2} sm={4} xs={12}>
-                  Certificate
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <div className="flex flex-wrap m--2">
-                    <TextField
-                      className="m-2 min-w-188"
-                      label="Certificate"
-                      name="certificate"
-                      size="small"
-                      variant="outlined"
-                      select
-                      value={values.certificate || ""}
-                      onChange={handleChange}
-                    >
-                      {cert.map((item, ind) => (
-                        <MenuItem value={item.id} key={item.name}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                </Grid>
-                <Grid item md={2} sm={4} xs={12}>
-                  Kick off date
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    name="kickoff_date"
-                    size="small"
-                    type="datetime-local"
-                    variant="outlined"
-                    value={values.kickoff_date}
-                    onChange={handleChange}
-                  />
+                  <AutocompleteRoles setState={setRole} width={"50%"} size={"small"}/>
                 </Grid>
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
-                  Create
+                  Submit
                 </Button>
               </div>
             </form>
           )}
         </Formik>
         {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
+          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+            {msg.text}
+          </Alert>
+        </Snackbar> : ""}
       </Card>
     </div>
   );
@@ -153,9 +108,9 @@ const NewStaff = () => {
 
 const initialValues = {
   name: "",
-  slug:"",
-  certificate:"",
-  kickoff_date:""
+  slug: "",
+  certificate: "",
+  kickoff_date: ""
 };
 
 export default NewStaff;

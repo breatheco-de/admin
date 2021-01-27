@@ -3,23 +3,29 @@ import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
+import { Alert } from '@material-ui/lab';
+import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 
 const Students = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const academy_id = localStorage.getItem("academy_id");
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/4/member?roles=country_manager,student&status=invited`).then(({ data }) => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=country_manager,student&status=invited`).then(({ data }) => {
             console.log(data)
             setIsLoading(false);
             if (isAlive) {
                 setUserList(data)
             };
-        });
+        }).catch(error => {
+            setIsLoading(false);
+            setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
+          })
         return () => setIsAlive(false);
     }, [isAlive]);
 
@@ -54,14 +60,25 @@ const Students = () => {
             },
         },
         {
+            name: "role",
+            label: "Role",
+            options: {
+                filter: true,
+                customBodyRenderLite: (dataIndex) => {
+                    let item = userList[dataIndex]
+                    return <div className="MUIDataTableBodyCell-root-326">{item.role.name}</div>
+                }
+            },
+        },
+        {
             name: "action",
             label: " ",
             options: {
                 filter: false,
                 customBodyRenderLite: (dataIndex) => {
                     let item = userList[dataIndex].user !== null ?
-                    (userList[dataIndex]) :
-                    ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id:"" } });
+                        (userList[dataIndex]) :
+                        ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
                     return <div className="flex items-center">
                         <div className="flex-grow"></div>
                         <Link to={`/admin/students/${item.user.id}/${item.user.first_name} ${item.user.last_name}`}>
@@ -82,23 +99,20 @@ const Students = () => {
 
     return (
         <div className="m-sm-30">
+            {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
+                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
+                    {msg.text}
+                </Alert>
+            </Snackbar> : ""}
             <div className="mb-sm-30">
                 <div className="flex flex-wrap justify-between mb-6">
                     <div>
                         <Breadcrumb
                             routeSegments={[
                                 { name: "Admin", path: "/" },
-                                { name: "Students" },
+                                { name: "Invites" },
                             ]}
                         />
-                    </div>
-
-                    <div className="">
-                        <Link to={`/admin/students/new`}>
-                            <Button variant="contained" color="primary">
-                                Add new student
-            </Button>
-                        </Link>
                     </div>
                 </div>
             </div>
@@ -106,7 +120,7 @@ const Students = () => {
                 <div className="min-w-750">
                     {isLoading && <MatxLoading />}
                     <MUIDataTable
-                        title={"All Students"}
+                        title={"Invites"}
                         data={userList}
                         columns={columns}
                         options={{

@@ -12,13 +12,12 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
     const [loading, setLoading] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [value, setValue] = React.useState("");
-    const [selectedValue, setSelectedValue] = React.useState({});
     // Searching status (whether there is pending API request)
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
     const searchUsers = (searchTerm) => {
         setLoading(true)
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
+        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)
             .then(({ data }) => {
                 setLoading(false);
                 setOptions(data);
@@ -37,9 +36,9 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                         setOpen(false)
                         e.stopPropagation();
                         showForm({
-                            show:true,
-                            data:{
-                                first_name:params.inputValue
+                            show: true,
+                            data: {
+                                first_name: params.inputValue
                             }
                         });
                     }}
@@ -73,20 +72,26 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                     setValue(value);
                 }}
                 open={open}
-                onOpen={() => {
-                    setOpen(true);
-                }}
-                onClose={() => {
-                    setOpen(false);
-                }}
+                onOpen={() => setOpen(true)}
+                onClose={() => setOpen(false)}
                 filterOptions={filterOptions}
-                getOptionSelected={(option, value) => {
-                    setSelectedValue(option.id);
-                    return option.first_name === value.first_name
-                }}
-                getOptionLabel={option => `${option.first_name}`}
+                getOptionSelected={(option, value) => option.first_name === value.first_name}
+                getOptionLabel={option =>`${option.first_name}`}
                 renderOption={option => {
-                    return option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`
+                    return option.newUser ? option.newUser : <Button
+                        onClick={(e) => {
+                            setOpen(false)
+                            e.stopPropagation();
+                            showForm({
+                                show: true,
+                                data: {
+                                    ...option
+                                }
+                            });
+                        }}
+                    >
+                        {option.first_name} {option.last_name}, ({option.email})
+              </Button>
                 }}
                 options={options}
                 loading={loading}
@@ -96,7 +101,6 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                         label="Search users"
                         fullWidth
                         variant="outlined"
-                        onChange={(e) => setSearchTerm(e.target.value)}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -111,9 +115,6 @@ export default function AsyncAutocomplete({ addUserTo, cohort_id, button_label, 
                     />
                 )}
             />
-            <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserTo(selectedValue)}>
-                {button_label}
-            </Button>
         </div>
     );
 }
