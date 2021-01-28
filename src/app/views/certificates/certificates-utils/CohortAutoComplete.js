@@ -23,7 +23,7 @@ export default function Asynchronous({ setSelectedCohort }) {
         }
 
         (async () => {
-            const cohorts = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/`)
+            const cohorts = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)
             await sleep(1e3);
 
             if (active) {
