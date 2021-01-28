@@ -12,6 +12,19 @@ import dayjs from "dayjs";
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
+const statusColors = {
+  'INVITED': 'text-white bg-error',
+  'ACTIVE': 'text-white bg-green',
+}
+const roleColors = {
+  'admin': 'text-black bg-gray',
+}
+
+const name = (user) => {
+    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+    else return "No name";
+}
+
 const Staff = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
@@ -23,7 +36,7 @@ const Staff = () => {
       .then((res) => {
         const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
         res.status === 200 ?
-          (axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=${roles.join()}&status=active`)
+          (axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=${roles.join()}`)
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
@@ -45,6 +58,7 @@ const Staff = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
+
   const columns = [
     {
       name: "first_name", // field name in the row object
@@ -57,7 +71,7 @@ const Staff = () => {
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
+                <h5 className="my-0 text-15">{name(user)}</h5>
                 <small className="text-muted">{user?.email}</small>
               </div>
             </div>
@@ -86,8 +100,23 @@ const Staff = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           let item = userList[dataIndex]
-          
-          return <small className={"border-radius-4 px-2 pt-2px bg-green text-white"}>{item.role.name.toUpperCase()}</small>
+          return <small className={"border-radius-4 px-2 pt-2px "+(roleColors[item.role.slug] || "bg-light")}>{item.role.name.toUpperCase()}</small>
+        }
+      },
+    },
+    {
+      name: "status",
+      label: "Status",
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex]
+          return <div className="flex items-center">
+            <div className="ml-3">
+                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
+                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+            </div>
+          </div>
         }
       },
     },
@@ -131,9 +160,9 @@ const Staff = () => {
 
           <div className="">
             <Link to={`/admin/staff/new`}>
-              <Button variant="contained" color="primary">
-                Add new staff member
-            </Button>
+                <Button variant="contained" color="primary">
+                    Add new staff member
+                </Button>
             </Link>
           </div>
         </div>
