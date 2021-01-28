@@ -9,3 +9,7 @@
     -ms-touch-action: auto;
   }
 } */
+
+.d-block{
+    display: block !important;
+}

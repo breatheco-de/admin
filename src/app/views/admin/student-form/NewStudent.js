@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Formik } from "formik";
+
 import { Alert, AlertTitle } from '@material-ui/lab';
-import axios from "../../../../axios";
+
 import {
-  Grid,
   Card,
   Divider,
-  TextField,
-  Button
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { ProfileForm } from "./student-utils/ProfileForm";
@@ -19,25 +16,14 @@ const NewStudent = () => {
   const [showForm, setShowForm] = useState({
     show: false,
     data: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      address: "",
-      phone: "",
-      invite: false,
+      first_name:"",
+      last_name:"",
+      email:"",
+      address:"",
+      phone:"",
+      cohort:""
     }
   });
-
-  const addUserToAcademy = (user_id) => {
-    const academy_id = localStorage.getItem("academy_id");
-    console.log(user_id)
-    axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/${academy_id}/member`, { role: "student", user: user_id })
-      .then(data => setMsg({ alert: true, type: "success", text: "Added" }))
-      .catch(error => {
-        console.log(error)
-        setMsg({ alert: true, type: "error", text: "Errror" })
-      })
-  }
 
   return (
     <div className="m-sm-30">
@@ -66,8 +52,13 @@ const NewStudent = () => {
             You can search for current users or create a new one
         </Alert>
         </div>
+<<<<<<< HEAD
         <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy} />
         {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ""}
+=======
+        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} />
+        {showForm.show ? <ProfileForm  initialValues={showForm.data}/> : ""}
+>>>>>>> c796b9738973aaf76e19683d8562b5c63e859c24
       </Card>
     </div>
   );

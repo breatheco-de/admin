@@ -2,13 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
-
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -21,21 +18,17 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const Cohorts= () => {
+const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/admissions/academy/cohort").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST + "/v1/events/academy/event").then(({ data }) => {
       setIsLoading(false);
       if (isAlive) setItems(data);
-    }).catch(error => {
-      setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required"});
-    })
+    });
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -48,8 +41,8 @@ const Cohorts= () => {
       },
     },
     {
-      name: "stage", // field name in the row object
-      label: "Stage", // column title that will be shown in table
+      name: "status", // field name in the row object
+      label: "Status", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
@@ -58,12 +51,7 @@ const Cohorts= () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item ?.stage]}>{item ?.stage}</small><br />
-                {
-                  ((dayjs().isBefore(dayjs(item ?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item ?.stage)) ||
-                    (dayjs().isAfter(dayjs(item ?.ending_date)) && !['ENDED', 'DELETED'].includes(item ?.stage))) &&
-                  <small className="text-warning pb-2px"><Icon>error</Icon>Out of sync</small>
-                }
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.status]}>{item?.status}</small><br />
               </div>
             </div>
           );
@@ -71,43 +59,21 @@ const Cohorts= () => {
       },
     },
     {
-      name: "slug", // field name in the row object
-      label: "Slug", // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: i => {
-          let item = items[i];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-15">{item ?.name}</h5>
-                <small className="text-muted">{item ?.slug}</small>
-              </div>
-            </div>
-          );
-        },
-      },
+      name: "title", // field name in the row object
+      label: "Title", // column title that will be shown in table
     },
     {
-      name: "kickoff_date",
-      label: "Kickoff Date",
+      name: "starting_at",
+      label: "Starting Date",
       options: {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].kickoff_date).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].kickoff_date).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].starting_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items[i].starting_at).fromNow()}</small>
             </div>
           </div>
-      },
-    },
-    {
-      name: "certificate",
-      label: "Certificate",
-      options: {
-        filter: true,
-        customBodyRenderLite: i => items[i].certificate ?.name
       },
     },
     {
@@ -136,18 +102,13 @@ const Cohorts= () => {
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                    {msg.text}
-                </Alert>
-            </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/" },
-                { name: "Cohorts" },
+                { name: "Event", path: "/" },
+                { name: "Event List" },
               ]}
             />
           </div>
@@ -155,9 +116,9 @@ const Cohorts= () => {
           <div className="">
             <Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
-                Add new cohort
+                Add new event
               </Button>
-            </Link>
+          </Link>
           </div>
         </div>
       </div>
@@ -165,7 +126,7 @@ const Cohorts= () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Cohorts"}
+            title={"All Events"}
             data={items}
             columns={columns}
             options={{
@@ -220,4 +181,4 @@ const Cohorts= () => {
   );
 };
 
-export default Cohorts;
+export default EventList;

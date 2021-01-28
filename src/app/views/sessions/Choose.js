@@ -1,13 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios.js";
 import {
   Card,
   Grid,
-  Button,
   Select,
   MenuItem,
-  CircularProgress,
+
 } from "@material-ui/core";
-import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+
 
 import { makeStyles } from "@material-ui/core/styles";
 import history from "history.js";
@@ -32,8 +32,10 @@ const Choose = () => {
   const handleChange = (event) => {
       const { role, academy } = event.target.value;
 
-      if(role && role != ""){
+      if(role && role !== ""){
         choose({ role, academy });
+        axios.defaults.headers.common['Academy'] = academy.id;
+        localStorage.setItem("bc-academy", JSON.stringify(academy));
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }

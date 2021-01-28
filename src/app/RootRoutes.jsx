@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
 import adminRoutes from "./views/admin/routes";
+import eventsRoutes from "./views/events/routes";
 import certificatesRoutes from "./views/certificates/certificatesRoutes"
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
@@ -29,6 +30,7 @@ const errorRoute = [
 const routes = [
   ...dashboardRoutes,
   ...adminRoutes,
+  ...eventsRoutes,
   ...materialRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,

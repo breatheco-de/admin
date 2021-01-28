@@ -13,18 +13,20 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
-const CustomerForm = () => {
+const NewCohort = () => {
   const [cert, setCert] = useState([]);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
   const postCohort = (values) => {
      axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,values)
       .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
-      .catch(error => setMsg({ 
+      .catch(error => {
+        console.log(error)
+        setMsg({ 
         alert: true, 
         type: "error", 
-        text: error.detail || error.slug[0] || error.name[0] || error.kickoff_date[0] || "Unknown error, check cohort fields"
-       }))
+        text: error.detail || "Unknown error, check cohort fields"
+       })})
   };
 
   console.log("cert:", cert)
@@ -161,4 +163,4 @@ const initialValues = {
   kickoff_date:""
 };
 
-export default CustomerForm;
+export default NewCohort;

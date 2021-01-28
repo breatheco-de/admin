@@ -12,6 +12,7 @@ const MatxSuspense = props => {
                 setLoading(true)
                 return config
                 }, function (error) {
+                setLoading(false)
                 return Promise.reject(error);
                 });
     
@@ -21,6 +22,7 @@ const MatxSuspense = props => {
     
                 return response;
             }, function (error) {
+                setLoading(false)
                 return Promise.reject(error);
             });
         }
