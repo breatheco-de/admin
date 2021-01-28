@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Grid, Card } from "@material-ui/core";
+import { Grid, Card, TextField } from "@material-ui/core";
 import DoughnutChart from "../charts/echarts/Doughnut";
 import ModifiedAreaChart from "./shared/ModifiedAreaChart";
 import StatCards from "./shared/StatCards";
@@ -95,13 +95,30 @@ const Analytics = () => {
             .then(( { data }) => {
                 setFeedback(data.filter(a => a.score));
             })
-    }, [])
-
+    }, [params])
+    console.log("params", params)
     return (
         <Fragment>
             <div className="pb-24 pt-7 px-8 bg-primary">
                 <div className="card-title capitalize text-white mb-4 text-white-secondary">
-                    Leads day by day
+                    Dashboard ranging from 
+                    <TextField
+                        className="ml-1"
+                        name="kickoff_date"
+                        size="small"
+                        type="date"
+                        value={params.start.format('YYYY-MM-DD')}
+                        onChange={v => setParams({ ...params, start: dayjs(v.target.value, 'YYYY-MM-DD')})}
+                    />
+                    to
+                    <TextField
+                        className="ml-1"
+                        name="kickoff_date"
+                        size="small"
+                        type="date"
+                        value={params.end.format('YYYY-MM-DD')}
+                        onChange={v => setParams({ ...params, end: dayjs(v.target.value, 'YYYY-MM-DD')})}
+                    />
         </div>
                 <ModifiedAreaChart
                     height="280px"
