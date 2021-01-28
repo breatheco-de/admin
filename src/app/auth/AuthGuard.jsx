@@ -16,7 +16,7 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
       ? matched.auth.includes(user.role)
       : true;
   console.log("matched and user: ", matched, user);
-  localStorage.setItem("academy_id", user ? (user.academy ? user.academy.id : "") : "");
+  localStorage.setItem("bc-academy", user ? (user.academy ? user.academy.id : "") : "");
   axios.defaults.headers.common['Academy'] = user ? (user.academy ? user.academy.id : "") : "";
   return authenticated;
 };

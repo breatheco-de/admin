@@ -146,6 +146,7 @@ export const AuthProvider = ({ children }) => {
   const choose = ({role, academy}) => {
         setUserData({ ...state.user, role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
+        localStorage.setItem("bc-academy", JSON.stringify(academy));
         dispatch({ type: "CHOOSE", payload: {role, academy} });
   };
 
@@ -167,6 +168,7 @@ export const AuthProvider = ({ children }) => {
             else if(user.roles.length === 1){
                 user.role = user.roles[0];
                 user.academy = user.roles[0].academy;
+                localStorage.setItem("bc-academy", JSON.stringify(user.academy));
             }
 
             dispatch({
