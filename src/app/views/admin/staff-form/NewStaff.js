@@ -7,8 +7,6 @@ import {
   Grid,
   Card,
   Divider,
-  TextField,
-  MenuItem,
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
@@ -21,8 +19,8 @@ const NewStaff = () => {
   const [role, setRole] = useState(null);
 
   const postMember = () => {
-    if(user && user !== null && role  && role !== null) {
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, {user: user.id, role:role})
+    if(user !== null && role !== null) {
+      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, {user: user.id, role:role.slug})
       .then((data) => {
         if(data.status === 201) setMsg({ alert: true, type: "success", text: "Member added successfully" }); 
         else setMsg({ alert: true, type: "success", text: data.statusText });
@@ -85,7 +83,7 @@ const NewStaff = () => {
                   Role
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <AutocompleteRoles setState={setRole} width={"50%"} size={"small"}/>
+                  <AutocompleteRoles onChange={(role) => setRole(role)} width={"50%"} size={"small"} value={role}/>
                 </Grid>
               </Grid>
               <div className="mt-6">

@@ -66,7 +66,7 @@ const Students = () => {
                 filter: true,
                 customBodyRenderLite: (dataIndex) => {
                     let item = userList[dataIndex]
-                    return <div className="MUIDataTableBodyCell-root-326">{item.role.name}</div>
+                    return <div className="MUIDataTableBodyCell-root-326">{item.role.name.toUpperCase()}</div>
                 }
             },
         },

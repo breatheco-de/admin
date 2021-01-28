@@ -21,7 +21,7 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const CustomerList = () => {
+const Cohorts= () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
@@ -220,4 +220,4 @@ const CustomerList = () => {
   );
 };
 
-export default CustomerList;
+export default Cohorts;

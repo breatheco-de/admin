@@ -31,13 +31,13 @@ const routes = [
         component: React.lazy(() => import("./students")),
     },
     {
-        path: "/admin/staff",
-        component: React.lazy(() => import("./staff-form/NewStaff")),
-    },
-    {
         path: "/admin/staff/new",
         exact: true,
         component: React.lazy(() => import("./staff-form/NewStaff")),
+    },
+    {
+        path: "/admin/staff",
+        component: React.lazy(() => import("./staff")),
     },
     {
         path: "/admin/invites",

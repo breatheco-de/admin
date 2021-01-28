@@ -6,7 +6,7 @@ import useDebounce from "../hooks/useDebounce";
 import axios from "../../axios";
 import { Children } from "react";
 
-export  function AutocompleteUsers({ cohort_id, setState, button_label,size, width,onChange,value,asyncSearch,children, ...rest }) {
+export  function AutocompleteUsers({ size, width,onChange,value,asyncSearch,children, ...rest }) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
