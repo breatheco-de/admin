@@ -21,7 +21,7 @@ const StatCards = ({ metrics }) => {
           elevation={6}
         >
           <div className="flex items-center">
-            <Icon className={classes.icon}>group</Icon>
+            <Icon className={classes.icon}>{metrics[0].icon}</Icon>
             <div className="ml-3">
               <small className="text-muted">{metrics[0].label}</small>
               <h6 className="m-0 mt-1 text-primary font-medium">{metrics[0].value}</h6>
@@ -40,12 +40,12 @@ const StatCards = ({ metrics }) => {
           elevation={6}
         >
           <div className="flex items-center">
-            <Icon className={classes.icon}>attach_money</Icon>
+            <Icon className={classes.icon}>{metrics[1].icon}</Icon>
             <div className="ml-3">
               <small className="text-muted line-height-1">
-                This week Sales
+                {metrics[1].label}
               </small>
-              <h6 className="m-0 mt-1 text-primary font-medium">$80,500</h6>
+              <h6 className="m-0 mt-1 text-primary font-medium">{metrics[1].value}</h6>
             </div>
           </div>
           <Tooltip title="View Details" placement="top">
@@ -61,11 +61,11 @@ const StatCards = ({ metrics }) => {
           elevation={6}
         >
           <div className="flex items-center">
-            <Icon className={classes.icon}>store</Icon>
+            <Icon className={classes.icon}>{metrics[2].icon}</Icon>
             <div className="ml-3">
-              <small className="text-muted">Inventory Status</small>
+              <small className="text-muted">{metrics[2].value}</small>
               <h6 className="m-0 mt-1 text-primary font-medium">
-                8.5% Stock Surplus
+                {metrics[2].label}
               </h6>
             </div>
           </div>
@@ -82,10 +82,10 @@ const StatCards = ({ metrics }) => {
           elevation={6}
         >
           <div className="flex items-center">
-            <Icon className={classes.icon}>shopping_cart</Icon>
+            <Icon className={classes.icon}>{metrics[3].icon}</Icon>
             <div className="ml-3">
-              <small className="text-muted">Orders to deliver</small>
-              <h6 className="m-0 mt-1 text-primary font-medium">305 Orders</h6>
+              <small className="text-muted">{metrics[3].value}</small>
+              <h6 className="m-0 mt-1 text-primary font-medium">{metrics[3].label}</h6>
             </div>
           </div>
           <Tooltip title="View Details" placement="top">

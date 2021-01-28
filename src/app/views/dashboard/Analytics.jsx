@@ -22,7 +22,24 @@ const Analytics = () => {
     const [leads, setLeads] = useState({ 
         series:[34, 45, 31, 45, 31, 43, 26, 43, 31, 45, 33, 40],
         xAxis: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-        total: 123
+        total: 123,
+        max: 60,
+        min: 0,
+    });
+    const [checkins, setCheckins] = useState([]);
+    const [feedback, setFeedback] = useState([]);
+    const [donutLeads, setDonutLeads] = useState({ 
+        data: [   
+          {
+            value: 65,
+            name: "Google",
+          },
+          {
+            value: 20,
+            name: "Facebook",
+          },
+          { value: 15, name: "Others" },
+        ]
     });
 
     useEffect(() => {
@@ -31,8 +48,7 @@ const Analytics = () => {
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
             academy: academy.slug,
-            max: 60,
-            min: 0
+            by: 'location,created_at__date,course'
         })
             .then(( { data }) => {
                 console.log("data", data)
@@ -40,15 +56,44 @@ const Analytics = () => {
                 let xAxis = [];
                 let total = 0;
                 let max = 0;
-                let min = 20;
+                let min = 0;
                 data.forEach(stamp => {
                     series.push(stamp.total_leads);
                     xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'))
                     total += stamp.total_leads;
                     if(stamp.total_leads > max) max = stamp.total_leads;
-                    if(stamp.total_leads < min) min = stamp.total_leads;
+                    // if(stamp.total_leads < min) min = stamp.total_leads;
                 })
                 setLeads({ series, xAxis, total, max, min })
+            })
+
+        BC.marketing().getLeads({
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+            academy: academy.slug,
+            by: 'utm_source'
+        })
+            .then(( { data }) => {
+                let _data = [];
+                data.forEach(stamp => {
+                    _data.push({ name: stamp.utm_source, value: stamp.total_leads });
+                })
+                setDonutLeads({ data: _data })
+            })
+
+        BC.events().getCheckins({
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+        })
+            .then(( { data }) => {
+                setCheckins(data);
+            })
+
+        BC.feedback().getAnswers({
+            status: "ANSWERED"
+        })
+            .then(( { data }) => {
+                setFeedback(data.filter(a => a.score));
             })
     }, [])
 
@@ -63,7 +108,7 @@ const Analytics = () => {
                     option={{
                         yAxis: {
                             type: "value",
-                            min: leads.min,
+                            min: 0,
                             max: leads.max,
                         },
                         series: [
@@ -83,24 +128,27 @@ const Analytics = () => {
                 <Grid container spacing={3}>
                     <Grid item lg={8} md={8} sm={12} xs={12}>
                         <StatCards metrics={[
-                            { label: "Total Leads", value: leads.total }
+                            { label: "Total Leads", value: leads.total, icon: "group" },
+                            { label: "Total Reviews", value: 23, icon: "star" },
+                            { label: "Net Promoter Score", value: feedback.reduce((total, current) => current.score ? total + parseInt(current.score) : total,0) / feedback.length, icon: "tag_faces" },
+                            { label: "Event Tickets", value: checkins.length, icon: "group" },
                         ]} />
 
                         {/* Top Selling Products */}
-                        <TopSellingTable />
+                        {/* <TopSellingTable /> */}
 
-                        <StatCards2 />
+                        {/* <StatCards2 /> */}
 
-                        <h4 className="card-title text-muted mb-4">Ongoing Projects</h4>
-                        <RowCards />
+                        {/* <h4 className="card-title text-muted mb-4">Ongoing Projects</h4> */}
+                        {/* <RowCards /> */}
                     </Grid>
 
                     <Grid item lg={4} md={4} sm={12} xs={12}>
                         <Card className="px-6 py-4 mb-6">
-                            <div className="card-title">Traffic Sources</div>
-                            <div className="card-subtitle">Last 30 days</div>
+                            <div className="card-title">Lead Sources</div>
                             <DoughnutChart
                                 height="300px"
+                                option={{ series: [{ name: "Lead Sources", data: donutLeads.data }]}}
                                 color={[
                                     theme.palette.primary.dark,
                                     theme.palette.primary.main,
@@ -109,9 +157,9 @@ const Analytics = () => {
                             />
                         </Card>
 
-                        <UpgradeCard />
+                        {/* <UpgradeCard /> */}
 
-                        <Campaigns />
+                        {/* <Campaigns /> */}
                     </Grid>
                 </Grid>
             </div>

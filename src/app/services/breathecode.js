@@ -18,6 +18,20 @@ class BreatheCodeClient {
             // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
             const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
             return axios.get(`${this.host}/marketing/report/lead?${qs}`)
+        },
+    })
+    feedback = () => ({
+        getAnswers: (query) => {
+            // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+            return axios.get(`${this.host}/feedback/academy/answer?${qs}`)
+        },
+    })
+    events = () => ({
+        getCheckins: (query) => {
+            // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
+            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+            return axios.get(`${this.host}/events/checkin?${qs}`)
         }
     })
 
