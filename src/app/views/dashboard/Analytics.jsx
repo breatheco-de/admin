@@ -129,8 +129,13 @@ const Analytics = () => {
                     <Grid item lg={8} md={8} sm={12} xs={12}>
                         <StatCards metrics={[
                             { label: "Total Leads", value: leads.total, icon: "group" },
-                            { label: "Total Reviews", value: 23, icon: "star" },
-                            { label: "Net Promoter Score", value: feedback.reduce((total, current) => current.score ? total + parseInt(current.score) : total,0) / feedback.length, icon: "tag_faces" },
+                            { label: "Total Reviews", value: "No reviews yet", icon: "star" },
+                            { 
+                                label: "Net Promoter Score", 
+                                icon: "tag_faces",
+                                value: feedback.length == 0 ? "No feedback yet" : 
+                                        feedback.reduce((total, current) => current.score ? total + parseInt(current.score) : total,0) / feedback.length, 
+                            },
                             { label: "Event Tickets", value: checkins.length, icon: "group" },
                         ]} />
 
