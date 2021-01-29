@@ -52,13 +52,8 @@ const NewStudent = () => {
             You can search for current users or create a new one
         </Alert>
         </div>
-<<<<<<< HEAD
-        <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} addUserTo={addUserToAcademy} />
-        {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ""}
-=======
         <Autocomplete button_label={"Add user to academy"} showForm={setShowForm} />
         {showForm.show ? <ProfileForm  initialValues={showForm.data}/> : ""}
->>>>>>> c796b9738973aaf76e19683d8562b5c63e859c24
       </Card>
     </div>
   );

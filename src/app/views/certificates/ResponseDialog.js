@@ -8,6 +8,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+
 export default function ResponseDialog({ openDialog, setOpenDialog, responseData, isLoading }) {
 
   const handleClose = () => {
@@ -55,6 +64,15 @@ export default function ResponseDialog({ openDialog, setOpenDialog, responseData
 
 const ResponseContent = ({ responseData, isLoading }) => {
 
+    const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
+    const classes = useStyles();
+
+
   const getMuiThemeError = () => createMuiTheme({
     overrides: {
       MUIDataTableBodyCell: {
@@ -91,6 +109,8 @@ const ResponseContent = ({ responseData, isLoading }) => {
       message: item.msg
     }
   })
+
+  console.log("errorData:", errorData)
 
   const columnsSuccess = [
     {
@@ -129,20 +149,43 @@ const ResponseContent = ({ responseData, isLoading }) => {
 
   return (
     <>
-      <MuiThemeProvider theme={getMuiThemeSuccess()}>
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="right">Student</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Message</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {errorData.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell >{row.student}</TableCell>
+              <TableCell >{row.status}</TableCell>
+              <TableCell >{row.message}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+      {/* <MuiThemeProvider theme={getMuiThemeSuccess()}>
         <MUIDataTable
           title={"Certificates Created"}
           data={successData}
           columns={columnsSuccess}
         />
-      </MuiThemeProvider>
-      <MuiThemeProvider theme={getMuiThemeError()}>
+      </MuiThemeProvider> */}
+      {/* <MuiThemeProvider theme={getMuiThemeError()}>
         <MUIDataTable
           title={"Pending Certificates"}
           data={errorData}
           columns={columnsError}
         />
-      </MuiThemeProvider>
+      </MuiThemeProvider> */}
     </>
   )
 }

@@ -142,7 +142,7 @@ export default function Asynchronous({ setSelectedStudent, selectedCohort }) {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const loading = open && options.length === 0;
-    const { slug } = selectedCohort;
+    
 
     React.useEffect(() => {
         let active = true;
@@ -152,7 +152,7 @@ export default function Asynchronous({ setSelectedStudent, selectedCohort }) {
         }
 
         (async () => {
-            const students = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${slug}&roles=STUDENT`)
+            const students = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${selectedCohort}&roles=STUDENT`)
             await sleep(1e3);
 
             if (active) {

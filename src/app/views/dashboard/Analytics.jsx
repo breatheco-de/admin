@@ -44,10 +44,11 @@ const Analytics = () => {
 
     useEffect(() => {
         const academy = JSON.parse(localStorage.getItem("bc-academy"));
+        const academyId = JSON.parse(localStorage.getItem("academy_id"));
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-            academy: academy.slug,
+            academy: academyId,
             by: 'location,created_at__date,course'
         })
             .then(( { data }) => {
@@ -70,7 +71,7 @@ const Analytics = () => {
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-            academy: academy.slug,
+            academy: academyId,
             by: 'utm_source'
         })
             .then(( { data }) => {

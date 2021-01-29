@@ -7,7 +7,7 @@ import {
     CircularProgress
   } from "@material-ui/core";
 
-export const AutocompleteCohorts = ({buttonLabel, addTo, setState, placeholder, size, width}) => {
+export const AutocompleteCohorts = ({buttonLabel, addTo, setState, placeholder, size, width, setCohortSlug, setCertificateForm}) => {
     const [allCohorts, setAllCohorts] = useState([]);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -42,6 +42,8 @@ export const AutocompleteCohorts = ({buttonLabel, addTo, setState, placeholder, 
           }}
           size={size}
           getOptionSelected={(option, value) => {
+            setCertificateForm(true)
+            setCohortSlug(value.slug)
             setSelect(value.id);
             setState(value.id);
             return option.name === value.name

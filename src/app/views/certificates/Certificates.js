@@ -114,7 +114,7 @@ const Certificates = () => {
                         </Link>
                         <Link to="/certificates/new/all" color="primary" className="btn btn-primary">
                             <Button variant="contained" color="primary">
-                                Add all Certificates
+                                Add cohort Certificates
                             </Button>
                         </Link>
                     </div>
