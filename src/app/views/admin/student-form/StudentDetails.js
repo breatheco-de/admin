@@ -15,7 +15,35 @@ import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 
-const StudentDetails = ({ name, std_id }) => {
+const StudentDetails = ({ user, std_id }) => {
+  const initialValues = {
+    "first_name": user?.user.first_name,
+    "last_name": user?.user.last_name,
+    "address": user?.address,
+    "phone": user?.phone
+  }
+  const customerInfo = [
+    {
+      title: "First Name",
+      name: "first_name",
+      value: initialValues.first_name,
+    },
+    {
+      title: "Last Name",
+      name: "last_name",
+      value: initialValues.last_name,
+    },
+    {
+      title: "Phone number",
+      name: "phone",
+      value: initialValues.phone,
+    },
+    {
+      title: "Address",
+      name: "address",
+      value: initialValues.address,
+    },
+  ];
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const updateStudentProfile = (values) => {
     console.log(values)
@@ -33,8 +61,8 @@ const StudentDetails = ({ name, std_id }) => {
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
-        <h5 className="mt-4 mb-2">{name}</h5>
-        <small className="text-muted">Student</small>
+        <h5 className="mt-4 mb-2">{user?.user.first_name + " " + user?.user.last_name}</h5>
+        <small className="text-muted">{user?.role.name}</small>
       </div>
       <Divider />
       <Formik
@@ -60,19 +88,25 @@ const StudentDetails = ({ name, std_id }) => {
                 <TableRow>
                   <TableCell className="pl-4">Email</TableCell>
                   <TableCell>
-                    <div>ui-lib@example.com</div>
+                    <div>{user?.user.email}</div>
                     <small className="px-1 py-2px bg-light-green text-green border-radius-4">
                       EMAIL VERIFIED
-              </small>
+                    </small>
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
-                    <div>github.com/alesanchezr</div>
-                    <small className="px-1 py-2px bg-light-green text-green border-radius-4">
+                    <div>{user?.user.github}</div>
+                    {user?.user.github == undefined ?
+                      <small className="px-1 py-2px bg-light-error text-red border-radius-4">
+                      GITHUB UNVERIFIED
+                    </small>: 
+                      <small className="px-1 py-2px bg-light-green text-green border-radius-4">
                       GITHUB VERIFIED
-              </small>
+                    </small>
+                    }
+                    
                   </TableCell>
                 </TableRow>
                 {customerInfo.map((item, ind) => (
@@ -80,7 +114,7 @@ const StudentDetails = ({ name, std_id }) => {
                     <TableCell className="pl-4">{item.title}</TableCell>
                     <TableCell>
                       <TextField
-                        label={item.title}
+                        placeholder={item.title}
                         name={item.name}
                         size="small"
                         variant="outlined"
@@ -111,33 +145,7 @@ const StudentDetails = ({ name, std_id }) => {
   );
 };
 
-const initialValues = {
-  "first_name": "",
-  "last_name": "",
-  "address": "",
-  "phone": ""
-}
-const customerInfo = [
-  {
-    title: "First Name",
-    name: "first_name",
-    value: initialValues.first_name,
-  },
-  {
-    title: "Last Name",
-    name: "last_name",
-    value: initialValues.last_name,
-  },
-  {
-    title: "Phone number",
-    name: "phone",
-    value: initialValues.phone,
-  },
-  {
-    title: "Address",
-    name: "address",
-    value: initialValues.address,
-  },
-];
+
+
 
 export default StudentDetails;

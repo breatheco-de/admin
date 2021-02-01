@@ -44,10 +44,11 @@ const InvoiceOverview = ({ std_id }) => {
   const changeStudentStatus = (value, name, studentId, i) => {
     console.log(value, name, i)
     const s_status = {
-      role: stdCohorts[i].role,
+      role: stdCohorts[i].role.toUpperCase(),
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status
     }
+    console.log(s_status)
     axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${stdCohorts[i].cohort.id}/user/${studentId}`, { ...s_status, [name]: value })
       .then((data) => {
         console.log(data)
