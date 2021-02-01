@@ -66,6 +66,16 @@ export const navigations = [
         name: "Feedback",
         icon: "record_voice_over",
         children: [
+            {
+                name: "Answers",
+                path: "/feedback/answers",
+                iconText: "OL",
+            },
+            {
+                name: "Surveys",
+                path: "/feedback/surveys",
+                iconText: "OL",
+            },
         ],
     },
 

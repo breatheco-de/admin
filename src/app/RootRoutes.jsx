@@ -5,6 +5,7 @@ import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
 import adminRoutes from "./views/admin/routes";
 import eventsRoutes from "./views/events/routes";
+import feedbackRoutes from "./views/feedback/routes";
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
@@ -30,6 +31,7 @@ const routes = [
   ...dashboardRoutes,
   ...adminRoutes,
   ...eventsRoutes,
+  ...feedbackRoutes,
   ...materialRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,

@@ -121,7 +121,7 @@ const Students = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
-              // selectableRows: "none", // set checkbox for each row
+              selectableRows: false, // set checkbox for each row
               // search: false, // set search option
               // filter: false, // set data filter option
               // download: false, // set download option
