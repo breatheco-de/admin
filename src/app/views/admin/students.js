@@ -68,7 +68,7 @@ const Students = () => {
             let item = userList[dataIndex];
             return <div className="flex items-center">
                 <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.user.id}/${item.user.first_name} ${item.user.last_name}`}>
+                <Link to={`/admin/students/${item.user.id}`}>
                     <IconButton>
                         <Icon>edit</Icon>
                     </IconButton>
