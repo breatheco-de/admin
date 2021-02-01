@@ -62,9 +62,10 @@ export const navigations = [
         ],
     },
     {
-    name: "Certificates",
-    path: "/certificates",
-    icon: "card_membership",
+        beta: true,
+        name: "Certificates",
+        path: "/certificates",
+        icon: "card_membership",
     },
     {
         beta: true,
@@ -96,13 +97,14 @@ export const navigations = [
             },
         ],
     },
-    {
-        beta: true,
-        name: "Certificates",
-        icon: "card_membership",
-        children: [
-        ],
-    },
+    // {
+    //     beta: true,
+    //     path: "/certificates",
+    //     name: "Certificates",
+    //     icon: "card_membership",
+    //     children: [
+    //     ],
+    // },
     {
         beta: true,
         label: "Components",
