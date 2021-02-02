@@ -8,8 +8,8 @@ import {
     Grid,
     Card,
     Divider,
-    TextField,
-    MenuItem,
+    // TextField,
+    // MenuItem,
     Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
@@ -24,14 +24,14 @@ import ResponseDialog from "./ResponseDialog"
 const NewCertificate = () => {
     const { type } = useParams();
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-    const [academy, setAcademy] = useState([]);
+    // const [academy, setAcademy] = useState([]);
     const [specialties, setSpecialties] = useState([]);
     const [selectedStudent, setSelectedStudent] = React.useState({});
     const [selectedCohort, setSelectedCohort] = React.useState(null);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [responseData, setResponseData] = React.useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [user, setUser] =useState(null)
+    // const [user, setUser] =useState(null)
     const [cohortSlug, setCohortSlug] = useState(null);
     const [certificateForm, setCertificateForm] = useState(false)
 
@@ -112,7 +112,8 @@ const NewCertificate = () => {
                             <form className="p-4" onSubmit={handleSubmit}>
                                 <Grid container spacing={3} alignItems="center">
                                     <Grid item md={2} sm={4} xs={12}>
-                                        Cohort
+                                        <div className="flex mb-6">Cohort</div>
+                                        
                                     </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
                                         <AutocompleteCohorts setCertificateForm={setCertificateForm} setState={setSelectedCohort} setCohortSlug={setCohortSlug} placeholder="Cohort" size="small" width="100%"/>
@@ -123,11 +124,9 @@ const NewCertificate = () => {
                                                 Student
                                     </Grid>
                                             <Grid item md={10} sm={8} xs={12}>
-                                                {/* <AutocompleteUsers onChange={(user)=> setUser(user)} width={"100%"} asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${cohortSlug}&roles=STUDENT`)}>
-                                            </AutocompleteUsers> */}
-                                                <StudentAutoComplete setSelectedStudent={setSelectedStudent} selectedCohort={cohortSlug}></StudentAutoComplete>
+                                                <StudentAutoComplete setSelectedStudent={setSelectedStudent} selectedCohort={cohortSlug} size="small" width="100%"></StudentAutoComplete>
                                             </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
+                                    {/* <Grid item md={2} sm={4} xs={12}>
                                         Specialty
                                     </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
@@ -196,7 +195,7 @@ const NewCertificate = () => {
                                             value={values.signed_by_role}
                                             onChange={handleChange}
                                         />
-                                    </Grid>
+                                    </Grid> */}
                                     </>:null}
                                 </Grid>
                                 <div className="mt-6">
