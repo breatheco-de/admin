@@ -13,12 +13,14 @@ const Certificates = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([]);
+    
 
     console.log("certificates:", items)
+    
 
     useEffect(() => {
         setIsLoading(true);
-        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/41", {
+        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate", {
             headers: {
                 "Academy": "4"
             }
@@ -28,6 +30,7 @@ const Certificates = () => {
         });
         return () => setIsAlive(false);
     }, [isAlive]);
+
 
     const columns = [
         {
@@ -80,8 +83,19 @@ const Certificates = () => {
             label: "Cohort", // column title that will be shown in table
             options: {
                 filter: true,
-                customBodyRenderLite: i =>
-                    items[i].cohort ?.name
+                filterType: "multiselect",
+                 customBodyRender: (value, tableMeta, updateValue) => (
+                     console.log("value",value) ||
+                    value.name
+            
+          ),
+                // customBodyRenderLite: i => {
+                //     let item = items[i].cohort;
+                //     return (
+                //         item?.name
+                //     )
+                // }
+                    
                 },
         },
         {
