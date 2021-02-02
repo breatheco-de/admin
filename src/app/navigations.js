@@ -18,7 +18,7 @@ export const navigations = [
     //     icon: "dashboard",
     //   },
     {
-        name: "Admin",
+        name: "Admissions",
         icon: "school",
         auth: authRoles.contry_manager,
         children: [
@@ -58,6 +58,18 @@ export const navigations = [
                 name: "View Order",
                 path: "/invoice/fdskfjdsuoiucrwevbgd",
                 iconText: "VO",
+            },
+        ],
+    },
+    {
+        beta: true,
+        name: "Coursework",
+        icon: "record_voice_over",
+        children: [
+            {
+                name: "Reports",
+                path: "/coursework/student",
+                iconText: "OL",
             },
         ],
     },
