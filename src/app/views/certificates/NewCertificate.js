@@ -35,7 +35,7 @@ const NewCertificate = () => {
     const [cohortSlug, setCohortSlug] = useState(null);
     const [certificateForm, setCertificateForm] = useState(false)
 
-    // preguntar si url viene con cohortid y hacer condicional el fetch y usar params
+    
 
     const getSpecialties = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)

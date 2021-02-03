@@ -3,7 +3,7 @@ import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 var relativeTime = require('dayjs/plugin/relativeTime')
@@ -13,21 +13,22 @@ const Certificates = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([]);
+    let { cohortId } = useParams();
     
-
-    console.log("certificates:", items)
     
-
     useEffect(() => {
         setIsLoading(true);
-        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate", {
-            headers: {
-                "Academy": "4"
-            }
-        }).then(({ data }) => {
+        if (cohortId !== null || cohortId !== undefined) {
+            axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId).then(({ data }) => {
             setIsLoading(false);
             if (isAlive) setItems(data);
         });
+
+        } if (cohortId === null || cohortId === undefined) {
+        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate").then(({ data }) => {
+            setIsLoading(false);
+            if (isAlive) setItems(data);
+        })};
         return () => setIsAlive(false);
     }, [isAlive]);
 
@@ -59,6 +60,19 @@ const Certificates = () => {
                 },
         },
         {
+            name: "status", // field name in the row object
+            label: "Status", // column title that will be shown in table
+
+            options: {
+                filter: true,
+                filterType: "multiselect",
+                 customBodyRender: (value, tableMeta, updateValue) => (
+                    value
+            
+          ),
+                },
+        },
+        {
             name: "expires_at",
             label: "Expires at",
             options: {
@@ -85,16 +99,9 @@ const Certificates = () => {
                 filter: true,
                 filterType: "multiselect",
                  customBodyRender: (value, tableMeta, updateValue) => (
-                     console.log("value",value) ||
                     value.name
             
           ),
-                // customBodyRenderLite: i => {
-                //     let item = items[i].cohort;
-                //     return (
-                //         item?.name
-                //     )
-                // }
                     
                 },
         },

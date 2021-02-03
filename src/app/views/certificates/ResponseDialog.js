@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,9 +10,16 @@ import CertificatesResult from './certificates-utils/CertificatesResults'
 
 export default function ResponseDialog({ openDialog, setOpenDialog, responseData, isLoading }) {
 
+let history = useHistory();
+
   const handleClose = () => {
     setOpenDialog(false);
   };
+
+  const handleClick = () => {
+      handleClose();
+      history.push("/certificates/cohort/62")
+  }
 
   const descriptionElementRef = React.useRef(null);
   React.useEffect(() => {
@@ -45,7 +53,7 @@ export default function ResponseDialog({ openDialog, setOpenDialog, responseData
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={()=> handleClick()} color="primary">
             Close
           </Button>
         </DialogActions>
@@ -57,24 +65,9 @@ export default function ResponseDialog({ openDialog, setOpenDialog, responseData
 const ResponseContent = ({ responseData, isLoading }) => {
 
   const { data } = responseData
-
-  const successData = data.success.map((item) => {
-    return {
-      student: `${item.user.first_name} ${item.user.last_name}`,
-      status: "success",
-      message: "certificate created"
-    }
-  })
-  const errorData = data.error.map((item) => {
-    return {
-      student: `${item.first_name} ${item.last_name}`,
-      status: "failure",
-      message: item.msg
-    }
-  })
   
   return (
-    <CertificatesResult errorData={errorData} successData={successData} />
+    <CertificatesResult certificates={data}/>
   )
 }
 

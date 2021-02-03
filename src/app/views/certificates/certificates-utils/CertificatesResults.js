@@ -24,10 +24,8 @@ const rows = [
   createData('Eclair', 262, 16.0),
 ];
 
-export default function CertificatesResult({errorData, successData}) {
+export default function CertificatesResult({certificates}) {
   const classes = useStyles();
-
-  const rows = [...errorData, ...successData]
 
   return (
     <TableContainer component={Paper}>
@@ -40,13 +38,13 @@ export default function CertificatesResult({errorData, successData}) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
+          {certificates.map((row) => (
+            <TableRow key={row.id}>
               <TableCell component="th" scope="row">
-                {row.student}
+                {`${row.user.first_name} ${row.user.last_name}`}
               </TableCell>
               <TableCell >{row.status}</TableCell>
-              <TableCell >{row.message}</TableCell>
+              <TableCell >{row.status_text}</TableCell>
             </TableRow>
           ))}
         </TableBody>
