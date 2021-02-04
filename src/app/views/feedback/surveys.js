@@ -2,54 +2,56 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
-import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-
-let relativeTime = require('dayjs/plugin/relativeTime')
+import { MatxLoading } from "matx";
+var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
-const Students = () => {
+const stageColors = {
+  'INACTIVE': 'bg-gray',
+  'PREWORK': 'bg-secondary',
+  'STARTED': 'text-white bg-warning',
+  'FINAL_PROJECT': 'text-white bg-error',
+  'ENDED': 'text-white bg-green',
+  'DELETED': 'light-gray',
+}
+
+const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
-  const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-  //TODO: Show errors with the response 
-   
+  const [items, setItems] = useState([]);
+
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`)
-    .then(({ data }) => {
-      console.log(data);
+    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
       setIsLoading(false);
-      if (isAlive){
-        let filterUserNull = data.filter(item => item.user !== null)
-        setUserList(filterUserNull)
-      };
-    }).catch(error => {
-      setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
-    })
+      if (isAlive) setItems(data);
+    });
     return () => setIsAlive(false);
   }, [isAlive]);
 
   const columns = [
     {
-      name: "first_name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: "id", // field name in the row object
+      label: "ID", // column title that will be shown in table
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "status", // field name in the row object
+      label: "Status", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = userList[dataIndex];
+          let item = items[dataIndex];
+
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.status]}>{item?.status}</small><br />
               </div>
             </div>
           );
@@ -58,15 +60,30 @@ const Students = () => {
     },
     {
       name: "created_at",
-      label: "Created At",
+      label: "Sent date",
       options: {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
             </div>
+          </div>
+      },
+    },
+    {
+      name: "score",
+      label: "Score",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <LinearProgress
+                color="primary"
+                value={items[i].score * 10}
+                variant="determinate"
+            />
           </div>
       },
     },
@@ -75,54 +92,53 @@ const Students = () => {
       label: " ",
       options: {
         filter: false,
-        customBodyRenderLite: (dataIndex) => {
-            let item = userList[dataIndex];
-            return <div className="flex items-center">
-                <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.user.id}`}>
-                    <IconButton>
-                        <Icon>edit</Icon>
-                    </IconButton>
-                </Link>
-            </div>
-        },
+        customBodyRenderLite: (dataIndex) => (
+          <div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
+              <IconButton>
+                <Icon>edit</Icon>
+              </IconButton>
+            </Link>
+            <Link to="/pages/view-customer">
+              <IconButton>
+                <Icon>arrow_right_alt</Icon>
+              </IconButton>
+            </Link>
+          </div>
+        ),
       },
     },
   ];
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
       <div className="mb-sm-30">
-      <div className="flex flex-wrap justify-between mb-6">
-        <div>
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
             <Breadcrumb
-            routeSegments={[
-                { name: "Admin", path: "/" },
-                { name: "Students" },
-            ]}
+              routeSegments={[
+                { name: "Feedback", path: "/" },
+                { name: "Answer List" },
+              ]}
             />
-        </div>
+          </div>
 
-        <div className="">
-        <Link to={`/admin/students/new`}>
-            <Button variant="contained" color="primary">
-                Add new student
-            </Button>
-        </Link>
+          <div className="">
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
+              <Button variant="contained" color="primary">
+                Send new survey
+              </Button>
+          </Link>
+          </div>
         </div>
-      </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-        {isLoading && <MatxLoading />}
-        <MUIDataTable
-            title={"All Students"}
-            data={userList}
+          {isLoading && <MatxLoading />}
+          <MUIDataTable
+            title={"All Events"}
+            data={items}
             columns={columns}
             options={{
               filterType: "textField",
@@ -176,4 +192,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default EventList;

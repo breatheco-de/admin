@@ -71,6 +71,7 @@ export const colorStyles = makeStyles(({ palette, ...theme }) => ({
     ".text-muted": { color: `${palette.text.secondary} !important` },
     ".text-hint": { color: `${palette.text.hint} !important` },
     ".text-gray": { color: "rgba(0, 0, 0, 0.74) !important" },
+    ".text-orange": { color: "#ddb502 !important" },
     ".text-brand": { color: `${palette.primary.main} !important` },
     ".text-primary": { color: `${palette.primary.main} !important` },
     ".text-secondary": { color: `${palette.secondary.main} !important` },

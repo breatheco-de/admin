@@ -3,8 +3,10 @@ import { Redirect } from "react-router-dom";
 
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
-import adminRoutes from "./views/admin/routes";
+import admissionsRoutes from "./views/admissions/routes";
 import eventsRoutes from "./views/events/routes";
+import feedbackRoutes from "./views/feedback/routes";
+import courseworkRoutes from "./views/coursework/routes";
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
@@ -28,8 +30,10 @@ const errorRoute = [
 
 const routes = [
   ...dashboardRoutes,
-  ...adminRoutes,
+  ...admissionsRoutes,
   ...eventsRoutes,
+  ...courseworkRoutes,
+  ...feedbackRoutes,
   ...materialRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,

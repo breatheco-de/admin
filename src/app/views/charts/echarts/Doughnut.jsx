@@ -2,113 +2,117 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 import { useTheme } from "@material-ui/styles";
 
-const DoughnutChart = ({ height, color = [] }) => {
-  const theme = useTheme();
+const DoughnutChart = ({ height, color = [], option }) => {
+    const theme = useTheme();
 
-  const option = {
-    legend: {
-      show: true,
-      itemGap: 20,
-      icon: "circle",
-      bottom: 0,
-      textStyle: {
-        color: theme.palette.text.secondary,
-        fontSize: 13,
-        fontFamily: "roboto",
-      },
-    },
-    tooltip: {
-      show: false,
-      trigger: "item",
-      formatter: "{a} <br/>{b}: {c} ({d}%)",
-    },
-    xAxis: [
-      {
-        axisLine: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
-        },
-      },
-    ],
-    yAxis: [
-      {
-        axisLine: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
-        },
-      },
-    ],
-
-    series: [
-      {
-        name: "Traffic Rate",
-        type: "pie",
-        radius: ["45%", "72.55%"],
-        center: ["50%", "50%"],
-        avoidLabelOverlap: false,
-        hoverOffset: 5,
-        stillShowZeroSum: false,
-        label: {
-          normal: {
-            show: false,
-            position: "center", // shows the description data to center, turn off to show in right side
-            textStyle: {
-              color: theme.palette.text.secondary,
-              fontSize: 13,
-              fontFamily: "roboto",
-            },
-            formatter: "{a}",
-          },
-          emphasis: {
+    const defaultOption = {
+        legend: {
             show: true,
+            itemGap: 20,
+            icon: "circle",
+            bottom: 0,
             textStyle: {
-              fontSize: "14",
-              fontWeight: "normal",
-              // color: "rgba(15, 21, 77, 1)"
+                color: theme.palette.text.secondary,
+                fontSize: 13,
+                fontFamily: "roboto",
             },
-            formatter: "{b} \n{c} ({d}%)",
-          },
         },
-        labelLine: {
-          normal: {
+        tooltip: {
             show: false,
-          },
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)",
         },
-        data: [
-          {
-            value: 65,
-            name: "Google",
-          },
-          {
-            value: 20,
-            name: "Facebook",
-          },
-          { value: 15, name: "Others" },
+        xAxis: [
+            {
+                axisLine: {
+                    show: false,
+                },
+                splitLine: {
+                    show: false,
+                },
+            },
         ],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-        },
-      },
-    ],
-  };
+        yAxis: [
+            {
+                axisLine: {
+                    show: false,
+                },
+                splitLine: {
+                    show: false,
+                },
+            },
+        ],
 
-  return (
-    <ReactEcharts
-      style={{ height: height }}
-      option={{
-        ...option,
+        series: [
+            {
+                name: "Traffic Rate",
+                type: "pie",
+                radius: ["45%", "72.55%"],
+                center: ["50%", "50%"],
+                avoidLabelOverlap: false,
+                hoverOffset: 5,
+                stillShowZeroSum: false,
+                label: {
+                    normal: {
+                        show: false,
+                        position: "center", // shows the description data to center, turn off to show in right side
+                        textStyle: {
+                            color: theme.palette.text.secondary,
+                            fontSize: 13,
+                            fontFamily: "roboto",
+                        },
+                        formatter: "{a}",
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            fontSize: "14",
+                            fontWeight: "normal",
+                            // color: "rgba(15, 21, 77, 1)"
+                        },
+                        formatter: "{b} \n{c} ({d}%)",
+                    },
+                },
+                labelLine: {
+                    normal: {
+                        show: false,
+                    },
+                },
+                data: [
+                    {
+                        value: 65,
+                        name: "Google",
+                    },
+                    {
+                        value: 20,
+                        name: "Facebook",
+                    },
+                    { value: 15, name: "Others" },
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                    },
+                },
+            },
+        ],
+    };
+
+    let newOptions = { ...defaultOption, ...option };
+    newOptions = {
+        ...newOptions,
+        series: defaultOption.series.map((s, i) => ({ ...s, ...option.series[i] })),
         color: [...color],
-      }}
-    />
-  );
+    }
+    console.log("newOptions", newOptions);
+    return (
+        <ReactEcharts
+            style={{ height: height }}
+            option={newOptions}
+        />
+    );
 };
 
 export default DoughnutChart;
