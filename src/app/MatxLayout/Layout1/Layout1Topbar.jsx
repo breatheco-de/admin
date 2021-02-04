@@ -6,6 +6,7 @@ import {
   Avatar,
   useMediaQuery,
   Hidden,
+  Switch,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
@@ -18,6 +19,7 @@ import { merge } from "lodash";
 import clsx from "clsx";
 import NotificationBar2 from "app/views/notification/NotificationBar2";
 import useAuth from "app/hooks/useAuth";
+import history from "history.js";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
@@ -90,6 +92,14 @@ const Layout1Topbar = () => {
     );
   };
 
+  const updateSettings = (_settings) => {
+    dispatch(
+      setLayoutSettings(
+        merge({}, settings, _settings)
+      )
+    );
+  };
+
   const handleSidebarToggle = () => {
     let { layout1Settings } = settings;
     let mode;
@@ -102,7 +112,7 @@ const Layout1Topbar = () => {
 
     updateSidebarMode({ mode });
   };
-
+  console.log("user", user)
   return (
     <div className={classes.topbar}>
       <div className={clsx({ "topbar-hold": true, fixed: fixed })}>
@@ -113,7 +123,7 @@ const Layout1Topbar = () => {
             </IconButton>
 
             <div className="hide-on-mobile">
-              <IconButton>
+              {/* <IconButton>
                 <Icon>mail_outline</Icon>
               </IconButton>
 
@@ -123,13 +133,22 @@ const Layout1Topbar = () => {
 
               <IconButton>
                 <Icon>star_outline</Icon>
+              </IconButton> */}
+
+              <IconButton>
+                <Switch
+                    onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}
+                    checked={settings.beta}
+                    color="secondary"
+                    size="small"
+                />
               </IconButton>
             </div>
           </div>
           <div className="flex items-center">
-            <MatxSearchBox />
+            {/* <MatxSearchBox />
 
-            <NotificationBar />
+            <NotificationBar /> */}
 
             <MatxMenu
               menuButton={
@@ -139,15 +158,18 @@ const Layout1Topbar = () => {
                       Hi <strong>{user.first_name}</strong>
                     </span>
                   </Hidden>
-                  <Avatar className="cursor-pointer" src={user.avatar} />
+                  <Avatar className="cursor-pointer" src={user.github?.avatar} />
                 </div>
               }
             >
-              <MenuItem>
-                    <p>
-                      Hi <strong>{user.first_name}</strong>
+              <MenuItem onClick={() => history.push("/session/choose")}>
+                <div>
+                    <p className="m-0">
+                      Hi <strong>{user.first_name || "No name"}</strong>
                     </p>
-                    <small>{user.academy?.name}: {user.role}</small>
+                    <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
+                    <p className="m-0 w-100"><small className="d-block">Role: {user.role.role || user.role}</small></p>
+                </div>
               </MenuItem>
               <MenuItem>
                 <Link className={classes.menuItem} to="/">
@@ -155,19 +177,19 @@ const Layout1Topbar = () => {
                   <span className="pl-4"> Home </span>
                 </Link>
               </MenuItem>
-              <MenuItem>
-                {/* <Link
+              {/*<MenuItem>
+                 <Link
                 className={classes.menuItem}
                 to="/page-layouts/user-profile"
-              > */}
+              > 
                 <Icon> person </Icon>
                 <span className="pl-4"> Profile </span>
-                {/* </Link> */}
+                </Link> 
               </MenuItem>
               <MenuItem className={classes.menuItem}>
                 <Icon> settings </Icon>
                 <span className="pl-4"> Settings </span>
-              </MenuItem>
+              </MenuItem>*/}
               <MenuItem onClick={logout} className={classes.menuItem}>
                 <Icon> power_settings_new </Icon>
                 <span className="pl-4"> Logout </span>

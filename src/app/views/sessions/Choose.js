@@ -35,6 +35,7 @@ const Choose = () => {
       if(role && role !== ""){
         choose({ role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
+        localStorage.setItem("bc-academy", JSON.stringify(academy));
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }
