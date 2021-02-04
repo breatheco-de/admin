@@ -23,8 +23,7 @@ import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import AsyncAutocomplete from "./cohort-utils/Autocomplete";
-import {AutocompleteUsers} from "../../../components/AutocompleteUsers";
+import {AsyncAutocomplete} from "../../../components/Autocomplete";
 
 
 
@@ -144,11 +143,18 @@ const CohortStudents = ({ slug, cohort_id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AutocompleteUsers onChange={(user)=> setUser(user)} width={"100%"} asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}>
+                <AsyncAutocomplete 
+                onChange={(user)=> setUser(user)} 
+                width={"100%"} 
+                label="Search Users"
+                asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)} 
+                debounced={true}
+                getLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
+                >
                     <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id, user.id)}>
                         Add to cohort
                     </Button>
-                </AutocompleteUsers>
+                </AsyncAutocomplete>
                 
             </div>
 

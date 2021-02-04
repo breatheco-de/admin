@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Avatar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
   Divider,
@@ -15,15 +13,13 @@ import {
   Button,
   MenuItem,
   DialogActions,
-  IconButton,
-  CircularProgress
+  IconButton
 } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../../../../axios";
 import { MatxLoading } from "matx";
-import { setLayoutSettings } from "app/redux/actions/LayoutActions";
+import { AsyncAutocomplete } from "app/components/Autocomplete";
 
 const InvoiceOverview = ({ std_id }) => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
@@ -35,10 +31,9 @@ const InvoiceOverview = ({ std_id }) => {
   const [allCohorts, setAllCohorts] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [select, setSelect] = React.useState("");
+  const [cohort, setCohort] = useState(null);
   useEffect(() => {
     getStudentCohorts();
-    getAllCohorts();
   }, [])
 
   const changeStudentStatus = (value, name, studentId, i) => {
@@ -74,17 +69,6 @@ const InvoiceOverview = ({ std_id }) => {
       .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
   }
 
-  const getAllCohorts = () => {
-    setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)
-      .then(({ data }) => {
-        console.log(data);
-        setAllCohorts(data);
-        setIsLoading(false);
-      })
-      .catch(error => console.log(error))
-  }
-
   const deleteUserFromCohort = () => {
     axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${currentStd.cohort_id}/user/${currentStd.id}`)
       .then((data) => {
@@ -97,10 +81,10 @@ const InvoiceOverview = ({ std_id }) => {
       .catch(error => setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
     setOpenDialog(false);
   }
-  const addUserToCohort = (cohort_id) => {
-    if (!cohort_id) setMsg({ alert: true, type: "warning", text: "Select a cohort" });
+  const addUserToCohort = () => {
+    if (cohort === null) setMsg({ alert: true, type: "warning", text: "Select a cohort" });
     else {
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
+      axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}/user`, {
         user: std_id,
         role: "STUDENT",
         finantial_status: null,
@@ -148,53 +132,18 @@ const InvoiceOverview = ({ std_id }) => {
       <Divider className="mb-6" />
 
       <div className="flex mb-6">
-        <Autocomplete
-          id="asynchronous-demo"
-          style={{ width: "100%" }}
-          open={open}
-          onOpen={() => {
-            setOpen(true);
-          }}
-          onClose={() => {
-            setOpen(false);
-          }}
-          getOptionSelected={(option, value) => {
-            setSelect(value.id);
-            return option.name === value.name
-          }}
-          getOptionLabel={option => `${option.name}, (${option.slug})`}
-          options={allCohorts}
-          loading={loading}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label="Search users"
-              fullWidth
-              variant="outlined"
-              onChange={({ target: { value } }) => {
-                allCohorts.filter((item) => {
-                  return value === "" || item.name.includes(value) || item.slug.includes(value)
-                }).map(item => `${item.name} (${item.slug})`)
-              }}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={20} />
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                  </React.Fragment>
-                )
-              }}
-            />
-          )}
-        />
-        <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(select)}>
+        <AsyncAutocomplete
+        onChange={(cohort) => setCohort(cohort)}
+        width={"100%"}
+        label="Search Cohorts"
+        getLabel={option => `${option.name}, (${option.slug})`}
+        asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+        >
+        <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort()}>
           Add to cohort
         </Button>
+        </AsyncAutocomplete>
       </div>
-
       <div className="overflow-auto">
         <div className="min-w-600">
           {stdCohorts.map((s, i) => (

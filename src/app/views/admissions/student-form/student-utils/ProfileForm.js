@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import {
     Grid,
@@ -9,31 +9,31 @@ import {
 import axios from "../../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
-import {AutocompleteCohorts} from "../../../../components/AutocompleteCohorts";
+import { AsyncAutocomplete } from "../../../../components/Autocomplete";
 
 
-export const ProfileForm = ({initialValues}) => {
+export const ProfileForm = ({ initialValues }) => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-    const [cohortId, setCohortId] = useState(null);
+    const [cohort, setCohort] = useState(null);
 
     const postAcademyStudentProfile = (values) => {
-        console.log(cohortId)
-        const requestValues = cohortId && cohortId !== "" ? { ...values, cohort: cohortId, invite: true } : { ...values, invite: true };
+        console.log(cohort.id)
+        const requestValues = cohort && cohort.id !== "" ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
         axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`, requestValues)
-            .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ?"Student created successfuly" : data.statusText}))
+            .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ? "Student created successfuly" : data.statusText }))
             .catch(error => {
                 console.log(error)
-                let resKeys = Object.keys({...values, cohort: cohortId});
+                let resKeys = Object.keys({ ...values, cohort: cohort.id });
                 resKeys.forEach(item => {
-                    if(Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0]});
-                    else if(error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail: "Unknown error, check fields"})
+                    if (Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0] });
+                    else if (error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail : "Unknown error, check fields" })
                 })
             })
     }
 
     return <Formik
         initialValues={initialValues}
-        onSubmit={(values) =>postAcademyStudentProfile(values)}
+        onSubmit={(values) => postAcademyStudentProfile(values)}
         enableReinitialize={true}
     >
         {({
@@ -59,7 +59,7 @@ export const ProfileForm = ({initialValues}) => {
                     </Grid>
                     <Grid item md={11} sm={8} xs={12}>
                         <div className="flex">
-                        <TextField
+                            <TextField
                                 className="m-2"
                                 label="First Name"
                                 name="first_name"
@@ -128,7 +128,14 @@ export const ProfileForm = ({initialValues}) => {
                         Cohort
                     </Grid>
                     <Grid item md={10} sm={8} xs={12}>
-                        <AutocompleteCohorts setState={setCohortId} placeholder="Cohort" size="small" width="30%"/>
+                        <AsyncAutocomplete
+                            onChange={(cohort) => setCohort(cohort)}
+                            width={"30%"}
+                            size="small"
+                            label="Cohort"
+                            getLabel={option => `${option.name}, (${option.slug})`}
+                            asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+                        />
                     </Grid>
                 </Grid>
                 <div className="mt-6">

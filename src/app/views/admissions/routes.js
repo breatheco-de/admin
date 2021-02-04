@@ -36,6 +36,11 @@ const routes = [
         component: React.lazy(() => import("./staff-form/NewStaff")),
     },
     {
+        path: "/admin/staff/:staff_id",
+        exact: true,
+        component: React.lazy(() => import("./staff-form")),
+    },
+    {
         path: "/admin/staff",
         component: React.lazy(() => import("./staff")),
     },

@@ -7,6 +7,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+
+let relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
 
 const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
@@ -57,6 +61,13 @@ const Students = () => {
       label: "Created At",
       options: {
         filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+            </div>
+          </div>
       },
     },
     {
@@ -71,11 +82,6 @@ const Students = () => {
                 <Link to={`/admin/students/${item.user.id}`}>
                     <IconButton>
                         <Icon>edit</Icon>
-                    </IconButton>
-                </Link>
-                <Link to="/pages/view-customer">
-                    <IconButton>
-                        <Icon>arrow_right_alt</Icon>
                     </IconButton>
                 </Link>
             </div>
