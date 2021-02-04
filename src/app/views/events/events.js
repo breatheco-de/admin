@@ -114,7 +114,7 @@ const EventList = () => {
           </div>
 
           <div className="">
-            <Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
+            <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new event
               </Button>

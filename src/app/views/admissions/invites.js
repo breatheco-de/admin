@@ -92,14 +92,9 @@ const Students = () => {
                         ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
                     return <div className="flex items-center">
                         <div className="flex-grow"></div>
-                        <Link to={`/admin/students/${item.user.id}/${item.user.first_name} ${item.user.last_name}`}>
-                            <IconButton>
-                                <Icon>edit</Icon>
-                            </IconButton>
-                        </Link>
                         <Link to="/pages/view-customer">
                             <IconButton>
-                                <Icon>arrow_right_alt</Icon>
+                                <Icon>refresh</Icon>
                             </IconButton>
                         </Link>
                     </div>
