@@ -142,7 +142,7 @@ const Staff = () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Students"}
+            title={"Staff Members"}
             data={userList}
             columns={columns}
             options={{
