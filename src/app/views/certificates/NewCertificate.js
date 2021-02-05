@@ -17,6 +17,7 @@ import { Breadcrumb } from "matx";
 import StudentAutoComplete from "./certificates-utils/StudentAutoComplete";
 
 import {AutocompleteCohorts} from "../../components/AutocompleteCohorts"
+import { AsyncAutocomplete } from "../../components/Autocomplete";
 // import {AutocompleteUsers} from "../../components/AutocompleteUsers"
 import ResponseDialog from "./ResponseDialog"
 
@@ -34,8 +35,10 @@ const NewCertificate = () => {
     // const [user, setUser] =useState(null)
     const [cohortSlug, setCohortSlug] = useState(null);
     const [certificateForm, setCertificateForm] = useState(false)
+    const [cohort, setCohort] = useState([]);
+    const [student, setStudent] = useState([]);
 
-    
+    console.log("students:", student)
 
     const getSpecialties = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
@@ -50,7 +53,7 @@ const NewCertificate = () => {
     const postCerfiticate = (values) => {
         // One specific certificate
         if (type === "single") {
-            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}/student/${selectedStudent}`, values)
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}/student/${student.user.id}`, values)
             .then((data) => {
                 console.log("data", data)
                 setMsg({ alert: true, type: "success", text: "Certificate added successfully" })
@@ -63,7 +66,7 @@ const NewCertificate = () => {
         } if (type === "all") {
             //all certificates
             setIsLoading(true)
-            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${selectedCohort}`, values).
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}`, values).
             then((data) => {
                 setResponseData(data)
                 setIsLoading(false)
@@ -79,7 +82,7 @@ const NewCertificate = () => {
     return (
 
         <div className="m-sm-30">
-            <ResponseDialog setOpenDialog={setOpenDialog} openDialog={openDialog} responseData={responseData} isLoading={isLoading} />
+            <ResponseDialog setOpenDialog={setOpenDialog} openDialog={openDialog} responseData={responseData} isLoading={isLoading} cohortId={cohort.id}/>
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
@@ -115,89 +118,28 @@ const NewCertificate = () => {
                                 <Grid container spacing={3} alignItems="center">
                                     <Grid item md={2} sm={4} xs={12}>
                                         <div className="flex mb-6">Cohort</div>
-                                        
                                     </Grid>
                                     <Grid item md={10} sm={8} xs={12}>
-                                        <AutocompleteCohorts setCertificateForm={setCertificateForm} setState={setSelectedCohort} setCohortSlug={setCohortSlug} placeholder="Cohort" size="small" width="100%"/>
+                                        <AsyncAutocomplete size="small"
+                                         width="100%" 
+                                         asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+                                         onChange={(cohort) => setCohort(cohort)}
+                                         getLabel={option => `${option.name}, (${option.slug})`}
+                                         label="Cohort"/>
                                     </Grid>
-                                    {type === "single" && certificateForm ?
+                                    {type === "single" && cohort.length !== 0 ?
                                         <>
                                             <Grid item md={2} sm={4} xs={12}>
                                                 Student
-                                    </Grid>
-                                            <Grid item md={10} sm={8} xs={12}>
-                                                <StudentAutoComplete setSelectedStudent={setSelectedStudent} selectedCohort={cohortSlug} size="small" width="100%"></StudentAutoComplete>
                                             </Grid>
-                                    {/* <Grid item md={2} sm={4} xs={12}>
-                                        Specialty
-                                    </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <div className="flex flex-wrap m--2">
-                                            <TextField
-                                                className="m-2 min-w-188"
-                                                label="Specialty"
-                                                name="specialty"
-                                                size="small"
-                                                variant="outlined"
-                                                select
-                                                value={values.specialty || ""}
-                                                onChange={handleChange}
-                                            >
-                                                {specialties.map((item, ind) => (
-                                                    <MenuItem value={item.name} key={item.name}>
-                                                        {item.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </TextField>
-                                        </div>
-                                    </Grid>
-
-                                    <Grid item md={2} sm={4} xs={12}>
-                                        Layout
-                                    </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <div className="flex flex-wrap m--2">
-                                            <TextField
-                                                className="m-2 min-w-188"
-                                                label="Layout"
-                                                name="layout"
-                                                size="small"
-                                                variant="outlined"
-                                                select
-                                                value={values.layout || ""}
-                                                onChange={handleChange}
-                                            >
-                                                <MenuItem value={"default"}>{"default"}
-                                                </MenuItem>
-                                            </TextField>
-                                        </div>
-                                    </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
-                                        Signed by
-                </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <TextField
-                                            label=""
-                                            name="signed_by"
-                                            size="small"
-                                            variant="outlined"
-                                            value={values.signed_by}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
-                                        Signed by Role
-                                    </Grid>
-                                    <Grid item md={10} sm={8} xs={12}>
-                                        <TextField
-                                            label=""
-                                            name="signed_by_role"
-                                            size="small"
-                                            variant="outlined"
-                                            value={values.signed_by_role}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid> */}
+                                            <Grid item md={10} sm={8} xs={12}>
+                                                <AsyncAutocomplete size="small"
+                                         width="100%" 
+                                         asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${cohort.slug}&roles=STUDENT`)}
+                                         onChange={(student) => setStudent(student)}
+                                         getLabel={(option) => `${option.user.first_name} ${option.user.last_name} (${option.user.email})`}
+                                         label="Student"/>
+                                            </Grid>
                                     </>:null}
                                 </Grid>
                                 <div className="mt-6">

@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CertificatesResult from './certificates-utils/CertificatesResults'
 
-export default function ResponseDialog({ openDialog, setOpenDialog, responseData, isLoading }) {
+export default function ResponseDialog({ openDialog, setOpenDialog, responseData, isLoading, cohortId }) {
 
 let history = useHistory();
 
@@ -18,7 +18,7 @@ let history = useHistory();
 
   const handleClick = () => {
       handleClose();
-      history.push("/certificates/cohort/62")
+      history.push(`/certificates/cohort/${cohortId}`)
   }
 
   const descriptionElementRef = React.useRef(null);
