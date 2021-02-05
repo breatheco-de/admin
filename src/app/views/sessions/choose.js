@@ -42,7 +42,7 @@ const Choose = () => {
   }
   if(!user) return history.push("/session/login");
 
-  const roles = [{ role: "", academy: { name: "Click me to select"} }].concat(user.roles);
+  const roles = [{ role: "", academy: { name: "Click me to select"} }].concat(user.roles.filter(r => r.role.toUpperCase() != "STUDENT"));
   return (
     <div
       className={clsx(
