@@ -63,11 +63,6 @@ export const navigations = [
     },
     {
         beta: true,
-
-        name: "Certificates",
-        path: "/certificates",
-        icon: "card_membership",
-
         name: "Coursework",
         icon: "record_voice_over",
         children: [
@@ -119,14 +114,12 @@ export const navigations = [
             },
         ],
     },
-    // {
-    //     beta: true,
-    //     path: "/certificates",
-    //     name: "Certificates",
-    //     icon: "card_membership",
-    //     children: [
-    //     ],
-    // },
+    {
+        beta: true,
+        path: "/certificates",
+        name: "Certificates",
+        icon: "card_membership",
+    },
     {
         beta: true,
         label: "Components",
