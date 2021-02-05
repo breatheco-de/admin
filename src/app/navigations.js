@@ -63,11 +63,11 @@ export const navigations = [
     },
     {
         beta: true,
-<<<<<<< HEAD
+
         name: "Certificates",
         path: "/certificates",
         icon: "card_membership",
-=======
+
         name: "Coursework",
         icon: "record_voice_over",
         children: [
@@ -77,7 +77,7 @@ export const navigations = [
                 iconText: "OL",
             },
         ],
->>>>>>> f82c7008ad5132c729ac1179893a351817deb14e
+
     },
     {
         beta: true,
