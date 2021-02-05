@@ -24,7 +24,10 @@ const Staff = () => {
 
   const getMemberById = () => {
     axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member/${staff_id}`)
-      .then(({ data }) => setMember(data))
+      .then(({ data }) => {
+        console.log(data)
+        setMember(data)
+      })
       .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
   }
   const passwordReset = () => {
