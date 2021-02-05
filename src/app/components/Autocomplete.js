@@ -4,14 +4,14 @@ import { TextField, CircularProgress } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "../hooks/useDebounce";
 
-export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, children, debounced = false, getLabel, label,filterLabels,filterOptions, ...rest }) {
+export function AsyncAutocomplete(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
-
+  const { width, onChange, value, asyncSearch, children, debounced = false, getLabel, label } = props;
   const search = (searchTerm) => {
     setLoading(true);
     asyncSearch(searchTerm).then(({ data }) => {
@@ -38,18 +38,17 @@ export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, c
   return (
     <>
       <Autocomplete
-        {...rest}
-        id="asynchronous-demo"
+        {...props}
+        id="async_autocomplete"
         style={{ width: width }}
         open={open}
-        size={size}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         value={value}
         onChange={(e, newValue) => {
+          setOpen(false);
           onChange(newValue);
         }}
-        filterOptions={filterOptions}
         getOptionLabel={getLabel}
         options={options}
         loading={loading}
