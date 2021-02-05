@@ -43,10 +43,11 @@ const NewCohort = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        <Breadcrumb
+      <Breadcrumb
           routeSegments={[
-            { name: "Pages", path: "/pages" },
-            { name: "New Customer" },
+            { name: "Admin", path: "/admin" },
+            { name: "Cohort", path: "/admin/cohorts" },
+            { name: "New Cohort" },
           ]}
         />
       </div>

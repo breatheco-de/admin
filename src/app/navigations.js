@@ -18,7 +18,7 @@ export const navigations = [
     //     icon: "dashboard",
     //   },
     {
-        name: "Admin",
+        name: "Admissions",
         icon: "school",
         auth: authRoles.contry_manager,
         children: [
@@ -63,15 +63,37 @@ export const navigations = [
     },
     {
         beta: true,
+<<<<<<< HEAD
         name: "Certificates",
         path: "/certificates",
         icon: "card_membership",
+=======
+        name: "Coursework",
+        icon: "record_voice_over",
+        children: [
+            {
+                name: "Reports",
+                path: "/coursework/student",
+                iconText: "OL",
+            },
+        ],
+>>>>>>> f82c7008ad5132c729ac1179893a351817deb14e
     },
     {
         beta: true,
         name: "Feedback",
         icon: "record_voice_over",
         children: [
+            {
+                name: "Answers",
+                path: "/feedback/answers",
+                iconText: "OL",
+            },
+            {
+                name: "Surveys",
+                path: "/feedback/surveys",
+                iconText: "OL",
+            },
         ],
     },
 

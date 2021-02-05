@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -25,7 +25,7 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/events/academy/event").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
       setIsLoading(false);
       if (isAlive) setItems(data);
     });
@@ -34,24 +34,18 @@ const EventList = () => {
 
   const columns = [
     {
-      name: "id", // field name in the row object
-      label: "ID", // column title that will be shown in table
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "status", // field name in the row object
-      label: "Status", // column title that will be shown in table
+      name: "first_name", // field name in the row object
+      label: "Name", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = items[dataIndex];
-
+          let { user } = items[dataIndex];
           return (
             <div className="flex items-center">
+              <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.status]}>{item?.status}</small><br />
+                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
+                <small className="text-muted">{user?.email}</small>
               </div>
             </div>
           );
@@ -59,20 +53,58 @@ const EventList = () => {
       },
     },
     {
-      name: "title", // field name in the row object
-      label: "Title", // column title that will be shown in table
-    },
-    {
-      name: "starting_at",
-      label: "Starting Date",
+      name: "created_at",
+      label: "Sent date",
       options: {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].starting_at).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].starting_at).fromNow()}</small>
-            </div>
+            {items[i].created_at ? 
+                <div className="ml-3">
+                    <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
+                    <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+                </div>
+                :
+                <div className="ml-3">
+                    No information
+                </div>
+            }
+          </div>
+      },
+    },
+    {
+      name: "score",
+      label: "Score",
+      options: {
+        filter: true,
+        filterType: "multiselect",
+        customBodyRenderLite: i => {
+            const color = items[i].score > 7 ? "text-green" : items[i].score < 7 ? "text-error" : "text-orange";
+            if(items[i].score)
+                return <div className="flex items-center">
+                    <LinearProgress
+                        color="secondary"
+                        value={parseInt(items[i].score) * 10}
+                        variant="determinate"
+                        />
+                    <small className={color}>{items[i].score}</small>
+                </div>
+            else return "Not answered"
+        }
+      },
+    },
+    {
+      name: "comment",
+      label: "Comments",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            { items[i].comment ? 
+                items[i].comment.substring(0, 100)
+                :
+                "No comments"
+            }
           </div>
       },
     },
@@ -84,11 +116,6 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
-              <IconButton>
-                <Icon>edit</Icon>
-              </IconButton>
-            </Link>
             <Link to="/pages/view-customer">
               <IconButton>
                 <Icon>arrow_right_alt</Icon>
@@ -107,16 +134,16 @@ const EventList = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Event", path: "/" },
-                { name: "Event List" },
+                { name: "Feedback", path: "/" },
+                { name: "Answer List" },
               ]}
             />
           </div>
 
           <div className="">
-            <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
-                Add new event
+                Send new survey
               </Button>
           </Link>
           </div>
@@ -132,7 +159,7 @@ const EventList = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
-              // selectableRows: "none", // set checkbox for each row
+              selectableRows: "none", // set checkbox for each row
               // search: false, // set search option
               // filter: false, // set data filter option
               // download: false, // set download option

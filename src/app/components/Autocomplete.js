@@ -1,37 +1,37 @@
 // *https://www.registers.service.gov.uk/registers/country/use-the-api*
 import React from "react";
-import { TextField, CircularProgress, Button } from "@material-ui/core";
+import { TextField, CircularProgress } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "../hooks/useDebounce";
-import axios from "../../axios";
-import { Children } from "react";
 
-export  function AutocompleteUsers({ size, width,onChange,value,asyncSearch,children, ...rest }) {
+export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, children, debounced = false, getLabel, label,filterLabels,filterOptions, ...rest }) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [select, setSelect] = React.useState("");
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
-  const searchUsers = (searchTerm) => {
-    setLoading(true)
+  const search = (searchTerm) => {
+    setLoading(true);
     asyncSearch(searchTerm).then(({ data }) => {
-        setLoading(false);
-        setOptions(data);
-        console.log(data)
-      })
+      setLoading(false);
+      setOptions(data);
+      console.log(options)
+    })
       .catch(error => console.log(error))
   }
 
   React.useEffect(() => {
-    if (debouncedSearchTerm) {
-      searchUsers(debouncedSearchTerm);
-    } else {
-      setOptions([]);
+    if (debounced) {
+      if (debouncedSearchTerm) {
+        search(debouncedSearchTerm);
+      } else {
+        setOptions([]);
+      }
+    } else{
+      search();
     }
-
   }, [debouncedSearchTerm]);
 
 
@@ -47,17 +47,20 @@ export  function AutocompleteUsers({ size, width,onChange,value,asyncSearch,chil
         onClose={() => setOpen(false)}
         value={value}
         onChange={(e, newValue) => {
-            onChange(newValue);
+          onChange(newValue);
         }}
-        getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
+        filterOptions={filterOptions}
+        getOptionLabel={getLabel}
         options={options}
         loading={loading}
         renderInput={params => (
           <TextField
             {...params}
-            label="Search users"
+            label={label}
             fullWidth
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value)
+            }}
             variant="outlined"
             InputProps={{
               ...params.InputProps,

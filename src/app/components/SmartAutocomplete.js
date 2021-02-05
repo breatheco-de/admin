@@ -2,30 +2,28 @@
 import React from "react";
 import { TextField, CircularProgress, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import useDebounce from "../../../../hooks/useDebounce";
-import axios from "../../../../../axios";
+import useDebounce from "../hooks/useDebounce";
+import axios from "../../axios";
+import { Children } from "react";
 
-export default function AutocompleteRoles({ addUserTo, cohort_id, button_label, ...rest }) {
+export function SmartAutocomplete({ size, width,onChange,value,asyncSearch,children, ...rest }) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [select, setSelect] = React.useState("");
-  const [value, setValue] = React.useState(null);
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
   const searchUsers = (searchTerm) => {
     setLoading(true)
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?name=${searchTerm}`)
-      .then(({ data }) => {
+    asyncSearch(searchTerm).then(({ data }) => {
         setLoading(false);
         setOptions(data);
         console.log(data)
       })
       .catch(error => console.log(error))
   }
-
 
   React.useEffect(() => {
     if (debouncedSearchTerm) {
@@ -42,12 +40,15 @@ export default function AutocompleteRoles({ addUserTo, cohort_id, button_label, 
       <Autocomplete
         {...rest}
         id="asynchronous-demo"
-        style={{ width: "100%" }}
+        style={{ width: width }}
         open={open}
+        size={size}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         value={value}
-        onChange={(e, newValue) => setValue(newValue)}
+        onChange={(e, newValue) => {
+            onChange(newValue);
+        }}
         getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
         options={options}
         loading={loading}
@@ -72,9 +73,7 @@ export default function AutocompleteRoles({ addUserTo, cohort_id, button_label, 
           />
         )}
       />
-      <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserTo(cohort_id, value.id)}>
-        {button_label}
-      </Button>
+      {children}
     </>
   );
 }

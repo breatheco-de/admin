@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -25,7 +25,7 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/events/academy/event").then(({ data }) => {
+    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
       setIsLoading(false);
       if (isAlive) setItems(data);
     });
@@ -59,20 +59,31 @@ const EventList = () => {
       },
     },
     {
-      name: "title", // field name in the row object
-      label: "Title", // column title that will be shown in table
-    },
-    {
-      name: "starting_at",
-      label: "Starting Date",
+      name: "created_at",
+      label: "Sent date",
       options: {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].starting_at).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].starting_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
             </div>
+          </div>
+      },
+    },
+    {
+      name: "score",
+      label: "Score",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <LinearProgress
+                color="primary"
+                value={items[i].score * 10}
+                variant="determinate"
+            />
           </div>
       },
     },
@@ -107,16 +118,16 @@ const EventList = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Event", path: "/" },
-                { name: "Event List" },
+                { name: "Feedback", path: "/" },
+                { name: "Answer List" },
               ]}
             />
           </div>
 
           <div className="">
-            <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
-                Add new event
+                Send new survey
               </Button>
           </Link>
           </div>

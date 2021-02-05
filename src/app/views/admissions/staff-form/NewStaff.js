@@ -10,8 +10,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
-import { AutocompleteUsers } from "../../../components/AutocompleteUsers";
-import { AutocompleteRoles } from "../../../components/AutocompleteRoles";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
 
 const NewStaff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
@@ -77,13 +76,27 @@ const NewStaff = () => {
                   User
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <AutocompleteUsers onChange={(user) => setUser(user)} size={"small"} width={"50%"} value={user} asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}/>
+                  <AsyncAutocomplete
+                  onChange={(user) => setUser(user)} 
+                  size={"small"} width={"50%"} 
+                  value={user} 
+                  label="User"
+                  debounced={true}
+                  getLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
+                  asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}/>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Role
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <AutocompleteRoles onChange={(role) => setRole(role)} width={"50%"} size={"small"} value={role}/>
+                  <AsyncAutocomplete 
+                  onChange={(role) => setRole(role)} 
+                  width={"50%"}
+                  asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)}
+                  size={"small"}
+                  label="Roles"
+                  getLabel={option => `${option.name}`}
+                  value={role}/>
                 </Grid>
               </Grid>
               <div className="mt-6">
