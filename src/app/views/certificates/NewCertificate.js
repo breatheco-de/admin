@@ -14,31 +14,20 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 
-import StudentAutoComplete from "./certificates-utils/StudentAutoComplete";
 
-import {AutocompleteCohorts} from "../../components/AutocompleteCohorts"
 import { AsyncAutocomplete } from "../../components/Autocomplete";
-// import {AutocompleteUsers} from "../../components/AutocompleteUsers"
 import ResponseDialog from "./ResponseDialog"
 
 
 const NewCertificate = () => {
     const { type } = useParams();
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-    // const [academy, setAcademy] = useState([]);
     const [specialties, setSpecialties] = useState([]);
-    const [selectedStudent, setSelectedStudent] = React.useState({});
-    const [selectedCohort, setSelectedCohort] = React.useState(null);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [responseData, setResponseData] = React.useState({});
     const [isLoading, setIsLoading] = useState(false);
-    // const [user, setUser] =useState(null)
-    const [cohortSlug, setCohortSlug] = useState(null);
-    const [certificateForm, setCertificateForm] = useState(false)
     const [cohort, setCohort] = useState([]);
     const [student, setStudent] = useState([]);
-
-    console.log("students:", student)
 
     const getSpecialties = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)

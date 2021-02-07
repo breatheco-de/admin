@@ -29,7 +29,6 @@ const NewCohort = () => {
        })})
   };
 
-  console.log("cert:", cert)
 
   const getCertificates = () => {
     axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
