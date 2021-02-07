@@ -4,12 +4,12 @@ const certificatesRoutes = [
     {
         path: "/certificates",
         exact: true,
-        component: React.lazy(() => import("./Certificates")),
+        component: React.lazy(() => import("./certificates")),
     },
     {
         path: "/certificates/cohort/:cohortId",
         exact: true,
-        component: React.lazy(() => import("./Certificates")),
+        component: React.lazy(() => import("./certificates")),
     },
     {
         path: "/certificates/new/:type",
