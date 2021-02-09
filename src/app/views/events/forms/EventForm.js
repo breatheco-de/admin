@@ -13,14 +13,35 @@ import {
     Checkbox
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import { useParams } from "react-router-dom";
 
-const NewEvent = () => {
+const EventForm = () => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-
+    const { id } = useParams();
     const postEvent = (values) => {
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event`,{...values})
-        .then(({data}) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event created successfully" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
-        .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
+        if (id) {
+            axios.put(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event/${id}`, { ...values })
+                .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event updated" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
+                .catch(error => {
+                    console.log(error)
+                    let resKeys = Object.keys(values);
+                    resKeys.forEach(item => {
+                        if (Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0] });
+                        else if (error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail : "Unknown error, check fields" })
+                    })
+                })
+        } else {
+            axios.post(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event`, { ...values })
+                .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event created" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
+                .catch(error => {
+                    console.log(error)
+                    let resKeys = Object.keys(values);
+                    resKeys.forEach(item => {
+                        if (Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0] });
+                        else if (error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail : "Unknown error, check fields" })
+                    })
+                })
+        }
     }
     return (
         <div className="m-sm-30">
@@ -28,13 +49,13 @@ const NewEvent = () => {
                 <Breadcrumb
                     routeSegments={[
                         { name: "Events", path: "/events" },
-                        { name: "New Event" },
+                        { name: id ? "Edit Event" : "New Event"},
                     ]}
                 />
             </div>
             <Card elevation={3}>
                 <div className="flex p-4">
-                    <h4 className="m-0">Create a new Event</h4>
+                    <h4 className="m-0">{id ? "Edit Event" : "Create a new Event"}</h4>
                 </div>
                 <Divider className="mb-2" />
                 <Formik
@@ -237,12 +258,12 @@ const NewEvent = () => {
                                     Online Event
                                 </Grid>
                                 <Grid item md={4} sm={8} xs={12}>
-                                <Checkbox
-                                    checked={values.online_event}
-                                    onChange={handleChange}
-                                    name="online_event"
-                                    color="primary"
-                                />
+                                    <Checkbox
+                                        checked={values.online_event}
+                                        onChange={handleChange}
+                                        name="online_event"
+                                        color="primary"
+                                    />
                                 </Grid>
                             </Grid>
                             <div className="mt-6">
@@ -264,19 +285,19 @@ const NewEvent = () => {
 };
 
 const initialValues = {
-    title:"",
-    description:"",
+    title: "",
+    description: "",
     excerpt: "",
     lang: "",
-    url:"",
-    banner:"",
-    capacity:0,
-    starting_at:"",
-    ending_at:"",
-    host:null,
-    event_type:null,
-    venue:null,
-    online_event:false
+    url: "",
+    banner: "",
+    capacity: 0,
+    starting_at: "",
+    ending_at: "",
+    host: null,
+    event_type: null,
+    venue: null,
+    online_event: false
 };
 
-export default NewEvent;
+export default EventForm;
