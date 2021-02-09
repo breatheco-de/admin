@@ -18,12 +18,12 @@ const ProductList = () => {
             <div className="flex items-center">
               <img
                 className="h-32 border-radius-4"
-                src={user?.imgUrl}
+                src={user ?.imgUrl}
                 alt="user"
               />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{user ?.name}</h5>
+                <small className="text-muted">{user ?.email}</small>
               </div>
             </div>
           );

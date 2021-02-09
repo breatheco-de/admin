@@ -58,10 +58,10 @@ const Cohorts= () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.stage]}>{item?.stage}</small><br />
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item ?.stage]}>{item ?.stage}</small><br />
                 {
-                  ((dayjs().isBefore(dayjs(item?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item?.stage)) ||
-                    (dayjs().isAfter(dayjs(item?.ending_date)) && !['ENDED', 'DELETED'].includes(item?.stage))) &&
+                  ((dayjs().isBefore(dayjs(item ?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item ?.stage)) ||
+                    (dayjs().isAfter(dayjs(item ?.ending_date)) && !['ENDED', 'DELETED'].includes(item ?.stage))) &&
                   <small className="text-warning pb-2px"><Icon>error</Icon>Out of sync</small>
                 }
               </div>
@@ -80,8 +80,8 @@ const Cohorts= () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <h5 className="my-0 text-15">{item?.name}</h5>
-                <small className="text-muted">{item?.slug}</small>
+                <h5 className="my-0 text-15">{item ?.name}</h5>
+                <small className="text-muted">{item ?.slug}</small>
               </div>
             </div>
           );
@@ -107,7 +107,7 @@ const Cohorts= () => {
       label: "Certificate",
       options: {
         filter: true,
-        customBodyRenderLite: i => items[i].certificate?.name
+        customBodyRenderLite: i => items[i].certificate ?.name
       },
     },
     {
@@ -157,7 +157,7 @@ const Cohorts= () => {
               <Button variant="contained" color="primary">
                 Add new cohort
               </Button>
-          </Link>
+            </Link>
           </div>
         </div>
       </div>
