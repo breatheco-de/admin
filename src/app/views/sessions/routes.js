@@ -1,7 +1,7 @@
 import JwtLogin from "./login/JwtLogin.jsx";
-import NotFound from "./NotFound";
+import NotFound from "./notfound";
 import JwtRegister from "./register/JwtRegister";
-import Choose from "./Choose";
+import Choose from "./choose";
 
 const sessionRoutes = [
   {
