@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -8,8 +9,6 @@ import {
     Grid,
     Card,
     Divider,
-    // TextField,
-    // MenuItem,
     Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
@@ -28,6 +27,7 @@ const NewCertificate = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [cohort, setCohort] = useState([]);
     const [student, setStudent] = useState([]);
+    let history = useHistory();
 
     const getSpecialties = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
@@ -44,8 +44,10 @@ const NewCertificate = () => {
         if (type === "single") {
             axios.post(`${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}/student/${student.user.id}`, values)
             .then((data) => {
-                console.log("data", data)
                 setMsg({ alert: true, type: "success", text: "Certificate added successfully" })
+                setTimeout(function(){
+                    history.push("/certificates")
+                }, 1000);
             })
                 .catch(error => console.log("error",error) || setMsg({
                     alert: true,
