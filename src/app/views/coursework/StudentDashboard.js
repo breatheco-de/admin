@@ -8,7 +8,7 @@ import clsx from "clsx";
 import axios from "../../../axios"
 import UserProfileContent from "./components/UserProfileContent";
 import UserProfileSidenav from "./components/UserProfileSidenav";
-import { SmartAutocomplete } from "../../components/SmartAutocomplete";
+import { AsyncAutocomplete } from "../../components/Autocomplete";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const usestyles = makeStyles(({ palette, ...theme }) => ({
@@ -48,7 +48,7 @@ const UserProfile = () => {
     }, [isMobile]);
 
     if(!profile) return <div>
-        <SmartAutocomplete 
+        <AsyncAutocomplete 
             width={"100%"} 
             onChange={(profile)=> {
                 setProfile(profile)
