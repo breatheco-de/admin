@@ -9,24 +9,22 @@ export function AsyncAutocomplete(props) {
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [cache, setCache] = React.useState({
-    term: "",
-    results: []
-  });
+  const [cache, setCache] = React.useState({})
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
   const { width, onChange, value, asyncSearch, children, debounced = false, getLabel, label } = props;
   const search = (searchTerm) => {
     setLoading(true);
-    if(cache.term === searchTerm && debounced){
-      setOptions(cache.results);
+    if(cache[searchTerm] !== undefined && debounced){
+      setOptions(cache[searchTerm]);
       setLoading(false);
+      console.log(cache)
     } else asyncSearch(searchTerm).then(({ data }) => {
       setLoading(false);
       setOptions(data);
       setCache({
-        term:searchTerm,
-        results: data
+       ...cache,
+       [searchTerm]:data 
       });
       console.log(options)
     })
