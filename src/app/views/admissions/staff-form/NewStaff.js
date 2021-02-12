@@ -94,6 +94,7 @@ const NewStaff = () => {
                     size={"small"} width={"50%"}
                     value={user}
                     label="User"
+                    freeSolo
                     debounced={true}
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
                     getLabel={option => option.email}
