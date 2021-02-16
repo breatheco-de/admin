@@ -47,7 +47,7 @@ const Certificates = () => {
             label: "User",
             options: {
                 filter: true,
-                customBodyRenderLite: i => items[i].user ?.first_name
+                customBodyRenderLite: i => items[i] && items[i].user.first_name + " " + items[i].user.last_name 
             },
         },
         {
