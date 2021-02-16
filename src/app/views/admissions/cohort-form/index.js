@@ -27,7 +27,7 @@ const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
-    const [stageDialog, setStageDialog] = useState(false) 
+    const [stageDialog, setStageDialog] = useState(false);
     const [cohort, setCohort] = useState({})
     useEffect(() => {
         getCohort();

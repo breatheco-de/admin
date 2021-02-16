@@ -56,7 +56,7 @@ const NewStudent = () => {
         </div>
         <div className="flex m-4">
         <AsyncAutocomplete
-          onChange={(user) => setShowForm({data:user, show:true})}
+          onChange={(user) => setShowForm({data:{...showForm.data, ...user}, show:true})}
           width={"100%"}
           label="Search Users"
           asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}
@@ -71,7 +71,9 @@ const NewStudent = () => {
                             setShowForm({
                                 show: true,
                                 data: {
-                                    first_name: params.inputValue
+                                    first_name: params.inputValue,
+                                    last_name:"",
+                                    email:""
                                 }
                             });
                         }}

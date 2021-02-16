@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import {
   Avatar,
   Button,
@@ -17,8 +17,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 const StudentDetails = ({ user, std_id }) => {
   const initialValues = {
-    "first_name": user?.user.first_name,
-    "last_name": user?.user.last_name,
+    "first_name": user?.first_name,
+    "last_name": user?.last_name,
     "address": user?.address,
     "phone": user?.phone
   }
@@ -45,12 +45,18 @@ const StudentDetails = ({ user, std_id }) => {
     },
   ];
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [crt_user, setCrtUser] = useState({});
+  useEffect(() =>{
+   user ?  setCrtUser(user) : setCrtUser({});
+  }, [user])
   const updateStudentProfile = (values) => {
-    console.log(values)
+    console.log(values);
+    console.log(std_id)
     axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${std_id}`, { ...values })
-        .then(data => {
-          console.log(data)
-          setMsg({ alert: true, type: "success", text: "User profile updated successfully"})
+        .then(({data}) => {
+          setCrtUser({...crt_user, ...data });
+          setMsg({ alert: true, type: "success", text: "User profile updated successfully"});
+          console.log(crt_user)
       })
         .catch(error => {
             console.log(error)
@@ -61,8 +67,8 @@ const StudentDetails = ({ user, std_id }) => {
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
-        <h5 className="mt-4 mb-2">{user?.user.first_name + " " + user?.user.last_name}</h5>
-        <small className="text-muted">{user?.role.name}</small>
+        <h5 className="mt-4 mb-2">{crt_user?.first_name + " " + crt_user?.last_name}</h5>
+        <small className="text-muted">{user?.role.name.toUpperCase()}</small>
       </div>
       <Divider />
       <Formik
