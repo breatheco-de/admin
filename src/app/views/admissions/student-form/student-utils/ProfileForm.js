@@ -10,17 +10,22 @@ import axios from "../../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { AsyncAutocomplete } from "../../../../components/Autocomplete";
+import { useHistory } from "react-router-dom";
 
 
 export const ProfileForm = ({ initialValues }) => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
     const [cohort, setCohort] = useState(null);
+    const history = useHistory();
 
     const postAcademyStudentProfile = (values) => {
         console.log(cohort.id)
         const requestValues = cohort && cohort.id !== "" ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
         axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`, requestValues)
-            .then(data => setMsg({ alert: true, type: "success", text: data.status_code === 201 ? "Student created successfuly" : data.statusText }))
+            .then(data =>{ 
+                setMsg({ alert: true, type: "success", text: data.status_code >= 200 ? "Student created successfuly" : data.statusText })
+                setTimeout(() => history.push("/admin/invites"), 1000);
+            })
             .catch(error => {
                 console.log(error)
                 let resKeys = Object.keys({ ...values, cohort: cohort.id });
