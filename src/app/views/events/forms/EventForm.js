@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../../../../axios";
 import {
     Grid,
     Card,
@@ -14,13 +13,14 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { useParams } from "react-router-dom";
+import bc from "app/services/breathecode";
 
 const EventForm = () => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
     const { id } = useParams();
     const postEvent = (values) => {
         if (id) {
-            axios.put(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event/${id}`, { ...values })
+            bc.events().updateAcademyEvent(id, values)
                 .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event updated" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
                 .catch(error => {
                     console.log(error)
@@ -31,7 +31,7 @@ const EventForm = () => {
                     })
                 })
         } else {
-            axios.post(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event`, { ...values })
+            bc.events().addAcademyEvent(values)
                 .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event created" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
                 .catch(error => {
                     console.log(error)

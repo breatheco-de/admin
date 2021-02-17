@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -8,6 +7,7 @@ import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
 
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -21,7 +21,7 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const Cohorts= () => {
+const Cohorts = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
@@ -29,7 +29,8 @@ const Cohorts= () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/admissions/academy/cohort").then(({ data }) => {
+    bc.admissions().getAllCohorts()
+    .then(({ data }) => {
       setIsLoading(false);
       if (isAlive) setItems(data);
     }).catch(error => {

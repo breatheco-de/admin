@@ -12,6 +12,7 @@ import {
 import { Breadcrumb } from "matx";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { createFilterOptions } from "@material-ui/lab/Autocomplete";
+import bc from "app/services/breathecode";
 const filter = createFilterOptions();
 const NewStaff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
@@ -20,7 +21,7 @@ const NewStaff = () => {
   const postMember = () => {
     if (user !== null && role !== null) {
       let refactor = user.id ? { user: user.id } : { email: user.email, invite: true }
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, { ...refactor, role: role.slug })
+      bc.auth().addAcademyMember({ ...refactor, role: role.slug })
         .then((data) => {
           if (data.status === 201) {
             setMsg({ alert: true, type: "success", text: "Member added successfully" });
@@ -98,7 +99,7 @@ const NewStaff = () => {
                     debounced={true}
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
                     getLabel={option => option.email}
-                    asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
                     filterOptions={(options, params) => {
                       const filtered = filter(options, params);
                       if (params.inputValue !== '') {
@@ -124,7 +125,7 @@ const NewStaff = () => {
                   <AsyncAutocomplete
                     onChange={(role) => setRole(role)}
                     width={"50%"}
-                    asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)}
+                    asyncSearch={() => bc.auth().getRoles()}
                     size={"small"}
                     label="Roles"
                     getLabel={option => `${option.name}`}

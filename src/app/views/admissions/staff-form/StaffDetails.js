@@ -16,9 +16,9 @@ import {
   Dialog,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
 
 const StaffDetails = ({ user, staff_id }) => {
   const initialValues = {
@@ -53,7 +53,7 @@ const StaffDetails = ({ user, staff_id }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [roles, setRoles] = useState(null);
   const updateMemberProfile = (values) => {
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${staff_id}`, { ...values })
+    bc.auth().updateAcademyStudent(values)
       .then(data => {
         setMsg({ alert: true, type: "success", text: "User profile updated successfully" })
       })
@@ -63,14 +63,14 @@ const StaffDetails = ({ user, staff_id }) => {
       })
   }
   const updateRole = (role) => {
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member/${user.user.id}`,{role: role})
+    bc.auth().updateAcademyMember({role:role})
     .then(({data}) => {
       console.log(data)
       setMsg({ alert: true, type: "success", text: "Role updated successfully" }) })
     .catch(error => setMsg({ alert: true, type: "error", text: error.detail}))
   }
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)
+    bc.auth().getRoles()
     .then(({data}) => setRoles(data))
     .catch(error => setMsg({ alert: true, type: "error", text: error.detail}))
   } , [])

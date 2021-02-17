@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -8,6 +7,7 @@ import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -32,11 +32,11 @@ const Staff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
   const getAcademyMembers = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)
+    bc.auth().getRoles()
       .then((res) => {
         const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
         res.status === 200 ?
-          (axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=${roles.join()}`)
+          bc.auth().getAcademyMembers({roles: roles.join()})
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
@@ -47,7 +47,7 @@ const Staff = () => {
             }).catch(error => {
               setIsLoading(false);
               setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read members" });
-            })) : setMsg({ alert: true, type: "error", text: "An error ocurred" });
+            }) : setMsg({ alert: true, type: "error", text: "An error ocurred" });
       })
       .catch(error => console.log(error))
   }

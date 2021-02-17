@@ -13,10 +13,10 @@ import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";
-import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
-import DowndownMenu from "../../../components/DropdownMenu"
+import DowndownMenu from "../../../components/DropdownMenu";
+import bc from "app/services/breathecode";
 
 const options = [
     { label: "Change cohort stage", value: "stage" },
@@ -35,7 +35,7 @@ const Cohort = () => {
 
     const getCohort = () => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${slug}`)
+        bc.admissions().getCohort(slug)
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
@@ -46,7 +46,7 @@ const Cohort = () => {
     const updateCohort = (values) => {
         console.log(values);
         console.log(cohort.id)
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
+        bc.admissions().updateCohort({ ...values, certificate: cohort.certificate.id })
             .then((data) => {
                 console.log(data);
                 if (data.status <= 200) {

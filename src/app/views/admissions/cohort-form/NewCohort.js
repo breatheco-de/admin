@@ -2,7 +2,6 @@ import React, { useState,useEffect } from "react";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../../../../axios";
 import {
   Grid,
   Card,
@@ -12,13 +11,14 @@ import {
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import bc from "app/services/breathecode";
 
 const NewCohort = () => {
   const [cert, setCert] = useState([]);
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
   const postCohort = (values) => {
-     axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,values)
+     bc.admissions().addCohort(values)
       .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
       .catch(error => {
         console.log(error)
@@ -30,7 +30,7 @@ const NewCohort = () => {
   };
 
   const getCertificates = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
+    bc.admissions().getCertificates()
     .then(({data}) => setCert(data))
     .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
   }

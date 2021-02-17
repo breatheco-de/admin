@@ -19,11 +19,11 @@ import {
 } from "@material-ui/core";
 import { format } from "date-fns";
 import clsx from "clsx";
-import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import {AsyncAutocomplete} from "../../../components/Autocomplete";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
+import bc from "app/services/breathecode";
 
 
 
@@ -42,7 +42,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
     const [studenList, setStudentsList] = useState([]);
     const [currentStd, setCurrentStd] = useState({});
     const [openRoleDialog, setRoleDialog] = useState(false);
-    const [user, setUser] =useState(null)
+    const [user, setUser] = useState(null)
     // Redux actions and store
 
     useEffect(() => {
@@ -56,23 +56,24 @@ const CohortStudents = ({ slug, cohort_id }) => {
             finantial_status: studenList[i].finantial_status,
             educational_status: studenList[i].educational_status
         }
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user/${studentId}`, { ...s_status, [name]: value })
-            .then((data) => {
-                console.log(data)
-                if (data.status >= 200) {
-                    setMsg({ alert: true, type: "success", text: "User status updated" });
-                    getCohortStudents();
-                } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
-            })
+        bc.admissions().updateCohortUserInfo(cohort_id, studentId, { ...s_status, [name]: value }).then((data) => {
+            console.log(data)
+            if (data.status >= 200) {
+                setMsg({ alert: true, type: "success", text: "User status updated" });
+                getCohortStudents();
+            } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+        })
             .catch(error => {
-                setMsg({ alert: true, type: "error", text: error.details || error.role[0] });
+                setMsg({ alert: true, type: "error", text: error.details });
                 console.log(error)
             })
     }
 
     const getCohortStudents = () => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${slug}`)
+        bc.admissions().getAllUserCohorts({
+            cohorts: slug
+        })
             .then(({ data }) => {
                 console.log(data);
                 setIsLoading(false);
@@ -82,25 +83,25 @@ const CohortStudents = ({ slug, cohort_id }) => {
     }
 
     const addUserToCohort = (user_id) => {
-        axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
-            user:user_id,
-            role:"STUDENT",
-            finantial_status:null,
-            educational_status:"ACTIVE"
+        bc.admissions().addUserCohort(cohort_id, {
+            user: user_id,
+            role: "STUDENT",
+            finantial_status: null,
+            educational_status: "ACTIVE"
         }).then((data) => {
-            if(data.status >= 200){
+            if (data.status >= 200) {
                 setMsg({ alert: true, type: "success", text: "User added successfully" });
                 getCohortStudents();
-            }else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+            } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
         })
-        .catch(error => {
-            console.log(error)
-            setMsg({ alert: true, type: "error", text: error.details });
-        })
-    } 
+            .catch(error => {
+                console.log(error)
+                setMsg({ alert: true, type: "error", text: error.details });
+            })
+    }
 
     const deleteUserFromCohort = () => {
-        axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user/${currentStd.id}`)
+        bc.admissions().deleteUserCohort(cohort_id, currentStd.id)
             .then((data) => {
                 if (data.status === 204) {
                     setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
@@ -143,19 +144,19 @@ const CohortStudents = ({ slug, cohort_id }) => {
             <Divider className="mb-6" />
 
             <div className="flex mb-6">
-                <AsyncAutocomplete 
-                onChange={(user)=> setUser(user)} 
-                width={"100%"} 
-                label="Search Users"
-                asyncSearch={(searchTerm)=> axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)} 
-                debounced={true}
-                getLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
+                <AsyncAutocomplete
+                    onChange={(user) => setUser(user)}
+                    width={"100%"}
+                    label="Search Users"
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
+                    debounced={true}
+                    getLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
                 >
                     <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id, user.id)}>
                         Add to cohort
                     </Button>
                 </AsyncAutocomplete>
-                
+
             </div>
 
             <div className="overflow-auto">
@@ -168,7 +169,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                                     <div className="flex">
                                         <Avatar
                                             className={clsx("h-full w-full mb-6 mr-2", classes.avatar)}
-                                            src={s.user.profile !== undefined ? s.user.profile.avatar_url: ""}
+                                            src={s.user.profile !== undefined ? s.user.profile.avatar_url : ""}
                                         />
                                         <div className="flex-grow">
                                             <h6 className="mt-0 mb-0 text-15 text-primary">
@@ -181,7 +182,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                                                 <small onClick={() => {
                                                     setRoleDialog(true);
                                                     setCurrentStd({ id: s.user.id, positionInArray: i })
-                                                    }} className={"border-radius-4 px-2 pt-2px bg-secondary"} style={{ cursor: "pointer" }}>{s.role}</small>
+                                                }} className={"border-radius-4 px-2 pt-2px bg-secondary"} style={{ cursor: "pointer" }}>{s.role}</small>
                                             </p>
                                         </div>
                                     </div>

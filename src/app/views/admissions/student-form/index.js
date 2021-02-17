@@ -7,6 +7,7 @@ import DowndownMenu from "../../../components/DropdownMenu"
 import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
 import dayjs from "dayjs";
 
 const options = [
@@ -24,8 +25,8 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const getMemberById = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member/${std_id}`)
-      .then(({ data }) => setMember(data))
+    bc.auth().getAcademyMember(std_id)
+    .then(({ data }) => setMember(data))
       .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
   }
   const passwordReset = () => {

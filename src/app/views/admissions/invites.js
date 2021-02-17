@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
@@ -8,6 +7,7 @@ import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -20,7 +20,8 @@ const Students = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=country_manager,student&status=invited`).then(({ data }) => {
+        bc.auth().getAcademyMembers({roles: "country_manager,student", status: "invited"})
+        .then(({ data }) => {
             console.log(data)
             setIsLoading(false);
             if (isAlive) {

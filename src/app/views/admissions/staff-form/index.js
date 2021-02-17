@@ -7,6 +7,7 @@ import axios from "../../../../axios";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
 const options = [
   { label: "Send password reset", value: "password_reset" },
@@ -23,7 +24,7 @@ const Staff = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const getMemberById = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member/${staff_id}`)
+    bc.auth().getAcademyMember(staff_id)
       .then(({ data }) => {
         console.log(data)
         setMember(data)
