@@ -50,14 +50,21 @@ export const navigations = [
         beta: true,
         children: [
             {
-                name: "Order List",
-                path: "/pages/order-list",
+                name: "Leads Log",
+                path: "/leads/list",
                 iconText: "OL",
             },
+        ],
+    },
+    {
+        name: "Media",
+        icon: "collections",
+        beta: true,
+        children: [
             {
-                name: "View Order",
-                path: "/invoice/fdskfjdsuoiucrwevbgd",
-                iconText: "VO",
+                name: "Gallery",
+                path: "/media/gallery",
+                iconText: "OL",
             },
         ],
     },
@@ -72,6 +79,7 @@ export const navigations = [
                 iconText: "OL",
             },
         ],
+
     },
     {
         beta: true,
@@ -115,10 +123,9 @@ export const navigations = [
     },
     {
         beta: true,
+        path: "/certificates",
         name: "Certificates",
         icon: "card_membership",
-        children: [
-        ],
     },
     {
         beta: true,

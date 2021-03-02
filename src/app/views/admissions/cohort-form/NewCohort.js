@@ -29,6 +29,7 @@ const NewCohort = () => {
        })})
   };
 
+
   const getCertificates = () => {
     bc.admissions().getCertificates()
     .then(({data}) => setCert(data))
