@@ -5,9 +5,13 @@ import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
 import admissionsRoutes from "./views/admissions/routes";
 import eventsRoutes from "./views/events/routes";
+
+import certificatesRoutes from "./views/certificates/certificatesRoutes"
+
 import feedbackRoutes from "./views/feedback/routes";
 import mediaRoutes from "./views/media/routes";
 import courseworkRoutes from "./views/coursework/routes";
+
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
@@ -40,6 +44,7 @@ const routes = [
   ...pageLayoutRoutes,
   ...ListRoute,
   ...pagesRoutes,
+  ...certificatesRoutes,
   ...redirectRoute,
   ...errorRoute,
 ];

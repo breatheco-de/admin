@@ -79,6 +79,7 @@ export const navigations = [
                 iconText: "OL",
             },
         ],
+
     },
     {
         beta: true,
@@ -122,10 +123,9 @@ export const navigations = [
     },
     {
         beta: true,
+        path: "/certificates",
         name: "Certificates",
         icon: "card_membership",
-        children: [
-        ],
     },
     {
         beta: true,
