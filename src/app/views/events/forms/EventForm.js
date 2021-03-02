@@ -22,25 +22,11 @@ const EventForm = () => {
         if (id) {
             bc.events().updateAcademyEvent(id, values)
                 .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event updated" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
-                .catch(error => {
-                    console.log(error)
-                    let resKeys = Object.keys(values);
-                    resKeys.forEach(item => {
-                        if (Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0] });
-                        else if (error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail : "Unknown error, check fields" })
-                    })
-                })
+                .catch(error => error)
         } else {
             bc.events().addAcademyEvent(values)
                 .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event created" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
-                .catch(error => {
-                    console.log(error)
-                    let resKeys = Object.keys(values);
-                    resKeys.forEach(item => {
-                        if (Array.isArray(error[item])) setMsg({ alert: true, type: "error", text: error[item][0] });
-                        else if (error.detail) setMsg({ alert: true, type: "error", text: error.detail ? error.detail : "Unknown error, check fields" })
-                    })
-                })
+                .catch(error => error)
         }
     }
     return (

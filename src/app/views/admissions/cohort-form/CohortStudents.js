@@ -194,25 +194,25 @@ const CohortStudents = ({ slug, cohort_id }) => {
                                         name="finantial_status"
                                         size="small"
                                         variant="outlined"
-                                        value={s.finantial_status || 'N/D'}
+                                        value={s.finantial_status || ''}
                                         onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
                                         select
                                     >
-                                        {['FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item, ind) => (
+                                        {['FULLY_PAID', 'UP_TO_DATE', 'LATE',''].map((item, ind) => (
                                             <MenuItem value={item} key={item}>
                                                 {item}
                                             </MenuItem>
                                         ))}
                                     </TextField>
                                 </Grid>
-                                <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
+                                <Grid item lg={2} md={4} sm={2} xs={2} className="text-center">
                                     <TextField
                                         className="min-w-100"
                                         label="Educational Status"
                                         name="educational_status"
                                         size="small"
                                         variant="outlined"
-                                        value={s.educational_status || 'N/D'}
+                                        value={s.educational_status || ''}
                                         onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
                                         select
                                     >

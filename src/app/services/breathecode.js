@@ -3,7 +3,6 @@ import axios from "../../axios";
 class BreatheCodeClient {
     constructor() {
         this.host = `${process.env.REACT_APP_API_HOST}/v1`;
-
     }
     admissions = () => {
         return {
@@ -59,7 +58,7 @@ class BreatheCodeClient {
                 return axios.put(`${this.host}/auth/academy/student/${user}`,payload)
             },
             updateAcademyMember: (user, payload) => {
-                return axios.put(`${this.host}/auth/academy/member/${user.user.id}`,payload)
+                return axios.put(`${this.host}/auth/academy/member/${user}`,payload)
             },
             addAcademyStudent: (payload) => {
                 return axios.post(`${this.host}/auth/academy/student`, payload)

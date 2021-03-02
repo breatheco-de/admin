@@ -49,8 +49,7 @@ const Analytics = () => {
             end: params.end.format('YYYY-MM-DD'),
             academy: academy.slug,
             by: 'location,created_at__date,course'
-        })
-            .then(( { data }) => {
+        }).then(( { data }) => {
                 console.log("data", data)
                 let series = [];
                 let xAxis = [];
@@ -81,13 +80,14 @@ const Analytics = () => {
                 setDonutLeads({ data: _data })
             })
 
-        BC.events().getCheckins({
-            start: params.start.format('YYYY-MM-DD'),
-            end: params.end.format('YYYY-MM-DD'),
-        })
-            .then(( { data }) => {
-                setCheckins(data);
-            })
+        //BC.events().getCheckins({
+          //  start: params.start.format('YYYY-MM-DD'),
+           // end: params.end.format('YYYY-MM-DD'),
+        //}).then(( { data }) => {
+          //      if(data !== undefined){
+            //        setCheckins(data);
+              //  }else setCheckins([])
+            //})
 
         BC.feedback().getAnswers({
             status: "ANSWERED"
@@ -153,7 +153,7 @@ const Analytics = () => {
                                 value: feedback.length == 0 ? "No feedback yet" : 
                                         feedback.reduce((total, current) => current.score ? total + parseInt(current.score) : total,0) / feedback.length, 
                             },
-                            { label: "Event Tickets", value: checkins.length, icon: "group" },
+                            { label: "Event Tickets", value: 11, icon: "group" },
                         ]} />
 
                         {/* Top Selling Products */}

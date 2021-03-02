@@ -25,7 +25,7 @@ export const ProfileForm = ({ initialValues }) => {
             bc.auth().addAcademyStudent(requestValues)
             .then(data =>{ 
                 setMsg({ alert: true, type: "success", text: data.status_code >= 200 ? "Student created successfuly" : data.statusText })
-                setTimeout(() => history.push("/admin/invites"), 1000);
+                setTimeout(() => history.push("/admin/students"), 1000);
             })
             .catch(error => {
                 console.log(error)

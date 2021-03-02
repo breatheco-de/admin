@@ -53,7 +53,7 @@ const StaffDetails = ({ user, staff_id }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [roles, setRoles] = useState(null);
   const updateMemberProfile = (values) => {
-    bc.auth().updateAcademyStudent(values)
+    bc.auth().updateAcademyMember(staff_id,{...values, role: user.role.slug})
       .then(data => {
         setMsg({ alert: true, type: "success", text: "User profile updated successfully" })
       })
@@ -63,7 +63,7 @@ const StaffDetails = ({ user, staff_id }) => {
       })
   }
   const updateRole = (role) => {
-    bc.auth().updateAcademyMember({role:role})
+    bc.auth().updateAcademyMember(staff_id,{role:role})
     .then(({data}) => {
       console.log(data)
       setMsg({ alert: true, type: "success", text: "Role updated successfully" }) })

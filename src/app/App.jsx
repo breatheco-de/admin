@@ -14,7 +14,6 @@ import sessionRoutes from "./views/sessions/routes";
 import { AuthProvider } from "app/contexts/JWTAuthContext";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 import AuthGuard from "./auth/AuthGuard";
-
 const App = () => {
   return (
     <AppContext.Provider value={{ routes }}>
@@ -33,7 +32,6 @@ const App = () => {
                         component={item.component}
                       />
                     ))}
-
                     {/* AUTH PROTECTED PAGES */}
                     <AuthGuard>
                       <MatxLayout />

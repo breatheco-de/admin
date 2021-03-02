@@ -20,7 +20,7 @@ const Students = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        bc.auth().getAcademyMembers({roles: "country_manager,student", status: "invited"})
+        bc.auth().getAcademyMembers({status: "invited"})
         .then(({ data }) => {
             console.log(data)
             setIsLoading(false);
