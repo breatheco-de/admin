@@ -6,7 +6,7 @@ import useDebounce from "../hooks/useDebounce";
 
 export function AsyncAutocomplete(props) {
   const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
+  const [options, setOptions] = React.useState(props.defaultOptions || []);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [cache, setCache] = React.useState({})
@@ -41,7 +41,7 @@ export function AsyncAutocomplete(props) {
     } else{
       search();
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, props.defaultOptions]);
 
 
   return (
