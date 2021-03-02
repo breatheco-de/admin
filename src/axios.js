@@ -17,6 +17,7 @@ axiosInstance.interceptors.response.use(
    return response
   },
   (error) =>{
+  console.log(error.response)
   if(typeof error.response.data === "object"){
     for(let item in error.response.data){
        if(Array.isArray(error.response.data[item])){
@@ -25,7 +26,9 @@ axiosInstance.interceptors.response.use(
          }
        }
     }
-  } else toast.error(error.response.data.detail || 'Something went wrong!') 
+  } 
+  if(error.response.status >= 400) toast.error(error.response.data.detail)
+  else toast.error('Something went wrong!')
     Promise.reject(
       (error.response && error.response.data) || "Something went wrong!"
     )}
