@@ -28,6 +28,7 @@ const NewCertificate = () => {
     const [cohort, setCohort] = useState([]);
     const [student, setStudent] = useState([]);
     let history = useHistory();
+    
 
     const getSpecialties = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
@@ -39,6 +40,7 @@ const NewCertificate = () => {
         getSpecialties();
     }, [])
 
+    console.log("slug:", cohort.slug)
     const postCerfiticate = (values) => {
         // One specific certificate
         if (type === "single") {
@@ -124,7 +126,9 @@ const NewCertificate = () => {
                                                 Student
                                             </Grid>
                                             <Grid item md={10} sm={8} xs={12}>
+                                                
                                                 <AsyncAutocomplete size="small"
+                                        debounced={true}
                                          width="100%" 
                                          asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${cohort.slug}&roles=STUDENT`)}
                                          onChange={(student) => setStudent(student)}

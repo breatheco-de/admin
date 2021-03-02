@@ -6,6 +6,7 @@ import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import BC from "../../services/breathecode";
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -19,6 +20,7 @@ const Certificates = () => {
     useEffect(() => {
         setIsLoading(true);
         if (cohortId !== null || cohortId !== undefined) {
+            // BC.certificates().getCertificatesByCohort({cohortId}).then(({data}) => {
             axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId).then(({ data }) => {
             setIsLoading(false);
             if (isAlive) setItems(data);
