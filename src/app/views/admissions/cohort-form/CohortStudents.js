@@ -58,28 +58,21 @@ const CohortStudents = ({ slug, cohort_id }) => {
         }
         bc.admissions().updateCohortUserInfo(cohort_id, studentId, { ...s_status, [name]: value }).then((data) => {
             console.log(data)
-            if (data.status >= 200) {
-                setMsg({ alert: true, type: "success", text: "User status updated" });
-                getCohortStudents();
-            } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+            if (data.status >= 200) getCohortStudents();
+        }).catch(error => {
+            console.log(error)
         })
-            .catch(error => {
-                setMsg({ alert: true, type: "error", text: error.details });
-                console.log(error)
-            })
     }
 
     const getCohortStudents = () => {
         setIsLoading(true);
         bc.admissions().getAllUserCohorts({
             cohorts: slug
-        })
-            .then(({ data }) => {
+        }).then(({ data }) => {
                 console.log(data);
                 setIsLoading(false);
-                data.length < 1 ? setMsg({ alert: true, type: "error", text: "This Cohort is empty or doesn´t exist" }) : setStudentsList(data)
-            })
-            .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+                data.length < 1 ? setStudentsList([]) : setStudentsList(data)
+        }).catch(error => error)
     }
 
     const addUserToCohort = (user_id) => {
@@ -89,27 +82,16 @@ const CohortStudents = ({ slug, cohort_id }) => {
             finantial_status: null,
             educational_status: "ACTIVE"
         }).then((data) => {
-            if (data.status >= 200) {
-                setMsg({ alert: true, type: "success", text: "User added successfully" });
-                getCohortStudents();
-            } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
-        })
-            .catch(error => {
-                console.log(error)
-                setMsg({ alert: true, type: "error", text: error.details });
-            })
+            if (data.status >= 200) getCohortStudents();
+        }).catch(error => error)
     }
 
     const deleteUserFromCohort = () => {
         bc.admissions().deleteUserCohort(cohort_id, currentStd.id)
             .then((data) => {
-                if (data.status === 204) {
-                    setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
-                    getCohortStudents();
-                }
-                else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
+                if (data.status === 204) getCohortStudents();
             })
-            .catch(error => setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
+            .catch(error => error)
         setOpenDialog(false);
     }
     return (

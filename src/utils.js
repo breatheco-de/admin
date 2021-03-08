@@ -173,23 +173,19 @@ export function classList(classes) {
 export function resolveResponse(res) {
   if (res.config.method != "get") {
     if (res.config.url.includes("cohort")) {
-      if (res.config.method === "put" && res.status >= 200) {
-        return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} updated`, toastOption)
-      } else if (res.config.method === "post" && res.status >= 200) {
-        return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} created`, toastOption)
-      } else return toast.success(`Success`, toastOption)
+      if (res.config.method === "put" && res.status >= 200) return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} updated`, toastOption)
+      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} created`, toastOption)
+      else if (res.config.method === "delete" && res.status >= 200) return toast.warning(`Cohort ${res.config.url.includes("user") ? "user" : ""} deleted`, toastOption)
+      else return toast.success(`Success`, toastOption)
     } else if (res.config.url.includes("auth") && !res.config.url.includes("login")) {
-      if (res.config.method === "put" && res.status >= 200) {
-        return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} updated`, toastOption)
-      } else if (res.config.method === "post" && res.status >= 200) {
-        return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} created`, toastOption)
-      } else return toast.success(`Success`, toastOption)
+      if (res.config.method === "put" && res.status >= 200) return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} updated`, toastOption)
+      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} created`, toastOption)
+      else if (res.config.method === "delete" && res.status >= 200) return toast.warning(`Academy ${res.config.url.includes("member") ? "member" : "student"} deleted`, toastOption)
+      else return toast.success(`Success`, toastOption)
     } else if (res.config.url.includes("events")) {
-      if (res.config.method === "put" && res.status >= 200) {
-        return toast.success(`Event updated`, toastOption)
-      } else if (res.config.method === "post" && res.status >= 200) {
-        return toast.success(`Event created`, toastOption)
-      }
+      if (res.config.method === "put" && res.status >= 200) return toast.success(`Event updated`, toastOption)
+      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Event created`, toastOption)
+      else if(res.config.method === "delete" && res.status >= 200) return toast.warning(`Event deleted`, toastOption)
     } else return toast.success(`Success`, toastOption)
   }
 }
@@ -206,7 +202,7 @@ export function resolveError(error){
   }
   if (error.response.status === 404) return toast.error(error.response.data.detail || "Not found", toastOption)
   else if (error.response.status === 403) {
-    if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have this capability", toastOption)
+    if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have the permissions required", toastOption)
   }
   else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
   else return toast.error('Something went wrong!', toastOption)
