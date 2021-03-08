@@ -11,7 +11,6 @@ import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import { AsyncAutocomplete } from "../../../../components/Autocomplete";
 import { useHistory } from "react-router-dom";
-import { BarChart } from "recharts";
 import bc from "app/services/breathecode";
 
 export const ProfileForm = ({ initialValues }) => {

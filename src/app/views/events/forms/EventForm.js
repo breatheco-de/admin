@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import { Formik } from "formik";
 import { Alert } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -12,20 +12,83 @@ import {
     Checkbox
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
-import { useParams } from "react-router-dom";
+import { useParams,useHistory } from "react-router-dom";
 import bc from "app/services/breathecode";
+import dayjs from "dayjs";
+
+//Timezone plugin
+let utc = require('dayjs/plugin/utc')
+dayjs.extend(utc);
 
 const EventForm = () => {
     const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+    const [event, setEvent] = useState({
+        title: "",
+        description: "",
+        excerpt: "",
+        lang: "",
+        url: "",
+        banner: "",
+        capacity: 0,
+        starting_at: "",
+        ending_at: "",
+        host: null,
+        event_type: null,
+        venue: null,
+        online_event: false
+    });
     const { id } = useParams();
+    const history = useHistory();
+    
+    useEffect(() => {
+        if(id) bc.events().getAcademyEvent(id)
+        .then(({data}) => setEvent({...data, starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"), ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss")}))
+        .catch(error => error); 
+    }, [])
     const postEvent = (values) => {
+        console.log(values)
         if (id) {
-            bc.events().updateAcademyEvent(id, values)
-                .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event updated" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
+            const {academy, ...rest} = values;
+            bc.events().updateAcademyEvent(id, {...rest, starting_at: dayjs(rest.starting_at).utc().format(), ending_at: dayjs(rest.ending_at).utc().format()})
+            .then(({ data }) =>{
+                setEvent({
+                    title: "",
+                    description: "",
+                    excerpt: "",
+                    lang: "",
+                    url: "",
+                    banner: "",
+                    capacity: 0,
+                    starting_at: "",
+                    ending_at: "",
+                    host: null,
+                    event_type: null,
+                    venue: null,
+                    online_event: false
+                });
+                if(data.academy !== undefined) history.push("/events/list")
+            })
                 .catch(error => error)
         } else {
-            bc.events().addAcademyEvent(values)
-                .then(({ data }) => data.status === 201 ? setMsg({ alert: true, type: "success", text: "Event created" }) : setMsg({ alert: true, type: "success", text: data.statusText }))
+            bc.events().addAcademyEvent({...values, starting_at: dayjs(values.starting_at).utc().format(), ending_at: dayjs(values.ending_at).utc().format()})
+                .then(({ data }) => {
+                    setEvent({
+                        title: "",
+                        description: "",
+                        excerpt: "",
+                        lang: "",
+                        url: "",
+                        banner: "",
+                        capacity: 0,
+                        starting_at: "",
+                        ending_at: "",
+                        host: null,
+                        event_type: null,
+                        venue: null,
+                        online_event: false
+                    });
+                    if(data.academy !== undefined) history.push("/events/list")
+                })
                 .catch(error => error)
         }
     }
@@ -34,7 +97,7 @@ const EventForm = () => {
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
-                        { name: "Events", path: "/events" },
+                        { name: "Events", path: "/events/list" },
                         { name: id ? "Edit Event" : "New Event"},
                     ]}
                 />
@@ -45,7 +108,7 @@ const EventForm = () => {
                 </div>
                 <Divider className="mb-2" />
                 <Formik
-                    initialValues={initialValues}
+                    initialValues={event}
                     onSubmit={(values) => postEvent(values)}
                     enableReinitialize={true}
                 >
@@ -268,22 +331,6 @@ const EventForm = () => {
             </Card>
         </div>
     );
-};
-
-const initialValues = {
-    title: "",
-    description: "",
-    excerpt: "",
-    lang: "",
-    url: "",
-    banner: "",
-    capacity: 0,
-    starting_at: "",
-    ending_at: "",
-    host: null,
-    event_type: null,
-    venue: null,
-    online_event: false
 };
 
 export default EventForm;
