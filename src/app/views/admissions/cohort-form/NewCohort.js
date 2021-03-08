@@ -1,7 +1,5 @@
 import React, { useState,useEffect } from "react";
 import { Formik } from "formik";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import {
   Grid,
   Card,
@@ -15,25 +13,15 @@ import bc from "app/services/breathecode";
 
 const NewCohort = () => {
   const [cert, setCert] = useState([]);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-
   const postCohort = (values) => {
      bc.admissions().addCohort(values)
-      .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
-      .catch(error => {
-        console.log(error)
-        setMsg({ 
-        alert: true, 
-        type: "error", 
-        text: error.detail || "Unknown error, check cohort fields"
-       })})
+      .then((data) => data)
+      .catch(error => console.log(error))
   };
-
-
   const getCertificates = () => {
     bc.admissions().getCertificates()
     .then(({data}) => setCert(data))
-    .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
+    .catch(error => error) 
   }
   useEffect(() =>{
     getCertificates();
@@ -146,11 +134,6 @@ const NewCohort = () => {
             </form>
           )}
         </Formik>
-        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
       </Card>
     </div>
   );

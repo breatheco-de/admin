@@ -5,8 +5,6 @@ import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import bc from "app/services/breathecode";
 
 var relativeTime = require('dayjs/plugin/relativeTime')
@@ -35,7 +33,6 @@ const Cohorts = () => {
       if (isAlive) setItems(data);
     }).catch(error => {
       setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required"});
     })
     return () => setIsAlive(false);
   }, [isAlive]);
@@ -137,11 +134,6 @@ const Cohorts = () => {
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                    {msg.text}
-                </Alert>
-            </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>

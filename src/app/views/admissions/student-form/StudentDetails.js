@@ -11,8 +11,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import bc from "app/services/breathecode";
 
 const StudentDetails = ({ user, std_id }) => {
@@ -55,13 +53,9 @@ const StudentDetails = ({ user, std_id }) => {
     bc.auth().updateAcademyStudent(std_id, values)
         .then(({data}) => {
           setCrtUser({...crt_user, ...data });
-          setMsg({ alert: true, type: "success", text: "User profile updated successfully"});
           console.log(crt_user);
       })
-        .catch(error => {
-            console.log(error)
-            setMsg({ alert: true, type: "error", text: error.detail})
-        })
+        .catch(error => error)
 }
   return (
     <Card className="pt-6" elevation={3}>
@@ -142,11 +136,6 @@ const StudentDetails = ({ user, std_id }) => {
           </form>
         )}
       </Formik>
-      {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> ): ""}
     </Card>
   );
 };

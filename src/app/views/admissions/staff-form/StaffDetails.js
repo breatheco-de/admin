@@ -16,8 +16,6 @@ import {
   Dialog,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import bc from "app/services/breathecode";
 
 const StaffDetails = ({ user, staff_id }) => {
@@ -49,30 +47,24 @@ const StaffDetails = ({ user, staff_id }) => {
       value: initialValues.address,
     },
   ];
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [roleDialog, setRoleDialog] = useState(false);
   const [roles, setRoles] = useState(null);
   const updateMemberProfile = (values) => {
     bc.auth().updateAcademyMember(staff_id,{...values, role: user.role.slug})
-      .then(data => {
-        setMsg({ alert: true, type: "success", text: "User profile updated successfully" })
-      })
-      .catch(error => {
-        console.log(error)
-        setMsg({ alert: true, type: "error", text: error.detail || `${error.first_name[0]}: First Name` || error.email[0] || error.phone[0] })
-      })
+      .then(data => data)
+      .catch(error => console.log(error))
   }
   const updateRole = (role) => {
     bc.auth().updateAcademyMember(staff_id,{role:role})
     .then(({data}) => {
       console.log(data)
-      setMsg({ alert: true, type: "success", text: "Role updated successfully" }) })
-    .catch(error => setMsg({ alert: true, type: "error", text: error.detail}))
+    })
+    .catch(error =>error)
   }
   useEffect(() => {
     bc.auth().getRoles()
     .then(({data}) => setRoles(data))
-    .catch(error => setMsg({ alert: true, type: "error", text: error.detail}))
+    .catch(error => error)
   } , [])
   return (
     <Card className="pt-6" elevation={3}>
@@ -155,11 +147,6 @@ const StaffDetails = ({ user, staff_id }) => {
           </form>
         )}
       </Formik>
-      {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar>) : ""}
       <Dialog
         onClose={() => setRoleDialog(false)}
         open={roleDialog}

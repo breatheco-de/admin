@@ -5,8 +5,6 @@ import StudentCohorts from "./StudentCohorts";
 import StudentDetails from "./StudentDetails";
 import DowndownMenu from "../../../components/DropdownMenu"
 import axios from "../../../../axios";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import bc from "app/services/breathecode";
 import dayjs from "dayjs";
 
@@ -20,19 +18,18 @@ dayjs.extend(LocalizedFormat)
 
 const Student = () => {
   const { std_id } = useParams();
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [member, setMember] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
   const getMemberById = () => {
     bc.auth().getAcademyMember(std_id)
     .then(({ data }) => setMember(data))
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
+      .catch(error => error)
   }
   const passwordReset = () => {
     axios.post(`${process.env.REACT_APP_API_HOST}/v1/user/password/reset`, { email: member?.user.email })
-      .then(({ data }) => setMsg({ alert: true, type: "success", text: "Password reset sent"}))
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
+      .then(({ data }) => data)
+      .catch(error => error)
       setOpenDialog(false)
   }
   useEffect(() => {
@@ -41,11 +38,6 @@ const Student = () => {
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
-        {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-            {msg.text}
-          </Alert>
-        </Snackbar>) : ""}
         {/* This Dialog opens the modal to delete the user in the cohort */}
         <Dialog
           open={openDialog}

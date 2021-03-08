@@ -26,26 +26,17 @@ const NewStaff = () => {
       bc.auth().addAcademyMember({ ...refactor, role: role.slug })
         .then((data) => {
           if (data.status === 201) {
-            setMsg({ alert: true, type: "success", text: "Member added successfully" });
             setRole(null);
             setUser(null);
             history.push("/admin/staff");
-          } else setMsg({ alert: true, type: "success", text: data.statusText });
+          }
         })
-        .catch(error => {
-          console.log(error);
-          setMsg({
-            alert: true,
-            type: "error",
-            text: error.detail || "Unknown error, check fields"
-          })
-        })
+        .catch(error => console.log(error))
     } else setMsg({
       alert: true,
       type: "error",
       text: "Role and User cannot be empty"
     })
-
   };
   useEffect(() => {
     console.log(user)

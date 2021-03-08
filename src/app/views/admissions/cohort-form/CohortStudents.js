@@ -19,8 +19,6 @@ import {
 } from "@material-ui/core";
 import { format } from "date-fns";
 import clsx from "clsx";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "app/services/breathecode";
@@ -38,7 +36,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [studenList, setStudentsList] = useState([]);
     const [currentStd, setCurrentStd] = useState({});
     const [openRoleDialog, setRoleDialog] = useState(false);
@@ -219,11 +216,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
                         </div>
                     ))}
                 </div>
-                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
             </div>
             {/* This Dialog opens the modal for the user role in the cohort */}
             <Dialog

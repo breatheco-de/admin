@@ -15,8 +15,6 @@ import {
   DialogActions,
   IconButton
 } from "@material-ui/core";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../../../../axios";
 import { MatxLoading } from "matx";
 import { AsyncAutocomplete } from "app/components/Autocomplete";
@@ -48,15 +46,9 @@ const StudentCohorts = ({ std_id }) => {
     bc.admissions().updateCohortUserInfo(stdCohorts[i].cohort.id,studentId,{ ...s_status, [name]: value })
       .then((data) => {
         console.log(data)
-        if (data.status >= 200) {
-          setMsg({ alert: true, type: "success", text: "User status updated" });
-          getStudentCohorts();
-        } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+        if (data.status >= 200)  getStudentCohorts();
       })
-      .catch(error => {
-        setMsg({ alert: true, type: "error", text: error.details || error.role[0] });
-        console.log(error)
-      })
+      .catch(error => error)
   }
 
   const getStudentCohorts = () => {
@@ -67,21 +59,17 @@ const StudentCohorts = ({ std_id }) => {
       .then(({ data }) => {
         console.log(data)
         setIsLoading(false);
-        data.length < 1 ? setMsg({ alert: true, type: "error", text: "This user have not cohorts assigned" }) : setStdCohorts(data)
+        data.length < 1 ? setStdCohorts([]): setStdCohorts(data)
       })
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+      .catch(error => error)
   }
 
   const deleteUserFromCohort = () => {
     bc.admissions().deleteUserCohort(currentStd.cohort_id,currentStd.id)
       .then((data) => {
-        if (data.status === 204) {
-          setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
-          getStudentCohorts();
-        }
-        else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
+        if (data.status === 204) getStudentCohorts();
       })
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
+      .catch(error => error)
     setOpenDialog(false);
   }
   const addUserToCohort = () => {
@@ -93,17 +81,10 @@ const StudentCohorts = ({ std_id }) => {
         finantial_status: null,
         educational_status: "ACTIVE"
       }).then((data) => {
-        if (data.status >= 200) {
-          setMsg({ alert: true, type: "success", text: "User added successfully" });
-          getStudentCohorts();
-        } else setMsg({ alert: true, type: "error", text: "Could not add user to cohort" })
+        if (data.status >= 200) getStudentCohorts();
       })
-        .catch(error => {
-          console.log(error)
-          setMsg({ alert: true, type: "error", text: error.details });
-        })
+        .catch(error => error)
     }
-
   }
 
   return (
@@ -243,11 +224,6 @@ const StudentCohorts = ({ std_id }) => {
           ))}
         </List>
       </Dialog>
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
     </Card>
   );
 };

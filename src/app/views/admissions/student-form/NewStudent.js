@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Card,
@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { ProfileForm } from "./student-utils/ProfileForm";
-import Snackbar from '@material-ui/core/Snackbar';
 import { createFilterOptions } from "@material-ui/lab/Autocomplete";
 import {AsyncAutocomplete} from "app/components/Autocomplete";
 import bc from "app/services/breathecode";
@@ -30,11 +29,6 @@ const NewStudent = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-            {msg.text}
-          </Alert>
-        </Snackbar> : ""}
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },

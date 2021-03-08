@@ -13,8 +13,6 @@ import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import DowndownMenu from "../../../components/DropdownMenu";
 import bc from "app/services/breathecode";
 
@@ -26,7 +24,6 @@ const options = [
 const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [stageDialog, setStageDialog] = useState(false);
     const [cohort, setCohort] = useState({})
     useEffect(() => {
@@ -47,16 +44,8 @@ const Cohort = () => {
         console.log(values);
         console.log(cohort)
         bc.admissions().updateCohort(cohort.id,{ ...values})
-            .then((data) => {
-                console.log(data);
-                if (data.status <= 200) {
-                    setMsg({ alert: true, type: "success", text: "Cohort details updated successfully" });
-                } else setMsg({ alert: true, type: "error", text: "Could not update cohort details" });
-            })
-            .catch(error => {
-                console.log(error);
-                setMsg({ alert: true, type: "error", text: error.details || "Unknown problem when updating the cohort" })
-            })
+            .then((data) => data)
+            .catch(error => console.log(error))
     }
 
     return (
@@ -97,11 +86,6 @@ const Cohort = () => {
                         />
                     </Grid>
                 </Grid>
-                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
             </div>
             <Dialog
                 onClose={() => setStageDialog(false)}

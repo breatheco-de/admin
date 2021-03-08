@@ -3,8 +3,6 @@ import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
@@ -29,7 +27,6 @@ const Students = () => {
             };
         }).catch(error => {
             setIsLoading(false);
-            setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
           })
         return () => setIsAlive(false);
     }, [isAlive]);
@@ -106,11 +103,6 @@ const Students = () => {
 
     return (
         <div className="m-sm-30">
-            {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                    {msg.text}
-                </Alert>
-            </Snackbar> : ""}
             <div className="mb-sm-30">
                 <div className="flex flex-wrap justify-between mb-6">
                     <div>
