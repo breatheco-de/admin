@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
+import { useHistory } from "react-router-dom";
 import { createFilterOptions } from "@material-ui/lab/Autocomplete";
 import bc from "app/services/breathecode";
 const filter = createFilterOptions();
@@ -18,6 +19,7 @@ const NewStaff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const history = useHistory();
   const postMember = () => {
     if (user !== null && role !== null) {
       let refactor = user.id ? { user: user.id } : { email: user.email, invite: true }
@@ -27,6 +29,7 @@ const NewStaff = () => {
             setMsg({ alert: true, type: "success", text: "Member added successfully" });
             setRole(null);
             setUser(null);
+            history.push("/admin/staff");
           } else setMsg({ alert: true, type: "success", text: data.statusText });
         })
         .catch(error => {

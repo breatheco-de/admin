@@ -20,12 +20,12 @@ export const ProfileForm = ({ initialValues }) => {
     const history = useHistory();
 
     const postAcademyStudentProfile = (values) => {
-        console.log(cohort.id)
-        const requestValues = cohort && cohort.id !== "" ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
+        console.log(cohort)
+        const requestValues = cohort !== null ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
             bc.auth().addAcademyStudent(requestValues)
             .then(data =>{ 
                 setMsg({ alert: true, type: "success", text: data.status_code >= 200 ? "Student created successfuly" : data.statusText })
-                setTimeout(() => history.push("/admin/students"), 1000);
+                history.push("/admin/students");
             })
             .catch(error => {
                 console.log(error)

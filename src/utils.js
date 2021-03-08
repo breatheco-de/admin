@@ -1,4 +1,11 @@
 import { differenceInSeconds } from "date-fns";
+import { func } from "prop-types";
+import { toast } from 'react-toastify';
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000
+}
 
 export const convertHexToRGB = (hex) => {
   // check if it's a rgba
@@ -161,4 +168,46 @@ export function classList(classes) {
     .filter((entry) => entry[1])
     .map((entry) => entry[0])
     .join(" ");
+}
+
+export function resolveResponse(res) {
+  if (res.config.method != "get") {
+    if (res.config.url.includes("cohort")) {
+      if (res.config.method === "put" && res.status >= 200) {
+        return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} updated`, toastOption)
+      } else if (res.config.method === "post" && res.status >= 200) {
+        return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} created`, toastOption)
+      } else return toast.success(`Success`, toastOption)
+    } else if (res.config.url.includes("auth") && !res.config.url.includes("login")) {
+      if (res.config.method === "put" && res.status >= 200) {
+        return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} updated`, toastOption)
+      } else if (res.config.method === "post" && res.status >= 200) {
+        return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} created`, toastOption)
+      } else return toast.success(`Success`, toastOption)
+    } else if (res.config.url.includes("events")) {
+      if (res.config.method === "put" && res.status >= 200) {
+        return toast.success(`Event updated`, toastOption)
+      } else if (res.config.method === "post" && res.status >= 200) {
+        return toast.success(`Event created`, toastOption)
+      }
+    } else return toast.success(`Success`, toastOption)
+  }
+}
+
+export function resolveError(error){
+  if (typeof error.response.data === "object") {
+    for (let item in error.response.data) {
+      if (Array.isArray(error.response.data[item])) {
+        for (let str of error.response.data[item]) {
+         return toast.error(`${item.toUpperCase()}: ${str}`, toastOption);
+        }
+      }
+    }
+  }
+  if (error.response.status === 404) return toast.error(error.response.data.detail || "Not found", toastOption)
+  else if (error.response.status === 403) {
+    if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have this capability", toastOption)
+  }
+  else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
+  else return toast.error('Something went wrong!', toastOption)
 }

@@ -45,8 +45,8 @@ const Cohort = () => {
     }
     const updateCohort = (values) => {
         console.log(values);
-        console.log(cohort.id)
-        bc.admissions().updateCohort({ ...values, certificate: cohort.certificate.id })
+        console.log(cohort)
+        bc.admissions().updateCohort(cohort.id,{ ...values})
             .then((data) => {
                 console.log(data);
                 if (data.status <= 200) {

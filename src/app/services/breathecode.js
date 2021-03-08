@@ -96,7 +96,7 @@ class BreatheCodeClient {
             return axios.post(`${this.host}/events/academy/event`, payload)
         },
         updateAcademyEvent: (event, payload) => {
-            return axios.put(`${process.env.REACT_APP_API_HOST}/v1/events/academy/event/${event}`, payload)
+            return axios.put(`${process.env.REACT_APP_API_HOST}/events/academy/event/${event}`, payload)
         },
         getAcademyEvents: () => {
             return axios.get(`${this.host}/events/academy/event`)
