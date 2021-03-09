@@ -33,6 +33,9 @@ class BreatheCodeClient {
             },
             getAllCohorts: () => {
                 return axios.get(`${this.host}/admissions/academy/cohort`)
+            },
+            getAllCourseSyllabus: (query) => {
+                return axios.get(`${this.host}/admissions/certificate/${query}/academy/4/syllabus`)
             }
          }
     }

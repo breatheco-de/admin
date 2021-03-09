@@ -203,7 +203,7 @@ export function resolveError(error){
   if (error.response.status === 404) return toast.error(error.response.data.detail || "Not found", toastOption)
   else if (error.response.status === 403) {
     if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have the permissions required", toastOption)
-  }
+  } else if (error.response.status === 500) return toast.error("Internal server error, try again later", toastOption)
   else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
   else return toast.error('Something went wrong!', toastOption)
 }

@@ -10,23 +10,18 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
 
 const NewCohort = () => {
-  const [cert, setCert] = useState([]);
+  const [cert, setCert] = useState(null);
+  const [version, setVersion] = useState(null);
   const postCohort = (values) => {
-     bc.admissions().addCohort(values)
+    console.log({...values, syllabus: `${cert.slug}.v${version.version}`})
+     bc.admissions().addCohort({...values, syllabus: `${cert.slug}.v${version.version}`})
       .then((data) => data)
       .catch(error => console.log(error))
   };
-  const getCertificates = () => {
-    bc.admissions().getCertificates()
-    .then(({data}) => setCert(data))
-    .catch(error => error) 
-  }
-  useEffect(() =>{
-    getCertificates();
-  }, [])
-
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -90,26 +85,27 @@ const NewCohort = () => {
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Certificate
+                  Syllabus
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
-                    <TextField
-                      className="m-2 min-w-188"
-                      label="Certificate"
-                      name="certificate"
-                      size="small"
-                      variant="outlined"
-                      select
-                      value={values.certificate || ""}
-                      onChange={handleChange}
-                    >
-                      {cert.map((item, ind) => (
-                        <MenuItem value={item.id} key={item.name}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                  <AsyncAutocomplete
+                    onChange={(certificate) => setCert(certificate)}
+                    width={"30%"}
+                    className="mr-2 ml-2"
+                    asyncSearch={() => bc.admissions().getCertificates()}
+                    size={"small"}
+                    label="Certificate"
+                    getLabel={option => `${option.name}`}
+                    value={cert} />
+                    {cert !== null ? <AsyncAutocomplete
+                    onChange={(v) => setVersion(v)}
+                    width={"20%"}
+                    asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
+                    size={"small"}
+                    label="Version"
+                    getLabel={option => `${option.version}`}
+                    value={version} /> : ""}
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -142,7 +138,6 @@ const NewCohort = () => {
 const initialValues = {
   name: "",
   slug:"",
-  certificate:"",
   kickoff_date:""
 };
 

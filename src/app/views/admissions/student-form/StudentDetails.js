@@ -42,7 +42,6 @@ const StudentDetails = ({ user, std_id }) => {
       value: initialValues.address,
     },
   ];
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [crt_user, setCrtUser] = useState({});
   useEffect(() =>{
    user ?  setCrtUser(user) : setCrtUser({});

@@ -25,7 +25,7 @@ const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [stageDialog, setStageDialog] = useState(false);
-    const [cohort, setCohort] = useState({})
+    const [cohort, setCohort] = useState(null);
     useEffect(() => {
         getCohort();
     }, [])
@@ -70,20 +70,21 @@ const Cohort = () => {
                 </div>
                 <Grid container spacing={3}>
                     <Grid item md={4} xs={12}>
-                        <CohortDetails
+                        {cohort !== null ? <CohortDetails
                             slug={slug}
                             language={cohort.language || "en"}
                             endDate={cohort.ending_date}
                             startDate={cohort.kickoff_date}
                             id={cohort.id}
+                            syllabus={cohort.syllabus}
                             onSubmit={updateCohort}
-                        />
+                        /> : ""}
                     </Grid>
                     <Grid item md={8} xs={12}>
-                        <CohortStudents
+                        {cohort !== null ? <CohortStudents
                             slug={slug}
                             cohort_id={cohort.id}
-                        />
+                        /> : ""}
                     </Grid>
                 </Grid>
             </div>
