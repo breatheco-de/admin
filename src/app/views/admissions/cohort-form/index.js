@@ -13,10 +13,8 @@ import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
 import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";
-import axios from "../../../../axios";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
-import DowndownMenu from "../../../components/DropdownMenu"
+import DowndownMenu from "../../../components/DropdownMenu";
+import bc from "app/services/breathecode";
 
 const options = [
     { label: "Change cohort stage", value: "stage" },
@@ -26,16 +24,15 @@ const options = [
 const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
     const [stageDialog, setStageDialog] = useState(false);
-    const [cohort, setCohort] = useState({})
+    const [cohort, setCohort] = useState(null);
     useEffect(() => {
         getCohort();
     }, [])
 
     const getCohort = () => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${slug}`)
+        bc.admissions().getCohort(slug)
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
@@ -45,18 +42,10 @@ const Cohort = () => {
     }
     const updateCohort = (values) => {
         console.log(values);
-        console.log(cohort.id)
-        axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${cohort.id}`, { ...values, certificate: cohort.certificate.id })
-            .then((data) => {
-                console.log(data);
-                if (data.status <= 200) {
-                    setMsg({ alert: true, type: "success", text: "Cohort details updated successfully" });
-                } else setMsg({ alert: true, type: "error", text: "Could not update cohort details" });
-            })
-            .catch(error => {
-                console.log(error);
-                setMsg({ alert: true, type: "error", text: error.details || "Unknown problem when updating the cohort" })
-            })
+        console.log(cohort)
+        bc.admissions().updateCohort(cohort.id,{ ...values})
+            .then((data) => data)
+            .catch(error => console.log(error))
     }
 
     return (
@@ -81,27 +70,23 @@ const Cohort = () => {
                 </div>
                 <Grid container spacing={3}>
                     <Grid item md={4} xs={12}>
-                        <CohortDetails
+                        {cohort !== null ? <CohortDetails
                             slug={slug}
                             language={cohort.language || "en"}
                             endDate={cohort.ending_date}
                             startDate={cohort.kickoff_date}
                             id={cohort.id}
+                            syllabus={cohort.syllabus}
                             onSubmit={updateCohort}
-                        />
+                        /> : ""}
                     </Grid>
                     <Grid item md={8} xs={12}>
-                        <CohortStudents
+                        {cohort !== null ? <CohortStudents
                             slug={slug}
                             cohort_id={cohort.id}
-                        />
+                        /> : ""}
                     </Grid>
                 </Grid>
-                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
             </div>
             <Dialog
                 onClose={() => setStageDialog(false)}
