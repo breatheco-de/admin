@@ -1,7 +1,5 @@
 import React, { useState, useEffect} from "react";
 import { Formik } from "formik";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import {
     Grid,
     Card,
@@ -21,7 +19,6 @@ let utc = require('dayjs/plugin/utc')
 dayjs.extend(utc);
 
 const EventForm = () => {
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
     const [event, setEvent] = useState({
         title: "",
         description: "",
@@ -317,17 +314,12 @@ const EventForm = () => {
                             </Grid>
                             <div className="mt-6">
                                 <Button color="primary" variant="contained" type="submit">
-                                    Create
+                                {id ? "Update" : "Create"}
                                 </Button>
                             </div>
                         </form>
                     )}
                 </Formik>
-                {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
             </Card>
         </div>
     );
