@@ -35,7 +35,7 @@ const Staff = () => {
     bc.auth().getRoles()
       .then((res) => {
         const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
-        res.status === 200 ?
+        if(res.status === 200) 
           bc.auth().getAcademyMembers({roles: roles.join()})
             .then(({ data }) => {
               console.log(data);
@@ -46,8 +46,7 @@ const Staff = () => {
               };
             }).catch(error => {
               setIsLoading(false);
-              setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read members" });
-            }) : setMsg({ alert: true, type: "error", text: "An error ocurred" });
+            })
       })
       .catch(error => console.log(error))
   }

@@ -10,6 +10,16 @@ import bc from "app/services/breathecode";
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
+const statusColors = {
+  'INVITED': 'text-white bg-error',
+ 'ACTIVE': 'text-white bg-green',
+}
+
+const name = (user) => {
+    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+    else return "No name";
+}
+
 const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
@@ -24,8 +34,7 @@ const Students = () => {
       console.log(data);
       setIsLoading(false);
       if (isAlive){
-        let filterUserNull = data.filter(item => item.user !== null)
-        setUserList(filterUserNull)
+        setUserList(data)
       };
     }).catch(error => {
       setIsLoading(false);
@@ -40,13 +49,13 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = userList[dataIndex];
+          let { user, ...rest } = userList[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{user !== null ? name(user) : rest.first_name + " " + rest.last_name}</h5>
+                <small className="text-muted">{user?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -68,6 +77,22 @@ const Students = () => {
       },
     },
     {
+      name: "status",
+      label: "Status",
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex]
+          return <div className="flex items-center">
+            <div className="ml-3">
+                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
+                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+            </div>
+          </div>
+        }
+      },
+    },
+    {
       name: "action",
       label: " ",
       options: {
@@ -76,7 +101,7 @@ const Students = () => {
             let item = userList[dataIndex];
             return <div className="flex items-center">
                 <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.user.id}`}>
+                <Link to={`/admin/students/${ item.user !== null ? item.user.id : ""}`}>
                     <IconButton>
                         <Icon>edit</Icon>
                     </IconButton>

@@ -186,7 +186,8 @@ export function resolveResponse(res) {
       if (res.config.method === "put" && res.status >= 200) return toast.success(`Event updated`, toastOption)
       else if (res.config.method === "post" && res.status >= 200) return toast.success(`Event created`, toastOption)
       else if(res.config.method === "delete" && res.status >= 200) return toast.warning(`Event deleted`, toastOption)
-    } else return toast.success(`Success`, toastOption)
+    } else if (res.config.url.includes("login") && res.status >= 200) return toast.success(`Logged in`, toastOption)
+    else return toast.success(`Success`, toastOption)
   }
 }
 
