@@ -9,6 +9,7 @@ import eventsRoutes from "./views/events/routes";
 import certificatesRoutes from "./views/certificates/certificatesRoutes"
 
 import feedbackRoutes from "./views/feedback/routes";
+import mediaRoutes from "./views/media/routes";
 import courseworkRoutes from "./views/coursework/routes";
 
 
@@ -16,7 +17,7 @@ import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
 import ListRoute from "./views/list/ListRoute";
 
-import pagesRoutes from "./views/pages/pagesRoutes";
+import pagesRoutes from "./views/leads/pagesRoutes";
 
 const redirectRoute = [
   {
@@ -36,6 +37,7 @@ const routes = [
   ...dashboardRoutes,
   ...admissionsRoutes,
   ...eventsRoutes,
+  ...mediaRoutes,
   ...courseworkRoutes,
   ...feedbackRoutes,
   ...materialRoutes,

@@ -11,9 +11,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import axios from "../../../../axios";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
 
 const StudentDetails = ({ user, std_id }) => {
   const initialValues = {
@@ -44,7 +42,6 @@ const StudentDetails = ({ user, std_id }) => {
       value: initialValues.address,
     },
   ];
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [crt_user, setCrtUser] = useState({});
   useEffect(() =>{
    user ?  setCrtUser(user) : setCrtUser({});
@@ -52,16 +49,12 @@ const StudentDetails = ({ user, std_id }) => {
   const updateStudentProfile = (values) => {
     console.log(values);
     console.log(std_id)
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${std_id}`, { ...values })
+    bc.auth().updateAcademyStudent(std_id, values)
         .then(({data}) => {
           setCrtUser({...crt_user, ...data });
-          setMsg({ alert: true, type: "success", text: "User profile updated successfully"});
-          console.log(crt_user)
+          console.log(crt_user);
       })
-        .catch(error => {
-            console.log(error)
-            setMsg({ alert: true, type: "error", text: error.detail || `${error.first_name[0]}: First Name` || error.email[0] || error.phone[0]})
-        })
+        .catch(error => error)
 }
   return (
     <Card className="pt-6" elevation={3}>
@@ -142,11 +135,6 @@ const StudentDetails = ({ user, std_id }) => {
           </form>
         )}
       </Formik>
-      {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> ): ""}
     </Card>
   );
 };

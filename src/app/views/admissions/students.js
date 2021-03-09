@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
+
+const statusColors = {
+  'INVITED': 'text-white bg-error',
+ 'ACTIVE': 'text-white bg-green',
+}
+
+const name = (user) => {
+    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+    else return "No name";
+}
 
 const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
@@ -21,17 +29,15 @@ const Students = () => {
    
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`)
+    bc.auth().getAcademyStudents()
     .then(({ data }) => {
       console.log(data);
       setIsLoading(false);
       if (isAlive){
-        let filterUserNull = data.filter(item => item.user !== null)
-        setUserList(filterUserNull)
+        setUserList(data)
       };
     }).catch(error => {
       setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
     })
     return () => setIsAlive(false);
   }, [isAlive]);
@@ -43,13 +49,13 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = userList[dataIndex];
+          let { user, ...rest } = userList[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{user !== null ? name(user) : rest.first_name + " " + rest.last_name}</h5>
+                <small className="text-muted">{user?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -71,6 +77,22 @@ const Students = () => {
       },
     },
     {
+      name: "status",
+      label: "Status",
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex]
+          return <div className="flex items-center">
+            <div className="ml-3">
+                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
+                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+            </div>
+          </div>
+        }
+      },
+    },
+    {
       name: "action",
       label: " ",
       options: {
@@ -79,7 +101,7 @@ const Students = () => {
             let item = userList[dataIndex];
             return <div className="flex items-center">
                 <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.user.id}`}>
+                <Link to={`/admin/students/${ item.user !== null ? item.user.id : ""}`}>
                     <IconButton>
                         <Icon>edit</Icon>
                     </IconButton>
@@ -92,11 +114,6 @@ const Students = () => {
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
       <div className="mb-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
         <div>

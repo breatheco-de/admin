@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import A from '@material-ui/core/Link';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import bc from "app/services/breathecode";
+
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -24,7 +25,8 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/events/academy/event").then(({ data }) => {
+    bc.events().getAcademyEvents()
+    .then(({ data }) => {
       console.log(data)
       setIsLoading(false);
       if (isAlive) setItems(data);

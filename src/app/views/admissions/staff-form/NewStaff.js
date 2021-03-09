@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../../../../axios";
 import {
   Grid,
   Card,
@@ -11,37 +10,32 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
+import { useHistory } from "react-router-dom";
 import { createFilterOptions } from "@material-ui/lab/Autocomplete";
+import bc from "app/services/breathecode";
 const filter = createFilterOptions();
 const NewStaff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const history = useHistory();
   const postMember = () => {
     if (user !== null && role !== null) {
       let refactor = user.id ? { user: user.id } : { email: user.email, invite: true }
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member`, { ...refactor, role: role.slug })
+      bc.auth().addAcademyMember({ ...refactor, role: role.slug })
         .then((data) => {
           if (data.status === 201) {
-            setMsg({ alert: true, type: "success", text: "Member added successfully" });
             setRole(null);
             setUser(null);
-          } else setMsg({ alert: true, type: "success", text: data.statusText });
+            history.push("/admin/staff");
+          }
         })
-        .catch(error => {
-          console.log(error);
-          setMsg({
-            alert: true,
-            type: "error",
-            text: error.detail || "Unknown error, check fields"
-          })
-        })
+        .catch(error => console.log(error))
     } else setMsg({
       alert: true,
       type: "error",
       text: "Role and User cannot be empty"
     })
-
   };
   useEffect(() => {
     console.log(user)
@@ -98,7 +92,7 @@ const NewStaff = () => {
                     debounced={true}
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
                     getLabel={option => option.email}
-                    asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
                     filterOptions={(options, params) => {
                       const filtered = filter(options, params);
                       if (params.inputValue !== '') {
@@ -124,7 +118,7 @@ const NewStaff = () => {
                   <AsyncAutocomplete
                     onChange={(role) => setRole(role)}
                     width={"50%"}
-                    asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)}
+                    asyncSearch={() => bc.auth().getRoles()}
                     size={"small"}
                     label="Roles"
                     getLabel={option => `${option.name}`}

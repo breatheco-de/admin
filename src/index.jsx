@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 // import "./_index.scss";
 
 import * as serviceWorker from "./serviceWorker";
+import 'react-toastify/dist/ReactToastify.css';
 import App from "./app/App";
 
 // cssVars();

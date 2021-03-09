@@ -4,9 +4,8 @@ import { useParams } from "react-router-dom";
 import StaffDetails from "./StaffDetails";
 import DowndownMenu from "../../../components/DropdownMenu"
 import axios from "../../../../axios";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
 const options = [
   { label: "Send password reset", value: "password_reset" },
@@ -23,17 +22,17 @@ const Staff = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const getMemberById = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member/${staff_id}`)
+    bc.auth().getAcademyMember(staff_id)
       .then(({ data }) => {
         console.log(data)
         setMember(data)
       })
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
+      .catch(error => error)
   }
   const passwordReset = () => {
     axios.post(`${process.env.REACT_APP_API_HOST}/v1/user/password/reset`, { email: member?.user.email })
-      .then(({ data }) => setMsg({ alert: true, type: "success", text: "Password reset sent"}))
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details || "Unknown error" }))
+      .then(({ data }) => data)
+      .catch(error => error)
       setOpenDialog(false)
   }
   useEffect(() => {
@@ -42,11 +41,6 @@ const Staff = () => {
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
-        {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-            {msg.text}
-          </Alert>
-        </Snackbar>) : ""}
         {/* This Dialog opens the modal to delete the user in the cohort */}
         <Dialog
           open={openDialog}

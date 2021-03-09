@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Card,
@@ -7,12 +7,11 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { ProfileForm } from "./student-utils/ProfileForm";
-import Snackbar from '@material-ui/core/Snackbar';
 import { createFilterOptions } from "@material-ui/lab/Autocomplete";
-import axios from "../../../../axios";
 import {AsyncAutocomplete} from "app/components/Autocomplete";
-const filter = createFilterOptions();
+import bc from "app/services/breathecode";
 
+const filter = createFilterOptions();
 const NewStudent = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
   const [showForm, setShowForm] = useState({
@@ -30,11 +29,6 @@ const NewStudent = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-          <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-            {msg.text}
-          </Alert>
-        </Snackbar> : ""}
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },
@@ -59,7 +53,7 @@ const NewStudent = () => {
           onChange={(user) => setShowForm({data:{...showForm.data, ...user}, show:true})}
           width={"100%"}
           label="Search Users"
-          asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user?like=${searchTerm}`)}
+          asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
           debounced={true}
           filterOptions={(options, params) => {
             const filtered = filter(options, params);
@@ -72,8 +66,6 @@ const NewStudent = () => {
                                 show: true,
                                 data: {
                                     first_name: params.inputValue,
-                                    last_name:"",
-                                    email:""
                                 }
                             });
                         }}
