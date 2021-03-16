@@ -81,7 +81,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                     <AsyncAutocomplete
                                         onChange={(v) => setVersion(v)}
                                         width={"20%"}
-                                        key={cert?.slug}
+                                        key={cert.slug}
                                         asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert?.slug)}
                                         size={"small"}
                                         label="Version"

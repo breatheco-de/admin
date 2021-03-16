@@ -101,6 +101,7 @@ const NewCohort = () => {
                     {cert !== null ? <AsyncAutocomplete
                     onChange={(v) => setVersion(v)}
                     width={"20%"}
+                    key={cert.slug}
                     asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
                     size={"small"}
                     label="Version"
