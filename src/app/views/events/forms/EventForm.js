@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import {
     Grid,
@@ -10,9 +10,10 @@ import {
     Checkbox
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
-import { useParams,useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import bc from "app/services/breathecode";
 import dayjs from "dayjs";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
 
 //Timezone plugin
 let utc = require('dayjs/plugin/utc')
@@ -34,40 +35,21 @@ const EventForm = () => {
         venue: null,
         online_event: false
     });
+    const [venue, setVenue] = useState(null);
+    const [eventType, setEventType] = useState(null);
     const { id } = useParams();
     const history = useHistory();
-    
+
     useEffect(() => {
-        if(id) bc.events().getAcademyEvent(id)
-        .then(({data}) => setEvent({...data, starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"), ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss")}))
-        .catch(error => error); 
+        if (id) bc.events().getAcademyEvent(id)
+            .then(({ data }) => setEvent({ ...data, starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"), ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss") }))
+            .catch(error => error);
     }, [])
     const postEvent = (values) => {
         console.log(values)
         if (id) {
-            const {academy, ...rest} = values;
-            bc.events().updateAcademyEvent(id, {...rest, starting_at: dayjs(rest.starting_at).utc().format(), ending_at: dayjs(rest.ending_at).utc().format()})
-            .then(({ data }) =>{
-                setEvent({
-                    title: "",
-                    description: "",
-                    excerpt: "",
-                    lang: "",
-                    url: "",
-                    banner: "",
-                    capacity: 0,
-                    starting_at: "",
-                    ending_at: "",
-                    host: null,
-                    event_type: null,
-                    venue: null,
-                    online_event: false
-                });
-                if(data.academy !== undefined) history.push("/events/list")
-            })
-                .catch(error => error)
-        } else {
-            bc.events().addAcademyEvent({...values, starting_at: dayjs(values.starting_at).utc().format(), ending_at: dayjs(values.ending_at).utc().format()})
+            const { academy, ...rest } = values;
+            bc.events().updateAcademyEvent(id, { ...rest, starting_at: dayjs(rest.starting_at).utc().format(), ending_at: dayjs(rest.ending_at).utc().format() })
                 .then(({ data }) => {
                     setEvent({
                         title: "",
@@ -84,7 +66,28 @@ const EventForm = () => {
                         venue: null,
                         online_event: false
                     });
-                    if(data.academy !== undefined) history.push("/events/list")
+                    if (data.academy !== undefined) history.push("/events/list")
+                })
+                .catch(error => error)
+        } else {
+            bc.events().addAcademyEvent({ ...values, starting_at: dayjs(values.starting_at).utc().format(), ending_at: dayjs(values.ending_at).utc().format() })
+                .then(({ data }) => {
+                    setEvent({
+                        title: "",
+                        description: "",
+                        excerpt: "",
+                        lang: "",
+                        url: "",
+                        banner: "",
+                        capacity: 0,
+                        starting_at: "",
+                        ending_at: "",
+                        host: null,
+                        event_type: null,
+                        venue: null,
+                        online_event: false
+                    });
+                    if (data.academy !== undefined) history.push("/events/list")
                 })
                 .catch(error => error)
         }
@@ -95,7 +98,7 @@ const EventForm = () => {
                 <Breadcrumb
                     routeSegments={[
                         { name: "Events", path: "/events/list" },
-                        { name: id ? "Edit Event" : "New Event"},
+                        { name: id ? "Edit Event" : "New Event" },
                     ]}
                 />
             </div>
@@ -248,14 +251,14 @@ const EventForm = () => {
                                     Venue
                                 </Grid>
                                 <Grid item md={4} sm={8} xs={12}>
-                                    <TextField
+                                    <AsyncAutocomplete
+                                        onChange={(venue) => setVenue(venue)}
+                                        width={"50%"}
+                                        asyncSearch={() => bc.auth().getRoles()}
+                                        size={"small"}
                                         label="Venue"
-                                        name="venue"
-                                        size="small"
-                                        variant="outlined"
-                                        value={values.venue}
-                                        onChange={handleChange}
-                                    />
+                                        getLabel={option => `${option.name}`}
+                                        value={venue} />
                                 </Grid>
                                 <Grid item md={2} sm={4} xs={12}>
                                     Event Type
@@ -314,7 +317,7 @@ const EventForm = () => {
                             </Grid>
                             <div className="mt-6">
                                 <Button color="primary" variant="contained" type="submit">
-                                {id ? "Update" : "Create"}
+                                    {id ? "Update" : "Create"}
                                 </Button>
                             </div>
                         </form>

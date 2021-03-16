@@ -31,8 +31,9 @@ class BreatheCodeClient {
             getCertificates: () => {
                 return axios._get("Certificates",`${this.host}/admissions/certificate`)
             },
-            getAllCohorts: () => {
-                return axios._get("Cohorts",`${this.host}/admissions/academy/cohort`)
+            getAllCohorts: (query) => {
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query) => {
                 return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/4/syllabus`)
