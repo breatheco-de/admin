@@ -14,7 +14,6 @@ const Students = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
 
     useEffect(() => {
         setIsLoading(true);
