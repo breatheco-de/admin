@@ -71,8 +71,9 @@ class BreatheCodeClient {
                 const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
                 return axios._get("Academy member",`${this.host}/auth/academy/member?${qs}`)
             },
-            getAcademyStudents: () => {
-                return axios._get("Academy student",`${this.host}/auth/academy/student`)
+            getAcademyStudents: (query) => {
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             }
         }
     }
@@ -102,8 +103,9 @@ class BreatheCodeClient {
         updateAcademyEvent: (event, payload) => {
             return axios._put("Academy event",`${this.host}/events/academy/event/${event}`, payload)
         },
-        getAcademyEvents: () => {
-            return axios._get("Academy event",`${this.host}/events/academy/event`)
+        getAcademyEvents: (query) => {
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Academy event",`${this.host}/events/academy/event${query ? '?'+ qs : ''}`);
         },
         getAcademyEvent: (event) => {
             return axios._get("Academy event",`${this.host}/events/academy/event/${event}`)

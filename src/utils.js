@@ -171,15 +171,15 @@ export function classList(classes) {
 }
 
 export function resolveResponse(res) {
-  console.log(axios.scopes[res.config.url], "este es el scope")
+  console.log(axios.scopes[res.config.url], "este es el scope");
+  const methods = {
+    put: "updated",
+    post: "created",
+    delete:"deleted"
+  }
   if (res.config.method !== "get" && res.status >= 200) {
-    switch(res.config.method){
-      case "put": return toast.success(`${axios.scopes[res.config.url]} updated successfully`, toastOption)
-      case "post": return toast.success(`${axios.scopes[res.config.url]} created successfully`, toastOption)
-      case "delete": return toast.success(`${axios.scopes[res.config.url]} deleted successfully`, toastOption)
-      default : return toast.success(`Success`, toastOption)
-    }
-  } 
+    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
+  }
 }
 
 export function resolveError(error){

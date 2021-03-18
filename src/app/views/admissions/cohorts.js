@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField, Button, TableCell, TableRow, TableFooter, TablePagination, AccordionActions } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -198,7 +198,7 @@ const Cohorts = () => {
               elevation: 0,
               count: table.count,
               page: table.page,
-              rowsPerPage:query.get("limit") || 10,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 console.log(action, tableState)

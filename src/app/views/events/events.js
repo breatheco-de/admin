@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
 
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -22,17 +24,46 @@ const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0 
+  })
+  const query = useQuery();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
-    bc.events().getAcademyEvents()
+    bc.events().getAcademyEvents({
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    })
     .then(({ data }) => {
       console.log(data)
       setIsLoading(false);
-      if (isAlive) setItems(data);
+      if (isAlive) {
+        setItems(data.results);
+        setTable({count: data.count});
+      };
     });
     return () => setIsAlive(false);
   }, [isAlive]);
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    console.log("page: ",  rowsPerPage);
+    bc.events().getAcademyEvents({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+          setItems(data.results);
+          setTable({count: data.count, page:page});
+          history.replace(`/events/list?limit=${rowsPerPage}&offset=${page*rowsPerPage}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
 
   const columns = [
     {
@@ -155,15 +186,24 @@ const EventList = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
               elevation: 0,
+              count: table.count,
+              page: table.page,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch(action){
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,
