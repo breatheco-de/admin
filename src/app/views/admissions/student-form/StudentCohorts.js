@@ -120,7 +120,7 @@ const StudentCohorts = ({ std_id }) => {
         onChange={(cohort) => setCohort(cohort)}
         width={"100%"}
         label="Search Cohorts"
-        getLabel={option => `${option.name}, (${option.slug})`}
+        getOptionLabel={option => `${option.name}, (${option.slug})`}
         asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
         >
         <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort()}>

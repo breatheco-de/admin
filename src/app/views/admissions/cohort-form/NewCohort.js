@@ -105,7 +105,7 @@ const NewCohort = () => {
                     asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
                     size={"small"}
                     label="Version"
-                    getLabel={option => `${option.version}`}
+                    getOptionLabel={option => `${option.version}`}
                     value={version} /> : ""}
                   </div>
                 </Grid>

@@ -7,6 +7,7 @@ import {
   Card,
   Divider,
   Button,
+  TextField
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
@@ -16,30 +17,34 @@ import bc from "app/services/breathecode";
 const filter = createFilterOptions();
 const NewStaff = () => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState({
+    id:"",
+    email:"",
+    first_name:"",
+    last_name:""
+  });
+  const [role, setRole] = useState({
+    slug:"",
+    name:""
+  });
+  const [showForm, setShowForm] = useState(false);
   const history = useHistory();
-  const postMember = () => {
-    if (user !== null && role !== null) {
-      let refactor = user.id ? { user: user.id } : { email: user.email, invite: true }
-      bc.auth().addAcademyMember({ ...refactor, role: role.slug })
-        .then((data) => {
-          if (data.status === 201) {
-            setRole(null);
-            setUser(null);
-            history.push("/admin/staff");
-          }
-        })
-        .catch(error => console.log(error))
-    } else setMsg({
-      alert: true,
-      type: "error",
-      text: "Role and User cannot be empty"
-    })
+  const postMember = (values) => {
+    console.log(values)
+        let refactor = user.id !== "" ? { user: user.id } : { email: values.email, invite: true, ...values }
+        console.log(refactor)
+        bc.auth().addAcademyMember({ ...refactor, role: role.slug !== "" ? role.slug : ""})
+          .then((data) => {
+            setShowForm(false);
+            if (data.status === 201) {
+              setRole(null);
+              setUser(null);
+              history.push("/admin/staff");
+            }
+          })
+          .catch(error => setShowForm(false))
   };
-  useEffect(() => {
-    console.log(user)
-  }, [user])
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -63,7 +68,7 @@ const NewStaff = () => {
         </div>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => postMember()}
+          onSubmit={(values) => postMember(values)}
           enableReinitialize={true}
         >
           {({
@@ -84,14 +89,14 @@ const NewStaff = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
+                    id="user"
                     onChange={(user) => setUser(user)}
                     size={"small"} width={"50%"}
                     value={user}
                     label="User"
-                    freeSolo
                     debounced={true}
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
-                    getLabel={option => option.email}
+                    getOptionLabel={option => option.email}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
                     filterOptions={(options, params) => {
                       const filtered = filter(options, params);
@@ -100,7 +105,7 @@ const NewStaff = () => {
                           newUser: <Button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setUser({ email: params.inputValue });
+                              setShowForm(true);
                             }}
                           >
                             Invite '{params.inputValue}' to Breathecode
@@ -116,14 +121,85 @@ const NewStaff = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
+                    id="roles"
                     onChange={(role) => setRole(role)}
                     width={"50%"}
                     asyncSearch={() => bc.auth().getRoles()}
                     size={"small"}
                     label="Roles"
-                    getLabel={option => `${option.name}`}
+                    getOptionLabel={option => `${option.name}`}
                     value={role} />
                 </Grid>
+               { showForm ?  <> <Grid item md={2} sm={4} xs={12}>
+                  Name
+                    </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <div className="flex">
+                    <TextField
+                      className="mb-2 mt-2"
+                      label="First Name"
+                      name="first_name"
+                      size="small"
+                      required
+                      variant="outlined"
+                      value={values.first_name}
+                      onChange={handleChange}
+                    />
+                    <TextField
+                      className="m-2"
+                      label="Last Name"
+                      name="last_name"
+                      size="small"
+                      required
+                      variant="outlined"
+                      value={values.last_name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Phone number
+                    </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    label="Phone number"
+                    name="phone"
+                    size="small"
+                    required
+                    variant="outlined"
+                    value={values.phone}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Address
+                    </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    label="Address"
+                    name="address"
+                    size="small"
+                    type="text"
+                    variant="outlined"
+                    value={values.address}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Email
+                    </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    label="Email"
+                    name="email"
+                    size="small"
+                    type="email"
+                    required
+                    variant="outlined"
+                    value={values.email}
+                    onChange={handleChange}
+                  />
+                </Grid></> : ""}
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
@@ -144,10 +220,11 @@ const NewStaff = () => {
 };
 
 const initialValues = {
-  name: "",
-  slug: "",
-  certificate: "",
-  kickoff_date: ""
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone: "",
+  address: ""
 };
 
 export default NewStaff;
