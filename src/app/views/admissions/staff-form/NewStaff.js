@@ -94,7 +94,7 @@ const NewStaff = () => {
                     size={"small"} width={"50%"}
                     value={user}
                     label="User"
-                    debounced={true}
+                    debounced
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
                     getOptionLabel={option => option.email}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}

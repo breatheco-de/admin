@@ -1,134 +1,46 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { Grow, Icon, IconButton, TextField, Tooltip } from "@material-ui/core";
 import { format } from "date-fns";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { Link } from "react-router-dom";
+import bc from "../../services/breathecode";
+import dayjs from "dayjs";
 
-const OrderList = () => {
+let relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
+const Leads = () => {
+  const [items, setItems] = useState([]);
+  useEffect(()=>{
+    bc.marketing().getAcademyLeads().
+    then(({data}) => setItems(data))
+    .catch(error => error) 
+  },[])
   const columns = [
     {
-      name: "_id",
-      label: "Order No.",
+      name: "id",
+      label: "ID",
       options: {
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{orderList[dataIndex]._id}</span>
+          <span className="ellipsis">{items[dataIndex].id}</span>
         ),
       },
     },
     {
-      name: "customerName",
-      label: "Customer",
+      name: "created_at",
+      label: "Created At",
       options: {
         filter: true,
-      },
-    },
-    {
-      name: "productName",
-      label: "Product",
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{orderList[dataIndex].productName}</span>
-        ),
-      },
-    },
-    {
-      name: "date",
-      label: "Date",
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">
-            {format(orderList[dataIndex].date, "dd MMM, yyyy")}
-          </span>
-        ),
-      },
-    },
-    {
-      name: "status",
-      label: "Status",
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          let status = orderList[dataIndex].status;
-
-          switch (status) {
-            case "delivered":
-              return (
-                <small className="capitalize text-white bg-green border-radius-4 px-2 py-2px">
-                  {status}
-                </small>
-              );
-            case "processing":
-              return (
-                <small className="capitalize bg-secondary border-radius-4 px-2 py-2px">
-                  {status}
-                </small>
-              );
-            case "cancelled":
-              return (
-                <small className="capitalize text-white bg-error border-radius-4 px-2 py-2px">
-                  {status}
-                </small>
-              );
-
-            default:
-              break;
-          }
-        },
-      },
-    },
-    {
-      name: "method",
-      label: "Method",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "total",
-      label: "Total",
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <span>${orderList[dataIndex].total.toFixed(2)}</span>
-        ),
-      },
-    },
-    {
-      name: "action",
-      label: " ",
-      options: {
-        filter: false,
-        customBodyRenderLite: (dataIndex) => (
+        customBodyRenderLite: i =>
           <div className="flex items-center">
-            <div className="flex-grow"></div>
-            <Tooltip title="Mark as Delivered">
-              <IconButton>
-                <Icon className="text-green" fontSize="small">
-                  done
-                </Icon>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Cancel Order">
-              <IconButton>
-                <Icon color="error" fontSize="small">
-                  clear
-                </Icon>
-              </IconButton>
-            </Tooltip>
-            <Link to={`/invoice/${orderList[dataIndex]._id}`}>
-              <Tooltip title="View Order">
-                <IconButton>
-                  <Icon fontSize="small">arrow_right_alt</Icon>
-                </IconButton>
-              </Tooltip>
-            </Link>
+            <div className="ml-3">
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+            </div>
           </div>
-        ),
       },
-    },
+    }
   ];
 
   return (
@@ -145,7 +57,7 @@ const OrderList = () => {
         <div className="min-w-750">
           <MUIDataTable
             title={"All Orders"}
-            data={orderList}
+            data={items}
             columns={columns}
             options={{
               filterType: "textField",
@@ -193,42 +105,4 @@ const OrderList = () => {
   );
 };
 
-const orderList = [
-  {
-    _id: "lkfjdfjdsjdslgkfjdskjfds",
-    date: new Date(),
-    customerName: "Ben Schieldman",
-    productName: "Bit Bass Headphone",
-    method: "PayPal",
-    total: 15.25,
-    status: "delivered",
-  },
-  {
-    _id: "fkjjirewoigkjdhvkcxyhuig",
-    date: new Date(),
-    customerName: "Joyce Watson",
-    productName: "Comlion Watch",
-    method: "Visa Card",
-    total: 75.25,
-    status: "cancelled",
-  },
-  {
-    _id: "fdskjkljicuviosduisjd",
-    date: new Date(),
-    customerName: "Kayle Brown",
-    productName: "Beats Headphone",
-    method: "Master Card",
-    total: 45.25,
-    status: "processing",
-  },
-  {
-    _id: "fdskfjdsuoiucrwevbgd",
-    date: new Date(),
-    customerName: "Ven Helsing",
-    productName: "BMW Bumper",
-    method: "Master Card",
-    total: 2145.25,
-    status: "delivered",
-  },
-];
-export default OrderList;
+export default Leads;

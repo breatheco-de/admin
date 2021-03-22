@@ -3,7 +3,6 @@ import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
-import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 
@@ -14,6 +13,12 @@ const Students = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    const resendInvite = (user) => {
+        bc.auth().resendInvite(user)
+        .then(({data}) => console.log(data))
+        .catch(error => console.log(error))
+    } 
 
     useEffect(() => {
         setIsLoading(true);
@@ -89,11 +94,9 @@ const Students = () => {
                         ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
                     return <div className="flex items-center">
                         <div className="flex-grow"></div>
-                        <Link to="/pages/view-customer">
-                            <IconButton>
+                            <IconButton onClick={() => resendInvite(item.id)}>
                                 <Icon>refresh</Icon>
                             </IconButton>
-                        </Link>
                     </div>
                 },
             },
