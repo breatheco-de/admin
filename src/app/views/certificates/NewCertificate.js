@@ -124,7 +124,7 @@ const NewCertificate = () => {
                                                 Student
                                             </Grid>
                                             <Grid item md={10} sm={8} xs={12}>
-                                                <AsyncAutocomplete size="small"
+                                                <AsyncAutocomplete size="small" key={cohort.slug}
                                          width="100%" 
                                          asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${cohort.slug}&roles=STUDENT`)}
                                          onChange={(student) => setStudent(student)}

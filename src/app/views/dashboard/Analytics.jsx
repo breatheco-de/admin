@@ -44,8 +44,8 @@ const Analytics = () => {
 
     useEffect(() => {
         const academy = JSON.parse(localStorage.getItem("bc-academy"));
-        if(academy) return undefined;
-
+        if(academy === undefined || academy.id === undefined) return null;
+        
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
