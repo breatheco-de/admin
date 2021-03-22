@@ -3,6 +3,7 @@ import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "../hooks/useDebounce";
+import PropTypes from "prop-types";
 
 export function AsyncAutocomplete(props) {
   const [open, setOpen] = React.useState(false);
@@ -12,7 +13,7 @@ export function AsyncAutocomplete(props) {
   const [cache, setCache] = React.useState({})
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
-  const { width, onChange, value, asyncSearch, children, debounced = false, getLabel, label } = props;
+  const { width, onChange, value, asyncSearch, children, debounced, label, ...rest } = props;
   const search = (searchTerm) => {
     setLoading(true);
     if(cache[searchTerm] !== undefined && debounced){
@@ -47,8 +48,7 @@ export function AsyncAutocomplete(props) {
   return (
     <>
       <Autocomplete
-        {...props}
-        id="async_autocomplete"
+        {...rest}
         style={{ width: width }}
         open={open}
         onOpen={() => setOpen(true)}
@@ -58,7 +58,6 @@ export function AsyncAutocomplete(props) {
           setOpen(false);
           onChange(newValue);
         }}
-        getOptionLabel={getLabel}
         options={options}
         loading={loading}
         renderInput={params => (
@@ -88,3 +87,11 @@ export function AsyncAutocomplete(props) {
     </>
   );
 }
+
+AsyncAutocomplete.propTypes = {
+	debounced: PropTypes.bool,
+	children: PropTypes.any,
+  label: PropTypes.string,
+  asyncSearch: PropTypes.func,
+  value: PropTypes.any
+};

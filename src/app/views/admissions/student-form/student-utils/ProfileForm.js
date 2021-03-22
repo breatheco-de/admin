@@ -122,7 +122,7 @@ export const ProfileForm = ({ initialValues }) => {
                             width={"30%"}
                             size="small"
                             label="Cohort"
-                            getLabel={option => `${option.name}, (${option.slug})`}
+                            getOptionLabel={option => `${option.name}, (${option.slug})`}
                             asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
                         />
                     </Grid>

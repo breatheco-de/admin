@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
 import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -29,26 +29,57 @@ const Staff = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [role, setRole] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0 
+  });
+  const query = useQuery();
+  const history = useHistory();
 
   const getAcademyMembers = () => {
     bc.auth().getRoles()
       .then((res) => {
-        const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
-        if(res.status === 200) 
-          bc.auth().getAcademyMembers({roles: roles.join()})
+        if(res.status === 200){
+          setRole(() => res.data.filter(r => r.slug !== "student").map(r => r.slug));
+          bc.auth().getAcademyMembers({
+          roles: role.join(","), 
+          limit: query.get("limit") !== null ? query.get("limit") : 10,
+          offset: query.get("offset") !== null ? query.get("offset") : 0
+        })
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
               if (isAlive) {
-                let filterUserNull = data.filter(item => item.user !== null)
-                setUserList(filterUserNull)
+                let filterUserNull = data.results.filter(item => item.user !== null);
+                setUserList(filterUserNull);
+                setTable({count: data.count});
               };
             }).catch(error => {
               setIsLoading(false);
             })
+          }
       })
       .catch(error => console.log(error))
+  }
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    console.log("page: ",  rowsPerPage);
+    bc.auth().getAcademyMembers({
+      roles: role.join(","),
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        let filterUserNull = data.results.filter(item => item.user !== null);
+        setUserList(filterUserNull);
+        setTable({count: data.count, page:page});
+        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page*rowsPerPage}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
   }
 
   useEffect(() => {
@@ -141,11 +172,6 @@ const Staff = () => {
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
@@ -176,8 +202,24 @@ const Staff = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
+              serverSide: true,
               elevation: 0,
+              count: table.count,
+              page: table.page,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch(action){
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,

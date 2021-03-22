@@ -129,7 +129,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                     label="Search Users"
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
                     debounced={true}
-                    getLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
+                    getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
                 >
                     <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id, user.id)}>
                         Add to cohort
