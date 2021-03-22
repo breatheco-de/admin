@@ -63,7 +63,7 @@ const Analytics = () => {
                     xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'))
                     total += stamp.total_leads;
                     if(stamp.total_leads > max) max = stamp.total_leads;
-                    // if(stamp.total_leads < min) min = stamp.total_leads;
+                    if(stamp.total_leads < min) min = stamp.total_leads;
                 })
                 setLeads({ series, xAxis, total, max, min })
             })
@@ -82,14 +82,14 @@ const Analytics = () => {
                 setDonutLeads({ data: _data })
             })
 
-        //BC.events().getCheckins({
-          //  start: params.start.format('YYYY-MM-DD'),
-           // end: params.end.format('YYYY-MM-DD'),
-        //}).then(( { data }) => {
-          //      if(data !== undefined){
-            //        setCheckins(data);
-              //  }else setCheckins([])
-            //})
+        BC.events().getCheckins({
+          start: params.start.format('YYYY-MM-DD'),
+        end: params.end.format('YYYY-MM-DD'),
+            }).then(( { data }) => {
+              if(data !== undefined){
+                setCheckins(data);
+             }else setCheckins([])
+            })
 
         BC.feedback().getAnswers({
             status: "ANSWERED"
@@ -98,7 +98,6 @@ const Analytics = () => {
                 setFeedback(data.filter(a => a.score));
             })
     }, [params])
-    console.log("params", params)
     return (
         <Fragment>
             <div className="pb-24 pt-7 px-8 bg-primary">

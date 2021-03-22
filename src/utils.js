@@ -1,6 +1,6 @@
 import { differenceInSeconds } from "date-fns";
-import { func } from "prop-types";
 import { toast } from 'react-toastify';
+import axios from "./axios";
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -171,23 +171,14 @@ export function classList(classes) {
 }
 
 export function resolveResponse(res) {
-  if (res.config.method != "get") {
-    if (res.config.url.includes("cohort")) {
-      if (res.config.method === "put" && res.status >= 200) return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} updated`, toastOption)
-      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Cohort ${res.config.url.includes("user") ? "user" : ""} created`, toastOption)
-      else if (res.config.method === "delete" && res.status >= 200) return toast.warning(`Cohort ${res.config.url.includes("user") ? "user" : ""} deleted`, toastOption)
-      else return toast.success(`Success`, toastOption)
-    } else if (res.config.url.includes("auth") && !res.config.url.includes("login")) {
-      if (res.config.method === "put" && res.status >= 200) return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} updated`, toastOption)
-      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Academy ${res.config.url.includes("member") ? "member" : "student"} created`, toastOption)
-      else if (res.config.method === "delete" && res.status >= 200) return toast.warning(`Academy ${res.config.url.includes("member") ? "member" : "student"} deleted`, toastOption)
-      else return toast.success(`Success`, toastOption)
-    } else if (res.config.url.includes("events")) {
-      if (res.config.method === "put" && res.status >= 200) return toast.success(`Event updated`, toastOption)
-      else if (res.config.method === "post" && res.status >= 200) return toast.success(`Event created`, toastOption)
-      else if(res.config.method === "delete" && res.status >= 200) return toast.warning(`Event deleted`, toastOption)
-    } else if (res.config.url.includes("login") && res.status >= 200) return toast.success(`Logged in`, toastOption)
-    else return toast.success(`Success`, toastOption)
+  console.log(axios.scopes[res.config.url], "este es el scope");
+  const methods = {
+    put: "updated",
+    post: "created",
+    delete:"deleted"
+  }
+  if (res.config.method !== "get" && res.status >= 200) {
+    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
   }
 }
 

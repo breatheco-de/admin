@@ -77,7 +77,7 @@ const NewStudent = () => {
             }
             return filtered;
         }}
-          getLabel={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
+        getOptionLabel={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
         />
         </div>
         {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ""}

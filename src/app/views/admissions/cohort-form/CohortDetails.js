@@ -76,16 +76,16 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         asyncSearch={() => bc.admissions().getCertificates()}
                                         size={"small"}
                                         label="Certificate"
-                                        getLabel={option => `${option.name}`}
+                                        getOptionLabel={option => `${option.name}`}
                                         value={cert} />
                                     <AsyncAutocomplete
                                         onChange={(v) => setVersion(v)}
                                         width={"20%"}
-                                        key={cert?.slug}
+                                        key={cert.slug}
                                         asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert?.slug)}
                                         size={"small"}
                                         label="Version"
-                                        getLabel={option => `${option.version}`}
+                                        getOptionLabel={option => `${option.version}`}
                                         value={version} />
                                 </div>
                             </Grid>
