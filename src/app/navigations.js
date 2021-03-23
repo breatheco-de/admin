@@ -115,8 +115,8 @@ export const navigations = [
                 iconText: "OL",
             },
             {
-                name: "Attendies",
-                path: "/events/attendies",
+                name: "Attendees",
+                path: "/events/attendees",
                 iconText: "OL",
             },
         ],

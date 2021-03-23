@@ -29,7 +29,7 @@ const Staff = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [role, setRole] = useState([]);
+  let [role, setRole] = useState(null);
   const [table, setTable] = useState({
     count: 100,
     page: 0 
@@ -41,9 +41,9 @@ const Staff = () => {
     bc.auth().getRoles()
       .then((res) => {
         if(res.status === 200){
-          setRole(() => res.data.filter(r => r.slug !== "student").map(r => r.slug));
+          let r = res.data.filter(r => r.slug !== "student").map(r => r.slug);
           bc.auth().getAcademyMembers({
-          roles: role.join(","), 
+          roles: r.join(","), 
           limit: query.get("limit") !== null ? query.get("limit") : 10,
           offset: query.get("offset") !== null ? query.get("offset") : 0
         })
