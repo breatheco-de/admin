@@ -1,21 +1,41 @@
 import React,{useState, useEffect} from "react";
-import { Grow, Icon, IconButton, TextField, Tooltip } from "@material-ui/core";
-import { format } from "date-fns";
+import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
-import { Link } from "react-router-dom";
 import bc from "../../services/breathecode";
 import dayjs from "dayjs";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
 
 let relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
+
+const stageColors = {
+  'google': 'bg-gray',
+  'facebook': 'bg-secondary',
+  'coursereport': 'text-white bg-warning',
+  'ActiveCampaign': 'text-white bg-error',
+  'bing':'text-white bg-green'
+}
 
 const Leads = () => {
   const [items, setItems] = useState([]);
+  const [isAlive, setIsAlive] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const query = useQuery();
+  const history = useHistory();
+
   useEffect(()=>{
+    setIsLoading(true);
     bc.marketing().getAcademyLeads().
-    then(({data}) => setItems(data))
-    .catch(error => error) 
+    then(({data}) =>{
+      setIsLoading(false);
+      if (isAlive){ 
+        setItems(data);
+      };
+    })
+    .catch(error => setIsLoading(false)) 
+    return () => setIsAlive(false);
   },[])
   const columns = [
     {
@@ -28,10 +48,67 @@ const Leads = () => {
       },
     },
     {
+      name: "location",
+      label: "Location",
+      options: {
+        filter: true,
+        filterType: "multiselect",
+        filterList:query.get("location") !== null ? [query.get("location")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items[dataIndex].location}</span>
+        ),
+      },
+    },
+    {
+      name: "course",
+      label: "Course",
+      options: {
+        filterList:query.get("course") !== null ? [query.get("course")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items[dataIndex].course !== null ? items[dataIndex].course !== null : "---"}</span>
+        ),
+      },
+    },
+    {
+      name: "utm_medium",
+      label: "Utm Medium",
+      options: {
+        filterList:query.get("utm_medium") !== null ? [query.get("utm_medium")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items[dataIndex].utm_medium !== null ? items[dataIndex].utm_medium: "---"}</span>
+        ),
+      },
+    },
+    {
+      name: "utm_source",
+      label: "Utm Source",
+      options: {
+        filter: true,
+        filterType: "multiselect",
+        filterList:query.get("utm_source") !== null ? [query.get("utm_source")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className={`ellipsis ${stageColors[items[dataIndex].utm_source]} border-radius-4 px-2 pt-2px text-center`} >{items[dataIndex].utm_source !== null ? items[dataIndex].utm_source: "---"}</span>
+        ),
+      },
+    },
+    {
+      name: "tags",
+      label: "Tags",
+      options: {
+        filter: true,
+        filterType: "multiselect",
+        filterList:query.get("tags") !== null ? [query.get("tags")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items[dataIndex].tags}</span>
+        ),
+      },
+    },
+    {
       name: "created_at",
       label: "Created At",
       options: {
         filter: true,
+        filterList:query.get("created_at") !== null ? [query.get("created_at")] : [],
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">

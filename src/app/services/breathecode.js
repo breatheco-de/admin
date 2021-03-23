@@ -40,7 +40,6 @@ class BreatheCodeClient {
             }
          }
     }
-
     auth() {
         return {
             addStudent : (payload) => {
@@ -76,7 +75,7 @@ class BreatheCodeClient {
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
-                return axios._put("Invite", `${this.host}/user/invite/resend/${user}`)
+                return axios._put("Invite", `${this.host}/auth/user/invite/resend/${user}`)
             }
         }
     }

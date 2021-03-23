@@ -69,7 +69,10 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                             <Grid item md={10} sm={8} xs={12}>
                                 <div className="mr-4 flex flex-wrap">
                                     <AsyncAutocomplete
-                                        onChange={(certificate) => setCert(certificate)}
+                                        onChange={(certificate) => {
+                                            setCert(certificate);
+                                            setVersion(null);
+                                        }}
                                         width={"70%"}
                                         initialValue={cert}
                                         className="mr-2 ml-2"
@@ -81,8 +84,8 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                     <AsyncAutocomplete
                                         onChange={(v) => setVersion(v)}
                                         width={"20%"}
-                                        key={cert.slug}
-                                        asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert?.slug)}
+                                        key={cert !== null ? cert.slug: ""}
+                                        asyncSearch={() =>  bc.admissions().getAllCourseSyllabus(cert?.slug)}
                                         size={"small"}
                                         label="Version"
                                         getOptionLabel={option => `${option.version}`}

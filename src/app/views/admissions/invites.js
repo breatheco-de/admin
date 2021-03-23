@@ -6,8 +6,8 @@ import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 
-let relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
+let relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
 const Students = () => {
     const [isAlive, setIsAlive] = useState(true);
