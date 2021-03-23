@@ -42,6 +42,7 @@ const Staff = () => {
       .then((res) => {
         if(res.status === 200){
           let r = res.data.filter(r => r.slug !== "student").map(r => r.slug);
+          setRole(r);
           bc.auth().getAcademyMembers({
           roles: r.join(","), 
           limit: query.get("limit") !== null ? query.get("limit") : 10,
