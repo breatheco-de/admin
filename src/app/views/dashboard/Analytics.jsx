@@ -3,11 +3,6 @@ import { Grid, Card, TextField } from "@material-ui/core";
 import DoughnutChart from "../charts/echarts/Doughnut";
 import ModifiedAreaChart from "./shared/ModifiedAreaChart";
 import StatCards from "./shared/StatCards";
-import TopSellingTable from "./shared/TopSellingTable";
-import RowCards from "./shared/RowCards";
-import StatCards2 from "./shared/StatCards2";
-import UpgradeCard from "./shared/UpgradeCard";
-import Campaigns from "./shared/Campaigns";
 import { useTheme } from "@material-ui/styles";
 import BC from "../../services/breathecode";
 import dayjs from "dayjs";
@@ -83,11 +78,11 @@ const Analytics = () => {
             })
 
         BC.events().getCheckins({
-          start: params.start.format('YYYY-MM-DD'),
-        end: params.end.format('YYYY-MM-DD'),
-            }).then(( { data }) => {
-              if(data !== undefined){
-                setCheckins(data);
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+            }).then((res) => {
+              if(res !== undefined && res.data !== undefined){
+                setCheckins(res.data);
              }else setCheckins([])
             })
 
