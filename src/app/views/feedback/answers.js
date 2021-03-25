@@ -6,6 +6,9 @@ import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } fro
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -18,19 +21,53 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const EventList = () => {
+const Answers = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0,
+    querys: {} 
+  });
+  const query = useQuery();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
+    let q = {
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    }
+    setTable({querys: q});
+    bc.feedback().getAnswers(q).then(({ data }) => {
       setIsLoading(false);
-      if (isAlive) setItems(data);
+      if (isAlive){ 
+        setItems(data.results);
+      }
     });
     return () => setIsAlive(false);
   }, [isAlive]);
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    console.log("page: ",  rowsPerPage);
+    setTable({...table, page:page, querys:{limit:rowsPerPage, offset:page*rowsPerPage}});
+    console.log(table.querys)
+    bc.feedback().getAnswers({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+          setItems(data.results);
+          setTable({...table,count: data.count});
+          console.log(table.querys)
+          history.replace(`/feedback/answers?${Object.keys(table.querys).map(key => `${key}=${table.querys[key]}`).join('&')}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+   }
 
   const columns = [
     {
@@ -134,7 +171,7 @@ const EventList = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Feedback", path: "/" },
+                { name: "Feedback", path: "/feedback" },
                 { name: "Answer List" },
               ]}
             />
@@ -153,19 +190,36 @@ const EventList = () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Events"}
+            title={"All Answers"}
             data={items}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
-              selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
+              elevation: 0,
+              count: table.count,
+              page: table.page,
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
+                console.log(changedColumn, filterList,type, changedColumnIndex, "onFilterChange");
+                setTable({ querys: {...table.querys,[changedColumn]: filterList[changedColumnIndex][0] }})
+                history.replace(`/feedback/answers?${Object.keys(table.querys).map(key => `${key}=${table.querys[key]}`).join('&')}`)
+              },
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
+              rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                switch(action){
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "filterChange":
+                    //console.log(action, tableState)
+                }
+              }, 
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customSearchRender: (
@@ -208,4 +262,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default Answers;

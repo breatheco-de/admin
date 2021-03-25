@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Tooltip } from "@material-ui/core";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 
@@ -16,22 +16,22 @@ const Students = () => {
 
     const resendInvite = (user) => {
         bc.auth().resendInvite(user)
-        .then(({data}) => console.log(data))
-        .catch(error => console.log(error))
-    } 
+            .then(({ data }) => console.log(data))
+            .catch(error => console.log(error))
+    }
 
     useEffect(() => {
         setIsLoading(true);
-        bc.auth().getAcademyMembers({status: "invited"})
-        .then(({ data }) => {
-            console.log(data)
-            setIsLoading(false);
-            if (isAlive) {
-                setUserList(data)
-            };
-        }).catch(error => {
-            setIsLoading(false);
-          })
+        bc.auth().getAcademyMembers({ status: "invited" })
+            .then(({ data }) => {
+                console.log(data)
+                setIsLoading(false);
+                if (isAlive) {
+                    setUserList(data)
+                };
+            }).catch(error => {
+                setIsLoading(false);
+            })
         return () => setIsAlive(false);
     }, [isAlive]);
 
@@ -64,13 +64,13 @@ const Students = () => {
             options: {
                 filter: true,
                 customBodyRenderLite: i =>
-                  <div className="flex items-center">
-                    <div className="ml-3">
-                      <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
-                      <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+                    <div className="flex items-center">
+                        <div className="ml-3">
+                            <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
+                            <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+                        </div>
                     </div>
-                  </div>
-              },
+            },
         },
         {
             name: "role",
@@ -94,9 +94,11 @@ const Students = () => {
                         ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
                     return <div className="flex items-center">
                         <div className="flex-grow"></div>
+                        <Tooltip title="Resend Invite">
                             <IconButton onClick={() => resendInvite(item.id)}>
                                 <Icon>refresh</Icon>
                             </IconButton>
+                        </Tooltip>
                     </div>
                 },
             },
