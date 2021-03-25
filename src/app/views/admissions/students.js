@@ -2,24 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 import { useQuery } from '../../hooks/useQuery';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
 const statusColors = {
   'INVITED': 'text-white bg-error',
- 'ACTIVE': 'text-white bg-green',
+  'ACTIVE': 'text-white bg-green',
 }
 
 const name = (user) => {
-    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
-    else return "No name";
+  if (user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+  else return "No name";
 }
 
 const Students = () => {
@@ -28,46 +28,52 @@ const Students = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [table, setTable] = useState({
     count: 100,
-    page: 0 
+    page: 0
   });
   const query = useQuery();
   const history = useHistory();
   //TODO: Show errors with the response 
-   
+
   useEffect(() => {
     setIsLoading(true);
     bc.auth().getAcademyStudents({
       limit: query.get("limit") !== null ? query.get("limit") : 10,
       offset: query.get("offset") !== null ? query.get("offset") : 0
     })
-    .then(({ data }) => {
-      console.log(data);
-      setIsLoading(false);
-      if (isAlive){
-        setUserList(data.results);
-        setTable({count: data.count});
-      };
-    }).catch(error => {
-      setIsLoading(false);
-    })
+      .then(({ data }) => {
+        console.log(data);
+        setIsLoading(false);
+        if (isAlive) {
+          setUserList(data.results);
+          setTable({ count: data.count });
+        };
+      }).catch(error => {
+        setIsLoading(false);
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    console.log("page: ",  rowsPerPage);
+    console.log("page: ", rowsPerPage);
     bc.auth().getAcademyStudents({
       limit: rowsPerPage,
       offset: page * rowsPerPage
     })
       .then(({ data }) => {
         setIsLoading(false);
-          setUserList(data.results);
-          setTable({count: data.count, page:page});
-          history.replace(`/admin/students?limit=${rowsPerPage}&offset=${page*rowsPerPage}`)
+        setUserList(data.results);
+        setTable({ count: data.count, page: page });
+        history.replace(`/admin/students?limit=${rowsPerPage}&offset=${page * rowsPerPage}`)
       }).catch(error => {
         setIsLoading(false);
       })
+  }
+
+  const resendInvite = (user) => {
+    bc.auth().resendInvite(user)
+      .then(({ data }) => console.log(data))
+      .catch(error => console.log(error))
   }
 
   const columns = [
@@ -113,8 +119,8 @@ const Students = () => {
           let item = userList[dataIndex]
           return <div className="flex items-center">
             <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
-                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+              <small className={"border-radius-4 px-2 pt-2px" + statusColors[item.status]}>{item.status.toUpperCase()}</small>
+              {item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
             </div>
           </div>
         }
@@ -126,46 +132,57 @@ const Students = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-            let item = userList[dataIndex];
-            return <div className="flex items-center">
-                <div className="flex-grow"></div>
-                <Link to={`/admin/students/${ item.user !== null ? item.user.id : ""}`}>
-                    <IconButton>
-                        <Icon>edit</Icon>
-                    </IconButton>
-                </Link>
-            </div>
+          let item = userList[dataIndex].user !== null ?
+            (userList[dataIndex]) :
+            ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
+          return item.status === "INVITED" ? (<div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Tooltip title="Resend Invite">
+              <IconButton onClick={() => resendInvite(item.id)}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            </Tooltip>
+          </div>) : <div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Link to={`/admin/students/${item.user !== null ? item.user.id : ""}`}>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
+            </Link>
+          </div>
         },
       },
-    },
+    }
   ];
 
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-      <div className="flex flex-wrap justify-between mb-6">
-        <div>
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
             <Breadcrumb
-            routeSegments={[
+              routeSegments={[
                 { name: "Admin", path: "/" },
                 { name: "Students" },
-            ]}
+              ]}
             />
-        </div>
+          </div>
 
-        <div className="">
-        <Link to={`/admin/students/new`}>
-            <Button variant="contained" color="primary">
+          <div className="">
+            <Link to={`/admin/students/new`}>
+              <Button variant="contained" color="primary">
                 Add new student
             </Button>
-        </Link>
+            </Link>
+          </div>
         </div>
-      </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-        {isLoading && <MatxLoading />}
-        <MUIDataTable
+          {isLoading && <MatxLoading />}
+          <MUIDataTable
             title={"All Students"}
             data={userList}
             columns={columns}
@@ -180,13 +197,13 @@ const Students = () => {
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 console.log(action, tableState)
-                switch(action){
+                switch (action) {
                   case "changePage":
                     console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case "changeRowsPerPage":
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                 }
               },
