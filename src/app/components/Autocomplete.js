@@ -13,7 +13,7 @@ export function AsyncAutocomplete(props) {
   const [cache, setCache] = React.useState({})
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
-  const { width, onChange, value, asyncSearch, children, debounced, label, ...rest } = props;
+  const { width, onChange, value, asyncSearch, children, debounced, label,required, ...rest } = props;
   const search = (searchTerm) => {
     setLoading(true);
     if(cache[searchTerm] !== undefined && debounced){
@@ -68,6 +68,7 @@ export function AsyncAutocomplete(props) {
             onChange={(e) => {
               setSearchTerm(e.target.value)
             }}
+            required={required}
             variant="outlined"
             InputProps={{
               ...params.InputProps,
@@ -93,5 +94,6 @@ AsyncAutocomplete.propTypes = {
 	children: PropTypes.any,
   label: PropTypes.string,
   asyncSearch: PropTypes.func,
-  value: PropTypes.any
+  value: PropTypes.any,
+  required:PropTypes.bool
 };

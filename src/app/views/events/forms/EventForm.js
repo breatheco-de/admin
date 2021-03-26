@@ -31,8 +31,6 @@ const EventForm = () => {
         starting_at: "",
         ending_at: "",
         host: null,
-        event_type: null,
-        venue: null,
         online_event: false
     });
     const [venue, setVenue] = useState(null);
@@ -42,14 +40,23 @@ const EventForm = () => {
 
     useEffect(() => {
         if (id) bc.events().getAcademyEvent(id)
-            .then(({ data }) => setEvent({ ...data, starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"), ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss") }))
+            .then(({ data }) => setEvent({ ...data, starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"), ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss")}))
             .catch(error => error);
     }, [])
     const postEvent = (values) => {
         console.log(values)
+        const venueAndType = {
+            venue: venue !== null ? venue.id: null,
+            event_type: eventType !== null ? eventType.id: null,
+        }
         if (id) {
             const { academy, ...rest } = values;
-            bc.events().updateAcademyEvent(id, { ...rest, starting_at: dayjs(rest.starting_at).utc().format(), ending_at: dayjs(rest.ending_at).utc().format() })
+            bc.events().updateAcademyEvent(id, { 
+                ...rest, 
+                starting_at: dayjs(rest.starting_at).utc().format(), 
+                ending_at: dayjs(rest.ending_at).utc().format(), 
+                ...venueAndType
+             })
                 .then(({ data }) => {
                     setEvent({
                         title: "",
@@ -70,7 +77,12 @@ const EventForm = () => {
                 })
                 .catch(error => error)
         } else {
-            bc.events().addAcademyEvent({ ...values, starting_at: dayjs(values.starting_at).utc().format(), ending_at: dayjs(values.ending_at).utc().format() })
+            bc.events().addAcademyEvent({ 
+                ...values, 
+                starting_at: dayjs(values.starting_at).utc().format(), 
+                ending_at: dayjs(values.ending_at).utc().format(), 
+                ...venueAndType
+            })
                 .then(({ data }) => {
                     setEvent({
                         title: "",
@@ -254,24 +266,26 @@ const EventForm = () => {
                                     <AsyncAutocomplete
                                         onChange={(venue) => setVenue(venue)}
                                         width={"50%"}
-                                        asyncSearch={() => bc.auth().getRoles()}
+                                        asyncSearch={() => bc.events().getAcademyVenues()}
                                         size={"small"}
                                         label="Venue"
-                                        getLabel={option => `${option.name}`}
+                                        required={true}
+                                        getOptionLabel={option => `${option.title}`}
                                         value={venue} />
                                 </Grid>
                                 <Grid item md={2} sm={4} xs={12}>
                                     Event Type
                                 </Grid>
                                 <Grid item md={4} sm={8} xs={12}>
-                                    <TextField
-                                        label="Event Type"
-                                        name="event_type"
-                                        size="small"
-                                        variant="outlined"
-                                        value={values.event_type}
-                                        onChange={handleChange}
-                                    />
+                                <AsyncAutocomplete
+                                        onChange={(eventType) => setEventType(eventType)}
+                                        width={"50%"}
+                                        asyncSearch={() => bc.events().getAcademyEventType()}
+                                        size={"small"}
+                                        label="Event type"
+                                        required={true}
+                                        getOptionLabel={option => `${option.name}`}
+                                        value={eventType} />
                                 </Grid>
                                 <Grid item md={2} sm={4} xs={12}>
                                     Event Description
