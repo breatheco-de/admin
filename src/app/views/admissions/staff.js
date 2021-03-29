@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 import { useQuery } from '../../hooks/useQuery';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -21,8 +21,8 @@ const roleColors = {
 }
 
 const name = (user) => {
-    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
-    else return "No name";
+  if (user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+  else return "No name";
 }
 
 const Staff = () => {
@@ -32,7 +32,7 @@ const Staff = () => {
   let [role, setRole] = useState(null);
   const [table, setTable] = useState({
     count: 100,
-    page: 0 
+    page: 0
   });
   const query = useQuery();
   const history = useHistory();
@@ -40,33 +40,33 @@ const Staff = () => {
   const getAcademyMembers = () => {
     bc.auth().getRoles()
       .then((res) => {
-        if(res.status === 200){
+        if (res.status === 200) {
           let r = res.data.filter(r => r.slug !== "student").map(r => r.slug);
           setRole(r);
           bc.auth().getAcademyMembers({
-          roles: r.join(","), 
-          limit: query.get("limit") !== null ? query.get("limit") : 10,
-          offset: query.get("offset") !== null ? query.get("offset") : 0
-        })
+            roles: r.join(","),
+            limit: query.get("limit") !== null ? query.get("limit") : 10,
+            offset: query.get("offset") !== null ? query.get("offset") : 0
+          })
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
               if (isAlive) {
                 let filterUserNull = data.results.filter(item => item.user !== null);
                 setUserList(filterUserNull);
-                setTable({count: data.count});
+                setTable({ count: data.count });
               };
             }).catch(error => {
               setIsLoading(false);
             })
-          }
+        }
       })
       .catch(error => console.log(error))
   }
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    console.log("page: ",  rowsPerPage);
+    console.log("page: ", rowsPerPage);
     bc.auth().getAcademyMembers({
       roles: role.join(","),
       limit: rowsPerPage,
@@ -76,11 +76,16 @@ const Staff = () => {
         setIsLoading(false);
         let filterUserNull = data.results.filter(item => item.user !== null);
         setUserList(filterUserNull);
-        setTable({count: data.count, page:page});
-        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page*rowsPerPage}`)
+        setTable({ count: data.count, page: page });
+        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`)
       }).catch(error => {
         setIsLoading(false);
       })
+  }
+  const resendInvite = (user) => {
+    bc.auth().resendInvite(user)
+      .then(({ data }) => console.log(data))
+      .catch(error => console.log(error))
   }
 
   useEffect(() => {
@@ -131,7 +136,7 @@ const Staff = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           let item = userList[dataIndex]
-          return <small className={"border-radius-4 px-2 pt-2px "+(roleColors[item.role.slug] || "bg-light")}>{item.role.name.toUpperCase()}</small>
+          return <small className={"border-radius-4 px-2 pt-2px " + (roleColors[item.role.slug] || "bg-light")}>{item.role.name.toUpperCase()}</small>
         }
       },
     },
@@ -144,8 +149,8 @@ const Staff = () => {
           let item = userList[dataIndex]
           return <div className="flex items-center">
             <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
-                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+              <small className={"border-radius-4 px-2 pt-2px" + statusColors[item.status]}>{item.status.toUpperCase()}</small>
+              {item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
             </div>
           </div>
         }
@@ -157,18 +162,29 @@ const Staff = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
-          return <div className="flex items-center">
+          let item = userList[dataIndex].user !== null ?
+            (userList[dataIndex]) :
+            ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
+          return item.status === "INVITED" ? (<div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Tooltip title="Resend Invite">
+              <IconButton onClick={() => resendInvite(item.id)}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            </Tooltip>
+          </div>) : <div className="flex items-center">
             <div className="flex-grow"></div>
             <Link to={`/admin/staff/${item.user.id}`}>
-              <IconButton>
-                <Icon>edit</Icon>
-              </IconButton>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
             </Link>
           </div>
         },
       },
-    },
+    }
   ];
 
   return (
@@ -186,8 +202,8 @@ const Staff = () => {
 
           <div className="">
             <Link to={`/admin/staff/new`}>
-                <Button variant="contained" color="primary">
-                    Add new staff member
+              <Button variant="contained" color="primary">
+                Add new staff member
                 </Button>
             </Link>
           </div>
@@ -211,13 +227,13 @@ const Staff = () => {
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 console.log(action, tableState)
-                switch(action){
+                switch (action) {
                   case "changePage":
                     console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case "changeRowsPerPage":
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                 }
               },

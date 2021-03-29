@@ -115,6 +115,12 @@ class BreatheCodeClient {
         },
         getAcademyEvent: (event) => {
             return axios._get("Academy event",`${this.host}/events/academy/event/${event}`)
+        },
+        getAcademyVenues: () => {
+            return axios._get("Venues", `${this.host}/events/academy/venues`)
+        },
+        getAcademyEventType: () => {
+            return axios._get("Event Type", `${this.host}/events/academy/eventype`)
         }
     })
 
