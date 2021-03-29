@@ -96,7 +96,7 @@ const NewCohort = () => {
                     asyncSearch={() => bc.admissions().getCertificates()}
                     size={"small"}
                     label="Certificate"
-                    getLabel={option => `${option.name}`}
+                    getOptionLabel={option => `${option.name}`}
                     value={cert} />
                     {cert !== null ? <AsyncAutocomplete
                     onChange={(v) => setVersion(v)}
