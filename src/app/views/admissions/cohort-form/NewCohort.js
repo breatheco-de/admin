@@ -96,7 +96,8 @@ const NewCohort = () => {
                     asyncSearch={() => bc.admissions().getCertificates()}
                     size={"small"}
                     label="Certificate"
-                    getLabel={option => `${option.name}`}
+                    required={true}
+                    getOptionLabel={option => `${option.name}`}
                     value={cert} />
                     {cert !== null ? <AsyncAutocomplete
                     onChange={(v) => setVersion(v)}
@@ -105,6 +106,7 @@ const NewCohort = () => {
                     asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
                     size={"small"}
                     label="Version"
+                    required={true}
                     getOptionLabel={option => `${option.version}`}
                     value={version} /> : ""}
                   </div>

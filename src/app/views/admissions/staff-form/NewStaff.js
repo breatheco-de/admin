@@ -106,6 +106,8 @@ const NewStaff = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               setShowForm(true);
+                              if(params.inputValue.includes("@"))setFieldValue("email", params.inputValue)
+                              else setFieldValue("first_name", params.inputValue)                               
                             }}
                           >
                             Invite '{params.inputValue}' to Breathecode
@@ -127,6 +129,7 @@ const NewStaff = () => {
                     asyncSearch={() => bc.auth().getRoles()}
                     size={"small"}
                     label="Roles"
+                    required={true}
                     getOptionLabel={option => `${option.name}`}
                     value={role} />
                 </Grid>
