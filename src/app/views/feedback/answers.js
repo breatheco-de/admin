@@ -24,12 +24,10 @@ const stageColors = {
 const Answers = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  const [table, setTable] = useState({
-    count: 100,
-    page: 0,
-    querys: {} 
+  const [items, setItems] = useState({
+    page:0
   });
+  const [querys, setQuerys] = useState({});
   const query = useQuery();
   const history = useHistory();
 
@@ -39,35 +37,37 @@ const Answers = () => {
       limit: query.get("limit") !== null ? query.get("limit") : 10,
       offset: query.get("offset") !== null ? query.get("offset") : 0
     }
-    setTable({querys: q});
-    bc.feedback().getAnswers(q).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive){ 
-        setItems(data.results);
-      }
-    });
+    setQuerys(q);
+    bc.feedback().getAnswers(q)
+      .then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) {
+          setItems({...data});
+          //setTable({...table,count: data.count});
+        };
+      }).catch(error => {
+        setIsLoading(false);
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage) => {
+   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    console.log("page: ",  rowsPerPage);
-    setTable({...table, page:page, querys:{limit:rowsPerPage, offset:page*rowsPerPage}});
-    console.log(table.querys)
     bc.feedback().getAnswers({
       limit: rowsPerPage,
       offset: page * rowsPerPage
     })
       .then(({ data }) => {
         setIsLoading(false);
-          setItems(data.results);
-          setTable({...table,count: data.count});
-          console.log(table.querys)
-          history.replace(`/feedback/answers?${Object.keys(table.querys).map(key => `${key}=${table.querys[key]}`).join('&')}`)
+        setItems({...data, page:page});
       }).catch(error => {
         setIsLoading(false);
       })
-   }
+      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
+      setQuerys(q);
+      history.replace(`/feedback/answers?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+  }
+   
 
   const columns = [
     {
@@ -76,7 +76,7 @@ const Answers = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = items[dataIndex];
+          let { user } = items.results[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
@@ -96,10 +96,10 @@ const Answers = () => {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
-            {items[i].created_at ? 
+            {items.results[i].created_at ? 
                 <div className="ml-3">
-                    <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
-                    <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+                    <h5 className="my-0 text-15">{dayjs(items.results[i].created_at).format("MM-DD-YYYY")}</h5>
+                    <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
                 </div>
                 :
                 <div className="ml-3">
@@ -116,15 +116,15 @@ const Answers = () => {
         filter: true,
         filterType: "multiselect",
         customBodyRenderLite: i => {
-            const color = items[i].score > 7 ? "text-green" : items[i].score < 7 ? "text-error" : "text-orange";
-            if(items[i].score)
+            const color = items.results[i].score > 7 ? "text-green" : items.results[i].score < 7 ? "text-error" : "text-orange";
+            if(items.results[i].score)
                 return <div className="flex items-center">
                     <LinearProgress
                         color="secondary"
-                        value={parseInt(items[i].score) * 10}
+                        value={parseInt(items.results[i].score) * 10}
                         variant="determinate"
                         />
-                    <small className={color}>{items[i].score}</small>
+                    <small className={color}>{items.results[i].score}</small>
                 </div>
             else return "Not answered"
         }
@@ -137,8 +137,8 @@ const Answers = () => {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
-            { items[i].comment ? 
-                items[i].comment.substring(0, 100)
+            { items.results[i].comment ? 
+                items.results[i].comment.substring(0, 100)
                 :
                 "No comments"
             }
@@ -191,19 +191,19 @@ const Answers = () => {
           {isLoading && <MatxLoading />}
           <MUIDataTable
             title={"All Answers"}
-            data={items}
+            data={items.results}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
               serverSide: true,
               elevation: 0,
-              count: table.count,
-              page: table.page,
+              page: items.page,
+              count: items.count,
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                console.log(changedColumn, filterList,type, changedColumnIndex, "onFilterChange");
-                setTable({ querys: {...table.querys,[changedColumn]: filterList[changedColumnIndex][0] }})
-                history.replace(`/feedback/answers?${Object.keys(table.querys).map(key => `${key}=${table.querys[key]}`).join('&')}`)
+                let q = { [changedColumn]: filterList[changedColumnIndex][0], ...querys }
+                setQuerys(q)
+                history.replace(`/feedback/answers?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
               rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],

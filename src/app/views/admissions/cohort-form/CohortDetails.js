@@ -79,6 +79,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         asyncSearch={() => bc.admissions().getCertificates()}
                                         size={"small"}
                                         label="Certificate"
+                                        required={true}
                                         getOptionLabel={option => `${option.name}`}
                                         value={cert} />
                                     <AsyncAutocomplete
@@ -88,6 +89,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         asyncSearch={() =>  bc.admissions().getAllCourseSyllabus(cert?.slug)}
                                         size={"small"}
                                         label="Version"
+                                        required={true}
                                         getOptionLabel={option => `${option.version}`}
                                         value={version} />
                                 </div>
