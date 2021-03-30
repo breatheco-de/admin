@@ -22,6 +22,7 @@ const Leads = () => {
   const [items, setItems] = useState([]);
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [querys, setQuerys] = useState({});
   const query = useQuery();
   const history = useHistory();
 
@@ -140,6 +141,11 @@ const Leads = () => {
               filterType: "textField",
               responsive: "standard",
               elevation: 0,
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
+                let q = { [changedColumn]: filterList[changedColumnIndex][0]}
+                setQuerys(q)
+                history.replace(`/leads/list?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+              },
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onRowsDelete: (data) => console.log(data),
               customSearchRender: (
