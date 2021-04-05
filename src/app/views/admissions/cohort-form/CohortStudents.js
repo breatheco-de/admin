@@ -131,7 +131,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                     debounced={true}
                     getOptionLabel={option => `${option.first_name} ${option.last_name}, (${option.email})`}
                 >
-                    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(cohort_id, user.id)}>
+                    <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort(user.id)}>
                         Add to cohort
                     </Button>
                 </AsyncAutocomplete>
