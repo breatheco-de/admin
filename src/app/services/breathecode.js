@@ -36,7 +36,7 @@ class BreatheCodeClient {
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/4/syllabus`)
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             }
          }
     }
@@ -75,7 +75,7 @@ class BreatheCodeClient {
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
-                return axios._put("Invite", `${this.host}/auth/user/invite/resend/${user}`)
+                return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
             }
         }
     }
