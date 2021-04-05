@@ -75,7 +75,7 @@ class BreatheCodeClient {
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
-                return axios._put("Invite", `${this.host}/auth/user/invite/resend/${user}`)
+                return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
             }
         }
     }
@@ -101,7 +101,7 @@ class BreatheCodeClient {
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
             const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Event",`${this.host}/events/checkin?${qs}`)
+            return axios._get("Event",`${this.host}/academy/checkin?${qs}`)
         },
         addAcademyEvent: (payload) => {
             return axios._post("Academy event",`${this.host}/events/academy/event`, payload)
