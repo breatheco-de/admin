@@ -28,6 +28,19 @@ const ShopContainer = ({
   return (
     <Fragment>
       <div className="relative h-full w-full">
+        <div className='mt-2'>
+          <TextField
+            style={{ display: "none" }}
+            id="contained-button-file"
+            type="file"
+            inputProps={{multiple: true}}
+          />
+          <label htmlFor="contained-button-file">
+            <Button variant="contained" color="primary" component="span">
+              Upload
+          </Button>
+          </label>
+        </div>
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
             <Button
