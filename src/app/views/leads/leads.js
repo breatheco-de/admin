@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from "react";
-import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import { Link } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import bc from "../../services/breathecode";
 import dayjs from "dayjs";
@@ -37,6 +38,7 @@ const Leads = () => {
     .catch(error => setIsLoading(false)) 
     return () => setIsAlive(false);
   },[])
+
   const columns = [
     {
       name: "id",
@@ -123,12 +125,23 @@ const Leads = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        <Breadcrumb
-          routeSegments={[
-            { name: "Pages", path: "/pages" },
-            { name: "Order List" },
-          ]}
-        />
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
+            <Breadcrumb
+              routeSegments={[
+                { name: "Pages", path: "/leads/list" },
+                { name: "Order List" },
+              ]}
+            />
+          </div>
+          <div className="">
+              <Link to="/leads/list/new" color="primary" className="btn btn-primary">
+                <Button variant="contained" color="primary">
+                  Add new lead
+                </Button>
+              </Link>
+          </div>
+        </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
