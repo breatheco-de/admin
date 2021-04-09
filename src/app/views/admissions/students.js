@@ -30,16 +30,18 @@ const Students = () => {
   const [table, setTable] = useState({
     count: 100,
     page: 0
-  });
+  }); 
   const query = useQuery();
   const history = useHistory();
+
   //TODO: Show errors with the response 
 
   useEffect(() => {
     setIsLoading(true);
     bc.auth().getAcademyStudents({
       limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0
+      offset: query.get("offset") !== null ? query.get("offset") : 0,
+      first_name: query.get("first_name") !== null ? query.get("first_name") : ""
     })
       .then(({ data }) => {
         console.log(data);
@@ -69,6 +71,26 @@ const Students = () => {
       }).catch(error => {
         setIsLoading(false);
       })
+  }
+
+  const handlePageChangeByName = (newName) => {
+    setIsLoading(true);
+    bc.auth().getAcademyStudents({
+      first_name: newName
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        setUserList(data.results);
+        history.replace(`/admin/students?name=${newName}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
+
+  const searchByName = (e, newName) => {
+    if (e.key == "Enter") {
+      handlePageChangeByName(newName)
+    }
   }
 
   const resendInvite = (user) => {
@@ -203,7 +225,6 @@ const Students = () => {
                 console.log(action, tableState)
                 switch (action) {
                   case "changePage":
-                    console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case "changeRowsPerPage":
@@ -223,7 +244,8 @@ const Students = () => {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
+                      onChange={({ target: { value } }) => {handleSearch(value)}}
+                      onKeyPress={(e) => {searchByName(e, e.target.value)}}
                       InputProps={{
                         style: {
                           paddingRight: 0,

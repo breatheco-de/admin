@@ -71,7 +71,7 @@ class BreatheCodeClient {
                 return axios._get("Academy member",`${this.host}/auth/academy/member?${qs}`)
             },
             getAcademyStudents: (query) => {
-                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : ''; 
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
