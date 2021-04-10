@@ -41,7 +41,7 @@ const Students = () => {
     bc.auth().getAcademyStudents({
       limit: query.get("limit") !== null ? query.get("limit") : 10,
       offset: query.get("offset") !== null ? query.get("offset") : 0,
-      first_name: query.get("first_name") !== null ? query.get("first_name") : ""
+      like: query.get("like") !== null ? query.get("like") : ""
     })
       .then(({ data }) => {
         console.log(data);
@@ -76,12 +76,14 @@ const Students = () => {
   const handlePageChangeByName = (newName) => {
     setIsLoading(true);
     bc.auth().getAcademyStudents({
-      first_name: newName
+      like: newName
     })
       .then(({ data }) => {
         setIsLoading(false);
-        setUserList(data.results);
-        history.replace(`/admin/students?name=${newName}`)
+        console.log("data", data)
+        setUserList(data);
+        console.log("userList", userList);
+        history.replace(`/admin/students?name=${newName}`);
       }).catch(error => {
         setIsLoading(false);
       })
