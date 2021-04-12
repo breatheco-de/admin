@@ -36,7 +36,7 @@ class BreatheCodeClient {
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/4/syllabus`)
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             }
          }
     }
@@ -101,7 +101,7 @@ class BreatheCodeClient {
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
             const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Event",`${this.host}/academy/checkin?${qs}`)
+            return axios._get("Event",`${this.host}/events/academy/checkin?${qs}`)
         },
         addAcademyEvent: (payload) => {
             return axios._post("Academy event",`${this.host}/events/academy/event`, payload)

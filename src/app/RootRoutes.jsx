@@ -10,7 +10,6 @@ import certificatesRoutes from "./views/certificates/certificatesRoutes"
 
 import feedbackRoutes from "./views/feedback/routes";
 import mediaRoutes from "./views/media/routes";
-import courseworkRoutes from "./views/coursework/routes";
 
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
@@ -38,7 +37,6 @@ const routes = [
   ...admissionsRoutes,
   ...eventsRoutes,
   ...mediaRoutes,
-  ...courseworkRoutes,
   ...feedbackRoutes,
   ...materialRoutes,
   ...pageLayoutRoutes,
