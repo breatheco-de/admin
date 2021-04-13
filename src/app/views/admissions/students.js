@@ -33,6 +33,9 @@ const Students = () => {
   }); 
   const query = useQuery();
   const history = useHistory();
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [nameURL, setNameURL] = useState("");
 
   //TODO: Show errors with the response 
 
@@ -56,43 +59,25 @@ const Students = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage) => {
+  const handlePageChange = (page, rowsPerPage, newName) => {
     setIsLoading(true);
+    setLimit(rowsPerPage);
+    setOffset(page * rowsPerPage);
+    setNameURL(newName);
     console.log("page: ", rowsPerPage);
     bc.auth().getAcademyStudents({
-      limit: rowsPerPage,
-      offset: page * rowsPerPage
+      limit: rowsPerPage == 0 ? 10 : rowsPerPage,
+      offset: page * rowsPerPage,
+      like: newName
     })
       .then(({ data }) => {
         setIsLoading(false);
         setUserList(data.results);
         setTable({ count: data.count, page: page });
-        history.replace(`/admin/students?limit=${rowsPerPage}&offset=${page * rowsPerPage}`)
+        history.replace(`/admin/students?limit=${rowsPerPage == 0 ? 10 : rowsPerPage}&offset=${page * rowsPerPage}${newName == "" ? "" : `?name=${newName}`}`)
       }).catch(error => {
         setIsLoading(false);
       })
-  }
-
-  const handlePageChangeByName = (newName) => {
-    setIsLoading(true);
-    bc.auth().getAcademyStudents({
-      like: newName
-    })
-      .then(({ data }) => {
-        setIsLoading(false);
-        console.log("data", data)
-        setUserList(data);
-        console.log("userList", userList);
-        history.replace(`/admin/students?name=${newName}`);
-      }).catch(error => {
-        setIsLoading(false);
-      })
-  }
-
-  const searchByName = (e, newName) => {
-    if (e.key == "Enter") {
-      handlePageChangeByName(newName)
-    }
   }
 
   const resendInvite = (user) => {
@@ -227,10 +212,10 @@ const Students = () => {
                 console.log(action, tableState)
                 switch (action) {
                   case "changePage":
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, nameURL);
                     break;
                   case "changeRowsPerPage":
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, nameURL);
                     break;
                 }
               },
@@ -247,7 +232,7 @@ const Students = () => {
                       size="small"
                       fullWidth
                       onChange={({ target: { value } }) => {handleSearch(value)}}
-                      onKeyPress={(e) => {searchByName(e, e.target.value)}}
+                      onKeyPress={(e) => {if(e.key == "Enter"){handlePageChange(limit, offset, e.target.value)}}}
                       InputProps={{
                         style: {
                           paddingRight: 0,
