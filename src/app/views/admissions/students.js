@@ -33,18 +33,18 @@ const Students = () => {
   }); 
   const query = useQuery();
   const history = useHistory();
-  const [limit, setLimit] = useState(10);
-  const [offset, setOffset] = useState(0);
-  const [nameURL, setNameURL] = useState("");
+  const [limit, setLimit] = useState(query.get("limit") || 10);
+  const [offset, setOffset] = useState(query.get("offset") || 0);
+  const [nameURL, setNameURL] = useState(query.get("like") || "");
 
   //TODO: Show errors with the response 
-
+  console.log("soy nameurl", nameURL); 
   useEffect(() => {
     setIsLoading(true);
     bc.auth().getAcademyStudents({
-      limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0,
-      like: query.get("like") !== null ? query.get("like") : ""
+      limit,
+      offset,
+      like: nameURL
     })
       .then(({ data }) => {
         console.log(data);
@@ -59,22 +59,23 @@ const Students = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage, newName) => {
+  const handlePageChange = (page, _limit, _like) => {
     setIsLoading(true);
-    setLimit(rowsPerPage);
-    setOffset(page * rowsPerPage);
-    setNameURL(newName);
-    console.log("page: ", rowsPerPage);
-    bc.auth().getAcademyStudents({
-      limit: rowsPerPage == 0 ? 10 : rowsPerPage,
-      offset: page * rowsPerPage,
-      like: newName
-    })
+    setLimit(_limit);
+    setOffset(page * _limit);
+    setNameURL(_like);
+    console.log("page: ", _limit);
+    let query = {
+      limit: _limit,
+      offset: page * _limit,
+      like: _like
+    }
+    bc.auth().getAcademyStudents(query)
       .then(({ data }) => {
         setIsLoading(false);
         setUserList(data.results);
         setTable({ count: data.count, page: page });
-        history.replace(`/admin/students?limit=${rowsPerPage == 0 ? 10 : rowsPerPage}&offset=${page * rowsPerPage}${newName == "" ? "" : `?name=${newName}`}`)
+        history.replace(`/admin/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
       }).catch(error => {
         setIsLoading(false);
       })
@@ -232,7 +233,7 @@ const Students = () => {
                       size="small"
                       fullWidth
                       onChange={({ target: { value } }) => {handleSearch(value)}}
-                      onKeyPress={(e) => {if(e.key == "Enter"){handlePageChange(limit, offset, e.target.value)}}}
+                      onKeyPress={(e) => {if(e.key == "Enter"){handlePageChange(offset, limit, e.target.value); console.log("soy limit" ,limit)}}}
                       InputProps={{
                         style: {
                           paddingRight: 0,
