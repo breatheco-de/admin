@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 
 const NewLead = () => {
   const [leadType, setLeadType] = useState("");
+  let academy = JSON.parse(localStorage.getItem("bc-academy"));
   const [newLead, setNewLead] = useState(
     {
       first_name: "",
@@ -39,12 +40,13 @@ const NewLead = () => {
       city: "",
       latitude: 0,
       longitude: 0,
-      stats: "",
+      state: "",
       zip_code: 0,
       browser_lang: "",
       lead_type: "",
       tag_objects: [],
-      automation_objects: []
+      automation_objects: [],
+      academy: academy.id
     }
   ); 
 
@@ -409,6 +411,19 @@ const NewLead = () => {
                   />
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
+                  State
+                </Grid>
+                <Grid item md = {10} sm = {8} xs = {12}>
+                  <TextField
+                    label = "State"
+                    name = "state"
+                    size = "small"
+                    variant = "outlined"
+                     defaultValue = {newLead.stats}
+                    onChange = {createLead}
+                  />
+                </Grid>
+                <Grid item md = {2} sm = {4} xs = {12}>
                   City
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
@@ -418,6 +433,19 @@ const NewLead = () => {
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newLead.city}
+                    onChange = {createLead}
+                  />
+                </Grid>
+                <Grid item md = {2} sm = {4} xs = {12}>
+                  ZIP code
+                </Grid>
+                <Grid item md = {10} sm = {8} xs = {12}>
+                  <TextField
+                    label = "ZIP code"
+                    name = "zip_code"
+                    size = "small"
+                    variant = "outlined"
+                    defaultValue = {newLead.zip_code}
                     onChange = {createLead}
                   />
                 </Grid>
@@ -444,32 +472,6 @@ const NewLead = () => {
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newLead.longitude}
-                    onChange = {createLead}
-                  />
-                </Grid>
-                <Grid item md = {2} sm = {4} xs = {12}>
-                  Stats
-                </Grid>
-                <Grid item md = {10} sm = {8} xs = {12}>
-                  <TextField
-                    label = "Stats"
-                    name = "stats"
-                    size = "small"
-                    variant = "outlined"
-                     defaultValue = {newLead.stats}
-                    onChange = {createLead}
-                  />
-                </Grid>
-                <Grid item md = {2} sm = {4} xs = {12}>
-                  ZIP code
-                </Grid>
-                <Grid item md = {10} sm = {8} xs = {12}>
-                  <TextField
-                    label = "ZIP code"
-                    name = "zip_code"
-                    size = "small"
-                    variant = "outlined"
-                    defaultValue = {newLead.zip_code}
                     onChange = {createLead}
                   />
                 </Grid>
@@ -510,9 +512,11 @@ const NewLead = () => {
                 </Grid>
               </Grid>
               <div className = "mt-6">
-                <Button color = "primary" variant = "contained" type = "submit">
-                  Create
-                </Button>
+              
+                  <Button color = "primary" variant = "contained" type = "submit">
+                    Create
+                  </Button>
+
               </div>
             </form>
           )}
