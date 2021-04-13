@@ -204,7 +204,7 @@ const Cohorts = () => {
               page: items.page,
               count: items.count,
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                let q = { [changedColumn]: filterList[changedColumnIndex][0]};
+                let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
                 setQuerys(q);
                 history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
