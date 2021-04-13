@@ -108,8 +108,8 @@ const StaffDetails = ({ user, staff_id }) => {
                 <TableRow>
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
-                    <div>{user?.user.github}</div>
-                    {user?.user.github == undefined ?
+                    <div>{user?.user.github?.username}</div>
+                    {user?.user.github?.username == undefined || !user?.user.github?.username ?
                       <small className="px-1 py-2px bg-light-error text-red border-radius-4">
                         GITHUB UNVERIFIED
                     </small> :
