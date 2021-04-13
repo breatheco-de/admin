@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 import {
   Grid,
   TextField,
@@ -9,6 +9,7 @@ import {
   TablePagination,
   Hidden,
 } from "@material-ui/core";
+import {StyledDropzone} from "../../components/Dropzone"
 import GridMediaCard from "./GridMediaCard"
 import ListMediaCard from "./ListMediaCard"
 import * as _ from "lodash";
@@ -28,19 +29,7 @@ const ShopContainer = ({
   return (
     <Fragment>
       <div className="relative h-full w-full">
-        <div className='mt-2'>
-          <TextField
-            style={{ display: "none" }}
-            id="contained-button-file"
-            type="file"
-            inputProps={{multiple: true}}
-          />
-          <label htmlFor="contained-button-file">
-            <Button variant="contained" color="primary" component="span">
-              Upload
-          </Button>
-          </label>
-        </div>
+        <StyledDropzone />
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
             <Button

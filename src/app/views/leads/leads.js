@@ -47,7 +47,7 @@ const Leads = () => {
   },[])
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    bc.admissions().getAcademyLeads({
+    bc.marketing().getAcademyLeads({
       limit: rowsPerPage,
       offset: page * rowsPerPage
     })
