@@ -204,11 +204,11 @@ const Cohorts = () => {
               page: items.page,
               count: items.count,
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                let q = { [changedColumn]: filterList[changedColumnIndex][0], ...querys }
-                setQuerys(q)
+                let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
+                setQuerys(q);
                 history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
-              rowsPerPage: querys.limit === undefined ? parseInt(query.get("limit"), 10) : querys.limit,
+              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 switch (action) {

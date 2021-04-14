@@ -5,7 +5,7 @@ import {
 
 const initialState = {
   productList: [
-      { title: "Media example", imgUrl: "https://www.pixelstalk.net/wp-content/uploads/2016/07/HD-Black-Horse-Image.jpg", category: { title: "Hourses"}, description: "asdasd" }
+      { title: "Media example", imgUrl: "https://www.pixelstalk.net/wp-content/uploads/2016/07/HD-Black-Horse-Image.jpg", category: { title: "Horses"}, description: "asdasd" }
   ],
   categoryList: [],
 };

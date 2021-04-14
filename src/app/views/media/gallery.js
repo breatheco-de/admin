@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from "matx";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   getProductList,
@@ -10,6 +9,8 @@ import {
 import SideNav from "./SideNav";
 import GalleryContainer from "./GalleryContainer";
 import { debounce } from "lodash";
+
+// Dropzone depency for drag and drop
 
 const Gallery = () => {
   const [open, setOpen] = useState(true);
@@ -53,7 +54,6 @@ const Gallery = () => {
       let tempList = productList.filter((product) =>
         product.title.toLowerCase().match(query.toLowerCase())
       );
-
       setFilteredProductList(tempList);
     }, 200),
     [productList]

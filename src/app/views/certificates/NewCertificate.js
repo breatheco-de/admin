@@ -115,7 +115,7 @@ const NewCertificate = () => {
                                          width="100%" 
                                          asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
                                          onChange={(cohort) => setCohort(cohort)}
-                                         getLabel={option => `${option.name}, (${option.slug})`}
+                                         getOptionLabel={option => `${option.name}, (${option.slug})`}
                                          label="Cohort"/>
                                     </Grid>
                                     {type === "single" && cohort.length !== 0 ?
@@ -128,7 +128,7 @@ const NewCertificate = () => {
                                          width="100%" 
                                          asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?cohorts=${cohort.slug}&roles=STUDENT`)}
                                          onChange={(student) => setStudent(student)}
-                                         getLabel={(option) => `${option.user.first_name} ${option.user.last_name} (${option.user.email})`}
+                                         getOptionLabel={(option) => `${option.user.first_name} ${option.user.last_name} (${option.user.email})`}
                                          label="Student"/>
                                             </Grid>
                                     </>:null}

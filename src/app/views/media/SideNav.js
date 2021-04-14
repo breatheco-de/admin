@@ -55,7 +55,7 @@ const Sidenav = ({
       </div>
       <div className="px-4">
         <Card elevation={3} className="p-4 mb-4">
-          <h6 className="m-0 mb-4">Price</h6>
+        <h5 className="m-0 mb-4">Type</h5>
           <FormControl component="fieldset" className="w-full">
             <RadioGroup
               aria-label="status"

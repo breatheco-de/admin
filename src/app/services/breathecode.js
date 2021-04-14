@@ -36,7 +36,7 @@ class BreatheCodeClient {
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/4/syllabus`)
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             }
          }
     }
@@ -75,15 +75,15 @@ class BreatheCodeClient {
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
-                return axios._put("Invite", `${this.host}/auth/user/invite/resend/${user}`)
+                return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
             }
         }
     }
     marketing = () => ({
         getLeads: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
-            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Lead report",`${this.host}/marketing/report/lead?${qs}`)
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Lead report",`${this.host}/marketing/report/lead${query? '?'+ qs : ''}`)
         },
         getAcademyLeads: (query) => {
             const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
@@ -103,8 +103,8 @@ class BreatheCodeClient {
     events = () => ({
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
-            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Event",`${this.host}/events/checkin?${qs}`)
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Event",`${this.host}/events/academy/checkin${query? '?'+ qs : ''}`)
         },
         addAcademyEvent: (payload) => {
             return axios._post("Academy event",`${this.host}/events/academy/event`, payload)

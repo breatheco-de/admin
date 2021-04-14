@@ -20,15 +20,23 @@ const stageColors = {
 }
 
 const Leads = () => {
-  const [items, setItems] = useState([]);
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [items, setItems] = useState({
+    page:0
+  });
+  const [querys, setQuerys] = useState({});
   const query = useQuery();
   const history = useHistory();
 
   useEffect(()=>{
     setIsLoading(true);
-    bc.marketing().getAcademyLeads().
+    let q = {
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    }
+    setQuerys(q);
+    bc.marketing().getAcademyLeads(q).
     then(({data}) =>{
       setIsLoading(false);
       if (isAlive){ 
@@ -39,13 +47,30 @@ const Leads = () => {
     return () => setIsAlive(false);
   },[])
 
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    bc.marketing().getAcademyLeads({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        setItems({...data, page:page});
+      }).catch(error => {
+        setIsLoading(false);
+      })
+      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
+      setQuerys(q);
+      history.replace(`/leads/list?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+  }
+
   const columns = [
     {
       name: "id",
       label: "ID",
       options: {
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].id}</span>
+          <span className="ellipsis">{items.results[dataIndex].id}</span>
         ),
       },
     },
@@ -57,7 +82,7 @@ const Leads = () => {
         filterType: "multiselect",
         filterList:query.get("location") !== null ? [query.get("location")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].location}</span>
+          <span className="ellipsis">{items.results[dataIndex].location}</span>
         ),
       },
     },
@@ -67,7 +92,7 @@ const Leads = () => {
       options: {
         filterList:query.get("course") !== null ? [query.get("course")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].course !== null ? items[dataIndex].course !== null : "---"}</span>
+          <span className="ellipsis">{items.results[dataIndex].course !== null ? items.results[dataIndex].course !== null : "---"}</span>
         ),
       },
     },
@@ -77,7 +102,7 @@ const Leads = () => {
       options: {
         filterList:query.get("utm_medium") !== null ? [query.get("utm_medium")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].utm_medium !== null ? items[dataIndex].utm_medium: "---"}</span>
+          <span className="ellipsis">{items.results[dataIndex].utm_medium !== null ? items.results[dataIndex].utm_medium: "---"}</span>
         ),
       },
     },
@@ -89,7 +114,7 @@ const Leads = () => {
         filterType: "multiselect",
         filterList:query.get("utm_source") !== null ? [query.get("utm_source")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className={`ellipsis ${stageColors[items[dataIndex].utm_source]} border-radius-4 px-2 pt-2px text-center`} >{items[dataIndex].utm_source !== null ? items[dataIndex].utm_source: "---"}</span>
+          <span className={`ellipsis ${stageColors[items.results[dataIndex].utm_source]} border-radius-4 px-2 pt-2px text-center`} >{items.results[dataIndex].utm_source !== null ? items.results[dataIndex].utm_source: "---"}</span>
         ),
       },
     },
@@ -101,7 +126,7 @@ const Leads = () => {
         filterType: "multiselect",
         filterList:query.get("tags") !== null ? [query.get("tags")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].tags}</span>
+          <span className="ellipsis">{items.results[dataIndex].tags}</span>
         ),
       },
     },
@@ -114,8 +139,8 @@ const Leads = () => {
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items.results[i].created_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
             </div>
           </div>
       },
@@ -147,13 +172,34 @@ const Leads = () => {
         <div className="min-w-750">
           <MUIDataTable
             title={"All Orders"}
-            data={items}
+            data={items.results}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
               elevation: 0,
+              page: items.page,
+              count: items.count,
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
+                let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
+                setQuerys(q);
+                history.replace(`/leads/list?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+              },
+              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                switch (action) {
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                  case "filterChange":
+                  //console.log(action, tableState)
+                }
+              },
               onRowsDelete: (data) => console.log(data),
               customSearchRender: (
                 searchText,
