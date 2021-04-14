@@ -83,7 +83,7 @@ const NewLead = () => {
   const ProfileSchema = Yup.object().shape({
     first_name: Yup.string()
       .min(2, "Your name is too short")
-      .required("Please enter your full name"),
+      .required("Please enter a full name"),
     email: Yup.string()
       .email("The email is incorrect"),
     course: Yup.string().required("Please enter a course"),
