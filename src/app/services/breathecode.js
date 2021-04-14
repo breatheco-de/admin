@@ -82,8 +82,8 @@ class BreatheCodeClient {
     marketing = () => ({
         getLeads: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
-            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Lead report",`${this.host}/marketing/report/lead?${qs}`)
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Lead report",`${this.host}/marketing/report/lead${query? '?'+ qs : ''}`)
         },
         getAcademyLeads: (query) => {
             const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
@@ -100,8 +100,8 @@ class BreatheCodeClient {
     events = () => ({
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
-            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-            return axios._get("Event",`${this.host}/events/academy/checkin?${qs}`)
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Event",`${this.host}/events/academy/checkin${query? '?'+ qs : ''}`)
         },
         addAcademyEvent: (payload) => {
             return axios._post("Academy event",`${this.host}/events/academy/event`, payload)
