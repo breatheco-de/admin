@@ -71,7 +71,7 @@ class BreatheCodeClient {
                 return axios._get("Academy member",`${this.host}/auth/academy/member?${qs}`)
             },
             getAcademyStudents: (query) => {
-                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : ''; 
                 return axios._get("Academy student",`${this.host}/auth/academy/student${query ? '?'+ qs : ''}`)
             },
             resendInvite:(user) => {
@@ -88,7 +88,10 @@ class BreatheCodeClient {
         getAcademyLeads: (query) => {
             const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
             return axios._get("Academy lead", `${this.host}/marketing/academy/lead${query ? '?'+ qs : ''}`)
-        }
+        },
+        getAcademyTags: () => axios._get("Academy tags",`${this.host}/marketing/academy/tag`),
+        getAcademyAutomations: () => axios._get("Academy automations",`${this.host}/marketing/academy/automation`),
+        addNewLead: (newLead) => axios._post("New lead", `${this.host}/marketing/lead`, newLead)
     })
     feedback = () => ({
         getAnswers: (query) => {
