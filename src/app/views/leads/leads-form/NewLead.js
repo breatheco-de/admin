@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Formik } from "formik";
-
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
   Card,
@@ -13,10 +13,22 @@ import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import * as Yup from 'yup';
+import { useHistory } from "react-router-dom";
+
+const useStyles = makeStyles(({ palette, ...theme }) => ({
+  select: {
+      width: "9rem",
+  },
+}));
+
+
 
 const NewLead = () => {
+  const classes = useStyles();
   const [leadType, setLeadType] = useState("");
+  const [language, setLanguge] = useState("");
   let academy = JSON.parse(localStorage.getItem("bc-academy"));
+  const history = useHistory();
   const [newLead, setNewLead] = useState(
     {
       first_name: "",
@@ -78,6 +90,24 @@ const NewLead = () => {
     },
   ];
 
+  const selectLanguages = (event) => {
+    setLanguge(event.target.value);
+    setNewLead({
+      ...newLead, language: event.target.value
+    })
+  }
+
+  const languages = [
+    {
+      value: "es",
+      label: "Spanish"
+    },
+    {
+      value: "us",
+      label: "English"
+    }
+  ]
+
   const phoneRegExp = /^[+]?([0-9]{11,15})$/;
 
   const ProfileSchema = Yup.object().shape({
@@ -115,7 +145,7 @@ const NewLead = () => {
         <Formik
           initialValues = {newLead}
           validationSchema = {ProfileSchema}
-          onSubmit = {(newLead) => {bc.marketing().addNewLead(newLead); console.log(newLead)}}
+          onSubmit = {(newLead) => {bc.marketing().addNewLead(newLead); history.push('/leads/list')}}
           enableReinitialize = {true}
         >
           {({
@@ -197,10 +227,12 @@ const NewLead = () => {
                   <TextField
                     error = {errors.course && touched.course}
                     helperText = {touched.course && errors.course}
+                    className={classes.select}
                     label = "Course"
                     name = "course"
                     size = "small"
                     variant = "outlined"
+
                     defaultValue = {newLead.course}
                     onChange = {createLead}
                   />
@@ -223,6 +255,7 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
+                    className={classes.select}
                     label = "Location"
                     name = "location"
                     size = "small"
@@ -238,14 +271,22 @@ const NewLead = () => {
                   <TextField
                     error = {errors.language && touched.language}
                     helperText = {touched.language && errors.language}
+                    select
+                    className={classes.select}
                     label = "Language"
                     name = "language"
                     size = "small"
                     variant = "outlined"
-                    defaultValue = {newLead.language}
-                    onChange = {createLead}
-                  />
-                </Grid>
+                    defaultValue = {language}
+                    onChange = {selectLanguages}
+                  >
+                    {languages.map((option) => (
+                        <MenuItem key = {option.value} value = {option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                </Grid>                     
                 <Grid item md = {2} sm = {4} xs = {12}>
                   Utm url
                 </Grid>
@@ -357,7 +398,7 @@ const NewLead = () => {
                   <div className = "flex flex-wrap m--2">
                     <AsyncAutocomplete
                       onChange = {(tags) => {setNewLead({...newLead, tag_objects: [tags.id]}); console.log(tags)}}
-                      width = {"40%"}
+                      width = {"35%"}
                       className = "mr-2 ml-2"
                       asyncSearch = {() => bc.marketing().getAcademyTags()}
                       size = {"small"}
@@ -374,7 +415,7 @@ const NewLead = () => {
                   <div className = "flex flex-wrap m--2">
                     <AsyncAutocomplete
                       onChange = {(automation) => setNewLead({...newLead, automation_objects: [automation.id]})}
-                      width = {"40%"}
+                      width = {"35%"}
                       className = "mr-2 ml-2"
                       asyncSearch = {() => bc.marketing().getAcademyAutomations()}
                       size = {"small"}
@@ -402,6 +443,7 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
+                    className={classes.select}
                     label = "Country"
                     name = "country"
                     size = "small"
@@ -496,6 +538,7 @@ const NewLead = () => {
                     error = {errors.lead_type && touched.lead_type}
                     helperText = {touched.lead_type && errors.lead_type}
                     select
+                    className={classes.select}
                     label = "type"
                     name = "lead_type"
                     size = "small"
@@ -512,11 +555,9 @@ const NewLead = () => {
                 </Grid>
               </Grid>
               <div className = "mt-6">
-              
-                  <Button color = "primary" variant = "contained" type = "submit">
-                    Create
-                  </Button>
-
+                <Button color = "primary" variant = "contained" type = "submit" >
+                  Create
+                </Button>
               </div>
             </form>
           )}
