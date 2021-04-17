@@ -19,6 +19,7 @@ import bc from "app/services/breathecode";
 const options = [
     { label: "Change cohort stage", value: "stage" },
     { label: "Cohort Detailed Report", value: "cohort_deport" },
+    { label: "Instant NPS Survey", value: ""}
 ];
 
 const Cohort = () => {

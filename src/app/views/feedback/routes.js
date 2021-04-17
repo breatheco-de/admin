@@ -13,6 +13,11 @@ const routes = [
         component: React.lazy(() => import("./surveys.js")),
         beta: true,
     },
+    {
+        path: "/feedback/survey/new",
+        exact: true,
+        component: React.lazy(() => import("./survey-form/newSurvey.js")),
+    }
 ];
 
 export default routes;
