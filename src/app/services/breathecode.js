@@ -37,7 +37,7 @@ class BreatheCodeClient {
             },
             getAllCourseSyllabus: (query) => {
                 return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
-            }
+            },
          }
     }
     auth() {

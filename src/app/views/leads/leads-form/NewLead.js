@@ -14,21 +14,26 @@ import bc from "app/services/breathecode";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import * as Yup from 'yup';
 import { useHistory } from "react-router-dom";
+import { TramRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   select: {
-      width: "9rem",
+      width: "18rem",
   },
 }));
 
 
-
 const NewLead = () => {
   const classes = useStyles();
+  const history = useHistory();
+  
   const [leadType, setLeadType] = useState("");
   const [language, setLanguge] = useState("");
+  const [listCourse, setListCourse] = useState();
+  const [course, setCourse] = useState();
+
   let academy = JSON.parse(localStorage.getItem("bc-academy"));
-  const history = useHistory();
+
   const [newLead, setNewLead] = useState(
     {
       first_name: "",
@@ -37,7 +42,7 @@ const NewLead = () => {
       phone: "",
       course: "",
       client_comments: "",
-      location: "",
+      location: academy.name,
       language: "",
       utm_url: "",
       utm_medium: "", 
@@ -107,6 +112,27 @@ const NewLead = () => {
       label: "English"
     }
   ]
+
+  //useeffect para hacer el dropdown de las academias\\
+
+  useEffect(() => {
+    bc.admissions().getCertificates()
+        .then(({data}) => {
+          setListCourse(data)
+        })
+    }, [])
+
+    useEffect(() => {
+      if (listCourse){
+        setCourse(listCourse.map(item => (
+          <MenuItem key = {item.id} value = {item.name}>
+              {item.name}
+          </MenuItem>
+        )))
+      }       
+    }, [listCourse != undefined])
+
+  //VALIDACIONES FORM\\
 
   const phoneRegExp = /^[+]?([0-9]{11,15})$/;
 
@@ -227,15 +253,16 @@ const NewLead = () => {
                   <TextField
                     error = {errors.course && touched.course}
                     helperText = {touched.course && errors.course}
+                    select
                     className={classes.select}
                     label = "Course"
                     name = "course"
                     size = "small"
                     variant = "outlined"
-
-                    defaultValue = {newLead.course}
-                    onChange = {createLead}
-                  />
+                    defaultValue = {course}
+                    onChange = {createLead}>
+                      {course}
+                  </TextField>
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
                   Client comments
@@ -255,13 +282,11 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
-                    className={classes.select}
                     label = "Location"
                     name = "location"
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newLead.location}
-                    onChange = {createLead}
                   />
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
@@ -397,7 +422,7 @@ const NewLead = () => {
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <div className = "flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      onChange = {(tags) => {setNewLead({...newLead, tag_objects: [tags.id]}); console.log(tags)}}
+                      onChange = {(tags) => {setNewLead({...newLead, tag_objects: [tags.id]})}}
                       width = {"35%"}
                       className = "mr-2 ml-2"
                       asyncSearch = {() => bc.marketing().getAcademyTags()}
