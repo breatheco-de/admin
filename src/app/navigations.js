@@ -70,19 +70,6 @@ export const navigations = [
     },
     {
         beta: true,
-        name: "Coursework",
-        icon: "record_voice_over",
-        children: [
-            {
-                name: "Reports",
-                path: "/coursework/student",
-                iconText: "OL",
-            },
-        ],
-
-    },
-    {
-        beta: true,
         name: "Feedback",
         icon: "record_voice_over",
         children: [

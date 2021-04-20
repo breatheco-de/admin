@@ -18,17 +18,19 @@ const Certificates = () => {
     
     useEffect(() => {
         setIsLoading(true);
-        if (cohortId !== null || cohortId !== undefined) {
+        if (cohortId !== null && cohortId !== undefined) {
             axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId).then(({ data }) => {
-            setIsLoading(false);
-            if (isAlive) setItems(data);
-        });
+                setIsLoading(false);
+                if (isAlive) setItems(data);
+            });
 
-        } if (cohortId === null || cohortId === undefined) {
-        axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate").then(({ data }) => {
-            setIsLoading(false);
-            if (isAlive) setItems(data);
-        })};
+        } 
+        else {
+            axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate").then(({ data }) => {
+                setIsLoading(false);
+                if (isAlive) setItems(data);
+            });
+        }
         return () => setIsAlive(false);
     }, [isAlive]);
 

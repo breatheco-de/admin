@@ -96,7 +96,7 @@ const StudentDetails = ({ user, std_id }) => {
                 <TableRow>
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
-                    <div>{user?.user.github}</div>
+                    <div>{user?.user.github?.username}</div>
                     {user?.user.github == undefined ?
                       <small className="px-1 py-2px bg-light-error text-red border-radius-4">
                       GITHUB UNVERIFIED
