@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import {
   Card,
   TextField,
@@ -8,12 +8,16 @@ import {
   Radio,
   RadioGroup,
   FormControl,
-  Slider,
   Checkbox,
-  Fab,
   Button,
   Hidden,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  Grid
 } from "@material-ui/core";
+import { Formik } from "formik";
 
 const Sidenav = ({
   query,
@@ -25,7 +29,9 @@ const Sidenav = ({
   handleTypeChange,
   handleCategoryChange,
   handleClearAllFilter,
+  onNewCategory
 }) => {
+  const [dialog, setDialog] = useState(false)
   return (
     <Fragment>
       <div className="pl-4 flex items-center mb-4 mt-2">
@@ -53,7 +59,7 @@ const Sidenav = ({
       </div>
       <div className="px-4">
         <Card elevation={3} className="p-4 mb-4">
-        <h5 className="m-0 mb-4">Type</h5>
+          <h5 className="m-0 mb-4">Type</h5>
           <FormControl component="fieldset" className="w-full">
             <RadioGroup
               aria-label="status"
@@ -114,9 +120,14 @@ const Sidenav = ({
               </small>
             </div>
           ))}
+          <Button
+            variant="contained"
+            color="primary"
+            className="w-full"
+            onClick={() => setDialog(true)}
+          >Add Category</Button>
         </Card>
         <Button
-          className="w-full"
           variant="contained"
           color="primary"
           onClick={handleClearAllFilter}
@@ -124,6 +135,82 @@ const Sidenav = ({
           Clear All Filteres
         </Button>
       </div>
+      {/* DIALOG*/}
+      <Dialog
+        onClose={() => setDialog(false)}
+        open={dialog}
+        aria-labelledby="simple-dialog-title"
+      >
+        <DialogTitle id="simple-dialog-title">New Category</DialogTitle>
+        <Formik
+          initialValues={{
+            name:'',
+            slug:''
+          }}
+          onSubmit={(values) => {
+            setDialog(false)
+            onNewCategory(values)
+          }}
+          enableReinitialize={true}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            setSubmitting,
+            setFieldValue,
+          }) => (
+            <form className="p-4" onSubmit={handleSubmit}>
+              <DialogContent className='px-5'>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item md={2} sm={4} xs={12}>
+                    Category name
+            </Grid>
+                  <Grid item md={10} sm={8} xs={12}>
+                    <TextField
+                      label="Name"
+                      name="name"
+                      fullWidth
+                      size="medium"
+                      variant="outlined"
+                      required
+                      value={values.name}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item md={2} sm={4} xs={12}>
+                    Slug
+            </Grid>
+                  <Grid item md={10} sm={8} xs={12}>
+                    <TextField
+                      label="Slug"
+                      name="slug"
+                      fullWidth
+                      size="medium"
+                      variant="outlined"
+                      required
+                      value={values.slug}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setDialog(false)} color="primary">
+                  Cancel
+                </Button>
+                <Button color="primary" type="submit" autoFocus>
+                  Save
+                </Button>
+              </DialogActions>
+            </form>
+          )}
+        </Formik>
+      </Dialog>
     </Fragment>
   );
 };

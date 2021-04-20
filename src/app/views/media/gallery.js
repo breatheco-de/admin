@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProductList,
   getCategoryList,
-  updateFileInfo
+  updateFileInfo,
+  deleteFile,
+  createCategory
 } from "app/redux/actions/MediaActions";
 import {openDialog, closeDialog} from '../../redux/actions/DialogActions';
 import Dialog from '../../components/Dialog';
@@ -30,6 +32,7 @@ const Gallery = () => {
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
+  const { refresh } = useSelector((state) => state.ecommerce);
   const { show, value } = useSelector(state => state.dialog)
 
   const toggleSidenav = () => {
@@ -124,7 +127,7 @@ const Gallery = () => {
   useEffect(() => {
     dispatch(getProductList());
     dispatch(getCategoryList());
-  }, [dispatch]);
+  }, [dispatch, refresh]);
 
   useEffect(() => {
     setFilteredProductList(productList);
@@ -142,6 +145,7 @@ const Gallery = () => {
             slug:'',
             categories: []
           }}
+          onDelete={()=> dispatch(deleteFile(value))}
           onSubmit={(values)=> dispatch(updateFileInfo(value, values))}
         />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
@@ -156,6 +160,7 @@ const Gallery = () => {
             handleSliderChange={handleSliderChange}
             handleCategoryChange={handleCategoryChange}
             handleClearAllFilter={handleClearAllFilter}
+            onNewCategory={(values) => dispatch(createCategory(values))}
           ></SideNav>
         </MatxSidenav>
         <MatxSidenavContent>

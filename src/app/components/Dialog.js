@@ -44,19 +44,17 @@ const CustomDialog = (props) => {
                         <DialogTitle id="alert-dialog-title">
                             {props.title}
                         </DialogTitle>
-                        <DialogContent>
-
-                            <Grid container spacing={3} alignItems="center">
+                        <DialogContent className='px-5'>
+                            <Grid container spacing={2} alignItems="center">
                                 <Grid item md={2} sm={4} xs={12}>
                                     File name
                                     </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <TextField
-                                        className="m-1"
                                         label="Name"
                                         name="name"
+                                        fullWidth
                                         size="medium"
-                                        required
                                         variant="outlined"
                                         value={values.name}
                                         onChange={handleChange}
@@ -67,11 +65,10 @@ const CustomDialog = (props) => {
                                     </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <TextField
-                                        className="m-1"
                                         label="Slug"
                                         name="slug"
-                                        size=""
-                                        required
+                                        fullWidth
+                                        size="medium"
                                         variant="outlined"
                                         value={values.slug}
                                         onChange={handleChange}
@@ -83,7 +80,6 @@ const CustomDialog = (props) => {
                                 <Grid item md={10} sm={8} xs={12}>
                                     <AsyncAutocomplete
                                         onChange={(category) => { setCategory(category); setFieldValue('categories', category.map(c => c.id)) }}
-                                        className="m-1"
                                         width={"100%"}
                                         label="Categories"
                                         value={category}
@@ -93,15 +89,17 @@ const CustomDialog = (props) => {
                                     />
                                 </Grid>
                             </Grid>
-
                         </DialogContent>
                         <DialogActions>
+                            <Button color="secondary" autoFocus onClick={()=>{ props.onDelete(); props.onClose()}}>
+                                Delete file
+                            </Button>
                             <Button onClick={props.onClose} color="primary">
                                 Cancel
-                    </Button>
+                            </Button>
                             <Button color="primary" type="submit" autoFocus>
                                 Save
-                    </Button>
+                            </Button>
                         </DialogActions>
                     </form>
                 )}

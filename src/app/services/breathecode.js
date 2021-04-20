@@ -137,6 +137,12 @@ class BreatheCodeClient {
             },
             updateMedia: (media,payload) => {
                 return axios._put("Media",`${this.host}/media/info/${media}`, payload)
+            },
+            deleteMedia: (media) => {
+                return axios._delete('Media',`${this.host}/media/info/${media}`)
+            },
+            createCategory : (payload) => {
+                return axios._post('Category', `${this.host}/media/category`, payload)
             }
         }
     }

@@ -41,7 +41,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
   const { cartList } = useSelector((state) => state.ecommerce);
   const dispatch = useDispatch();
   const type = {
-    pdf:'https://www.flaticon.es/svg/vstatic/svg/617/617473.svg?token=exp=1618899561~hmac=fc7fa6dfba70053b4ec858faa24c7db3',
+    pdf:'https://image.freepik.com/free-vector/illustration-folder-icon_53876-5845.jpg',
     video:'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732'
   }
   const amount = cartList?.find((p) => p.id === product.id)?.amount || 0;
@@ -54,7 +54,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
       <Grid container spacing={2} alignItems="center">
         <Grid item lg={6} md={6} sm={6} xs={12}>
           <div className="flex justify-center items-center relative">
-            <img className="w-full" src={product.mime.includes('pdf') ? type.pdf : product.url} alt={product.name} />
+            <img className="w-full" src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.url} alt={product.name} />
           </div>
         </Grid>
         <Grid item lg={6} md={6} sm={6} xs={12} className="p-6">

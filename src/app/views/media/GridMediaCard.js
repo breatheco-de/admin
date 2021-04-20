@@ -40,7 +40,7 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
   const { cartList } = useSelector((state) => state.ecommerce);
   const dispatch = useDispatch();
   const type = {
-    pdf:'https://www.flaticon.es/svg/vstatic/svg/617/617473.svg?token=exp=1618899561~hmac=fc7fa6dfba70053b4ec858faa24c7db3',
+    pdf:'https://image.freepik.com/free-vector/illustration-folder-icon_53876-5845.jpg',
     video:'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732'
   }
   const amount = cartList?.find((p) => p.id === media.id)?.amount || 0;
@@ -54,7 +54,7 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
         <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
           <Icon>mode_edit</Icon>
         </span>
-        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.url} alt={media.slug} />
+        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.url} alt={media.slug} />
         <div className="image-box-overlay flex justify-center items-center"></div>
       </div>
       <div className="p-6">
