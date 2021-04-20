@@ -33,7 +33,6 @@ const NewLead = () => {
   const [course, setCourse] = useState();
 
   let academy = JSON.parse(localStorage.getItem("bc-academy"));
-  let location = JSON.parse(localStorage.getItem("my-academy"));
 
   const [newLead, setNewLead] = useState(
     {
@@ -43,7 +42,7 @@ const NewLead = () => {
       phone: "",
       course: "",
       client_comments: "",
-      location: location.active_campaign_slug,
+      location: academy.active_campaign_slug,
       language: "",
       utm_url: "",
       utm_medium: "", 
@@ -123,7 +122,6 @@ const NewLead = () => {
 
   useEffect(() => {
     if (listCourse){
-      console.log(listCourse)
       setCourse(listCourse.map(item => (
         <MenuItem key = {item.id} value = {item.slug}>
             {item.name}

@@ -14,6 +14,7 @@ import history from "history.js";
 import clsx from "clsx";
 import useAuth from 'app/hooks/useAuth';
 
+import bc from "app/services/breathecode";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
@@ -31,13 +32,15 @@ const Choose = () => {
   const { choose, user } = useAuth();
   const classes = useStyles();
 
-  const handleChange = (event) => {
+  const handleChange = async (event) => {
       const { role, academy } = event.target.value;
 
       if(role && role !== ""){
+
         choose({ role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
-        localStorage.setItem("bc-academy", JSON.stringify(academy));
+        const { data } = await bc.admissions().getMyAcademy()
+        localStorage.setItem("bc-academy", JSON.stringify(data));
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }
@@ -45,7 +48,6 @@ const Choose = () => {
   if(!user) return history.push("/session/login");
 
   const roles = [{ role: "", academy: { name: "Click me to select"} }].concat(user.roles.filter(r => r.role.toUpperCase() != "STUDENT"));
-
   return (
     <div
       className={clsx(

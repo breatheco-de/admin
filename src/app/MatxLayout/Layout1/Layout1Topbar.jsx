@@ -78,17 +78,6 @@ const Layout1Topbar = () => {
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
   const fixed = settings?.layout1Settings?.topbar?.fixed;
 
-
-  //El siguiente useEffect es para setear en el locarStorage "my-academy"...
-  // ...con el endpoint de academy/me\\
-
-  useEffect(() => {
-    bc.admissions().getMyAcademy()
-      .then(( {data} ) => {
-        localStorage.setItem("my-academy", JSON.stringify(data))
-      })
-  })
-
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(
       setLayoutSettings(
