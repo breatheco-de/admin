@@ -29,7 +29,8 @@ const NewSurvey = () => {
       cohort: "",
       max_assistants: 2,
       max_teachers: 2, 
-      duration: 1
+      duration: 1,
+      send_now: false
     }
   ); 
   const history = useHistory();
