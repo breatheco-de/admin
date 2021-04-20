@@ -14,7 +14,8 @@ import bc from "app/services/breathecode";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import * as Yup from 'yup';
 import { useHistory } from "react-router-dom";
-import { TramRounded } from "@material-ui/icons";
+import { NewReleasesRounded, TramRounded } from "@material-ui/icons";
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   select: {
@@ -22,17 +23,17 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
+const countrys = require("./countrys.json")
 
 const NewLead = () => {
   const classes = useStyles();
   const history = useHistory();
-  
-  const [leadType, setLeadType] = useState("");
-  const [language, setLanguge] = useState("");
+
   const [listCourse, setListCourse] = useState();
   const [course, setCourse] = useState();
 
   let academy = JSON.parse(localStorage.getItem("bc-academy"));
+  let location = JSON.parse(localStorage.getItem("my-academy"));
 
   const [newLead, setNewLead] = useState(
     {
@@ -42,7 +43,7 @@ const NewLead = () => {
       phone: "",
       course: "",
       client_comments: "",
-      location: academy.name,
+      location: location.active_campaign_slug,
       language: "",
       utm_url: "",
       utm_medium: "", 
@@ -67,14 +68,13 @@ const NewLead = () => {
     }
   ); 
 
-  // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE DE OBJECT "newLead" \\
+  // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE THE OBJECT "newLead" \\
     
   const createLead = event => {
 		setNewLead({ ...newLead, [event.target.name]: event.target.value });
 	};
 
   const selectTypeLead = (event) => {
-    setLeadType(event.target.value);
     setNewLead({
       ...newLead, lead_type: event.target.value
     });
@@ -96,7 +96,6 @@ const NewLead = () => {
   ];
 
   const selectLanguages = (event) => {
-    setLanguge(event.target.value);
     setNewLead({
       ...newLead, language: event.target.value
     })
@@ -122,15 +121,24 @@ const NewLead = () => {
         })
     }, [])
 
-    useEffect(() => {
-      if (listCourse){
-        setCourse(listCourse.map(item => (
-          <MenuItem key = {item.id} value = {item.name}>
-              {item.name}
-          </MenuItem>
-        )))
-      }       
-    }, [listCourse != undefined])
+  useEffect(() => {
+    if (listCourse){
+      setCourse(listCourse.map(item => (
+        <MenuItem key = {item.id} value = {item.name}>
+            {item.name}
+        </MenuItem>
+      )))
+    }       
+  }, [listCourse != undefined])
+
+
+  //Constante para definir la lista de paises que viene de un JSON de este mismo directorio\\
+
+  const listCountrys = countrys.map((item, index) => (
+    <MenuItem key = {index} value = {item.name_en}>
+        {item.name_en}
+    </MenuItem>
+  ))
 
   //VALIDACIONES FORM\\
 
@@ -146,7 +154,10 @@ const NewLead = () => {
     language: Yup.string().required("Please enter a language"),
     lead_type: Yup.string().required("Please select one type of lead"),
     phone: Yup.string()
-      .matches(phoneRegExp, `Please enter the correct format with the code of your country with a ${"+"}`)
+      .matches(phoneRegExp, `Please enter the correct format with the code of your country with a ${"+"}`),
+    latitude: Yup.number().typeError("Please enter a valid number and if not, leave the value at 0."),
+    longitude: Yup.number().typeError("Please enter a valid number and if not, leave the value at 0."),
+    zip_code: Yup.number().typeError("Please enter a valid number and if not, leave the value at 0."),
   });
 
   
@@ -259,7 +270,7 @@ const NewLead = () => {
                     name = "course"
                     size = "small"
                     variant = "outlined"
-                    defaultValue = {course}
+                    defaultValue = {newLead.course}
                     onChange = {createLead}>
                       {course}
                   </TextField>
@@ -302,7 +313,7 @@ const NewLead = () => {
                     name = "language"
                     size = "small"
                     variant = "outlined"
-                    defaultValue = {language}
+                    defaultValue = {newLead.language}
                     onChange = {selectLanguages}
                   >
                     {languages.map((option) => (
@@ -469,13 +480,15 @@ const NewLead = () => {
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
                     className={classes.select}
+                    select
                     label = "Country"
                     name = "country"
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newLead.country}
-                    onChange = {createLead}
-                  />
+                    onChange = {createLead}>
+                      {listCountrys}
+                  </TextField>
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
                   State
@@ -508,6 +521,8 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
+                    error = {errors.zip_code && touched.zip_code}
+                    helperText = {touched.zip_code && errors.zip_code}
                     label = "ZIP code"
                     name = "zip_code"
                     size = "small"
@@ -521,6 +536,8 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
+                    error = {errors.latitude && touched.latitude}
+                    helperText = {touched.latitude && errors.latitude}
                     label = "Latitude"
                     name = "latitude"
                     size = "small"
@@ -534,6 +551,8 @@ const NewLead = () => {
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
                   <TextField
+                    error = {errors.longitude && touched.longitude}
+                    helperText = {touched.longitude && errors.longitude}
                     label = "Longitude"
                     name = "longitude"
                     size = "small"
@@ -568,7 +587,7 @@ const NewLead = () => {
                     name = "lead_type"
                     size = "small"
                     variant = "outlined"
-                    value = {leadType}
+                    value = {newLead.leadType}
                     onChange = {selectTypeLead}
                     >
                       {leadTypes.map((option) => (

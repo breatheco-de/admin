@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Icon,
   IconButton,
@@ -19,6 +19,7 @@ import clsx from "clsx";
 import NotificationBar2 from "app/views/notification/NotificationBar2";
 import useAuth from "app/hooks/useAuth";
 import history from "history.js";
+import bc from "app/services/breathecode";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
@@ -76,6 +77,17 @@ const Layout1Topbar = () => {
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
   const fixed = settings?.layout1Settings?.topbar?.fixed;
+
+
+  //El siguiente useEffect es para setear en el locarStorage "my-academy"...
+  // ...con el endpoint de academy/me\\
+
+  useEffect(() => {
+    bc.admissions().getMyAcademy()
+      .then(( {data} ) => {
+        localStorage.setItem("my-academy", JSON.stringify(data))
+      })
+  })
 
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(

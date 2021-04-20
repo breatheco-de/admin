@@ -14,6 +14,7 @@ import history from "history.js";
 import clsx from "clsx";
 import useAuth from 'app/hooks/useAuth';
 
+
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
     background: "#1A2038",
@@ -29,6 +30,7 @@ const Choose = () => {
   const [loading, setLoading] = useState(false);
   const { choose, user } = useAuth();
   const classes = useStyles();
+
   const handleChange = (event) => {
       const { role, academy } = event.target.value;
 
@@ -43,6 +45,7 @@ const Choose = () => {
   if(!user) return history.push("/session/login");
 
   const roles = [{ role: "", academy: { name: "Click me to select"} }].concat(user.roles.filter(r => r.role.toUpperCase() != "STUDENT"));
+
   return (
     <div
       className={clsx(
