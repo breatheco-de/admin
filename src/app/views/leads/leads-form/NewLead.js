@@ -123,8 +123,9 @@ const NewLead = () => {
 
   useEffect(() => {
     if (listCourse){
+      console.log(listCourse)
       setCourse(listCourse.map(item => (
-        <MenuItem key = {item.id} value = {item.name}>
+        <MenuItem key = {item.id} value = {item.slug}>
             {item.name}
         </MenuItem>
       )))
