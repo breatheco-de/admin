@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProductList,
   getCategoryList,
+  updateFileInfo
 } from "app/redux/actions/MediaActions";
-
+import {openDialog, closeDialog} from '../../redux/actions/DialogActions';
+import Dialog from '../../components/Dialog';
 import SideNav from "./SideNav";
 import GalleryContainer from "./GalleryContainer";
 import { debounce } from "lodash";
@@ -20,7 +22,7 @@ const Gallery = () => {
   const [orderBy, setOrderBy] = useState("default");
   const [sliderRange, setSliderRange] = useState([0, 100]);
   const [query, setQuery] = useState("");
-  const [multilevel, setMultilevel] = useState("all");
+  const [type, setType] = useState("all");
   const [shipping, setShipping] = useState(false);
   const [categories, setCategories] = useState([]);
   const [filteredProductList, setFilteredProductList] = useState([]);
@@ -28,6 +30,7 @@ const Gallery = () => {
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
+  const { show, value } = useSelector(state => state.dialog)
 
   const toggleSidenav = () => {
     setOpen(!open);
@@ -52,32 +55,25 @@ const Gallery = () => {
   const search = useCallback(
     debounce((query) => {
       let tempList = productList.filter((product) =>
-        product.title.toLowerCase().match(query.toLowerCase())
+        product.slug.toLowerCase().match(query.toLowerCase())
       );
       setFilteredProductList(tempList);
     }, 200),
     [productList]
   );
 
-  const handleMultilevelChange = (event) => {
+  const handleTypeChange = (event) => {
+    console.log(event.target.value)
     let eventValue = event.target.value;
-    let range = eventValue.split(",");
-
-    setMultilevel(eventValue);
+    setType(eventValue);
 
     if (eventValue === "all") {
       setFilteredProductList(productList);
       return;
     }
+    let tempList = productList.filter((product) => product.mime.includes(eventValue));
+    setFilteredProductList(tempList);
 
-    range = range.map((value) => parseInt(value));
-
-    if (range.length === 2) {
-      filterProductOnPriceRange(range[0], range[1]);
-    } else {
-      let tempList = productList.filter((product) => product.price >= range[0]);
-      setFilteredProductList(tempList);
-    }
   };
 
   const handleCategoryChange = (event) => {
@@ -88,14 +84,9 @@ const Gallery = () => {
     } else {
       tempCategories = categories.filter((item) => item !== target.name);
     }
-
+     console.log(tempCategories)
     setCategories(tempCategories);
-    setFilteredProductList(filterProductOnProperty("category", tempCategories));
-  };
-
-  const handleFreeShippingClick = () => {
-    setShipping(!shipping);
-    setFilteredProductList(filterProductOnProperty("freeShipping", [shipping]));
+    setFilteredProductList(filterProductOnCategory(tempCategories));
   };
 
   const filterProductOnProperty = (property, value = []) => {
@@ -103,6 +94,15 @@ const Gallery = () => {
       return productList;
     }
     return productList.filter((product) => value.includes(product[property]));
+  };
+
+  const filterProductOnCategory= (values = []) => {
+    if (values.length === 0) {
+      return productList;
+    }
+    return productList.filter((product) => {
+      for(let item of product.categories) return values.includes(item.id.toString())
+    });
   };
 
   const filterProductOnPriceRange = (lowestPrice, highestPrice) => {
@@ -115,7 +115,7 @@ const Gallery = () => {
   const handleClearAllFilter = () => {
     setSliderRange([0, 100]);
     setQuery("");
-    setMultilevel("all");
+    setType("all");
     setShipping(false);
     setCategories([]);
     setFilteredProductList(productList);
@@ -133,19 +133,28 @@ const Gallery = () => {
   return (
     <div className="shop m-sm-30">
       <MatxSidenavContainer>
+        <Dialog 
+          title='Edit Media File'
+          onClose={() => dispatch(closeDialog())}
+          open={show}
+          formInitialValues={{
+            name:'',
+            slug:'',
+            categories: []
+          }}
+          onSubmit={(values)=> dispatch(updateFileInfo(value, values))}
+        />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
           <SideNav
             query={query}
             categories={categories}
-            multilevel={multilevel}
+            type={type}
             categoryList={categoryList}
-            shipping={shipping}
             toggleSidenav={toggleSidenav}
             handleSearch={handleSearch}
-            handleMultilevelChange={handleMultilevelChange}
+            handleTypeChange={handleTypeChange}
             handleSliderChange={handleSliderChange}
             handleCategoryChange={handleCategoryChange}
-            handleFreeShippingClick={handleFreeShippingClick}
             handleClearAllFilter={handleClearAllFilter}
           ></SideNav>
         </MatxSidenav>
@@ -161,6 +170,7 @@ const Gallery = () => {
             handleChange={(e) => setOrderBy(e.target.value)}
             handleChangePage={handleChangePage}
             setRowsPerPage={(e) => setRowsPerPage(e.target.value)}
+            onOpenDialog={(value)=> dispatch(openDialog(value))}
           ></GalleryContainer>
         </MatxSidenavContent>
       </MatxSidenavContainer>

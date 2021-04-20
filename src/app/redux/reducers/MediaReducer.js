@@ -1,12 +1,12 @@
 import {
   GET_PRODUCT_LIST,
   GET_CATEGORY_LIST,
+  UPLOAD_MEDIA_FILE,
+  UPDATE_MEDIA_FILE
 } from "../actions/MediaActions";
 
 const initialState = {
-  productList: [
-      { title: "Media example", imgUrl: "https://www.pixelstalk.net/wp-content/uploads/2016/07/HD-Black-Horse-Image.jpg", category: { title: "Horses"}, description: "asdasd" }
-  ],
+  productList: [],
   categoryList: [],
 };
 
@@ -23,6 +23,16 @@ const MediaReducer = function (state = initialState, action) {
         ...state,
         categoryList: [...action.payload],
       };
+    }
+    case UPLOAD_MEDIA_FILE: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_MEDIA_FILE: {
+      return {
+        ...state
+      }
     }
     default: {
       return {

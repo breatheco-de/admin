@@ -124,6 +124,23 @@ class BreatheCodeClient {
         }
     })
 
+    media(){
+        return {
+            upload: (payload) => {
+                return axios._put("Media",`${this.host}/media/upload`, payload, {headers:{ 'Content-Type':'multipart/form-data'}})
+            },
+            getAllCategories: () => {
+                return axios._get("Media", `${this.host}/media/category`)
+            },
+            getMedia: () => {
+                return axios._get('Media', `${this.host}/media`)
+            },
+            updateMedia: (media,payload) => {
+                return axios._put("Media",`${this.host}/media/info/${media}`, payload)
+            }
+        }
+    }
+
     getItem(key) {
         let value = this.ls.getItem(key)
         try {
@@ -132,6 +149,8 @@ class BreatheCodeClient {
             return null
         }
     }
+
+    
 
 }
 
