@@ -269,7 +269,7 @@ const EventForm = () => {
                                         asyncSearch={() => bc.events().getAcademyVenues()}
                                         size={"small"}
                                         label="Venue"
-                                        required={true}
+                                        required={false}
                                         getOptionLabel={option => `${option.title}`}
                                         value={venue} />
                                 </Grid>
