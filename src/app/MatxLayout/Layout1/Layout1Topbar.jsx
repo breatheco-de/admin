@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Icon,
   IconButton,
@@ -19,6 +19,7 @@ import clsx from "clsx";
 import NotificationBar2 from "app/views/notification/NotificationBar2";
 import useAuth from "app/hooks/useAuth";
 import history from "history.js";
+import bc from "app/services/breathecode";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
