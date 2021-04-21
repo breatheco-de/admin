@@ -10,11 +10,10 @@ import history from "history.js";
 import routes from "./RootRoutes";
 import { Store } from "./redux/Store";
 import { GlobalCss, MatxSuspense } from "matx";
-import sessionRoutes from "./views/sessions/SessionRoutes";
+import sessionRoutes from "./views/sessions/routes";
 import { AuthProvider } from "app/contexts/JWTAuthContext";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 import AuthGuard from "./auth/AuthGuard";
-
 const App = () => {
   return (
     <AppContext.Provider value={{ routes }}>
@@ -33,7 +32,6 @@ const App = () => {
                         component={item.component}
                       />
                     ))}
-
                     {/* AUTH PROTECTED PAGES */}
                     <AuthGuard>
                       <MatxLayout />

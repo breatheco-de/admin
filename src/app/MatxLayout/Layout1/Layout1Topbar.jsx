@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Icon,
   IconButton,
@@ -13,13 +13,13 @@ import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 import { MatxMenu, MatxSearchBox } from "matx";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
-import ShoppingCart from "../SharedCompoents/ShoppingCart";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { merge } from "lodash";
 import clsx from "clsx";
 import NotificationBar2 from "app/views/notification/NotificationBar2";
 import useAuth from "app/hooks/useAuth";
 import history from "history.js";
+import bc from "app/services/breathecode";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {

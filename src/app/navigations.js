@@ -50,29 +50,23 @@ export const navigations = [
         beta: true,
         children: [
             {
-                name: "Order List",
-                path: "/pages/order-list",
+                name: "Leads Log",
+                path: "/leads/list",
                 iconText: "OL",
-            },
-            {
-                name: "View Order",
-                path: "/invoice/fdskfjdsuoiucrwevbgd",
-                iconText: "VO",
             },
         ],
     },
     {
+        name: "Media",
+        icon: "collections",
         beta: true,
-        name: "Coursework",
-        icon: "record_voice_over",
         children: [
             {
-                name: "Reports",
-                path: "/coursework/student",
+                name: "Gallery",
+                path: "/media/gallery",
                 iconText: "OL",
             },
         ],
-
     },
     {
         beta: true,
@@ -108,8 +102,8 @@ export const navigations = [
                 iconText: "OL",
             },
             {
-                name: "Attendies",
-                path: "/events/attendies",
+                name: "Attendees",
+                path: "/events/attendees",
                 iconText: "OL",
             },
         ],

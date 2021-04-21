@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField} from "@material-ui/core";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
-import { Link } from "react-router-dom";
+import { Avatar, Grow, Icon, IconButton, TextField, Tooltip } from "@material-ui/core";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
 
-let relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
+let relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
 const Students = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [userList, setUserList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+
+    const resendInvite = (user) => {
+        bc.auth().resendInvite(user)
+            .then(({ data }) => console.log(data))
+            .catch(error => console.log(error))
+    }
 
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=country_manager,student&status=invited`).then(({ data }) => {
-            console.log(data)
-            setIsLoading(false);
-            if (isAlive) {
-                setUserList(data)
-            };
-        }).catch(error => {
-            setIsLoading(false);
-            setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
-          })
+        bc.auth().getAcademyMembers({ status: "invited" })
+            .then(({ data }) => {
+                console.log(data)
+                setIsLoading(false);
+                if (isAlive) {
+                    setUserList(data)
+                };
+            }).catch(error => {
+                setIsLoading(false);
+            })
         return () => setIsAlive(false);
     }, [isAlive]);
 
@@ -62,13 +64,13 @@ const Students = () => {
             options: {
                 filter: true,
                 customBodyRenderLite: i =>
-                  <div className="flex items-center">
-                    <div className="ml-3">
-                      <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
-                      <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+                    <div className="flex items-center">
+                        <div className="ml-3">
+                            <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format("MM-DD-YYYY")}</h5>
+                            <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+                        </div>
                     </div>
-                  </div>
-              },
+            },
         },
         {
             name: "role",
@@ -92,11 +94,11 @@ const Students = () => {
                         ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
                     return <div className="flex items-center">
                         <div className="flex-grow"></div>
-                        <Link to="/pages/view-customer">
-                            <IconButton>
+                        <Tooltip title="Resend Invite">
+                            <IconButton onClick={() => resendInvite(item.id)}>
                                 <Icon>refresh</Icon>
                             </IconButton>
-                        </Link>
+                        </Tooltip>
                     </div>
                 },
             },
@@ -105,11 +107,6 @@ const Students = () => {
 
     return (
         <div className="m-sm-30">
-            {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                    {msg.text}
-                </Alert>
-            </Snackbar> : ""}
             <div className="mb-sm-30">
                 <div className="flex flex-wrap justify-between mb-6">
                     <div>

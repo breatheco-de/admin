@@ -6,6 +6,9 @@ import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } fro
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -18,19 +21,53 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const EventList = () => {
+const Answers = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState({
+    page:0
+  });
+  const [querys, setQuerys] = useState({});
+  const query = useQuery();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
+    let q = {
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    }
+    setQuerys(q);
+    bc.feedback().getAnswers(q)
+      .then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) {
+          setItems({...data});
+          //setTable({...table,count: data.count});
+        };
+      }).catch(error => {
+        setIsLoading(false);
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
+
+   const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    bc.feedback().getAnswers({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        setItems({...data, page:page});
+      }).catch(error => {
+        setIsLoading(false);
+      })
+      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
+      setQuerys(q);
+      history.replace(`/feedback/answers?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+  }
+   
 
   const columns = [
     {
@@ -39,7 +76,7 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = items[dataIndex];
+          let { user } = items.results[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
@@ -59,10 +96,10 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
-            {items[i].created_at ? 
+            {items.results[i].created_at ? 
                 <div className="ml-3">
-                    <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
-                    <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+                    <h5 className="my-0 text-15">{dayjs(items.results[i].created_at).format("MM-DD-YYYY")}</h5>
+                    <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
                 </div>
                 :
                 <div className="ml-3">
@@ -79,15 +116,15 @@ const EventList = () => {
         filter: true,
         filterType: "multiselect",
         customBodyRenderLite: i => {
-            const color = items[i].score > 7 ? "text-green" : items[i].score < 7 ? "text-error" : "text-orange";
-            if(items[i].score)
+            const color = items.results[i].score > 7 ? "text-green" : items.results[i].score < 7 ? "text-error" : "text-orange";
+            if(items.results[i].score)
                 return <div className="flex items-center">
                     <LinearProgress
                         color="secondary"
-                        value={parseInt(items[i].score) * 10}
+                        value={parseInt(items.results[i].score) * 10}
                         variant="determinate"
                         />
-                    <small className={color}>{items[i].score}</small>
+                    <small className={color}>{items.results[i].score}</small>
                 </div>
             else return "Not answered"
         }
@@ -100,8 +137,8 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: i =>
           <div className="flex items-center">
-            { items[i].comment ? 
-                items[i].comment.substring(0, 100)
+            { items.results[i].comment ? 
+                items.results[i].comment.substring(0, 100)
                 :
                 "No comments"
             }
@@ -134,7 +171,7 @@ const EventList = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Feedback", path: "/" },
+                { name: "Feedback", path: "/feedback" },
                 { name: "Answer List" },
               ]}
             />
@@ -153,19 +190,36 @@ const EventList = () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Events"}
-            data={items}
+            title={"All Answers"}
+            data={items.results}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
-              selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
+              elevation: 0,
+              page: items.page,
+              count: items.count,
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
+                let q = { [changedColumn]: filterList[changedColumnIndex][0] }
+                setQuerys(q)
+                history.replace(`/feedback/answers?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+              },
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
+              rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                switch(action){
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "filterChange":
+                    //console.log(action, tableState)
+                }
+              }, 
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customSearchRender: (
@@ -208,4 +262,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default Answers;

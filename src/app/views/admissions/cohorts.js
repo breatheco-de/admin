@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
+
 
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -21,23 +22,52 @@ const stageColors = {
   'DELETED': 'light-gray',
 }
 
-const Cohorts= () => {
+const Cohorts = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [items, setItems] = useState({
+    page:0
+  });
+  const [querys, setQuerys] = useState({});
+  const query = useQuery();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/admissions/academy/cohort").then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    }).catch(error => {
-      setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required"});
-    })
+    let q = {
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    }
+    setQuerys(q);
+    bc.admissions().getAllCohorts(q)
+      .then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) {
+          setItems({...data});
+          //setTable({...table,count: data.count});
+        };
+      }).catch(error => {
+        setIsLoading(false);
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    bc.admissions().getAllCohorts({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        setItems({...data, page:page});
+      }).catch(error => {
+        setIsLoading(false);
+      })
+      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
+      setQuerys(q);
+      history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+  }
 
   const columns = [
     {
@@ -52,16 +82,16 @@ const Cohorts= () => {
       label: "Stage", // column title that will be shown in table
       options: {
         filter: true,
+        filterList: query.get("stage") !== null ? [query.get("stage")] : [],
         customBodyRenderLite: (dataIndex) => {
-          let item = items[dataIndex];
-
+          let item = items.results[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item ?.stage]}>{item ?.stage}</small><br />
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.stage]}>{item?.stage}</small><br />
                 {
-                  ((dayjs().isBefore(dayjs(item ?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item ?.stage)) ||
-                    (dayjs().isAfter(dayjs(item ?.ending_date)) && !['ENDED', 'DELETED'].includes(item ?.stage))) &&
+                  ((dayjs().isBefore(dayjs(item?.kickoff_date)) && ['INACTIVE', 'PREWORK'].includes(item?.stage)) ||
+                    (dayjs().isAfter(dayjs(item?.ending_date)) && !['ENDED', 'DELETED'].includes(item?.stage))) &&
                   <small className="text-warning pb-2px"><Icon>error</Icon>Out of sync</small>
                 }
               </div>
@@ -75,13 +105,14 @@ const Cohorts= () => {
       label: "Slug", // column title that will be shown in table
       options: {
         filter: true,
+        filterList: query.get("slug") !== null ? [query.get("slug")] : [],
         customBodyRenderLite: i => {
-          let item = items[i];
+          let item = items.results[i];
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <h5 className="my-0 text-15">{item ?.name}</h5>
-                <small className="text-muted">{item ?.slug}</small>
+                <h5 className="my-0 text-15">{item?.name}</h5>
+                <small className="text-muted">{item?.slug}</small>
               </div>
             </div>
           );
@@ -93,11 +124,12 @@ const Cohorts= () => {
       label: "Kickoff Date",
       options: {
         filter: true,
+        filterList: query.get("kickoff_date") !== null ? [query.get("kickoff_date")] : [],
         customBodyRenderLite: i =>
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].kickoff_date).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].kickoff_date).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items.results[i].kickoff_date).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items.results[i].kickoff_date).fromNow()}</small>
             </div>
           </div>
       },
@@ -107,7 +139,8 @@ const Cohorts= () => {
       label: "Certificate",
       options: {
         filter: true,
-        customBodyRenderLite: i => items[i].certificate ?.name
+        filterList: query.get("certificate") !== null ? [query.get("certificate")] : [],
+        customBodyRenderLite: i => items.results[i].certificate?.name
       },
     },
     {
@@ -118,7 +151,7 @@ const Cohorts= () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
+            <Link to={"/admin/cohorts/" + items.results[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -136,17 +169,12 @@ const Cohorts= () => {
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                    {msg.text}
-                </Alert>
-            </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/" },
+                { name: "Admin", path: "/admin" },
                 { name: "Cohorts" },
               ]}
             />
@@ -166,20 +194,35 @@ const Cohorts= () => {
           {isLoading && <MatxLoading />}
           <MUIDataTable
             title={"All Cohorts"}
-            data={items}
+            data={items.results}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
               elevation: 0,
+              page: items.page,
+              count: items.count,
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
+                let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
+                setQuerys(q);
+                history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+              },
+              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                switch (action) {
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                  case "filterChange":
+                  //console.log(action, tableState)
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,

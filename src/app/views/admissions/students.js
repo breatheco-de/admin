@@ -1,40 +1,92 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
+import CustomToolbar from "../../components/CustomToolbar";
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
+
+const statusColors = {
+  'INVITED': 'text-white bg-error',
+  'ACTIVE': 'text-white bg-green',
+}
+
+const name = (user) => {
+  if (user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+  else return "No name";
+}
 
 const Students = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0
+  }); 
+
+  const query = useQuery();
+  const history = useHistory();
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLike, setQueryLike] = useState(query.get("like") || "");
+ 
+  
   //TODO: Show errors with the response 
-   
+ 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student`)
-    .then(({ data }) => {
-      console.log(data);
-      setIsLoading(false);
-      if (isAlive){
-        let filterUserNull = data.filter(item => item.user !== null)
-        setUserList(filterUserNull)
-      };
-    }).catch(error => {
-      setIsLoading(false);
-      setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read students"});
+    bc.auth().getAcademyStudents({
+      limit: queryLimit,
+      offset: queryOffset,
+      like: queryLike
     })
+      .then(({ data }) => {
+        console.log(data);
+        setIsLoading(false);
+        if (isAlive) {
+          setUserList(data.results);
+          setTable({ count: data.count });
+        };
+      }).catch(error => {
+        setIsLoading(false);
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
+
+  const handlePageChange = (page, rowsPerPage, _like) => {
+    setIsLoading(true);
+    setQueryLimit(rowsPerPage);
+    setQueryOffset(rowsPerPage * page);
+    setQueryLike(_like);
+    let query = {
+      limit: rowsPerPage,
+      offset: page * rowsPerPage,
+      like: _like
+    }
+    bc.auth().getAcademyStudents(query)
+      .then(({ data }) => {
+        setIsLoading(false);
+        setUserList(data.results);
+        setTable({ count: data.count, page: page });
+        history.replace(`/admin/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
+
+  const resendInvite = (user) => {
+    bc.auth().resendInvite(user)
+      .then(({ data }) => console.log(data))
+      .catch(error => console.log(error))
+  }
 
   const columns = [
     {
@@ -43,13 +95,13 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = userList[dataIndex];
+          let { user, ...rest } = userList[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.imgUrl} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{user?.first_name} {user?.last_name}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{user !== null ? name(user) : rest.first_name + " " + rest.last_name}</h5>
+                <small className="text-muted">{user?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -71,71 +123,104 @@ const Students = () => {
       },
     },
     {
+      name: "status",
+      label: "Status",
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = userList[dataIndex]
+          return <div className="flex items-center">
+            <div className="ml-3">
+              <small className={"border-radius-4 px-2 pt-2px" + statusColors[item.status]}>{item.status.toUpperCase()}</small>
+              {item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+            </div>
+          </div>
+        }
+      },
+    },
+    {
       name: "action",
       label: " ",
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-            let item = userList[dataIndex];
-            return <div className="flex items-center">
-                <div className="flex-grow"></div>
-                <Link to={`/admin/students/${item.user.id}`}>
-                    <IconButton>
-                        <Icon>edit</Icon>
-                    </IconButton>
-                </Link>
-            </div>
+          let item = userList[dataIndex].user !== null ?
+            (userList[dataIndex]) :
+            ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
+          return item.status === "INVITED" ? (<div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Tooltip title="Resend Invite">
+              <IconButton onClick={() => resendInvite(item.id)}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            </Tooltip>
+          </div>) : <div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Link to={`/admin/students/${item.user !== null ? item.user.id : ""}`}>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
+            </Link>
+          </div>
         },
       },
-    },
+    }
   ];
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
       <div className="mb-sm-30">
-      <div className="flex flex-wrap justify-between mb-6">
-        <div>
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
             <Breadcrumb
-            routeSegments={[
+              routeSegments={[
                 { name: "Admin", path: "/" },
                 { name: "Students" },
-            ]}
+              ]}
             />
-        </div>
+          </div>
 
-        <div className="">
-        <Link to={`/admin/students/new`}>
-            <Button variant="contained" color="primary">
+          <div className="">
+            <Link to={`/admin/students/new`}>
+              <Button variant="contained" color="primary">
                 Add new student
             </Button>
-        </Link>
+            </Link>
+          </div>
         </div>
-      </div>
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-        {isLoading && <MatxLoading />}
-        <MUIDataTable
+          {isLoading && <MatxLoading />}
+          <MUIDataTable
             title={"All Students"}
             data={userList}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
-              selectableRows: false, // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
               elevation: 0,
+              count: table.count,
+              page: table.page,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+              return <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={userList} key={userList} history={history}/>
+              },
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch (action) {
+                  case "changePage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,
@@ -148,7 +233,12 @@ const Students = () => {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
+                      onChange={({ target: { value } }) => {handleSearch(value)}}
+                      onKeyPress={(e) => {
+                        if(e.key == "Enter"){
+                          handlePageChange(queryOffset, queryLimit, e.target.value)
+                        }
+                      }}
                       InputProps={{
                         style: {
                           paddingRight: 0,

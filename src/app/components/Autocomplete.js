@@ -3,20 +3,30 @@ import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useDebounce from "../hooks/useDebounce";
+import PropTypes from "prop-types";
 
-export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, children, debounced = false, getLabel, label,filterLabels,filterOptions, ...rest }) {
+export function AsyncAutocomplete(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [cache, setCache] = React.useState({})
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
-
+  const { width, onChange, value, asyncSearch, children, debounced, label,required, ...rest } = props;
   const search = (searchTerm) => {
     setLoading(true);
-    asyncSearch(searchTerm).then(({ data }) => {
+    if(cache[searchTerm] !== undefined && debounced){
+      setOptions(cache[searchTerm]);
+      setLoading(false);
+      console.log(cache)
+    } else asyncSearch(searchTerm).then(({ data }) => {
       setLoading(false);
       setOptions(data);
+      setCache({
+       ...cache,
+       [searchTerm]:data 
+      });
       console.log(options)
     })
       .catch(error => console.log(error))
@@ -39,18 +49,15 @@ export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, c
     <>
       <Autocomplete
         {...rest}
-        id="asynchronous-demo"
         style={{ width: width }}
         open={open}
-        size={size}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         value={value}
         onChange={(e, newValue) => {
+          setOpen(false);
           onChange(newValue);
         }}
-        filterOptions={filterOptions}
-        getOptionLabel={getLabel}
         options={options}
         loading={loading}
         renderInput={params => (
@@ -61,6 +68,7 @@ export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, c
             onChange={(e) => {
               setSearchTerm(e.target.value)
             }}
+            required={required}
             variant="outlined"
             InputProps={{
               ...params.InputProps,
@@ -80,3 +88,12 @@ export function AsyncAutocomplete({ size, width, onChange, value, asyncSearch, c
     </>
   );
 }
+
+AsyncAutocomplete.propTypes = {
+	debounced: PropTypes.bool,
+	children: PropTypes.any,
+  label: PropTypes.string,
+  asyncSearch: PropTypes.func,
+  value: PropTypes.any,
+  required:PropTypes.bool
+};

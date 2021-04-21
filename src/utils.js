@@ -1,4 +1,11 @@
 import { differenceInSeconds } from "date-fns";
+import { toast } from 'react-toastify';
+import axios from "./axios";
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000
+}
 
 export const convertHexToRGB = (hex) => {
   // check if it's a rgba
@@ -161,4 +168,38 @@ export function classList(classes) {
     .filter((entry) => entry[1])
     .map((entry) => entry[0])
     .join(" ");
+}
+
+export function resolveResponse(res) {
+  console.log(axios.scopes[res.config.url], "este es el scope");
+  const methods = {
+    put: "updated",
+    post: "created",
+    delete:"deleted"
+  }
+  if (res.config.method !== "get" && res.status >= 200) {
+    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
+  }
+}
+
+export function resolveError(error){
+  if (typeof error.response.data === "object") {
+    for (let item in error.response.data) {
+      if (Array.isArray(error.response.data[item])) {
+        for (let str of error.response.data[item]) {
+         return toast.error(`${item.toUpperCase()}: ${str}`, toastOption);
+        }
+      } else {
+        for (let key in error.response.data[item]) {
+          return toast.error(`${key.toUpperCase()}: ${error.response.data[item][key][0]}`, toastOption);
+         }
+      }
+    }
+  }
+  if (error.response.status === 404) return toast.error(error.response.data.detail || "Not found", toastOption)
+  else if (error.response.status === 403) {
+    if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have the permissions required", toastOption)
+  } else if (error.response.status === 500) return toast.error("Internal server error, try again later", toastOption)
+  else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
+  else return toast.error('Something went wrong!', toastOption)
 }

@@ -3,11 +3,6 @@ import { Grid, Card, TextField } from "@material-ui/core";
 import DoughnutChart from "../charts/echarts/Doughnut";
 import ModifiedAreaChart from "./shared/ModifiedAreaChart";
 import StatCards from "./shared/StatCards";
-import TopSellingTable from "./shared/TopSellingTable";
-import RowCards from "./shared/RowCards";
-import StatCards2 from "./shared/StatCards2";
-import UpgradeCard from "./shared/UpgradeCard";
-import Campaigns from "./shared/Campaigns";
 import { useTheme } from "@material-ui/styles";
 import BC from "../../services/breathecode";
 import dayjs from "dayjs";
@@ -44,14 +39,14 @@ const Analytics = () => {
 
     useEffect(() => {
         const academy = JSON.parse(localStorage.getItem("bc-academy"));
-        const academyId = JSON.parse(localStorage.getItem("academy_id"));
+        if(academy === undefined || academy.id === undefined) return null;
+        
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
             academy: academy.id,
             by: 'location,created_at__date,course'
-        })
-            .then(( { data }) => {
+        }).then(( { data }) => {
                 console.log("data", data)
                 let series = [];
                 let xAxis = [];
@@ -63,7 +58,7 @@ const Analytics = () => {
                     xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'))
                     total += stamp.total_leads;
                     if(stamp.total_leads > max) max = stamp.total_leads;
-                    // if(stamp.total_leads < min) min = stamp.total_leads;
+                    if(stamp.total_leads < min) min = stamp.total_leads;
                 })
                 setLeads({ series, xAxis, total, max, min })
             })
@@ -71,7 +66,7 @@ const Analytics = () => {
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-            academy: academyId,
+            academy: academy.id,
             by: 'utm_source'
         })
             .then(( { data }) => {
@@ -85,9 +80,10 @@ const Analytics = () => {
         BC.events().getCheckins({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-        })
-            .then(( { data }) => {
-                setCheckins(data);
+            }).then((res) => {
+              if(res !== undefined && res.data !== undefined){
+                setCheckins(res.data);
+             }else setCheckins([])
             })
 
         BC.feedback().getAnswers({
@@ -97,7 +93,6 @@ const Analytics = () => {
                 setFeedback(data.filter(a => a.score));
             })
     }, [params])
-    console.log("params", params)
     return (
         <Fragment>
             <div className="pb-24 pt-7 px-8 bg-primary">
@@ -154,7 +149,7 @@ const Analytics = () => {
                                 value: feedback.length == 0 ? "No feedback yet" : 
                                         feedback.reduce((total, current) => current.score ? total + parseInt(current.score) : total,0) / feedback.length, 
                             },
-                            { label: "Event Tickets", value: checkins.length, icon: "group" },
+                            { label: "Event Tickets", value: 11, icon: "group" },
                         ]} />
 
                         {/* Top Selling Products */}

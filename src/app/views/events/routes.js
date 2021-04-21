@@ -14,7 +14,17 @@ const routes = [
     {
         path: "/events/NewEvent",
         exact: true,
-        component: React.lazy(() => import("./forms/NewEvent.js")),
+        component: React.lazy(() => import("./forms/EventForm.js")),
+    },
+    {
+        path: "/events/EditEvent/:id",
+        exact: true,
+        component: React.lazy(() => import("./forms/EventForm.js")),
+    },
+    {
+        path: "/events/attendees",
+        exact: true,
+        component: React.lazy(() => import("./attendees")),
     }
 ];
 

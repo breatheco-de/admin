@@ -4,7 +4,6 @@ import { MatxMenu, MatxToolbarMenu, MatxSearchBox } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
 import { useDispatch, useSelector } from "react-redux";
 import NotificationBar from "../SharedCompoents/NotificationBar";
-import ShoppingCart from "../SharedCompoents/ShoppingCart";
 import { makeStyles } from "@material-ui/core/styles";
 import { logoutUser } from "app/redux/actions/UserActions";
 import clsx from "clsx";
@@ -81,8 +80,6 @@ const Layout2Topbar = () => {
             <MatxSearchBox />
 
             <NotificationBar />
-
-            <ShoppingCart />
 
             <MatxMenu
               menuButton={

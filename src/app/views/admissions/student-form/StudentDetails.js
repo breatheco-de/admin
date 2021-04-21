@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import {
   Avatar,
   Button,
@@ -11,14 +11,12 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import axios from "../../../../axios";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
+import bc from "app/services/breathecode";
 
 const StudentDetails = ({ user, std_id }) => {
   const initialValues = {
-    "first_name": user?.user.first_name,
-    "last_name": user?.user.last_name,
+    "first_name": user?.first_name,
+    "last_name": user?.last_name,
     "address": user?.address,
     "phone": user?.phone
   }
@@ -44,25 +42,26 @@ const StudentDetails = ({ user, std_id }) => {
       value: initialValues.address,
     },
   ];
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  const [crt_user, setCrtUser] = useState({});
+  useEffect(() =>{
+   user ?  setCrtUser(user) : setCrtUser({});
+  }, [user])
   const updateStudentProfile = (values) => {
-    console.log(values)
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${std_id}`, { ...values })
-        .then(data => {
-          console.log(data)
-          setMsg({ alert: true, type: "success", text: "User profile updated successfully"})
+    console.log(values);
+    console.log(std_id)
+    bc.auth().updateAcademyStudent(std_id, values)
+        .then(({data}) => {
+          setCrtUser({...crt_user, ...data });
+          console.log(crt_user);
       })
-        .catch(error => {
-            console.log(error)
-            setMsg({ alert: true, type: "error", text: error.detail || `${error.first_name[0]}: First Name` || error.email[0] || error.phone[0]})
-        })
+        .catch(error => error)
 }
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
-        <h5 className="mt-4 mb-2">{user?.user.first_name + " " + user?.user.last_name}</h5>
-        <small className="text-muted">{user?.role.name}</small>
+        <Avatar className="w-84 h-84" src={user?.user?.github?.avatar_url || ''}/>
+        <h5 className="mt-4 mb-2">{crt_user?.first_name + " " + crt_user?.last_name}</h5>
+        <small className="text-muted">{user?.role.name.toUpperCase()}</small>
       </div>
       <Divider />
       <Formik
@@ -97,7 +96,7 @@ const StudentDetails = ({ user, std_id }) => {
                 <TableRow>
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
-                    <div>{user?.user.github}</div>
+                    <div>{user?.user.github?.username}</div>
                     {user?.user.github == undefined ?
                       <small className="px-1 py-2px bg-light-error text-red border-radius-4">
                       GITHUB UNVERIFIED
@@ -106,7 +105,6 @@ const StudentDetails = ({ user, std_id }) => {
                       GITHUB VERIFIED
                     </small>
                     }
-                    
                   </TableCell>
                 </TableRow>
                 {customerInfo.map((item, ind) => (
@@ -136,11 +134,6 @@ const StudentDetails = ({ user, std_id }) => {
           </form>
         )}
       </Formik>
-      {msg.alert ? (<Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> ): ""}
     </Card>
   );
 };

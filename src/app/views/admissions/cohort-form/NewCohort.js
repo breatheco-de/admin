@@ -1,8 +1,5 @@
 import React, { useState,useEffect } from "react";
 import { Formik } from "formik";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../../../../axios";
 import {
   Grid,
   Card,
@@ -12,33 +9,19 @@ import {
   Button,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
+import bc from "app/services/breathecode";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
 
 const NewCohort = () => {
-  const [cert, setCert] = useState([]);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-
+  const [cert, setCert] = useState(null);
+  const [version, setVersion] = useState(null);
   const postCohort = (values) => {
-     axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,values)
-      .then((data) => setMsg({ alert: true, type: "success", text: "Cohort added successfully" }))
-      .catch(error => {
-        console.log(error)
-        setMsg({ 
-        alert: true, 
-        type: "error", 
-        text: error.detail || "Unknown error, check cohort fields"
-       })})
+    console.log({...values, syllabus: `${cert.slug}.v${version.version}`})
+     bc.admissions().addCohort({...values, syllabus: `${cert.slug}.v${version.version}`})
+      .then((data) => data)
+      .catch(error => console.log(error))
   };
-
-
-  const getCertificates = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/certificate`)
-    .then(({data}) => setCert(data))
-    .catch(error => setMsg({ alert: true, type: "error", text: error.details })) 
-  }
-  useEffect(() =>{
-    getCertificates();
-  }, [])
-
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -102,26 +85,30 @@ const NewCohort = () => {
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Certificate
+                  Syllabus
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
-                    <TextField
-                      className="m-2 min-w-188"
-                      label="Certificate"
-                      name="certificate"
-                      size="small"
-                      variant="outlined"
-                      select
-                      value={values.certificate || ""}
-                      onChange={handleChange}
-                    >
-                      {cert.map((item, ind) => (
-                        <MenuItem value={item.id} key={item.name}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                  <AsyncAutocomplete
+                    onChange={(certificate) => setCert(certificate)}
+                    width={"30%"}
+                    className="mr-2 ml-2"
+                    asyncSearch={() => bc.admissions().getCertificates()}
+                    size={"small"}
+                    label="Certificate"
+                    required={true}
+                    getOptionLabel={option => `${option.name}`}
+                    value={cert} />
+                    {cert !== null ? <AsyncAutocomplete
+                    onChange={(v) => setVersion(v)}
+                    width={"20%"}
+                    key={cert.slug}
+                    asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
+                    size={"small"}
+                    label="Version"
+                    required={true}
+                    getOptionLabel={option => `${option.version}`}
+                    value={version} /> : ""}
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -146,11 +133,6 @@ const NewCohort = () => {
             </form>
           )}
         </Formik>
-        {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-                    <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-                        {msg.text}
-                    </Alert>
-                </Snackbar> : ""}
       </Card>
     </div>
   );
@@ -159,7 +141,6 @@ const NewCohort = () => {
 const initialValues = {
   name: "",
   slug:"",
-  certificate:"",
   kickoff_date:""
 };
 

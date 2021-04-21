@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import { MatxLoading } from "matx";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -21,34 +21,70 @@ const roleColors = {
 }
 
 const name = (user) => {
-    if(user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
-    else return "No name";
+  if (user && user.first_name && user.first_name != "") return user.first_name + " " + user.last_name;
+  else return "No name";
 }
 
 const Staff = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+  let [role, setRole] = useState(null);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0
+  });
+  const query = useQuery();
+  const history = useHistory();
 
   const getAcademyMembers = () => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/role`)
+    bc.auth().getRoles()
       .then((res) => {
-        const roles = res.data.filter(r => r.slug !== "student").map(r => r.slug);
-        res.status === 200 ?
-          (axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/member?roles=${roles.join()}`)
+        if (res.status === 200) {
+          let r = res.data.filter(r => r.slug !== "student").map(r => r.slug);
+          setRole(r);
+          bc.auth().getAcademyMembers({
+            roles: r.join(","),
+            limit: query.get("limit") !== null ? query.get("limit") : 10,
+            offset: query.get("offset") !== null ? query.get("offset") : 0
+          })
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
               if (isAlive) {
-                let filterUserNull = data.filter(item => item.user !== null)
-                setUserList(filterUserNull)
+                let filterUserNull = data.results.filter(item => item.user !== null);
+                setUserList(filterUserNull);
+                setTable({ count: data.count });
               };
             }).catch(error => {
               setIsLoading(false);
-              setMsg({ alert: true, type: "error", text: error.detail || "You dont have the permissions required to read members" });
-            })) : setMsg({ alert: true, type: "error", text: "An error ocurred" });
+            })
+        }
       })
+      .catch(error => console.log(error))
+  }
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    console.log("page: ", rowsPerPage);
+    bc.auth().getAcademyMembers({
+      roles: role.join(","),
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+        let filterUserNull = data.results.filter(item => item.user !== null);
+        setUserList(filterUserNull);
+        setTable({ count: data.count, page: page });
+        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
+  const resendInvite = (user) => {
+    bc.auth().resendInvite(user)
+      .then(({ data }) => console.log(data))
       .catch(error => console.log(error))
   }
 
@@ -100,7 +136,7 @@ const Staff = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           let item = userList[dataIndex]
-          return <small className={"border-radius-4 px-2 pt-2px "+(roleColors[item.role.slug] || "bg-light")}>{item.role.name.toUpperCase()}</small>
+          return <small className={"border-radius-4 px-2 pt-2px " + (roleColors[item.role.slug] || "bg-light")}>{item.role.name.toUpperCase()}</small>
         }
       },
     },
@@ -113,8 +149,8 @@ const Staff = () => {
           let item = userList[dataIndex]
           return <div className="flex items-center">
             <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px"+statusColors[item.status]}>{item.status.toUpperCase()}</small>
-                { item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
+              <small className={"border-radius-4 px-2 pt-2px" + statusColors[item.status]}>{item.status.toUpperCase()}</small>
+              {item.status == 'INVITED' && <small className="text-muted d-block">Needs to accept invite</small>}
             </div>
           </div>
         }
@@ -126,27 +162,33 @@ const Staff = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
-          return <div className="flex items-center">
+          let item = userList[dataIndex].user !== null ?
+            (userList[dataIndex]) :
+            ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
+          return item.status === "INVITED" ? (<div className="flex items-center">
+            <div className="flex-grow"></div>
+            <Tooltip title="Resend Invite">
+              <IconButton onClick={() => resendInvite(item.id)}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            </Tooltip>
+          </div>) : <div className="flex items-center">
             <div className="flex-grow"></div>
             <Link to={`/admin/staff/${item.user.id}`}>
-              <IconButton>
-                <Icon>edit</Icon>
-              </IconButton>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
             </Link>
           </div>
         },
       },
-    },
+    }
   ];
 
   return (
     <div className="m-sm-30">
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
@@ -160,8 +202,8 @@ const Staff = () => {
 
           <div className="">
             <Link to={`/admin/staff/new`}>
-                <Button variant="contained" color="primary">
-                    Add new staff member
+              <Button variant="contained" color="primary">
+                Add new staff member
                 </Button>
             </Link>
           </div>
@@ -177,8 +219,24 @@ const Staff = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
+              serverSide: true,
               elevation: 0,
+              count: table.count,
+              page: table.page,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch (action) {
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    break;
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,

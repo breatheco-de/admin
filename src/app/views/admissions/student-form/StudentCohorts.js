@@ -15,13 +15,12 @@ import {
   DialogActions,
   IconButton
 } from "@material-ui/core";
-import { Alert } from '@material-ui/lab';
-import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../../../../axios";
 import { MatxLoading } from "matx";
 import { AsyncAutocomplete } from "app/components/Autocomplete";
+import bc from "app/services/breathecode";
 
-const InvoiceOverview = ({ std_id }) => {
+const StudentCohorts = ({ std_id }) => {
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
@@ -44,63 +43,48 @@ const InvoiceOverview = ({ std_id }) => {
       educational_status: stdCohorts[i].educational_status
     }
     console.log(s_status)
-    axios.put(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${stdCohorts[i].cohort.id}/user/${studentId}`, { ...s_status, [name]: value })
+    bc.admissions().updateCohortUserInfo(stdCohorts[i].cohort.id,studentId,{ ...s_status, [name]: value })
       .then((data) => {
         console.log(data)
-        if (data.status >= 200) {
-          setMsg({ alert: true, type: "success", text: "User status updated" });
-          getStudentCohorts();
-        } else setMsg({ alert: true, type: "error", text: "Could not update user status" })
+        if (data.status >= 200)  getStudentCohorts();
       })
-      .catch(error => {
-        setMsg({ alert: true, type: "error", text: error.details || error.role[0] });
-        console.log(error)
-      })
+      .catch(error => error)
   }
 
   const getStudentCohorts = () => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?users=${std_id}`)
+    bc.admissions().getAllUserCohorts({
+      users: std_id
+    })
       .then(({ data }) => {
         console.log(data)
         setIsLoading(false);
-        data.length < 1 ? setMsg({ alert: true, type: "error", text: "This user have not cohorts assigned" }) : setStdCohorts(data)
+        data.length < 1 ? setStdCohorts([]): setStdCohorts(data)
       })
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details }))
+      .catch(error => error)
   }
 
   const deleteUserFromCohort = () => {
-    axios.delete(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${currentStd.cohort_id}/user/${currentStd.id}`)
+    bc.admissions().deleteUserCohort(currentStd.cohort_id,currentStd.id)
       .then((data) => {
-        if (data.status === 204) {
-          setMsg({ alert: true, type: "success", text: "User have been deleted from cohort" });
-          getStudentCohorts();
-        }
-        else setMsg({ alert: true, type: "error", text: "Delete not successfull" })
+        if (data.status === 204) getStudentCohorts();
       })
-      .catch(error => setMsg({ alert: true, type: "error", text: error.details + " or permission denied" }))
+      .catch(error => error)
     setOpenDialog(false);
   }
   const addUserToCohort = () => {
     if (cohort === null) setMsg({ alert: true, type: "warning", text: "Select a cohort" });
     else {
-      axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort.id}/user`, {
+      bc.admissions().addUserCohort(cohort.id,{
         user: std_id,
         role: "STUDENT",
         finantial_status: null,
         educational_status: "ACTIVE"
       }).then((data) => {
-        if (data.status >= 200) {
-          setMsg({ alert: true, type: "success", text: "User added successfully" });
-          getStudentCohorts();
-        } else setMsg({ alert: true, type: "error", text: "Could not add user to cohort" })
+        if (data.status >= 200) getStudentCohorts();
       })
-        .catch(error => {
-          console.log(error)
-          setMsg({ alert: true, type: "error", text: error.details });
-        })
+        .catch(error => error)
     }
-
   }
 
   return (
@@ -136,7 +120,7 @@ const InvoiceOverview = ({ std_id }) => {
         onChange={(cohort) => setCohort(cohort)}
         width={"100%"}
         label="Search Cohorts"
-        getLabel={option => `${option.name}, (${option.slug})`}
+        getOptionLabel={option => `${option.name}, (${option.slug})`}
         asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
         >
         <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort()}>
@@ -240,15 +224,10 @@ const InvoiceOverview = ({ std_id }) => {
           ))}
         </List>
       </Dialog>
-      {msg.alert ? <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: "", type: "" })}>
-        <Alert onClose={() => setMsg({ alert: false, text: "", type: "" })} severity={msg.type}>
-          {msg.text}
-        </Alert>
-      </Snackbar> : ""}
     </Card>
   );
 };
 
 
 
-export default InvoiceOverview;
+export default StudentCohorts;

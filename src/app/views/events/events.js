@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import {  Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import A from '@material-ui/core/Link';
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import bc from "app/services/breathecode";
+import { useQuery } from '../../hooks/useQuery';
+import {useHistory} from 'react-router-dom';
+
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
 const stageColors = {
-  'INACTIVE': 'bg-gray',
-  'PREWORK': 'bg-secondary',
+  'DRAFT': 'bg-gray',
   'STARTED': 'text-white bg-warning',
-  'FINAL_PROJECT': 'text-white bg-error',
   'ENDED': 'text-white bg-green',
   'DELETED': 'light-gray',
 }
@@ -22,15 +24,46 @@ const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0 
+  })
+  const query = useQuery();
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/events/academy/event").then(({ data }) => {
+    bc.events().getAcademyEvents({
+      limit: query.get("limit") !== null ? query.get("limit") : 10,
+      offset: query.get("offset") !== null ? query.get("offset") : 0
+    })
+    .then(({ data }) => {
+      console.log(data)
       setIsLoading(false);
-      if (isAlive) setItems(data);
+      if (isAlive) {
+        setItems(data.results);
+        setTable({count: data.count});
+      };
     });
     return () => setIsAlive(false);
   }, [isAlive]);
+
+  const handlePageChange = (page, rowsPerPage) => {
+    setIsLoading(true);
+    console.log("page: ",  rowsPerPage);
+    bc.events().getAcademyEvents({
+      limit: rowsPerPage,
+      offset: page * rowsPerPage
+    })
+      .then(({ data }) => {
+        setIsLoading(false);
+          setItems(data.results);
+          setTable({count: data.count, page:page});
+          history.replace(`/events/list?limit=${rowsPerPage}&offset=${page*rowsPerPage}`)
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
 
   const columns = [
     {
@@ -47,7 +80,6 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           let item = items[dataIndex];
-
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -61,6 +93,19 @@ const EventList = () => {
     {
       name: "title", // field name in the row object
       label: "Title", // column title that will be shown in table
+    },
+    {
+      name: "url",
+      label: "Landing URL",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <div className="ml-3">
+              <A className="px-2 pt-2px border-radius-4 text-white bg-green" href={items[i].url} rel="noopener">URL</A>
+            </div>
+          </div>
+      },
     },
     {
       name: "starting_at",
@@ -77,6 +122,20 @@ const EventList = () => {
       },
     },
     {
+      name: "ending_at",
+      label: "Ending Date",
+      options: {
+        filter: true,
+        customBodyRenderLite: i =>
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">{dayjs(items[i].ending_at).format("MM-DD-YYYY")}</h5>
+              <small className="text-muted">{dayjs(items[i].ending_at).fromNow()}</small>
+            </div>
+          </div>
+      },
+    },
+    {
       name: "action",
       label: " ",
       options: {
@@ -84,14 +143,9 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
+            <Link to={"/events/EditEvent/" + items[dataIndex].id}>
               <IconButton>
                 <Icon>edit</Icon>
-              </IconButton>
-            </Link>
-            <Link to="/pages/view-customer">
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Link>
           </div>
@@ -132,15 +186,24 @@ const EventList = () => {
             options={{
               filterType: "textField",
               responsive: "standard",
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              serverSide: true,
               elevation: 0,
+              count: table.count,
+              page: table.page,
+              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch(action){
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    break;
+                }
+              },
               customSearchRender: (
                 searchText,
                 handleSearch,
