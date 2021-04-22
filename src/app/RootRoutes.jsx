@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 
+import adminRoutes from "./views/admin/routes";
 import admissionsRoutes from "./views/admissions/routes";
 import eventsRoutes from "./views/events/routes";
 
@@ -34,6 +35,7 @@ const errorRoute = [
 
 const routes = [
   ...dashboardRoutes,
+  ...adminRoutes,
   ...admissionsRoutes,
   ...eventsRoutes,
   ...mediaRoutes,

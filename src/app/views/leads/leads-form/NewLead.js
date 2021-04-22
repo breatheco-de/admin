@@ -296,6 +296,8 @@ const NewLead = () => {
                     name = "location"
                     size = "small"
                     variant = "outlined"
+                    value={newLead.location}
+                    readOnly={true}
                     defaultValue = {newLead.location}
                   />
                 </Grid>

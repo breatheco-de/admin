@@ -19,7 +19,7 @@ const EventSettings = () => {
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },
-            { name: "Students", path: "/admin/students" },
+            { name: "Students", path: "/admissions/students" },
             { name: "New Student" },
           ]}
         />
