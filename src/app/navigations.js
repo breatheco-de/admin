@@ -48,7 +48,6 @@ export const navigations = [
     {
         name: "Leads",
         icon: "monetization_on",
-        beta: true,
         children: [
             {
                 name: "Leads Log",
@@ -70,7 +69,6 @@ export const navigations = [
         ],
     },
     {
-        beta: true,
         name: "Feedback",
         icon: "record_voice_over",
         children: [
@@ -80,6 +78,7 @@ export const navigations = [
                 iconText: "OL",
             },
             {
+                beta: true,
                 name: "Surveys",
                 path: "/feedback/surveys",
                 iconText: "OL",
@@ -88,7 +87,6 @@ export const navigations = [
     },
 
     {
-        beta: true,
         name: "Events & Workshops",
         icon: "event",
         children: [
@@ -96,6 +94,7 @@ export const navigations = [
                 name: "Settings",
                 path: "/events/settings",
                 iconText: "OL",
+                beta: true,
             },
             {
                 name: "Event List",
@@ -106,6 +105,7 @@ export const navigations = [
                 name: "Attendees",
                 path: "/events/attendees",
                 iconText: "OL",
+                beta: true,
             },
         ],
     },
