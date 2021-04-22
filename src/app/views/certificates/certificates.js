@@ -10,6 +10,12 @@ import BC from "../../services/breathecode";
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
+const statusColors = {
+    'ERROR': 'text-white bg-error',
+    'PERSISTED': 'text-white bg-green',
+    'PENDING': 'text-white bg-secondary',
+  }
+
 const Certificates = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -69,11 +75,13 @@ const Certificates = () => {
             options: {
                 filter: true,
                 filterType: "multiselect",
-                 customBodyRender: (value, tableMeta, updateValue) => (
-                    value
-            
-          ),
-                },
+                 customBodyRender: (value, tableMeta, updateValue) => { 
+                return <div className="flex items-center">
+                 <div className="ml-3">
+                   <small className={"border-radius-4 px-2 pt-2px" + statusColors[value]}>{value.toUpperCase()}</small>
+                 </div>
+               </div>
+                }},
         },
         {
             name: "expires_at",
