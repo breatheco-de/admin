@@ -14,6 +14,8 @@ import history from "history.js";
 import clsx from "clsx";
 import useAuth from 'app/hooks/useAuth';
 
+import bc from "app/services/breathecode";
+
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
     background: "#1A2038",
@@ -29,13 +31,16 @@ const Choose = () => {
   const [loading, setLoading] = useState(false);
   const { choose, user } = useAuth();
   const classes = useStyles();
-  const handleChange = (event) => {
+
+  const handleChange = async (event) => {
       const { role, academy } = event.target.value;
 
       if(role && role !== ""){
+
         choose({ role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
-        localStorage.setItem("bc-academy", JSON.stringify(academy));
+        const { data } = await bc.admissions().getMyAcademy()
+        localStorage.setItem("bc-academy", JSON.stringify(data));
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }

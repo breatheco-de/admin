@@ -92,7 +92,7 @@ const Leads = () => {
       options: {
         filterList:query.get("course") !== null ? [query.get("course")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].course !== null ? items.results[dataIndex].course !== null : "---"}</span>
+          <span className="ellipsis">{items.results[dataIndex].course}</span>
         ),
       },
     },
