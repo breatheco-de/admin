@@ -2,53 +2,34 @@ import React from "react";
 
 const routes = [
     {
-        path: "/admin/cohorts/new",
+        path: "/admissions/cohorts/new",
         exact: true,
         component: React.lazy(() => import("./cohort-form/NewCohort")),
     },
     {
-        path: "/admin/cohorts/:slug",
+        path: "/admissions/cohorts/:slug",
         exact: true,
         component: React.lazy(() => import("./cohort-form")),
     },
     {
         exact: true,
-        path: "/admin/cohorts",
+        path: "/admissions/cohorts",
         component: React.lazy(() => import("./cohorts")),
     },
     {
-        path: "/admin/students/new",
+        path: "/admissions/students/new",
         exact: true,
         component: React.lazy(() => import("./student-form/NewStudent")),
     },
     {
-        path: "/admin/students/:std_id",
+        path: "/admissions/students/:std_id",
         exact: true,
         component: React.lazy(() => import("./student-form")),
     },
     {
-        path: "/admin/students",
+        path: "/admissions/students",
         component: React.lazy(() => import("./students")),
     },
-    {
-        path: "/admin/staff/new",
-        exact: true,
-        component: React.lazy(() => import("./staff-form/NewStaff")),
-    },
-    {
-        path: "/admin/staff/:staff_id",
-        exact: true,
-        component: React.lazy(() => import("./staff-form")),
-    },
-    {
-        path: "/admin/staff",
-        component: React.lazy(() => import("./staff")),
-    },
-    {
-        path: "/admin/invites",
-        exact: true,
-        component: React.lazy(() => import("./invites")),
-    }
 ];
 
 export default routes;

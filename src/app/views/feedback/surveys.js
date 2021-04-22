@@ -95,7 +95,7 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
+            <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>

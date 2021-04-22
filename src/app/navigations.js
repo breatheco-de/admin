@@ -12,26 +12,10 @@ export const navigations = [
         icon: "show_chart",
         beta: true
     },
-    //   {
-    //     name: "Inventory Management",
-    //     path: "/dashboard/inventory-management",
-    //     icon: "dashboard",
-    //   },
     {
-        name: "Admissions",
-        icon: "school",
-        auth: authRoles.contry_manager,
+        name: "Admin",
+        icon: "account_circle",
         children: [
-            {
-                name: "Cohorts",
-                path: "/admin/cohorts",
-                iconText: "CO",
-            },
-            {
-                name: "Students",
-                path: "/admin/students",
-                iconText: "STU",
-            },
             {
                 name: "Staff",
                 path: "/admin/staff",
@@ -42,6 +26,23 @@ export const navigations = [
                 path: "/admin/invites",
                 iconText: "STA",
             },
+        ],
+    },
+    {
+        name: "Admissions",
+        icon: "school",
+        auth: authRoles.contry_manager,
+        children: [
+            {
+                name: "Cohorts",
+                path: "/admissions/cohorts",
+                iconText: "CO",
+            },
+            {
+                name: "Students",
+                path: "/admissions/students",
+                iconText: "STU",
+            }
         ],
     },
     {
