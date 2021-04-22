@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
-import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -121,7 +121,26 @@ const Certificates = () => {
             label: "Preview",
             options: {
                 filter: true,
-                customBodyRenderLite: i => <a href={items[i].preview_url}>{items[i].preview_url !== null ? "preview" : "not available"}</a>
+                customBodyRenderLite: i => {
+                    return <div className="flex items-center">
+                    <div className="flex-grow"></div>
+                    <a href={items[i].preview_url} target="_blank">
+                      <Tooltip title={items[i].preview_url !== null ? "Preview Available" : "Preview Not available"}>
+                        <IconButton>
+                          <Icon>search</Icon>
+                        </IconButton>
+                      </Tooltip>
+                      </a>
+                    
+                    <a href={`https://certificate.breatheco.de/pdf/${items[i].preview_url.slice(56)}`} target="_blank">
+                      <Tooltip title="PDF">
+                        <IconButton>
+                          <Icon>image</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </a>
+                  </div>
+                }  
             },
         },
     ];
