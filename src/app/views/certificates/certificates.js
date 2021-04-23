@@ -16,12 +16,12 @@ const statusColors = {
     'PENDING': 'text-white bg-secondary',
   }
 
+
 const Certificates = () => {
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([]);
     let { cohortId } = useParams();
-    
     
     useEffect(() => {
         setIsLoading(true);
@@ -49,6 +49,7 @@ const Certificates = () => {
             options: {
                 filter: true,
                 customBodyRenderLite: i => items[i].specialty ?.name
+                
             },
         },
         {
@@ -75,10 +76,13 @@ const Certificates = () => {
             options: {
                 filter: true,
                 filterType: "multiselect",
-                 customBodyRender: (value, tableMeta, updateValue) => { 
+                customBodyRender: (value, tableMeta, updateValue) => { 
+                let item = items[tableMeta.rowIndex]
                 return <div className="flex items-center">
                  <div className="ml-3">
+                     <Tooltip title={item.status_text || "everything looks great"}>
                    <small className={"border-radius-4 px-2 pt-2px" + statusColors[value]}>{value.toUpperCase()}</small>
+                   </Tooltip>
                  </div>
                </div>
                 }},
