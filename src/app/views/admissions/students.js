@@ -211,7 +211,6 @@ const Students = () => {
               return <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={userList} key={userList} history={history}/>
               },
               onTableChange: (action, tableState) => {
-                console.log(action, tableState)
                 switch (action) {
                   case "changePage":
                     handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);

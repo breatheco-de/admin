@@ -29,17 +29,22 @@ const Cohorts = () => {
     page:0
   });
   const [querys, setQuerys] = useState({});
+
   const query = useQuery();
   const history = useHistory();
 
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLike, setQueryLike] = useState(query.get("like") || "");
+
+
   useEffect(() => {
     setIsLoading(true);
-    let q = {
-      limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0
-    }
-    setQuerys(q);
-    bc.admissions().getAllCohorts(q)
+    bc.admissions().getAllCohorts({
+      limit: queryLimit,
+      offset: queryOffset,
+      like: queryLike
+    })
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) {
@@ -52,21 +57,25 @@ const Cohorts = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage) => {
+  const handlePageChange = (page, rowsPerPage, _like) => {
     setIsLoading(true);
-    bc.admissions().getAllCohorts({
+    setQueryLimit(rowsPerPage);
+    setQueryOffset(rowsPerPage * page);
+    setQueryLike(_like);
+    let query = {
       limit: rowsPerPage,
-      offset: page * rowsPerPage
-    })
+      offset: page * rowsPerPage,
+      like: _like
+    }
+    setQuerys(query);
+    bc.admissions().getAllCohorts(query)
       .then(({ data }) => {
         setIsLoading(false);
         setItems({...data, page:page});
+        history.replace(`/admin/cohorts?${Object.keys(query).map(key => `${key}=${query[key]}`).join('&')}`)
       }).catch(error => {
         setIsLoading(false);
       })
-      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
-      setQuerys(q);
-      history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
   }
 
   const columns = [
@@ -206,6 +215,7 @@ const Cohorts = () => {
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
                 setQuerys(q);
+                console.log("hola", querys);
                 history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
               rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
@@ -214,10 +224,10 @@ const Cohorts = () => {
                 switch (action) {
                   case "changePage":
                     console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
                     break;
                   case "changeRowsPerPage":
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
                     break;
                   case "filterChange":
                   //console.log(action, tableState)
@@ -236,6 +246,11 @@ const Cohorts = () => {
                       size="small"
                       fullWidth
                       onChange={({ target: { value } }) => handleSearch(value)}
+                      onKeyPress={(e) => {
+                        if(e.key == "Enter"){
+                          handlePageChange(queryOffset, queryLimit, e.target.value)
+                        }
+                      }}
                       InputProps={{
                         style: {
                           paddingRight: 0,
