@@ -215,7 +215,6 @@ const Cohorts = () => {
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
                 setQuerys(q);
-                console.log("hola", querys);
                 history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
               rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
