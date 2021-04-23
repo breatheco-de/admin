@@ -127,6 +127,13 @@ class BreatheCodeClient {
         }
     })
 
+    certificates = () => ({
+        getAllCertificates: (query) => {
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Certificates",`${this.host}/certificate${query ? '?'+ qs : ''}`)
+        }
+    })
+
     getItem(key) {
         let value = this.ls.getItem(key)
         try {

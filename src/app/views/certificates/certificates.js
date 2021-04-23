@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
@@ -6,6 +8,7 @@ import { Avatar, Grow, Icon, IconButton, TextField, Button } from "@material-ui/
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import bc from "app/services/breathecode";
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -14,25 +17,86 @@ const Certificates = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [items, setItems] = useState([]);
     let { cohortId } = useParams();
+
+    const [table, setTable] = useState({
+        count: 100,
+        page: 0
+      });
+
+    const query = useQuery();
+    const history = useHistory();
+    const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+    const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+    const [queryLike, setQueryLike] = useState(query.get("like") || "");
     
     
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     if (cohortId !== null && cohortId !== undefined) {
+    //         console.log("ey");
+    //         axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId)
+    //             .then(({ data }) => {
+    //                 setIsLoading(false);
+    //                 if (isAlive){
+    //                     setItems(data);
+    //                     console.log(items);
+    //                 } 
+    //             });
+    //     } 
+    //     else {
+    //         console.log("ey");
+    //         axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate")
+    //             .then(({ data }) => {
+    //                 setIsLoading(false);
+    //                 if (isAlive){
+    //                     setItems(data);
+    //                     console.log(items);
+    //                 } 
+    //             });
+    //     }
+    //     return () => setIsAlive(false);
+    // }, [isAlive]);
+
     useEffect(() => {
         setIsLoading(true);
-        if (cohortId !== null && cohortId !== undefined) {
-            axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId).then(({ data }) => {
-                setIsLoading(false);
-                if (isAlive) setItems(data);
-            });
-
-        } 
-        else {
-            axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate").then(({ data }) => {
-                setIsLoading(false);
-                if (isAlive) setItems(data);
-            });
-        }
+        bc.certificates().getAllCertificates({
+          limit: queryLimit,
+          offset: queryOffset,
+          like: queryLike
+        })
+          .then(({ data }) => {
+            setIsLoading(false);
+            if (isAlive) {
+                setItems(data)
+              setTable({ count: data.count });
+            };
+          }).catch(error => {
+            setIsLoading(false);
+          })
         return () => setIsAlive(false);
-    }, [isAlive]);
+      }, [isAlive]);
+
+
+    const handlePageChange = (page, rowsPerPage, _like) => {
+        setIsLoading(true);
+        setQueryLimit(rowsPerPage);
+        setQueryOffset(rowsPerPage * page);
+        setQueryLike(_like);
+        let query = {
+          limit: rowsPerPage,
+          offset: page * rowsPerPage,
+          like: _like
+        }
+        bc.certificates().getAllCertificates(query)
+          .then(({ data }) => {
+            setItems(data);
+            setIsLoading(false);
+            setTable({ count: data.count, page: page });
+            history.replace(`/certificates?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+          }).catch(error => {
+            setIsLoading(false);
+          })
+      }
 
 
     const columns = [
@@ -160,8 +224,22 @@ const Certificates = () => {
                             // print: false, // set print option
                             // pagination: true, //set pagination option
                             // viewColumns: false, // set column option
+                            count: table.count,
+                            page: table.page,
                             elevation: 0,
+                            rowsPerPage: parseInt(query.get("limit"), 10) || 10,
                             rowsPerPageOptions: [10, 20, 40, 80, 100],
+                            onTableChange: (action, tableState) => {
+                                console.log(action, tableState)
+                                switch (action) {
+                                  case "changePage":
+                                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                                    break;
+                                  case "changeRowsPerPage":
+                                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                                    break;
+                                }
+                              },
                             customSearchRender: (
                                 searchText,
                                 handleSearch,
@@ -175,6 +253,11 @@ const Certificates = () => {
                                             size="small"
                                             fullWidth
                                             onChange={({ target: { value } }) => handleSearch(value)}
+                                            onKeyPress={(e) => {
+                                                if(e.key == "Enter"){
+                                                  handlePageChange(queryOffset, queryLimit, e.target.value)
+                                                }
+                                              }}
                                             InputProps={{
                                                 style: {
                                                     paddingRight: 0,
@@ -182,7 +265,7 @@ const Certificates = () => {
                                                 startAdornment: (
                                                     <Icon className="mr-2" fontSize="small">
                                                         search
-                          </Icon>
+                                                    </Icon>
                                                 ),
                                                 endAdornment: (
                                                     <IconButton onClick={hideSearch}>
