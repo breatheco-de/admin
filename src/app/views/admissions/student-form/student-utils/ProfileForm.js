@@ -20,7 +20,7 @@ export const ProfileForm = ({ initialValues }) => {
         const requestValues = cohort !== null ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
             bc.auth().addAcademyStudent(requestValues)
             .then(data =>{ 
-                history.push("/admin/students");
+                history.push("/admissions/students");
             })
             .catch(error => error)
     }
