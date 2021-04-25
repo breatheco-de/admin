@@ -44,7 +44,7 @@ const Analytics = () => {
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-            academy: academy.id,
+            academy: academy.slug,
             by: 'location,created_at__date,course'
         }).then(( { data }) => {
                 console.log("data", data)
@@ -66,7 +66,7 @@ const Analytics = () => {
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),
-            academy: academy.id,
+            academy: academy.slug,
             by: 'utm_source'
         })
             .then(( { data }) => {
