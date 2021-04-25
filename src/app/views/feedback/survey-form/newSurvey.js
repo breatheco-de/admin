@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Dialog,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
@@ -18,26 +18,14 @@ import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     select: {
-        width: "15rem",
+      width: "15rem",
     },
   }));
-
-// const DialogContent = withStyles((theme) => ({
-//   root: {
-//     padding: theme.spacing(2),
-//   },
-// }))(MuiDialogContent);
-
-
-// const DialogActions = withStyles((theme) => ({
-//   root: {
-//     margin: 0,
-//     padding: theme.spacing(1),
-//   },
-// }))(MuiDialogActions);
 
 const NewSurvey = () => {
   const [listCohorts, setListCohort] = useState(undefined); 
@@ -55,9 +43,15 @@ const NewSurvey = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const [roleDialog, setRoleDialog] = useState(false);
-  const [roles, setRoles] = useState(null);
+  const [open, setOpen] = useState(false);
+    
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
   // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE DE OBJECT "newSurvey" \\
 
    useEffect(() => {
@@ -70,7 +64,7 @@ const NewSurvey = () => {
     useEffect(() => {
         listCohorts != undefined
             ? setcohortName(listCohorts.map(item => (
-                <MenuItem key = {item.name} value = {item.name}>
+                <MenuItem key = {item.name} value = {item.id}>
                     {item.name}
                 </MenuItem>
             )))
@@ -187,7 +181,7 @@ const NewSurvey = () => {
                     onChange = {createSurvey}
                   />
                 </Grid>
-                  <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+                  <Button color = "primary" variant = "contained" type = "submit" onClick={()=> handleClickOpen(true)}>
                     Create
                   </Button>
               </Grid>
@@ -196,35 +190,56 @@ const NewSurvey = () => {
         </Formik>
         </Card>
         <Dialog
-          onClose={() => setRoleDialog(false)}
-          open={roleDialog}
+          onClose={handleClose}
+          open={open}
           aria-labelledby="simple-dialog-title"
-        >
+        > 
           <DialogTitle id="simple-dialog-title">
-            Are you sure?
+              Are you sure?
           </DialogTitle>
           <DialogContent>
             <Typography gutterBottom>
               {`Cohort: ${newSurvey.cohort}`} 
             </Typography>
             <Typography gutterBottom>
-              {`Max assistant to as: ${newSurvey.max_assistants}`} 
+              {`Max assistant to ask: ${newSurvey.max_assistants}`} 
             </Typography>
             <Typography gutterBottom>
-              {`Max teacherz: ${newSurvey.max_teachers}`} 
+              Max teachers: <span className="fs-5 fw-bolder">{newSurvey.max_teachers}</span>
             </Typography>
               <Typography gutterBottom>
               {`Duration: ${newSurvey.duration}`} 
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+            <Button 
+              color = "primary" 
+              variant = "contained" 
+              type = "submit" 
+              onClick={() => {
+                bc.feedback().addNewSurvey(newSurvey);
+                console.log(newSurvey);
+                handleClose();
+              }}>
               Save as a draft
             </Button>
-            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+            <Button 
+              color = "success" 
+              variant = "contained" 
+              type = "submit" 
+              onClick={() => {
+                bc.feedback().updateSurvey({
+                  ...newSurvey, send_now: true
+                }, newSurvey.cohort);
+                console.log(newSurvey);
+                handleClose();
+              }}>
               Send now
             </Button>
-            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+            <Button 
+              color = "danger" 
+              variant = "contained" 
+              onClick={handleClose}>
               Delete
             </Button>
           </DialogActions>

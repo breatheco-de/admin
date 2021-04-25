@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Formik } from "formik";
 import {
     Grid,
     Icon,
@@ -8,6 +9,8 @@ import {
     DialogTitle,
     Dialog,
     Button,
+    TextField,
+    DialogActions
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
@@ -15,32 +18,73 @@ import CohortDetails from "./CohortDetails";
 import { MatxLoading } from "matx";
 import DowndownMenu from "../../../components/DropdownMenu";
 import bc from "app/services/breathecode";
+import { DialogContent } from "@material-ui/core";
+import { DialogContentText } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import ControlledExpansionPanels from "app/views/material-kit/expansion-panel/ControlledAccordion";
 
 const options = [
     { label: "Change cohort stage", value: "stage" },
     { label: "Cohort Detailed Report", value: "cohort_deport" },
-    { label: "Instant NPS Survey", value: ""}
+    { label: "Instant NPS Survey", value: "new_survey"}
 ];
+
+const useStyles = makeStyles(({ palette, ...theme }) => ({
+    dialogue: {
+        color: "rgba(52, 49, 76, 1)",
+    },
+  }));
 
 const Cohort = () => {
     const { slug } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [stageDialog, setStageDialog] = useState(false);
     const [cohort, setCohort] = useState(null);
-    useEffect(() => {
-        getCohort();
-    }, [])
+    const classes = useStyles();
 
-    const getCohort = () => {
+    //DIALOGUE FOR NEWSURVEY\\
+
+    const [newSurvey, setNewSurvey] = useState(
+        {
+          cohort: null,
+          max_assistants: 2,
+          max_teachers: 2, 
+          duration: 1,
+          send_now: false
+        }
+      ); 
+    const [open, setOpen] = useState(false);
+    
+    const handleClickOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+
+    const createSurvey = event => {
+        setNewSurvey({ 
+            ...newSurvey, [event.target.name]: event.target.value 
+        });
+    };
+
+    //USEEFFECT QUE CARGA EL COHORT DETAIL\\
+
+    useEffect(() => {
         setIsLoading(true);
         bc.admissions().getCohort(slug)
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
-                console.log(data)
+                setNewSurvey({
+                    ...newSurvey, cohort: data.id
+                })
             })
             .catch(error => console.log(error));
-    }
+
+    }, [])
+
     const updateCohort = (values) => {
         console.log(values);
         console.log(cohort)
@@ -62,7 +106,13 @@ const Cohort = () => {
                         </div>
                     </div>
                     {isLoading && <MatxLoading />}
-                    <DowndownMenu options={options} icon="more_horiz" onSelect={({value})=>setStageDialog(value === "stage" ?true : false)}>
+                    <DowndownMenu 
+                        options={options} 
+                        icon="more_horiz" 
+                        onSelect={({value}) => {
+                            setStageDialog(value === "stage" ? true : false)
+                            setOpen(value === "new_survey" ? true : false) 
+                        }}>
                         <Button>
                             <Icon>playlist_add</Icon>
                             Additional Actions
@@ -117,6 +167,113 @@ const Cohort = () => {
                         </ListItem>
                     ))}
                 </List>
+            </Dialog>
+            <Dialog
+                onClose={handleClose}
+                open={open}
+                aria-labelledby="simple-dialog-title"
+            >
+                <DialogTitle id="simple-dialog-title">
+                    New Instant Survey
+                </DialogTitle>
+                <Formik
+                    initialValues = {newSurvey}
+                    enableReinitialize = {true}
+                    onSubmit = { () => {
+                        newSurvey.send_now
+                            ? bc.feedback().updateSurvey(newSurvey, newSurvey.cohort)
+                            : bc.feedback().addNewSurvey(newSurvey);
+                    }}
+                    >
+                    {({
+                        handleSubmit,
+                    }) => (
+                        <form className = "p-4" onSubmit={handleSubmit}>
+                            <DialogContent>
+                                <DialogContentText className={classes.dialogue}>
+                                    Cohort:
+                                </DialogContentText>
+                                <TextField
+                                    type="text"
+                                    label = "Cohort"
+                                    name = "cohort"
+                                    size = "small"
+                                    variant = "outlined"
+                                    defaultValue = {slug}
+                                />
+                                <DialogContentText className={classes.dialogue}>
+                                    Max assistants to ask:
+                                </DialogContentText>
+                                <TextField
+                                    type="number"
+                                    label = "Max assistants"
+                                    name = "max_assistants"
+                                    size = "small"
+                                    variant = "outlined"
+                                    defaultValue = {newSurvey.max_assistants}
+                                    onChange = {createSurvey}
+                                />
+                                <DialogContentText className={classes.dialogue}>
+                                    Max assistants of teachers:
+                                </DialogContentText>
+                                <TextField
+                                    type="number"
+                                    label = "Max teachers"
+                                    name = "max_teachers"
+                                    size = "small"
+                                    variant = "outlined"
+                                    defaultValue = {newSurvey.max_teachers}
+                                    onChange = {createSurvey}
+                                />
+                                <DialogContentText className={classes.dialogue}>
+                                    Duration:
+                                </DialogContentText>
+                                <TextField
+                                    type="number"
+                                    label = "Duration"
+                                    name = "duration"
+                                    size = "small"
+                                    variant = "outlined"
+                                    defaultValue = {newSurvey.duration}
+                                    onChange = {createSurvey}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button 
+                                color = "primary" 
+                                variant = "contained" 
+                                type = "submit" 
+                                onClick={() => {
+                                    console.log(newSurvey);
+                                    setNewSurvey({
+                                        ...newSurvey, send_now: false
+                                    });
+                                    handleClose();
+                                }}>
+                                Save as a draft
+                                </Button>
+                                <Button 
+                                color = "primary" 
+                                variant = "contained" 
+                                type = "submit" 
+                                onClick={() => {
+                                    setNewSurvey({
+                                        ...newSurvey, send_now: true
+                                    });
+                                    console.log(newSurvey);
+                                    handleClose();
+                                }}>
+                                Send now
+                                </Button>
+                                <Button 
+                                color = "danger" 
+                                variant = "contained" 
+                                onClick={handleClose}>
+                                Delete
+                                </Button>
+                            </DialogActions>   
+                        </form> )}
+                </Formik>            
             </Dialog>
         </>
     );
