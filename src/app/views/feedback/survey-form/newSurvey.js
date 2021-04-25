@@ -7,18 +7,37 @@ import {
   TextField,
   MenuItem,
   Button,
+  DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogActions
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { makeStyles } from "@material-ui/core/styles";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     select: {
         width: "15rem",
     },
   }));
+
+// const DialogContent = withStyles((theme) => ({
+//   root: {
+//     padding: theme.spacing(2),
+//   },
+// }))(MuiDialogContent);
+
+
+// const DialogActions = withStyles((theme) => ({
+//   root: {
+//     margin: 0,
+//     padding: theme.spacing(1),
+//   },
+// }))(MuiDialogActions);
 
 const NewSurvey = () => {
   const [listCohorts, setListCohort] = useState(undefined); 
@@ -35,6 +54,9 @@ const NewSurvey = () => {
   ); 
   const history = useHistory();
   const classes = useStyles();
+
+  const [roleDialog, setRoleDialog] = useState(false);
+  const [roles, setRoles] = useState(null);
 
   // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE DE OBJECT "newSurvey" \\
 
@@ -54,6 +76,10 @@ const NewSurvey = () => {
             )))
             : console.log("");
     }, [listCohorts != undefined])
+
+    //Añadir POST para submit con send_now en false
+
+    //Añadir PUT en el modal para send_now en true
 
     const createSurvey = event => {
             setNewSurvey({ ...newSurvey, [event.target.name]: event.target.value });
@@ -161,14 +187,49 @@ const NewSurvey = () => {
                     onChange = {createSurvey}
                   />
                 </Grid>
-                  <Button color = "primary" variant = "contained" type = "submit">
+                  <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
                     Create
                   </Button>
               </Grid>
             </form>
           )}
         </Formik>
-      </Card>
+        </Card>
+        <Dialog
+          onClose={() => setRoleDialog(false)}
+          open={roleDialog}
+          aria-labelledby="simple-dialog-title"
+        >
+          <DialogTitle id="simple-dialog-title">
+            Are you sure?
+          </DialogTitle>
+          <DialogContent>
+            <Typography gutterBottom>
+              {`Cohort: ${newSurvey.cohort}`} 
+            </Typography>
+            <Typography gutterBottom>
+              {`Max assistant to as: ${newSurvey.max_assistants}`} 
+            </Typography>
+            <Typography gutterBottom>
+              {`Max teacherz: ${newSurvey.max_teachers}`} 
+            </Typography>
+              <Typography gutterBottom>
+              {`Duration: ${newSurvey.duration}`} 
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+              Save as a draft
+            </Button>
+            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+              Send now
+            </Button>
+            <Button color = "primary" variant = "contained" type = "submit" onClick={()=> setRoleDialog(true)}>
+              Delete
+            </Button>
+          </DialogActions>
+      </Dialog>
+      
     </div>
   );
 };
