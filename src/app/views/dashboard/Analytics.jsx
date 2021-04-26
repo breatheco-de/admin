@@ -1,13 +1,22 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Grid, Card, TextField } from "@material-ui/core";
+import { Grid, Card, TextField, Button } from "@material-ui/core";
 import DoughnutChart from "../charts/echarts/Doughnut";
 import ModifiedAreaChart from "./shared/ModifiedAreaChart";
 import StatCards from "./shared/StatCards";
 import { useTheme } from "@material-ui/styles";
 import BC from "../../services/breathecode";
 import dayjs from "dayjs";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(({ palette, ...theme }) => ({
+    button: {
+        marginLeft: "1rem",
+        padding: "0rem",
+    },
+}));
 
 const Analytics = () => {
+    const classes = useStyles();
     const theme = useTheme();
     const [params, setParams] = useState({
         start: dayjs().subtract(30, 'day'),
@@ -36,6 +45,7 @@ const Analytics = () => {
           { value: 15, name: "Others" },
         ]
     });
+    const [renderNewDates, setRenderNewDates] = useState(false);
 
     useEffect(() => {
         const academy = JSON.parse(localStorage.getItem("bc-academy"));
@@ -92,11 +102,13 @@ const Analytics = () => {
             .then(( { data }) => {
                 setFeedback(data.filter(a => a.score));
             })
-    }, [params])
+    }, [renderNewDates])
+
+
     return (
         <Fragment>
             <div className="pb-24 pt-7 px-8 bg-primary">
-                <div className="card-title capitalize text-white mb-4 text-white-secondary">
+                <div className="card-title capitalize text-white mb-4 mx-5 text-white-secondary ">
                     Dashboard ranging from 
                     <TextField
                         className="ml-1"
@@ -115,7 +127,15 @@ const Analytics = () => {
                         value={params.end.format('YYYY-MM-DD')}
                         onChange={v => setParams({ ...params, end: dayjs(v.target.value, 'YYYY-MM-DD')})}
                     />
-        </div>
+                    <Button 
+                        color = "success" 
+                        variant = "contained"
+                        size="small"
+                        className={classes.button}
+                        onClick={() => setRenderNewDates(!renderNewDates)}>
+                        Apply
+                    </Button>
+                 </div>
                 <ModifiedAreaChart
                     height="280px"
                     option={{
