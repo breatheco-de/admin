@@ -75,7 +75,7 @@ const Students = () => {
         setIsLoading(false);
         setUserList(data.results);
         setTable({ count: data.count, page: page });
-        history.replace(`/admin/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+        history.replace(`/admissions/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
       }).catch(error => {
         setIsLoading(false);
       })
@@ -155,7 +155,7 @@ const Students = () => {
             </Tooltip>
           </div>) : <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={`/admin/students/${item.user !== null ? item.user.id : ""}`}>
+            <Link to={`/admissions/students/${item.user !== null ? item.user.id : ""}`}>
               <Tooltip title="Edit">
                 <IconButton>
                   <Icon>edit</Icon>
@@ -175,14 +175,14 @@ const Students = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/" },
+                { name: "Admissions", path: "/" },
                 { name: "Students" },
               ]}
             />
           </div>
 
           <div className="">
-            <Link to={`/admin/students/new`}>
+            <Link to={`/admissions/students/new`}>
               <Button variant="contained" color="primary">
                 Add new student
             </Button>
