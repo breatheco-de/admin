@@ -30,16 +30,19 @@ const AttendeeList = () => {
   const query = useQuery();
   const history = useHistory();
 
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLike, setQueryLike] = useState(query.get("like") || "");
+
   useEffect(() => {
     setIsLoading(true);
-    let q = {
-      limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0
-    }
-    setQuerys(q);
-    bc.events().getCheckins(q)
+    bc.events().getCheckins({
+      limit: queryLimit,
+      offset: queryOffset,
+      like: queryLike
+    })
     .then(({ data }) => {
-      console.log(data)
+      console.log(data);
       setIsLoading(false);
       if (isAlive) {
         setItems(data);
@@ -48,23 +51,26 @@ const AttendeeList = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage) => {
+  const handlePageChange = (page, rowsPerPage, _like) => {
     setIsLoading(true);
-    console.log("page: ",  rowsPerPage);
-    bc.events().getCheckins({
+    setQueryLimit(rowsPerPage);
+    setQueryOffset(rowsPerPage * page);
+    setQueryLike(_like);
+    let query = {
       limit: rowsPerPage,
-      offset: page * rowsPerPage
-    })
+      offset: page * rowsPerPage,
+      like: _like
+    }
+    bc.events().getCheckins(query)
       .then(({ data }) => {
         setIsLoading(false);
         setItems({...data, page:page});
+        history.replace(`/events/attendees?${Object.keys(query).map(key => `${key}=${query[key]}`).join('&')}`)
           
       }).catch(error => {
         setIsLoading(false);
       })
-      let q = {...querys, limit:rowsPerPage, offset:page * rowsPerPage};
-      setQuerys(q);
-      history.replace(`/events/attendees?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+     setQuerys(query);
   }
 
   const columns = [
@@ -73,6 +79,23 @@ const AttendeeList = () => {
       label: "ID", // column title that will be shown in table
       options: {
         filter: true,
+      },
+    },
+    {
+      name: "email", // field name in the row object
+      label: "Email", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          let item = items.results[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.email]}>{item?.email}</small><br />
+              </div>
+            </div>
+          );
+        },
       },
     },
     {
@@ -95,18 +118,18 @@ const AttendeeList = () => {
     {
       name: "title", // field name in the row object
       label: "Title", // column title that will be shown in table
-    },
-    {
-      name: "url",
-      label: "Landing URL",
       options: {
         filter: true,
-        customBodyRenderLite: i =>
-          <div className="flex items-center">
-            <div className="ml-3">
-              <A className="px-2 pt-2px border-radius-4 text-white bg-green" href={items.results[i].url} rel="noopener">URL</A>
+        customBodyRenderLite: (dataIndex) => {
+          let item = items.results[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.event.title]}>{item?.event.title}</small><br />
+              </div>
             </div>
-          </div>
+          );
+        },
       },
     },
     {
@@ -196,10 +219,10 @@ const AttendeeList = () => {
                 switch(action){
                   case "changePage":
                     console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage, queryLike);
                     break;
                   case "changeRowsPerPage":
-                    handlePageChange(tableState.page,tableState.rowsPerPage);
+                    handlePageChange(tableState.page,tableState.rowsPerPage, queryLike);
                     break;
                 }
               },
@@ -216,6 +239,11 @@ const AttendeeList = () => {
                       size="small"
                       fullWidth
                       onChange={({ target: { value } }) => handleSearch(value)}
+                      onKeyPress={(e) => {
+                        if(e.key == "Enter"){
+                          handlePageChange(queryOffset, queryLimit, e.target.value)
+                        }
+                      }}
                       InputProps={{
                         style: {
                           paddingRight: 0,
