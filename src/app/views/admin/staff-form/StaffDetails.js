@@ -20,10 +20,10 @@ import bc from "app/services/breathecode";
 
 const StaffDetails = ({ user, staff_id }) => {
   const initialValues = {
-    "first_name": user?.user.first_name,
-    "last_name": user?.user.last_name,
-    "address": user?.address,
-    "phone": user?.phone
+    "first_name": user?.first_name,
+    "last_name": user?.last_name,
+    "address": user?.address === null ? '' : user?.address ,
+    "phone": user?.phone === null ? '' : user?.phone
   }
   const customerInfo = [
     {
@@ -69,8 +69,8 @@ const StaffDetails = ({ user, staff_id }) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
-        <h5 className="mt-4 mb-2">{user?.user.first_name + " " + user?.user.last_name}</h5>
+        <Avatar className="w-84 h-84" src="" />
+        <h5 className="mt-4 mb-2">{user?.first_name + " " + user?.last_name}</h5>
         <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3" onClick={()=> setRoleDialog(true)} style={{ cursor: "pointer" }}>
           {user?.role.name.toUpperCase()}
         </div>

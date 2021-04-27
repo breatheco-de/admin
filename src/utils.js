@@ -189,6 +189,10 @@ export function resolveError(error){
         for (let str of error.response.data[item]) {
          return toast.error(`${item.toUpperCase()}: ${str}`, toastOption);
         }
+      } else {
+        for (let key in error.response.data[item]) {
+          return toast.error(`${key.toUpperCase()}: ${error.response.data[item][key][0]}`, toastOption);
+         }
       }
     }
   }

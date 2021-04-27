@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -151,9 +152,11 @@ const CohortStudents = ({ slug, cohort_id }) => {
                                             src={s.user.profile !== undefined ? s.user.profile.avatar_url : ""}
                                         />
                                         <div className="flex-grow">
-                                            <h6 className="mt-0 mb-0 text-15 text-primary">
-                                                {s.user.first_name} {s.user.last_name}
-                                            </h6>
+                                            <Link to={`/admin/students/${s.user.id}`}>
+                                                <h6 className="mt-0 mb-0 text-15 text-primary">
+                                                    {s.user.first_name} {s.user.last_name}
+                                                </h6>
+                                            </Link>
                                             <p className="mt-0 mb-6px text-13">
                                                 <span className="font-medium">{s.created_at}</span>
                                             </p>

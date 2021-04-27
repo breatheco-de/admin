@@ -9,10 +9,12 @@ import {
   TablePagination,
   Hidden,
 } from "@material-ui/core";
+import { uploadFiles } from "app/redux/actions/MediaActions";
 import {StyledDropzone} from "../../components/Dropzone"
 import GridMediaCard from "./GridMediaCard"
 import ListMediaCard from "./ListMediaCard"
 import * as _ from "lodash";
+import { useState } from "react";
 
 const ShopContainer = ({
   orderBy,
@@ -25,11 +27,14 @@ const ShopContainer = ({
   handleChange,
   handleChangePage,
   setRowsPerPage,
+  onOpenDialog
 }) => {
+  const [upload, setUpload] = useState(false);
   return (
     <Fragment>
       <div className="relative h-full w-full">
-        <StyledDropzone />
+        {!upload ? <Button size="medium" variant="contained" color="primary" className='mt-2' onClick={() => setUpload(true)}>Upload</Button> :
+        <StyledDropzone uploadFiles={uploadFiles} hideZone={() => setUpload(false)}/>}
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
             <Button
@@ -71,11 +76,11 @@ const ShopContainer = ({
             .map((product) =>
               view === "grid" ? (
                 <Grid item key={product.id} lg={4} md={6} sm={12} xs={12}>
-                  <GridMediaCard media={product}></GridMediaCard>
+                  <GridMediaCard media={product} onOpenDialog={() => onOpenDialog(product.id)}></GridMediaCard>
                 </Grid>
               ) : (
                 <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>
-                  <ListMediaCard product={product}></ListMediaCard>
+                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product.id)}></ListMediaCard>
                 </Grid>
               )
             )}

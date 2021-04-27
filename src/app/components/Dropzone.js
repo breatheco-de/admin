@@ -1,5 +1,7 @@
-import React, {useMemo} from 'react';
+import { Avatar, Button } from '@material-ui/core';
+import React, {useMemo, useState, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
+import { useDispatch } from "react-redux";
 
 const baseStyle = {
   flex: 1,
@@ -30,6 +32,7 @@ const rejectStyle = {
 };
 
 export function StyledDropzone(props) {
+  const dispatch = useDispatch();
   const {
     getRootProps,
     getInputProps,
@@ -38,13 +41,12 @@ export function StyledDropzone(props) {
     isDragReject,
     acceptedFiles
   } = useDropzone();
-  const [files, setFiles] = React.useState([])
-  const acceptedFileItems = acceptedFiles.map(file => {
-    console.log(file)
+
+  const acceptedFileItems =  acceptedFiles.map(file => {
     return (
-    <li key={file.path}>
+    <div key={file.path} className='card m-1 p-1'>
       {file.path} - {file.size} bytes
-    </li>
+    </div>
   )});
 
   const style = useMemo(() => ({
@@ -62,10 +64,16 @@ export function StyledDropzone(props) {
       <div {...getRootProps({style})}>
         <input {...getInputProps()} />
         <p>Drag 'n' drop some files here, or click to select files</p>
-        <ul>
+        <div className="flex">
             {acceptedFileItems}
-        </ul>
-        <img src={acceptedFileItems[0]?.path}/>
+        </div>
+        {acceptedFiles.length > 0 ? <Button variant="contained" color="primary" onClick={e =>{
+            dispatch(props.uploadFiles(acceptedFiles));
+            props.hideZone();
+            e.stopPropagation();
+            }}>
+            Save
+        </Button> : ""}
       </div>
   );
 }

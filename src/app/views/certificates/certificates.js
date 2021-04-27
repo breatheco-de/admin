@@ -98,6 +98,8 @@ const Certificates = () => {
           })
       }
 
+    console.log(items.results)
+
 
     const columns = [
         {
@@ -105,24 +107,24 @@ const Certificates = () => {
             label: "Specialty",
             options: {
                 filter: true,
-                customBodyRenderLite: i => items[i].specialty ?.name
+                customBodyRenderLite: i => items.specialty ?.name
             },
         },
-        {
-            name: "user",
-            label: "User",
-            options: {
-                filter: true,
-                customBodyRenderLite: i => items[i] && items[i].user.first_name + " " + items[i].user.last_name 
-            },
-        },
+        // {
+        //     name: "user",
+        //     label: "User",
+        //     options: {
+        //         filter: true,
+        //         customBodyRenderLite: i => items && items.user.first_name + " " + items.user.last_name 
+        //     },
+        // },
         {
             name: "academy", // field name in the row object
             label: "Academy", // column title that will be shown in table
 
             options: {
                 filter: true,
-                customBodyRenderLite: i => items[i].academy ?.name
+                customBodyRenderLite: i => items.academy ?.name
                 },
         },
         {
@@ -144,7 +146,7 @@ const Certificates = () => {
             options: {
                 filter: true,
                 customBodyRenderLite: i => {
-                    let item = items[i]
+                    let item = items
 
                     return (
                         <div className="flex items-center">
@@ -176,7 +178,7 @@ const Certificates = () => {
             label: "Preview",
             options: {
                 filter: true,
-                customBodyRenderLite: i => <a href={items[i].preview_url}>{items[i].preview_url !== null ? "preview" : "not available"}</a>
+                customBodyRenderLite: i => <a href={items.preview_url}>{items.preview_url !== null ? "preview" : "not available"}</a>
             },
         },
     ];
@@ -212,7 +214,7 @@ const Certificates = () => {
                     {isLoading && <MatxLoading />}
                     <MUIDataTable
                         title={"All Certificates"}
-                        data={items}
+                        data={items.results}
                         columns={columns}
                         options={{
                             filterType: "textField",
