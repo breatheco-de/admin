@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
+import { useSelector } from "react-redux";
 import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
@@ -20,6 +21,7 @@ const stageColors = {
 
 const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
+  const { settings } = useSelector(({ layout }) => layout);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
 
@@ -95,7 +97,7 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items[dataIndex].slug}>
+            <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -124,13 +126,14 @@ const EventList = () => {
             />
           </div>
 
-          <div className="">
+          {settings.beta && <div className="">
             <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
-          </Link>
+            </Link>
           </div>
+          }
         </div>
       </div>
       <div className="overflow-auto">

@@ -35,12 +35,15 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const ListMediaCard = ({ product }) => {
+const ListMediaCard = ({ product, onOpenDialog }) => {
   const classes = useStyles();
   const user = useSelector((state) => state.user);
   const { cartList } = useSelector((state) => state.ecommerce);
   const dispatch = useDispatch();
-
+  const type = {
+    pdf:'https://image.freepik.com/free-vector/illustration-folder-icon_53876-5845.jpg',
+    video:'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732'
+  }
   const amount = cartList?.find((p) => p.id === product.id)?.amount || 0;
 
   return (
@@ -51,24 +54,23 @@ const ListMediaCard = ({ product }) => {
       <Grid container spacing={2} alignItems="center">
         <Grid item lg={6} md={6} sm={6} xs={12}>
           <div className="flex justify-center items-center relative">
-            <img className="w-full" src={product.imgUrl} alt={product.title} />
+            <img className="w-full" src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.url} alt={product.name} />
           </div>
         </Grid>
         <Grid item lg={6} md={6} sm={6} xs={12} className="p-6">
-          <h5 className="m-0 mb-3">{product.title}</h5>
+          <h5 className="m-0 mb-3">{product.name}</h5>
           <div className="flex justify-between mb-4">
-            <span className="text-muted">$</span>
-            <Rating
-              size="small"
-              readOnly={true}
-              name="half-rating"
-              value={4}
-              precision={0.5}
-            />
+            <span className="text-muted">Categories: {product.categories.map(c => c.name + ", ")}</span>
+          </div>
+          <div className="flex justify-between mb-4">
+            <span className="text-muted">Type: {product.mime}</span>
           </div>
           <p className="m-0 text-muted">
-            {product.description.substring(0, 200)}
+            Description: {product.description?.substring(0, 200)}
           </p>
+        </Grid>
+        <Grid item lg={6} md={6} sm={6} xs={12}>
+          <Button size="medium" variant="contained" color="primary" className='mt-2' onClick={onOpenDialog}>Edit</Button>
         </Grid>
       </Grid>
     </Card>

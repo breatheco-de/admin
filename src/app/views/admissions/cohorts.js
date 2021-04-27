@@ -72,7 +72,7 @@ const Cohorts = () => {
       .then(({ data }) => {
         setIsLoading(false);
         setItems({...data, page:page});
-        history.replace(`/admin/cohorts?${Object.keys(query).map(key => `${key}=${query[key]}`).join('&')}`)
+        history.replace(`/admissions/cohorts?${Object.keys(query).map(key => `${key}=${query[key]}`).join('&')}`)
       }).catch(error => {
         setIsLoading(false);
       })
@@ -160,7 +160,7 @@ const Cohorts = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={"/admin/cohorts/" + items.results[dataIndex].slug}>
+            <Link to={"/admissions/cohorts/" + items.results[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -190,7 +190,7 @@ const Cohorts = () => {
           </div>
 
           <div className="">
-            <Link to="/admin/cohorts/new" color="primary" className="btn btn-primary">
+            <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new cohort
               </Button>
@@ -215,7 +215,7 @@ const Cohorts = () => {
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
                 setQuerys(q);
-                history.replace(`/admin/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
+                history.replace(`/admissions/cohorts?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
               rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],

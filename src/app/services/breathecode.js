@@ -37,7 +37,8 @@ class BreatheCodeClient {
             },
             getAllCourseSyllabus: (query) => {
                 return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
-            }
+            },
+            getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
          }
     }
     auth() {
@@ -127,6 +128,29 @@ class BreatheCodeClient {
         }
     })
 
+    media(){
+        return {
+            upload: (payload) => {
+                return axios._put("Media",`${this.host}/media/upload`, payload, {headers:{ 'Content-Type':'multipart/form-data'}})
+            },
+            getAllCategories: () => {
+                return axios._get("Media", `${this.host}/media/category`)
+            },
+            getMedia: () => {
+                return axios._get('Media', `${this.host}/media`)
+            },
+            updateMedia: (media,payload) => {
+                return axios._put("Media",`${this.host}/media/info/${media}`, payload)
+            },
+            deleteMedia: (media) => {
+                return axios._delete('Media',`${this.host}/media/info/${media}`)
+            },
+            createCategory : (payload) => {
+                return axios._post('Category', `${this.host}/media/category`, payload)
+            }
+        }
+    }
+
     getItem(key) {
         let value = this.ls.getItem(key)
         try {
@@ -135,6 +159,8 @@ class BreatheCodeClient {
             return null
         }
     }
+
+    
 
 }
 

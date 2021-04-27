@@ -12,26 +12,10 @@ export const navigations = [
         icon: "show_chart",
         beta: true
     },
-    //   {
-    //     name: "Inventory Management",
-    //     path: "/dashboard/inventory-management",
-    //     icon: "dashboard",
-    //   },
     {
-        name: "Admissions",
-        icon: "school",
-        auth: authRoles.contry_manager,
+        name: "Admin",
+        icon: "account_circle",
         children: [
-            {
-                name: "Cohorts",
-                path: "/admin/cohorts",
-                iconText: "CO",
-            },
-            {
-                name: "Students",
-                path: "/admin/students",
-                iconText: "STU",
-            },
             {
                 name: "Staff",
                 path: "/admin/staff",
@@ -45,9 +29,25 @@ export const navigations = [
         ],
     },
     {
+        name: "Admissions",
+        icon: "school",
+        auth: authRoles.contry_manager,
+        children: [
+            {
+                name: "Cohorts",
+                path: "/admissions/cohorts",
+                iconText: "CO",
+            },
+            {
+                name: "Students",
+                path: "/admissions/students",
+                iconText: "STU",
+            }
+        ],
+    },
+    {
         name: "Leads",
         icon: "monetization_on",
-        beta: true,
         children: [
             {
                 name: "Leads Log",
@@ -69,7 +69,6 @@ export const navigations = [
         ],
     },
     {
-        beta: true,
         name: "Feedback",
         icon: "record_voice_over",
         children: [
@@ -79,6 +78,7 @@ export const navigations = [
                 iconText: "OL",
             },
             {
+                beta: true,
                 name: "Surveys",
                 path: "/feedback/surveys",
                 iconText: "OL",
@@ -87,7 +87,6 @@ export const navigations = [
     },
 
     {
-        beta: true,
         name: "Events & Workshops",
         icon: "event",
         children: [
@@ -95,6 +94,7 @@ export const navigations = [
                 name: "Settings",
                 path: "/events/settings",
                 iconText: "OL",
+                beta: true,
             },
             {
                 name: "Event List",
@@ -105,6 +105,7 @@ export const navigations = [
                 name: "Attendees",
                 path: "/events/attendees",
                 iconText: "OL",
+                beta: true,
             },
         ],
     },
