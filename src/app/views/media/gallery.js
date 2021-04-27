@@ -27,10 +27,9 @@ const Gallery = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10);
   const [orderBy, setOrderBy] = useState("default");
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState("all");
-  const [categories, setCategories] = useState([]);
-  const [filteredProductList, setFilteredProductList] = useState([]);
+  const [query, setQuery] = useState(pgQuery.get("like") !== null ? pgQuery.get("like"): "");
+  const [type, setType] = useState(pgQuery.get("mime") !== null ? pgQuery.get("mime") : "all");
+  const [categories, setCategories] = useState(pgQuery.get("categories") !== null ? [...pgQuery.get("categories").split(",")] : []);
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
@@ -59,13 +58,23 @@ const Gallery = () => {
   const search = useCallback(
     debounce((query) => {
       if(query === ""){
-        delete pagination['name']
+        delete pagination['like']
         dispatch(getProductList(pagination))
+        history.replace(`/media/gallery?${Object.keys(pagination).map(key => `${key}=${pagination[key]}`).join('&')}`)
       }
-      else dispatch(getProductList({
+      else {
+      dispatch(getProductList({
         ...pagination,
-        name: query
+        like: query
       }))
+      history.replace(`/media/gallery?${Object.keys({
+        ...pagination,
+        like: query
+      }).map(key => `${key}=${{
+        ...pagination,
+        like: query
+      }[key]}`).join('&')}`)
+    }
     }, 300),
     [productList]
   );
@@ -77,12 +86,14 @@ const Gallery = () => {
     if (eventValue === "all") {
       delete pagination['mime']
       dispatch(getProductList(pagination));
+      history.replace(`/media/gallery?${Object.keys(pagination).map(key => `${key}=${pagination[key]}`).join('&')}`)
       return;
     }
     dispatch(getProductList({
       ...pagination,
       mime:eventValue
     }));
+    history.replace(`/media/gallery?${Object.keys({...pagination, mime:eventValue}).map(key => `${key}=${{...pagination, mime:eventValue}[key]}`).join('&')}`)
   };
 
   const handleCategoryChange = (event) => {
@@ -94,16 +105,19 @@ const Gallery = () => {
         ...pagination,
         categories: tempCategories.join(",")
       }));
+      history.replace(`/media/gallery?${Object.keys({...pagination,categories: tempCategories.join(",")}).map(key => `${key}=${{...pagination,categories: tempCategories.join(",")}[key]}`).join('&')}`)
     } else {
       tempCategories = categories.filter((item) => item !== target.name);
       if(tempCategories.length < 1){
         delete pagination['categories']
         dispatch(getProductList(pagination));
+        history.replace(`/media/gallery?${Object.keys(pagination).map(key => `${key}=${pagination[key]}`).join('&')}`)
       } else {
         dispatch(getProductList({
          ...pagination,
          categories: tempCategories.join(",")
         }));
+        history.replace(`/media/gallery?${Object.keys({...pagination,categories: tempCategories.join(",")}).map(key => `${key}=${{...pagination,categories: tempCategories.join(",")}[key]}`).join('&')}`)
       }
     }
     setCategories(tempCategories);
@@ -118,7 +132,10 @@ const Gallery = () => {
     setQuery("");
     setType("all");
     setCategories([]);
-    setFilteredProductList(productList);
+    dispatch(getProductList({
+      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
+      offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
+     }));
   };
 
   useEffect(() => {

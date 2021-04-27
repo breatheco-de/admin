@@ -31,7 +31,6 @@ const Students = () => {
     count: 100,
     page: 0
   }); 
-
   const query = useQuery();
   const history = useHistory();
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
@@ -205,6 +204,7 @@ const Students = () => {
               elevation: 0,
               count: table.count,
               page: table.page,
+              selectableRowsHeader:false,
               rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
