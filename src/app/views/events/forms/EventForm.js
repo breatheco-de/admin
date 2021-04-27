@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
+import { Alert, AlertTitle } from '@material-ui/lab';
 import {
     Grid,
     Card,
@@ -115,10 +116,15 @@ const EventForm = () => {
                 />
             </div>
             <Card elevation={3}>
+
                 <div className="flex p-4">
                     <h4 className="m-0">{id ? "Edit Event" : "Create a new Event"}</h4>
                 </div>
                 <Divider className="mb-2" />
+                {!id &&             <Alert severity="warning">
+                <AlertTitle>Before you add a new event</AlertTitle>
+                Usually events get added automatically from EventBrite, please only manually add events that are NOT going to be published thru Eventbrite.
+            </Alert>}
                 <Formik
                     initialValues={event}
                     onSubmit={(values) => postEvent(values)}
