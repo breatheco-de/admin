@@ -136,8 +136,9 @@ class BreatheCodeClient {
             getAllCategories: () => {
                 return axios._get("Media", `${this.host}/media/category`)
             },
-            getMedia: () => {
-                return axios._get('Media', `${this.host}/media`)
+            getMedia: (query) => {
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                return axios._get('Media', `${this.host}/media${query ? '?'+ qs : ''}`)
             },
             updateMedia: (media,payload) => {
                 return axios._put("Media",`${this.host}/media/info/${media}`, payload)

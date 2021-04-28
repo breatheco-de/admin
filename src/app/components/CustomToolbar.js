@@ -31,7 +31,7 @@ const CustomToolbarSelect = (props) => {
     const [bulk, setBulk] = useState([])
     useEffect(() => {
         let selected = props.selectedRows.data.map(item => item.index);
-        setBulk(selected.map(item => { return { user: props.items[item].user.id, role:"STUDENT", finantial_status: null ,educational_status: null }}))
+        setBulk(selected.map(item => { if(props.items[item].user !== null) return { user: props.items[item].user.id, role:"STUDENT", finantial_status: null ,educational_status: null }}))
     }, [])
     const addBulkToCohort = (e) => {
         e.preventDefault();
