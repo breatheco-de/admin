@@ -101,6 +101,13 @@ class BreatheCodeClient {
             return axios._get("Academy answers",`${this.host}/feedback/academy/answer?${qs}`)
         },
     })
+    certificates = () => ({
+        getCertificatesByCohort: (query) => {
+            // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+            return axios.get(`${this.host}/certificate/cohort/?${qs}`)
+        },
+    })
     events = () => ({
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
