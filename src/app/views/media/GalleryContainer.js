@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment } from "react";
 import {
   Grid,
   TextField,
@@ -27,9 +27,13 @@ const ShopContainer = ({
   handleChange,
   handleChangePage,
   setRowsPerPage,
-  onOpenDialog
+  onOpenDialog,
+  pagination
 }) => {
   const [upload, setUpload] = useState(false);
+  React.useEffect(()=> {
+    console.log(page)
+  }, [page])
   return (
     <Fragment>
       <div className="relative h-full w-full">
@@ -70,34 +74,26 @@ const ShopContainer = ({
             </IconButton>
           </div>
         </div>
-        <Grid container spacing={2}>
-          {_.orderBy(productList, orderBy !== "false" ? "price" : "", orderBy)
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((product) =>
+        <Grid container spacing={2} direction="row" style={{alignItems:"stretch"}}>
+          {productList.map((product) =>
               view === "grid" ? (
-                <Grid item key={product.id} lg={4} md={6} sm={12} xs={12}>
-                  <GridMediaCard media={product} onOpenDialog={() => onOpenDialog(product.id)}></GridMediaCard>
+                <Grid item key={product.id} lg={3} md={3} sm={12} xs={12} >
+                  <GridMediaCard media={product} onOpenDialog={() =>{console.log(product); onOpenDialog(product)}} key={product.id}></GridMediaCard>
                 </Grid>
               ) : (
                 <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>
-                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product.id)}></ListMediaCard>
+                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product)}  key={product.id}></ListMediaCard>
                 </Grid>
               )
             )}
         </Grid>
       </div>
       <TablePagination
-        rowsPerPageOptions={[6, 12, 24]}
+        rowsPerPageOptions={[10, 20, 50, 100]}
         component="div"
-        count={productList.length}
+        count={pagination.count}
         rowsPerPage={rowsPerPage}
         page={page}
-        backIconButtonProps={{
-          "aria-label": "Previous Page",
-        }}
-        nextIconButtonProps={{
-          "aria-label": "Next Page",
-        }}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={setRowsPerPage}
       />

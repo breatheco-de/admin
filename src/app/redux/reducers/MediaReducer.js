@@ -10,7 +10,8 @@ import {
 const initialState = {
   productList: [],
   categoryList: [],
-  refresh: false
+  refresh: false,
+  pagination: {}
 };
 
 const MediaReducer = function (state = initialState, action) {
@@ -18,8 +19,9 @@ const MediaReducer = function (state = initialState, action) {
     case GET_PRODUCT_LIST: {
       return {
         ...state,
-        productList: [...action.payload],
-        refresh: false
+        productList: [...action.payload.results],
+        refresh: false,
+        pagination: action.payload.pagination
       };
     }
     case GET_CATEGORY_LIST: {
@@ -36,7 +38,8 @@ const MediaReducer = function (state = initialState, action) {
     }
     case UPDATE_MEDIA_FILE: {
       return {
-        ...state
+        ...state,
+        refresh: true
       }
     }
     case DELETE_MEDIA_FILE: {

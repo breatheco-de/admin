@@ -1,5 +1,5 @@
-import { Avatar, Button } from '@material-ui/core';
-import React, {useMemo, useState, useEffect} from 'react';
+import {  Button } from '@material-ui/core';
+import React, {useMemo,} from 'react';
 import {useDropzone} from 'react-dropzone';
 import { useDispatch } from "react-redux";
 
@@ -68,9 +68,9 @@ export function StyledDropzone(props) {
             {acceptedFileItems}
         </div>
         {acceptedFiles.length > 0 ? <Button variant="contained" color="primary" onClick={e =>{
+            e.stopPropagation();
             dispatch(props.uploadFiles(acceptedFiles));
             props.hideZone();
-            e.stopPropagation();
             }}>
             Save
         </Button> : ""}

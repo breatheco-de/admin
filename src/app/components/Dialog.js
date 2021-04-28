@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
     DialogTitle,
     Dialog,
@@ -12,20 +12,29 @@ import { Formik } from "formik";
 import { AsyncAutocomplete } from './Autocomplete';
 import bc from '../services/breathecode';
 
-const CustomDialog = (props) => {
-    const [category, setCategory] = useState([])
+const CustomDialog = ({open, onClose, formInitialValues, onDelete, title, onSubmit ,...rest}) => {
+    const [category, setCategory] = useState([]);
+    useEffect(()=> {
+        setCategory(formInitialValues.categories)
+        return ()=> {
+            setCategory([]);
+            formInitialValues.categories = []
+        }
+    }, [])
     return (
         <Dialog
-            open={props.open}
-            onClose={props.onClose}
+            open={open}
+            onClose={onClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            {...rest}
         >
             <Formik
-                initialValues={props.formInitialValues}
+                initialValues={formInitialValues}
                 onSubmit={(values) => {
-                    props.onSubmit(values)
-                    props.onClose()
+                    onSubmit(values);
+                    onClose();
+                    setCategory([]);
                 }}
                 enableReinitialize={true}
             >
@@ -42,10 +51,40 @@ const CustomDialog = (props) => {
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <DialogTitle id="alert-dialog-title">
-                            {props.title}
+                            {title}
                         </DialogTitle>
                         <DialogContent className='px-5'>
                             <Grid container spacing={2} alignItems="center">
+                            <Grid item md={2} sm={4} xs={12}>
+                                    URL
+                                    </Grid>
+                                <Grid item md={10} sm={8} xs={12}>
+                                    <TextField
+                                        label="URL"
+                                        name="url"
+                                        fullWidth
+                                        size="medium"
+                                        disabled
+                                        variant="outlined"
+                                        value={values.url}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                <Grid item md={2} sm={4} xs={12}>
+                                    Mime Type
+                                    </Grid>
+                                <Grid item md={10} sm={8} xs={12}>
+                                    <TextField
+                                        label="Mime"
+                                        name="mime"
+                                        fullWidth
+                                        size="medium"
+                                        variant="outlined"
+                                        value={values.mime}
+                                        disabled
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
                                 <Grid item md={2} sm={4} xs={12}>
                                     File name
                                     </Grid>
@@ -79,7 +118,7 @@ const CustomDialog = (props) => {
                                     </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <AsyncAutocomplete
-                                        onChange={(category) => { setCategory(category); setFieldValue('categories', category.map(c => c.id)) }}
+                                        onChange={(category) => { setCategory(category); setFieldValue('categories', category.map(c => c.id)); console.log(category, formInitialValues) }}
                                         width={"100%"}
                                         label="Categories"
                                         value={category}
@@ -91,10 +130,10 @@ const CustomDialog = (props) => {
                             </Grid>
                         </DialogContent>
                         <DialogActions>
-                            <Button color="secondary" autoFocus onClick={()=>{ props.onDelete(); props.onClose()}}>
+                            <Button color="secondary" autoFocus onClick={()=>{ onDelete(); onClose()}}>
                                 Delete file
                             </Button>
-                            <Button onClick={props.onClose} color="primary">
+                            <Button onClick={onClose} color="primary">
                                 Cancel
                             </Button>
                             <Button color="primary" type="submit" autoFocus>
