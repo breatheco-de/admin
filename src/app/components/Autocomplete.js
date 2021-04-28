@@ -34,7 +34,9 @@ export function AsyncAutocomplete(props) {
       asyncSearch(searchTerm)
         .then(({ data }) => {
           setLoading(false);
-          setOptions(Array.isArray(data) ? data : [data]);
+          if (!Array.isArray(data))
+            throw Error("incoming search data must be an array");
+          setOptions(data);
           setCache({
             ...cache,
             [searchTerm]: data,

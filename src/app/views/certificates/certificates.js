@@ -88,10 +88,21 @@ const Certificates = () => {
         filterType: "multiselect",
         customBodyRender: (value, tableMeta, updateValue) => {
           let item = items[tableMeta.rowIndex];
+          console.log("item:", item);
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
-                <Tooltip title={item.status_text || "everything looks great"}>
+                {item.status_text !== null ? (
+                  <Tooltip title={item.status_text}>
+                    <small
+                      className={
+                        "border-radius-4 px-2 pt-2px" + statusColors[value]
+                      }
+                    >
+                      {value.toUpperCase()}
+                    </small>
+                  </Tooltip>
+                ) : (
                   <small
                     className={
                       "border-radius-4 px-2 pt-2px" + statusColors[value]
@@ -99,7 +110,7 @@ const Certificates = () => {
                   >
                     {value.toUpperCase()}
                   </small>
-                </Tooltip>
+                )}
               </div>
             </div>
           );
@@ -151,32 +162,37 @@ const Certificates = () => {
           return (
             <div className='flex items-center'>
               <div className='flex-grow'></div>
-              <a href={items[i].preview_url} target='_blank'>
-                <Tooltip
-                  title={
-                    items[i].preview_url !== null
-                      ? "Preview Available"
-                      : "Preview Not available"
-                  }
-                >
-                  <IconButton>
-                    <Icon>image</Icon>
-                  </IconButton>
-                </Tooltip>
-              </a>
+              {items[i].preview_url !== null &&
+              items[i].preview_url !== undefined ? (
+                <>
+                  <a href={items[i].preview_url} target='_blank'>
+                    <Tooltip
+                      title={
+                        items[i].preview_url !== null
+                          ? "Preview Available"
+                          : "Preview Not available"
+                      }
+                    >
+                      <IconButton>
+                        <Icon>image</Icon>
+                      </IconButton>
+                    </Tooltip>
+                  </a>
 
-              <a
-                href={`https://certificate.breatheco.de/${items[
-                  i
-                ].preview_url.slice(56)}`}
-                target='_blank'
-              >
-                <Tooltip title='Image'>
-                  <IconButton>
-                    <Icon>search</Icon>
-                  </IconButton>
-                </Tooltip>
-              </a>
+                  <a
+                    href={`https://certificate.breatheco.de/${items[
+                      i
+                    ].preview_url.slice(56)}`}
+                    target='_blank'
+                  >
+                    <Tooltip title='Image'>
+                      <IconButton>
+                        <Icon>search</Icon>
+                      </IconButton>
+                    </Tooltip>
+                  </a>
+                </>
+              ) : null}
             </div>
           );
         },

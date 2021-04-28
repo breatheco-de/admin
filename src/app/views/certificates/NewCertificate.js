@@ -37,11 +37,11 @@ const NewCertificate = () => {
 
   console.log("cohort:", cohort);
   const postCerfiticate = (values) => {
-    // One specific certificate
+    // student certificate
     if (type === "single") {
       axios
         .post(
-          `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}/student/${student.user.id}`,
+          `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${student.cohort.id}/student/${student.user.id}`,
           values
         )
         .then((data) => {
@@ -175,39 +175,16 @@ const NewCertificate = () => {
                         width='100%'
                         asyncSearch={() =>
                           axios.get(
-                            `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=downtown-miami`
+                            `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=downtown-miami&roles=STUDENT&educational_status=ACTIVE,GRADUATED`
                           )
                         }
                         onChange={(student) => setStudent(student)}
                         value={student}
                         getOptionLabel={(option) =>
                           option.length !== 0 &&
-                          `${option.user.first_name} ${option.user.last_name} (${option.user.email})`
+                          `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`
                         }
                         label='Student'
-                      />
-                    </Grid>
-                  </>
-                ) : null}
-                {type === "single" && student.length !== 0 ? (
-                  <>
-                    <Grid item md={2} sm={4} xs={12}>
-                      <div className='flex mb-6'>Cohort</div>
-                    </Grid>
-                    <Grid item md={10} sm={8} xs={12}>
-                      <AsyncAutocomplete
-                        size='small'
-                        width='100%'
-                        asyncSearch={() =>
-                          axios.get(
-                            `${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/${student.cohort.id}`
-                          )
-                        }
-                        onChange={(cohort) => setCohort(cohort)}
-                        getOptionLabel={(option) =>
-                          `${option.name}, (${option.slug})`
-                        }
-                        label='Cohort'
                       />
                     </Grid>
                   </>
@@ -243,9 +220,9 @@ const NewCertificate = () => {
 };
 
 const initialValues = {
-  // academy: "",
+  academy: "",
   specialty: "",
-  // slug: "default",
+  slug: "default",
   signed_by: "",
   signed_by_role: "Director",
 };
