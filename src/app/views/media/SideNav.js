@@ -69,23 +69,23 @@ const Sidenav = ({
             >
               <FormControlLabel
                 className="h-32"
-                value="image"
+                value="image/jpeg"
                 control={<Radio color="secondary" />}
                 label="Image"
                 labelPlacement="end"
               />
               <FormControlLabel
                 className="h-32"
-                value="video"
+                value="video/webp"
                 control={<Radio color="secondary" />}
                 label="Video"
                 labelPlacement="end"
               />
               <FormControlLabel
                 className="h-32"
-                value="pdf"
+                value="application/pdf"
                 control={<Radio color="secondary" />}
-                label="Document"
+                label="PDF"
                 labelPlacement="end"
               />
               <FormControlLabel
@@ -108,16 +108,16 @@ const Sidenav = ({
             >
               <FormControlLabel
                 className="flex-grow"
-                name={category.id.toString()}
+                name={category.id}
                 onChange={handleCategoryChange}
                 control={
                   <Checkbox checked={categories.includes(category.id.toString())} />
                 }
                 label={<span className="capitalize">{category.name}</span>}
               />
-              <small className="badge bg-light-primary text-primary">
+              {/*<small className="badge bg-light-primary text-primary">
                 {category.medias}
-              </small>
+              </small>*/}
             </div>
           ))}
           <Button

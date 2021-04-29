@@ -2,7 +2,7 @@ import {OPEN, CLOSE} from '../actions/DialogActions';
 
 const initialState = {
     show:false,
-    value:''
+    value: {}
   };
 
 const DialogReducer = function (state = initialState, action) {
@@ -18,7 +18,7 @@ const DialogReducer = function (state = initialState, action) {
         return {
           ...state,
           show: false,
-          value:''
+          value: {}
         };
       }
       default: {
