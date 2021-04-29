@@ -9,6 +9,8 @@ import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import bc from "app/services/breathecode";
+import CustomToolbar from "../../components/CustomToolbar";
+
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
@@ -28,46 +30,19 @@ const Certificates = () => {
     const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
     const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
     const [queryLike, setQueryLike] = useState(query.get("like") || "");
-    
-    
-    // useEffect(() => {
-    //     setIsLoading(true);
-    //     if (cohortId !== null && cohortId !== undefined) {
-    //         console.log("ey");
-    //         axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId)
-    //             .then(({ data }) => {
-    //                 setIsLoading(false);
-    //                 if (isAlive){
-    //                     setItems(data);
-    //                     console.log(items);
-    //                 } 
-    //             });
-    //     } 
-    //     else {
-    //         console.log("ey");
-    //         axios.get(process.env.REACT_APP_API_HOST + "/v1/certificate")
-    //             .then(({ data }) => {
-    //                 setIsLoading(false);
-    //                 if (isAlive){
-    //                     setItems(data);
-    //                     console.log(items);
-    //                 } 
-    //             });
-    //     }
-    //     return () => setIsAlive(false);
-    // }, [isAlive]);
+
 
     useEffect(() => {
         setIsLoading(true);
         bc.certificates().getAllCertificates({
           limit: queryLimit,
           offset: queryOffset,
-          like: queryLike
         })
           .then(({ data }) => {
+            console.log(data.results);
             setIsLoading(false);
             if (isAlive) {
-                setItems(data)
+                setItems(data.results)
               setTable({ count: data.count });
             };
           }).catch(error => {
@@ -89,7 +64,8 @@ const Certificates = () => {
         }
         bc.certificates().getAllCertificates(query)
           .then(({ data }) => {
-            setItems(data);
+              
+            setItems(data.results);
             setIsLoading(false);
             setTable({ count: data.count, page: page });
             history.replace(`/certificates?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
@@ -98,18 +74,17 @@ const Certificates = () => {
           })
       }
 
-    console.log(items.results)
-
+    console.log(items);
 
     const columns = [
-        {
-            name: "specialty",
-            label: "Specialty",
-            options: {
-                filter: true,
-                customBodyRenderLite: i => items.specialty ?.name
-            },
-        },
+        // {
+        //     name: "specialty",
+        //     label: "Specialty",
+        //     options: {
+        //         filter: true,
+        //         customBodyRenderLite: i => items.specialty ?.name
+        //     },
+        // },
         // {
         //     name: "user",
         //     label: "User",
@@ -121,33 +96,44 @@ const Certificates = () => {
         {
             name: "academy", // field name in the row object
             label: "Academy", // column title that will be shown in table
-
             options: {
                 filter: true,
-                customBodyRenderLite: i => items.academy ?.name
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]                   
+                    return (
+                        <div className="flex items-center">
+                            <div className="ml-1">
+                                <h5 className="my-0 text-15">{ item.academy.name }</h5>
+                            </div>
+                        </div>
+                    )
                 },
+            },
         },
         {
             name: "status", // field name in the row object
             label: "Status", // column title that will be shown in table
-
             options: {
                 filter: true,
-                filterType: "multiselect",
-                 customBodyRender: (value, tableMeta, updateValue) => (
-                    value
-            
-          ),
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]                   
+                    return (
+                        <div className="flex items-center">
+                            <div className="ml-3">
+                                <small>{ item.status }</small>
+                            </div>
+                        </div>
+                    )
                 },
+            },
         },
         {
             name: "expires_at",
             label: "Expires at",
             options: {
                 filter: true,
-                customBodyRenderLite: i => {
-                    let item = items
-
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]
                     return (
                         <div className="flex items-center">
                             <div className="ml-3">
@@ -165,20 +151,44 @@ const Certificates = () => {
             label: "Cohort", // column title that will be shown in table
             options: {
                 filter: true,
-                filterType: "multiselect",
-                 customBodyRender: (value, tableMeta, updateValue) => (
-                    value.name
-            
-          ),
-                    
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]                   
+                    return (
+                        <div className="flex items-center">
+                            <div className="ml-1">
+                                <h5 className="my-0 text-15">{ item.cohort.name }</h5>
+                            </div>
+                        </div>
+                    )
                 },
+            }
+        },
+        {
+            name: "cohort", // field name in the row object
+            label: "Cohort", // column title that will be shown in table
+            options: {
+                filter: true,
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]                   
+                    return (
+                        <div className="flex items-center">
+                            <div className="ml-1">
+                                <h5 className="my-0 text-15">{ item.cohort.slug }</h5>
+                            </div>
+                        </div>
+                    )
+                },
+            }
         },
         {
             name: "preview_url",
             label: "Preview",
             options: {
                 filter: true,
-                customBodyRenderLite: i => <a href={items.preview_url}>{items.preview_url !== null ? "preview" : "not available"}</a>
+                customBodyRenderLite: (dataIndex) => {
+                    let item = items[dataIndex]
+                    return <a href={item.preview_url}>{item.preview_url !== null ? "preview" : "not available"}</a>
+                } 
             },
         },
     ];
@@ -214,23 +224,20 @@ const Certificates = () => {
                     {isLoading && <MatxLoading />}
                     <MUIDataTable
                         title={"All Certificates"}
-                        data={items.results}
+                        data={items}
                         columns={columns}
                         options={{
                             filterType: "textField",
                             responsive: "standard",
-                            // selectableRows: "none", // set checkbox for each row
-                            // search: false, // set search option
-                            // filter: false, // set data filter option
-                            // download: false, // set download option
-                            // print: false, // set print option
-                            // pagination: true, //set pagination option
-                            // viewColumns: false, // set column option
+                            serverSide: true,
+                            elevation: 0,
                             count: table.count,
                             page: table.page,
-                            elevation: 0,
                             rowsPerPage: parseInt(query.get("limit"), 10) || 10,
                             rowsPerPageOptions: [10, 20, 40, 80, 100],
+                            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+                                return <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={items} key={items} history={history}/>
+                                },
                             onTableChange: (action, tableState) => {
                                 console.log(action, tableState)
                                 switch (action) {
