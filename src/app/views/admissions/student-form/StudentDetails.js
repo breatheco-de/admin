@@ -59,7 +59,7 @@ const StudentDetails = ({ user, std_id }) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar className="w-84 h-84" src="/assets/images/faces/10.jpg" />
+        <Avatar className="w-84 h-84" src={user?.user?.github?.avatar_url || ''}/>
         <h5 className="mt-4 mb-2">{crt_user?.first_name + " " + crt_user?.last_name}</h5>
         <small className="text-muted">{user?.role.name.toUpperCase()}</small>
       </div>
@@ -105,7 +105,6 @@ const StudentDetails = ({ user, std_id }) => {
                       GITHUB VERIFIED
                     </small>
                     }
-                    
                   </TableCell>
                 </TableRow>
                 {customerInfo.map((item, ind) => (

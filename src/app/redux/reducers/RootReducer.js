@@ -6,6 +6,7 @@ import NotificationReducer from "./NotificationReducer";
 import EcommerceReducer from "./MediaReducer";
 import NavigationReducer from "./NavigationReducer";
 import CohortReducer from "./CohortReducer";
+import DialogReducer from './DialogReducer';
 
 const RootReducer = combineReducers({
   user: UserReducer,
@@ -14,7 +15,8 @@ const RootReducer = combineReducers({
   notifications: NotificationReducer,
   ecommerce: EcommerceReducer,
   navigations: NavigationReducer,
-  cohorts: CohortReducer
+  cohorts: CohortReducer,
+  dialog: DialogReducer
 });
 
 export default RootReducer;

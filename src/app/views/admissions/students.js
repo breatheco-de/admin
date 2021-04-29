@@ -31,7 +31,6 @@ const Students = () => {
     count: 100,
     page: 0
   }); 
-
   const query = useQuery();
   const history = useHistory();
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
@@ -76,7 +75,7 @@ const Students = () => {
         setIsLoading(false);
         setUserList(data.results);
         setTable({ count: data.count, page: page });
-        history.replace(`/admin/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+        history.replace(`/admissions/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
       }).catch(error => {
         setIsLoading(false);
       })
@@ -156,7 +155,7 @@ const Students = () => {
             </Tooltip>
           </div>) : <div className="flex items-center">
             <div className="flex-grow"></div>
-            <Link to={`/admin/students/${item.user !== null ? item.user.id : ""}`}>
+            <Link to={`/admissions/students/${item.user !== null ? item.user.id : ""}`}>
               <Tooltip title="Edit">
                 <IconButton>
                   <Icon>edit</Icon>
@@ -176,14 +175,14 @@ const Students = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/" },
+                { name: "Admissions", path: "/" },
                 { name: "Students" },
               ]}
             />
           </div>
 
           <div className="">
-            <Link to={`/admin/students/new`}>
+            <Link to={`/admissions/students/new`}>
               <Button variant="contained" color="primary">
                 Add new student
             </Button>
@@ -205,13 +204,13 @@ const Students = () => {
               elevation: 0,
               count: table.count,
               page: table.page,
+              selectableRowsHeader:false,
               rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
               return <CustomToolbar selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={userList} key={userList} history={history}/>
               },
               onTableChange: (action, tableState) => {
-                console.log(action, tableState)
                 switch (action) {
                   case "changePage":
                     handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);

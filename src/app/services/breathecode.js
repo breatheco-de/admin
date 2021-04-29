@@ -37,7 +37,8 @@ class BreatheCodeClient {
             },
             getAllCourseSyllabus: (query) => {
                 return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
-            }
+            },
+            getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
          }
     }
     auth() {
@@ -102,6 +103,13 @@ class BreatheCodeClient {
         addNewSurvey: (newSurvey) => axios._post("New Survey", `${this.host}/feedback/academy/survey`, newSurvey),
         updateSurvey: (survey, cohort) => axios._put("Survey", `${this.host}/feedback/academy/survey/${cohort}`, survey)
     })
+    certificates = () => ({
+        getCertificatesByCohort: (query) => {
+            // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+            const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+            return axios.get(`${this.host}/certificate/cohort/?${qs}`)
+        },
+    })
     events = () => ({
         getCheckins: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
@@ -129,6 +137,30 @@ class BreatheCodeClient {
         }
     })
 
+    media(){
+        return {
+            upload: (payload) => {
+                return axios._put("Media",`${this.host}/media/upload`, payload, {headers:{ 'Content-Type':'multipart/form-data'}})
+            },
+            getAllCategories: () => {
+                return axios._get("Media", `${this.host}/media/category`)
+            },
+            getMedia: (query) => {
+                const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+                return axios._get('Media', `${this.host}/media${query ? '?'+ qs : ''}`)
+            },
+            updateMedia: (media,payload) => {
+                return axios._put("Media",`${this.host}/media/info/${media}`, payload)
+            },
+            deleteMedia: (media) => {
+                return axios._delete('Media',`${this.host}/media/info/${media}`)
+            },
+            createCategory : (payload) => {
+                return axios._post('Category', `${this.host}/media/category`, payload)
+            }
+        }
+    }
+
     getItem(key) {
         let value = this.ls.getItem(key)
         try {
@@ -137,6 +169,8 @@ class BreatheCodeClient {
             return null
         }
     }
+
+    
 
 }
 
