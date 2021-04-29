@@ -50,7 +50,7 @@ const Cohort = () => {
           max_assistants: 2,
           max_teachers: 2, 
           duration: 1,
-          send_now: false
+          send_now: true
         }
       ); 
     const [open, setOpen] = useState(false);
@@ -180,9 +180,8 @@ const Cohort = () => {
                     initialValues = {newSurvey}
                     enableReinitialize = {true}
                     onSubmit = { () => {
-                        newSurvey.send_now
-                            ? bc.feedback().updateSurvey(newSurvey, newSurvey.cohort)
-                            : bc.feedback().addNewSurvey(newSurvey);
+                        bc.feedback().addNewSurvey(newSurvey);
+                        console.log(newSurvey)
                     }}
                     >
                     {({
@@ -242,27 +241,8 @@ const Cohort = () => {
                                 <Button 
                                 color = "primary" 
                                 variant = "contained" 
-                                type = "submit" 
-                                onClick={() => {
-                                    console.log(newSurvey);
-                                    setNewSurvey({
-                                        ...newSurvey, send_now: false
-                                    });
-                                    handleClose();
-                                }}>
-                                Save as a draft
-                                </Button>
-                                <Button 
-                                color = "primary" 
-                                variant = "contained" 
-                                type = "submit" 
-                                onClick={() => {
-                                    setNewSurvey({
-                                        ...newSurvey, send_now: true
-                                    });
-                                    console.log(newSurvey);
-                                    handleClose();
-                                }}>
+                                type = "submit"
+                                onClick={handleClose}>
                                 Send now
                                 </Button>
                                 <Button 

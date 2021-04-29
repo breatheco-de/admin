@@ -20,6 +20,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { setISODay } from "date-fns";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     select: {
@@ -40,6 +41,9 @@ const NewSurvey = () => {
       send_now: false
     }
   ); 
+  const [id, setId] = useState(null);
+  const [cohortNameInDialog, setCohortNameInDialog] = useState(null)
+
   const history = useHistory();
   const classes = useStyles();
 
@@ -64,16 +68,12 @@ const NewSurvey = () => {
     useEffect(() => {
         listCohorts != undefined
             ? setcohortName(listCohorts.map(item => (
-                <MenuItem key = {item.name} value = {item.id}>
+                <MenuItem key = {item.name} value = {item.id} onCLick = {console.log(item.name)}>
                     {item.name}
                 </MenuItem>
             )))
             : console.log("");
     }, [listCohorts != undefined])
-
-    //Añadir POST para submit con send_now en false
-
-    //Añadir PUT en el modal para send_now en true
 
     const createSurvey = event => {
             setNewSurvey({ ...newSurvey, [event.target.name]: event.target.value });
@@ -106,7 +106,11 @@ const NewSurvey = () => {
 
         <Formik
           initialValues = {newSurvey}
-          onSubmit = {(newSurvey) => console.log(newSurvey)}
+          onSubmit = {async(newSurvey) => 
+            bc.feedback().addNewSurvey(newSurvey)
+              .then(({ data }) => 
+                setId(data.id))
+          }
           enableReinitialize = {true}
         >
           {({
@@ -134,7 +138,10 @@ const NewSurvey = () => {
                     size = "small"
                     variant = "outlined"
                     value = {cohort}
-                    onChange = {selectCohort}
+                    onChange = {(e) => {
+                      selectCohort(e);
+                      console.log(cohort);
+                    }}
                     >
                       {cohortName}
                     </TextField>
@@ -181,7 +188,13 @@ const NewSurvey = () => {
                     onChange = {createSurvey}
                   />
                 </Grid>
-                  <Button color = "primary" variant = "contained" type = "submit" onClick={()=> handleClickOpen(true)}>
+                  <Button 
+                    color = "primary" 
+                    variant = "contained" 
+                    type = "submit" 
+                    onClick={()=> {
+                      handleClickOpen(true);
+                      }}>
                     Create
                   </Button>
               </Grid>
@@ -217,8 +230,6 @@ const NewSurvey = () => {
               variant = "contained" 
               type = "submit" 
               onClick={() => {
-                bc.feedback().addNewSurvey(newSurvey);
-                console.log(newSurvey);
                 handleClose();
               }}>
               Save as a draft
@@ -230,7 +241,7 @@ const NewSurvey = () => {
               onClick={() => {
                 bc.feedback().updateSurvey({
                   ...newSurvey, send_now: true
-                }, newSurvey.cohort);
+                }, id);
                 console.log(newSurvey);
                 handleClose();
               }}>
