@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Grid,
   Divider,
@@ -136,9 +137,11 @@ const StudentCohorts = ({ std_id }) => {
                 <Grid item lg={4} md={4} sm={6} xs={6}>
                   <div className="flex">
                     <div className="flex-grow">
-                      <h6 className="mt-0 mb-0 text-15 text-primary">
-                        {s.cohort.name}
-                      </h6>
+                      <Link to={"/admin/cohorts/"+ s.cohort.slug}>
+                        <h6 className="mt-0 mb-0 text-15 text-primary">
+                          {s.cohort.name}
+                        </h6>
+                      </Link>
                       <p className="mt-0 mb-6px text-13">
                         <span className="font-medium">{s.cohort.kickoff_date}</span>
                       </p>

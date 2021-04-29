@@ -19,6 +19,7 @@ const stageColors = {
   'bing':'text-white bg-green'
 }
 
+
 const Leads = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,7 @@ const Leads = () => {
     then(({data}) =>{
       setIsLoading(false);
       if (isAlive){ 
-        setItems(data);
+        setItems({...data});
       };
     })
     .catch(error => setIsLoading(false)) 
@@ -64,35 +65,71 @@ const Leads = () => {
       history.replace(`/leads/list?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
   }
 
+  const handleFilterSubmit = () => {
+    bc.marketing().getAcademyLeads(querys)
+      .then(({ data }) => {
+        setIsLoading(false);
+        setItems({...data});
+          
+      }).catch(error => {
+        setIsLoading(false);
+      })
+  }
   const columns = [
     {
       name: "id",
       label: "ID",
       options: {
+        filterList:query.get("id") !== null ? [query.get("id")] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">{items.results[dataIndex].id}</span>
         ),
       },
     },
     {
-      name: "location",
-      label: "Location",
+      name: "first_name", // field name in the row object
+      label: "Name", // column title that will be shown in table
       options: {
         filter: true,
-        filterType: "multiselect",
-        filterList:query.get("location") !== null ? [query.get("location")] : [],
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].location}</span>
-        ),
+        customBodyRenderLite: (dataIndex) => {
+          let lead = items.results[dataIndex];
+          return (
+              <div className="ml-3">
+                <h5 className="my-0 text-15">{lead.first_name + " " + lead.last_name}</h5>
+                <small className="text-muted">{lead?.email || lead.email}</small>
+              </div>
+          );
+        },
       },
     },
     {
       name: "course",
       label: "Course",
       options: {
+        display: false,
         filterList:query.get("course") !== null ? [query.get("course")] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">{items.results[dataIndex].course}</span>
+        ),
+      },
+    },
+    {
+      name: "lead_type",
+      label: "Lead Type",
+      options: {
+        filterList:query.get("lead_type") !== null ? [query.get("lead_type")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items.results[dataIndex].lead_type ? items.results[dataIndex].lead_type : "---"}</span>
+        ),
+      },
+    },
+    {
+      name: "utm_url",
+      label: "Utm URL",
+      options: {
+        filterList:query.get("utm_url") !== null ? [query.get("utm_url")] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items.results[dataIndex].utm_url ? items.results[dataIndex].utm_url: "---"}</span>
         ),
       },
     },
@@ -102,7 +139,7 @@ const Leads = () => {
       options: {
         filterList:query.get("utm_medium") !== null ? [query.get("utm_medium")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].utm_medium !== null ? items.results[dataIndex].utm_medium: "---"}</span>
+          <span className="ellipsis">{items.results[dataIndex].utm_medium ? items.results[dataIndex].utm_medium: "---"}</span>
         ),
       },
     },
@@ -114,7 +151,7 @@ const Leads = () => {
         filterType: "multiselect",
         filterList:query.get("utm_source") !== null ? [query.get("utm_source")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className={`ellipsis ${stageColors[items.results[dataIndex].utm_source]} border-radius-4 px-2 pt-2px text-center`} >{items.results[dataIndex].utm_source !== null ? items.results[dataIndex].utm_source: "---"}</span>
+          <span className={`ellipsis ${stageColors[items.results[dataIndex].utm_source]} border-radius-4 px-2 pt-2px text-center`} >{items.results[dataIndex].utm_source ? items.results[dataIndex].utm_source: "---"}</span>
         ),
       },
     },
@@ -126,7 +163,7 @@ const Leads = () => {
         filterType: "multiselect",
         filterList:query.get("tags") !== null ? [query.get("tags")] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].tags}</span>
+          <span className="ellipsis">{items.results[dataIndex].tags ? items.results[dataIndex].tags : "---"}</span>
         ),
       },
     },
@@ -171,21 +208,30 @@ const Leads = () => {
       <div className="overflow-auto">
         <div className="min-w-750">
           <MUIDataTable
-            title={"All Orders"}
+            title={"All Leads"}
             data={items.results}
             columns={columns}
             options={{
               filterType: "textField",
               responsive: "standard",
               elevation: 0,
+              serverSide:true,
               page: items.page,
               count: items.count,
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                let q = {...querys,  [changedColumn]: filterList[changedColumnIndex][0] };
+                let q;
+                if (type === 'reset'){
+                  q = { limit: querys.limit ? querys.limit : 10, offset: querys.offset ? querys.offset : 0}
+                } else {
+                  if(filterList[changedColumnIndex][0] === undefined || type === 'chip'){
+                    q = {...querys}
+                    delete q[changedColumn]
+                  } else  q = {...querys, [changedColumn]: filterList[changedColumnIndex][0]};
+                }
                 setQuerys(q);
                 history.replace(`/leads/list?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
               },
-              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+              rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 switch (action) {
@@ -199,6 +245,13 @@ const Leads = () => {
                   case "filterChange":
                   //console.log(action, tableState)
                 }
+              },
+              customFilterDialogFooter: (currentFilterList, applyNewFilters) => {
+                return (
+                  <div style={{ marginTop: '40px' }}>
+                    <Button variant="contained" onClick={() => handleFilterSubmit()}>Apply Filters</Button>
+                  </div>
+                );
               },
               onRowsDelete: (data) => console.log(data),
               customSearchRender: (
