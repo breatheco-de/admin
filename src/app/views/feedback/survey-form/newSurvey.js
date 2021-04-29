@@ -14,13 +14,9 @@ import {
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import { setISODay } from "date-fns";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     select: {
@@ -240,7 +236,7 @@ const NewSurvey = () => {
               type = "submit" 
               onClick={() => {
                 bc.feedback().updateSurvey({
-                  ...newSurvey, send_now: true
+                  send_now: true
                 }, id);
                 console.log(newSurvey);
                 handleClose();
