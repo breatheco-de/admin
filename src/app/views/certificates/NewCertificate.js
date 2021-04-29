@@ -172,6 +172,7 @@ const NewCertificate = () => {
                       <AsyncAutocomplete
                         size='small'
                         key={cohort.slug}
+                        debounced={true}
                         width='100%'
                         asyncSearch={() =>
                           axios.get(
