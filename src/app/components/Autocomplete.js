@@ -19,7 +19,7 @@ export function AsyncAutocomplete(props) {
     value,
     asyncSearch,
     children,
-    debounced,
+    debounced = true,
     label,
     required,
     ...rest
