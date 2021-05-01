@@ -7,14 +7,54 @@ import {
   TextField,
   MenuItem,
   Button,
+  Checkbox
 } from "@material-ui/core";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { makeStyles } from "@material-ui/core/styles";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 
+const useStyles = makeStyles(({ palette, ...theme }) => ({
+  neverEnd: {
+      display: "none",
+  },
+}));
+
 const NewCohort = () => {
+  const classes = useStyles();
+
+  const [newCohort, setNewCohort] = useState({
+    name: "",
+    slug: "",
+    kickoff_date: today,
+    ending_date: today,
+  })
+
   const [cert, setCert] = useState(null);
   const [version, setVersion] = useState(null);
+
+  const academy = JSON.parse(localStorage.getItem("bc-academy"));
+
+  const today = new Date()
+
+  const [checked, setChecked] = useState(false)
+  const [neverEnd, setNeverEnd] = useState(true);
+
+  const testhandleChange = (event) => {
+    setChecked(event.target.checked);
+    setNeverEnd(!neverEnd);
+    setNewCohort({
+      ...newCohort, ending_date: null
+    })
+  };
+  
+
+
   const postCohort = (values) => {
     console.log({...values, syllabus: `${cert.slug}.v${version.version}`})
      bc.admissions().addCohort({...values, syllabus: `${cert.slug}.v${version.version}`})
@@ -41,8 +81,8 @@ const NewCohort = () => {
         <Divider className="mb-2" />
 
         <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => postCohort(values)}
+          initialValues={newCohort}
+          onSubmit={(newCohort) => console.log(newCohort)}
           enableReinitialize={true}
         >
           {({
@@ -59,6 +99,17 @@ const NewCohort = () => {
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
               <Grid item md={2} sm={4} xs={12}>
+                  This cohort never ends. 
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                    <Checkbox
+                      checked={checked}
+                      onChange={testhandleChange}
+                      name="ending_date"
+                      color="primary"
+                    />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
                   Cohort Name
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -76,6 +127,7 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
+                    
                     label="Cohort Slug"
                     name="slug"
                     size="small"
@@ -96,33 +148,65 @@ const NewCohort = () => {
                     asyncSearch={() => bc.admissions().getCertificates()}
                     size={"small"}
                     label="Certificate"
-                    required={true}
+                    // required={true}
                     getOptionLabel={option => `${option.name}`}
                     value={cert} />
                     {cert !== null ? <AsyncAutocomplete
                     onChange={(v) => setVersion(v)}
                     width={"20%"}
                     key={cert.slug}
-                    asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug)}
+                    asyncSearch={() => {
+                      console.log(cert.slug);
+                      bc.admissions().getAllCourseSyllabus(cert.slug)}}
                     size={"small"}
                     label="Version"
-                    required={true}
+                    // required={true}
                     getOptionLabel={option => `${option.version}`}
                     value={version} /> : ""}
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Kick off date
+                    Start date
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    name="kickoff_date"
-                    size="small"
-                    type="datetime-local"
-                    variant="outlined"
-                    value={values.kickoff_date}
-                    onChange={handleChange}
-                  />
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            className="m-2"
+                            margin="none"
+                            label="Date"
+                            inputVariant="outlined"
+                            type="text"
+                            size="small"
+                            autoOk={true}
+                            value={newCohort.kickoff_date}
+                            format="MMMM dd, yyyy"
+                            onChange={(date) => setNewCohort({
+                              ...newCohort, kickoff_date: date
+                            })}
+                        />
+                    </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12} className={neverEnd ? "" : classes.neverEnd}>
+                    End date
+                </Grid>
+                <Grid item md={10} sm={8} xs={12} className={neverEnd ? "" : classes.neverEnd}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                          name="ending_date"
+                          className="m-2"
+                          margin="none"
+                          label="End date"
+                          inputVariant="outlined"
+                          type="text"
+                          size="small"
+                          autoOk={true}
+                          value={newCohort.ending_date}
+                          format="MMMM dd, yyyy"
+                          onChange={(date) => setNewCohort({
+                            ...newCohort, ending_date: date
+                          })}
+                        />
+                    </MuiPickersUtilsProvider>
                 </Grid>
               </Grid>
               <div className="mt-6">
@@ -136,12 +220,6 @@ const NewCohort = () => {
       </Card>
     </div>
   );
-};
-
-const initialValues = {
-  name: "",
-  slug:"",
-  kickoff_date:""
 };
 
 export default NewCohort;
