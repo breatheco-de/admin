@@ -35,8 +35,8 @@ class BreatheCodeClient {
                 const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
-            getAllCourseSyllabus: (query) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
+            getAllCourseSyllabus: (query, academyID) => {
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`)
             },
             getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
          }
