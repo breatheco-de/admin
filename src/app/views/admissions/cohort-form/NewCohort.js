@@ -45,7 +45,7 @@ const NewCohort = () => {
   const [checked, setChecked] = useState(false)
   const [neverEnd, setNeverEnd] = useState(true);
 
-  const testhandleChange = (event) => {
+  const handleChange = (event) => {
     setChecked(event.target.checked);
     setNeverEnd(!neverEnd);
     setNewCohort({
@@ -104,7 +104,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                     <Checkbox
                       checked={checked}
-                      onChange={testhandleChange}
+                      onChange={handleChange}
                       name="ending_date"
                       color="primary"
                     />
@@ -119,7 +119,7 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={values.name}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -133,7 +133,7 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={values.slug}
-                    onChange={handleChange}
+                    // onChange={handleChange}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
