@@ -183,7 +183,7 @@ const Cohorts = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/admin" },
+                { name: "Admin", path: "/admissions" },
                 { name: "Cohorts" },
               ]}
             />
