@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import {
   Grid,
@@ -28,7 +28,8 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const NewCohort = () => {
   const classes = useStyles();
-  const today = new Date()
+  const startDate = new Date();
+  const [endDates, setEndDates] = useState(new Date());
   const [cert, setCert] = useState(null);
   const [version, setVersion] = useState(null);
   const [checked, setChecked] = useState(false)
@@ -36,8 +37,9 @@ const NewCohort = () => {
   const [newCohort, setNewCohort] = useState({
     name: "",
     slug: "",
-    kickoff_date: today,
-    ending_date: today,
+    kickoff_date: startDate,
+    ending_date: endDates,
+    never_ends: false,
   })
   const academy = JSON.parse(localStorage.getItem("bc-academy"));
   const history = useHistory();
@@ -46,16 +48,23 @@ const NewCohort = () => {
     setChecked(event.target.checked);
     setNeverEnd(!neverEnd);
     setNewCohort({
-      ...newCohort, ending_date: null
+      ...newCohort, 
+          ending_date: null,
+          never_ends: true
     })
   };
+
+  useEffect(() => {
+    setEndDates(
+      endDates.setDate(endDates.getDate() + 30)
+    )
+  }, [])
   
   const createCohort = (event) => {
     setNewCohort({
       ...newCohort, [event.target.name]: event.target.value
     })
   }
-
 
   const postCohort = (values) => {
      bc.admissions().addCohort({...values, syllabus: `${cert.slug}.v${version.version}`})
@@ -193,7 +202,9 @@ const NewCohort = () => {
                           value={newCohort.ending_date}
                           format="MMMM dd, yyyy"
                           onChange={(date) => setNewCohort({
-                            ...newCohort, ending_date: date
+                            ...newCohort, 
+                                ending_date: date,
+                                never_ends: false,
                           })}
                           disabled={neverEnd ? false : true}
                         />
@@ -207,7 +218,6 @@ const NewCohort = () => {
                           onChange={handleNeverEnd}
                           name="ending_date"
                           color="primary"
-                          
                         />
                       }
                       label="This cohort never ends."
