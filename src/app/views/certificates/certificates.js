@@ -66,17 +66,18 @@ const Certificates = () => {
       label: "User",
       options: {
         filter: true,
-        customBodyRenderLite: (i) =>
-          items[i] && items[i].user.first_name + " " + items[i].user.last_name,
-      },
-    },
-    {
-      name: "academy", // field name in the row object
-      label: "Academy", // column title that will be shown in table
-
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].academy?.name,
+        customBodyRenderLite: (i) => {
+          return (
+            <Link
+              to={`/admissions/students/${
+                items[i].user !== null ? items[i].user.id : ""
+              }`}
+            >
+              {items[i] &&
+                items[i].user.first_name + " " + items[i].user.last_name}
+            </Link>
+          );
+        },
       },
     },
     {
@@ -122,6 +123,7 @@ const Certificates = () => {
       label: "Expires at",
       options: {
         filter: true,
+        display: false,
         customBodyRenderLite: (i) => {
           let item = items[i];
 
@@ -150,7 +152,14 @@ const Certificates = () => {
       options: {
         filter: true,
         filterType: "multiselect",
-        customBodyRender: (value, tableMeta, updateValue) => value.name,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          let item = items[tableMeta.rowIndex];
+          return (
+            <Link to={"/admissions/cohorts/" + item.cohort.slug}>
+              {value.name}
+            </Link>
+          );
+        },
       },
     },
     {
@@ -165,7 +174,11 @@ const Certificates = () => {
               {items[i].preview_url !== null &&
               items[i].preview_url !== undefined ? (
                 <>
-                  <a href={items[i].preview_url} target='_blank'>
+                  <a
+                    href={items[i].preview_url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <Tooltip
                       title={
                         items[i].preview_url !== null
@@ -184,6 +197,7 @@ const Certificates = () => {
                       i
                     ].preview_url.slice(56)}`}
                     target='_blank'
+                    rel='noopener noreferrer'
                   >
                     <Tooltip title='Image'>
                       <IconButton>
@@ -252,7 +266,7 @@ const Certificates = () => {
               // download: false, // set download option
               // print: false, // set print option
               // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              viewColumns: true, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customSearchRender: (
