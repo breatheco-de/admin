@@ -10,11 +10,14 @@ import {
   TextField,
   Button,
   Tooltip,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import BC from "../../services/breathecode";
+import ResponseDialog from "./ResponseDialog";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -22,6 +25,54 @@ const statusColors = {
   ERROR: "text-white bg-error",
   PERSISTED: "text-white bg-green",
   PENDING: "text-white bg-secondary",
+};
+
+const DownloadCsvIcon = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownloadAll = () => {
+    (() => {
+      axios
+        .get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/all`, {
+          headers: { Accept: "text/csv" },
+          responseType: "blob",
+        })
+        .then(({ data }) => {
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "file.csv");
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch((error) => console.log(error));
+    })();
+  };
+  return (
+    <>
+      <Tooltip title='csv'>
+        <IconButton onClick={handleClick}>
+          <Icon>cloud_download</Icon>
+        </IconButton>
+      </Tooltip>
+      <Menu
+        id='download-csv'
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={null}>Dowload Current Page</MenuItem>
+        <MenuItem onClick={handleDownloadAll}>All</MenuItem>
+      </Menu>
+    </>
+  );
 };
 
 const Certificates = () => {
@@ -258,12 +309,19 @@ const Certificates = () => {
             data={items}
             columns={columns}
             options={{
+              customToolbar: () => {
+                return <DownloadCsvIcon />;
+              },
+              // onDownload: () => {
+              //   alert("Show options");
+              //   return false;
+              // },
               filterType: "textField",
               responsive: "standard",
               // selectableRows: "none", // set checkbox for each row
               // search: false, // set search option
               // filter: false, // set data filter option
-              // download: false, // set download option
+              download: false, // set download option
               // print: false, // set print option
               // pagination: true, //set pagination option
               viewColumns: true, // set column option
