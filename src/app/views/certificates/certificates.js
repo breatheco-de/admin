@@ -39,7 +39,7 @@ const DownloadCsvIcon = () => {
   const handleDownloadAll = () => {
     (() => {
       axios
-        .get(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/all`, {
+        .get(`${process.env.REACT_APP_API_HOST}/v1/certificate`, {
           headers: { Accept: "text/csv" },
           responseType: "blob",
         })
@@ -53,6 +53,26 @@ const DownloadCsvIcon = () => {
         })
         .catch((error) => console.log(error));
     })();
+    handleClose();
+  };
+  const handleDownloadSingle = () => {
+    (() => {
+      axios
+        .get(`${process.env.REACT_APP_API_HOST}/v1/certificate?limit=10`, {
+          headers: { Accept: "text/csv" },
+          responseType: "blob",
+        })
+        .then(({ data }) => {
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "file.csv");
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch((error) => console.log(error));
+    })();
+    handleClose();
   };
   return (
     <>
@@ -68,7 +88,7 @@ const DownloadCsvIcon = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={null}>Dowload Current Page</MenuItem>
+        <MenuItem onClick={handleDownloadSingle}>Dowload Current Page</MenuItem>
         <MenuItem onClick={handleDownloadAll}>All</MenuItem>
       </Menu>
     </>
