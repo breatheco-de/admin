@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import { DownloadCsv } from "../../components/DownloadCsv";
 import axios from "../../../axios";
@@ -15,45 +17,80 @@ import {
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+
 import BC from "../../services/breathecode";
 import ResponseDialog from "./ResponseDialog";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+
 const statusColors = {
-  ERROR: "text-white bg-error",
-  PERSISTED: "text-white bg-green",
-  PENDING: "text-white bg-secondary",
-};
+    ERROR: "text-white bg-error",
+    PERSISTED: "text-white bg-green",
+    PENDING: "text-white bg-secondary",
+  };
 
 const Certificates = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  let { cohortId } = useParams();
+    const [isAlive, setIsAlive] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [items, setItems] = useState([]);
+    let { cohortId } = useParams();
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (cohortId !== null && cohortId !== undefined) {
-      axios
-        .get(
-          process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId
-        )
-        .then(({ data }) => {
-          setIsLoading(false);
-          if (isAlive) setItems(data);
-        });
-    } else {
-      axios
-        .get(process.env.REACT_APP_API_HOST + "/v1/certificate")
-        .then(({ data }) => {
-          setIsLoading(false);
-          if (isAlive) setItems(data);
-        });
-    }
-    return () => setIsAlive(false);
-  }, [isAlive]);
+    const [table, setTable] = useState({
+        count: 100,
+        page: 0
+      });
 
+    const query = useQuery();
+    const history = useHistory();
+    const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+    const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+    const [queryLike, setQueryLike] = useState(query.get("like") || "");
+
+
+    useEffect(() => {
+        setIsLoading(true);
+        bc.certificates().getAllCertificates({
+          limit: queryLimit,
+          offset: queryOffset,
+        })
+          .then(({ data }) => {
+            console.log(data.results);
+            setIsLoading(false);
+            if (isAlive) {
+                setItems(data.results)
+              setTable({ count: data.count });
+            };
+          }).catch(error => {
+            setIsLoading(false);
+          })
+        return () => setIsAlive(false);
+      }, [isAlive]);
+
+
+    const handlePageChange = (page, rowsPerPage, _like) => {
+        setIsLoading(true);
+        setQueryLimit(rowsPerPage);
+        setQueryOffset(rowsPerPage * page);
+        setQueryLike(_like);
+        let query = {
+          limit: rowsPerPage,
+          offset: page * rowsPerPage,
+          like: _like
+        }
+        bc.certificates().getAllCertificates(query)
+          .then(({ data }) => {
+              
+            setItems(data.results);
+            setIsLoading(false);
+            setTable({ count: data.count, page: page });
+            history.replace(`/certificates?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+          }).catch(error => {
+            setIsLoading(false);
+          })
+      }
+
+   
   const columns = [
     {
       name: "specialty",
@@ -274,19 +311,34 @@ const Certificates = () => {
               viewColumns: true, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch (action) {
+                  case "changePage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                }
+              },
+            customSearchRender: (
                 searchText,
                 handleSearch,
                 hideSearch,
                 options
-              ) => {
+            ) => {
                 return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
+                    <Grow appear in={true} timeout={300}>
+                        <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            onKeyPress={(e) => {
+                                if(e.key == "Enter"){
+                                  handlePageChange(queryOffset, queryLimit, e.target.value)
+                                }
+                              }}
                       InputProps={{
                         style: {
                           paddingRight: 0,

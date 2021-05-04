@@ -121,7 +121,7 @@ const EventList = () => {
             <Breadcrumb
               routeSegments={[
                 { name: "Feedback", path: "/" },
-                { name: "Answer List" },
+                { name: "Survey List" },
               ]}
             />
           </div>
@@ -129,7 +129,7 @@ const EventList = () => {
           {settings.beta && <div className="">
             <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
-                Send new survey
+                Add new survey
               </Button>
             </Link>
           </div>
