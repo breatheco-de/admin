@@ -232,7 +232,6 @@ const Students = () => {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      onChange={({ target: { value } }) => {handleSearch(value)}}
                       onKeyPress={(e) => {
                         if(e.key == "Enter"){
                           handlePageChange(queryOffset, queryLimit, e.target.value)
