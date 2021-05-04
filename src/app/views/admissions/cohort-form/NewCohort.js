@@ -29,7 +29,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 const NewCohort = () => {
   const classes = useStyles();
   const startDate = new Date();
-  const [endDates, setEndDates] = useState(new Date());
+  const [endDates, setEndDates] = useState(null);
   const [cert, setCert] = useState(null);
   const [version, setVersion] = useState(null);
   const [checked, setChecked] = useState(false)
@@ -53,12 +53,6 @@ const NewCohort = () => {
           never_ends: true
     })
   };
-
-  useEffect(() => {
-    setEndDates(
-      endDates.setDate(endDates.getDate() + 30)
-    )
-  }, [])
   
   const createCohort = (event) => {
     setNewCohort({
