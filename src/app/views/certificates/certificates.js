@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
+import { DownloadCsv } from "../../components/DownloadCsv";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import {
@@ -10,8 +11,6 @@ import {
   TextField,
   Button,
   Tooltip,
-  Menu,
-  MenuItem,
 } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
@@ -25,74 +24,6 @@ const statusColors = {
   ERROR: "text-white bg-error",
   PERSISTED: "text-white bg-green",
   PENDING: "text-white bg-secondary",
-};
-
-const DownloadCsvIcon = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleDownloadAll = () => {
-    (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}/v1/certificate`, {
-          headers: { Accept: "text/csv" },
-          responseType: "blob",
-        })
-        .then(({ data }) => {
-          const url = window.URL.createObjectURL(new Blob([data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "file.csv");
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((error) => console.log(error));
-    })();
-    handleClose();
-  };
-  const handleDownloadSingle = () => {
-    (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}/v1/certificate?limit=10`, {
-          headers: { Accept: "text/csv" },
-          responseType: "blob",
-        })
-        .then(({ data }) => {
-          const url = window.URL.createObjectURL(new Blob([data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "file.csv");
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch((error) => console.log(error));
-    })();
-    handleClose();
-  };
-  return (
-    <>
-      <Tooltip title='csv'>
-        <IconButton onClick={handleClick}>
-          <Icon>cloud_download</Icon>
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id='download-csv'
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleDownloadSingle}>Dowload Current Page</MenuItem>
-        <MenuItem onClick={handleDownloadAll}>All</MenuItem>
-      </Menu>
-    </>
-  );
 };
 
 const Certificates = () => {
@@ -330,12 +261,8 @@ const Certificates = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                return <DownloadCsvIcon />;
+                return <DownloadCsv />;
               },
-              // onDownload: () => {
-              //   alert("Show options");
-              //   return false;
-              // },
               filterType: "textField",
               responsive: "standard",
               // selectableRows: "none", // set checkbox for each row
