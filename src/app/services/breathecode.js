@@ -94,12 +94,15 @@ class BreatheCodeClient {
         getAcademyAutomations: () => axios._get("Academy automations",`${this.host}/marketing/academy/automation`),
         addNewLead: (newLead) => axios._post("New lead", `${this.host}/marketing/lead`, newLead)
     })
+
     feedback = () => ({
         getAnswers: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
             const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
             return axios._get("Academy answers",`${this.host}/feedback/academy/answer?${qs}`)
         },
+        addNewSurvey: (newSurvey) => axios._post("New Survey", `${this.host}/feedback/academy/survey`, newSurvey),
+        updateSurvey: (survey, id) => axios._put("Survey", `${this.host}/feedback/academy/survey/${id}`, survey)
     })
     certificates = () => ({
         getCertificatesByCohort: (query) => {
