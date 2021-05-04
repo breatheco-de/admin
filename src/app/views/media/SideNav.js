@@ -108,10 +108,10 @@ const Sidenav = ({
             >
               <FormControlLabel
                 className="flex-grow"
-                name={category.slug}
+                name={category.id}
                 onChange={handleCategoryChange}
                 control={
-                  <Checkbox checked={categories.includes(category.slug)} />
+                  <Checkbox checked={categories.includes(category.id.toString())} />
                 }
                 label={<span className="capitalize">{category.name}</span>}
               />

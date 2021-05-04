@@ -129,7 +129,9 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         autoOk={true}
                                         value={values.ending_date}
                                         format="MMMM dd, yyyy"
-                                        onChange={(date) => setFieldValue("ending_date", date)}
+                                        onChange={(date) => {
+                                            console.log(date);
+                                            setFieldValue("ending_date", date)}}
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
