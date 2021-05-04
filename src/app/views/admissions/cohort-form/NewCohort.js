@@ -29,7 +29,6 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 const NewCohort = () => {
   const classes = useStyles();
   const startDate = new Date();
-  const [endDates, setEndDates] = useState(null);
   const [cert, setCert] = useState(null);
   const [version, setVersion] = useState(null);
   const [checked, setChecked] = useState(false)
@@ -38,7 +37,7 @@ const NewCohort = () => {
     name: "",
     slug: "",
     kickoff_date: startDate,
-    ending_date: endDates,
+    ending_date: null,
     never_ends: false,
   })
   const academy = JSON.parse(localStorage.getItem("bc-academy"));
@@ -147,6 +146,7 @@ const NewCohort = () => {
                     getOptionLabel={option => `${option.name}`}
                     value={cert} />
                       {cert !== null ? <AsyncAutocomplete
+                      debounced={false}
                       onChange={(v) => setVersion(v)}
                       width={"20%"}
                       key={cert.slug}
@@ -192,7 +192,6 @@ const NewCohort = () => {
                           inputVariant="outlined"
                           type="text"
                           size="small"
-                          autoOk={true}
                           value={newCohort.ending_date}
                           format="MMMM dd, yyyy"
                           onChange={(date) => setNewCohort({
@@ -201,6 +200,7 @@ const NewCohort = () => {
                                 never_ends: false,
                           })}
                           disabled={neverEnd ? false : true}
+                          required
                         />
                     </MuiPickersUtilsProvider>
                 </Grid>
