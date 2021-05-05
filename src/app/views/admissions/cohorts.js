@@ -235,7 +235,14 @@ const Cohorts = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                return <DownloadCsv />;
+                let singlePageTableCsv = `/v1/admissions/academy/cohort?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
+                let allPagesTableCsv = `/v1/admissions/academy/cohort?like=${queryLike}`;
+                return (
+                  <DownloadCsv
+                    singlePageTableCsv={singlePageTableCsv}
+                    allPagesTableCsv={allPagesTableCsv}
+                  />
+                );
               },
               download: false,
               filterType: "textField",
