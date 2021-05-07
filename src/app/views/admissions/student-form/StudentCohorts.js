@@ -137,7 +137,7 @@ const StudentCohorts = ({ std_id }) => {
                 <Grid item lg={4} md={4} sm={6} xs={6}>
                   <div className="flex">
                     <div className="flex-grow">
-                      <Link to={"/admin/cohorts/"+ s.cohort.slug}>
+                      <Link to={"/admissions/cohorts/"+ s.cohort.slug}>
                         <h6 className="mt-0 mb-0 text-15 text-primary">
                           {s.cohort.name}
                         </h6>
