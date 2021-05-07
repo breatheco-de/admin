@@ -23,6 +23,7 @@ import DowndownMenu from "../../../components/DropdownMenu";
 import bc from "app/services/breathecode";
 import * as Yup from 'yup';
 import { makeStyles } from "@material-ui/core/styles";
+import { setDay } from "date-fns";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     dialogue: {
@@ -85,6 +86,7 @@ const Cohort = () => {
             .then(({ data }) => {
                 setIsLoading(false);
                 setCohort(data);
+                setStage(data.stage)
                 setMaxSyllabusDays(data.syllabus.certificate.duration_in_days);
             })
             .catch(error => console.log(error));;
@@ -95,16 +97,13 @@ const Cohort = () => {
             .then((data) => data)
             .catch(error => console.log(error))
     }
-
-    const setCurrentDay = () => {
-
-    }
     
     const ProfileSchema = Yup.object().shape({
         current_day: Yup.number()
             .max(maxSyllabusDays, `You can not set a day greater than ${maxSyllabusDays}`)
             .required("Please enter a day")
     });
+
 
     return (
         <>
@@ -160,7 +159,7 @@ const Cohort = () => {
                 <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
                 <Formik
                     initialValues = {{
-                        stage: "",
+                        stage: stage,
                         current_day: newDay
                     }}
                     enableReinitialize = {true}
@@ -200,7 +199,9 @@ const Cohort = () => {
                                         size = "small"
                                         variant = "outlined"
                                         defaultValue = {cohort.stage}
-                                        onChange = {(e) => {setStage(e.target.value)}}
+                                        onChange = {(e) => {
+                                            setStage(e.target.value)
+                                        }}
                                     >
                                         {stageMap.map((option) => (
                                             <MenuItem key = {option.value} value = {option.value}>
@@ -215,11 +216,14 @@ const Cohort = () => {
                                     error = {errors.current_day && touched.current_day}
                                     helperText = {touched.current_day && errors.current_day}
                                     type="number"
-                                    label ="day"
                                     name = "current_day"
                                     size = "small"
                                     variant = "outlined"
-                                    defaultValue = {cohort.stage === "ENDED" ? maxSyllabusDays : cohort.current_day}
+                                    value={
+                                        stage === "ENDED"
+                                            ? maxSyllabusDays
+                                            : cohort.current_day
+                                    }
                                     onChange = {(e) => {setNewDay(e.target.value)}}
                                 />
                             </DialogContent>
