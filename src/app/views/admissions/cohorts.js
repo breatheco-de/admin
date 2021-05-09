@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Icon, IconButton,  Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import { useHistory } from "react-router-dom";
+
 import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
+import { SmartMUIDataTable } from "app/components/SmartDataTable";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -25,14 +25,14 @@ const stageColors = {
 const Cohorts = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState({
-    page: 0,
-  });
-  const [querys, setQuerys] = useState({});
-
+  const [items, setItems] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0
+  }); 
   const query = useQuery();
   const history = useHistory();
-
+  const [querys, setQuerys] = useState({});
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
@@ -48,8 +48,8 @@ const Cohorts = () => {
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) {
-          setItems({ ...data });
-          //setTable({...table,count: data.count});
+          setItems(data.results);
+          setTable({ count: data.count });
         }
       })
       .catch((error) => {
@@ -73,7 +73,8 @@ const Cohorts = () => {
       .getAllCohorts(query)
       .then(({ data }) => {
         setIsLoading(false);
-        setItems({ ...data, page: page });
+        setItems(data.results);
+        setTable({ count: data.count, page: page });
         history.replace(
           `/admissions/cohorts?${Object.keys(query)
             .map((key) => `${key}=${query[key]}`)
@@ -100,7 +101,7 @@ const Cohorts = () => {
         filter: true,
         filterList: query.get("stage") !== null ? [query.get("stage")] : [],
         customBodyRenderLite: (dataIndex) => {
-          let item = items.results[dataIndex];
+          let item = items[dataIndex];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -133,7 +134,7 @@ const Cohorts = () => {
         filter: true,
         filterList: query.get("slug") !== null ? [query.get("slug")] : [],
         customBodyRenderLite: (i) => {
-          let item = items.results[i];
+          let item = items[i];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -156,10 +157,10 @@ const Cohorts = () => {
           <div className='flex items-center'>
             <div className='ml-3'>
               <h5 className='my-0 text-15'>
-                {dayjs(items.results[i].kickoff_date).format("MM-DD-YYYY")}
+                {dayjs(items[i].kickoff_date).format("MM-DD-YYYY")}
               </h5>
               <small className='text-muted'>
-                {dayjs(items.results[i].kickoff_date).fromNow()}
+                {dayjs(items[i].kickoff_date).fromNow()}
               </small>
             </div>
           </div>
@@ -173,7 +174,7 @@ const Cohorts = () => {
         filter: true,
         filterList:
           query.get("certificate") !== null ? [query.get("certificate")] : [],
-        customBodyRenderLite: (i) => items.results[i].certificate?.name,
+        customBodyRenderLite: (i) => items[i].certificate?.name,
       },
     },
     {
@@ -184,7 +185,7 @@ const Cohorts = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className='flex items-center'>
             <div className='flex-grow'></div>
-            <Link to={"/admissions/cohorts/" + items.results[dataIndex].slug}>
+            <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -229,103 +230,17 @@ const Cohorts = () => {
       <div className='overflow-auto'>
         <div className='min-w-750'>
           {isLoading && <MatxLoading />}
-          <MUIDataTable
-            title={"All Cohorts"}
-            data={items.results}
+          <SmartMUIDataTable 
+            title="All Cohorts"
+            data={items}
             columns={columns}
-            options={{
-              customToolbar: () => {
-                return <DownloadCsv />;
-              },
-              download: false,
-              filterType: "textField",
-              responsive: "standard",
-              serverSide: true,
-              elevation: 0,
-              page: items.page,
-              count: items.count,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex
-              ) => {
-                let q = {
-                  ...querys,
-                  [changedColumn]: filterList[changedColumnIndex][0],
-                };
-                setQuerys(q);
-                history.replace(
-                  `/admissions/cohorts?${Object.keys(q)
-                    .map((key) => `${key}=${q[key]}`)
-                    .join("&")}`
-                );
-              },
-              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              onTableChange: (action, tableState) => {
-                switch (action) {
-                  case "changePage":
-                    console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike
-                    );
-                    break;
-                  case "changeRowsPerPage":
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike
-                    );
-                    break;
-                  case "filterChange":
-                  //console.log(action, tableState)
-                }
-              },
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      onKeyPress={(e) => {
-                        if (e.key == "Enter") {
-                          handlePageChange(
-                            queryOffset,
-                            queryLimit,
-                            e.target.value
-                          );
-                        }
-                      }}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
-            }}
+            handlePageChange={handlePageChange}
+            queryLimit={queryLimit}
+            queryOffset={queryOffset}
+            queryLike={queryLike}
+            querys={querys}
+            table={table}
+            queryUrl="/admissions/cohorts"
           />
         </div>
       </div>
