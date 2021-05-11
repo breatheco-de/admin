@@ -147,7 +147,14 @@ const Students = () => {
             (userList[dataIndex]) :
             ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
           return item.status === "INVITED" ? (<div className="flex items-center">
-            <div className="flex-grow"></div>
+            <div className="flex-grow">
+
+            </div>
+            <Tooltip title="Copy invite link">
+              <IconButton onClick={() => resendInvite(item.id)}>
+                <Icon>content_copy</Icon>
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Resend Invite">
               <IconButton onClick={() => resendInvite(item.id)}>
                 <Icon>refresh</Icon>
