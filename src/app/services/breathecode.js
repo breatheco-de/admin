@@ -35,11 +35,12 @@ class BreatheCodeClient {
           `${this.host}/admissions/cohort/${cohort}/user/${user}`
         );
       },
-      deleteUserCohortBulk: (cohort, payload) => {
+      deleteUserCohortBulk: (query) => {
+        console.log("query:", query);
+        const qs = query.join(",");
         return axios._delete(
           "Cohort",
-          `${this.host}/admissions/cohort/${cohort}/user`,
-          payload
+          `${this.host}/admissions/cohort/user?id=${qs}`
         );
       },
       getCohort: (cohort) => {

@@ -36,6 +36,7 @@ const CustomToolbarSelect = (props) => {
   useEffect(() => {
     setBulk(
       selected.map((item) => {
+        console.log("item:", props.items[item]);
         if (props.items[item].user !== null)
           return {
             user: props.items[item].user.id,
@@ -56,9 +57,9 @@ const CustomToolbarSelect = (props) => {
   };
   const deleteBulkStudents = (e) => {
     e.preventDefault();
-    console.log(cohort.id);
+    const arrayUser = bulk.map((item) => item.user);
     bc.admissions()
-      .deleteUserCohortBulk(cohort.id, bulk)
+      .deleteUserCohortBulk(arrayUser)
       .then((d) => d)
       .catch((r) => r);
   };
@@ -69,7 +70,7 @@ const CustomToolbarSelect = (props) => {
           <DeleteIcon
             className={classes.icon}
             onClick={(e) => {
-              setOpenDialog(true);
+              deleteBulkStudents(e);
             }}
           />
         </IconButton>
