@@ -167,7 +167,7 @@ const Layout1Topbar = () => {
                     <p className="m-0">
                       Hi <strong>{user.first_name || "No name"}</strong>
                     </p>
-                    <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
+                   <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
                     <p className="m-0 w-100"><small className="d-block">Role: {user.role.role || user.role}</small></p>
                 </div>
               </MenuItem>
