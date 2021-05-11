@@ -19,10 +19,12 @@ export const ProfileForm = ({ initialValues }) => {
         console.log(cohort)
         const requestValues = cohort !== null ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
             bc.auth().addAcademyStudent(requestValues)
-            .then(data =>{ 
-                history.push("/admissions/students");
+            .then(data =>{
+                if(data !== undefined){
+                   history.push("/admissions/students"); 
+                }
             })
-            .catch(error => error)
+            .catch(error =>console.log(error))
     }
 
     return <Formik

@@ -86,6 +86,11 @@ const Students = () => {
       .then(({ data }) => console.log(data))
       .catch(error => console.log(error))
   }
+  const getMemberInvite = (user) =>{
+    bc.auth().getMemberInvite(user)
+    .then(data => console.log(data))
+    .catch(error => console.log(error))
+  }
 
   const columns = [
     {
@@ -151,8 +156,8 @@ const Students = () => {
 
             </div>
             <Tooltip title="Copy invite link">
-              <IconButton onClick={() => resendInvite(item.id)}>
-                <Icon>content_copy</Icon>
+              <IconButton onClick={() => getMemberInvite(item.id)}>
+                <Icon>assignment</Icon>
               </IconButton>
             </Tooltip>
             <Tooltip title="Resend Invite">
