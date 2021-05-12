@@ -24,64 +24,10 @@ const name = (user) => {
 }
 
 const Students = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [table, setTable] = useState({
-    count: 100,
-    page: 0
-  }); 
-  const query = useQuery();
-  const history = useHistory();
-  const [querys, setQuerys] = useState({});
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [queryLike, setQueryLike] = useState(query.get("like") || "");
  
-  
-  //TODO: Show errors with the response 
- 
-  useEffect(() => {
-    setIsLoading(true);
-    bc.auth().getAcademyStudents({
-      limit: queryLimit,
-      offset: queryOffset,
-      like: queryLike
-    })
-      .then(({ data }) => {
-        console.log(data);
-        setIsLoading(false);
-        if (isAlive) {
-          setItems(data.results);
-          setTable({ count: data.count });
-        };
-      }).catch(error => {
-        setIsLoading(false);
-      })
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage, _like) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    let query = {
-      limit: rowsPerPage,
-      offset: page * rowsPerPage,
-      like: _like
-    }
-    setQuerys(query);
-    bc.auth().getAcademyStudents(query)
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItems(data.results);
-        setTable({ count: data.count, page: page });
-        history.replace(`/admissions/students?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
-      }).catch(error => {
-        setIsLoading(false);
-      })
-  }
 
   const resendInvite = (user) => {
     bc.auth().resendInvite(user)
@@ -96,6 +42,7 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
+          console.log(dataIndex);
           let { user, ...rest } = items[dataIndex];
           return (
             <div className="flex items-center">
@@ -196,16 +143,16 @@ const Students = () => {
         <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <SmartMUIDataTable 
-            title="All Certificates"
-            data={items}
+            title="All Students"
             columns={columns}
-            handlePageChange={handlePageChange}
-            queryLimit={queryLimit}
-            queryOffset={queryOffset}
-            queryLike={queryLike}
-            querys={querys}
-            table={table}
-            queryUrl="/admissions/students"
+            data={items}
+            url="/auth/academy/student"
+            historyReplace="/admissions/students"
+            search={async(querys) => {
+              const { data } = await bc.auth().getAcademyStudents(querys);
+              setItems(data.results);
+              return data
+            }}
           />
         </div>
       </div>

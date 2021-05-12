@@ -32,6 +32,7 @@ export function AsyncAutocomplete(props) {
       console.log(cache);
     } else
       asyncSearch(searchTerm)
+      console.log(searchTerm)
         .then(({ data }) => {
           setLoading(false);
           if (!Array.isArray(data))

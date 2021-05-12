@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from '../hooks/useQuery';
 import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
@@ -9,8 +10,61 @@ import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
 import { DownloadCsv } from "./DownloadCsv";
 
 export const SmartMUIDataTable = (props) => {
+    const [isAlive, setIsAlive] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [items, setItems] = useState([]);
+    const [table, setTable] = useState({
+        count: 100,
+        page: 0
+      }); 
+    const query = useQuery();
     const history = useHistory();
-    const [querys, setQuerys] = useState(props.querys)
+    const [querys, setQuerys] = useState({});
+    const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+    const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+    const [queryLike, setQueryLike] = useState(query.get("like") || "");
+
+    useEffect(() => {
+      setIsLoading(true);
+      props.search({
+        limit: queryLimit,
+        offset: queryOffset,
+        like: queryLike
+      })
+        .then(( data ) => {
+          console.log(data);
+          setIsLoading(false);
+          if (isAlive) {
+            setItems(data.results);
+            setTable({ count: data.count });
+          };
+        }).catch(error => {
+          setIsLoading(false);
+        })
+      return () => setIsAlive(false);
+    }, [isAlive]);
+
+    const handlePageChange = (page, rowsPerPage, _like) => {   
+        setIsLoading(true);
+        setQueryLimit(rowsPerPage);
+        setQueryOffset(rowsPerPage * page);
+        setQueryLike(_like);
+        let query = {
+          limit: rowsPerPage,
+          offset: page * rowsPerPage,
+          like: _like
+        }
+        setQuerys(query);
+        props.search(query)
+          .then(( data ) => {
+            setIsLoading(false);
+            setItems(data.results);
+            setTable({ count: data.count, page: page });
+            history.replace(`${props.historyReplace}?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+          }).catch(error => {
+            setIsLoading(false);
+          })
+    }
 
   return (
     <MUIDataTable
@@ -23,10 +77,10 @@ export const SmartMUIDataTable = (props) => {
             responsive: "standard",
             serverSide: true,
             elevation: 0,
-            count: props.table.count,
-            page: props.table.page,
+            count: table.count,
+            page: table.page,
             selectableRowsHeader:false,
-            rowsPerPage: props.querys.limit === undefined ? 10 : props.querys.limit,
+            rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
             rowsPerPageOptions: [10, 20, 40, 80, 100],
             viewColumns: true,
 
@@ -45,7 +99,7 @@ export const SmartMUIDataTable = (props) => {
                   [changedColumn]: filterList[changedColumnIndex][0],
                 };
                 setQuerys(q);
-                history.replace(`${props.queryUrl}?${Object.keys(q)
+                history.replace(`${props.historyReplace}?${Object.keys(q)
                     .map((key) => `${key}=${q[key]}`)
                     .join("&")}`
                 );
@@ -64,10 +118,10 @@ export const SmartMUIDataTable = (props) => {
             onTableChange: (action, tableState) => {
                 switch (action) {
                     case "changePage":
-                    props.handlePageChange(tableState.page, tableState.rowsPerPage, props.queryLike);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
                     break;
                     case "changeRowsPerPage":
-                    props.handlePageChange(tableState.page, tableState.rowsPerPage, props.queryLike);
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
                     break;
                 }
             },
@@ -86,7 +140,7 @@ export const SmartMUIDataTable = (props) => {
                             fullWidth
                             onKeyPress={(e) => {
                                 if(e.key == "Enter"){
-                                    props.handlePageChange(props.queryOffset, props.queryLimit, e.target.value)
+                                  handlePageChange(queryOffset, queryLimit,  e.target.value)
                                 }
                             }}
                             InputProps={{
@@ -117,11 +171,7 @@ SmartMUIDataTable.propTypes = {
     title: PropTypes.string,
     data: PropTypes.any,
     columns: PropTypes.any,
-    handlePageChange: PropTypes.any,
-    queryLimit: PropTypes.string,
-    queryOffset: PropTypes.string,
-    queryLike: PropTypes.string,
-    querys: PropTypes.object,
-    table: PropTypes.object,
-    queryUrl: PropTypes.string,
+    url: PropTypes.string,
+    historyReplace: PropTypes.string,
+    search: PropTypes.any
 };

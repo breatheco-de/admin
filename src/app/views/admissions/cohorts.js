@@ -32,19 +32,19 @@ const Cohorts = () => {
   }); 
   const query = useQuery();
   const history = useHistory();
-  const [querys, setQuerys] = useState({});
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [queryLike, setQueryLike] = useState(query.get("like") || "");
+  const [querys, setQuerys] = useState({
+    limit: query.get("limit") || 10,
+    offset: query.get("offset") || 0,
+    like: query.get("like") || "",
+  });
+  // const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  // const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  // const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
   useEffect(() => {
     setIsLoading(true);
     bc.admissions()
-      .getAllCohorts({
-        limit: queryLimit,
-        offset: queryOffset,
-        like: queryLike,
-      })
+      .getAllCohorts(querys)
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) {
@@ -60,23 +60,20 @@ const Cohorts = () => {
 
   const handlePageChange = (page, rowsPerPage, _like) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    let query = {
+    setQuerys({
+      ...querys,
       limit: rowsPerPage,
       offset: page * rowsPerPage,
-      like: _like,
-    };
-    setQuerys(query);
+      like: _like
+    })
     bc.admissions()
-      .getAllCohorts(query)
+      .getAllCohorts(querys)
       .then(({ data }) => {
         setIsLoading(false);
         setItems(data.results);
         setTable({ count: data.count, page: page });
         history.replace(
-          `/admissions/cohorts?${Object.keys(query)
+          `/admissions/cohorts?${Object.keys(querys)
             .map((key) => `${key}=${query[key]}`)
             .join("&")}`
         );
@@ -230,18 +227,15 @@ const Cohorts = () => {
       <div className='overflow-auto'>
         <div className='min-w-750'>
           {isLoading && <MatxLoading />}
-          <SmartMUIDataTable 
+          {/* <SmartMUIDataTable 
             title="All Cohorts"
             data={items}
             columns={columns}
             handlePageChange={handlePageChange}
-            queryLimit={queryLimit}
-            queryOffset={queryOffset}
-            queryLike={queryLike}
             querys={querys}
             table={table}
-            queryUrl="/admissions/cohorts"
-          />
+            queryUrl="/admissions/cohorts" */}
+          {/* /> */}
         </div>
       </div>
     </div>
