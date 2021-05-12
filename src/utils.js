@@ -183,7 +183,8 @@ export function resolveResponse(res) {
 }
 
 export function resolveError(error){
-  if (typeof error.response.data === "object") {
+  console.log(error.response)
+  if (typeof error.response.data === "object" && error.response.data.status_code === undefined) {
     for (let item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {
         for (let str of error.response.data[item]) {
@@ -202,4 +203,5 @@ export function resolveError(error){
   } else if (error.response.status === 500) return toast.error("Internal server error, try again later", toastOption)
   else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
   else return toast.error('Something went wrong!', toastOption)
+
 }

@@ -228,7 +228,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
             >
                 <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
                 <List>
-                    {['TEACHER', 'ASSISTANT', 'STUDENT'].map((role, i) => (
+                    {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
                         <ListItem
                             button
                             onClick={() => {

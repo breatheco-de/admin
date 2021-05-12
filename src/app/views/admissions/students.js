@@ -86,6 +86,11 @@ const Students = () => {
       .then(({ data }) => console.log(data))
       .catch(error => console.log(error))
   }
+  const getMemberInvite = (user) =>{
+    bc.auth().getMemberInvite(user)
+    .then(data => console.log(data))
+    .catch(error => console.log(error))
+  }
 
   const columns = [
     {
@@ -147,7 +152,14 @@ const Students = () => {
             (userList[dataIndex]) :
             ({ ...userList[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
           return item.status === "INVITED" ? (<div className="flex items-center">
-            <div className="flex-grow"></div>
+            <div className="flex-grow">
+
+            </div>
+            <Tooltip title="Copy invite link">
+              <IconButton onClick={() => getMemberInvite(item.id)}>
+                <Icon>assignment</Icon>
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Resend Invite">
               <IconButton onClick={() => resendInvite(item.id)}>
                 <Icon>refresh</Icon>

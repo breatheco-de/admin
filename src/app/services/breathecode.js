@@ -77,6 +77,9 @@ class BreatheCodeClient {
             },
             resendInvite:(user) => {
                 return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
+            },
+            getMemberInvite:(user) => {
+                return axios._get("Invite", `${this.host}/auth/academy/user/${user}/invite`)
             }
         }
     }

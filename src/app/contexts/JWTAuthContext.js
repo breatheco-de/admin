@@ -146,7 +146,6 @@ export const AuthProvider = ({ children }) => {
   const choose = ({role, academy}) => {
         setUserData({ ...state.user, role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
-        localStorage.setItem("bc-academy", JSON.stringify(academy));
         dispatch({ type: "CHOOSE", payload: {role, academy} });
   };
 
@@ -161,7 +160,6 @@ export const AuthProvider = ({ children }) => {
 
         if (accessToken && await isValidToken(accessToken)) {
             setSession(accessToken);
-
             const response = await axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
             let user = response.data;
             if(!user || user.roles.length === 0) throw Error("You are not a staff member from any academy")
@@ -170,7 +168,6 @@ export const AuthProvider = ({ children }) => {
                 user.academy = user.roles[0].academy;
                 localStorage.setItem("bc-academy", JSON.stringify(user.academy));
             }
-
             dispatch({
                 type: "INIT",
                 payload: {

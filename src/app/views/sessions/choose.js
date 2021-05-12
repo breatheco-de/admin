@@ -5,10 +5,7 @@ import {
   Grid,
   Select,
   MenuItem,
-
 } from "@material-ui/core";
-
-
 import { makeStyles } from "@material-ui/core/styles";
 import history from "history.js";
 import clsx from "clsx";
@@ -36,7 +33,6 @@ const Choose = () => {
       const { role, academy } = event.target.value;
 
       if(role && role !== ""){
-
         choose({ role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
         const { data } = await bc.admissions().getMyAcademy()
