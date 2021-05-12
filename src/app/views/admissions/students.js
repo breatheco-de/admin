@@ -4,11 +4,9 @@ import { MatxLoading } from "matx";
 import { Avatar, Icon, IconButton, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { useHistory } from 'react-router-dom';
 
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
 import bc from "app/services/breathecode";
-import { useQuery } from '../../hooks/useQuery'
 
 let relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
@@ -26,8 +24,6 @@ const name = (user) => {
 const Students = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
- 
-
 
   const resendInvite = (user) => {
     bc.auth().resendInvite(user)
@@ -42,7 +38,6 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          console.log(dataIndex);
           let { user, ...rest } = items[dataIndex];
           return (
             <div className="flex items-center">
@@ -146,7 +141,6 @@ const Students = () => {
             title="All Students"
             columns={columns}
             data={items}
-            url="/auth/academy/student"
             historyReplace="/admissions/students"
             search={async(querys) => {
               const { data } = await bc.auth().getAcademyStudents(querys);

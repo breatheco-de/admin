@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import { Icon, IconButton,  Button } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import { useHistory } from "react-router-dom";
+import MUIDataTable from "mui-datatables";
 
 import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
+import { DownloadCsv } from "app/components/DownloadCsv";
+import CustomToolbar from "app/components/CustomToolbar";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -32,14 +35,14 @@ const Cohorts = () => {
   }); 
   const query = useQuery();
   const history = useHistory();
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLike, setQueryLike] = useState(query.get("like") || "");
   const [querys, setQuerys] = useState({
-    limit: query.get("limit") || 10,
-    offset: query.get("offset") || 0,
-    like: query.get("like") || "",
+    limit: queryLimit,
+    offset: queryOffset,
+    like: queryLike
   });
-  // const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  // const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  // const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
   useEffect(() => {
     setIsLoading(true);
@@ -60,20 +63,22 @@ const Cohorts = () => {
 
   const handlePageChange = (page, rowsPerPage, _like) => {
     setIsLoading(true);
-    setQuerys({
-      ...querys,
+    setQueryLimit(rowsPerPage);
+    setQueryOffset(rowsPerPage * page);
+    setQueryLike(_like);
+    let query = {
       limit: rowsPerPage,
       offset: page * rowsPerPage,
       like: _like
-    })
-    bc.admissions()
-      .getAllCohorts(querys)
+    }
+    setQuerys(query)
+    bc.admissions().getAllCohorts(query)
       .then(({ data }) => {
         setIsLoading(false);
         setItems(data.results);
         setTable({ count: data.count, page: page });
         history.replace(
-          `/admissions/cohorts?${Object.keys(querys)
+          `/admissions/cohorts?${Object.keys(query)
             .map((key) => `${key}=${query[key]}`)
             .join("&")}`
         );
@@ -227,15 +232,102 @@ const Cohorts = () => {
       <div className='overflow-auto'>
         <div className='min-w-750'>
           {isLoading && <MatxLoading />}
-          {/* <SmartMUIDataTable 
-            title="All Cohorts"
-            data={items}
-            columns={columns}
-            handlePageChange={handlePageChange}
-            querys={querys}
-            table={table}
-            queryUrl="/admissions/cohorts" */}
-          {/* /> */}
+          {<MUIDataTable
+              title={"All Cohorts"}
+              data={items}
+              columns={columns}
+              options={{
+                  download: false,
+                  filterType: "textField",
+                  responsive: "standard",
+                  serverSide: true,
+                  elevation: 0,
+                  count: table.count,
+                  page: table.page,
+                  selectableRowsHeader:false,
+                  rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+                  rowsPerPageOptions: [10, 20, 40, 80, 100],
+                  viewColumns: true,
+                  customToolbar: () => {
+                      return <DownloadCsv />;
+                    },
+
+                  onFilterChange: (
+                      changedColumn,
+                      filterList,
+                      type,
+                      changedColumnIndex
+                    ) => {
+                      let q = {
+                        ...querys,
+                        [changedColumn]: filterList[changedColumnIndex][0],
+                      };
+                      setQuerys(q);
+                      history.replace(`/admissions/cohorts?${Object.keys(q)
+                          .map((key) => `${key}=${q[key]}`)
+                          .join("&")}`
+                      );
+                    },
+
+                  customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+                  return <CustomToolbar 
+                              selectedRows={selectedRows} 
+                              displayData={displayData} 
+                              setSelectedRows={setSelectedRows} 
+                              items={items} 
+                              key={items} 
+                              history={history}/>
+                  },
+
+                  onTableChange: (action, tableState) => {
+                      switch (action) {
+                          case "changePage":
+                          handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                          break;
+                          case "changeRowsPerPage":
+                          handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                          break;
+                      }
+                  },
+
+                  customSearchRender: (
+                      searchText,
+                      handleSearch,
+                      hideSearch,
+                      options
+                  ) => {
+                      return (
+                          <Grow appear in={true} timeout={300}>
+                              <TextField
+                                  variant="outlined"
+                                  size="small"
+                                  fullWidth
+                                  onKeyPress={(e) => {
+                                      if(e.key == "Enter"){
+                                        handlePageChange(queryOffset, queryLimit,  e.target.value)
+                                      }
+                                  }}
+                                  InputProps={{
+                                  style: {
+                                      paddingRight: 0,
+                                  },
+                                  startAdornment: (
+                                      <Icon className="mr-2" fontSize="small">
+                                      search
+                                      </Icon>
+                                  ),
+                                  endAdornment: (
+                                      <IconButton onClick={hideSearch}>
+                                      <Icon fontSize="small">clear</Icon>
+                                      </IconButton>
+                                  ),
+                                  }}
+                              />
+                          </Grow>
+                  );
+                  },
+              }}
+          />}
         </div>
       </div>
     </div>
