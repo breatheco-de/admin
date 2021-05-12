@@ -3,6 +3,7 @@ import axios from "../../axios";
 class BreatheCodeClient {
     constructor() {
         this.host = `${process.env.REACT_APP_API_HOST}/v1`;
+        const academy = JSON.parse(localStorage.getItem("bc-academy"));
     }
     admissions = () => {
         return {
@@ -36,7 +37,7 @@ class BreatheCodeClient {
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query, academyID) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`)
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             },
             getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
          }

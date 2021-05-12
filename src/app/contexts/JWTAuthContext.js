@@ -3,6 +3,8 @@ import axios from "axios.js";
 import { setUserData } from "../redux/actions/UserActions.js";
 import { MatxLoading } from "matx";
 
+const storedAcademy = JSON.parse(localStorage.getItem("bc-academy"));
+
 const initialState = {
   isAuthenticated: false,
   isInitialised: false,
@@ -105,6 +107,10 @@ export const AuthProvider = ({ children }) => {
     
     const res2 = await axios._get("User",process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
     if(!res2.data || res2.data.roles.length === 0) throw Error("You are not a staff member from any academy")
+    else if(typeof(storedAcademy) == "object"){
+        res2.data.role = res2.data.roles[0];
+        res2.data.academy = storedAcademy;
+    }
     else if(res2.data.roles.length === 1){
         res2.data.role = res2.data.roles[0];
         res2.data.academy = res2.data.roles[0].academy;

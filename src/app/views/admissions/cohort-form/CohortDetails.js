@@ -85,8 +85,12 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                     <AsyncAutocomplete
                                         onChange={(v) => setVersion(v)}
                                         width={"20%"}
+                                        debounced={false}
                                         key={cert !== null ? cert.slug: ""}
-                                        asyncSearch={() =>  bc.admissions().getAllCourseSyllabus(cert?.slug)}
+                                        asyncSearch={async () =>  {
+                                            const resp = await bc.admissions().getAllCourseSyllabus(cert?.slug);
+                                            return { ...resp, data: resp.data.sort((a,b) => parseInt(a.version) > parseInt(b.version) ? -1 : 1) };
+                                        }}
                                         size={"small"}
                                         label="Version"
                                         required={true}
