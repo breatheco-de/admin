@@ -92,7 +92,8 @@ const Cohort = () => {
     const updateCohort = (values) => {
         console.log(values);
         console.log(cohort)
-        if(values.never_ends)bc.admissions().updateCohort(cohort.id,{ ...values, ending_date:null})
+        const { ending_date, ...rest} = values
+        if(values.never_ends)bc.admissions().updateCohort(cohort.id,{ ...rest})
             .then((data) => data)
             .catch(error => console.log(error))
         else{ 
