@@ -36,7 +36,7 @@ class BreatheCodeClient {
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
             getAllCourseSyllabus: (query, academyID) => {
-                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`)
+                return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             },
             getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
          }

@@ -48,9 +48,9 @@ const Analytics = () => {
     const [renderNewDates, setRenderNewDates] = useState(false);
 
     useEffect(() => {
-        const academy = JSON.parse(localStorage.getItem("bc-academy"));
+        const { academy } = JSON.parse(localStorage.getItem("bc-session"));
         if(academy === undefined || academy.id === undefined) return null;
-        console.log(academy)
+        
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
             end: params.end.format('YYYY-MM-DD'),

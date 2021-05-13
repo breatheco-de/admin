@@ -16,7 +16,7 @@ makeStyles(({ palette, ...theme }) => ({
         boxShadow: theme.shadows[3],
     },
 }));
-const academy = JSON.parse(localStorage.getItem("bc-academy"));
+const { academy } = JSON.parse(localStorage.getItem("bc-session"));
 const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, handleNeverEnds }) => {
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
