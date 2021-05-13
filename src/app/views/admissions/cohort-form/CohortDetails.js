@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Divider, Card, Grid, TextField, Button, MenuItem } from "@material-ui/core";
+import React, { useState } from "react";
+import { Divider, Card, Grid, TextField, Button, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -16,8 +16,8 @@ makeStyles(({ palette, ...theme }) => ({
         boxShadow: theme.shadows[3],
     },
 }));
-
-const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus }) => {
+const { academy } = JSON.parse(localStorage.getItem("bc-session"));
+const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, handleNeverEnds }) => {
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
     return (
@@ -31,9 +31,10 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                     slug: slug,
                     language: language,
                     ending_date: endDate,
-                    kickoff_date: startDate
+                    kickoff_date: startDate,
+                    never_ends:false
                 }}
-                onSubmit={(values) => onSubmit({...values, syllabus: `${cert.slug}.v${version.version}`})}
+                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}` })}
                 enableReinitialize={true}
             >
                 {({
@@ -49,11 +50,12 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <Grid container spacing={3} alignItems="center">
-                            <Grid item md={4} sm={4} xs={12}>
+                            <Grid item md={3} sm={4} xs={12}>
                                 Cohort Slug
                                 </Grid>
-                            <Grid item md={8} sm={8} xs={12}>
+                            <Grid item md={9} sm={8} xs={12}>
                                 <TextField
+                                    className="m-2"
                                     label="Slug"
                                     name="slug"
                                     disabled
@@ -65,38 +67,37 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                             </Grid>
                             <Grid item md={2} sm={4} xs={12}>
                                 Syllabus
-                                </Grid>
-                            <Grid item md={10} sm={8} xs={12}>
-                                <div className="mr-4 flex flex-wrap">
-                                    <AsyncAutocomplete
-                                        onChange={(certificate) => {
-                                            setCert(certificate);
-                                            setVersion(null);
-                                        }}
-                                        width={"70%"}
-                                        initialValue={cert}
-                                        className="mr-2 ml-2"
-                                        asyncSearch={() => bc.admissions().getCertificates()}
-                                        size={"small"}
-                                        label="Certificate"
-                                        required={true}
-                                        getOptionLabel={option => `${option.name}`}
-                                        value={cert} />
-                                    <AsyncAutocomplete
-                                        onChange={(v) => setVersion(v)}
-                                        width={"20%"}
-                                        debounced={false}
-                                        key={cert !== null ? cert.slug: ""}
-                                        asyncSearch={async () =>  {
-                                            const resp = await bc.admissions().getAllCourseSyllabus(cert?.slug);
-                                            return { ...resp, data: resp.data.sort((a,b) => parseInt(a.version) > parseInt(b.version) ? -1 : 1) };
-                                        }}
-                                        size={"small"}
-                                        label="Version"
-                                        required={true}
-                                        getOptionLabel={option => `${option.version}`}
-                                        value={version} />
-                                </div>
+                            </Grid>
+                            <Grid item md={5} sm={4} xs={6}>
+                                <AsyncAutocomplete
+                                    onChange={(certificate) => {
+                                        setCert(certificate);
+                                        setVersion(null);
+                                    }}
+                                    width={"100%"}
+                                    initialValue={cert}
+                                    className="mr-2 ml-2"
+                                    asyncSearch={() => bc.admissions().getCertificates()}
+                                    size={"small"}
+                                    label="Certificate"
+                                    required={true}
+                                    debounced={false}
+                                    getOptionLabel={option => `${option.name}`}
+                                    value={cert} />
+                            </Grid>
+                            <Grid item md={5} sm={4} xs={6}>
+                                <AsyncAutocomplete
+                                    onChange={(v) => setVersion(v)}
+                                    width={"100%"}
+                                    key={cert !== null ? cert.slug : ""}
+                                    asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert?.slug,academy.id )}
+                                    size={"small"}
+                                    label="Version"
+                                    required={true}
+                                    debounced={false}
+                                    initialValue={version}
+                                    getOptionLabel={option => `${option.version}`}
+                                    value={version} />
                             </Grid>
                             <Grid item md={3} sm={4} xs={12}>
                                 Start date
@@ -116,12 +117,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         onChange={(date) => setFieldValue("kickoff_date", date)}
                                     />
                                 </MuiPickersUtilsProvider>
-
                             </Grid>
                             <Grid item md={3} sm={4} xs={12}>
                                 End date
                                 </Grid>
-                            <Grid item md={9} sm={8} xs={12}>
+                            {!values.never_ends ? <><Grid item md={5} sm={4} xs={6}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
                                         className="m-2"
@@ -135,16 +135,30 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         format="MMMM dd, yyyy"
                                         onChange={(date) => {
                                             console.log(date);
-                                            setFieldValue("ending_date", date)}}
+                                            setFieldValue("ending_date", date)
+                                        }}
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
+                            <Grid item md={4} sm={4} xs={6}>
+                                <FormControlLabel
+                                    className="flex-grow"
+                                    name={"never_ends"}
+                                    onChange={handleChange}
+                                    control={
+                                    <Checkbox checked={values.never_ends} />
+                                    }
+                                    label="This cohort never ends"
+                                />
+                            </Grid></>: <Grid item md={9} sm={8} xs={12}>
+                                This cohort never ends
+                                </Grid>}
                             <Grid item md={3} sm={4} xs={12}>
                                 Language
                                 </Grid>
                             <Grid item md={9} sm={8} xs={12}>
                                 <TextField
-                                    className="m-2 min-w-188"
+                                    className="m-2"
                                     label="Language"
                                     name="language"
                                     size="small"
@@ -159,11 +173,10 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus 
                                         </MenuItem>
                                     ))}
                                 </TextField>
-
                             </Grid>
                             <Button color="primary" variant="contained" type="submit">
                                 Save Cohort Details
-                                </Button>
+                            </Button>
                         </Grid>
                     </form>
                 )}

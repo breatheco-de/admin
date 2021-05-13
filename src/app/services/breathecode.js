@@ -3,7 +3,6 @@ import axios from "../../axios";
 class BreatheCodeClient {
     constructor() {
         this.host = `${process.env.REACT_APP_API_HOST}/v1`;
-        const academy = JSON.parse(localStorage.getItem("bc-academy"));
     }
     admissions = () => {
         return {
@@ -78,6 +77,9 @@ class BreatheCodeClient {
             },
             resendInvite:(user) => {
                 return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
+            },
+            getMemberInvite:(user) => {
+                return axios._get("Invite", `${this.host}/auth/academy/user/${user}/invite`)
             }
         }
     }

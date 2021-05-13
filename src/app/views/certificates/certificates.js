@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
 import { DownloadCsv } from "../../components/DownloadCsv";
-import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import {
   Avatar,
@@ -18,8 +17,6 @@ import {
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-
-import BC from "../../services/breathecode";
 import ResponseDialog from "./ResponseDialog";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);

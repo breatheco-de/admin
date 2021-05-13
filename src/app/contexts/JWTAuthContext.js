@@ -3,8 +3,6 @@ import axios from "axios.js";
 import { setUserData } from "../redux/actions/UserActions.js";
 import { MatxLoading } from "matx";
 
-const storedAcademy = JSON.parse(localStorage.getItem("bc-academy"));
-
 const initialState = {
   isAuthenticated: false,
   isInitialised: false,
@@ -106,10 +104,11 @@ export const AuthProvider = ({ children }) => {
     }
     
     const res2 = await axios._get("User",process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
+    const storedSession = JSON.parse(localStorage.getItem("bc-session"));
     if(!res2.data || res2.data.roles.length === 0) throw Error("You are not a staff member from any academy")
-    else if(typeof(storedAcademy) == "object"){
-        res2.data.role = res2.data.roles[0];
-        res2.data.academy = storedAcademy;
+    else if(storedSession && typeof(storedSession) == "object"){
+        res2.data.role = storedSession.role;
+        res2.data.academy = storedSession.academy;
     }
     else if(res2.data.roles.length === 1){
         res2.data.role = res2.data.roles[0];
@@ -152,7 +151,6 @@ export const AuthProvider = ({ children }) => {
   const choose = ({role, academy}) => {
         setUserData({ ...state.user, role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
-        localStorage.setItem("bc-academy", JSON.stringify(academy));
         dispatch({ type: "CHOOSE", payload: {role, academy} });
   };
 
@@ -167,16 +165,19 @@ export const AuthProvider = ({ children }) => {
 
         if (accessToken && await isValidToken(accessToken)) {
             setSession(accessToken);
-
             const response = await axios.get(process.env.REACT_APP_API_HOST+"/v1/auth/user/me");
             let user = response.data;
+            const storedSession = JSON.parse(localStorage.getItem("bc-session"));
             if(!user || user.roles.length === 0) throw Error("You are not a staff member from any academy")
+            else if(storedSession && typeof(storedSession) == "object"){
+              user.role = storedSession.role;
+              user.academy = storedSession.academy;
+            }
             else if(user.roles.length === 1){
                 user.role = user.roles[0];
                 user.academy = user.roles[0].academy;
-                localStorage.setItem("bc-academy", JSON.stringify(user.academy));
+                localStorage.setItem("bc-session", JSON.stringify({ role: user.role, academy: user.academy }));
             }
-
             dispatch({
                 type: "INIT",
                 payload: {
