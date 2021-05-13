@@ -28,22 +28,46 @@ const CustomToolbarSelect = (props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
+  const [idsArr, setIdsArr] = useState([]);
 
   const selected = useMemo(() => {
     return props.selectedRows.data.map((item) => item.index);
   }, [props.selectedRows]);
 
+  console.log("bulk", bulk);
+  console.log("selected:", selected);
+  console.log("idsArr:", idsArr);
+
+  useEffect(() => {
+    let bulkDeleteIds;
+    if (props.id === "students") bulkDeleteIds = bulk.map((item) => item.user);
+    if (props.id === "cohorts") bulkDeleteIds = bulk.map((item) => item.id);
+    setIdsArr(bulkDeleteIds);
+  }, [bulk]);
+
   useEffect(() => {
     setBulk(
       selected.map((item) => {
         console.log("item:", props.items[item]);
-        if (props.items[item].user !== null)
-          return {
-            user: props.items[item].user.id,
-            role: "STUDENT",
-            finantial_status: null,
-            educational_status: null,
-          };
+        switch (props.id) {
+          case "students":
+            if (props.items[item].user !== null)
+              return {
+                user: props.items[item].user.id,
+                role: "STUDENT",
+                finantial_status: null,
+                educational_status: null,
+              };
+
+            break;
+          case "cohorts":
+            return {
+              id: props.items[item].id,
+              slug: props.items[item].slug,
+              stage: props.items[item].stage,
+            };
+            break;
+        }
       })
     );
   }, [selected]);
@@ -55,13 +79,19 @@ const CustomToolbarSelect = (props) => {
       .catch((r) => r);
     setOpenDialog(false);
   };
-  const deleteBulkStudents = (e) => {
+  const deleteBulkEntities = (e) => {
     e.preventDefault();
-    const arrayUser = bulk.map((item) => item.user);
-    bc.admissions()
-      .deleteUserCohortBulk(arrayUser)
-      .then((d) => d)
-      .catch((r) => r);
+    if (props.id === "students") {
+      bc.admissions()
+        .deleteStudentBulk(idsArr)
+        .then((d) => d)
+        .catch((r) => r);
+    } else if (props.id === "cohorts") {
+      bc.admissions()
+        .deleteCohortsBulk(idsArr)
+        .then((d) => d)
+        .catch((r) => r);
+    }
   };
   return (
     <div className={classes.iconContainer}>
@@ -70,7 +100,7 @@ const CustomToolbarSelect = (props) => {
           <DeleteIcon
             className={classes.icon}
             onClick={(e) => {
-              deleteBulkStudents(e);
+              deleteBulkEntities(e);
             }}
           />
         </IconButton>

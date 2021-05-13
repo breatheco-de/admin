@@ -35,12 +35,20 @@ class BreatheCodeClient {
           `${this.host}/admissions/cohort/${cohort}/user/${user}`
         );
       },
-      deleteUserCohortBulk: (query) => {
+      deleteStudentBulk: (query) => {
         console.log("query:", query);
         const qs = query.join(",");
         return axios._delete(
           "Cohort",
-          `${this.host}/admissions/cohort/user?id=${qs}`
+          // `${this.host}/admissions/academy/cohort/user?id=${qs}`
+          `${this.host}/auth/academy/student?id=${qs}`
+        );
+      },
+      deleteCohortsBulk: (query) => {
+        const qs = query.join(",");
+        return axios._delete(
+          "Cohort",
+          `${this.host}/admissions/academy/cohort?id=${qs}`
         );
       },
       getCohort: (cohort) => {
