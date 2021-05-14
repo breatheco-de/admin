@@ -40,7 +40,6 @@ class BreatheCodeClient {
         const qs = query.join(",");
         return axios._delete(
           "Cohort",
-          // `${this.host}/admissions/academy/cohort/user?id=${qs}`
           `${this.host}/auth/academy/student?id=${qs}`
         );
       },

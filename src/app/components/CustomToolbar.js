@@ -40,12 +40,13 @@ const CustomToolbarSelect = (props) => {
 
   useEffect(() => {
     let bulkDeleteIds;
-    if (props.id === "students") bulkDeleteIds = bulk.map((item) => item.user);
+    if (props.id === "students") bulkDeleteIds = bulk.map((item) => item.id);
     if (props.id === "cohorts") bulkDeleteIds = bulk.map((item) => item.id);
     if (props.id === "staff") bulkDeleteIds = bulk.map((item) => item.id);
     if (props.id === "certificates")
       bulkDeleteIds = bulk.map((item) => item.id);
-    setIdsArr(bulkDeleteIds);
+    if (props.id === "leads") bulkDeleteIds = bulk.map((item) => item.id);
+    setIdsArr(bulkDeleteIds.filter((id) => id !== null));
   }, [bulk]);
 
   useEffect(() => {
@@ -54,13 +55,16 @@ const CustomToolbarSelect = (props) => {
         console.log("item:", props.items[item]);
         switch (props.id) {
           case "students":
-            if (props.items[item].user !== null)
-              return {
-                user: props.items[item].user.id,
-                role: "STUDENT",
-                finantial_status: null,
-                educational_status: null,
-              };
+            const { user } = props.items[item];
+            const userExists = !(user === null || user === undefined);
+            return {
+              user: userExists ? props.items[item].user.id : null,
+              id: props.items[item].id,
+              role: "STUDENT",
+              finantial_status: null,
+              educational_status: null,
+            };
+
             break;
           case "cohorts":
             return {
@@ -81,6 +85,13 @@ const CustomToolbarSelect = (props) => {
               id: props.items[item].id,
               preview_url: props.items[item].preview_url,
               status_text: props.items[item].status_text,
+            };
+            break;
+          case "leads":
+            return {
+              id: props.items[item].id,
+              location: props.items[item].location,
+              course: props.items[item].course,
             };
             break;
         }
@@ -114,10 +125,8 @@ const CustomToolbarSelect = (props) => {
         .catch((r) => r);
     } else if (props.id === "certificates") {
       console.log("delete certificates here");
-      // bc.admissions()
-      //   .deleteStaffBulk(idsArr)
-      //   .then((d) => d)
-      //   .catch((r) => r);
+    } else if (props.id === "leads") {
+      console.log("delete leads here");
     }
   };
   return (

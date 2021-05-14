@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DownloadCsv } from "../../components/DownloadCsv";
+import CustomToolbar from "../../components/CustomToolbar";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -316,6 +317,23 @@ const Leads = () => {
               rowsPerPage:
                 querys.limit === undefined ? 10 : parseInt(querys.limit),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows
+              ) => {
+                return (
+                  <CustomToolbar
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={items.results}
+                    key={items.results}
+                    history={history}
+                    id={"leads"}
+                  />
+                );
+              },
               onTableChange: (action, tableState) => {
                 switch (action) {
                   case "changePage":
