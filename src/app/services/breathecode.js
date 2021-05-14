@@ -51,6 +51,13 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort?id=${qs}`
         );
       },
+      deleteStaffBulk: (query) => {
+        const qs = query.join(",");
+        return axios._delete(
+          "Cohort",
+          `${this.host}/auth/academy/member?id=${qs}`
+        );
+      },
       getCohort: (cohort) => {
         return axios._get(
           "Cohort",

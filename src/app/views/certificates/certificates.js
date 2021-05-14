@@ -3,6 +3,7 @@ import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { Breadcrumb } from "matx";
 import { DownloadCsv } from "../../components/DownloadCsv";
+import CustomToolbar from "../../components/CustomToolbar";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import {
@@ -321,6 +322,23 @@ const Certificates = () => {
               viewColumns: true, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows
+              ) => {
+                return (
+                  <CustomToolbar
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={items}
+                    key={items}
+                    history={history}
+                    id={"certificates"}
+                  />
+                );
+              },
               onTableChange: (action, tableState) => {
                 console.log(action, tableState);
                 switch (action) {

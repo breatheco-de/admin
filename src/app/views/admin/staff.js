@@ -17,6 +17,7 @@ import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DownloadCsv } from "../../components/DownloadCsv";
+import CustomToolbar from "../../components/CustomToolbar";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -294,6 +295,23 @@ const Staff = () => {
               page: table.page,
               rowsPerPage: parseInt(query.get("limit"), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows
+              ) => {
+                return (
+                  <CustomToolbar
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={userList}
+                    key={userList}
+                    history={history}
+                    id={"staff"}
+                  />
+                );
+              },
               onTableChange: (action, tableState) => {
                 console.log(action, tableState);
                 switch (action) {

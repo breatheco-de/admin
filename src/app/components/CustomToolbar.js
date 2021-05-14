@@ -42,6 +42,9 @@ const CustomToolbarSelect = (props) => {
     let bulkDeleteIds;
     if (props.id === "students") bulkDeleteIds = bulk.map((item) => item.user);
     if (props.id === "cohorts") bulkDeleteIds = bulk.map((item) => item.id);
+    if (props.id === "staff") bulkDeleteIds = bulk.map((item) => item.id);
+    if (props.id === "certificates")
+      bulkDeleteIds = bulk.map((item) => item.id);
     setIdsArr(bulkDeleteIds);
   }, [bulk]);
 
@@ -58,13 +61,26 @@ const CustomToolbarSelect = (props) => {
                 finantial_status: null,
                 educational_status: null,
               };
-
             break;
           case "cohorts":
             return {
               id: props.items[item].id,
               slug: props.items[item].slug,
               stage: props.items[item].stage,
+            };
+            break;
+          case "staff":
+            return {
+              id: props.items[item].id,
+              email: props.items[item].email,
+              status: props.items[item].status,
+            };
+            break;
+          case "certificates":
+            return {
+              id: props.items[item].id,
+              preview_url: props.items[item].preview_url,
+              status_text: props.items[item].status_text,
             };
             break;
         }
@@ -91,6 +107,17 @@ const CustomToolbarSelect = (props) => {
         .deleteCohortsBulk(idsArr)
         .then((d) => d)
         .catch((r) => r);
+    } else if (props.id === "staff") {
+      bc.admissions()
+        .deleteStaffBulk(idsArr)
+        .then((d) => d)
+        .catch((r) => r);
+    } else if (props.id === "certificates") {
+      console.log("delete certificates here");
+      // bc.admissions()
+      //   .deleteStaffBulk(idsArr)
+      //   .then((d) => d)
+      //   .catch((r) => r);
     }
   };
   return (
