@@ -55,7 +55,6 @@ const Certificates = () => {
         offset: queryOffset,
       })
       .then(({ data }) => {
-        console.log(data.results);
         setIsLoading(false);
         if (isAlive) {
           setItems(data.results);

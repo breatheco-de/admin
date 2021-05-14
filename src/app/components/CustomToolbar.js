@@ -39,20 +39,12 @@ const CustomToolbarSelect = (props) => {
   console.log("idsArr:", idsArr);
 
   useEffect(() => {
-    let bulkDeleteIds;
-    if (props.id === "students") bulkDeleteIds = bulk.map((item) => item.id);
-    if (props.id === "cohorts") bulkDeleteIds = bulk.map((item) => item.id);
-    if (props.id === "staff") bulkDeleteIds = bulk.map((item) => item.id);
-    if (props.id === "certificates")
-      bulkDeleteIds = bulk.map((item) => item.id);
-    if (props.id === "leads") bulkDeleteIds = bulk.map((item) => item.id);
-    setIdsArr(bulkDeleteIds.filter((id) => id !== null));
+    setIdsArr(bulk.map((item) => item.id).filter((id) => id !== null));
   }, [bulk]);
 
   useEffect(() => {
     setBulk(
       selected.map((item) => {
-        console.log("item:", props.items[item]);
         switch (props.id) {
           case "students":
             const { user } = props.items[item];
