@@ -53,9 +53,6 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
         <img className="w-auto" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.url} alt={media.slug} style={{maxHeight:"200px"}}/>
         <div className="image-box-overlay flex justify-center items-center"></div>
       </div>
-      <div className="p-6">
-        <h5 className="m-0">{media.slug}</h5>
-      </div>
     </Card>
   );
 };

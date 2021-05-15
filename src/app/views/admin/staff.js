@@ -51,6 +51,12 @@ const Staff = () => {
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
 
+  const handleLoadingData = () => {
+    setIsLoading(true);
+    getAcademyMembers();
+    return () => setIsAlive(false);
+  };
+
   const getAcademyMembers = () => {
     bc.auth()
       .getRoles()
@@ -309,6 +315,7 @@ const Staff = () => {
                     key={userList}
                     history={history}
                     id={"staff"}
+                    reRender={handleLoadingData}
                   />
                 );
               },

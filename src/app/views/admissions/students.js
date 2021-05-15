@@ -47,9 +47,7 @@ const Students = () => {
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
-  //TODO: Show errors with the response
-
-  useEffect(() => {
+  const handleLoadingData = () => {
     setIsLoading(true);
     bc.auth()
       .getAcademyStudents({
@@ -69,6 +67,31 @@ const Students = () => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
+  };
+
+  //TODO: Show errors with the response
+
+  useEffect(() => {
+    handleLoadingData();
+    // setIsLoading(true);
+    // bc.auth()
+    //   .getAcademyStudents({
+    //     limit: queryLimit,
+    //     offset: queryOffset,
+    //     like: queryLike,
+    //   })
+    //   .then(({ data }) => {
+    //     console.log(data);
+    //     setIsLoading(false);
+    //     if (isAlive) {
+    //       setUserList(data.results);
+    //       setTable({ count: data.count });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setIsLoading(false);
+    //   });
+    // return () => setIsAlive(false);
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like) => {
@@ -102,6 +125,12 @@ const Students = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+  const getMemberInvite = (user) => {
+    bc.auth()
+      .getMemberInvite(user)
+      .then((data) => console.log(data))
       .catch((error) => console.log(error));
   };
 
@@ -194,6 +223,11 @@ const Students = () => {
           return item.status === "INVITED" ? (
             <div className='flex items-center'>
               <div className='flex-grow'></div>
+              <Tooltip title='Copy invite link'>
+                <IconButton onClick={() => getMemberInvite(item.id)}>
+                  <Icon>assignment</Icon>
+                </IconButton>
+              </Tooltip>
               <Tooltip title='Resend Invite'>
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>
@@ -286,6 +320,7 @@ const Students = () => {
                     key={userList}
                     history={history}
                     id={"students"}
+                    reRender={handleLoadingData}
                   />
                 );
               },

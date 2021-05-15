@@ -37,7 +37,6 @@ const AuthGuard = ({ children }) => {
 //   let authenticated = isAuthenticated;
 
   const previouseRoute = isAuthenticated ? pathname : null;
-
   if(user && typeof user.academy !== "object"){
     return (
       <Redirect

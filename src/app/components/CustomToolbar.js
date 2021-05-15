@@ -24,7 +24,7 @@ const defaultToolbarSelectStyles = {
 };
 
 const CustomToolbarSelect = (props) => {
-  const { classes } = props;
+  const { classes, reRender } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
@@ -104,16 +104,19 @@ const CustomToolbarSelect = (props) => {
       bc.admissions()
         .deleteStudentBulk(idsArr)
         .then((d) => d)
+        .then(() => reRender())
         .catch((r) => r);
     } else if (props.id === "cohorts") {
       bc.admissions()
         .deleteCohortsBulk(idsArr)
         .then((d) => d)
+        .then(() => reRender())
         .catch((r) => r);
     } else if (props.id === "staff") {
       bc.admissions()
         .deleteStaffBulk(idsArr)
         .then((d) => d)
+        // .then(() => reRender())
         .catch((r) => r);
     } else if (props.id === "certificates") {
       console.log("delete certificates here");

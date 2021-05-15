@@ -27,7 +27,7 @@ const NewCertificate = () => {
       .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
       .then(({ data }) => setSpecialties(data))
       .catch((error) =>
-        setMsg({ alert: true, type: "error", text: error.details })
+        setMsg({ alert: true, type: "error", text: error.details || error.detail })
       );
   };
 
