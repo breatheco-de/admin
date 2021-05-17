@@ -43,8 +43,10 @@ const CustomToolbarSelect = (props) => {
   }, [bulk]);
 
   useEffect(() => {
+    console.log("selected:", selected);
     setBulk(
       selected.map((item) => {
+        console.log("item:", props.items);
         switch (props.id) {
           case "students":
             const { user } = props.items[item];
@@ -56,7 +58,6 @@ const CustomToolbarSelect = (props) => {
               finantial_status: null,
               educational_status: null,
             };
-
             break;
           case "cohorts":
             return {
@@ -104,7 +105,10 @@ const CustomToolbarSelect = (props) => {
       bc.admissions()
         .deleteStudentBulk(idsArr)
         .then((d) => d)
-        .then(() => reRender())
+        .then(() => {
+          props.selectedRows.data = [];
+          reRender();
+        })
         .catch((r) => r);
     } else if (props.id === "cohorts") {
       bc.admissions()
@@ -116,7 +120,10 @@ const CustomToolbarSelect = (props) => {
       bc.admissions()
         .deleteStaffBulk(idsArr)
         .then((d) => d)
-        // .then(() => reRender())
+        .then(() => {
+          props.selectedRows.data = [];
+          reRender();
+        })
         .catch((r) => r);
     } else if (props.id === "certificates") {
       console.log("delete certificates here");
