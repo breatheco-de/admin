@@ -36,7 +36,7 @@ const Choose = () => {
         choose({ role, academy });
         axios.defaults.headers.common['Academy'] = academy.id;
         const { data } = await bc.admissions().getMyAcademy()
-        localStorage.setItem("bc-academy", JSON.stringify(data));
+        localStorage.setItem("bc-session", JSON.stringify({ role, academy }));
         if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
         else history.push("/");
       }

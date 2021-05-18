@@ -19,6 +19,7 @@ export function AsyncAutocomplete(props) {
     value,
     asyncSearch,
     children,
+    prefetch = false,
     debounced = true,
     label,
     required,
@@ -57,6 +58,10 @@ export function AsyncAutocomplete(props) {
       search();
     }
   }, [debouncedSearchTerm]);
+
+  React.useEffect(() => {
+    if (prefetch) search();
+  }, []);
 
   return (
     <>
@@ -109,4 +114,5 @@ AsyncAutocomplete.propTypes = {
   asyncSearch: PropTypes.func,
   value: PropTypes.any,
   required: PropTypes.bool,
+  prefetch: PropTypes.bool,
 };

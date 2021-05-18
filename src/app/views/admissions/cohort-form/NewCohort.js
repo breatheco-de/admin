@@ -40,7 +40,7 @@ const NewCohort = () => {
     ending_date: null,
     never_ends: false,
   })
-  const academy = JSON.parse(localStorage.getItem("bc-academy"));
+  const { academy } = JSON.parse(localStorage.getItem("bc-session"));
   const history = useHistory();
 
   const handleNeverEnd = (event) => {
