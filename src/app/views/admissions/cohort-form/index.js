@@ -10,7 +10,9 @@ import {
     Dialog,
     Button,
     TextField,
-    DialogActions
+    DialogActions,
+    FormControlLabel,
+    Checkbox
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import CohortStudents from "./CohortStudents";
@@ -41,7 +43,7 @@ const Cohort = () => {
     const [stageDialog, setStageDialog] = useState(false);
     const [cohort, setCohort] = useState(null);
     const classes = useStyles();
-
+    const [privateCohort, setPrivate] = useState(false)
     //DIALOGUE FOR NEWSURVEY\\
 
     const [newSurvey, setNewSurvey] = useState(
@@ -62,7 +64,9 @@ const Cohort = () => {
       const handleClose = () => {
         setOpen(false);
       };
-
+    const handlePrivateCohort = (e) =>{
+        setPrivate(e.target.checked);
+    }
     const createSurvey = event => {
         setNewSurvey({ 
             ...newSurvey, [event.target.name]: event.target.value 
@@ -88,11 +92,16 @@ const Cohort = () => {
     const updateCohort = (values) => {
         console.log(values);
         console.log(cohort)
-        bc.admissions().updateCohort(cohort.id,{ ...values})
+        if(values.never_ends)bc.admissions().updateCohort(cohort.id,{ ...values, ending_date:null})
             .then((data) => data)
             .catch(error => console.log(error))
+        else{ 
+            const {never_ends, ...rest} = values
+            bc.admissions().updateCohort(cohort.id,{ ...rest})
+            .then((data) => data)
+            .catch(error => console.log(error))
+        }
     }
-
     return (
         <>
             <div className="m-sm-30">
@@ -100,8 +109,18 @@ const Cohort = () => {
                     <div>
                         <h3 className="mt-0 mb-4 font-medium text-28">Cohort: {slug}</h3>
                         <div className="flex">
-                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3" onClick={()=> setStageDialog(true)} style={{ cursor: "pointer" }}>
+                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green m-auto" onClick={()=> setStageDialog(true)} style={{ cursor: "pointer" }}>
                                 {cohort && cohort.stage}
+                            </div>
+                            <div className="ml-2">
+                                <FormControlLabel
+                                    name={"private"}
+                                    onChange={(e)=>handlePrivateCohort(e)}
+                                    control={
+                                    <Checkbox checked={privateCohort} />
+                                    }
+                                    label="Make this cohort private"
+                                />
                             </div>
                         </div>
                     </div>
@@ -120,7 +139,8 @@ const Cohort = () => {
                     </DowndownMenu>
                 </div>
                 <Grid container spacing={3}>
-                    <Grid item md={4} xs={12}>
+                {!privateCohort ? 
+                   <> <Grid item md={4} xs={12}>
                         {cohort !== null ? <CohortDetails
                             slug={slug}
                             language={cohort.language || "en"}
@@ -136,7 +156,8 @@ const Cohort = () => {
                             slug={slug}
                             cohort_id={cohort.id}
                         /> : ""}
-                    </Grid>
+                    </Grid> </>
+                    : <Grid item md={12} xs={12} className="text-center">This cohort is private</Grid>}
                 </Grid>
             </div>
             <Dialog

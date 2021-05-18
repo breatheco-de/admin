@@ -32,7 +32,7 @@ const NewLead = () => {
   const [listCourse, setListCourse] = useState();
   const [course, setCourse] = useState();
 
-  let academy = JSON.parse(localStorage.getItem("bc-academy"));
+  let { academy } = JSON.parse(localStorage.getItem("bc-session"));
 
   const [newLead, setNewLead] = useState(
     {
