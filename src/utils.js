@@ -203,5 +203,4 @@ export function resolveError(error){
   } else if (error.response.status === 500) return toast.error("Internal server error, try again later", toastOption)
   else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
   else return toast.error('Something went wrong!', toastOption)
-
 }

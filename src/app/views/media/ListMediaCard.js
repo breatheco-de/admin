@@ -54,7 +54,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
         <Grid item lg={8} md={8} sm={8} xs={12} className="p-6">
           <h5 className="m-0 mb-3">{product.name}</h5>
           <div className="flex justify-between mb-4">
-            <span className="text-muted"><strong>Categories: </strong> {product.categories.map(c => <small className="border-radius-4 px-2 pt-2px bg-secondary mr-1">{c.name}</small>)}</span>
+            <span className="text-muted"><strong>Categories: </strong> {product.categories.map(c => <strong className="border-radius-4 px-2 pt-2px bg-secondary mr-1 text-white">{c.name}</strong>)}</span>
           </div>
           <div className="flex justify-between mb-4">
             <span className="text-muted"> <strong>Type: </strong>{product.mime}</span>
