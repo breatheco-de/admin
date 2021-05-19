@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Divider, Card, Grid, TextField, Button, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -17,7 +18,7 @@ makeStyles(({ palette, ...theme }) => ({
     },
 }));
 const { academy } = JSON.parse(localStorage.getItem("bc-session"));
-const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends }) => {
+const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends, isPrivate }) => {
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
     return (
@@ -50,6 +51,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <Grid container spacing={3} alignItems="center">
+                            {isPrivate ?<Grid item md={12} sm={12} xs={12}>
+                                <Alert severity="success" >
+                                    <AlertTitle className="m-auto">This cohort is private</AlertTitle>
+                                </Alert>
+                            </Grid>: null}
                             <Grid item md={3} sm={4} xs={12}>
                                 Cohort Slug
                                 </Grid>

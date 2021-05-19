@@ -143,7 +143,8 @@ const Gallery = () => {
   useEffect(() => {
     dispatch(getProductList({
      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
-     offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
+     offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0,
+     type: pgQuery.get("type") !== null ? pgQuery.get("type") : "",
     }));
     dispatch(getCategoryList());
   }, [refresh]);
