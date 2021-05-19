@@ -36,6 +36,7 @@ const Cohorts = () => {
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
+  const [querySort, setQuerySort] = useState(query.get("sort") || " ");
 
   useEffect(() => {
     setIsLoading(true);
@@ -44,6 +45,7 @@ const Cohorts = () => {
         limit: queryLimit,
         offset: queryOffset,
         like: queryLike,
+        sort: querySort,
       })
       .then(({ data }) => {
         setIsLoading(false);
@@ -58,15 +60,17 @@ const Cohorts = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage, _like) => {
+  const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
     setQueryLike(_like);
+    setQuerySort(_sort);
     let query = {
       limit: rowsPerPage,
       offset: page * rowsPerPage,
       like: _like,
+      sort: _sort,
     };
     setQuerys(query);
     bc.admissions()
@@ -234,6 +238,24 @@ const Cohorts = () => {
             data={items.results}
             columns={columns}
             options={{
+              onColumnSortChange: (changedColumn, direction) => {
+                if(direction == "asc"){
+                  handlePageChange(
+                    queryLimit,
+                    queryOffset,
+                    queryLike,
+                    changedColumn
+                  )
+                }
+                if(direction == "desc"){
+                  handlePageChange(
+                    queryLimit,
+                    queryOffset,
+                    queryLike,
+                    `-${changedColumn}`
+                  )
+                }
+              },
               customToolbar: () => {
                 return <DownloadCsv />;
               },
@@ -270,14 +292,16 @@ const Cohorts = () => {
                     handlePageChange(
                       tableState.page,
                       tableState.rowsPerPage,
-                      queryLike
+                      queryLike,
+                      querySort,
                     );
                     break;
                   case "changeRowsPerPage":
                     handlePageChange(
                       tableState.page,
                       tableState.rowsPerPage,
-                      queryLike
+                      queryLike,
+                      querySort
                     );
                     break;
                   case "filterChange":
@@ -302,7 +326,8 @@ const Cohorts = () => {
                           handlePageChange(
                             queryOffset,
                             queryLimit,
-                            e.target.value
+                            e.target.value,
+                            querySort
                           );
                         }
                       }}
