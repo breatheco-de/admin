@@ -9,7 +9,7 @@ export const getNotification = () => dispatch => {
   axios.get("/api/notification").then(res => {
     dispatch({
       type: GET_NOTIFICATION,
-      payload: res.data
+      payload: res.datadda
     });
   });
 };
