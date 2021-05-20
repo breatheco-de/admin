@@ -35,7 +35,7 @@ class BreatheCodeClient {
                 const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
                 return axios._get("Cohorts",`${this.host}/admissions/academy/cohort${query? '?'+ qs : ''}`)
             },
-            getAllCourseSyllabus: (query) => {
+            getAllCourseSyllabus: (query, academyID) => {
                 return axios._get("Syllabus",`${this.host}/admissions/certificate/${query}/syllabus`)
             },
             getMyAcademy: () => axios._get("My Academy",`${this.host}/admissions/academy/me`)
@@ -77,6 +77,9 @@ class BreatheCodeClient {
             },
             resendInvite:(user) => {
                 return axios._put("Invite", `${this.host}/auth/member/invite/resend/${user}`)
+            },
+            getMemberInvite:(user) => {
+                return axios._get("Invite", `${this.host}/auth/academy/user/${user}/invite`)
             }
         }
     }
@@ -94,12 +97,15 @@ class BreatheCodeClient {
         getAcademyAutomations: () => axios._get("Academy automations",`${this.host}/marketing/academy/automation`),
         addNewLead: (newLead) => axios._post("New lead", `${this.host}/marketing/lead`, newLead)
     })
+
     feedback = () => ({
         getAnswers: (query) => {
             // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
             const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
             return axios._get("Academy answers",`${this.host}/feedback/academy/answer?${qs}`)
         },
+        addNewSurvey: (newSurvey) => axios._post("New Survey", `${this.host}/feedback/academy/survey`, newSurvey),
+        updateSurvey: (survey, id) => axios._put("Survey", `${this.host}/feedback/academy/survey/${id}`, survey)
     })
     certificates = () => ({
         getCertificatesByCohort: (query) => {
@@ -133,7 +139,14 @@ class BreatheCodeClient {
         getAcademyEventType: () => {
             return axios._get("Event Type", `${this.host}/events/academy/eventype`)
         }
-    })
+    });
+
+    certificates = () => ({
+        getAllCertificates: (query) => {
+            const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+            return axios._get("Certificates",`${this.host}/certificate${query ? '?'+ qs : ''}`)
+        }
+    });
 
     media(){
         return {

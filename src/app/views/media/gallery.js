@@ -28,7 +28,7 @@ const Gallery = () => {
   const [rowsPerPage, setRowsPerPage] = useState(pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10);
   const [orderBy, setOrderBy] = useState("default");
   const [query, setQuery] = useState(pgQuery.get("like") !== null ? pgQuery.get("like"): "");
-  const [type, setType] = useState(pgQuery.get("mime") !== null ? pgQuery.get("mime") : "all");
+  const [type, setType] = useState(pgQuery.get("type") !== null ? pgQuery.get("type") : "all");
   const [categories, setCategories] = useState(pgQuery.get("categories") !== null ? [...pgQuery.get("categories").split(",")] : []);
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
@@ -84,16 +84,16 @@ const Gallery = () => {
     setType(eventValue);
 
     if (eventValue === "all") {
-      delete pagination['mime']
+      delete pagination['type']
       dispatch(getProductList(pagination));
       history.replace(`/media/gallery?${Object.keys(pagination).map(key => `${key}=${pagination[key]}`).join('&')}`)
       return;
     }
     dispatch(getProductList({
       ...pagination,
-      mime:eventValue
+      type:eventValue
     }));
-    history.replace(`/media/gallery?${Object.keys({...pagination, mime:eventValue}).map(key => `${key}=${{...pagination, mime:eventValue}[key]}`).join('&')}`)
+    history.replace(`/media/gallery?${Object.keys({...pagination, type:eventValue}).map(key => `${key}=${{...pagination, type:eventValue}[key]}`).join('&')}`)
   };
 
   const handleCategoryChange = (event) => {
@@ -129,13 +129,15 @@ const Gallery = () => {
     setRowsPerPage(e.target.value);
   }
   const handleClearAllFilter = () => {
+    const q = {
+      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
+      offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
+     }
     setQuery("");
     setType("all");
     setCategories([]);
-    dispatch(getProductList({
-      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
-      offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
-     }));
+    dispatch(getProductList(q));
+     history.replace(`/media/gallery?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
   };
 
   useEffect(() => {

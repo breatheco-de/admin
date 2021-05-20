@@ -48,7 +48,7 @@ const Analytics = () => {
     const [renderNewDates, setRenderNewDates] = useState(false);
 
     useEffect(() => {
-        const academy = JSON.parse(localStorage.getItem("bc-academy"));
+        const { academy } = JSON.parse(localStorage.getItem("bc-session"));
         if(academy === undefined || academy.id === undefined) return null;
         
         BC.marketing().getLeads({
@@ -99,11 +99,10 @@ const Analytics = () => {
         BC.feedback().getAnswers({
             status: "ANSWERED"
         })
-            .then(( { data }) => {
+            .then(({ data }) => {
                 setFeedback(data.filter(a => a.score));
             })
     }, [renderNewDates])
-
 
     return (
         <Fragment>

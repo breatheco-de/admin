@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
 import { Breadcrumb } from "matx";
-import axios from "../../../axios";
+import bc from "app/services/breathecode";
+import { DownloadCsv } from "../../components/DownloadCsv";
 import MUIDataTable from "mui-datatables";
 import {
   Avatar,
@@ -14,44 +17,79 @@ import {
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-import BC from "../../services/breathecode";
+
+import ResponseDialog from "./ResponseDialog";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
+
 const statusColors = {
-  ERROR: "text-white bg-error",
-  PERSISTED: "text-white bg-green",
-  PENDING: "text-white bg-secondary",
-};
+    ERROR: "text-white bg-error",
+    PERSISTED: "text-white bg-green",
+    PENDING: "text-white bg-secondary",
+  };
 
 const Certificates = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  let { cohortId } = useParams();
+    const [isAlive, setIsAlive] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [items, setItems] = useState([]);
+    let { cohortId } = useParams();
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (cohortId !== null && cohortId !== undefined) {
-      axios
-        .get(
-          process.env.REACT_APP_API_HOST + "/v1/certificate/cohort/" + cohortId
-        )
-        .then(({ data }) => {
-          setIsLoading(false);
-          if (isAlive) setItems(data);
-        });
-    } else {
-      axios
-        .get(process.env.REACT_APP_API_HOST + "/v1/certificate")
-        .then(({ data }) => {
-          setIsLoading(false);
-          if (isAlive) setItems(data);
-        });
-    }
-    return () => setIsAlive(false);
-  }, [isAlive]);
+    const [table, setTable] = useState({
+        count: 100,
+        page: 0
+      });
 
+    const query = useQuery();
+    const history = useHistory();
+    const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+    const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+    const [queryLike, setQueryLike] = useState(query.get("like") || "");
+
+
+    useEffect(() => {
+        setIsLoading(true);
+        bc.certificates().getAllCertificates({
+          limit: queryLimit,
+          offset: queryOffset,
+        })
+          .then(({ data }) => {
+            console.log(data.results);
+            setIsLoading(false);
+            if (isAlive) {
+                setItems(data.results)
+              setTable({ count: data.count });
+            };
+          }).catch(error => {
+            setIsLoading(false);
+          })
+        return () => setIsAlive(false);
+      }, [isAlive]);
+
+
+    const handlePageChange = (page, rowsPerPage, _like) => {
+        setIsLoading(true);
+        setQueryLimit(rowsPerPage);
+        setQueryOffset(rowsPerPage * page);
+        setQueryLike(_like);
+        let query = {
+          limit: rowsPerPage,
+          offset: page * rowsPerPage,
+          like: _like
+        }
+        bc.certificates().getAllCertificates(query)
+          .then(({ data }) => {
+              
+            setItems(data.results);
+            setIsLoading(false);
+            setTable({ count: data.count, page: page });
+            history.replace(`/certificates?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+          }).catch(error => {
+            setIsLoading(false);
+          })
+      }
+
+   
   const columns = [
     {
       name: "specialty",
@@ -66,17 +104,18 @@ const Certificates = () => {
       label: "User",
       options: {
         filter: true,
-        customBodyRenderLite: (i) =>
-          items[i] && items[i].user.first_name + " " + items[i].user.last_name,
-      },
-    },
-    {
-      name: "academy", // field name in the row object
-      label: "Academy", // column title that will be shown in table
-
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].academy?.name,
+        customBodyRenderLite: (i) => {
+          return (
+            <Link
+              to={`/admissions/students/${
+                items[i].user !== null ? items[i].user.id : ""
+              }`}
+            >
+              {items[i] &&
+                items[i].user.first_name + " " + items[i].user.last_name}
+            </Link>
+          );
+        },
       },
     },
     {
@@ -122,6 +161,7 @@ const Certificates = () => {
       label: "Expires at",
       options: {
         filter: true,
+        display: false,
         customBodyRenderLite: (i) => {
           let item = items[i];
 
@@ -150,7 +190,14 @@ const Certificates = () => {
       options: {
         filter: true,
         filterType: "multiselect",
-        customBodyRender: (value, tableMeta, updateValue) => value.name,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          let item = items[tableMeta.rowIndex];
+          return (
+            <Link to={"/admissions/cohorts/" + item.cohort.slug}>
+              {value.name}
+            </Link>
+          );
+        },
       },
     },
     {
@@ -165,7 +212,11 @@ const Certificates = () => {
               {items[i].preview_url !== null &&
               items[i].preview_url !== undefined ? (
                 <>
-                  <a href={items[i].preview_url} target='_blank'>
+                  <a
+                    href={items[i].preview_url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <Tooltip
                       title={
                         items[i].preview_url !== null
@@ -184,6 +235,7 @@ const Certificates = () => {
                       i
                     ].preview_url.slice(56)}`}
                     target='_blank'
+                    rel='noopener noreferrer'
                   >
                     <Tooltip title='Image'>
                       <IconButton>
@@ -244,30 +296,48 @@ const Certificates = () => {
             data={items}
             columns={columns}
             options={{
+              customToolbar: () => {
+                return <DownloadCsv />;
+              },
               filterType: "textField",
               responsive: "standard",
               // selectableRows: "none", // set checkbox for each row
               // search: false, // set search option
               // filter: false, // set data filter option
-              // download: false, // set download option
+              download: false, // set download option
               // print: false, // set print option
               // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
+              viewColumns: true, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (
+              onTableChange: (action, tableState) => {
+                console.log(action, tableState)
+                switch (action) {
+                  case "changePage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
+                    break;
+                }
+              },
+            customSearchRender: (
                 searchText,
                 handleSearch,
                 hideSearch,
                 options
-              ) => {
+            ) => {
                 return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
+                    <Grow appear in={true} timeout={300}>
+                        <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            onKeyPress={(e) => {
+                                if(e.key == "Enter"){
+                                  handlePageChange(queryOffset, queryLimit, e.target.value)
+                                }
+                              }}
                       InputProps={{
                         style: {
                           paddingRight: 0,
