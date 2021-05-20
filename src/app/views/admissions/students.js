@@ -166,7 +166,6 @@ const Students = () => {
             title="All Students"
             columns={columns}
             data={items}
-            historyReplace="/admissions/students"
             search={async(querys) => {
               const { data } = await bc.auth().getAcademyStudents(querys);
               setItems(data.results);

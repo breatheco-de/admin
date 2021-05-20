@@ -29,8 +29,6 @@ export const SmartMUIDataTable = (props) => {
       like: queryLike,
       sort: querySort
     });
-
-    console.log(history);
   
     useEffect(() => {
       setIsLoading(true);
@@ -65,7 +63,7 @@ export const SmartMUIDataTable = (props) => {
             setIsLoading(false);
             setItems(data.results);
             setTable({ count: data.count, page: page });
-            history.replace(`${props.historyReplace}?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
+            history.replace(`${history.location.pathname}?${Object.keys(query).map(key => key + "=" + query[key]).join("&")}`)
           }).catch(error => {
             setIsLoading(false);
           })
@@ -97,17 +95,17 @@ export const SmartMUIDataTable = (props) => {
             onColumnSortChange: (changedColumn, direction) => {
               if(direction == "asc"){
                 handlePageChange(
-                  querys.limit,
                   querys.offset,
                   querys.limit,
+                  querys.like,
                   changedColumn
                 )
               }
               if(direction == "desc"){
                 handlePageChange(
-                  querys.limit,
                   querys.offset,
-                  querys.limit,
+                  querys.limit,                  
+                  querys.like,
                   `-${changedColumn}`
                 )
               }
@@ -196,6 +194,5 @@ SmartMUIDataTable.propTypes = {
     title: PropTypes.string,
     data: PropTypes.any,
     columns: PropTypes.any,
-    historyReplace: PropTypes.string,
     search: PropTypes.any,
 };
