@@ -46,13 +46,13 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
       className={clsx("text-center relative h-full myHeight", classes.mediaCard)}
       style={{maxHeight:"300px"}}
     >
-      <div className="flex justify-center items-center relative">
+      <div className="flex justify-center items-center relative" >
         <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
           <Icon>mode_edit</Icon>
         </span>
-        <img className="w-auto" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.url} alt={media.slug} style={{maxHeight:"200px"}}/>
-        <div className="image-box-overlay flex justify-center items-center"></div>
+        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.url} alt={media.slug} />
       </div>
+      <div class="p-6" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h5 class="m-0">{media.name}</h5></div>
     </Card>
   );
 };

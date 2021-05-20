@@ -141,15 +141,14 @@ const Gallery = () => {
   };
 
   useEffect(() => {
-    dispatch(getProductList({
-     limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
-     offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0,
-     type: pgQuery.get("type") !== null ? pgQuery.get("type") : "",
-    }));
+    let keys = pgQuery.keys();
+    let result = {}
+    for(let key of keys){
+      result[key] = pgQuery.get(key);
+    }
+    dispatch(getProductList(result));
     dispatch(getCategoryList());
   }, [refresh]);
-
-  
 
   return (
     <div className="shop m-sm-30">

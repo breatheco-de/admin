@@ -108,7 +108,7 @@ const Sidenav = ({
             >
               <FormControlLabel
                 className="flex-grow"
-                name={category.id}
+                name={category.id.toString()}
                 onChange={handleCategoryChange}
                 control={
                   <Checkbox checked={categories.includes(category.id.toString())} />
@@ -179,21 +179,6 @@ const Sidenav = ({
                       variant="outlined"
                       required
                       value={values.name}
-                      onChange={handleChange}
-                    />
-                  </Grid>
-                  <Grid item md={2} sm={4} xs={12}>
-                    Slug
-            </Grid>
-                  <Grid item md={10} sm={8} xs={12}>
-                    <TextField
-                      label="Slug"
-                      name="slug"
-                      fullWidth
-                      size="medium"
-                      variant="outlined"
-                      required
-                      value={values.slug}
                       onChange={handleChange}
                     />
                   </Grid>
