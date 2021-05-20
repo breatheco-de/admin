@@ -4,6 +4,7 @@ import { MatxLoading } from "matx";
 import { Avatar, Icon, IconButton, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import {toast} from 'react-toastify';
 
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
 import bc from "app/services/breathecode";
@@ -21,6 +22,12 @@ const name = (user) => {
   else return "No name";
 }
 
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000
+}
+
 const Students = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +36,17 @@ const Students = () => {
     bc.auth().resendInvite(user)
       .then(({ data }) => console.log(data))
       .catch(error => console.log(error))
+  }
+  const getMemberInvite = (user) =>{
+    bc.auth().getMemberInvite(user)
+    .then(res => {
+      console.log(res.data.invite_url);
+      if(res.data){ 
+        navigator.clipboard.writeText(res.data.invite_url)
+        toast.success('Invite url copied successfuly', toastOption)
+      }
+    })
+    .catch(error => error)
   }
 
   const columns = [
@@ -91,7 +109,14 @@ const Students = () => {
             (items[dataIndex]) :
             ({ ...items[dataIndex], user: { first_name: "", last_name: "", imgUrl: "", id: "" } });
           return item.status === "INVITED" ? (<div className="flex items-center">
-            <div className="flex-grow"></div>
+            <div className="flex-grow">
+
+            </div>
+            <Tooltip title="Copy invite link">
+              <IconButton onClick={() => getMemberInvite(item.id)}>
+                <Icon>assignment</Icon>
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Resend Invite">
               <IconButton onClick={() => resendInvite(item.id)}>
                 <Icon>refresh</Icon>

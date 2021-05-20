@@ -69,21 +69,21 @@ const Sidenav = ({
             >
               <FormControlLabel
                 className="h-32"
-                value="image/jpeg"
+                value="image"
                 control={<Radio color="secondary" />}
                 label="Image"
                 labelPlacement="end"
               />
               <FormControlLabel
                 className="h-32"
-                value="video/webp"
+                value="video"
                 control={<Radio color="secondary" />}
                 label="Video"
                 labelPlacement="end"
               />
               <FormControlLabel
                 className="h-32"
-                value="application/pdf"
+                value="pdf"
                 control={<Radio color="secondary" />}
                 label="PDF"
                 labelPlacement="end"

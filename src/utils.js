@@ -183,7 +183,8 @@ export function resolveResponse(res) {
 }
 
 export function resolveError(error){
-  if (typeof error.response.data === "object") {
+  console.log(error.response)
+  if (typeof error.response.data === "object" && error.response.data.status_code === undefined) {
     for (let item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {
         for (let str of error.response.data[item]) {

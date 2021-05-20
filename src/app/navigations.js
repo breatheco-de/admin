@@ -110,7 +110,6 @@ export const navigations = [
         ],
     },
     {
-        beta: true,
         path: "/certificates",
         name: "Certificates",
         icon: "card_membership",

@@ -61,8 +61,8 @@ const ShopContainer = ({
               }}
             >
               <MenuItem value="default">Default</MenuItem>
-              <MenuItem value="asc">Lowest Price</MenuItem>
-              <MenuItem value="desc">Highest Price</MenuItem>
+              <MenuItem value="recent">Recents First</MenuItem>
+              <MenuItem value="oldest">Oldests First</MenuItem>
             </TextField>
             <IconButton onClick={() => toggleView("grid")}>
               <Icon color={view === "grid" ? "primary" : "inherit"}>

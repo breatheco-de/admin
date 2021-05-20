@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     DialogTitle,
     Dialog,
@@ -11,12 +11,14 @@ import {
 import { Formik } from "formik";
 import { AsyncAutocomplete } from './Autocomplete';
 import bc from '../services/breathecode';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const CustomDialog = ({open, onClose, formInitialValues, onDelete, title, onSubmit ,...rest}) => {
+const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSubmit, ...rest }) => {
     const [category, setCategory] = useState([]);
-    useEffect(()=> {
+    const [copied, setCopied] = useState(false)
+    useEffect(() => {
         setCategory(formInitialValues.categories)
-        return ()=> {
+        return () => {
             setCategory([]);
             formInitialValues.categories = []
         }
@@ -55,24 +57,30 @@ const CustomDialog = ({open, onClose, formInitialValues, onDelete, title, onSubm
                         </DialogTitle>
                         <DialogContent className='px-5'>
                             <Grid container spacing={2} alignItems="center">
-                            <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={2} sm={4} xs={12}>
                                     URL
-                                    </Grid>
-                                <Grid item md={10} sm={8} xs={12}>
+                            </Grid>
+                                <Grid item md={8} sm={6} xs={10}>
                                     <TextField
                                         label="URL"
                                         name="url"
-                                        fullWidth
                                         size="medium"
                                         disabled
+                                        fullWidth
                                         variant="outlined"
                                         value={values.url}
                                         onChange={handleChange}
                                     />
                                 </Grid>
+                                <Grid item md={2} sm={2} xs={2}>
+                                    <CopyToClipboard text={values.url}
+                                        onCopy={() => setCopied(true)}>
+                                        <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : "Copy"}</Button>
+                                    </CopyToClipboard>
+                                </Grid>
                                 <Grid item md={2} sm={4} xs={12}>
                                     Mime Type
-                                    </Grid>
+                                </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <TextField
                                         label="Mime"
@@ -130,7 +138,7 @@ const CustomDialog = ({open, onClose, formInitialValues, onDelete, title, onSubm
                             </Grid>
                         </DialogContent>
                         <DialogActions>
-                            <Button color="secondary" autoFocus onClick={()=>{ onDelete(); onClose()}}>
+                            <Button color="secondary" autoFocus onClick={() => { onDelete(); onClose() }}>
                                 Delete file
                             </Button>
                             <Button onClick={onClose} color="primary">

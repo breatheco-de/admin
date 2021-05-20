@@ -43,11 +43,17 @@ const Cohorts = () => {
     offset: queryOffset,
     like: queryLike
   });
+  const [querySort, setQuerySort] = useState(query.get("sort") || " ");
 
   useEffect(() => {
     setIsLoading(true);
     bc.admissions()
-      .getAllCohorts(querys)
+      .getAllCohorts({
+        limit: queryLimit,
+        offset: queryOffset,
+        like: queryLike,
+        sort: querySort,
+      })
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) {
@@ -61,18 +67,21 @@ const Cohorts = () => {
     return () => setIsAlive(false);
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage, _like) => {
+  const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
     setQueryLike(_like);
+    setQuerySort(_sort);
     let query = {
       limit: rowsPerPage,
       offset: page * rowsPerPage,
-      like: _like
-    }
-    setQuerys(query)
-    bc.admissions().getAllCohorts(query)
+      like: _like,
+      sort: _sort,
+    };
+    setQuerys(query);
+    bc.admissions()
+      .getAllCohorts(query)
       .then(({ data }) => {
         setIsLoading(false);
         setItems(data.results);
@@ -210,7 +219,7 @@ const Cohorts = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/admin" },
+                { name: "Admin", path: "/admissions" },
                 { name: "Cohorts" },
               ]}
             />
@@ -232,102 +241,125 @@ const Cohorts = () => {
       <div className='overflow-auto'>
         <div className='min-w-750'>
           {isLoading && <MatxLoading />}
-          {<MUIDataTable
-              title={"All Cohorts"}
-              data={items}
-              columns={columns}
-              options={{
-                  download: false,
-                  filterType: "textField",
-                  responsive: "standard",
-                  serverSide: true,
-                  elevation: 0,
-                  count: table.count,
-                  page: table.page,
-                  selectableRowsHeader:false,
-                  rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
-                  rowsPerPageOptions: [10, 20, 40, 80, 100],
-                  viewColumns: true,
-                  customToolbar: () => {
-                      return <DownloadCsv />;
-                    },
-
-                  onFilterChange: (
-                      changedColumn,
-                      filterList,
-                      type,
-                      changedColumnIndex
-                    ) => {
-                      let q = {
-                        ...querys,
-                        [changedColumn]: filterList[changedColumnIndex][0],
-                      };
-                      setQuerys(q);
-                      history.replace(`/admissions/cohorts?${Object.keys(q)
-                          .map((key) => `${key}=${q[key]}`)
-                          .join("&")}`
-                      );
-                    },
-
-                  customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                  return <CustomToolbar 
-                              selectedRows={selectedRows} 
-                              displayData={displayData} 
-                              setSelectedRows={setSelectedRows} 
-                              items={items} 
-                              key={items} 
-                              history={history}/>
-                  },
-
-                  onTableChange: (action, tableState) => {
-                      switch (action) {
-                          case "changePage":
-                          handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
-                          break;
-                          case "changeRowsPerPage":
-                          handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
-                          break;
-                      }
-                  },
-
-                  customSearchRender: (
-                      searchText,
-                      handleSearch,
-                      hideSearch,
-                      options
-                  ) => {
-                      return (
-                          <Grow appear in={true} timeout={300}>
-                              <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  onKeyPress={(e) => {
-                                      if(e.key == "Enter"){
-                                        handlePageChange(queryOffset, queryLimit,  e.target.value)
-                                      }
-                                  }}
-                                  InputProps={{
-                                  style: {
-                                      paddingRight: 0,
-                                  },
-                                  startAdornment: (
-                                      <Icon className="mr-2" fontSize="small">
-                                      search
-                                      </Icon>
-                                  ),
-                                  endAdornment: (
-                                      <IconButton onClick={hideSearch}>
-                                      <Icon fontSize="small">clear</Icon>
-                                      </IconButton>
-                                  ),
-                                  }}
-                              />
-                          </Grow>
-                  );
-                  },
-              }}
-          />}
+          <MUIDataTable
+            title={"All Cohorts"}
+            data={items.results}
+            columns={columns}
+            options={{
+              onColumnSortChange: (changedColumn, direction) => {
+                if(direction == "asc"){
+                  handlePageChange(
+                    queryLimit,
+                    queryOffset,
+                    queryLike,
+                    changedColumn
+                  )
+                }
+                if(direction == "desc"){
+                  handlePageChange(
+                    queryLimit,
+                    queryOffset,
+                    queryLike,
+                    `-${changedColumn}`
+                  )
+                }
+              },
+              customToolbar: () => {
+                return <DownloadCsv />;
+              },
+              download: false,
+              filterType: "textField",
+              responsive: "standard",
+              serverSide: true,
+              elevation: 0,
+              page: items.page,
+              count: items.count,
+              onFilterChange: (
+                changedColumn,
+                filterList,
+                type,
+                changedColumnIndex
+              ) => {
+                let q = {
+                  ...querys,
+                  [changedColumn]: filterList[changedColumnIndex][0],
+                };
+                setQuerys(q);
+                history.replace(
+                  `/admissions/cohorts?${Object.keys(q)
+                    .map((key) => `${key}=${q[key]}`)
+                    .join("&")}`
+                );
+              },
+              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+              rowsPerPageOptions: [10, 20, 40, 80, 100],
+              onTableChange: (action, tableState) => {
+                switch (action) {
+                  case "changePage":
+                    console.log(tableState.page, tableState.rowsPerPage);
+                    handlePageChange(
+                      tableState.page,
+                      tableState.rowsPerPage,
+                      queryLike,
+                      querySort,
+                    );
+                    break;
+                  case "changeRowsPerPage":
+                    handlePageChange(
+                      tableState.page,
+                      tableState.rowsPerPage,
+                      queryLike,
+                      querySort
+                    );
+                    break;
+                  case "filterChange":
+                  //console.log(action, tableState)
+                }
+              },
+              customSearchRender: (
+                searchText,
+                handleSearch,
+                hideSearch,
+                options
+              ) => {
+                return (
+                  <Grow appear in={true} timeout={300}>
+                    <TextField
+                      variant='outlined'
+                      size='small'
+                      fullWidth
+                      onChange={({ target: { value } }) => handleSearch(value)}
+                      onKeyPress={(e) => {
+                        if (e.key == "Enter") {
+                          handlePageChange(
+                            queryOffset,
+                            queryLimit,
+                            e.target.value,
+                            querySort
+                          );
+                        }
+                      }}
+                      InputProps={{
+                        style: {
+                          paddingRight: 0,
+                        },
+                        startAdornment: (
+                          <Icon className='mr-2' fontSize='small'>
+                            search
+                          </Icon>
+                        ),
+                        endAdornment: (
+                          <IconButton onClick={hideSearch}>
+                            <Icon fontSize='small'>clear</Icon>
+                          </IconButton>
+                        ),
+                      }}
+                    />
+                  </Grow>
+                );
+              },
+            }}
+          />
         </div>
       </div>
     </div>

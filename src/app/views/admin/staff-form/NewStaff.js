@@ -94,10 +94,10 @@ const NewStaff = () => {
                     size={"small"} width={"50%"}
                     value={user}
                     label="User"
-                    debounced
+                    debounced={true}
                     renderOption={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
                     getOptionLabel={option => option.email}
-                    asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm || "")}
                     filterOptions={(options, params) => {
                       const filtered = filter(options, params);
                       if (params.inputValue !== '') {
@@ -128,6 +128,8 @@ const NewStaff = () => {
                     width={"50%"}
                     asyncSearch={() => bc.auth().getRoles()}
                     size={"small"}
+                    prefetch={true}
+                    debaunced={true}
                     label="Roles"
                     required={true}
                     getOptionLabel={option => `${option.name}`}

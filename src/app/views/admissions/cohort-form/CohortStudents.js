@@ -152,7 +152,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                                             src={s.user.profile !== undefined ? s.user.profile.avatar_url : ""}
                                         />
                                         <div className="flex-grow">
-                                            <Link to={`/admin/students/${s.user.id}`}>
+                                            <Link to={`/admissions/students/${s.user.id}`}>
                                                 <h6 className="mt-0 mb-0 text-15 text-primary">
                                                     {s.user.first_name} {s.user.last_name}
                                                 </h6>
@@ -228,7 +228,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
             >
                 <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
                 <List>
-                    {['TEACHER', 'ASSISTANT', 'STUDENT'].map((role, i) => (
+                    {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
                         <ListItem
                             button
                             onClick={() => {
