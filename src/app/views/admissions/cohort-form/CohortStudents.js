@@ -61,9 +61,9 @@ const CohortStudents = ({ slug, cohort_id }) => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          //   setQueryOffset(10);
-          //   setQueryLimit(10);
-          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          setQueryOffset((prevQueryOffset) => queryOffset + 3);
+          setQueryLimit((prevQueryLimit) => queryLimit + 3);
+          // setPageNumber((prevPageNumber) => prevPageNumber + 1);
         }
       });
       if (node) observer.current.observe(node);
@@ -107,7 +107,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .then(({ data }) => {
         console.log(data);
         setIsLoading(false);
-        data.length < 1 ? setStudentsList([]) : setStudentsList(data);
+        data.length < 1 ? setStudentsList([]) : setStudentsList(data.results);
       })
       .catch((error) => error);
   };

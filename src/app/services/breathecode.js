@@ -19,7 +19,7 @@ class BreatheCodeClient {
           .join("&");
         return axios._get(
           "Cohort",
-          `${this.host}/admissions/cohort/user?${qs}`
+          `${this.host}/admissions/academy/cohort/user?${qs}`
         );
       },
       addUserCohort: (cohort, payload) => {
