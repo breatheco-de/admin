@@ -146,7 +146,7 @@ const Gallery = () => {
     for(let key of keys){
       result[key] = pgQuery.get(key);
     }
-    dispatch(getProductList(result));
+    dispatch(getProductList({limit:10, offset:0, ...result}));
     dispatch(getCategoryList());
   }, [refresh]);
 

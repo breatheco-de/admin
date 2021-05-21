@@ -23,7 +23,7 @@ import bc from "app/services/breathecode";
 import { DialogContent } from "@material-ui/core";
 import { DialogContentText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ControlledExpansionPanels from "app/views/material-kit/expansion-panel/ControlledAccordion";
+
 
 const options = [
     { label: "Change cohort stage", value: "stage" },
@@ -96,8 +96,11 @@ const Cohort = () => {
 
     const makePrivate = () => {
         bc.admissions().updateCohort(cohort.id, { ...cohort, private: !cohort.private, syllabus:`${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`})
-                .then((data) => data)
+                .then((data) => {
+                    setCohort({...cohort, private: !cohort.private})
+                })
                 .catch(error => console.log(error))
+        
     }
 
     const updateCohort = (values) => {
