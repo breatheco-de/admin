@@ -29,6 +29,7 @@ const CustomToolbarSelect = (props) => {
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
   const [idsArr, setIdsArr] = useState([]);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const selected = useMemo(() => {
     return props.selectedRows.data.map((item) => item.index);
@@ -99,6 +100,7 @@ const CustomToolbarSelect = (props) => {
       .catch((r) => r);
     setOpenDialog(false);
   };
+
   const deleteBulkEntities = (e) => {
     e.preventDefault();
     if (props.id === "students") {
@@ -126,24 +128,39 @@ const CustomToolbarSelect = (props) => {
         })
         .catch((r) => r);
     } else if (props.id === "certificates") {
-      console.log("delete certificates here");
+      bc.admissions()
+        .deleteCertificatesBulk(idsArr)
+        .then((d) => d)
+        .then(() => {
+          props.selectedRows.data = [];
+          reRender();
+        })
+        .catch((r) => r);
     } else if (props.id === "leads") {
-      console.log("delete leads here");
+      bc.admissions()
+        .deleteLeadsBulk(idsArr)
+        .then((d) => d)
+        .then(() => {
+          props.selectedRows.data = [];
+          reRender();
+        })
+        .catch((r) => r);
     }
   };
   return (
     <div className={classes.iconContainer}>
-      <Tooltip title={"Deselect ALL"}>
+      <Tooltip title={"Delete ALL"}>
         <IconButton className={classes.iconButton}>
           <DeleteIcon
             className={classes.icon}
             onClick={(e) => {
-              deleteBulkEntities(e);
+              setBulkDeleting(true);
+              setOpenDialog(true);
             }}
           />
         </IconButton>
       </Tooltip>
-      <Tooltip title={"Inverse selection"}>
+      <Tooltip title={"Add bulk to cohort"}>
         <IconButton
           className={classes.iconButton}
           onClick={() => setOpenDialog(true)}
@@ -154,36 +171,53 @@ const CustomToolbarSelect = (props) => {
       {/* Dialog */}
       <Dialog
         open={openDialog}
-        onClose={() => setOpenDialog(false)}
+        onClose={() => {
+          setBulkDeleting(false);
+          setOpenDialog(false);
+        }}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
         <form>
           <DialogTitle id='alert-dialog-title'>
-            Add in bulk students to a cohort
-            <div className='mt-4'>
-              <AsyncAutocomplete
-                onChange={(cohort) => setCohort(cohort)}
-                width={"100%"}
-                size='medium'
-                label='Cohort'
-                required={true}
-                getOptionLabel={(option) => `${option.name}, (${option.slug})`}
-                asyncSearch={() => bc.admissions().getAllCohorts()}
-              />
-            </div>
+            {bulkDeleting
+              ? "Are you sure you want to delete these resources"
+              : "Add in bulk students to a cohort"}
+            {!bulkDeleting && (
+              <div className='mt-4'>
+                <AsyncAutocomplete
+                  onChange={(cohort) => setCohort(cohort)}
+                  width={"100%"}
+                  size='medium'
+                  label='Cohort'
+                  required={true}
+                  getOptionLabel={(option) =>
+                    `${option.name}, (${option.slug})`
+                  }
+                  asyncSearch={() => bc.admissions().getAllCohorts()}
+                />
+              </div>
+            )}
           </DialogTitle>
           <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color='primary'>
+            <Button
+              onClick={() => {
+                setBulkDeleting(false);
+                setOpenDialog(false);
+              }}
+              color='primary'
+            >
               Cancel
             </Button>
             <Button
               color='primary'
               type='submit'
               autoFocus
-              onClick={(e) => addBulkToCohort(e)}
+              onClick={(e) =>
+                bulkDeleting ? deleteBulkEntities(e) : addBulkToCohort(e)
+              }
             >
-              Save
+              {bulkDeleting ? "Yes" : "Save"}
             </Button>
           </DialogActions>
         </form>

@@ -57,6 +57,20 @@ class BreatheCodeClient {
           `${this.host}/auth/academy/member?id=${qs}`
         );
       },
+      deleteLeadsBulk: (query) => {
+        const qs = query.join(",");
+        return axios._delete(
+          "Leads",
+          `${this.host}/marketing/academy/lead?id=${qs}`
+        );
+      },
+      deleteCertificatesBulk: (query) => {
+        const qs = query.join(",");
+        return axios._delete(
+          "Certificates",
+          `${this.host}/certificate/?id=${qs}`
+        );
+      },
       getCohort: (cohort) => {
         return axios._get(
           "Cohort",

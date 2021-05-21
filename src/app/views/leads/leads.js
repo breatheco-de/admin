@@ -34,7 +34,7 @@ const Leads = () => {
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
-  useEffect(() => {
+  const handleLoadingData = () => {
     setIsLoading(true);
     let q = {
       limit: query.get("limit") !== null ? query.get("limit") : 10,
@@ -51,6 +51,10 @@ const Leads = () => {
       })
       .catch((error) => setIsLoading(false));
     return () => setIsAlive(false);
+  };
+
+  useEffect(() => {
+    handleLoadingData();
   }, []);
 
   const handlePageChange = (page, rowsPerPage) => {
@@ -331,6 +335,7 @@ const Leads = () => {
                     key={items.results}
                     history={history}
                     id={"leads"}
+                    reRender={handleLoadingData}
                   />
                 );
               },

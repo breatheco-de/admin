@@ -47,7 +47,7 @@ const Certificates = () => {
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
-  useEffect(() => {
+  const handleLoadingData = () => {
     setIsLoading(true);
     bc.certificates()
       .getAllCertificates({
@@ -65,6 +65,10 @@ const Certificates = () => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
+  };
+
+  useEffect(() => {
+    handleLoadingData();
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like) => {
@@ -335,6 +339,7 @@ const Certificates = () => {
                     key={items}
                     history={history}
                     id={"certificates"}
+                    reRender={handleLoadingData}
                   />
                 );
               },
