@@ -25,7 +25,6 @@ import DowndownMenu from "../../../components/DropdownMenu";
 import bc from "app/services/breathecode";
 import * as Yup from 'yup';
 import { makeStyles } from "@material-ui/core/styles";
-import { setDay } from "date-fns";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     dialogue: {
@@ -40,15 +39,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
   }));
 
-// import ControlledExpansionPanels from "app/views/material-kit/expansion-panel/ControlledAccordion";
 
-// const options = [
-//     { label: "Change cohort stage", value: "stage" },
-//     { label: "Change Cohort current day", value: "current_date" },
-//     { label: "Cohort Detailed Report", value: "cohort_deport" },
-//     { label: "Instant NPS Survey", value: "new_survey" },
-//     { label: "Mark as private", value: "private" }
-// ];
 
 const stageMap = [
     {
@@ -143,18 +134,20 @@ const Cohort = () => {
 
     const makePrivate = () => {
         bc.admissions().updateCohort(cohort.id, { ...cohort, private: !cohort.private, syllabus:`${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`})
-                .then((data) => data)
+                .then((data) => {
+                    setCohort({...cohort, private: !cohort.private})
+                })
                 .catch(error => console.log(error))
+        
     }
 
     const updateCohort = (values) => {
         const { ending_date, ...rest } = values
-        if (values.never_ends) bc.admissions().updateCohort(cohort.id, { ...rest, private: cohort.private })
+        if (values.never_ends) bc.admissions().updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date:null })
             .then((data) => data)
             .catch(error => console.log(error))
         else {
-            const { never_ends, ...rest } = values
-            bc.admissions().updateCohort(cohort.id, { ...rest, private: cohort.private })
+            bc.admissions().updateCohort(cohort.id, { ...values, private: cohort.private })
                 .then((data) => data)
                 .catch(error => console.log(error))
         }
@@ -174,7 +167,7 @@ const Cohort = () => {
                     <div>
                         <h3 className="mt-0 mb-4 font-medium text-28">Cohort: {slug}</h3>
                         <div className="flex">
-                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green m-auto" onClick={() => setStageDialog(true)} style={{ cursor: "pointer" }}>
+                            <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green " onClick={() => setStageDialog(true)} style={{ cursor: "pointer" }}>
                                 {cohort && cohort.stage}
                             </div>
                         </div>
@@ -213,6 +206,7 @@ const Cohort = () => {
                             id={cohort.id}
                             syllabus={cohort.syllabus}
                             never_ends={cohort.never_ends}
+                            isPrivate={cohort.private}
                             onSubmit={updateCohort}
                         /> : ""}
                     </Grid>
