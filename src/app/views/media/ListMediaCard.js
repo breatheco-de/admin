@@ -43,13 +43,18 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
   return (
     <Card
       elevation={3}
-      className={clsx("p-4 relative h-full", classes.productCard)}
+      className={clsx("pr-4 relative h-full", classes.productCard)}
     >
       <Grid container spacing={2} alignItems="center">
-        <Grid item lg={4} md={4} sm={4} xs={12}>
-          <div className="flex justify-center items-center relative">
-            <img className="w-auto" src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.url} alt={product.name} style={{height:"auto", maxWidth:"60%", display:"block"}}/>
-          </div>
+        <Grid item lg={4} md={4} sm={4} xs={12} style={{padding:0, width:"200px", height:"250px"}}>
+            <img src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.url} alt={product.name} style={{
+              height: "100%",
+              width:"100%",
+              position: "relative",
+              left: 0,
+              top: 0,
+              objectFit: "cover"
+              }}/>
         </Grid>
         <Grid item lg={8} md={8} sm={8} xs={12} className="p-6">
           <h5 className="m-0 mb-3">{product.name}</h5>

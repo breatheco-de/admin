@@ -91,8 +91,8 @@ const ShopContainer = ({
       <TablePagination
         rowsPerPageOptions={[10, 20, 50, 100]}
         component="div"
-        count={pagination.count}
-        rowsPerPage={rowsPerPage}
+        count={pagination.count || 0}
+        rowsPerPage={parseInt(rowsPerPage, 10)}
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={setRowsPerPage}

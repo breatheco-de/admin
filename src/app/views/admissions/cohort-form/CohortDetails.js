@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Divider, Card, Grid, TextField, Button, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -17,7 +18,7 @@ makeStyles(({ palette, ...theme }) => ({
     },
 }));
 const { academy } = JSON.parse(localStorage.getItem("bc-session"));
-const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends }) => {
+const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends, isPrivate }) => {
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
     return (
@@ -50,6 +51,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <Grid container spacing={3} alignItems="center">
+                            {isPrivate ?<Grid item md={12} sm={12} xs={12}>
+                                <Alert severity="warning" >
+                                    <AlertTitle className="m-auto">This cohort is private</AlertTitle>
+                                </Alert>
+                            </Grid>: null}
                             <Grid item md={3} sm={4} xs={12}>
                                 Cohort Slug
                                 </Grid>
@@ -118,10 +124,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
+                            {!values.never_ends ? <>
                             <Grid item md={3} sm={4} xs={12}>
                                 End date
                                 </Grid>
-                            {!values.never_ends ? <><Grid item md={5} sm={4} xs={6}>
+                            <Grid item md={5} sm={4} xs={6}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
                                         className="m-2"
@@ -140,7 +147,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
-                                <Grid item md={4} sm={4} xs={6}>
+                                <Grid item md={12} sm={12} xs={12}>
                                     <FormControlLabel
                                         className="flex-grow"
                                         name={"never_ends"}
@@ -150,7 +157,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         }
                                         label="This cohort never ends"
                                     />
-                                </Grid></> : <Grid item md={9} sm={8} xs={12}>
+                                </Grid></> : <Grid item md={12} sm={12} xs={12}>
                                 <FormControlLabel
                                     className="flex-grow"
                                     name={"never_ends"}
