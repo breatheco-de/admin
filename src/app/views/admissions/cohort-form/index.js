@@ -82,9 +82,6 @@ const Cohort = () => {
         { label: "Instant NPS Survey", value: "new_survey" },
         { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
     ];
-    
-    //DIALOGUE FOR NEWSURVEY\\
-
     const [newSurvey, setNewSurvey] = useState(
         {
             cohort: slug,
@@ -110,8 +107,6 @@ const Cohort = () => {
             ...newSurvey, [event.target.name]: event.target.value
         });
     };
-
-    //USEEFFECT QUE CARGA EL COHORT DETAIL\\
 
     useEffect(() => {
         setIsLoading(true);
