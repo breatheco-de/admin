@@ -15,6 +15,14 @@ import {
     createCategory
 } from "../redux/actions/MediaActions";
 import { debounce } from "lodash";
+import {toast} from 'react-toastify';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000
+}
+
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -70,9 +78,10 @@ export default function MediaDialog({ openDialog, onClose }) {
     const { productList = [] } = useSelector((state) => state.ecommerce);
     const { categoryList = [] } = useSelector((state) => state.ecommerce);
     const { pagination } = useSelector((state) => state.ecommerce);
-    const [category, setCategories] = useState([]);
+    const [category, setCategories] = useState("all");
     const [query, setQuery] = useState("");
-    const [type, setType] = useState([]);
+    const [type, setType] = useState("all");
+    const [sort, setSort] = useState("default");
     const dispatch = useDispatch();
 
     const handleSearch = (query) => {
@@ -108,13 +117,24 @@ export default function MediaDialog({ openDialog, onClose }) {
 
     const handleCategory = (value) => {
         setCategories(value);
-        if(value === "all"){
+        if (value === "all") {
             delete pagination['categories'];
             dispatch(getProductList(pagination));
             return;
         }
         dispatch(getProductList({
             ...pagination, categories: value
+        }));
+    }
+
+    const handleSort = (value) => {
+        if (value === "default") {
+            delete pagination['sort'];
+            dispatch(getProductList(pagination));
+            return;
+        }
+        dispatch(getProductList({
+            ...pagination, sort: value
         }));
     }
 
@@ -131,7 +151,7 @@ export default function MediaDialog({ openDialog, onClose }) {
             TransitionComponent={Transition}
         >
             <AppBar className={classes.appBar}>
-                <Toolbar>
+                <Toolbar style={{padding:"24px"}}>
                     <IconButton
                         edge="start"
                         color="inherit"
@@ -144,9 +164,9 @@ export default function MediaDialog({ openDialog, onClose }) {
                         Media Gallery
                     </Typography>
                     <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-controlled-open-select-label">Category</InputLabel>
+                        <InputLabel id="category">Category</InputLabel>
                         <Select
-                            labelId="demo-controlled-open-select-label"
+                            labelId="category"
                             id="demo-controlled-open-select"
                             value={category}
                             onChange={(e) => handleCategory(e.target.value)}
@@ -162,14 +182,14 @@ export default function MediaDialog({ openDialog, onClose }) {
                         </Select>
                     </FormControl>
                     <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-controlled-open-select-label">Type</InputLabel>
+                        <InputLabel id="type">Type</InputLabel>
                         <Select
-                            labelId="demo-controlled-open-select-label"
+                            labelId="type"
                             id="demo-controlled-open-select"
                             value={type}
                             onChange={(e) => handleType(e.target.value)}
                         >
-                            {["All","Image", "Video", "PDF"].map((type) => (
+                            {["All", "Image", "Video", "PDF"].map((type) => (
                                 <MenuItem key={type} value={type.toLowerCase()}>
                                     {type}
                                 </MenuItem>
@@ -177,9 +197,28 @@ export default function MediaDialog({ openDialog, onClose }) {
                         </Select>
                     </FormControl>
                     <FormControl className={classes.formControl}>
+                        <InputLabel id="sort">Sort</InputLabel>
+                        <Select
+                            labelId="sort"
+                            id="demo-controlled-open-select"
+                            value={sort}
+                            onChange={(e) => handleSort(e.target.value)}
+                        >
+                            <MenuItem value="default">
+                                Default
+                                </MenuItem>
+                            <MenuItem value="created_at">
+                                Recents First
+                                </MenuItem>
+                            <MenuItem value="-created_at">
+                                Oldests First
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl className={classes.formControl}>
                         <TextField
                             name="query"
-                            placeholder="Search here..."
+                            placeholder="Search by "
                             style={{ marginTop: "12px" }}
                             value={query}
                             onChange={(e) => handleSearch(e.target.value)}
@@ -190,7 +229,10 @@ export default function MediaDialog({ openDialog, onClose }) {
             <div >
                 <GridList cellHeight={200}>
                     {productList.map((media) => (
-                        <GridListTile key={media.img} style={{ width: "10%" }} rows={1} >
+                        <GridListTile key={media.img} style={{ width: "10%", cursor:"pointer" }} rows={1} onClick={()=> {
+                            navigator.clipboard.writeText(media.url)
+                            toast.success('Url Copied', toastOption)
+                        }}>
                             <img src={media.url} alt={media.name} />
                         </GridListTile>
                     ))}

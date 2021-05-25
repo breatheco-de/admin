@@ -126,7 +126,7 @@ const Layout1Topbar = () => {
                <IconButton onClick={()=> setOpen(true)}>
                 <Icon>collections</Icon>
               </IconButton>
-              <MediaDialog openDialog={open} onClose={()=> setOpen(false)}/>
+              {open ? <MediaDialog openDialog={open} onClose={()=> setOpen(false)}/> : null}
               <IconButton>
                 <Switch
                     onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}
