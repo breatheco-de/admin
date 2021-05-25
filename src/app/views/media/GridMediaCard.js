@@ -52,7 +52,7 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
         </span>
         <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.url} alt={media.slug} />
       </div>
-      <div class="p-6" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h5 class="m-0">{media.name}</h5></div>
+      <div className="p-6" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h5 className="m-0">{media.name}</h5></div>
     </Card>
   );
 };

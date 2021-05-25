@@ -55,6 +55,17 @@ const Gallery = () => {
     search(query);
   };
 
+  const handleSortChange = (e) => {
+    if (e.target.value === "default"){
+      delete pagination['sort']
+      dispatch(getProductList(pagination))
+    } else {
+      dispatch(getProductList({...pagination, sort: e.target.value}));
+      history.replace(`/media/gallery?${Object.keys({...pagination, sort:e.target.value}).map(key => `${key}=${{...pagination, sort:e.target.value}[key]}`).join('&')}`);
+    }
+    setOrderBy(e.target.value);
+  }
+
   const search = useCallback(
     debounce((query) => {
       if(query === ""){
@@ -192,7 +203,7 @@ const Gallery = () => {
             rowsPerPage={rowsPerPage}
             toggleView={toggleView}
             toggleSidenav={toggleSidenav}
-            handleChange={(e) => setOrderBy(e.target.value)}
+            handleSortChange={(e) => handleSortChange(e)}
             handleChangePage={handleChangePage}
             setRowsPerPage={handleRowsPerPage}
             onOpenDialog={(value)=> dispatch(openDialog(value))}
