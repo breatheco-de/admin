@@ -43,37 +43,23 @@ const CohortStudents = ({ slug, cohort_id }) => {
   const [user, setUser] = useState(null);
   // Redux actions and store
 
-  //   infinite scroll
-  const [querys, setQuerys] = useState({});
-
   const query = useQuery();
-  const history = useHistory();
 
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 3);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [hasMore, setHasMore] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
 
-  const observer = useRef();
-  const lastStudentElementRef = useCallback(
-    (node) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setQueryOffset((prevQueryOffset) => queryOffset + 3);
-          setQueryLimit((prevQueryLimit) => queryLimit + 3);
-          // setPageNumber((prevPageNumber) => prevPageNumber + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore]
-  );
+  const handlePaginationNextPage = () => {
+    setQueryOffset((prevQueryOffset) => prevQueryOffset + queryLimit);
+  };
+
+  const handlePaginationPreviousPage = () => {
+    setQueryOffset((prevQueryOffset) => prevQueryOffset - queryLimit);
+  };
 
   useEffect(() => {
     getCohortStudents();
-  }, []);
+  }, [queryOffset]);
 
   const changeStudentStatus = (value, name, studentId, i) => {
     console.log(value, name, i);
@@ -108,6 +94,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
         console.log(data);
         setIsLoading(false);
         data.length < 1 ? setStudentsList([]) : setStudentsList(data.results);
+        setHasMore(data.results.length > 0);
       })
       .catch((error) => error);
   };
@@ -301,6 +288,27 @@ const CohortStudents = ({ slug, cohort_id }) => {
               </Grid>
             </div>
           ))}
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <>
+              <IconButton
+                disabled={queryOffset === 0}
+                onClick={() => {
+                  handlePaginationPreviousPage();
+                }}
+              >
+                <Icon fontSize='small'>navigate_before</Icon>
+              </IconButton>
+
+              <IconButton
+                disabled={!hasMore}
+                onClick={() => {
+                  handlePaginationNextPage();
+                }}
+              >
+                <Icon fontSize='small'>navigate_next</Icon>
+              </IconButton>
+            </>
+          </div>
         </div>
       </div>
       {/* This Dialog opens the modal for the user role in the cohort */}
