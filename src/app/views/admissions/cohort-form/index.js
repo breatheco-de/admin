@@ -77,17 +77,14 @@ const Cohort = () => {
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
-        { label: "Change cohort current day", value: "currentDay" },
+        { label: "Change cohort current day", value: "current_day" },
         { label: "Cohort Detailed Report", value: "cohort_deport" },
         { label: "Instant NPS Survey", value: "new_survey" },
         { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
     ];
-    
-    //DIALOGUE FOR NEWSURVEY\\
-
     const [newSurvey, setNewSurvey] = useState(
         {
-            cohort: null,
+            cohort: slug,
             max_assistants: 2,
             max_teachers: 2,
             duration: 1,
@@ -110,8 +107,6 @@ const Cohort = () => {
             ...newSurvey, [event.target.name]: event.target.value
         });
     };
-
-    //USEEFFECT QUE CARGA EL COHORT DETAIL\\
 
     useEffect(() => {
         setIsLoading(true);
@@ -177,7 +172,7 @@ const Cohort = () => {
                         options={options}
                         icon="more_horiz"
                         onSelect={({ value }) => {
-                            value === "currentDay"
+                            value === "current_day"
                                 ? setCohortDayDialog(true)
                                 : setCohortDayDialog(false)
                             value === "stage"
@@ -378,7 +373,9 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey(newSurvey);
+                        bc.feedback().addNewSurvey({
+                            ...newSurvey, cohort: cohort.id
+                        });
                     }}
                 >
                     {({
