@@ -18,6 +18,7 @@ import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import CustomToolbar from "../../components/CustomToolbar";
 import { DownloadCsv } from "../../components/DownloadCsv";
+import { toast } from "react-toastify";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -31,6 +32,12 @@ const name = (user) => {
   if (user && user.first_name && user.first_name != "")
     return user.first_name + " " + user.last_name;
   else return "No name";
+};
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
 };
 
 const Students = () => {
@@ -130,8 +137,14 @@ const Students = () => {
   const getMemberInvite = (user) => {
     bc.auth()
       .getMemberInvite(user)
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        console.log(res.data.invite_url);
+        if (res.data) {
+          navigator.clipboard.writeText(res.data.invite_url);
+          toast.success("Invite url copied successfuly", toastOption);
+        }
+      })
+      .catch((error) => error);
   };
 
   const columns = [

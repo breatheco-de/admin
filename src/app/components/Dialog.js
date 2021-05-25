@@ -15,7 +15,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSubmit, ...rest }) => {
     const [category, setCategory] = useState([]);
-    const [copied, setCopied] = useState(false)
+    const [copied, setCopied] = useState(false);
+    const [confirm, setConfirm] = useState(false);
     useEffect(() => {
         setCategory(formInitialValues.categories)
         return () => {
@@ -138,7 +139,7 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                             </Grid>
                         </DialogContent>
                         <DialogActions>
-                            <Button color="secondary" autoFocus onClick={() => { onDelete(); onClose() }}>
+                            <Button color="secondary" autoFocus onClick={() => setConfirm(true)}>
                                 Delete file
                             </Button>
                             <Button onClick={onClose} color="primary">
@@ -151,6 +152,26 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                     </form>
                 )}
             </Formik>
+            {/* Delete confirm */}
+            <Dialog
+            open={confirm}
+            onClose={() => setConfirm(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            {...rest}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Are you sure you want to delete this file?
+                </DialogTitle>
+                <DialogActions>
+                    <Button color="secondary" autoFocus onClick={() => { onDelete(); setConfirm(false); onClose(); }}>
+                        Confirm
+                    </Button>
+                    <Button onClick={onClose} color="primary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Dialog>
     );
 }

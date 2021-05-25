@@ -129,24 +129,26 @@ const Gallery = () => {
     setRowsPerPage(e.target.value);
   }
   const handleClearAllFilter = () => {
+    const q = {
+      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
+      offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
+     }
     setQuery("");
     setType("all");
     setCategories([]);
-    dispatch(getProductList({
-      limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
-      offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
-     }));
+    dispatch(getProductList(q));
+     history.replace(`/media/gallery?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
   };
 
   useEffect(() => {
-    dispatch(getProductList({
-     limit: pgQuery.get("limit") !== null ? pgQuery.get("limit") : 10,
-     offset: pgQuery.get("offset") !== null ? pgQuery.get("offset") : 0
-    }));
+    let keys = pgQuery.keys();
+    let result = {}
+    for(let key of keys){
+      result[key] = pgQuery.get(key);
+    }
+    dispatch(getProductList({limit:10, offset:0, ...result}));
     dispatch(getCategoryList());
   }, [refresh]);
-
-  
 
   return (
     <div className="shop m-sm-30">
