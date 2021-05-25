@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
     Slide, Dialog, AppBar, Toolbar, IconButton, Typography, GridList,
     GridListTile, FormControl, InputLabel, Select, Chip, Input, MenuItem,
-    TextField, InputAdornment, Icon
+    TextField, Tooltip, Icon
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -138,6 +138,18 @@ export default function MediaDialog({ openDialog, onClose }) {
         }));
     }
 
+    const handleNext = () => {
+        const pages = Math.ceil(pagination.count/pagination.limit);
+        const currentPage = Math.ceil(pagination.offset / pagination.count);
+        dispatch(getProductList({
+            ...pagination, 
+        }));
+    }
+
+    const handlePrevious = () => {
+        
+    }
+
     useEffect(() => {
         dispatch(getProductList({ limit: 30, offset: 0 }));
         dispatch(getCategoryList());
@@ -224,6 +236,16 @@ export default function MediaDialog({ openDialog, onClose }) {
                             onChange={(e) => handleSearch(e.target.value)}
                         />
                     </FormControl>
+                    <Tooltip title="Previous Page">
+                       <IconButton>
+                            <Icon>keyboard_arrow_left</Icon>
+                        </IconButton> 
+                    </Tooltip>
+                    <Tooltip title="Next Page">
+                        <IconButton>
+                            <Icon>keyboard_arrow_right</Icon>
+                        </IconButton>  
+                    </Tooltip>
                 </Toolbar>
             </AppBar>
             <div >

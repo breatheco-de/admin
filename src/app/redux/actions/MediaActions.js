@@ -57,6 +57,6 @@ export const deleteFile = (id) => (dispatch) => {
 export const createCategory = (values) => (dispatch) => {
   bc.media().createCategory(values).then( res => dispatch({
     type:CREATE_CATEGORY,
-    payload: res.data
+    payload: res
   }))
 }

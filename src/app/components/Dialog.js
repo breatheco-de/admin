@@ -132,6 +132,7 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                                         label="Categories"
                                         value={category}
                                         multiple
+                                        debounced={false}
                                         asyncSearch={() => bc.media().getAllCategories()}
                                         getOptionLabel={option => `${option.name}`}
                                     />

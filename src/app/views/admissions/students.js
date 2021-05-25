@@ -210,7 +210,7 @@ const Students = () => {
             <Link to={`/admissions/students/new`}>
               <Button variant="contained" color="primary">
                 Add new student
-            </Button>
+              </Button>
             </Link>
           </div>
         </div>
