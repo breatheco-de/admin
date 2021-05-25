@@ -44,6 +44,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
   // Redux actions and store
 
   const query = useQuery();
+  const history = useHistory();
 
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 3);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
@@ -84,16 +85,23 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
   const getCohortStudents = () => {
     setIsLoading(true);
+    let query = {
+      cohorts: slug,
+      limit: queryLimit,
+      offset: queryOffset,
+    };
     bc.admissions()
-      .getAllUserCohorts({
-        cohorts: slug,
-        limit: queryLimit,
-        offset: queryOffset,
-      })
+      .getAllUserCohorts(query)
       .then(({ data }) => {
         console.log(data);
         setIsLoading(false);
         data.length < 1 ? setStudentsList([]) : setStudentsList(data.results);
+        delete query.cohorts;
+        history.replace(
+          `/admissions/cohorts/${slug}?${Object.keys(query)
+            .map((key) => `${key}=${query[key]}`)
+            .join("&")}`
+        );
         setHasMore(data.results.length > 0);
       })
       .catch((error) => error);
