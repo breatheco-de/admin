@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import { useHistory } from "react-router-dom";
+import MUIDataTable from "mui-datatables";
+
 import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
+import { SmartMUIDataTable } from "app/components/SmartDataTable";
+import { DownloadCsv } from "app/components/DownloadCsv";
+import CustomToolbar from "app/components/CustomToolbar";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -25,17 +28,21 @@ const stageColors = {
 const Cohorts = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState({
-    page: 0,
-  });
-  const [querys, setQuerys] = useState({});
-
+  const [items, setItems] = useState([]);
+  const [table, setTable] = useState({
+    count: 100,
+    page: 0
+  }); 
   const query = useQuery();
   const history = useHistory();
-
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [queryLike, setQueryLike] = useState(query.get("like") || "");
+  const [querys, setQuerys] = useState({
+    limit: queryLimit,
+    offset: queryOffset,
+    like: queryLike
+  });
   const [querySort, setQuerySort] = useState(query.get("sort") || " ");
 
   useEffect(() => {
@@ -50,8 +57,8 @@ const Cohorts = () => {
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) {
-          setItems({ ...data });
-          //setTable({...table,count: data.count});
+          setItems(data.results);
+          setTable({ count: data.count });
         }
       })
       .catch((error) => {
@@ -77,7 +84,8 @@ const Cohorts = () => {
       .getAllCohorts(query)
       .then(({ data }) => {
         setIsLoading(false);
-        setItems({ ...data, page: page });
+        setItems(data.results);
+        setTable({ count: data.count, page: page });
         history.replace(
           `/admissions/cohorts?${Object.keys(query)
             .map((key) => `${key}=${query[key]}`)
@@ -104,7 +112,7 @@ const Cohorts = () => {
         filter: true,
         filterList: query.get("stage") !== null ? [query.get("stage")] : [],
         customBodyRenderLite: (dataIndex) => {
-          let item = items.results[dataIndex];
+          let item = items[dataIndex];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -137,7 +145,7 @@ const Cohorts = () => {
         filter: true,
         filterList: query.get("slug") !== null ? [query.get("slug")] : [],
         customBodyRenderLite: (i) => {
-          let item = items.results[i];
+          let item = items[i];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -160,10 +168,10 @@ const Cohorts = () => {
           <div className='flex items-center'>
             <div className='ml-3'>
               <h5 className='my-0 text-15'>
-                {dayjs(items.results[i].kickoff_date).format("MM-DD-YYYY")}
+                {dayjs(items[i].kickoff_date).format("MM-DD-YYYY")}
               </h5>
               <small className='text-muted'>
-                {dayjs(items.results[i].kickoff_date).fromNow()}
+                {dayjs(items[i].kickoff_date).fromNow()}
               </small>
             </div>
           </div>
@@ -177,7 +185,7 @@ const Cohorts = () => {
         filter: true,
         filterList:
           query.get("certificate") !== null ? [query.get("certificate")] : [],
-        customBodyRenderLite: (i) => items.results[i].certificate?.name,
+        customBodyRenderLite: (i) => items[i].certificate?.name,
       },
     },
     {
@@ -188,7 +196,7 @@ const Cohorts = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className='flex items-center'>
             <div className='flex-grow'></div>
-            <Link to={"/admissions/cohorts/" + items.results[dataIndex].slug}>
+            <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
