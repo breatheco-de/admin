@@ -71,10 +71,10 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item md={2} sm={4} xs={12}>
+                            <Grid item md={3} sm={4} xs={12}>
                                 Syllabus
                             </Grid>
-                            <Grid item md={5} sm={4} xs={6}>
+                            <Grid item md={7} sm={4} xs={6}>
                                 <AsyncAutocomplete
                                     onChange={(certificate) => {
                                         setCert(certificate);
@@ -91,7 +91,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     getOptionLabel={option => `${option.name}`}
                                     value={cert} />
                             </Grid>
-                            <Grid item md={5} sm={4} xs={6}>
+                            <Grid item md={2} sm={4} xs={6}>
                                 <AsyncAutocomplete
                                     onChange={(v) => setVersion(v)}
                                     width={"100%"}
@@ -104,6 +104,28 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     initialValue={version}
                                     getOptionLabel={option => `${option.version}`}
                                     value={version} />
+                            </Grid>
+                            <Grid item md={3} sm={4} xs={12}>
+                                Language
+                                </Grid>
+                            <Grid item md={9} sm={8} xs={12}>
+                                <TextField
+                                    className="m-2"
+                                    label="Language"
+                                    name="language"
+                                    size="small"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={values.language}
+                                    onChange={handleChange}
+                                    select
+                                >
+                                    {['es', 'en'].map((item, ind) => (
+                                        <MenuItem value={item} key={item}>
+                                            {item.toUpperCase()}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                             </Grid>
                             <Grid item md={3} sm={4} xs={12}>
                                 Start date
@@ -127,8 +149,8 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                             {!values.never_ends ? <>
                             <Grid item md={3} sm={4} xs={12}>
                                 End date
-                                </Grid>
-                            <Grid item md={5} sm={4} xs={6}>
+                            </Grid>
+                            <Grid item md={9} sm={8} xs={6}>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
                                         className="m-2"
@@ -168,27 +190,6 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     label="This cohort never ends"
                                 />
                             </Grid>}
-                            <Grid item md={3} sm={4} xs={12}>
-                                Language
-                                </Grid>
-                            <Grid item md={9} sm={8} xs={12}>
-                                <TextField
-                                    className="m-2"
-                                    label="Language"
-                                    name="language"
-                                    size="small"
-                                    variant="outlined"
-                                    value={values.language}
-                                    onChange={handleChange}
-                                    select
-                                >
-                                    {['es', 'en'].map((item, ind) => (
-                                        <MenuItem value={item} key={item}>
-                                            {item}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
                             <Button color="primary" variant="contained" type="submit">
                                 Save Cohort Details
                             </Button>
