@@ -24,7 +24,7 @@ const ShopContainer = ({
   rowsPerPage,
   toggleSidenav,
   toggleView,
-  handleChange,
+  handleSortChange,
   handleChangePage,
   setRowsPerPage,
   onOpenDialog,
@@ -54,15 +54,15 @@ const ShopContainer = ({
             <TextField
               select
               name="orderBy"
-              onChange={handleChange}
+              onChange={handleSortChange}
               value={orderBy}
               InputProps={{
                 disableUnderline: true,
               }}
             >
               <MenuItem value="default">Default</MenuItem>
-              <MenuItem value="recent">Recents First</MenuItem>
-              <MenuItem value="oldest">Oldests First</MenuItem>
+              <MenuItem value="created_at">Recents First</MenuItem>
+              <MenuItem value="-created_at">Oldests First</MenuItem>
             </TextField>
             <IconButton onClick={() => toggleView("grid")}>
               <Icon color={view === "grid" ? "primary" : "inherit"}>

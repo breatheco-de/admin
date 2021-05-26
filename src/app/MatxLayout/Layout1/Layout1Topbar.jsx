@@ -18,6 +18,7 @@ import clsx from "clsx";
 import useAuth from "app/hooks/useAuth";
 import history from "history.js";
 import bc from "app/services/breathecode";
+import MediaDialog from "../../components/MediaDialog";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
@@ -75,6 +76,7 @@ const Layout1Topbar = () => {
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
   const fixed = settings?.layout1Settings?.topbar?.fixed;
+  const [open, setOpen] = React.useState(false);
 
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(
@@ -121,18 +123,10 @@ const Layout1Topbar = () => {
             </IconButton>
 
             <div className="hide-on-mobile">
-              {/* <IconButton>
-                <Icon>mail_outline</Icon>
+               <IconButton onClick={()=> setOpen(true)}>
+                <Icon>collections</Icon>
               </IconButton>
-
-              <IconButton>
-                <Icon>web_asset</Icon>
-              </IconButton>
-
-              <IconButton>
-                <Icon>star_outline</Icon>
-              </IconButton> */}
-
+              {open ? <MediaDialog openDialog={open} onClose={()=> setOpen(false)}/> : null}
               <IconButton>
                 <Switch
                     onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}

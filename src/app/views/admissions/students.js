@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
 import { MatxLoading } from "matx";
-import {
-  Avatar,
-  Grow,
-  Icon,
-  IconButton,
-  TextField,
-  Button,
-  Tooltip,
-} from "@material-ui/core";
+import { Avatar, Icon, IconButton, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import bc from "app/services/breathecode";
-import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import CustomToolbar from "../../components/CustomToolbar";
-import { DownloadCsv } from "../../components/DownloadCsv";
 import { toast } from "react-toastify";
+import { SmartMUIDataTable } from "app/components/SmartDataTable";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -41,92 +29,8 @@ const toastOption = {
 };
 
 const Students = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [userList, setUserList] = useState([]);
+  const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [table, setTable] = useState({
-    count: 100,
-    page: 0,
-  });
-  const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [queryLike, setQueryLike] = useState(query.get("like") || "");
-
-  const handleLoadingData = () => {
-    setIsLoading(true);
-    bc.auth()
-      .getAcademyStudents({
-        limit: queryLimit,
-        offset: queryOffset,
-        like: queryLike,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        setIsLoading(false);
-        if (isAlive) {
-          setUserList(data.results);
-          setTable({ count: data.count });
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-    return () => setIsAlive(false);
-  };
-
-  //TODO: Show errors with the response
-
-  useEffect(() => {
-    handleLoadingData();
-    // setIsLoading(true);
-    // bc.auth()
-    //   .getAcademyStudents({
-    //     limit: queryLimit,
-    //     offset: queryOffset,
-    //     like: queryLike,
-    //   })
-    //   .then(({ data }) => {
-    //     console.log(data);
-    //     setIsLoading(false);
-    //     if (isAlive) {
-    //       setUserList(data.results);
-    //       setTable({ count: data.count });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setIsLoading(false);
-    //   });
-    // return () => setIsAlive(false);
-  }, [isAlive]);
-
-  const handlePageChange = (page, rowsPerPage, _like) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    let query = {
-      limit: rowsPerPage,
-      offset: page * rowsPerPage,
-      like: _like,
-    };
-    bc.auth()
-      .getAcademyStudents(query)
-      .then(({ data }) => {
-        setIsLoading(false);
-        setUserList(data.results);
-        setTable({ count: data.count, page: page });
-        history.replace(
-          `/admissions/students?${Object.keys(query)
-            .map((key) => key + "=" + query[key])
-            .join("&")}`
-        );
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
 
   const resendInvite = (user) => {
     bc.auth()
@@ -154,7 +58,7 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user, ...rest } = userList[dataIndex];
+          let { user, ...rest } = items[dataIndex];
           return (
             <div className='flex items-center'>
               <Avatar className='w-48 h-48' src={user?.imgUrl} />
@@ -182,10 +86,10 @@ const Students = () => {
           <div className='flex items-center'>
             <div className='ml-3'>
               <h5 className='my-0 text-15'>
-                {dayjs(userList[i].created_at).format("MM-DD-YYYY")}
+                {dayjs(items[i].created_at).format("MM-DD-YYYY")}
               </h5>
               <small className='text-muted'>
-                {dayjs(userList[i].created_at).fromNow()}
+                {dayjs(items[i].created_at).fromNow()}
               </small>
             </div>
           </div>
@@ -198,7 +102,7 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
+          let item = items[dataIndex];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -227,10 +131,10 @@ const Students = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           let item =
-            userList[dataIndex].user !== null
-              ? userList[dataIndex]
+            items[dataIndex].user !== null
+              ? items[dataIndex]
               : {
-                  ...userList[dataIndex],
+                  ...items[dataIndex],
                   user: { first_name: "", last_name: "", imgUrl: "", id: "" },
                 };
           return item.status === "INVITED" ? (
@@ -293,108 +197,14 @@ const Students = () => {
       <div className='overflow-auto'>
         <div className='min-w-750'>
           {isLoading && <MatxLoading />}
-          <MUIDataTable
-            title={"All Students"}
-            data={userList}
+          <SmartMUIDataTable
+            title='All Students'
             columns={columns}
-            options={{
-              customToolbar: () => {
-                let singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                let allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}
-                `;
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: "textField",
-              responsive: "standard",
-              serverSide: true,
-              elevation: 0,
-              count: table.count,
-              page: table.page,
-              selectableRowsHeader: false,
-              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (
-                selectedRows,
-                displayData,
-                setSelectedRows
-              ) => {
-                return (
-                  <CustomToolbar
-                    selectedRows={selectedRows}
-                    displayData={displayData}
-                    setSelectedRows={setSelectedRows}
-                    items={userList}
-                    key={userList}
-                    history={history}
-                    id={"students"}
-                    reRender={handleLoadingData}
-                  />
-                );
-              },
-              onTableChange: (action, tableState) => {
-                switch (action) {
-                  case "changePage":
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike
-                    );
-                    break;
-                  case "changeRowsPerPage":
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike
-                    );
-                    break;
-                }
-              },
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onKeyPress={(e) => {
-                        if (e.key == "Enter") {
-                          handlePageChange(
-                            queryOffset,
-                            queryLimit,
-                            e.target.value
-                          );
-                        }
-                      }}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+            data={items}
+            search={async (querys) => {
+              const { data } = await bc.auth().getAcademyStudents(querys);
+              setItems(data.results);
+              return data;
             }}
           />
         </div>
