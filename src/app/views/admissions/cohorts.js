@@ -243,7 +243,7 @@ const Cohorts = () => {
           {isLoading && <MatxLoading />}
           <MUIDataTable
             title={"All Cohorts"}
-            data={items.results}
+            data={items}
             columns={columns}
             options={{
               onColumnSortChange: (changedColumn, direction) => {

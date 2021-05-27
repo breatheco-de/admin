@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 import ResponseDialog from "./ResponseDialog";
 import bc from "../../services/breathecode";
+import CustomToolbar from "app/components/CustomToolbar";
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -297,8 +298,14 @@ const Certificates = () => {
                 return <DownloadCsv />;
               },
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                console.log(selectedRows)
-                console.log(displayData)
+                return <CustomToolbar 
+                          selectedRows={selectedRows} 
+                          displayData={displayData} 
+                          setSelectedRows={setSelectedRows} 
+                          items={items} 
+                          key={items} 
+                          history={history}
+                         />
               },
               filterType: "textField",
               responsive: "standard",
