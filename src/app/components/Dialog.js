@@ -132,6 +132,7 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                                         label="Categories"
                                         value={category}
                                         multiple
+                                        debounced={false}
                                         asyncSearch={() => bc.media().getAllCategories()}
                                         getOptionLabel={option => `${option.name}`}
                                     />
@@ -164,10 +165,10 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                     Are you sure you want to delete this file?
                 </DialogTitle>
                 <DialogActions>
-                    <Button color="secondary" autoFocus onClick={() => { onDelete(); setConfirm(false); onClose(); }}>
+                    <Button color="secondary" autoFocus onClick={() => { onDelete(); setConfirm(false);}}>
                         Confirm
                     </Button>
-                    <Button onClick={onClose} color="primary">
+                    <Button onClick={() => setConfirm(false)} color="primary">
                         Cancel
                     </Button>
                 </DialogActions>
