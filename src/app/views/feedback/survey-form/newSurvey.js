@@ -52,7 +52,6 @@ const NewSurvey = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE DE OBJECT "newSurvey" \\
 
    useEffect(() => {
     bc.admissions().getAllCohorts(0)
@@ -62,13 +61,13 @@ const NewSurvey = () => {
     }, [])
 
     useEffect(() => {
-        listCohorts != undefined
-            ? setcohortName(listCohorts.map(item => (
-                <MenuItem key = {item.name} value = {item.id} onCLick = {console.log(item.name)}>
-                    {item.name}
-                </MenuItem>
-            )))
-            : console.log("");
+        if(listCohorts != undefined){
+          setcohortName(listCohorts.map(item => (
+            <MenuItem key = {item.name} value = {item.id} onCLick = {console.log(item.name)}>
+                {item.name}
+            </MenuItem>
+          )))
+        }
     }, [listCohorts != undefined])
 
     const createSurvey = event => {
@@ -136,7 +135,6 @@ const NewSurvey = () => {
                     value = {cohort}
                     onChange = {(e) => {
                       selectCohort(e);
-                      console.log(cohort);
                     }}
                     >
                       {cohortName}
