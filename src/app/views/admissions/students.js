@@ -59,7 +59,7 @@ const Students = () => {
           let { user, ...rest } = items[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.imgUrl} />
+              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">{user !== null ? name(user) : rest.first_name + " " + rest.last_name}</h5>
                 <small className="text-muted">{user?.email || rest.email}</small>
