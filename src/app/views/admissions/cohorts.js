@@ -247,22 +247,19 @@ const Cohorts = () => {
             columns={columns}
             options={{
               onColumnSortChange: (changedColumn, direction) => {
-                if(direction == "asc"){
-                  handlePageChange(
+                direction == "asc"
+                  ? handlePageChange(
                     queryLimit,
                     queryOffset,
                     queryLike,
                     changedColumn
                   )
-                }
-                if(direction == "desc"){
-                  handlePageChange(
+                  : handlePageChange(
                     queryLimit,
                     queryOffset,
                     queryLike,
                     `-${changedColumn}`
                   )
-                }
               },
               customToolbar: () => {
                 return <DownloadCsv />;

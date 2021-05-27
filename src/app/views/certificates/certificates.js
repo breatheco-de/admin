@@ -53,7 +53,6 @@ const Certificates = () => {
           offset: queryOffset,
         })
           .then(({ data }) => {
-            console.log(data.results);
             setIsLoading(false);
             if (isAlive) {
                 setItems(data.results)
@@ -126,7 +125,6 @@ const Certificates = () => {
         filterType: "multiselect",
         customBodyRender: (value, tableMeta, updateValue) => {
           let item = items[tableMeta.rowIndex];
-          console.log("item:", item);
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -298,6 +296,10 @@ const Certificates = () => {
               customToolbar: () => {
                 return <DownloadCsv />;
               },
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+                console.log(selectedRows)
+                console.log(displayData)
+              },
               filterType: "textField",
               responsive: "standard",
               // selectableRows: "none", // set checkbox for each row
@@ -310,7 +312,6 @@ const Certificates = () => {
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
-                console.log(action, tableState)
                 switch (action) {
                   case "changePage":
                     handlePageChange(tableState.page, tableState.rowsPerPage, queryLike);
