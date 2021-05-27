@@ -138,11 +138,11 @@ const Staff = () => {
         customBodyRenderLite: (dataIndex) => {
           let { user } = userList[dataIndex];
           return (
-            <div className='flex items-center'>
-              <Avatar className='w-48 h-48' src={user?.imgUrl} />
-              <div className='ml-3'>
-                <h5 className='my-0 text-15'>{name(user)}</h5>
-                <small className='text-muted'>{user?.email}</small>
+            <div className="flex items-center">
+              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
+              <div className="ml-3">
+                <h5 className="my-0 text-15">{name(user)}</h5>
+                <small className="text-muted">{user?.email}</small>
               </div>
             </div>
           );
