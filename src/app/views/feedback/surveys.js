@@ -3,21 +3,30 @@ import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
 import { useSelector } from "react-redux";
-import { Avatar, Grow, Icon, IconButton, TextField, Button, LinearProgress } from "@material-ui/core";
+import {
+  Avatar,
+  Grow,
+  Icon,
+  IconButton,
+  TextField,
+  Button,
+  LinearProgress,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
-var relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
+import { DownloadCsv } from "../../components/DownloadCsv";
+var relativeTime = require("dayjs/plugin/relativeTime");
+dayjs.extend(relativeTime);
 
 const stageColors = {
-  'INACTIVE': 'bg-gray',
-  'PREWORK': 'bg-secondary',
-  'STARTED': 'text-white bg-warning',
-  'FINAL_PROJECT': 'text-white bg-error',
-  'ENDED': 'text-white bg-green',
-  'DELETED': 'light-gray',
-}
+  INACTIVE: "bg-gray",
+  PREWORK: "bg-secondary",
+  STARTED: "text-white bg-warning",
+  FINAL_PROJECT: "text-white bg-error",
+  ENDED: "text-white bg-green",
+  DELETED: "light-gray",
+};
 
 const EventList = () => {
   const [isAlive, setIsAlive] = useState(true);
@@ -27,10 +36,12 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer").then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
+    axios
+      .get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer")
+      .then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) setItems(data);
+      });
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -51,9 +62,16 @@ const EventList = () => {
           let item = items[dataIndex];
 
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <small className={"border-radius-4 px-2 pt-2px " + stageColors[item?.status]}>{item?.status}</small><br />
+            <div className='flex items-center'>
+              <div className='ml-3'>
+                <small
+                  className={
+                    "border-radius-4 px-2 pt-2px " + stageColors[item?.status]
+                  }
+                >
+                  {item?.status}
+                </small>
+                <br />
               </div>
             </div>
           );
@@ -65,13 +83,18 @@ const EventList = () => {
       label: "Sent date",
       options: {
         filter: true,
-        customBodyRenderLite: i =>
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format("MM-DD-YYYY")}</h5>
-              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+        customBodyRenderLite: (i) => (
+          <div className='flex items-center'>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
+                {dayjs(items[i].created_at).format("MM-DD-YYYY")}
+              </h5>
+              <small className='text-muted'>
+                {dayjs(items[i].created_at).fromNow()}
+              </small>
             </div>
           </div>
+        ),
       },
     },
     {
@@ -79,14 +102,15 @@ const EventList = () => {
       label: "Score",
       options: {
         filter: true,
-        customBodyRenderLite: i =>
-          <div className="flex items-center">
+        customBodyRenderLite: (i) => (
+          <div className='flex items-center'>
             <LinearProgress
-                color="primary"
-                value={items[i].score * 10}
-                variant="determinate"
+              color='primary'
+              value={items[i].score * 10}
+              variant='determinate'
             />
           </div>
+        ),
       },
     },
     {
@@ -95,14 +119,14 @@ const EventList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="flex-grow"></div>
+          <div className='flex items-center'>
+            <div className='flex-grow'></div>
             <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
             </Link>
-            <Link to="/pages/view-customer">
+            <Link to='/pages/view-customer'>
               <IconButton>
                 <Icon>arrow_right_alt</Icon>
               </IconButton>
@@ -114,9 +138,9 @@ const EventList = () => {
   ];
 
   return (
-    <div className="m-sm-30">
-      <div className="mb-sm-30">
-        <div className="flex flex-wrap justify-between mb-6">
+    <div className='m-sm-30'>
+      <div className='mb-sm-30'>
+        <div className='flex flex-wrap justify-between mb-6'>
           <div>
             <Breadcrumb
               routeSegments={[
@@ -126,24 +150,40 @@ const EventList = () => {
             />
           </div>
 
-          {settings.beta && <div className="">
-            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
-                Add new survey
-              </Button>
-            </Link>
-          </div>
-          }
+          {settings.beta && (
+            <div className=''>
+              <Link
+                to='/feedback/survey/new'
+                color='primary'
+                className='btn btn-primary'
+              >
+                <Button variant='contained' color='primary'>
+                  Add new survey
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div className='overflow-auto'>
+        <div className='min-w-750'>
           {isLoading && <MatxLoading />}
           <MUIDataTable
             title={"All Events"}
             data={items}
             columns={columns}
             options={{
+              customToolbar: () => {
+                let singlePageTableCsv = `/v1/feedback/academy/answer`;
+                let allPagesTableCsv = `/v1/feedback/academy/answer`;
+                return (
+                  <DownloadCsv
+                    singlePageTableCsv={singlePageTableCsv}
+                    allPagesTableCsv={allPagesTableCsv}
+                  />
+                );
+              },
+              download: false,
               filterType: "textField",
               responsive: "standard",
               // selectableRows: "none", // set checkbox for each row
@@ -164,8 +204,8 @@ const EventList = () => {
                 return (
                   <Grow appear in={true} timeout={300}>
                     <TextField
-                      variant="outlined"
-                      size="small"
+                      variant='outlined'
+                      size='small'
                       fullWidth
                       onChange={({ target: { value } }) => handleSearch(value)}
                       InputProps={{
@@ -173,13 +213,13 @@ const EventList = () => {
                           paddingRight: 0,
                         },
                         startAdornment: (
-                          <Icon className="mr-2" fontSize="small">
+                          <Icon className='mr-2' fontSize='small'>
                             search
                           </Icon>
                         ),
                         endAdornment: (
                           <IconButton onClick={hideSearch}>
-                            <Icon fontSize="small">clear</Icon>
+                            <Icon fontSize='small'>clear</Icon>
                           </IconButton>
                         ),
                       }}
