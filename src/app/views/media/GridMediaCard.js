@@ -50,7 +50,7 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
         <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
           <Icon>mode_edit</Icon>
         </span>
-        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.thumbnail_url} alt={media.slug} />
+        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.thumbnail} alt={media.slug} />
       </div>
       <div className="p-6" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h5 className="m-0">{media.name}</h5></div>
     </Card>
