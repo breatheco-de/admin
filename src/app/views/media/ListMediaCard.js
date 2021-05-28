@@ -47,7 +47,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
     >
       <Grid container spacing={2} alignItems="center">
         <Grid item lg={4} md={4} sm={4} xs={12} style={{padding:0, width:"200px", height:"250px"}}>
-            <img src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.thumbnail_url} alt={product.name} style={{
+            <img src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.thumbnail} alt={product.name} style={{
               height: "100%",
               width:"100%",
               position: "relative",
