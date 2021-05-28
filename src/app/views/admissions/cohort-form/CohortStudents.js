@@ -54,10 +54,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
     setQueryOffset((prevQueryOffset) => prevQueryOffset + queryLimit);
   };
 
-  const handlePaginationPreviousPage = () => {
-    setQueryOffset((prevQueryOffset) => prevQueryOffset - queryLimit);
-  };
-
   useEffect(() => {
     getCohortStudents();
   }, [queryOffset]);
@@ -95,13 +91,9 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .then(({ data }) => {
         console.log(data);
         setIsLoading(false);
-        data.length < 1 ? setStudentsList([]) : setStudentsList(data.results);
-        delete query.cohorts;
-        history.replace(
-          `/admissions/cohorts/${slug}?${Object.keys(query)
-            .map((key) => `${key}=${query[key]}`)
-            .join("&")}`
-        );
+        data.length < 1
+          ? setStudentsList([])
+          : setStudentsList([...studenList, ...data.results]);
         setHasMore(data.results.length > 0);
       })
       .catch((error) => error);
@@ -296,26 +288,17 @@ const CohortStudents = ({ slug, cohort_id }) => {
               </Grid>
             </div>
           ))}
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <>
-              <IconButton
-                disabled={queryOffset === 0}
-                onClick={() => {
-                  handlePaginationPreviousPage();
-                }}
-              >
-                <Icon fontSize='small'>navigate_before</Icon>
-              </IconButton>
-
-              <IconButton
-                disabled={!hasMore}
-                onClick={() => {
-                  handlePaginationNextPage();
-                }}
-              >
-                <Icon fontSize='small'>navigate_next</Icon>
-              </IconButton>
-            </>
+          <div>
+            <Button
+              disabled={!hasMore}
+              fullWidth={true}
+              className='text-primary bg-light-primary'
+              onClick={() => {
+                handlePaginationNextPage();
+              }}
+            >
+              Load More
+            </Button>
           </div>
         </div>
       </div>
