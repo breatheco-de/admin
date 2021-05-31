@@ -10,6 +10,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "../../../services/breathecode";
+import { formatISO, subDays } from 'date-fns';
 
 makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -35,7 +36,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                     kickoff_date: startDate,
                     never_ends: never_ends
                 }}
-                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}` })}
+                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`, ending_date: subDays(values.ending_date, 1),  kickoff_date: subDays(values.kickoff_date, 1)   })}
                 enableReinitialize={true}
             >
                 {({
@@ -141,7 +142,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         size="small"
                                         autoOk={true}
                                         value={values.kickoff_date}
-                                        format="MMMM dd, yyyy"
+                                        format="yyyy-MM-dd"
                                         onChange={(date) => setFieldValue("kickoff_date", date)}
                                     />
                                 </MuiPickersUtilsProvider>
@@ -161,10 +162,10 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         size="small"
                                         autoOk={true}
                                         value={values.ending_date}
-                                        format="MMMM dd, yyyy"
+                                        format="yyyy-MM-dd"
                                         onChange={(date) => {
                                             console.log(date);
-                                            setFieldValue("ending_date", date)
+                                            setFieldValue("ending_date",  date)
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>
