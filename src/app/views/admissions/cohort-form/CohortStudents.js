@@ -46,7 +46,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
   const query = useQuery();
   const history = useHistory();
 
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 3);
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
   const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
   const [hasMore, setHasMore] = useState(false);
 
@@ -297,7 +297,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                 handlePaginationNextPage();
               }}
             >
-              Load More
+              {hasMore ? "Load More" : "No more students to load"}
             </Button>
           </div>
         </div>
