@@ -31,7 +31,7 @@ const CustomToolbarSelect = (props) => {
     const [cohort, setCohort] = useState(null);
     const [bulk, setBulk] = useState([])
     const [certificates, setCertificates] = useState([{
-        student_id: "",
+        user_id: "",
         cohort_slug: "",
     }]) 
     const [bulkCertificates, setBulkCertificates] = useState([])
@@ -48,13 +48,13 @@ const CustomToolbarSelect = (props) => {
         indexList.map((item, index) => {
             if(index == 0){
                 setCertificates([{
-                    student_id: props.items[item].user.id,
+                    user_id: props.items[item].user.id,
                     cohort_slug: props.items[item].cohort.slug
                 }])
             } 
             if(index > 0){
                 let certificate = {
-                    student_id: props.items[item].user.id,
+                    user_id: props.items[item].user.id,
                     cohort_slug: props.items[item].cohort.slug
                 }
                 certificates.push(certificate)
