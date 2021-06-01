@@ -255,7 +255,7 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
                 <GridList cellHeight={200}>
                     {productList.map((media) => (
                         <GridListTile key={media.slug} style={{ width: "10%", cursor:"pointer" }} rows={1} onClick={()=> { setUrl(name, media.url); onClose()}} className={clsx("", classes.hover)}>
-                            <img src={media.url} alt={media.name} />
+                            <img src={media.thumbnail} alt={media.name} />
                         </GridListTile>
                     ))}
                 </GridList>
