@@ -83,7 +83,6 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     }}
                                     width={"100%"}
                                     initialValue={cert}
-                                    className="mr-2 ml-2"
                                     asyncSearch={() => bc.admissions().getCertificates()}
                                     size={"small"}
                                     label="Certificate"
@@ -143,7 +142,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         autoOk={true}
                                         value={values.kickoff_date}
                                         format="yyyy-MM-dd"
-                                        onChange={(date) => setFieldValue("kickoff_date", date)}
+                                        onChange={(date) => setFieldValue("kickoff_date", date.toISOString())}
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
@@ -165,7 +164,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         format="yyyy-MM-dd"
                                         onChange={(date) => {
                                             console.log(date);
-                                            setFieldValue("ending_date",  date)
+                                            setFieldValue("ending_date",date.toISOString())
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>
