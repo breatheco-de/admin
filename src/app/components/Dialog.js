@@ -127,7 +127,7 @@ const CustomDialog = ({ open, onClose, formInitialValues, onDelete, title, onSub
                                     </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <AsyncAutocomplete
-                                        onChange={(category) => { setCategory(category); setFieldValue('categories', category.map(c => c.id)); console.log(category, formInitialValues) }}
+                                        onChange={(category) => { setCategory(category); setFieldValue('categories', category); console.log(category, formInitialValues) }}
                                         width={"100%"}
                                         label="Categories"
                                         value={category}

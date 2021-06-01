@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import { Grow, Icon, IconButton, TextField, Button} from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -9,9 +9,9 @@ import MUIDataTable from "mui-datatables";
 
 import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
+import { DownloadCsv } from "../../components/DownloadCsv";
+import CustomToolbar from "../../components/CustomToolbar";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
-import { DownloadCsv } from "app/components/DownloadCsv";
-import CustomToolbar from "app/components/CustomToolbar";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -31,8 +31,8 @@ const Cohorts = () => {
   const [items, setItems] = useState([]);
   const [table, setTable] = useState({
     count: 100,
-    page: 0
-  }); 
+    page: 0,
+  });
   const query = useQuery();
   const history = useHistory();
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
@@ -41,11 +41,11 @@ const Cohorts = () => {
   const [querys, setQuerys] = useState({
     limit: queryLimit,
     offset: queryOffset,
-    like: queryLike
+    like: queryLike,
   });
   const [querySort, setQuerySort] = useState(query.get("sort") || " ");
 
-  useEffect(() => {
+  const handleLoadingData = () => {
     setIsLoading(true);
     bc.admissions()
       .getAllCohorts({
@@ -65,6 +65,10 @@ const Cohorts = () => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
+  };
+
+  useEffect(() => {
+    handleLoadingData();
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
@@ -247,25 +251,32 @@ const Cohorts = () => {
             columns={columns}
             options={{
               onColumnSortChange: (changedColumn, direction) => {
-                if(direction == "asc"){
+                if (direction == "asc") {
                   handlePageChange(
                     queryLimit,
                     queryOffset,
                     queryLike,
                     changedColumn
-                  )
+                  );
                 }
-                if(direction == "desc"){
+                if (direction == "desc") {
                   handlePageChange(
                     queryLimit,
                     queryOffset,
                     queryLike,
                     `-${changedColumn}`
-                  )
+                  );
                 }
               },
               customToolbar: () => {
-                return <DownloadCsv />;
+                let singlePageTableCsv = `/v1/admissions/academy/cohort?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
+                let allPagesTableCsv = `/v1/admissions/academy/cohort?like=${queryLike}`;
+                return (
+                  <DownloadCsv
+                    singlePageTableCsv={singlePageTableCsv}
+                    allPagesTableCsv={allPagesTableCsv}
+                  />
+                );
               },
               download: false,
               filterType: "textField",
@@ -293,6 +304,24 @@ const Cohorts = () => {
               },
               rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows
+              ) => {
+                return (
+                  <CustomToolbar
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={items}
+                    key={items}
+                    history={history}
+                    id={"cohorts"}
+                    reRender={handleLoadingData}
+                  />
+                );
+              },
               onTableChange: (action, tableState) => {
                 switch (action) {
                   case "changePage":
@@ -301,7 +330,7 @@ const Cohorts = () => {
                       tableState.page,
                       tableState.rowsPerPage,
                       queryLike,
-                      querySort,
+                      querySort
                     );
                     break;
                   case "changeRowsPerPage":

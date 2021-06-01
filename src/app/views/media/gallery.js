@@ -177,7 +177,7 @@ const Gallery = () => {
             url: value.url
           }}
           onDelete={()=> dispatch(deleteFile(value.id))}
-          onSubmit={(values)=> dispatch(updateFileInfo(value.id, values))}
+          onSubmit={(values)=> dispatch(updateFileInfo(value.id,{ ...values, categories:values.categories.map(c => c.id)}))}
         />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
           <SideNav

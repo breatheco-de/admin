@@ -45,7 +45,7 @@ export const uploadFiles = (files) => (dispatch) => {
 export const updateFileInfo = (id,values) => (dispatch) => {
   bc.media().updateMedia(id, values).then(res => dispatch({
     type:UPDATE_MEDIA_FILE,
-    payload: res.data
+    payload: res
   }))
 }
 
