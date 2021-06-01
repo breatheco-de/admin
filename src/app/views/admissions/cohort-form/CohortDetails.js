@@ -10,7 +10,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "../../../services/breathecode";
-import { formatISO, subDays } from 'date-fns';
+import { formatISO } from 'date-fns';
 
 makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -36,7 +36,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                     kickoff_date: startDate,
                     never_ends: never_ends
                 }}
-                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`, ending_date: subDays(values.ending_date, 1),  kickoff_date: subDays(values.kickoff_date, 1)   })}
+                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`})}
                 enableReinitialize={true}
             >
                 {({
