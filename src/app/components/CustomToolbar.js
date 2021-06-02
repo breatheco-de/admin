@@ -13,6 +13,7 @@ import {
   DialogActions,
   IconButton,
 } from "@material-ui/core";
+import CustomToolbarSelectCertificates from "./CertificateCustomToolbar";
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -31,11 +32,6 @@ const CustomToolbarSelect = (props) => {
   const [bulk, setBulk] = useState([]);
   const [idsArr, setIdsArr] = useState([]);
   const [bulkDeleting, setBulkDeleting] = useState(false);
-  const [certificates, setCertificates] = useState([{
-    user_id: "",
-    cohort_slug: "",
-    }]) 
-    const [bulkCertificates, setBulkCertificates] = useState([])
 
   const selected = useMemo(() => {
     return props.selectedRows.data.map((item) => item.index);
@@ -48,7 +44,6 @@ const CustomToolbarSelect = (props) => {
   useEffect(() => {
     setBulk(
       selected.map((item) => {
-        console.log("item:", props.items);
         switch (props.id) {
           case "students":
             const { user } = props.items[item];
@@ -149,27 +144,6 @@ const CustomToolbarSelect = (props) => {
         .catch((r) => r);
     }
   };
-
-  useEffect(() => {
-    let indexList = props.selectedRows.data.map(item => item.index);
-    indexList.map((item, index) => {
-        if(index == 0){
-            setCertificates([{
-                user_id: props.items[item].user.id,
-                cohort_slug: props.items[item].cohort.slug
-            }])
-        } 
-        if(index > 0){
-            let certificate = {
-                user_id: props.items[item].user.id,
-                cohort_slug: props.items[item].cohort.slug
-            }
-            certificates.push(certificate)
-        }
-        setBulkCertificates(certificates)
-    })
-    }, [props.selectedRows])
-
   return (
     <div className={classes.iconContainer}>
       <Tooltip title={"Delete ALL"}>
@@ -191,15 +165,12 @@ const CustomToolbarSelect = (props) => {
           <GroupAddIcon className={classes.icon} />
         </IconButton>
       </Tooltip>
-      <Tooltip title={"Re-attemps certificates"}>
-            <IconButton className={classes.iconButton} onClick={() => {
-                bc.certificates().addBulkCertificates(bulkCertificates)
-                props.setSelectedRows(props.selectedRows.data = [])
-                setBulkCertificates([]);
-            }}>
-                <PostAddIcon className={classes.icon} />
-            </IconButton>
-        </Tooltip>
+      <CustomToolbarSelectCertificates 
+        selectedRows={props.selectedRows}
+        displayData={props.displayData}
+        setSelectedRows={props.setSelectedRows}
+        items={props.items}
+      />
       {/* Dialog */}
       <Dialog
         open={openDialog}

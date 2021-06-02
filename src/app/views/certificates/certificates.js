@@ -21,7 +21,11 @@ import { MatxLoading } from "matx";
 
 import bc from "../../services/breathecode";
 import CustomToolbarSelect from "app/components/CustomToolbar";
+import CustomToolbarSelectCertificates from "app/components/CertificateCustomToolbar";
+
 import ResponseDialog from "./ResponseDialog";
+
+
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
@@ -332,14 +336,26 @@ const Certificates = () => {
                 );
               },
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                return <CustomToolbar 
-                          selectedRows={selectedRows} 
-                          displayData={displayData} 
-                          setSelectedRows={setSelectedRows} 
-                          items={items} 
-                          key={items} 
-                          history={history}
-                         />
+                return (
+                  <>
+                    <CustomToolbar
+                      selectedRows={selectedRows}
+                      displayData={displayData}
+                      setSelectedRows={setSelectedRows}
+                      items={items}
+                      key={items}
+                      history={history}
+                      id={"certificates"}
+                      // missing re-render function as other view has
+                    />
+                    {/* <CustomToolbarSelectCertificates 
+                      selectedRows={selectedRows}
+                      displayData={displayData}
+                      setSelectedRows={setSelectedRows}
+                      items={items}
+                    /> */}
+                  </>
+                )
               },
               filterType: "textField",
               responsive: "standard",
