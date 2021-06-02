@@ -36,8 +36,8 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 const ListMediaCard = ({ product, onOpenDialog }) => {
   const classes = useStyles();
   const type = {
-    pdf:'https://image.freepik.com/free-vector/illustration-folder-icon_53876-5845.jpg',
-    video:'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732'
+    pdf:'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png',
+    video:'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png'
   }
 
   return (
@@ -47,7 +47,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
     >
       <Grid container spacing={2} alignItems="center">
         <Grid item lg={4} md={4} sm={4} xs={12} style={{padding:0, width:"200px", height:"250px"}}>
-            <img src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.thumbnail_url} alt={product.name} style={{
+            <img src={product.mime.includes('pdf') ? type.pdf : product.mime.includes('video') ? type.pdf : product.thumbnail} alt={product.name} style={{
               height: "100%",
               width:"100%",
               position: "relative",
@@ -57,7 +57,7 @@ const ListMediaCard = ({ product, onOpenDialog }) => {
               }}/>
         </Grid>
         <Grid item lg={8} md={8} sm={8} xs={12} className="p-6">
-          <h5 className="m-0 mb-3">{product.name}</h5>
+          <h6 className="m-0 mb-3">{product.name}</h6>
           <div className="flex justify-between mb-4">
             <span className="text-muted"><strong>Categories: </strong> {product.categories.map(c => <strong className="border-radius-4 px-2 pt-2px bg-secondary mr-1 text-white">{c.name}</strong>)}</span>
           </div>

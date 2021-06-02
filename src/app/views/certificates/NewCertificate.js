@@ -20,6 +20,7 @@ const NewCertificate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cohort, setCohort] = useState([]);
   const [student, setStudent] = useState([]);
+  const session = JSON.parse(localStorage.getItem("bc-session"));
   let history = useHistory();
 
   const getSpecialties = () => {
@@ -175,7 +176,7 @@ const NewCertificate = () => {
                         width='100%'
                         asyncSearch={() =>
                           axios.get(
-                            `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=downtown-miami&roles=STUDENT&educational_status=ACTIVE,GRADUATED`
+                            `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`
                           )
                         }
                         onChange={(student) => setStudent(student)}
