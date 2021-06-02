@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Slide, Dialog, AppBar, Toolbar, IconButton, Typography, GridList,
-    GridListTile, FormControl, InputLabel, Select, Chip, Input, MenuItem,
-    TextField, Tooltip, Icon
+    GridListTile, FormControl, InputLabel, Select, MenuItem,
+    TextField, Tooltip, Icon, Checkbox, ListItemText
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useDispatch, useSelector } from "react-redux";
@@ -128,6 +128,7 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
     }
 
     const handleCategory = (value) => {
+        console.log(value)
         setCategories(value);
         if (value.length < 1) {
             delete pagination['categories'];
@@ -137,6 +138,7 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
         dispatch(getProductList({
             ...pagination, categories: value.join(",")
         }));
+        console.log(category)
     }
 
     const handleSort = (value) => {
@@ -197,13 +199,15 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
                             id="demo-controlled-open-select"
                             value={category}
                             multiple
+                            renderValue={(selected) => categoryList.filter(i => selected.includes(i.id)).map( j => j.name).join(", ")}
                             onChange={(e) => handleCategory(e.target.value)}
                         >
-                            {categoryList.map((c) => (
-                                <MenuItem key={c.name} value={c.id}>
-                                    {c.name}
-                                </MenuItem>
-                            ))}
+                            {categoryList.map((c) => {
+                             return <MenuItem key={c.name} value={c.id}>
+                                        <Checkbox checked={category.includes(c.id)}/> 
+                                        <ListItemText primary={c.name} />
+                                    </MenuItem>
+                            })}
                         </Select>
                     </FormControl>
                     <FormControl className={classes.formControl}>
