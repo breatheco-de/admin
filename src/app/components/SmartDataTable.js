@@ -153,7 +153,6 @@ export const SmartMUIDataTable = (props) => {
               items={props.data}
               key={props.data}
               history={history}
-              id={"students"}
               // missing re-render function as other view has
             />
           );

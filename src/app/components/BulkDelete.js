@@ -30,6 +30,8 @@ const BulkDelete = (props) => {
     return props.selectedRows.data.map((item) => item.index);
   }, [props.selectedRows]);
 
+  let path = props.history.location.pathname
+
   useEffect(() => {
     setIdsArr(selected.map(item => props.items[item].id))
   }, [selected]);
@@ -37,7 +39,7 @@ const BulkDelete = (props) => {
   const deleteBulkEntities = (e) => {
     e.preventDefault();
     bc.admissions()
-    .deleteLeadsBulk(idsArr)
+    .deleteStudentBulk(idsArr)
     .then((d) => d)
     .then(() => {
         props.selectedRows.data = [];
@@ -46,7 +48,7 @@ const BulkDelete = (props) => {
     .catch((r) => r);
   };
   return (
-    <div className={classes.iconContainer}>
+      <>
       <Tooltip title={"Delete ALL"}>
         <IconButton className={classes.iconButton}>
           <DeleteIcon
@@ -93,7 +95,7 @@ const BulkDelete = (props) => {
         </form>
       </Dialog>
       {/* Dialog */}
-    </div>
+      </>
   );
 };
 

@@ -335,7 +335,6 @@ const Leads = () => {
                     items={items.results}
                     key={items.results}
                     history={history}
-                    id={"leads"}
                     reRender={handleLoadingData}
                   />
                 );
