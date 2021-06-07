@@ -119,9 +119,6 @@ const Layout1Topbar = () => {
               <Icon>menu</Icon>
             </IconButton>
 
-            <div className="hide-on-mobile">
-              {open ? <MediaDialog openDialog={open} onClose={()=> setOpen(false)}/> : null}
-            </div>
           </div>
           <div className="flex items-center">
             {/* <MatxSearchBox />
