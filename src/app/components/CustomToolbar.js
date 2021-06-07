@@ -13,7 +13,6 @@ import {
   DialogActions,
   IconButton,
 } from "@material-ui/core";
-import CustomToolbarSelectCertificates from "./CertificateCustomToolbar";
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -165,12 +164,6 @@ const CustomToolbarSelect = (props) => {
           <GroupAddIcon className={classes.icon} />
         </IconButton>
       </Tooltip>
-      <CustomToolbarSelectCertificates 
-        selectedRows={props.selectedRows}
-        displayData={props.displayData}
-        setSelectedRows={props.setSelectedRows}
-        items={props.items}
-      />
       {/* Dialog */}
       <Dialog
         open={openDialog}

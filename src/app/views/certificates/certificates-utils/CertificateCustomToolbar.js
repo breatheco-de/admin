@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { withStyles } from "@material-ui/core/styles";
-import bc from "../services/breathecode";
+import bc from "app/services/breathecode";
 import {
   Tooltip,
   IconButton,
@@ -18,7 +18,7 @@ const defaultToolbarSelectStyles = {
 };
 
 const CustomToolbarSelectCertificates = (props) => {
-  const { classes, reRender } = props;
+  const { classes } = props;
   const [bulkCertificates, setBulkCertificates] = useState([])
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const CustomToolbarSelectCertificates = (props) => {
       <Tooltip title={"Re-attemps certificates"}>
         <IconButton className={classes.iconButton} onClick={() => {
             bc.certificates().addBulkCertificates(bulkCertificates)
-            props.setSelectedRows(props.selectedRows.data = [])
+            props.setSelectedRows([])
             setBulkCertificates([]);}}>
             <PostAddIcon className={classes.icon} />
         </IconButton>

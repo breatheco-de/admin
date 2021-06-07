@@ -167,10 +167,8 @@ export const SmartMUIDataTable = (props) => {
         },
 
         customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-          
           let children = null;
           if(props.options?.customToolbarSelect) children = props.options.customToolbarSelect(selectedRows, displayData, setSelectedRows);
-          console.log("these are the children", children)
           return (
             <StyledDefaultToobar
               selectedRows={selectedRows}
