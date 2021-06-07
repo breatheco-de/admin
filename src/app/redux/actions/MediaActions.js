@@ -16,7 +16,9 @@ export const getProductList = (pagination) => (dispatch) => {
        pagination: {
          count:res.data.count, 
          ...pagination
-       }
+       },
+       next: res.data.next,
+       previous: res.data.previous
       }
    }))
 };
@@ -43,7 +45,7 @@ export const uploadFiles = (files) => (dispatch) => {
 export const updateFileInfo = (id,values) => (dispatch) => {
   bc.media().updateMedia(id, values).then(res => dispatch({
     type:UPDATE_MEDIA_FILE,
-    payload: res.data
+    payload: res
   }))
 }
 

@@ -10,7 +10,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "../../../services/breathecode";
-import { formatISO, subDays } from 'date-fns';
+import { formatISO } from 'date-fns';
 
 makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -36,7 +36,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                     kickoff_date: startDate,
                     never_ends: never_ends
                 }}
-                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`, ending_date: subDays(values.ending_date, 1),  kickoff_date: subDays(values.kickoff_date, 1)   })}
+                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`})}
                 enableReinitialize={true}
             >
                 {({
@@ -83,7 +83,6 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     }}
                                     width={"100%"}
                                     initialValue={cert}
-                                    className="mr-2 ml-2"
                                     asyncSearch={() => bc.admissions().getCertificates()}
                                     size={"small"}
                                     label="Certificate"
@@ -143,7 +142,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         autoOk={true}
                                         value={values.kickoff_date}
                                         format="yyyy-MM-dd"
-                                        onChange={(date) => setFieldValue("kickoff_date", date)}
+                                        onChange={(date) => setFieldValue("kickoff_date", date.toISOString())}
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
@@ -165,7 +164,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         format="yyyy-MM-dd"
                                         onChange={(date) => {
                                             console.log(date);
-                                            setFieldValue("ending_date",  date)
+                                            setFieldValue("ending_date",date.toISOString())
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>

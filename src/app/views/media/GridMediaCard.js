@@ -31,12 +31,16 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       },
     },
   },
+  img: {
+    objectFit: "cover",
+    height: "200px"
+  }
 }));
 
 const GridMediaCard = ({ media, onOpenDialog }) => {
   const classes = useStyles();
   const type = {
-    pdf:'https://image.freepik.com/free-vector/illustration-folder-icon_53876-5845.jpg',
+    pdf:'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png',
     video:'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732'
   }
 
@@ -50,9 +54,9 @@ const GridMediaCard = ({ media, onOpenDialog }) => {
         <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
           <Icon>mode_edit</Icon>
         </span>
-        <img className="w-full" src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.thumbnail} alt={media.slug} />
+        <img className={clsx("w-full", classes.img)} src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.thumbnail} alt={media.slug} />
       </div>
-      <div className="p-6" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h5 className="m-0">{media.name}</h5></div>
+      <div className="p-2" style={{position:"absolute", bottom:0, background:"white", width:"100%"}}><h6 className="m-0">{media.name}</h6></div>
     </Card>
   );
 };

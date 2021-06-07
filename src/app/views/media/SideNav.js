@@ -144,8 +144,7 @@ const Sidenav = ({
         <DialogTitle id="simple-dialog-title">New Category</DialogTitle>
         <Formik
           initialValues={{
-            name:'',
-            slug:''
+            name:''
           }}
           onSubmit={(values) => {
             setDialog(false)

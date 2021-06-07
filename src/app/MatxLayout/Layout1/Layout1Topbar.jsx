@@ -10,15 +10,13 @@ import {
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
-import { MatxMenu, MatxSearchBox } from "matx";
+import { MatxMenu} from "matx";
 import { Link } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { merge } from "lodash";
 import clsx from "clsx";
 import useAuth from "app/hooks/useAuth";
 import history from "history.js";
-import bc from "app/services/breathecode";
-import MediaDialog from "../../components/MediaDialog";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
@@ -76,8 +74,7 @@ const Layout1Topbar = () => {
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
   const fixed = settings?.layout1Settings?.topbar?.fixed;
-  const [open, setOpen] = React.useState(false);
-
+  
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(
       setLayoutSettings(
