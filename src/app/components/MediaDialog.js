@@ -10,12 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     getProductList,
     getCategoryList,
-    updateFileInfo,
-    deleteFile,
-    createCategory
 } from "../redux/actions/MediaActions";
 import { debounce } from "lodash";
 import {toast} from 'react-toastify';
+import clsx from "clsx";
 
 toast.configure();
 const toastOption = {
@@ -61,11 +59,18 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
     },
     appBar: {
-        position: "relative"
+        position: "relative",
+        background:"white"
     },
     title: {
         marginLeft: theme.spacing(2),
-        flex: 1
+        flex: 1,
+        color:"black"
+    },
+    hover: {
+        "&:hover": {
+              opacity: 1
+        }
     }
 }));
 
@@ -73,12 +78,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function MediaDialog({ openDialog, onClose }) {
+export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
     const classes = useStyles();
     const { productList = [] } = useSelector((state) => state.ecommerce);
     const { categoryList = [] } = useSelector((state) => state.ecommerce);
+    const { next = ""} = useSelector((state) => state.ecommerce);
+    const { previous = "" } = useSelector((state) => state.ecommerce);
     const { pagination } = useSelector((state) => state.ecommerce);
-    const [category, setCategories] = useState("all");
+    const [category, setCategories] = useState([]);
     const [query, setQuery] = useState("");
     const [type, setType] = useState("all");
     const [sort, setSort] = useState("default");
@@ -88,6 +95,11 @@ export default function MediaDialog({ openDialog, onClose }) {
         setQuery(query);
         search(query);
     };
+
+    const calculateParams = (str, query) => {
+        const params = new URLSearchParams(str);
+        return params.get(query);
+    }
 
     const search = useCallback(
         debounce((query) => {
@@ -117,13 +129,13 @@ export default function MediaDialog({ openDialog, onClose }) {
 
     const handleCategory = (value) => {
         setCategories(value);
-        if (value === "all") {
+        if (value.length < 1) {
             delete pagination['categories'];
             dispatch(getProductList(pagination));
             return;
         }
         dispatch(getProductList({
-            ...pagination, categories: value
+            ...pagination, categories: value.join(",")
         }));
     }
 
@@ -139,15 +151,19 @@ export default function MediaDialog({ openDialog, onClose }) {
     }
 
     const handleNext = () => {
-        const pages = Math.ceil(pagination.count/pagination.limit);
-        const currentPage = Math.ceil(pagination.offset / pagination.count);
-        dispatch(getProductList({
-            ...pagination, 
-        }));
+        if(next !== null){
+            dispatch(getProductList({
+                ...pagination, offset:calculateParams(next, "offset")
+            }));
+        } 
     }
 
     const handlePrevious = () => {
-        
+        if(previous !== null){
+            dispatch(getProductList({
+                ...pagination, offset:calculateParams(previous, "offset")
+            }));
+        } 
     }
 
     useEffect(() => {
@@ -166,7 +182,6 @@ export default function MediaDialog({ openDialog, onClose }) {
                 <Toolbar style={{padding:"24px"}}>
                     <IconButton
                         edge="start"
-                        color="inherit"
                         onClick={onClose}
                         aria-label="Close"
                     >
@@ -181,6 +196,7 @@ export default function MediaDialog({ openDialog, onClose }) {
                             labelId="category"
                             id="demo-controlled-open-select"
                             value={category}
+                            multiple
                             onChange={(e) => handleCategory(e.target.value)}
                         >
                             {categoryList.map((c) => (
@@ -188,9 +204,6 @@ export default function MediaDialog({ openDialog, onClose }) {
                                     {c.name}
                                 </MenuItem>
                             ))}
-                            <MenuItem value={"all"}>
-                                All
-                            </MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl className={classes.formControl}>
@@ -236,29 +249,28 @@ export default function MediaDialog({ openDialog, onClose }) {
                             onChange={(e) => handleSearch(e.target.value)}
                         />
                     </FormControl>
-                    <Tooltip title="Previous Page">
-                       <IconButton>
-                            <Icon>keyboard_arrow_left</Icon>
-                        </IconButton> 
-                    </Tooltip>
-                    <Tooltip title="Next Page">
-                        <IconButton>
-                            <Icon>keyboard_arrow_right</Icon>
-                        </IconButton>  
-                    </Tooltip>
                 </Toolbar>
             </AppBar>
             <div >
                 <GridList cellHeight={200}>
                     {productList.map((media) => (
-                        <GridListTile key={media.img} style={{ width: "10%", cursor:"pointer" }} rows={1} onClick={()=> {
-                            navigator.clipboard.writeText(media.url)
-                            toast.success('Url Copied', toastOption)
-                        }}>
-                            <img src={media.url} alt={media.name} />
+                        <GridListTile key={media.slug} style={{ width: "10%", cursor:"pointer" }} rows={1} onClick={()=> { setUrl(name, media.url); onClose()}} className={clsx("", classes.hover)}>
+                            <img src={media.thumbnail} alt={media.name} />
                         </GridListTile>
                     ))}
                 </GridList>
+                <div style={{position:"absolute", bottom:0, right:"10px"}}>
+                    <Tooltip title="Previous Page">
+                        <IconButton onClick={() => handlePrevious()}>
+                            <Icon>keyboard_arrow_left</Icon>
+                        </IconButton> 
+                    </Tooltip>
+                    <Tooltip title="Next Page">
+                        <IconButton onClick={() => handleNext()}>
+                            <Icon>keyboard_arrow_right</Icon>
+                        </IconButton>  
+                    </Tooltip>  
+                </div>
             </div>
         </Dialog>
     );

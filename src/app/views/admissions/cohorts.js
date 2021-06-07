@@ -117,6 +117,10 @@ const Cohorts = () => {
         filterList: query.get("stage") !== null ? [query.get("stage")] : [],
         customBodyRenderLite: (dataIndex) => {
           let item = items[dataIndex];
+          console.log(
+            "for kickoffdate:",
+            dayjs().isBefore(dayjs(item?.kickoff_date))
+          );
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -128,14 +132,12 @@ const Cohorts = () => {
                   {item?.stage}
                 </small>
                 <br />
-                {((dayjs().isBefore(dayjs(item?.kickoff_date)) &&
-                  ["INACTIVE", "PREWORK"].includes(item?.stage)) ||
-                  (dayjs().isAfter(dayjs(item?.ending_date)) &&
-                    !["ENDED", "DELETED"].includes(item?.stage))) && (
-                  <small className='text-warning pb-2px'>
-                    <Icon>error</Icon>Out of sync
-                  </small>
-                )}
+                {dayjs().isAfter(dayjs(item?.ending_date)) &&
+                  !["ENDED", "DELETED"].includes(item?.stage) && (
+                    <small className='text-warning pb-2px'>
+                      <Icon>error</Icon>Out of sync
+                    </small>
+                  )}
               </div>
             </div>
           );
@@ -150,10 +152,16 @@ const Cohorts = () => {
         filterList: query.get("slug") !== null ? [query.get("slug")] : [],
         customBodyRenderLite: (i) => {
           let item = items[i];
+          console.log("this is an item", item);
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
-                <h5 className='my-0 text-15'>{item?.name}</h5>
+                <Link
+                  to={"/admissions/cohorts/" + item.slug}
+                  style={{ textDecoration: "underline" }}
+                >
+                  <h5 className='my-0 text-15'>{item?.name}</h5>
+                </Link>
                 <small className='text-muted'>{item?.slug}</small>
               </div>
             </div>
@@ -189,7 +197,7 @@ const Cohorts = () => {
         filter: true,
         filterList:
           query.get("certificate") !== null ? [query.get("certificate")] : [],
-        customBodyRenderLite: (i) => items[i].certificate?.name,
+        customBodyRenderLite: (i) => items[i].syllabus.certificate?.name,
       },
     },
     {
@@ -203,11 +211,6 @@ const Cohorts = () => {
             <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
               <IconButton>
                 <Icon>edit</Icon>
-              </IconButton>
-            </Link>
-            <Link to='/pages/view-customer'>
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Link>
           </div>
