@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DownloadCsv } from "../../components/DownloadCsv";
-import  BulkDelete  from "../../components/BulkDelete";
+import BulkDelete from "../../components/ToolBar/BulkDelete";
 import CustomToolbar from "../../components/CustomToolbar";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
