@@ -75,22 +75,6 @@ export const SmartMUIDataTable = (props) => {
 
   useEffect(() => {
     loadData();
-    // setIsLoading(true);
-    // props
-    //   .search(querys)
-    //   .then((data) => {
-    //     setIsLoading(false);
-    //     if (isAlive) {
-    //       setItems(data.results);
-    //       setTable({ count: data.count });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setIsLoading(false);
-    //   });
-    // return () => {
-    //   setIsAlive(false);
-    // };
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
