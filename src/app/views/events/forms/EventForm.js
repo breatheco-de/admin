@@ -15,6 +15,7 @@ import { useParams, useHistory } from "react-router-dom";
 import bc from "app/services/breathecode";
 import dayjs from "dayjs";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
+import {MediaInput} from "../../../components/MediaInput"
 
 //Timezone plugin
 let utc = require('dayjs/plugin/utc')
@@ -143,95 +144,101 @@ const EventForm = () => {
                     }) => (
                         <form className="p-4" onSubmit={handleSubmit}>
                             <Grid container spacing={3} alignItems="center">
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Event Title
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         label="Event Title"
                                         name="title"
                                         required
                                         size="small"
+                                        fullWidth
                                         variant="outlined"
                                         value={values.title}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Banner URL
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
-                                    <TextField
-                                        label="Banner URL"
-                                        name="banner"
-                                        size="small"
-                                        variant="outlined"
-                                        value={values.banner}
-                                        onChange={handleChange}
+                                <Grid item md={3} sm={8} xs={12}>
+                                    <MediaInput 
+                                        size="small" 
+                                        placeholder="Banner URL"
+                                        value={values.banner} 
+                                        handleChange={setFieldValue} 
+                                        name={"url"} 
+                                        fullWidth 
+                                        inputProps={{style:{padding:"10px"}}}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Landing URL
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
-                                    <TextField
-                                        label="Landing URL"
-                                        name="url"
-                                        size="small"
-                                        variant="outlined"
-                                        value={values.url}
-                                        onChange={handleChange}
+                                <Grid item md={3} sm={8} xs={12}>
+                                    <MediaInput
+                                        placeholder="Landing URL"
+                                        size="small" 
+                                        value={values.url} 
+                                        handleChange={setFieldValue} 
+                                        name={"url"} 
+                                        fullWidth 
+                                        inputProps={{style:{padding:"10px"}}}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Capacity
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         label="Capacity"
                                         name="capacity"
                                         size="small"
                                         type="number"
                                         required
+                                        fullWidth
                                         variant="outlined"
                                         value={values.capacity}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Starting At
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         className="min-w-188"
                                         name="starting_at"
                                         size="small"
                                         required
+                                        fullWidth
                                         variant="outlined"
                                         type="datetime-local"
                                         value={values.starting_at}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Ending At
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         className="min-w-188"
                                         name="ending_at"
                                         size="small"
                                         required
+                                        fullWidth
                                         type="datetime-local"
                                         variant="outlined"
                                         value={values.ending_at}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Language
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <div className="flex flex-wrap m--2">
                                         <TextField
                                             className="m-2 min-w-188"
@@ -241,6 +248,7 @@ const EventForm = () => {
                                             required
                                             variant="outlined"
                                             select
+                                            fullWidth
                                             value={values.lang}
                                             onChange={handleChange}
                                         >
@@ -252,70 +260,73 @@ const EventForm = () => {
                                         </TextField>
                                     </div>
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Host
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         label="Host"
                                         name="host"
                                         size="small"
+                                        fullWidth
                                         variant="outlined"
                                         value={values.host}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Venue
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <AsyncAutocomplete
                                         onChange={(venue) => setVenue(venue)}
-                                        width={"50%"}
                                         asyncSearch={() => bc.events().getAcademyVenues()}
                                         size={"small"}
                                         label="Venue"
+                                        debounced={false}
                                         required={false}
                                         getOptionLabel={option => `${option.title}`}
                                         value={venue} />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Event Type
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                 <AsyncAutocomplete
                                         onChange={(eventType) => setEventType(eventType)}
-                                        width={"50%"}
                                         asyncSearch={() => bc.events().getAcademyEventType()}
                                         size={"small"}
+                                        debounced={false}
                                         label="Event type"
                                         required={true}
                                         getOptionLabel={option => `${option.name}`}
                                         value={eventType} />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Event Description
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         label="Event Description"
                                         name="description"
                                         size="small"
                                         multiline
                                         required
+                                        fullWidth
                                         variant="outlined"
                                         value={values.description}
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Short description
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <TextField
                                         label="Short Description"
                                         name="excerpt"
                                         size="small"
+                                        fullWidth
                                         multiline
                                         required
                                         variant="outlined"
@@ -323,10 +334,10 @@ const EventForm = () => {
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item md={2} sm={4} xs={12}>
+                                <Grid item md={1} sm={4} xs={12}>
                                     Online Event
                                 </Grid>
-                                <Grid item md={4} sm={8} xs={12}>
+                                <Grid item md={3} sm={8} xs={12}>
                                     <Checkbox
                                         checked={values.online_event}
                                         onChange={handleChange}

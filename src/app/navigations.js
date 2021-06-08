@@ -57,18 +57,6 @@ export const navigations = [
         ],
     },
     {
-        name: "Media",
-        icon: "collections",
-        beta: true,
-        children: [
-            {
-                name: "Gallery",
-                path: "/media/gallery",
-                iconText: "OL",
-            },
-        ],
-    },
-    {
         name: "Feedback",
         icon: "record_voice_over",
         children: [
@@ -85,7 +73,6 @@ export const navigations = [
             },
         ],
     },
-
     {
         name: "Events & Workshops",
         icon: "event",
@@ -113,6 +100,11 @@ export const navigations = [
         path: "/certificates",
         name: "Certificates",
         icon: "card_membership",
+    },
+    {
+        name: "Media Gallery",
+        icon: "collections",
+        path: "/media/gallery",
     },
     {
         beta: true,

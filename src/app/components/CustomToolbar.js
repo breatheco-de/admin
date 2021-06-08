@@ -1,7 +1,7 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
-import  BulkDelete  from "../components/BulkDelete";
+import BulkDelete from "../components/BulkDelete";
 import AddBulkToCohort from "../components/AddBulkToCohort";
 
 const defaultToolbarSelectStyles = {
@@ -20,24 +20,14 @@ const CustomToolbarSelect = (props) => {
   return (
     <div className={classes.iconContainer}>
       <BulkDelete
-                    selectedRows={props.selectedRows}
-                    displayData={props.displayData}
-                    setSelectedRows={props.setSelectedRows}
-                    items={props.items}
-                    key={props.key}
-                    history={props.history}
-                    // reRender={handleLoadingData}
-                  />
-      <AddBulkToCohort
-                    selectedRows={props.selectedRows}
-                    displayData={props.displayData}
-                    setSelectedRows={props.setSelectedRows}
-                    items={props.items}
-                    key={props.key}
-                    history={props.history}
-                    // reRender={handleLoadingData}
-                  />
-      
+        selectedRows={props.selectedRows}
+        displayData={props.displayData}
+        setSelectedRows={props.setSelectedRows}
+        items={props.items}
+        key={props.key}
+        history={props.history}
+        // reRender={handleLoadingData}
+      />
     </div>
   );
 };

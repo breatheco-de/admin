@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
-import bc from "../services/breathecode";
+import bc from "../../services/breathecode";
 import {
   DialogTitle,
   Dialog,
@@ -22,7 +22,7 @@ const defaultToolbarSelectStyles = {
 };
 
 const BulkDelete = (props) => {
-  const { classes, setSelectedRows, onChange } = props;
+  const { classes, onBulkDelete, setSelectedRows } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [idsArr, setIdsArr] = useState([]);
 
@@ -36,26 +36,18 @@ const BulkDelete = (props) => {
 
   const deleteBulkEntities = (e) => {
     e.preventDefault();
-    console.log("delete bulk entities");
     bc.admissions()
       .deleteStudentBulk(idsArr)
       .then((d) => {
-        console.log(-1, d);
         setOpenDialog(false);
         if (d.status >= 200 && d.status < 300) {
           setSelectedRows([]);
-          console.log(0);
-
-          if (onChange) {
-            onChange();
-            console.log(1);
-          }
+          if (onBulkDelete) onBulkDelete();
           return true;
         }
         throw Error("Items could not be deleted");
       })
       .catch((r) => {
-        console.log("catch", r);
         setOpenDialog(false);
         return r;
       });

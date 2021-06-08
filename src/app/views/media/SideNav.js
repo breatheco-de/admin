@@ -120,12 +120,12 @@ const Sidenav = ({
               </small>*/}
             </div>
           ))}
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             className="w-full"
             onClick={() => setDialog(true)}
-          >Add Category</Button>
+          >Add Category</Button> */}
         </Card>
         <Button
           variant="contained"
@@ -144,8 +144,7 @@ const Sidenav = ({
         <DialogTitle id="simple-dialog-title">New Category</DialogTitle>
         <Formik
           initialValues={{
-            name:'',
-            slug:''
+            name:''
           }}
           onSubmit={(values) => {
             setDialog(false)

@@ -83,6 +83,12 @@ export function AsyncAutocomplete(props) {
             {...params}
             label={label}
             fullWidth
+            onKeyPress={e => {
+              if(e.key=="Enter"){
+                e.preventDefault()
+                return false;
+              }
+            }}
             onChange={(e) => {
               setSearchTerm(e.target.value);
             }}

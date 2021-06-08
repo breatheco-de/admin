@@ -10,7 +10,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "../../../services/breathecode";
-import { formatISO, subDays } from 'date-fns';
+import { formatISO } from 'date-fns';
 
 makeStyles(({ palette, ...theme }) => ({
     avatar: {
@@ -18,8 +18,9 @@ makeStyles(({ palette, ...theme }) => ({
         boxShadow: theme.shadows[3],
     },
 }));
-const { academy } = JSON.parse(localStorage.getItem("bc-session"));
+
 const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends, isPrivate }) => {
+    const { academy } = JSON.parse(localStorage.getItem("bc-session"));
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
     return (
@@ -36,7 +37,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                     kickoff_date: startDate,
                     never_ends: never_ends
                 }}
-                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`, ending_date: subDays(values.ending_date, 1),  kickoff_date: subDays(values.kickoff_date, 1)   })}
+                onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}`})}
                 enableReinitialize={true}
             >
                 {({
@@ -52,11 +53,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <Grid container spacing={3} alignItems="center">
-                            {isPrivate ?<Grid item md={12} sm={12} xs={12}>
+                            {isPrivate && <Grid item md={12} sm={12} xs={12}>
                                 <Alert severity="warning" >
                                     <AlertTitle className="m-auto">This cohort is private</AlertTitle>
                                 </Alert>
-                            </Grid>: null}
+                            </Grid>}
                             <Grid item md={3} sm={4} xs={12}>
                                 Cohort Slug
                                 </Grid>
@@ -83,7 +84,6 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                     }}
                                     width={"100%"}
                                     initialValue={cert}
-                                    className="mr-2 ml-2"
                                     asyncSearch={() => bc.admissions().getCertificates()}
                                     size={"small"}
                                     label="Certificate"
@@ -143,7 +143,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         autoOk={true}
                                         value={values.kickoff_date}
                                         format="yyyy-MM-dd"
-                                        onChange={(date) => setFieldValue("kickoff_date", date)}
+                                        onChange={(date) => setFieldValue("kickoff_date", date.toISOString())}
                                     />
                                 </MuiPickersUtilsProvider>
                             </Grid>
@@ -165,7 +165,7 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                                         format="yyyy-MM-dd"
                                         onChange={(date) => {
                                             console.log(date);
-                                            setFieldValue("ending_date",  date)
+                                            setFieldValue("ending_date",date.toISOString())
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>

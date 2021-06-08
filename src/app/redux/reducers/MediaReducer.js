@@ -11,7 +11,9 @@ const initialState = {
   productList: [],
   categoryList: [],
   refresh: false,
-  pagination: {}
+  pagination: {},
+  next: null,
+  previous: null
 };
 
 const MediaReducer = function (state = initialState, action) {
@@ -21,6 +23,8 @@ const MediaReducer = function (state = initialState, action) {
         ...state,
         productList: [...action.payload.results],
         refresh: false,
+        next: action.payload.next,
+        previous:action.payload.previous,
         pagination: action.payload.pagination
       };
     }
@@ -45,7 +49,7 @@ const MediaReducer = function (state = initialState, action) {
     case DELETE_MEDIA_FILE: {
       return {
         ...state,
-        refresh: true
+        refresh: true,
       }
     }
     case CREATE_CATEGORY: {
