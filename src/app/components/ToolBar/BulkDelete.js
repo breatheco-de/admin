@@ -22,7 +22,7 @@ const defaultToolbarSelectStyles = {
 };
 
 const BulkDelete = (props) => {
-  const { classes, reRender, setSelectedRows } = props;
+  const { classes, onBulkDelete, setSelectedRows } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [idsArr, setIdsArr] = useState([]);
 
@@ -31,29 +31,29 @@ const BulkDelete = (props) => {
   }, [props.selectedRows]);
 
   useEffect(() => {
-    setIdsArr(selected.map(item => props.items[item].id))
+    setIdsArr(selected.map((item) => props.items[item].id));
   }, [selected]);
 
   const deleteBulkEntities = (e) => {
     e.preventDefault();
     bc.admissions()
       .deleteStudentBulk(idsArr)
-        .then((d) => {
-          setOpenDialog(false)
-          if(d.status >= 200 && d.status < 300){
-            setSelectedRows([]);
-            if(reRender) reRender();
-            return true;
-          }
-          throw Error("Items could not be deleted")
-        })
-        .catch((r) => {
-          setOpenDialog(false)
-          return r
-        });
+      .then((d) => {
+        setOpenDialog(false);
+        if (d.status >= 200 && d.status < 300) {
+          setSelectedRows([]);
+          if (onBulkDelete) onBulkDelete();
+          return true;
+        }
+        throw Error("Items could not be deleted");
+      })
+      .catch((r) => {
+        setOpenDialog(false);
+        return r;
+      });
   };
   return (
-      <>
+    <>
       <Tooltip title={"Delete ALL"}>
         <IconButton className={classes.iconButton}>
           <DeleteIcon
@@ -90,20 +90,18 @@ const BulkDelete = (props) => {
               color='primary'
               type='submit'
               autoFocus
-              onClick={(e) =>
-                 deleteBulkEntities(e)
-              }
+              onClick={(e) => deleteBulkEntities(e)}
             >
-               Yes
+              Yes
             </Button>
           </DialogActions>
         </form>
       </Dialog>
       {/* Dialog */}
-      </>
+    </>
   );
 };
 
 export default withStyles(defaultToolbarSelectStyles, {
-    name: "BulkDelete",
-  })(BulkDelete);
+  name: "BulkDelete",
+})(BulkDelete);
