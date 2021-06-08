@@ -68,13 +68,13 @@ export const SmartMUIDataTable = (props) => {
       .catch((error) => {
         setIsLoading(false);
       });
-    return () => {
-      setIsAlive(false);
-    };
   };
 
   useEffect(() => {
     loadData();
+    return () => {
+      setIsAlive(false);
+    };
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
