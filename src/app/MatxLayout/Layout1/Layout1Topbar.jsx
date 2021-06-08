@@ -119,17 +119,6 @@ const Layout1Topbar = () => {
               <Icon>menu</Icon>
             </IconButton>
 
-            <div className="hide-on-mobile">
-              
-              <IconButton>
-                <Switch
-                    onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}
-                    checked={settings.beta}
-                    color="secondary"
-                    size="small"
-                />
-              </IconButton>
-            </div>
           </div>
           <div className="flex items-center">
             {/* <MatxSearchBox />
@@ -156,6 +145,17 @@ const Layout1Topbar = () => {
                    <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
                     <p className="m-0 w-100"><small className="d-block">Role: {user.role.role || user.role}</small></p>
                 </div>
+              </MenuItem>
+              <MenuItem>
+                <IconButton>
+                  <Switch
+                      onChange={() => console.log("settings", settings) || updateSettings({ beta: !settings.beta })}
+                      checked={settings.beta}
+                      color="secondary"
+                      size="small"
+                  />
+                </IconButton>
+                <span className="pl-4"> Beta features </span>
               </MenuItem>
               <MenuItem>
                 <Link className={classes.menuItem} to="/">
