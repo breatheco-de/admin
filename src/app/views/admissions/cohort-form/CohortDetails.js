@@ -18,8 +18,9 @@ makeStyles(({ palette, ...theme }) => ({
         boxShadow: theme.shadows[3],
     },
 }));
-const { academy } = JSON.parse(localStorage.getItem("bc-session"));
+
 const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus, never_ends, isPrivate }) => {
+    const { academy } = JSON.parse(localStorage.getItem("bc-session"));
     const [cert, setCert] = useState(syllabus?.certificate);
     const [version, setVersion] = useState(syllabus);
     return (
@@ -52,11 +53,11 @@ const CohortDetails = ({ slug, endDate, startDate, language, onSubmit, syllabus,
                 }) => (
                     <form className="p-4" onSubmit={handleSubmit}>
                         <Grid container spacing={3} alignItems="center">
-                            {isPrivate ?<Grid item md={12} sm={12} xs={12}>
+                            {isPrivate && <Grid item md={12} sm={12} xs={12}>
                                 <Alert severity="warning" >
                                     <AlertTitle className="m-auto">This cohort is private</AlertTitle>
                                 </Alert>
-                            </Grid>: null}
+                            </Grid>}
                             <Grid item md={3} sm={4} xs={12}>
                                 Cohort Slug
                                 </Grid>
