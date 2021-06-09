@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import bc from "../../services/breathecode";
 import { toast } from "react-toastify";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
+import AddBulkToCohort from "./student-form/student-utils/AddBulkToCohort"
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -193,7 +194,12 @@ const Students = () => {
           <SmartMUIDataTable
             title='All Students'
             columns={columns}
-            data={items}
+            items={items}
+            options={{
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+                return <AddBulkToCohort selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={items} />
+              }
+            }}
             search={async (querys) => {
               const { data } = await bc.auth().getAcademyStudents(querys);
               setItems(data.results);

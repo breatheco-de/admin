@@ -3,11 +3,33 @@ import { useQuery } from "../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import CustomToolbar from "./CustomToolbar";
+import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
 import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
 
 import { DownloadCsv } from "./DownloadCsv";
+import BulkDelete from "./ToolBar/BulkDelete"
+
+const defaultToolbarSelectStyles = {
+  iconButton: {},
+  iconContainer: {
+    marginRight: "24px",
+  },
+  inverseIcon: {
+    transform: "rotate(90deg)",
+  },
+};
+
+const DefaultToobar = ({ children, ...props }) => {
+  return <div className={props.classes.iconContainer}>
+      <BulkDelete {...props} />
+      {children}
+    </div>
+}
+
+const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
+  name: "SmartMUIDataTable",
+})(DefaultToobar);
 
 export const SmartMUIDataTable = (props) => {
   const [isAlive, setIsAlive] = useState(true);
@@ -84,7 +106,7 @@ export const SmartMUIDataTable = (props) => {
   return (
     <MUIDataTable
       title={props.title}
-      data={props.data}
+      data={props.items}
       columns={props.columns}
       options={{
         download: false,
@@ -145,17 +167,19 @@ export const SmartMUIDataTable = (props) => {
         },
 
         customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+          
+          let children = null;
+          if(props.options?.customToolbarSelect) children = props.options.customToolbarSelect(selectedRows, displayData, setSelectedRows);
+          console.log("these are the children", children)
           return (
-            <CustomToolbar
+            <StyledDefaultToobar
               selectedRows={selectedRows}
               displayData={displayData}
               setSelectedRows={setSelectedRows}
-              items={props.data}
-              key={props.data}
-              history={history}
-              id={"students"}
-              // missing re-render function as other view has
-            />
+              items={props.items}
+            >
+              {children}
+            </StyledDefaultToobar>
           );
         },
 
@@ -223,7 +247,9 @@ export const SmartMUIDataTable = (props) => {
 
 SmartMUIDataTable.propTypes = {
   title: PropTypes.string,
-  data: PropTypes.any,
+  items: PropTypes.any,
   columns: PropTypes.any,
   search: PropTypes.any,
+  options: PropTypes.object,
 };
+
