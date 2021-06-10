@@ -56,6 +56,10 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
   useEffect(() => {
     getCohortStudents();
+  }, []);
+
+  useEffect(() => {
+    onLoadMoreStudents();
   }, [queryOffset]);
 
   const changeStudentStatus = (value, name, studentId, i) => {
@@ -80,6 +84,26 @@ const CohortStudents = ({ slug, cohort_id }) => {
   };
 
   const getCohortStudents = () => {
+    let currentStudentList = studenList;
+    setIsLoading(true);
+    let query = {
+      cohorts: slug,
+      limit: queryLimit,
+      offset: 0,
+    };
+    bc.admissions()
+      .getAllUserCohorts(query)
+      .then(({ data }) => {
+        setIsLoading(false);
+        data.results.length < 1
+          ? setStudentsList(currentStudentList)
+          : setStudentsList(data.results);
+      })
+      .catch((error) => error);
+  };
+
+  const onLoadMoreStudents = () => {
+    let currentStudentList = studenList;
     setIsLoading(true);
     let query = {
       cohorts: slug,
@@ -89,10 +113,9 @@ const CohortStudents = ({ slug, cohort_id }) => {
     bc.admissions()
       .getAllUserCohorts(query)
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
-        data.length < 1
-          ? setStudentsList([])
+        data.results.length < 1
+          ? setStudentsList(currentStudentList)
           : setStudentsList([...studenList, ...data.results]);
         setHasMore(data.results.length > 0);
       })
@@ -100,6 +123,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
   };
 
   const addUserToCohort = (user_id) => {
+    if (!hasMore) setHasMore(true);
     bc.admissions()
       .addUserCohort(cohort_id, {
         user: user_id,
@@ -181,113 +205,137 @@ const CohortStudents = ({ slug, cohort_id }) => {
       <div className='overflow-auto'>
         {isLoading && <MatxLoading />}
         <div className='min-w-600'>
-          {studenList.map((s, i) => (
-            <div key={i} className='py-4'>
-              <Grid container alignItems='center'>
-                <Grid item lg={6} md={6} sm={6} xs={6}>
-                  <div className='flex'>
-                    <Avatar
-                      className={clsx(
-                        "h-full w-full mb-6 mr-2",
-                        classes.avatar
-                      )}
-                      src={
-                        s.user.profile !== undefined
-                          ? s.user.profile.avatar_url
-                          : ""
-                      }
-                    />
-                    <div className='flex-grow'>
-                      <Link to={`/admissions/students/${s.user.id}`}>
-                        <h6 className='mt-0 mb-0 text-15 text-primary'>
-                          {s.user.first_name} {s.user.last_name}
-                        </h6>
-                      </Link>
-                      <p className='mt-0 mb-6px text-13'>
-                        <span className='font-medium'>{s.created_at}</span>
-                      </p>
-                      <p className='mt-0 mb-6px text-13'>
-                        <small
-                          onClick={() => {
-                            setRoleDialog(true);
-                            setCurrentStd({
-                              id: s.user.id,
-                              positionInArray: i,
-                            });
-                          }}
-                          className={"border-radius-4 px-2 pt-2px bg-secondary"}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {s.role}
-                        </small>
-                      </p>
+          {studenList.length > 0 &&
+            studenList.map((s, i) => (
+              <div key={i} className='py-4'>
+                <Grid container alignItems='center'>
+                  <Grid item lg={6} md={6} sm={6} xs={6}>
+                    <div className='flex'>
+                      <Avatar
+                        className={clsx(
+                          "h-full w-full mb-6 mr-2",
+                          classes.avatar
+                        )}
+                        src={
+                          s.user.profile !== undefined
+                            ? s.user.profile.avatar_url
+                            : ""
+                        }
+                      />
+                      <div className='flex-grow'>
+                        <Link to={`/admissions/students/${s.user.id}`}>
+                          <h6 className='mt-0 mb-0 text-15 text-primary'>
+                            {s.user.first_name} {s.user.last_name}
+                          </h6>
+                        </Link>
+                        <p className='mt-0 mb-6px text-13'>
+                          <span className='font-medium'>{s.created_at}</span>
+                        </p>
+                        <p className='mt-0 mb-6px text-13'>
+                          <small
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({
+                                id: s.user.id,
+                                positionInArray: i,
+                              });
+                            }}
+                            className={
+                              "border-radius-4 px-2 pt-2px bg-secondary"
+                            }
+                            style={{ cursor: "pointer" }}
+                          >
+                            {s.role}
+                          </small>
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Grid>
-                <Grid item lg={2} md={2} sm={2} xs={2} className='text-center'>
-                  <TextField
-                    className='min-w-100'
-                    label='Finantial Status'
-                    name='finantial_status'
-                    size='small'
-                    variant='outlined'
-                    value={s.finantial_status || ""}
-                    onChange={({ target: { name, value } }) =>
-                      changeStudentStatus(value, name, s.user.id, i)
-                    }
-                    select
+                  </Grid>
+                  <Grid
+                    item
+                    lg={2}
+                    md={2}
+                    sm={2}
+                    xs={2}
+                    className='text-center'
                   >
-                    {["FULLY_PAID", "UP_TO_DATE", "LATE", ""].map(
-                      (item, ind) => (
+                    <TextField
+                      className='min-w-100'
+                      label='Finantial Status'
+                      name='finantial_status'
+                      size='small'
+                      variant='outlined'
+                      value={s.finantial_status || ""}
+                      onChange={({ target: { name, value } }) =>
+                        changeStudentStatus(value, name, s.user.id, i)
+                      }
+                      select
+                    >
+                      {["FULLY_PAID", "UP_TO_DATE", "LATE", ""].map(
+                        (item, ind) => (
+                          <MenuItem value={item} key={item}>
+                            {item}
+                          </MenuItem>
+                        )
+                      )}
+                    </TextField>
+                  </Grid>
+                  <Grid
+                    item
+                    lg={2}
+                    md={4}
+                    sm={2}
+                    xs={2}
+                    className='text-center'
+                  >
+                    <TextField
+                      className='min-w-100'
+                      label='Educational Status'
+                      name='educational_status'
+                      size='small'
+                      variant='outlined'
+                      value={s.educational_status || ""}
+                      onChange={({ target: { name, value } }) =>
+                        changeStudentStatus(value, name, s.user.id, i)
+                      }
+                      select
+                    >
+                      {[
+                        "ACTIVE",
+                        "POSTPONED",
+                        "SUSPENDED",
+                        "GRADUATED",
+                        "DROPPED",
+                        "",
+                      ].map((item, ind) => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
-                      )
-                    )}
-                  </TextField>
-                </Grid>
-                <Grid item lg={2} md={4} sm={2} xs={2} className='text-center'>
-                  <TextField
-                    className='min-w-100'
-                    label='Educational Status'
-                    name='educational_status'
-                    size='small'
-                    variant='outlined'
-                    value={s.educational_status || ""}
-                    onChange={({ target: { name, value } }) =>
-                      changeStudentStatus(value, name, s.user.id, i)
-                    }
-                    select
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid
+                    item
+                    lg={2}
+                    md={2}
+                    sm={2}
+                    xs={2}
+                    className='text-center'
                   >
-                    {[
-                      "ACTIVE",
-                      "POSTPONED",
-                      "SUSPENDED",
-                      "GRADUATED",
-                      "DROPPED",
-                      "",
-                    ].map((item, ind) => (
-                      <MenuItem value={item} key={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    <div className='flex justify-end items-center'>
+                      <IconButton
+                        onClick={() => {
+                          setCurrentStd({ id: s.user.id, positionInArray: i });
+                          setOpenDialog(true);
+                        }}
+                      >
+                        <Icon fontSize='small'>delete</Icon>
+                      </IconButton>
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item lg={2} md={2} sm={2} xs={2} className='text-center'>
-                  <div className='flex justify-end items-center'>
-                    <IconButton
-                      onClick={() => {
-                        setCurrentStd({ id: s.user.id, positionInArray: i });
-                        setOpenDialog(true);
-                      }}
-                    >
-                      <Icon fontSize='small'>delete</Icon>
-                    </IconButton>
-                  </div>
-                </Grid>
-              </Grid>
-            </div>
-          ))}
+              </div>
+            ))}
           <div>
             <Button
               disabled={!hasMore}
