@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import {
     Grid,
     Icon,
-    List,
+    Select,
     ListItem,
     ListItemText,
     DialogTitle,
@@ -87,22 +87,23 @@ const Cohort = () => {
             cohort: slug,
             max_assistants: 2,
             max_teachers: 2,
-            duration: 1,
+            duration: "1 00:00:00",
             send_now: true
         }
     );
-    const [open, setOpen] = useState(false);
+    const [openSurveyDialog, setSurveyDialog] = useState(false);
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setSurveyDialog(true);
     };
 
     const handleClose = () => {
         setCohortDayDialog(false)
-        setOpen(false);
+        setSurveyDialog(false);
     };
 
-    const createSurvey = event => {
+    const updateSurvey = event => {
+        console.log("update survey", event.target.name, event.target.value)
         setNewSurvey({
             ...newSurvey, [event.target.name]: event.target.value
         });
@@ -179,8 +180,8 @@ const Cohort = () => {
                                 ? setStageDialog(true)
                                 : setStageDialog(false)
                             value === "new_survey"
-                                ? setOpen(true)
-                                : setOpen(false)
+                                ? setSurveyDialog(true)
+                                : setSurveyDialog(false)
                             if(value === "privacy"){
                                 makePrivate();
                             }
@@ -363,7 +364,7 @@ const Cohort = () => {
             </Dialog>
             <Dialog
                 onClose={handleClose}
-                open={open}
+                open={openSurveyDialog}
                 aria-labelledby="simple-dialog-title"
             >
                 <DialogTitle id="simple-dialog-title">
@@ -404,7 +405,7 @@ const Cohort = () => {
                                     size="small"
                                     variant="outlined"
                                     defaultValue={newSurvey.max_assistants}
-                                    onChange={createSurvey}
+                                    onChange={updateSurvey}
                                 />
                                 <DialogContentText className={classes.dialogue}>
                                     Max assistants of teachers:
@@ -416,20 +417,25 @@ const Cohort = () => {
                                     size="small"
                                     variant="outlined"
                                     defaultValue={newSurvey.max_teachers}
-                                    onChange={createSurvey}
+                                    onChange={updateSurvey}
                                 />
                                 <DialogContentText className={classes.dialogue}>
                                     Duration:
                                 </DialogContentText>
-                                <TextField
-                                    type="number"
+                                <Select
+                                    native
                                     label="Duration"
                                     name="duration"
-                                    size="small"
                                     variant="outlined"
-                                    defaultValue={newSurvey.duration}
-                                    onChange={createSurvey}
-                                />
+                                    size="small"
+                                    value={newSurvey.duration}
+                                    onChange={updateSurvey}
+                                >
+                                    <option value={"01:00:00"}>1 Hr</option>
+                                    <option value={"03:00:00"}>3 Hr</option>
+                                    <option value={"1 00:00:00"}>1 Day</option>
+                                    <option value={"2 00:00:00"}>2 Day</option>
+                                </Select>
                             </DialogContent>
                             <DialogActions>
                                 <Button
@@ -443,7 +449,7 @@ const Cohort = () => {
                                     color="danger"
                                     variant="contained"
                                     onClick={handleClose}>
-                                    Delete
+                                    Close
                                 </Button>
                             </DialogActions>
                         </form>)}
