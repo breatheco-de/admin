@@ -8,7 +8,7 @@ import MUIDataTable from "mui-datatables";
 import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
 
 import { DownloadCsv } from "./DownloadCsv";
-import BulkDelete from "./ToolBar/BulkDelete"
+import BulkDelete from "./ToolBar/BulkDelete";
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -21,11 +21,13 @@ const defaultToolbarSelectStyles = {
 };
 
 const DefaultToobar = ({ children, ...props }) => {
-  return <div className={props.classes.iconContainer}>
-      <BulkDelete {...props} />
+  return (
+    <div className={props.classes.iconContainer}>
+      <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
       {children}
     </div>
-}
+  );
+};
 
 const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
   name: "SmartMUIDataTable",
@@ -52,7 +54,7 @@ export const SmartMUIDataTable = (props) => {
     sort: querySort,
   });
 
-  useEffect(() => {
+  const loadData = () => {
     setIsLoading(true);
     props
       .search(querys)
@@ -66,7 +68,13 @@ export const SmartMUIDataTable = (props) => {
       .catch((error) => {
         setIsLoading(false);
       });
-    return () => setIsAlive(false);
+  };
+
+  useEffect(() => {
+    loadData();
+    return () => {
+      setIsAlive(false);
+    };
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
@@ -167,16 +175,21 @@ export const SmartMUIDataTable = (props) => {
         },
 
         customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-          
           let children = null;
-          if(props.options?.customToolbarSelect) children = props.options.customToolbarSelect(selectedRows, displayData, setSelectedRows);
-          console.log("these are the children", children)
+          if (props.options?.customToolbarSelect)
+            children = props.options.customToolbarSelect(
+              selectedRows,
+              displayData,
+              setSelectedRows
+            );
+          console.log("these are the children", children);
           return (
             <StyledDefaultToobar
               selectedRows={selectedRows}
               displayData={displayData}
               setSelectedRows={setSelectedRows}
               items={props.items}
+              onBulkDelete={loadData}
             >
               {children}
             </StyledDefaultToobar>
@@ -252,4 +265,3 @@ SmartMUIDataTable.propTypes = {
   search: PropTypes.any,
   options: PropTypes.object,
 };
-

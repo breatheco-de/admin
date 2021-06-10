@@ -67,6 +67,7 @@ const Certificates = () => {
     return () => setIsAlive(false);
   };
 
+
   useEffect(() => {
     handleLoadingData();
   }, [isAlive]);
