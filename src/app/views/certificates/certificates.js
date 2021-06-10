@@ -232,8 +232,13 @@ const Certificates = () => {
             columns={columns}
             items={items}
             options={{
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                return <CustomToolbarSelectCertificates selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={items} />
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows, loadData) => {
+                return <CustomToolbarSelectCertificates 
+                          selectedRows={selectedRows} 
+                          displayData={displayData} 
+                          setSelectedRows={setSelectedRows} 
+                          items={items} 
+                          loadData={loadData}/>
               }
             }}
             search={async (querys) => {

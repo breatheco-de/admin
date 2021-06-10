@@ -43,10 +43,18 @@ const CustomToolbarSelectCertificates = (props) => {
     setBulkCertificates(certificates)
     }, [props.selectedRows])
 
+  const reatempsCertificate = () => {
+    bc.certificates().addBulkCertificates(bulkCertificates)
+      .then((response) => {
+        console.log(response)
+        props.loadData();
+      })
+  }
+
   return (
       <Tooltip title={"Re-attemps certificates"}>
         <IconButton className={classes.iconButton} onClick={() => {
-            bc.certificates().addBulkCertificates(bulkCertificates)
+            reatempsCertificate();
             props.setSelectedRows([])
             setBulkCertificates([]);}}>
             <PostAddIcon className={classes.icon} />

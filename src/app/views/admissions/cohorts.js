@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
+import { Grow, Icon, IconButton, TextField, Button, Chip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -17,12 +17,12 @@ var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 const stageColors = {
-  INACTIVE: "bg-gray",
-  PREWORK: "bg-secondary",
-  STARTED: "text-white bg-warning",
-  FINAL_PROJECT: "text-white bg-error",
-  ENDED: "text-white bg-green",
-  DELETED: "light-gray",
+  INACTIVE: "gray",
+  PREWORK: "main",
+  STARTED: "primary",
+  FINAL_PROJECT: "error",
+  ENDED: "dark",
+  DELETED: "gray",
 };
 
 const Cohorts = () => {
@@ -124,20 +124,17 @@ const Cohorts = () => {
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
-                <small
-                  className={
-                    "border-radius-4 px-2 pt-2px " + stageColors[item?.stage]
-                  }
-                >
-                  {item?.stage}
-                </small>
-                <br />
-                {dayjs().isAfter(dayjs(item?.ending_date)) &&
-                  !["ENDED", "DELETED"].includes(item?.stage) && (
-                    <small className='text-warning pb-2px'>
-                      <Icon>error</Icon>Out of sync
-                    </small>
-                  )}
+                {(dayjs().isAfter(dayjs(item?.ending_date)) &&
+                  !["ENDED", "DELETED"].includes(item?.stage)) ? 
+                    <Chip
+                        size="small"
+                        icon={<Icon fontSize="small">error</Icon>}
+                        label="Out of sync"
+                        color="secondary"
+                    />
+                    :
+                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
+                }
               </div>
             </div>
           );

@@ -22,6 +22,10 @@ export const themeColors = {
         main: "#ffffff",
         contrastText: textLight.primary,
       },
+      main:{
+        main: "#2BB7F5",
+        contrastText: textLight.primary,
+      },
       secondary: {
         main: "#7467ef",
         contrastText: textLight.primary,
@@ -37,6 +41,10 @@ export const themeColors = {
         main: "#ffffff",
         contrastText: textLight.primary,
       },
+      main:{
+        main: "#2BB7F5",
+        contrastText: textLight.primary,
+      },
       secondary: {
         main: "#1976d2",
         contrastText: textLight.primary,
@@ -50,6 +58,10 @@ export const themeColors = {
       primary: {
         main: "#222A45",
         contrastText: "#ffffff",
+      },
+      main:{
+        main: "#2BB7F5",
+        contrastText: textLight.primary,
       },
       secondary: {
         main: "#ff9e43",
@@ -71,6 +83,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#ff9e43",
+        contrastText: textLight.primary,
+      },
+      main:{
+        main: "#2BB7F5",
         contrastText: textLight.primary,
       },
       error: errorColor,
