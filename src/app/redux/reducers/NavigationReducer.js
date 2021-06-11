@@ -1,5 +1,5 @@
 import { navigations } from "app/navigations";
-import { SET_USER_NAVIGATION } from "../actions/NavigationAction";
+import { SET_USER_NAVIGATION } from "../actions/NavigationActions";
 
 const initialState = [...navigations];
 
