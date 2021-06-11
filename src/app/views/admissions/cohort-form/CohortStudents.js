@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -58,7 +58,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
     getCohortStudents();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onLoadMoreStudents();
   }, [queryOffset]);
 
@@ -122,6 +122,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
           results.length < 1
             ? setStudentsList(currentStudentList)
             : setStudentsList([...studenList, ...results]);
+          // false when pagination returns []
           setHasMore(results.length > 0);
         }
       })
@@ -139,7 +140,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
         educational_status: "ACTIVE",
       })
       .then((data) => {
-        if (data.status >= 200) getCohortStudents();
+        if (data.status >= 200 && data.status < 300) getCohortStudents();
       })
       .catch((error) => error);
   };
