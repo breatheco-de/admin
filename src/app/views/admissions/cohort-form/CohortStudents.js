@@ -93,11 +93,14 @@ const CohortStudents = ({ slug, cohort_id }) => {
     };
     bc.admissions()
       .getAllUserCohorts(query)
-      .then(({ data }) => {
-        setIsLoading(false);
-        data.results.length < 1
-          ? setStudentsList(currentStudentList)
-          : setStudentsList(data.results);
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          const { results } = data.data;
+          setIsLoading(false);
+          results.length < 1
+            ? setStudentsList(currentStudentList)
+            : setStudentsList(results);
+        }
       })
       .catch((error) => error);
   };
@@ -112,18 +115,22 @@ const CohortStudents = ({ slug, cohort_id }) => {
     };
     bc.admissions()
       .getAllUserCohorts(query)
-      .then(({ data }) => {
-        setIsLoading(false);
-        data.results.length < 1
-          ? setStudentsList(currentStudentList)
-          : setStudentsList([...studenList, ...data.results]);
-        setHasMore(data.results.length > 0);
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          const { results } = data.data;
+          setIsLoading(false);
+          results.length < 1
+            ? setStudentsList(currentStudentList)
+            : setStudentsList([...studenList, ...results]);
+          setHasMore(results.length > 0);
+        }
       })
       .catch((error) => error);
   };
 
   const addUserToCohort = (user_id) => {
     if (!hasMore) setHasMore(true);
+    setQueryOffset(0);
     bc.admissions()
       .addUserCohort(cohort_id, {
         user: user_id,
@@ -138,6 +145,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
   };
 
   const deleteUserFromCohort = () => {
+    setQueryOffset(0);
     bc.admissions()
       .deleteUserCohort(cohort_id, currentStd.id)
       .then((data) => {
