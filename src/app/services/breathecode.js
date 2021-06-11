@@ -195,6 +195,12 @@ class BreatheCodeClient {
           `${this.host}/auth/member/invite/resend/${user}`
         );
       },
+      getMemberInvite: (user) => {
+        return axios._get(
+          "Invite",
+          `${this.host}/auth/academy/user/${user}/invite`
+        );
+      },
     };
   }
   marketing = () => ({

@@ -18,6 +18,7 @@ import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DownloadCsv } from "../../components/DownloadCsv";
 import CustomToolbar from "../../components/CustomToolbar";
+import CopyInviteModal from "app/components/CopyInviteModal";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -138,11 +139,11 @@ const Staff = () => {
         customBodyRenderLite: (dataIndex) => {
           let { user } = userList[dataIndex];
           return (
-            <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
-              <div className="ml-3">
-                <h5 className="my-0 text-15">{name(user)}</h5>
-                <small className="text-muted">{user?.email}</small>
+            <div className='flex items-center'>
+              <Avatar className='w-48 h-48' src={user?.github?.avatar_url} />
+              <div className='ml-3'>
+                <h5 className='my-0 text-15'>{name(user)}</h5>
+                <small className='text-muted'>{user?.email}</small>
               </div>
             </div>
           );
@@ -232,6 +233,7 @@ const Staff = () => {
           return item.status === "INVITED" ? (
             <div className='flex items-center'>
               <div className='flex-grow'></div>
+              <CopyInviteModal user={item.id} />
               <Tooltip title='Resend Invite'>
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>
