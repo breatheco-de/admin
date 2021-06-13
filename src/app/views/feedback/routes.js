@@ -8,6 +8,12 @@ const routes = [
         beta: true,
     },
     {
+        path: "/feedback/answers/details",
+        exact: true,
+        component: React.lazy(() => import("./details-answers/detailsAnswers.js")),
+        beta: true,
+    },
+    {
         path: "/feedback/surveys",
         exact: true,
         component: React.lazy(() => import("./surveys.js")),
