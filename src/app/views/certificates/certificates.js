@@ -142,47 +142,55 @@ const Certificates = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
-          return (
-            <div className='flex items-center'>
-              <div className='flex-grow'></div>
-              {items[i].preview_url !== null &&
-              items[i].preview_url !== undefined ? (
-                <>
-                  <a
-                    href={items[i].preview_url}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <Tooltip
-                      title={
-                        items[i].preview_url !== null
-                          ? "Preview Available"
-                          : "Preview Not available"
-                      }
+          if(items[i].status == "PERSISTED"){
+            return (
+              <div className='flex items-center'>
+                <div className='flex-grow'></div>
+                {items[i].preview_url !== null &&
+                items[i].preview_url !== undefined ? (
+                  <>
+                    <a
+                      href={items[i].preview_url}
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
-                      <IconButton>
-                        <Icon>image</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </a>
-
-                  <a
-                    href={`https://certificate.breatheco.de/${items[
-                      i
-                    ].preview_url.slice(56)}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <Tooltip title='Image'>
-                      <IconButton>
-                        <Icon>search</Icon>
-                      </IconButton>
-                    </Tooltip>
-                  </a>
-                </>
-              ) : null}
-            </div>
-          );
+                      <Tooltip
+                        title={
+                          items[i].preview_url !== null
+                            ? "Preview Available"
+                            : "Preview Not available"
+                        }
+                      >
+                        <IconButton>
+                          <Icon>image</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </a>
+  
+                    <a
+                      href={`https://certificate.breatheco.de/${items[
+                        i
+                      ].preview_url.slice(56)}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <Tooltip title='Image'>
+                        <IconButton>
+                          <Icon>search</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </a>
+                  </>
+                ) : null}
+              </div>
+            );
+          } else {
+            return (
+                <span className="flex items-center">
+                  {items[i].status_text} 
+                </span>
+            )
+          }
         },
       },
     },

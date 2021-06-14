@@ -55,7 +55,6 @@ export const SmartMUIDataTable = (props) => {
   });
 
   const loadData = () => {
-    console.log("llego")
     setIsLoading(true);
     props
       .search(querys)
@@ -184,7 +183,6 @@ export const SmartMUIDataTable = (props) => {
               setSelectedRows,
               loadData
             );
-          console.log("these are the children", children);
           return (
             <StyledDefaultToobar
               selectedRows={selectedRows}

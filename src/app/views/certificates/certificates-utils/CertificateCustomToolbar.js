@@ -43,20 +43,24 @@ const CustomToolbarSelectCertificates = (props) => {
     setBulkCertificates(certificates)
     }, [props.selectedRows])
 
-  const reatempsCertificate = () => {
+  const reattempCertificates = () => {
     bc.certificates().addBulkCertificates(bulkCertificates)
       .then((response) => {
-        console.log(response)
-        props.loadData();
+        if(response.status == 200){
+          props.loadData();
+          props.setSelectedRows([]);
+          setBulkCertificates([]);
+        }
+        throw Error('We were unable to process your request')
       })
+      .catch((error) => error)
   }
 
   return (
       <Tooltip title={"Re-attemps certificates"}>
         <IconButton className={classes.iconButton} onClick={() => {
-            reatempsCertificate();
-            props.setSelectedRows([])
-            setBulkCertificates([]);}}>
+            reattempCertificates();      
+        }}>
             <PostAddIcon className={classes.icon} />
         </IconButton>
     </Tooltip>
