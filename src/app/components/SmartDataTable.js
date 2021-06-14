@@ -190,6 +190,7 @@ export const SmartMUIDataTable = (props) => {
               setSelectedRows={setSelectedRows}
               items={props.items}
               onBulkDelete={loadData}
+              deleting={props.deleting}
             >
               {children}
             </StyledDefaultToobar>

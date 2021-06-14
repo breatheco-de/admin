@@ -328,14 +328,21 @@ const Leads = () => {
                 setSelectedRows
               ) => {
                 return (
-                  <BulkDelete
+                  <CustomToolbar
                     selectedRows={selectedRows}
                     displayData={displayData}
                     setSelectedRows={setSelectedRows}
                     items={items.results}
                     key={items.results}
                     history={history}
-                    reRender={handleLoadingData}
+                    id={"staff"}
+                    deleting={async (querys) => {
+                      const { status } = await bc
+                        .admissions()
+                        .deleteLeadsBulk(querys);
+                      return status;
+                    }}
+                    onBulkDelete={handleLoadingData}
                   />
                 );
               },

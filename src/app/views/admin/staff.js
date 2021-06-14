@@ -317,7 +317,13 @@ const Staff = () => {
                     key={userList}
                     history={history}
                     id={"staff"}
-                    reRender={handleLoadingData}
+                    deleting={async (querys) => {
+                      const { status } = await bc
+                        .admissions()
+                        .deleteStaffBulk(querys);
+                      return status;
+                    }}
+                    onBulkDelete={handleLoadingData}
                   />
                 );
               },

@@ -201,6 +201,10 @@ const Students = () => {
               setItems(data.results);
               return data;
             }}
+            deleting={async (querys) => {
+              const { data } = await bc.admissions().deleteStudentBulk(querys);
+              return data;
+            }}
           />
         </div>
       </div>

@@ -67,7 +67,6 @@ const Certificates = () => {
     return () => setIsAlive(false);
   };
 
-
   useEffect(() => {
     handleLoadingData();
   }, [isAlive]);
@@ -341,6 +340,13 @@ const Certificates = () => {
                     history={history}
                     id={"certificates"}
                     reRender={handleLoadingData}
+                    deleting={async (querys) => {
+                      const { status } = await bc
+                        .admissions()
+                        .deleteCertificatesBulk(querys);
+                      return status;
+                    }}
+                    onBulkDelete={handleLoadingData}
                   />
                 );
               },
