@@ -9,6 +9,7 @@ import {
   DialogContent,
   Grid,
   TextField,
+  DialogActions,
 } from "@material-ui/core";
 import bc from "app/services/breathecode";
 import { toast } from "react-toastify";
@@ -81,6 +82,11 @@ const CopyInviteModal = ({ user }) => {
               </Grid>
             </Grid>
           </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color='primary'>
+              Close
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     </>
