@@ -34,11 +34,11 @@ const Student = () => {
       .catch(error => error)
   }
   const passwordReset = () => {
-    bc.auth().passwordReset(std_id)
+    bc.auth().passwordReset(member.id)
       .then(res => { 
-        if (res.data && res.data.invite_url) {
-        navigator.clipboard.writeText(res.data.invite_url);
-        toast.success("Password reset url copied successfuly", toastOption);
+        if (res.data && res.data.reset_password_url) {
+        navigator.clipboard.writeText(res.data.reset_password_url);
+        toast.success("Password reset url copied", toastOption);
       }
     })
       .catch(error => error)
