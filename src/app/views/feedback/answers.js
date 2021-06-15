@@ -164,7 +164,7 @@ const Answers = () => {
             },
         },
         {
-            name: "comment",
+            name: "comment",  
             label: "Comments",
             options: {
                 filter: true,
@@ -185,7 +185,7 @@ const Answers = () => {
                 customBodyRenderLite: (dataIndex) => (
                     <div className='flex items-center'>
                         <div className='flex-grow'></div>
-                        <Link to='/feedback/answers/details'>
+                        <Link to={`/feedback/answers/details/`}>
                             <IconButton>
                                 <Icon>arrow_right_alt</Icon>
                             </IconButton>
@@ -257,7 +257,7 @@ const Answers = () => {
                                 setQuerys(q);
                                 history.replace(
                                     `/feedback/answers?${Object.keys(q)
-                                        .map((key) => `${key}=${q[key]}`)
+                                        .map((key) => `${key}=${q[key]}`)  
                                         .join("&")}`
                                 );
                             },
