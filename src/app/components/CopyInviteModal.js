@@ -3,10 +3,12 @@ import {
   Button,
   DialogTitle,
   Dialog,
-  DialogActions,
   Icon,
   IconButton,
   Tooltip,
+  DialogContent,
+  Grid,
+  TextField,
 } from "@material-ui/core";
 import bc from "app/services/breathecode";
 import { toast } from "react-toastify";
@@ -48,22 +50,38 @@ const CopyInviteModal = ({ user }) => {
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby='form-dialog-title'
+        fullWidth={true}
       >
-        <DialogTitle id='alert-dialog-title'>{inviteLink}</DialogTitle>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(inviteLink);
-              toast.success("Invite url copied successfuly", toastOption);
-            }}
-            color='primary'
-            autoFocus
-          >
-            Copy
-          </Button>
-        </DialogActions>
+        <form className='pb-4'>
+          <DialogTitle id='form-dialog-title'>Invite Link</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item md={10} sm={6} xs={10}>
+                <TextField
+                  label='URL'
+                  name='url'
+                  size='medium'
+                  disabled
+                  fullWidth
+                  variant='outlined'
+                  value={inviteLink}
+                />
+              </Grid>
+              <Grid item md={2} sm={2} xs={2}>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(inviteLink);
+                    toast.success("Invite url copied successfuly", toastOption);
+                  }}
+                  autoFocus
+                >
+                  Copy
+                </Button>
+              </Grid>
+            </Grid>
+          </DialogContent>
+        </form>
       </Dialog>
     </>
   );
