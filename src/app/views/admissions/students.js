@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import bc from "../../services/breathecode";
 import { toast } from "react-toastify";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
-import AddBulkToCohort from "./student-form/student-utils/AddBulkToCohort"
+import AddBulkToCohort from "./student-form/student-utils/AddBulkToCohort";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -60,11 +60,17 @@ const Students = () => {
         customBodyRenderLite: (dataIndex) => {
           let { user, ...rest } = items[dataIndex];
           return (
-            <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
-              <div className="ml-3">
-                <h5 className="my-0 text-15">{user !== null ? name(user) : rest.first_name + " " + rest.last_name}</h5>
-                <small className="text-muted">{user?.email || rest.email}</small>
+            <div className='flex items-center'>
+              <Avatar className='w-48 h-48' src={user?.github?.avatar_url} />
+              <div className='ml-3'>
+                <h5 className='my-0 text-15'>
+                  {user !== null
+                    ? name(user)
+                    : rest.first_name + " " + rest.last_name}
+                </h5>
+                <small className='text-muted'>
+                  {user?.email || rest.email}
+                </small>
               </div>
             </div>
           );
@@ -196,9 +202,20 @@ const Students = () => {
             columns={columns}
             items={items}
             options={{
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                return <AddBulkToCohort selectedRows={selectedRows} displayData={displayData} setSelectedRows={setSelectedRows} items={items} />
-              }
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows
+              ) => {
+                return (
+                  <AddBulkToCohort
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={items}
+                  />
+                );
+              },
             }}
             search={async (querys) => {
               const { data } = await bc.auth().getAcademyStudents(querys);

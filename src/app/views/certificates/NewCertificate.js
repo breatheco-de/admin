@@ -32,11 +32,13 @@ const NewCertificate = () => {
       );
   };
 
+
   useEffect(() => {
     getSpecialties();
   }, []);
 
-  console.log("cohort:", cohort);
+  
+
   const postCerfiticate = (values) => {
     // student certificate
     if (type === "single") {
