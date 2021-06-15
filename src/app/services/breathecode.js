@@ -195,6 +195,19 @@ class BreatheCodeClient {
           `${this.host}/auth/member/invite/resend/${user}`
         );
       },
+      getMemberInvite: (user) => {
+        return axios._get(
+          "Invite",
+          `${this.host}/auth/academy/user/${user}/invite`
+        );
+      },
+      passwordReset : (user, payload) =>{
+        return axios._post(
+          "Password reset",
+          `${this.host}/auth/member/${user}/password/reset`,
+          payload
+        );
+      }
     };
   }
   marketing = () => ({

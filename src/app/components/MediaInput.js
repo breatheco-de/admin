@@ -11,10 +11,11 @@ export const MediaInput = ({handleChange, value,name, ...rest}) => {
             id="standard-adornment-password"
             value={value}
             onChange={(e) => handleChange(name, e.target.value)}
+            style={{paddingRight:3}}
             endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={()=> setOpen(true)}>
-                    <Icon>collections</Icon>
+              <InputAdornment position="end" >
+                <IconButton onClick={()=> setOpen(true)} style={{padding:5}}>
+                  <Icon>collections</Icon>
                 </IconButton>
               </InputAdornment>
             }
