@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  Select,
 } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import bc from "app/services/breathecode";
@@ -33,7 +34,7 @@ const NewSurvey = () => {
       cohort: "",
       max_assistants: 2,
       max_teachers: 2, 
-      duration: 1,
+      duration: "1 00:00:00",
       send_now: false
     }
   ); 
@@ -70,7 +71,7 @@ const NewSurvey = () => {
         }
     }, [listCohorts != undefined])
 
-    const createSurvey = event => {
+    const updateSurvey = event => {
             setNewSurvey({ ...newSurvey, [event.target.name]: event.target.value });
         };
     
@@ -151,7 +152,7 @@ const NewSurvey = () => {
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newSurvey.max_assistants}
-                    onChange = {createSurvey}
+                    onChange = {updateSurvey}
                   />
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
@@ -165,22 +166,27 @@ const NewSurvey = () => {
                     size = "small"
                     variant = "outlined"
                     defaultValue = {newSurvey.max_teachers}
-                    onChange = {createSurvey}
+                    onChange = {updateSurvey}
                   />
                 </Grid>
                 <Grid item md = {2} sm = {4} xs = {12}>
                     Duration:
                 </Grid>
                 <Grid item md = {10} sm = {8} xs = {12}>
-                  <TextField
-                    type="number"
-                    label = "Duration"
-                    name = "duration"
-                    size = "small"
-                    variant = "outlined"
-                    defaultValue = {newSurvey.duration}
-                    onChange = {createSurvey}
-                  />
+                    <Select
+                        native
+                        label="Duration"
+                        name="duration"
+                        variant="outlined"
+                        size="small"
+                        value={newSurvey.duration}
+                        onChange={updateSurvey}
+                    >
+                        <option value={"01:00:00"}>1 Hr</option>
+                        <option value={"03:00:00"}>3 Hr</option>
+                        <option value={"1 00:00:00"}>1 Day</option>
+                        <option value={"2 00:00:00"}>2 Day</option>
+                    </Select>
                 </Grid>
                   <Button 
                     color = "primary" 
