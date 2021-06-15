@@ -14,7 +14,7 @@ import {
 } from "../redux/actions/MediaActions";
 import { debounce } from "lodash";
 import clsx from "clsx";
-import bc from "../services/breathecode";
+
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -96,11 +96,6 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
         search(query);
     };
 
-    const calculateParams = (str, query) => {
-        const params = new URLSearchParams(str);
-        return params.get(query);
-    }
-
     const search = useCallback(
         debounce((query) => {
             if (query === "") {
@@ -128,7 +123,6 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
     }
 
     const handleCategory = (value) => {
-        console.log(value)
         setCategories(value);
         if (value.length < 1) {
             delete pagination['categories'];
@@ -138,7 +132,6 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
         dispatch(getProductList({
             ...pagination, categories: value.join(",")
         }));
-        console.log(category)
     }
 
     const handleSort = (value) => {
