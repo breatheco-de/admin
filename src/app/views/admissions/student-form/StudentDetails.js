@@ -61,6 +61,7 @@ const StudentDetails = ({
       .updateAcademyMember(std_id, { role: role })
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
+          console.log("success");
         }
         throw Error("Could not update Role");
       })
@@ -82,8 +83,9 @@ const StudentDetails = ({
   useEffect(() => {
     user ? setCrtUser(user) : setCrtUser({});
   }, [user]);
+
   const updateStudentProfile = (values) => {
-    console.log(values);
+    console.log("the values", values, crt_user);
     console.log(std_id);
     bc.auth()
       .updateAcademyStudent(std_id, values)
@@ -199,7 +201,6 @@ const StudentDetails = ({
               onClick={() => {
                 updateRole(role.slug);
                 setRoleDialog(false);
-
                 setOpenRoleDialog(false);
               }}
               key={i}

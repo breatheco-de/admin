@@ -54,11 +54,11 @@ const CopyInviteModal = ({ user }) => {
         aria-labelledby='form-dialog-title'
         fullWidth={true}
       >
-        <form className='pb-4'>
+        <form className='p-4'>
           <DialogTitle id='form-dialog-title'>Invite Link</DialogTitle>
           <DialogContent>
             <Grid container spacing={2} alignItems='center'>
-              <Grid item md={10} sm={6} xs={10}>
+              <Grid item md={12} sm={12} xs={10}>
                 <TextField
                   label='URL'
                   name='url'
@@ -69,24 +69,22 @@ const CopyInviteModal = ({ user }) => {
                   value={inviteLink}
                 />
               </Grid>
-              <Grid item md={2} sm={2} xs={2}>
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(inviteLink);
-                    toast.success("Invite url copied successfuly", toastOption);
-                  }}
-                  autoFocus
-                >
-                  Copy
-                </Button>
-              </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color='primary'>
-              Close
-            </Button>
-          </DialogActions>
+          <Grid className='p-2'>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(inviteLink);
+                  toast.success("Invite url copied successfuly", toastOption);
+                }}
+                autoFocus
+              >
+                Copy
+              </Button>
+              <Button onClick={() => setOpenDialog(false)}>Close</Button>
+            </DialogActions>
+          </Grid>
         </form>
       </Dialog>
     </>
