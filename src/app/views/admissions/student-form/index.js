@@ -38,7 +38,7 @@ const Student = () => {
       .then(res => { 
         if (res.data && res.data.reset_password_url) {
         navigator.clipboard.writeText(res.data.reset_password_url);
-        toast.success("Password reset url copied successfuly", toastOption);
+        toast.success("Password reset url copied", toastOption);
       }
     })
       .catch(error => error)
