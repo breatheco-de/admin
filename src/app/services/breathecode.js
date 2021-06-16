@@ -245,6 +245,16 @@ class BreatheCodeClient {
         `${this.host}/feedback/academy/answer?${qs}`
       );
     },
+    getSingleAnswers: (query, id) => {
+      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+      const qs = Object.keys(query)
+        .map((key) => `${key}=${query[key]}`)
+        .join("&");
+      return axios._get(
+        "Academy single answers",
+        `${this.host}/feedback/academy/answer/${id}`
+      );
+    },
     addNewSurvey: (newSurvey) =>
       axios._post(
         "New Survey",

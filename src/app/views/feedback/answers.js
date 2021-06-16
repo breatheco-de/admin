@@ -182,16 +182,19 @@ const Answers = () => {
             label: " ",
             options: {
                 filter: false,
-                customBodyRenderLite: (dataIndex) => (
-                    <div className='flex items-center'>
+                customBodyRenderLite: () => {
+                    return(
+                        <div className='flex items-center'>
                         <div className='flex-grow'></div>
-                        <Link to={`/feedback/answers/details/`}>
+                        <span>
+                            {/* <span onClick={e => handleDetails(e)}> */}
                             <IconButton>
                                 <Icon>arrow_right_alt</Icon>
                             </IconButton>
-                        </Link>
+                        </span>
                     </div>
-                ),
+                    )
+                },
             },
         },
     ];
