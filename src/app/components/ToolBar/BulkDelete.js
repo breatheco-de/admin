@@ -38,6 +38,7 @@ const BulkDelete = (props) => {
     e.preventDefault();
     deleting(idsArr)
       .then((status) => {
+        console.log("status:", status);
         setOpenDialog(false);
         if (status >= 200 && status < 300) {
           setSelectedRows([]);

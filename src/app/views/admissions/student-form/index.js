@@ -16,6 +16,13 @@ import DowndownMenu from "../../../components/DropdownMenu";
 import axios from "../../../../axios";
 import bc from "app/services/breathecode";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const options = [
   { label: "Send password reset", value: "password_reset" },
@@ -39,11 +46,14 @@ const Student = () => {
       .catch((error) => error);
   };
   const passwordReset = () => {
-    axios
-      .post(`${process.env.REACT_APP_API_HOST}/v1/user/password/reset`, {
-        email: member?.user.email,
+    bc.auth()
+      .passwordReset(member.id)
+      .then((res) => {
+        if (res.data && res.data.reset_password_url) {
+          navigator.clipboard.writeText(res.data.reset_password_url);
+          toast.success("Password reset url copied", toastOption);
+        }
       })
-      .then(({ data }) => data)
       .catch((error) => error);
     setOpenDialog(false);
   };

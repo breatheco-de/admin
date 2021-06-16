@@ -2,24 +2,18 @@ import React, { useState, useEffect, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Slide, Dialog, AppBar, Toolbar, IconButton, Typography, GridList,
-    GridListTile, FormControl, InputLabel, Select, Chip, Input, MenuItem,
-    TextField, Tooltip, Icon
+    GridListTile, FormControl, InputLabel, Select, MenuItem,
+    TextField, Checkbox, ListItemText, CircularProgress
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import InfiniteScroll from "react-infinite-scroller";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getProductList,
     getCategoryList,
 } from "../redux/actions/MediaActions";
 import { debounce } from "lodash";
-import {toast} from 'react-toastify';
 import clsx from "clsx";
-
-toast.configure();
-const toastOption = {
-  position: toast.POSITION.BOTTOM_RIGHT,
-  autoClose: 8000
-}
 
 
 const useStyles = makeStyles(theme => ({
@@ -74,6 +68,12 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const loader = (
+    <div className="w-full text-center p-6" key="loader">
+      <CircularProgress variant="indeterminate"></CircularProgress>
+    </div>
+);
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -83,8 +83,8 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
     const { productList = [] } = useSelector((state) => state.ecommerce);
     const { categoryList = [] } = useSelector((state) => state.ecommerce);
     const { next = ""} = useSelector((state) => state.ecommerce);
-    const { previous = "" } = useSelector((state) => state.ecommerce);
     const { pagination } = useSelector((state) => state.ecommerce);
+    const [hasMoreItems, setHasMoreItems] = useState(true);
     const [category, setCategories] = useState([]);
     const [query, setQuery] = useState("");
     const [type, setType] = useState("all");
@@ -95,11 +95,6 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
         setQuery(query);
         search(query);
     };
-
-    const calculateParams = (str, query) => {
-        const params = new URLSearchParams(str);
-        return params.get(query);
-    }
 
     const search = useCallback(
         debounce((query) => {
@@ -148,29 +143,18 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
         dispatch(getProductList({
             ...pagination, sort: value
         }));
-    }
-
-    const handleNext = () => {
-        if(next !== null){
-            dispatch(getProductList({
-                ...pagination, offset:calculateParams(next, "offset")
-            }));
-        } 
-    }
-
-    const handlePrevious = () => {
-        if(previous !== null){
-            dispatch(getProductList({
-                ...pagination, offset:calculateParams(previous, "offset")
-            }));
-        } 
+        setSort(value);
     }
 
     useEffect(() => {
-        dispatch(getProductList({ limit: 30, offset: 0 }));
+        dispatch(getProductList({ limit: 50, offset: 0 }));
         dispatch(getCategoryList());
     }, [])
 
+    const loadMore = () =>{
+        if(next) dispatch(getProductList({...pagination, limit: parseInt(pagination.limit, 10) + 50, offset: 0 }));
+        else setHasMoreItems(false);
+    }
     return (
         <Dialog
             fullScreen
@@ -179,7 +163,7 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
             TransitionComponent={Transition}
         >
             <AppBar className={classes.appBar}>
-                <Toolbar style={{padding:"24px"}}>
+                <Toolbar style={{ padding: "24px" }}>
                     <IconButton
                         edge="start"
                         onClick={onClose}
@@ -197,13 +181,15 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
                             id="demo-controlled-open-select"
                             value={category}
                             multiple
+                            renderValue={(selected) => categoryList.filter(i => selected.includes(i.id)).map(j => j.name).join(", ")}
                             onChange={(e) => handleCategory(e.target.value)}
                         >
-                            {categoryList.map((c) => (
-                                <MenuItem key={c.name} value={c.id}>
-                                    {c.name}
+                            {categoryList.map((c) => {
+                                return <MenuItem key={c.name} value={c.id}>
+                                    <Checkbox checked={category.includes(c.id)} />
+                                    <ListItemText primary={c.name} />
                                 </MenuItem>
-                            ))}
+                            })}
                         </Select>
                     </FormControl>
                     <FormControl className={classes.formControl}>
@@ -251,26 +237,23 @@ export default function MediaDialog({ openDialog, onClose, setUrl, name }) {
                     </FormControl>
                 </Toolbar>
             </AppBar>
-            <div >
-                <GridList cellHeight={200}>
-                    {productList.map((media) => (
-                        <GridListTile key={media.slug} style={{ width: "10%", cursor:"pointer" }} rows={1} onClick={()=> { setUrl(name, media.url); onClose()}} className={clsx("", classes.hover)}>
-                            <img src={media.thumbnail} alt={media.name} />
-                        </GridListTile>
-                    ))}
-                </GridList>
-                <div style={{position:"absolute", bottom:0, right:"10px"}}>
-                    <Tooltip title="Previous Page">
-                        <IconButton onClick={() => handlePrevious()}>
-                            <Icon>keyboard_arrow_left</Icon>
-                        </IconButton> 
-                    </Tooltip>
-                    <Tooltip title="Next Page">
-                        <IconButton onClick={() => handleNext()}>
-                            <Icon>keyboard_arrow_right</Icon>
-                        </IconButton>  
-                    </Tooltip>  
-                </div>
+            <div className="p-8 h-full-screen scroll-y">
+                <InfiniteScroll
+                pageStart={0}
+                loadMore={loadMore}
+                hasMore={hasMoreItems}
+                loader={loader}
+                useWindow={false}
+                initialLoad={false}
+                >
+                    <GridList cellHeight={200}>
+                        {productList.map((m) => (
+                            <GridListTile key={m.slug} style={{ width: "10%", cursor: "pointer" }} rows={1} onClick={() => { setUrl(name, m.url); onClose() }} className={clsx("", classes.hover)}>
+                                <img src={m.thumbnail} alt={m.name} />
+                            </GridListTile>
+                        ))}
+                    </GridList>
+                </InfiniteScroll>
             </div>
         </Dialog>
     );
