@@ -252,7 +252,7 @@ class BreatheCodeClient {
         .join("&");
       return axios._get(
         "Academy single answers",
-        `${this.host}/feedback/academy/answer/${id}`
+        `${this.host}/feedback/academy/answer/${qs}`
       );
     },
     addNewSurvey: (newSurvey) =>

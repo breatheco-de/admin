@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Breadcrumb } from "matx";
 import axios from "../../../axios";
 import MUIDataTable from "mui-datatables";
@@ -10,6 +10,14 @@ import {
     TextField,
     Button,
     LinearProgress,
+    Dialog,
+    Divider,
+    Card,
+    MenuItem,
+    Input,
+    FormControlLabel,
+    Checkbox,
+    Tooltip,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
@@ -52,6 +60,7 @@ const Answers = () => {
         setQuerys(q);
         bc.feedback()
             .getAnswers(q)
+            // .getSingleAnwers(q)
             .then(({ data }) => {
                 setIsLoading(false);
                 if (isAlive) {
@@ -182,17 +191,50 @@ const Answers = () => {
             label: " ",
             options: {
                 filter: false,
-                customBodyRenderLite: () => {
+                handlePageChange: (page, rowsPerPage) => {
+                    setIsLoading(true);
+                    setQueryLimit(rowsPerPage);
+                    setQueryOffset(rowsPerPage * page);
+                    bc.feedback()
+                        .getSingleAnswers({
+                            limit: rowsPerPage,
+                            offset: page * rowsPerPage,
+                        })
+                        .then(({ data }) => {
+                            setIsLoading(false);
+                            setItems({ ...data, page: page });
+                        })
+                        .catch((error) => {
+                            setIsLoading(false);
+                        });
+                    let q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
+                    setQuerys(q);
+                    history.replace(
+                        `/feedback/answers?${Object.keys(q)
+                            .map((key) => `${key}=${q[key]}`)
+                            .join("&")}`
+                    )
+                },
+                customBodyRenderLite: (dataIndex) => {
+                    let { user } = items.results[dataIndex];
                     return(
-                        <div className='flex items-center'>
-                        <div className='flex-grow'></div>
-                        <span>
-                            {/* <span onClick={e => handleDetails(e)}> */}
-                            <IconButton>
-                                <Icon>arrow_right_alt</Icon>
-                            </IconButton>
-                        </span>
-                    </div>
+                        <Fragment>
+                            <div className='flex items-center'>
+                            <div className='flex-grow'></div>
+                                <span>
+                                    {/* <span onClick={e => handleDetails(e)}> */}
+                                    <IconButton>
+                                        <Icon>arrow_right_alt</Icon>
+                                    </IconButton>
+                                </span>
+                            </div>
+                            <div className='flex items-center'>
+                            <div className='flex-grow'></div>
+                                <span>
+                                    {user?.id}
+                                </span>
+                            </div>
+                        </Fragment>
                     )
                 },
             },
