@@ -11,6 +11,8 @@ import {
     Button,
     LinearProgress,
     Dialog,
+    DialogTitle,
+    DialogContent,
     Divider,
     Card,
     MenuItem,
@@ -51,6 +53,25 @@ const Answers = () => {
     const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
     const [queryLike, setQueryLike] = useState(query.get("like") || "");
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const [InfoUsers, setInfoUsers] = useState({
+        user: {
+            first_name: "",
+            last_name: ""
+        }
+    });
+
+    // const [InfoUsers, setInfoUsers] = useState({});
+
     useEffect(() => {
         setIsLoading(true);
         let q = {
@@ -65,6 +86,7 @@ const Answers = () => {
                 setIsLoading(false);
                 if (isAlive) {
                     setItems({ ...data });
+                    // console.log()
                     //setTable({...table,count: data.count});
                 }
             })
@@ -191,47 +213,21 @@ const Answers = () => {
             label: " ",
             options: {
                 filter: false,
-                handlePageChange: (page, rowsPerPage) => {
-                    setIsLoading(true);
-                    setQueryLimit(rowsPerPage);
-                    setQueryOffset(rowsPerPage * page);
-                    bc.feedback()
-                        .getSingleAnswers({
-                            limit: rowsPerPage,
-                            offset: page * rowsPerPage,
-                        })
-                        .then(({ data }) => {
-                            setIsLoading(false);
-                            setItems({ ...data, page: page });
-                        })
-                        .catch((error) => {
-                            setIsLoading(false);
-                        });
-                    let q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
-                    setQuerys(q);
-                    history.replace(
-                        `/feedback/answers?${Object.keys(q)
-                            .map((key) => `${key}=${q[key]}`)
-                            .join("&")}`
-                    )
-                },
                 customBodyRenderLite: (dataIndex) => {
-                    let { user } = items.results[dataIndex];
+                    // let { user } = items.results[dataIndex];
                     return(
                         <Fragment>
                             <div className='flex items-center'>
                             <div className='flex-grow'></div>
                                 <span>
                                     {/* <span onClick={e => handleDetails(e)}> */}
-                                    <IconButton>
+                                    <IconButton onClick={()=> {
+                                        handleClickOpen(true);
+                                        console.log(items.results[dataIndex]);
+                                        setInfoUsers(items.results[dataIndex]);
+                                    }}>
                                         <Icon>arrow_right_alt</Icon>
                                     </IconButton>
-                                </span>
-                            </div>
-                            <div className='flex items-center'>
-                            <div className='flex-grow'></div>
-                                <span>
-                                    {user?.id}
                                 </span>
                             </div>
                         </Fragment>
@@ -359,6 +355,63 @@ const Answers = () => {
                     />
                 </div>
             </div>
+
+            {/* MODAL */}
+            <Dialog
+                onClose={handleClose}
+                open={open}
+                aria-labelledby="simple-dialog-title"
+                > 
+                <DialogTitle id="simple-dialog-title">
+                    Are you sure?
+                </DialogTitle>
+                <DialogContent>
+                    {/* <Typography gutterBottom>
+                    {`Cohort: ${newSurvey.cohort}`} 
+                    </Typography>
+                    <Typography gutterBottom>
+                    {`Max assistant to ask: ${newSurvey.max_assistants}`} 
+                    </Typography>
+                    <Typography gutterBottom>
+                    Max teachers: <span className="fs-5 fw-bolder">{newSurvey.max_teachers}</span>
+                    </Typography>
+                    <Typography gutterBottom>
+                    {`Duration: ${newSurvey.duration}`} 
+                    </Typography> */}
+                    <p>{InfoUsers.user.first_name}</p>
+                    <p>{InfoUsers.user.last_name}</p>
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button 
+                    color = "primary" 
+                    variant = "contained" 
+                    type = "submit" 
+                    onClick={() => {
+                        handleClose();
+                    }}>
+                    Save as a draft
+                    </Button>
+                    <Button 
+                    color = "success" 
+                    variant = "contained" 
+                    type = "submit" 
+                    onClick={() => {
+                        bc.feedback().updateSurvey({
+                        send_now: true
+                        }, id);
+                        console.log(newSurvey);
+                        handleClose();
+                    }}>
+                    Send now
+                    </Button>
+                    <Button 
+                    color = "danger" 
+                    variant = "contained" 
+                    onClick={handleClose}>
+                    Delete
+                    </Button>
+                </DialogActions> */}
+            </Dialog>
         </div>
     );
 };
