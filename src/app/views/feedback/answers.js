@@ -11,19 +11,22 @@ import {
     Button,
     LinearProgress,
     Dialog,
+    Grid,
     DialogTitle,
     DialogContent,
+    DialogActions,
     Divider,
     Card,
     MenuItem,
     Input,
     FormControlLabel,
     Checkbox,
-    Tooltip,
+    Tooltip
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
+import { MatxMenu } from "matx";
 import bc from "app/services/breathecode";
 import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
@@ -64,9 +67,19 @@ const Answers = () => {
     };
 
     const [InfoUsers, setInfoUsers] = useState({
+        score: "",
+        title: "",
+        comment: "",
+        highest: "",
+        lowest: "",
         user: {
+            imgUrl: "",
             first_name: "",
-            last_name: ""
+            last_name: "",
+        },
+        academy: {
+            name: "",
+            slug: ""
         }
     });
 
@@ -195,7 +208,7 @@ const Answers = () => {
             },
         },
         {
-            name: "comment",  
+            name: "comment",
             label: "Comments",
             options: {
                 filter: true,
@@ -215,13 +228,13 @@ const Answers = () => {
                 filter: false,
                 customBodyRenderLite: (dataIndex) => {
                     // let { user } = items.results[dataIndex];
-                    return(
+                    return (
                         <Fragment>
                             <div className='flex items-center'>
-                            <div className='flex-grow'></div>
+                                <div className='flex-grow'></div>
                                 <span>
                                     {/* <span onClick={e => handleDetails(e)}> */}
-                                    <IconButton onClick={()=> {
+                                    <IconButton onClick={() => {
                                         handleClickOpen(true);
                                         console.log(items.results[dataIndex]);
                                         setInfoUsers(items.results[dataIndex]);
@@ -243,7 +256,7 @@ const Answers = () => {
                 <div className='flex flex-wrap justify-between mb-6'>
                     <div>
                         <Breadcrumb
-                            routeSegments={[ 
+                            routeSegments={[
                                 { name: "Feedback", path: "/feedback/answers" },
                                 { name: "Answer List" },
                             ]}
@@ -298,7 +311,7 @@ const Answers = () => {
                                 setQuerys(q);
                                 history.replace(
                                     `/feedback/answers?${Object.keys(q)
-                                        .map((key) => `${key}=${q[key]}`)  
+                                        .map((key) => `${key}=${q[key]}`)
                                         .join("&")}`
                                 );
                             },
@@ -361,58 +374,88 @@ const Answers = () => {
                 onClose={handleClose}
                 open={open}
                 aria-labelledby="simple-dialog-title"
-                > 
-                <DialogTitle id="simple-dialog-title">
-                    Are you sure?
-                </DialogTitle>
+            >
+                <div className="px-sm-24 pt-sm-24">
+                    <div className="flex items-center">
+                        <div className="flex items-center flex-grow">
+                            <p className="m-0 mb-4 text-small text-muted">
+                                Tech Startup Board Hot Backlog
+                            </p>
+                        </div>
+                        <IconButton size="small" onClick={handleClose}>
+                            <Icon>clear</Icon>
+                        </IconButton>
+                    </div>
+                    <div className="px-4 py-6" elevation={3}>
+                        <Grid container spacing={3}>
+                            <Grid item md={6} xs={6}>
+                                <div className="flex items-center">
+                                    <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
+                                    <div className='ml-3 mt-3'>
+                                        <h3 className='my-0 text-15'>
+                                            {InfoUsers.user.first_name} {InfoUsers.user.last_name}
+                                        </h3>
+                                        <p className="m-0 mb-4 text-small text-muted">
+                                            aalejo@gmail.com
+                                        </p>
+                                    </div>
+                                </div>
+                            </Grid>
+                            <Grid item md={6} xs={6}>
+                                <Card className="bg-primary items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-light-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-normal text-white uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h4>
+                                    </div>
+                                    {/* <div>
+                                        <h4 className="font-normal text-white m-0 pt-2">
+                                            
+                                        </h4>
+                                    </div> */}
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </div>
                 <DialogContent>
                     {/* <Typography gutterBottom>
-                    {`Cohort: ${newSurvey.cohort}`} 
-                    </Typography>
-                    <Typography gutterBottom>
-                    {`Max assistant to ask: ${newSurvey.max_assistants}`} 
-                    </Typography>
-                    <Typography gutterBottom>
-                    Max teachers: <span className="fs-5 fw-bolder">{newSurvey.max_teachers}</span>
-                    </Typography>
-                    <Typography gutterBottom>
-                    {`Duration: ${newSurvey.duration}`} 
-                    </Typography> */}
+                        {`Cohort: ${newSurvey.cohort}`} 
+                        </Typography>
+                        <Typography gutterBottom>
+                        {`Max assistant to ask: ${newSurvey.max_assistants}`} 
+                        </Typography>
+                        <Typography gutterBottom>
+                        Max teachers: <span className="fs-5 fw-bolder">{newSurvey.max_teachers}</span>
+                        </Typography>
+                        <Typography gutterBottom>
+                        {`Duration: ${newSurvey.duration}`} 
+                        </Typography> */}
+                    {/* <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} /> */}
                     <p>{InfoUsers.user.first_name}</p>
+                    <p>{InfoUsers.score}</p>
                     <p>{InfoUsers.user.last_name}</p>
+                    <p>{InfoUsers.academy.name}</p>
+                    <p>{InfoUsers.academy.slug}</p>
+                    <p>{InfoUsers.title}</p>
+                    <div>{InfoUsers.comment}</div>
+                    <p>{InfoUsers.highest}</p>
+                    <p>{InfoUsers.lowest}</p>
                 </DialogContent>
-                {/* <DialogActions>
-                    <Button 
-                    color = "primary" 
-                    variant = "contained" 
-                    type = "submit" 
-                    onClick={() => {
-                        handleClose();
-                    }}>
-                    Save as a draft
-                    </Button>
-                    <Button 
-                    color = "success" 
-                    variant = "contained" 
-                    type = "submit" 
-                    onClick={() => {
-                        bc.feedback().updateSurvey({
-                        send_now: true
-                        }, id);
-                        console.log(newSurvey);
-                        handleClose();
-                    }}>
-                    Send now
-                    </Button>
-                    <Button 
-                    color = "danger" 
-                    variant = "contained" 
-                    onClick={handleClose}>
-                    Delete
-                    </Button>
-                </DialogActions> */}
+                <DialogActions>
+                    <div className="px-sm-24 mb-3 flex justify-end">
+                        <Button className="mr-3" onClick={handleClose}>
+                            Cancel
+                            </Button>
+                    </div>
+                </DialogActions>
+                </div>
             </Dialog>
-        </div>
+        </div >
     );
 };
 
