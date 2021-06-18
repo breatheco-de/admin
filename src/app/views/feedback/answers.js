@@ -379,14 +379,14 @@ const Answers = () => {
                     <div className="flex items-center">
                         <div className="flex items-center flex-grow">
                             <p className="m-0 mb-4 text-small text-muted">
-                                Tech Startup Board Hot Backlog
+                                Answer with details
                             </p>
                         </div>
                         <IconButton size="small" onClick={handleClose}>
                             <Icon>clear</Icon>
                         </IconButton>
                     </div>
-                    <div className="px-4 py-6" elevation={3}>
+                    <DialogTitle>
                         <Grid container spacing={3}>
                             <Grid item md={6} xs={6}>
                                 <div className="flex items-center">
@@ -413,49 +413,65 @@ const Answers = () => {
                                             {InfoUsers.score}
                                         </h4>
                                     </div>
-                                    {/* <div>
-                                        <h4 className="font-normal text-white m-0 pt-2">
-                                            
-                                        </h4>
-                                    </div> */}
                                 </Card>
                             </Grid>
                         </Grid>
-                    </div>
-                <DialogContent>
-                    {/* <Typography gutterBottom>
-                        {`Cohort: ${newSurvey.cohort}`} 
-                        </Typography>
-                        <Typography gutterBottom>
-                        {`Max assistant to ask: ${newSurvey.max_assistants}`} 
-                        </Typography>
-                        <Typography gutterBottom>
-                        Max teachers: <span className="fs-5 fw-bolder">{newSurvey.max_teachers}</span>
-                        </Typography>
-                        <Typography gutterBottom>
-                        {`Duration: ${newSurvey.duration}`} 
-                        </Typography> */}
-                    {/* <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} /> */}
-                    <p>{InfoUsers.user.first_name}</p>
-                    <p>{InfoUsers.score}</p>
-                    <p>{InfoUsers.user.last_name}</p>
-                    <p>{InfoUsers.academy.name}</p>
-                    <p>{InfoUsers.academy.slug}</p>
-                    <p>{InfoUsers.title}</p>
-                    <div>{InfoUsers.comment}</div>
-                    <p>{InfoUsers.highest}</p>
-                    <p>{InfoUsers.lowest}</p>
-                </DialogContent>
-                <DialogActions>
-                    <div className="px-sm-24 mb-3 flex justify-end">
-                        <Button className="mr-3" onClick={handleClose}>
+                    </DialogTitle>
+                    <DialogContent>
+                        <div className="px-sm-24">
+                            <div className="flex items-center mb-2">
+                                <Icon className="text-muted">description</Icon>
+                                <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
+                            </div>
+                            
+                            <div className="comments ml-10">
+                                <div className="mb-4">
+                                    <div className="mb-2">
+                                        <h2 className="m-0">{InfoUsers.title}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Divider className="my-4"></Divider>
+
+
+                        <div className="px-sm-24">
+                            <div className="flex items-center mb-2">
+                                <Icon className="text-muted">message</Icon>
+                                <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
+                            </div>
+                            <div className="comments ml-10">
+                                <div className="mb-4">
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">{InfoUsers.highest}</h6>
+                                    </div>
+                                    <p className="m-0 text-muted">
+                                        {InfoUsers.comment}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {/* 
+                            <p>{InfoUsers.user.first_name}</p>
+                            <p>{InfoUsers.score}</p>
+                            <p>{InfoUsers.user.last_name}</p>
+                            <p>{InfoUsers.academy.name}</p>
+                            <p>{InfoUsers.academy.slug}</p>
+                            <p>{InfoUsers.title}</p>
+                            <div>{InfoUsers.comment}</div>
+                            <p>{InfoUsers.highest}</p>
+                            <p>{InfoUsers.lowest}</p>
+                        */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
                             Cancel
-                            </Button>
-                    </div>
-                </DialogActions>
+                        </Button>
+                    </DialogActions>
                 </div>
-            </Dialog>
-        </div >
+            </Dialog >
+        </div>
     );
 };
 
