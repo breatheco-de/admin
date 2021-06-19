@@ -283,20 +283,7 @@ const Answers = () => {
                             </div>
                         </Grid>
                         <Grid item md={6} xs={6}>
-                            {InfoUsers.score > 7 ? (
-                                <Card className="bg-dark items-center flex justify-between p-4">
-                                    <div>
-                                        <span className="text-green uppercase">
-                                            TOTAL SCORE:
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h2 className="font-normal text-green uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
-                                        </h2>
-                                    </div>
-                                </Card>
-                            ) : InfoUsers.score < 7 ? (
+                            {InfoUsers.score === null ? (
                                 <Card className="bg-dark items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-error uppercase">
@@ -305,19 +292,45 @@ const Answers = () => {
                                     </div>
                                     <div>
                                         <h2 className="font-normal text-error uppercase pt-2 mr-3">
+                                            Not
+                                        </h2>
+                                    </div>
+                                </Card>                            
+                            ) : InfoUsers.score > 7 ? (
+                                <Card className="bg-green items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h2>
+                                    </div>
+                                </Card>
+                            ) : InfoUsers.score < 7 ? (
+                                <Card className="bg-error items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {InfoUsers.score}
                                         </h2>
                                     </div>
                                 </Card>
                             ) : (
-                                <Card className="bg-dark items-center flex justify-between p-4">
+                                <Card className="bg-secondary items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-orange uppercase">
+                                        <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h2 className="font-normal text-orange uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {InfoUsers.score}
                                         </h2>
                                     </div>
@@ -332,7 +345,7 @@ const Answers = () => {
                             <Icon className="text-muted">description</Icon>
                             <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
                         </div> */}
-                        <div className="comments ml-10">
+                        <div className="comments">
                             <div className="mb-4">
                                 <div className="mb-2">
                                     <h2 className="m-0">{InfoUsers.title}</h2>
@@ -349,9 +362,13 @@ const Answers = () => {
                             <Icon className="text-muted">message</Icon>
                             <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
                         </div> */}
-                        <div className="comments ml-10">
+                        <div className="comments">
                             <div className="mb-4">
-                                {InfoUsers.score >= 7 ? (
+                                {InfoUsers.score === null ? (
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">No Comments</h6>
+                                    </div>
+                                ) : InfoUsers.score >= 7 ? (
                                     <div className="flex items-center mb-2">
                                         <h6 className="m-0">{InfoUsers.highest}</h6>
                                     </div>
