@@ -67,6 +67,7 @@ const Answers = () => {
     };
 
     const [InfoUsers, setInfoUsers] = useState({
+        color: "",
         score: "",
         title: "",
         comment: "",
@@ -226,8 +227,7 @@ const Answers = () => {
             label: " ",
             options: {
                 filter: false,
-                customBodyRenderLite: (dataIndex) => {
-                    // let { user } = items.results[dataIndex];
+                customBodyRenderLite: (dataIndex) => {    
                     return (
                         <Fragment>
                             <div className='flex items-center'>
@@ -249,6 +249,126 @@ const Answers = () => {
             },
         },
     ];
+
+    const Modal = (
+        <Dialog
+            onClose={handleClose}
+            open={open}
+            aria-labelledby="simple-dialog-title"
+        >
+            <div className="px-sm-24 pt-sm-24">
+                <div className="flex items-center">
+                    <div className="flex items-center flex-grow">
+                        <p className="m-0 mb-4 text-small text-muted">
+                            Answer with details
+                        </p>
+                    </div>
+                    <IconButton size="small" onClick={handleClose}>
+                        <Icon>clear</Icon>
+                    </IconButton>
+                </div>
+                <DialogTitle>
+                    <Grid container spacing={3}>
+                        <Grid item md={6} xs={6}>
+                            <div className="flex items-center">
+                                <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
+                                <div className='ml-3 mt-3'>
+                                    <h3 className='my-0 text-15'>
+                                        {InfoUsers.user.first_name} {InfoUsers.user.last_name}
+                                    </h3>
+                                    <p className="m-0 mb-4 text-small text-muted">
+                                        aalejo@gmail.com
+                                    </p>
+                                </div>
+                            </div>
+                        </Grid>
+                        <Grid item md={6} xs={6}>
+                            {InfoUsers.score > 7 ? (
+                                <Card className="bg-green items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-light-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-normal text-green uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h4>
+                                    </div>
+                                </Card>
+                            ) : InfoUsers.score < 7 ? (
+                                <Card className="bg-red items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-light-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-normal text-error uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h4>
+                                    </div>
+                                </Card>
+                            ) : (
+                                <Card className="bg-orange items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-light-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-normal text-orange uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h4>
+                                    </div>
+                                </Card>
+                            )}                                
+                        </Grid>
+                    </Grid>
+                </DialogTitle>
+                <DialogContent>
+                    <div className="px-sm-24">
+                        {/* <div className="flex items-center mb-2">
+                            <Icon className="text-muted">description</Icon>
+                            <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
+                        </div> */}
+                        <div className="comments ml-10">
+                            <div className="mb-4">
+                                <div className="mb-2">
+                                    <h2 className="m-0">{InfoUsers.title}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Divider className="my-4"></Divider>
+
+
+                    <div className="px-sm-24">
+                        {/* <div className="flex items-center mb-2">
+                            <Icon className="text-muted">message</Icon>
+                            <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
+                        </div> */}
+                        <div className="comments ml-10">
+                            <div className="mb-4">
+                                <div className="flex items-center mb-2">
+                                    <h6 className="m-0">{InfoUsers.highest}</h6>
+                                </div>
+                                <p className="m-0 text-muted">
+                                    {InfoUsers.comment}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </div>
+        </Dialog >
+    )
 
     return (
         <div className='m-sm-30'>
@@ -370,7 +490,8 @@ const Answers = () => {
             </div>
 
             {/* MODAL */}
-            <Dialog
+            {Modal}
+            {/* <Dialog
                 onClose={handleClose}
                 open={open}
                 aria-labelledby="simple-dialog-title"
@@ -378,7 +499,7 @@ const Answers = () => {
                 <div className="px-sm-24 pt-sm-24">
                     <div className="flex items-center">
                         <div className="flex items-center flex-grow">
-                            <p className="m-0 mb-4 text-small text-muted">
+                            <p className="m-0 mb-4 text-small text-muted" className={color}>
                                 Answer with details
                             </p>
                         </div>
@@ -423,7 +544,6 @@ const Answers = () => {
                                 <Icon className="text-muted">description</Icon>
                                 <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
                             </div>
-                            
                             <div className="comments ml-10">
                                 <div className="mb-4">
                                     <div className="mb-2">
@@ -452,17 +572,6 @@ const Answers = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* 
-                            <p>{InfoUsers.user.first_name}</p>
-                            <p>{InfoUsers.score}</p>
-                            <p>{InfoUsers.user.last_name}</p>
-                            <p>{InfoUsers.academy.name}</p>
-                            <p>{InfoUsers.academy.slug}</p>
-                            <p>{InfoUsers.title}</p>
-                            <div>{InfoUsers.comment}</div>
-                            <p>{InfoUsers.highest}</p>
-                            <p>{InfoUsers.lowest}</p>
-                        */}
                     </DialogContent>
                     <DialogActions>
                         <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
@@ -470,7 +579,7 @@ const Answers = () => {
                         </Button>
                     </DialogActions>
                 </div>
-            </Dialog >
+            </Dialog > */}
         </div>
     );
 };
