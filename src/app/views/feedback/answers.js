@@ -284,42 +284,42 @@ const Answers = () => {
                         </Grid>
                         <Grid item md={6} xs={6}>
                             {InfoUsers.score > 7 ? (
-                                <Card className="bg-green items-center flex justify-between p-4">
+                                <Card className="bg-dark items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-light-white uppercase">
+                                        <span className="text-green uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="font-normal text-green uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-green uppercase pt-2 mr-3">
                                             {InfoUsers.score}
-                                        </h4>
+                                        </h2>
                                     </div>
                                 </Card>
                             ) : InfoUsers.score < 7 ? (
-                                <Card className="bg-red items-center flex justify-between p-4">
+                                <Card className="bg-dark items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-light-white uppercase">
+                                        <span className="text-error uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="font-normal text-error uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-error uppercase pt-2 mr-3">
                                             {InfoUsers.score}
-                                        </h4>
+                                        </h2>
                                     </div>
                                 </Card>
                             ) : (
-                                <Card className="bg-orange items-center flex justify-between p-4">
+                                <Card className="bg-dark items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-light-white uppercase">
+                                        <span className="text-orange uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="font-normal text-orange uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-orange uppercase pt-2 mr-3">
                                             {InfoUsers.score}
-                                        </h4>
+                                        </h2>
                                     </div>
                                 </Card>
                             )}                                
@@ -351,9 +351,15 @@ const Answers = () => {
                         </div> */}
                         <div className="comments ml-10">
                             <div className="mb-4">
-                                <div className="flex items-center mb-2">
-                                    <h6 className="m-0">{InfoUsers.highest}</h6>
-                                </div>
+                                {InfoUsers.score >= 7 ? (
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">{InfoUsers.highest}</h6>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">{InfoUsers.lowest}</h6>
+                                    </div>
+                                )}
                                 <p className="m-0 text-muted">
                                     {InfoUsers.comment}
                                 </p>
