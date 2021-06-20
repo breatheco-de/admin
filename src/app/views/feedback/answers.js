@@ -284,14 +284,14 @@ const Answers = () => {
                         </Grid>
                         <Grid item md={6} xs={6}>
                             {InfoUsers.score === null ? (
-                                <Card className="bg-dark items-center flex justify-between p-4">
+                                <Card className="bg-gray items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-error uppercase">
+                                        <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h2 className="font-normal text-error uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             Not
                                         </h2>
                                     </div>
