@@ -502,7 +502,7 @@ const Answers = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
-                        Cancel
+                        Close
                     </Button>
                 </DialogActions>
             </div>
