@@ -250,149 +250,6 @@ const Answers = () => {
         },
     ];
 
-    const Modal = (
-        <Dialog
-            onClose={handleClose}
-            open={open}
-            aria-labelledby="simple-dialog-title"
-        >
-            <div className="px-sm-24 pt-sm-24">
-                <div className="flex items-center">
-                    <div className="flex items-center flex-grow">
-                        <p className="m-0 mb-4 text-small text-muted">
-                            Answer with details
-                        </p>
-                    </div>
-                    <IconButton size="small" onClick={handleClose}>
-                        <Icon>clear</Icon>
-                    </IconButton>
-                </div>
-                <DialogTitle>
-                    <Grid container spacing={3}>
-                        <Grid item md={6} xs={6}>
-                            <div className="flex items-center">
-                                <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
-                                <div className='ml-3 mt-3'>
-                                    <h3 className='my-0 text-15'>
-                                        {InfoUsers.user.first_name} {InfoUsers.user.last_name}
-                                    </h3>
-                                    <p className="m-0 mb-4 text-small text-muted">
-                                        aalejo@gmail.com
-                                    </p>
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item md={6} xs={6}>
-                            {InfoUsers.score === null ? (
-                                <Card className="bg-gray items-center flex justify-between p-4">
-                                    <div>
-                                        <span className="text-white uppercase">
-                                            TOTAL SCORE:
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            Not
-                                        </h2>
-                                    </div>
-                                </Card>                            
-                            ) : InfoUsers.score > 7 ? (
-                                <Card className="bg-green items-center flex justify-between p-4">
-                                    <div>
-                                        <span className="text-white uppercase">
-                                            TOTAL SCORE:
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
-                                        </h2>
-                                    </div>
-                                </Card>
-                            ) : InfoUsers.score < 7 ? (
-                                <Card className="bg-error items-center flex justify-between p-4">
-                                    <div>
-                                        <span className="text-white uppercase">
-                                            TOTAL SCORE:
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
-                                        </h2>
-                                    </div>
-                                </Card>
-                            ) : (
-                                <Card className="bg-secondary items-center flex justify-between p-4">
-                                    <div>
-                                        <span className="text-white uppercase">
-                                            TOTAL SCORE:
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
-                                        </h2>
-                                    </div>
-                                </Card>
-                            )}                                
-                        </Grid>
-                    </Grid>
-                </DialogTitle>
-                <DialogContent>
-                    <div className="px-sm-24">
-                        {/* <div className="flex items-center mb-2">
-                            <Icon className="text-muted">description</Icon>
-                            <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
-                        </div> */}
-                        <div className="comments">
-                            <div className="mb-4">
-                                <div className="mb-2">
-                                    <h2 className="m-0">{InfoUsers.title}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Divider className="my-4"></Divider>
-
-
-                    <div className="px-sm-24">
-                        {/* <div className="flex items-center mb-2">
-                            <Icon className="text-muted">message</Icon>
-                            <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
-                        </div> */}
-                        <div className="comments">
-                            <div className="mb-4">
-                                {InfoUsers.score === null ? (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">No Comments</h6>
-                                    </div>
-                                ) : InfoUsers.score >= 7 ? (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">{InfoUsers.highest}</h6>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">{InfoUsers.lowest}</h6>
-                                    </div>
-                                )}
-                                <p className="m-0 text-muted">
-                                    {InfoUsers.comment}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </div>
-        </Dialog >
-    )
-
     return (
         <div className='m-sm-30'>
             <div className='mb-sm-30'>
@@ -512,97 +369,144 @@ const Answers = () => {
                 </div>
             </div>
 
-            {/* MODAL */}
-            {Modal}
-            {/* <Dialog
-                onClose={handleClose}
-                open={open}
-                aria-labelledby="simple-dialog-title"
-            >
-                <div className="px-sm-24 pt-sm-24">
-                    <div className="flex items-center">
-                        <div className="flex items-center flex-grow">
-                            <p className="m-0 mb-4 text-small text-muted" className={color}>
-                                Answer with details
-                            </p>
-                        </div>
-                        <IconButton size="small" onClick={handleClose}>
-                            <Icon>clear</Icon>
-                        </IconButton>
+            <Dialog
+            onClose={handleClose}
+            open={open}
+            aria-labelledby="simple-dialog-title"
+        >
+            <div className="px-sm-24 pt-sm-24">
+                <div className="flex items-center">
+                    <div className="flex items-center flex-grow">
+                        <p className="m-0 mb-4 text-small text-muted">
+                            Answer with details
+                        </p>
                     </div>
-                    <DialogTitle>
-                        <Grid container spacing={3}>
-                            <Grid item md={6} xs={6}>
-                                <div className="flex items-center">
-                                    <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
-                                    <div className='ml-3 mt-3'>
-                                        <h3 className='my-0 text-15'>
-                                            {InfoUsers.user.first_name} {InfoUsers.user.last_name}
-                                        </h3>
-                                        <p className="m-0 mb-4 text-small text-muted">
-                                            aalejo@gmail.com
-                                        </p>
-                                    </div>
+                    <IconButton size="small" onClick={handleClose}>
+                        <Icon>clear</Icon>
+                    </IconButton>
+                </div>
+                <DialogTitle>
+                    <Grid container spacing={3}>
+                        <Grid item md={6} xs={6}>
+                            <div className="flex items-center">
+                                <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
+                                <div className='ml-3 mt-3'>
+                                    <h3 className='my-0 text-15'>
+                                        {InfoUsers.user.first_name} {InfoUsers.user.last_name}
+                                    </h3>
+                                    <p className="m-0 mb-4 text-small text-muted">
+                                        aalejo@gmail.com
+                                    </p>
                                 </div>
-                            </Grid>
-                            <Grid item md={6} xs={6}>
-                                <Card className="bg-primary items-center flex justify-between p-4">
+                            </div>
+                        </Grid>
+                        <Grid item md={6} xs={6}>
+                            {InfoUsers.score === null ? (
+                                <Card className="bg-gray items-center flex justify-between p-4">
                                     <div>
-                                        <span className="text-light-white uppercase">
+                                        {/* <span className="text-white uppercase">
+                                            Waiting for answer
+                                        </span> */}
+                                        <h5 className="font-normal text-white uppercase pt-2 mr-3">
+                                            Waiting fot answer
+                                        </h5>
+                                    </div>
+                                </Card>                            
+                            ) : InfoUsers.score > 7 ? (
+                                <Card className="bg-green items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="font-normal text-white uppercase pt-2 mr-3">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {InfoUsers.score}
-                                        </h4>
+                                        </h2>
                                     </div>
                                 </Card>
-                            </Grid>
-                        </Grid>
-                    </DialogTitle>
-                    <DialogContent>
-                        <div className="px-sm-24">
-                            <div className="flex items-center mb-2">
-                                <Icon className="text-muted">description</Icon>
-                                <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
-                            </div>
-                            <div className="comments ml-10">
-                                <div className="mb-4">
-                                    <div className="mb-2">
-                                        <h2 className="m-0">{InfoUsers.title}</h2>
+                            ) : InfoUsers.score < 7 ? (
+                                <Card className="bg-error items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
                                     </div>
+                                    <div>
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h2>
+                                    </div>
+                                </Card>
+                            ) : (
+                                <Card className="bg-secondary items-center flex justify-between p-4">
+                                    <div>
+                                        <span className="text-white uppercase">
+                                            TOTAL SCORE:
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                                            {InfoUsers.score}
+                                        </h2>
+                                    </div>
+                                </Card>
+                            )}                                
+                        </Grid>
+                    </Grid>
+                </DialogTitle>
+                <DialogContent>
+                    <div>
+                        {/* <div className="flex items-center mb-2">
+                            <Icon className="text-muted">description</Icon>
+                            <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
+                        </div> */}
+                        <div className="comments">
+                            <div className="mb-4">
+                                <div className="mb-2">
+                                    <h2 className="m-0">{InfoUsers.title}</h2>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <Divider className="my-4"></Divider>
+                    <Divider className="my-4"></Divider>
 
 
-                        <div className="px-sm-24">
-                            <div className="flex items-center mb-2">
-                                <Icon className="text-muted">message</Icon>
-                                <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
-                            </div>
-                            <div className="comments ml-10">
-                                <div className="mb-4">
+                    <div>
+                        {/* <div className="flex items-center mb-2">
+                            <Icon className="text-muted">message</Icon>
+                            <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
+                        </div> */}
+                        <div className="comments">
+                            <div className="mb-4">
+                                {InfoUsers.score === null ? (
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">No Comments</h6>
+                                    </div>
+                                ) : InfoUsers.score >= 7 ? (
                                     <div className="flex items-center mb-2">
                                         <h6 className="m-0">{InfoUsers.highest}</h6>
                                     </div>
-                                    <p className="m-0 text-muted">
-                                        {InfoUsers.comment}
-                                    </p>
-                                </div>
+                                ) : (
+                                    <div className="flex items-center mb-2">
+                                        <h6 className="m-0">{InfoUsers.lowest}</h6>
+                                    </div>
+                                )}
+                                <p className="m-0 text-muted">
+                                    {InfoUsers.comment}
+                                </p>
                             </div>
                         </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
-                            Cancel
-                        </Button>
-                    </DialogActions>
-                </div>
-            </Dialog > */}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </div>
+        </Dialog >
         </div>
     );
 };
