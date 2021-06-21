@@ -55,15 +55,17 @@ const StudentDetails = ({
   const [crt_user, setCrtUser] = useState({});
   const [roles, setRoles] = useState(null);
   const [roleDialog, setRoleDialog] = useState(false);
+  const [role, setRole] = useState("");
 
   const updateRole = (role) => {
     bc.auth()
       .updateAcademyMember(std_id, { role: role })
-      .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
-          console.log("success");
+      .then(({ data, status }) => {
+        if (status >= 200 && status < 300) {
+          setRole(data.role.replace("_", " "));
+        } else {
+          throw Error("Could not update Role");
         }
-        throw Error("Could not update Role");
       })
       .catch((error) => console.log(error));
   };
@@ -110,9 +112,8 @@ const StudentDetails = ({
           onClick={() => setRoleDialog(true)}
           style={{ cursor: "pointer" }}
         >
-          {user?.role.name.toUpperCase()}
+          {role.length ? role.toUpperCase() : user?.role.name.toUpperCase()}
         </div>
-        {/* <small className='text-muted'>{user?.role.name.toUpperCase()}</small> */}
       </div>
       <Divider />
       <Formik

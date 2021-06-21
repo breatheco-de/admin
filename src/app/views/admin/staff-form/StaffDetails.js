@@ -49,6 +49,7 @@ const StaffDetails = ({ user, staff_id }) => {
   ];
   const [roleDialog, setRoleDialog] = useState(false);
   const [roles, setRoles] = useState(null);
+  const [role, setRole] = useState("");
   const updateMemberProfile = (values) => {
     bc.auth()
       .updateAcademyMember(staff_id, { ...values, role: user.role.slug })
@@ -58,8 +59,12 @@ const StaffDetails = ({ user, staff_id }) => {
   const updateRole = (role) => {
     bc.auth()
       .updateAcademyMember(staff_id, { role: role })
-      .then(({ data }) => {
-        console.log(data);
+      .then(({ data, status }) => {
+        if (status >= 200 && status < 300) {
+          setRole(data.role.replace("_", " "));
+        } else {
+          throw Error("Could not update Role");
+        }
       })
       .catch((error) => error);
   };
@@ -81,7 +86,7 @@ const StaffDetails = ({ user, staff_id }) => {
           onClick={() => setRoleDialog(true)}
           style={{ cursor: "pointer" }}
         >
-          {user?.role.name.toUpperCase()}
+          {role.length ? role.toUpperCase() : user?.role.name.toUpperCase()}
         </div>
       </div>
       <Divider />
