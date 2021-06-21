@@ -135,7 +135,6 @@ const Certificates = () => {
         filterType: "multiselect",
         customBodyRender: (value, tableMeta, updateValue) => {
           let item = items[tableMeta.rowIndex];
-          console.log("item:", item);
           return (
             <div className='flex items-center'>
               <div className='ml-3'>

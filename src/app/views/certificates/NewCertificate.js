@@ -28,16 +28,17 @@ const NewCertificate = () => {
       .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
       .then(({ data }) => setSpecialties(data))
       .catch((error) =>
-        setMsg({ alert: true, type: "error", text: error.details || error.detail })
+        setMsg({
+          alert: true,
+          type: "error",
+          text: error.details || error.detail,
+        })
       );
   };
-
 
   useEffect(() => {
     getSpecialties();
   }, []);
-
-  
 
   const postCerfiticate = (values) => {
     // student certificate
@@ -48,11 +49,13 @@ const NewCertificate = () => {
           values
         )
         .then((data) => {
-          setMsg({
-            alert: true,
-            type: "success",
-            text: "Certificate added successfully",
-          });
+          if (data.status >= 200 && data.status < 300) {
+            setMsg({
+              alert: true,
+              type: "success",
+              text: "Certificate added successfully",
+            });
+          }
           setTimeout(function () {
             history.push("/certificates");
           }, 1000);
@@ -76,22 +79,21 @@ const NewCertificate = () => {
           values
         )
         .then((data) => {
-          setResponseData(data);
-          setIsLoading(false);
-          setOpenDialog(true);
+          if (data !== undefined && data.status >= 200 && data.status < 300) {
+            setResponseData(data);
+            setIsLoading(false);
+            setOpenDialog(true);
+          } else {
+            throw Error("Unknown error, check cerficate fields");
+          }
         })
-        .catch((error) =>
+        .catch((error) => {
           setMsg({
             alert: true,
             type: "error",
-            text:
-              error.detail ||
-              error.slug[0] ||
-              error.name[0] ||
-              error.kickoff_date[0] ||
-              "Unknown error, check cerficate fields",
-          })
-        );
+            text: error.message,
+          });
+        });
     }
   };
 
