@@ -350,7 +350,6 @@ const Certificates = () => {
                 );
               },
               onTableChange: (action, tableState) => {
-                console.log(action, tableState);
                 switch (action) {
                   case "changePage":
                     handlePageChange(

@@ -61,7 +61,7 @@ const StaffDetails = ({ user, staff_id }) => {
       .updateAcademyMember(staff_id, { role: role })
       .then(({ data, status }) => {
         if (status >= 200 && status < 300) {
-          setRole(data.role.replace("_", " "));
+          setRole(roles.find((role) => role.slug === data.role).name);
         } else {
           throw Error("Could not update Role");
         }

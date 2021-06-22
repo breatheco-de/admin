@@ -83,8 +83,6 @@ const NewCertificate = () => {
             setResponseData(data);
             setIsLoading(false);
             setOpenDialog(true);
-          } else {
-            throw Error("Unknown error, check cerficate fields");
           }
         })
         .catch((error) => {

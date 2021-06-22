@@ -201,10 +201,10 @@ class BreatheCodeClient {
           `${this.host}/auth/academy/user/${user}/invite`
         );
       },
-      passwordReset: (user, payload) => {
+      passwordReset: (user_id, payload) => {
         return axios._post(
           "Password reset",
-          `${this.host}/auth/member/${user}/password/reset`,
+          `${this.host}/auth/member/${user_id}/password/reset`,
           payload
         );
       },

@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import bc from "app/services/breathecode";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
 import AddBulkToCohort from "./student-form/student-utils/AddBulkToCohort";
-import CopyInviteModal from "app/components/CopyInviteModal";
+import InviteDetails from "app/components/InviteDetails";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -123,7 +123,7 @@ const Students = () => {
           return item.status === "INVITED" ? (
             <div className='flex items-center'>
               <div className='flex-grow'></div>
-              <CopyInviteModal user={item.id} />
+              <InviteDetails user={item.id} />
               <Tooltip title='Resend Invite'>
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>

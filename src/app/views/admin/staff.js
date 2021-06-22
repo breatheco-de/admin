@@ -18,7 +18,7 @@ import { useQuery } from "../../hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DownloadCsv } from "../../components/DownloadCsv";
 import CustomToolbar from "../../components/CustomToolbar";
-import CopyInviteModal from "app/components/CopyInviteModal";
+import InviteDetails from "app/components/InviteDetails";
 
 let relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -233,7 +233,7 @@ const Staff = () => {
           return item.status === "INVITED" ? (
             <div className='flex items-center'>
               <div className='flex-grow'></div>
-              <CopyInviteModal user={item.id} />
+              <InviteDetails user={item.id} />
               <Tooltip title='Resend Invite'>
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>

@@ -20,7 +20,7 @@ const toastOption = {
   autoClose: 8000,
 };
 
-const CopyInviteModal = ({ user }) => {
+const InviteDetails = ({ user }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [inviteLink, setInviteLink] = useState("");
 
@@ -91,4 +91,4 @@ const CopyInviteModal = ({ user }) => {
   );
 };
 
-export default CopyInviteModal;
+export default InviteDetails;
