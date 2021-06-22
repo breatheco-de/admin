@@ -47,62 +47,62 @@ const Analytics = () => {
     });
     const [renderNewDates, setRenderNewDates] = useState(false);
 
-    // useEffect(() => {
-    //     const { academy } = JSON.parse(localStorage.getItem("bc-session"));
-    //     if(academy === undefined || academy.id === undefined) return null;
+    useEffect(() => {
+        const { academy } = JSON.parse(localStorage.getItem("bc-session"));
+        if(academy === undefined || academy.id === undefined) return null;
         
-    //     BC.marketing().getLeads({
-    //         start: params.start.format('YYYY-MM-DD'),
-    //         end: params.end.format('YYYY-MM-DD'),
-    //         academy: academy.slug,
-    //         by: 'location,created_at__date,course'
-    //     }).then(( { data }) => {
-    //             console.log("data", data)
-    //             let series = [];
-    //             let xAxis = [];
-    //             let total = 0;
-    //             let max = 0;
-    //             let min = 0;
-    //             data.forEach(stamp => {
-    //                 series.push(stamp.total_leads);
-    //                 xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'))
-    //                 total += stamp.total_leads;
-    //                 if(stamp.total_leads > max) max = stamp.total_leads;
-    //                 if(stamp.total_leads < min) min = stamp.total_leads;
-    //             })
-    //             setLeads({ series, xAxis, total, max, min })
-    //         })
+        BC.marketing().getLeads({
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+            academy: academy.slug,
+            by: 'location,created_at__date,course'
+        }).then(( { data }) => {
+                console.log("data", data)
+                let series = [];
+                let xAxis = [];
+                let total = 0;
+                let max = 0;
+                let min = 0;
+                data.forEach(stamp => {
+                    series.push(stamp.total_leads);
+                    xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'))
+                    total += stamp.total_leads;
+                    if(stamp.total_leads > max) max = stamp.total_leads;
+                    if(stamp.total_leads < min) min = stamp.total_leads;
+                })
+                setLeads({ series, xAxis, total, max, min })
+            })
 
-    //     BC.marketing().getLeads({
-    //         start: params.start.format('YYYY-MM-DD'),
-    //         end: params.end.format('YYYY-MM-DD'),
-    //         academy: academy.slug,
-    //         by: 'utm_source'
-    //     })
-    //         .then(( { data }) => {
-    //             let _data = [];
-    //             data.forEach(stamp => {
-    //                 _data.push({ name: stamp.utm_source, value: stamp.total_leads });
-    //             })
-    //             setDonutLeads({ data: _data })
-    //         })
+        BC.marketing().getLeads({
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+            academy: academy.slug,
+            by: 'utm_source'
+        })
+            .then(( { data }) => {
+                let _data = [];
+                data.forEach(stamp => {
+                    _data.push({ name: stamp.utm_source, value: stamp.total_leads });
+                })
+                setDonutLeads({ data: _data })
+            })
 
-    //     BC.events().getCheckins({
-    //         start: params.start.format('YYYY-MM-DD'),
-    //         end: params.end.format('YYYY-MM-DD'),
-    //         }).then((res) => {
-    //           if(res !== undefined && res.data !== undefined){
-    //             setCheckins(res.data);
-    //          }else setCheckins([])
-    //         })
+        BC.events().getCheckins({
+            start: params.start.format('YYYY-MM-DD'),
+            end: params.end.format('YYYY-MM-DD'),
+            }).then((res) => {
+              if(res !== undefined && res.data !== undefined){
+                setCheckins(res.data);
+             }else setCheckins([])
+            })
 
-    //     BC.feedback().getAnswers({
-    //         status: "ANSWERED"
-    //     })
-    //         .then(({ data }) => {
-    //             setFeedback(data.filter(a => a.score));
-    //         })
-    // }, [renderNewDates])
+        BC.feedback().getAnswers({
+            status: "ANSWERED"
+        })
+            .then(({ data }) => {
+                setFeedback(data.filter(a => a.score));
+            })
+    }, [renderNewDates])
 
     return (
         <Fragment>

@@ -55,18 +55,11 @@ const Answers = () => {
     const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
     const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
     const [queryLike, setQueryLike] = useState(query.get("like") || "");
-
     const [open, setOpen] = useState(false);
+    const handleClickOpen = () => {setOpen(true);};
+    const handleClose = () => {setOpen(false);};
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const [InfoUsers, setInfoUsers] = useState({
+    const [answer, setanswer] = useState({
         color: "",
         score: "",
         title: "",
@@ -84,8 +77,6 @@ const Answers = () => {
         }
     });
 
-    // const [InfoUsers, setInfoUsers] = useState({});
-
     useEffect(() => {
         setIsLoading(true);
         let q = {
@@ -95,13 +86,10 @@ const Answers = () => {
         setQuerys(q);
         bc.feedback()
             .getAnswers(q)
-            // .getSingleAnwers(q)
             .then(({ data }) => {
                 setIsLoading(false);
                 if (isAlive) {
                     setItems({ ...data });
-                    // console.log()
-                    //setTable({...table,count: data.count});
                 }
             })
             .catch((error) => {
@@ -233,11 +221,9 @@ const Answers = () => {
                             <div className='flex items-center'>
                                 <div className='flex-grow'></div>
                                 <span>
-                                    {/* <span onClick={e => handleDetails(e)}> */}
                                     <IconButton onClick={() => {
                                         handleClickOpen(true);
-                                        console.log(items.results[dataIndex]);
-                                        setInfoUsers(items.results[dataIndex]);
+                                        setanswer(items.results[dataIndex]);
                                     }}>
                                         <Icon>arrow_right_alt</Icon>
                                     </IconButton>
@@ -389,30 +375,24 @@ const Answers = () => {
                     <Grid container spacing={3}>
                         <Grid item md={6} xs={6}>
                             <div className="flex items-center">
-                                <Avatar className='w-48 h-48' src={InfoUsers.user.imgUrl} />
+                                <Avatar className='w-48 h-48' src={answer.user.imgUrl} />
                                 <div className='ml-3 mt-3'>
                                     <h3 className='my-0 text-15'>
-                                        {InfoUsers.user.first_name} {InfoUsers.user.last_name}
+                                        {answer.user.first_name} {answer.user.last_name}
                                     </h3>
-                                    <p className="m-0 mb-4 text-small text-muted">
-                                        aalejo@gmail.com
-                                    </p>
                                 </div>
                             </div>
                         </Grid>
                         <Grid item md={6} xs={6}>
-                            {InfoUsers.score === null ? (
+                            {answer.score === null ? (
                                 <Card className="bg-gray items-center flex justify-between p-4">
                                     <div>
-                                        {/* <span className="text-white uppercase">
-                                            Waiting for answer
-                                        </span> */}
                                         <h5 className="font-normal text-white uppercase pt-2 mr-3">
                                             Waiting fot answer
                                         </h5>
                                     </div>
                                 </Card>                            
-                            ) : InfoUsers.score > 7 ? (
+                            ) : answer.score > 7 ? (
                                 <Card className="bg-green items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-white uppercase">
@@ -421,11 +401,11 @@ const Answers = () => {
                                     </div>
                                     <div>
                                         <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
+                                            {answer.score}
                                         </h2>
                                     </div>
                                 </Card>
-                            ) : InfoUsers.score < 7 ? (
+                            ) : answer.score < 7 ? (
                                 <Card className="bg-error items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-white uppercase">
@@ -434,7 +414,7 @@ const Answers = () => {
                                     </div>
                                     <div>
                                         <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
+                                            {answer.score}
                                         </h2>
                                     </div>
                                 </Card>
@@ -447,7 +427,7 @@ const Answers = () => {
                                     </div>
                                     <div>
                                         <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                                            {InfoUsers.score}
+                                            {answer.score}
                                         </h2>
                                     </div>
                                 </Card>
@@ -457,14 +437,10 @@ const Answers = () => {
                 </DialogTitle>
                 <DialogContent>
                     <div>
-                        {/* <div className="flex items-center mb-2">
-                            <Icon className="text-muted">description</Icon>
-                            <h6 className="m-0 ml-4 uppercase text-muted">Question</h6>
-                        </div> */}
                         <div className="comments">
                             <div className="mb-4">
                                 <div className="mb-2">
-                                    <h2 className="m-0">{InfoUsers.title}</h2>
+                                    <h2 className="m-0">{answer.title}</h2>
                                 </div>
                             </div>
                         </div>
@@ -474,28 +450,19 @@ const Answers = () => {
 
 
                     <div>
-                        {/* <div className="flex items-center mb-2">
-                            <Icon className="text-muted">message</Icon>
-                            <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
-                        </div> */}
                         <div className="comments">
                             <div className="mb-4">
-                                {InfoUsers.score === null ? (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">No Comments</h6>
-                                    </div>
-                                ) : InfoUsers.score >= 7 ? (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">{InfoUsers.highest}</h6>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center mb-2">
-                                        <h6 className="m-0">{InfoUsers.lowest}</h6>
-                                    </div>
-                                )}
-                                <p className="m-0 text-muted">
-                                    {InfoUsers.comment}
-                                </p>
+                                {answer.comment ? 
+                                    (
+                                        <p className="m-0 text-muted">
+                                        {answer.comment.substring(0, 10000)}
+                                    </p>
+                                    ) : (
+                                        <p className="m-0 text-muted">
+                                            Waiting for comments
+                                        </p>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
