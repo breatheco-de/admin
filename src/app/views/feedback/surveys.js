@@ -144,7 +144,7 @@ const EventList = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Feedback", path: "/" },
+                { name: "Feedback", path: "/feedback/surveys" },
                 { name: "Survey List" },
               ]}
             />
