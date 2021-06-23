@@ -8,6 +8,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import StatCard from "./StatCard";
+import { Breadcrumb } from "matx";
 import Answers from "./Answers";
 import GaugeProgressCard from "./GuageProgressCard";
 
@@ -35,6 +36,15 @@ const results = [
 const Analytics2 = () => {
   return (
     <div className="analytics m-sm-30">
+      <div className="mb-3">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Feedback", path: "/feedback/surveys" },
+            { name: "Survey List", path: "/feedback/surveys" },
+            { name: "Single Survey" },
+          ]}
+        />
+      </div>
       <Grid container spacing={2}>
         <Grid item md={4} xs={12}>
           <GaugeProgressCard />
