@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment,useState } from "react";
 import {
   Grid,
   TextField,
@@ -9,12 +9,14 @@ import {
   TablePagination,
   Hidden,
 } from "@material-ui/core";
-import { uploadFiles } from "app/redux/actions/MediaActions";
-import {StyledDropzone} from "../../components/Dropzone"
-import GridMediaCard from "./GridMediaCard"
-import ListMediaCard from "./ListMediaCard"
+import { uploadFiles, selectMedia } from "app/redux/actions/MediaActions";
+import { useDispatch, useSelector } from "react-redux";
+import {StyledDropzone} from "../../components/Dropzone";
+import GridMediaCard from "./GridMediaCard";
+import ListMediaCard from "./ListMediaCard";
 import * as _ from "lodash";
-import { useState } from "react";
+import SelectedMenu from "../material-kit/menu/SelectedMenu";
+
 
 const ShopContainer = ({
   orderBy,
@@ -31,9 +33,14 @@ const ShopContainer = ({
   pagination
 }) => {
   const [upload, setUpload] = useState(false);
-  React.useEffect(()=> {
-    console.log(page)
-  }, [page])
+  const { selected = [] } = useSelector((state) => state.ecommerce);
+  const dispatch = useDispatch();
+  
+  const handleSelectedMedia = (value) => {
+    const exist = selected.find(m => m.id === value.id)
+    if(exist) dispatch(selectMedia(selected.filter(m => m.id !== value.id)))
+    else dispatch(selectMedia(selected.concat(value)))
+  }
   return (
     <Fragment>
       <div className="relative h-full w-full">
@@ -78,7 +85,7 @@ const ShopContainer = ({
           {productList.map((product) =>
               view === "grid" ? (
                 <Grid item key={product.id} lg={3} md={3} sm={12} xs={12} >
-                  <GridMediaCard media={product} onOpenDialog={() =>{console.log(product); onOpenDialog(product)}} key={product.id}></GridMediaCard>
+                  <GridMediaCard media={product} onOpenDialog={() =>{onOpenDialog(product)}} key={product.id} onSelected={handleSelectedMedia} isSelected={selected}></GridMediaCard>
                 </Grid>
               ) : (
                 <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>

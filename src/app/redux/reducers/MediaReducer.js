@@ -1,10 +1,13 @@
+import { startOfMinute } from "date-fns";
 import {
   GET_PRODUCT_LIST,
   GET_CATEGORY_LIST,
   UPLOAD_MEDIA_FILE,
   UPDATE_MEDIA_FILE,
   DELETE_MEDIA_FILE,
-  CREATE_CATEGORY
+  CREATE_CATEGORY,
+  MEDIA_SELECTED,
+  CLEAN_MEDIA_SELECTED
 } from "../actions/MediaActions";
 
 const initialState = {
@@ -13,7 +16,8 @@ const initialState = {
   refresh: false,
   pagination: {},
   next: null,
-  previous: null
+  previous: null,
+  selected: []
 };
 
 const MediaReducer = function (state = initialState, action) {
@@ -58,9 +62,21 @@ const MediaReducer = function (state = initialState, action) {
         refresh: true
       }
     }
-    default: {
+    case MEDIA_SELECTED: {
+      return {
+        ...state, 
+        selected: action.payload
+      }
+    }
+    case CLEAN_MEDIA_SELECTED: {
       return {
         ...state,
+        selected:[]
+      }
+    }
+    default: {
+      return {
+        ...state
       };
     }
   }

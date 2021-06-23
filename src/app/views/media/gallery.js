@@ -6,7 +6,9 @@ import {
   getCategoryList,
   updateFileInfo,
   deleteFile,
-  createCategory
+  createCategory,
+  bulkEditMedia,
+  clearSelectedMedia
 } from "app/redux/actions/MediaActions";
 import {openDialog, closeDialog} from '../../redux/actions/DialogActions';
 import Dialog from '../../components/Dialog';
@@ -15,6 +17,7 @@ import GalleryContainer from "./GalleryContainer";
 import { debounce } from "lodash";
 import { useQuery } from '../../hooks/useQuery';
 import { useHistory } from 'react-router-dom';
+import { BulkEdit } from "./BulkEdit";
 
 
 // Dropzone depency for drag and drop
@@ -33,6 +36,7 @@ const Gallery = () => {
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
+  const { selected = [] } = useSelector((state) => state.ecommerce);
   const { refresh } = useSelector((state) => state.ecommerce);
   const history = useHistory();
   const { show, value } = useSelector(state => state.dialog);
@@ -180,7 +184,7 @@ const Gallery = () => {
           onSubmit={(values)=> dispatch(updateFileInfo(value.id,{ ...values, categories:values.categories.map(c => c.id)}))}
         />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
-          <SideNav
+          {selected.length < 1 ? <SideNav
             query={query}
             categories={categories}
             type={type}
@@ -191,7 +195,11 @@ const Gallery = () => {
             handleCategoryChange={handleCategoryChange}
             handleClearAllFilter={handleClearAllFilter}
             onNewCategory={(values) => dispatch(createCategory(values))}
-          ></SideNav>
+          ></SideNav> : <BulkEdit 
+          categoryList={categoryList} 
+          onClick={(values) => dispatch(bulkEditMedia(selected.map(m =>{ return { categories:values, id:m.id } })))}
+          clear={()=> dispatch(clearSelectedMedia())}
+          />}
         </MatxSidenav>
         <MatxSidenavContent>
           <GalleryContainer

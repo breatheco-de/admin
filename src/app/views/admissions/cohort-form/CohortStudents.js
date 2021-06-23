@@ -218,7 +218,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                           className={"border-radius-4 px-2 pt-2px bg-secondary"}
                           style={{ cursor: "pointer" }}
                         >
-                          {s.role}
+                          {s.role.toUpperCase()}
                         </small>
                       </p>
                     </div>
