@@ -4,7 +4,7 @@ import { MatxLoading } from "matx";
 import { Avatar, Icon, IconButton, Button, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import bc from "app/services/breathecode";
+import bc from "../../services/breathecode";
 import { toast } from "react-toastify";
 import { SmartMUIDataTable } from "app/components/SmartDataTable";
 import AddBulkToCohort from "./student-form/student-utils/AddBulkToCohort";
@@ -40,8 +40,7 @@ const Students = () => {
       .catch((error) => console.log(error));
   };
   const getMemberInvite = (user) => {
-    bc.auth()
-      .getMemberInvite(user)
+    bc.auth().getMemberInvite(user)
       .then((res) => {
         console.log(res.data.invite_url);
         if (res.data) {

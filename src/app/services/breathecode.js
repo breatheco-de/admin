@@ -195,6 +195,19 @@ class BreatheCodeClient {
           `${this.host}/auth/member/invite/resend/${user}`
         );
       },
+      getMemberInvite: (user) => {
+        return axios._get(
+          "Invite",
+          `${this.host}/auth/academy/user/${user}/invite`
+        );
+      },
+      passwordReset : (user, payload) =>{
+        return axios._post(
+          "Password reset",
+          `${this.host}/auth/member/${user}/password/reset`,
+          payload
+        );
+      }
     };
   }
   marketing = () => ({
@@ -258,15 +271,22 @@ class BreatheCodeClient {
         survey
       ),
   });
+
   certificates = () => ({
-    getCertificatesByCohort: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join("&");
-      return axios.get(`${this.host}/certificate/cohort/?${qs}`);
+    getAllCertificates: (query) => {
+        const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+        return axios._get("Certificates",`${this.host}/certificate${query ? '?'+ qs : ''}`)
     },
-  });
+    getCertificatesByCohort: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+        return axios.get(`${this.host}/certificate/cohort/?${qs}`)
+    },
+    addBulkCertificates: (payload) => {
+        return axios._post("Re-attemps certificates", `${this.host}/certificate/`, payload)
+    }
+})
+  
   events = () => ({
     getCheckins: (query) => {
       // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
@@ -318,21 +338,6 @@ class BreatheCodeClient {
     },
     getAcademyEventType: () => {
       return axios._get("Event Type", `${this.host}/events/academy/eventype`);
-    },
-  });
-
-  certificates = () => ({
-    getAllCertificates: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join("&")
-          : "";
-      return axios._get(
-        "Certificates",
-        `${this.host}/certificate${query ? "?" + qs : ""}`
-      );
     },
   });
 

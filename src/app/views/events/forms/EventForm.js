@@ -168,7 +168,7 @@ const EventForm = () => {
                                         placeholder="Banner URL"
                                         value={values.banner} 
                                         handleChange={setFieldValue} 
-                                        name={"url"} 
+                                        name={"banner"} 
                                         fullWidth 
                                         inputProps={{style:{padding:"10px"}}}
                                     />
