@@ -271,15 +271,22 @@ class BreatheCodeClient {
         survey
       ),
   });
+
   certificates = () => ({
-    getCertificatesByCohort: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join("&");
-      return axios.get(`${this.host}/certificate/cohort/?${qs}`);
+    getAllCertificates: (query) => {
+        const qs = query !== undefined ? Object.keys(query).map(key => `${key}=${query[key]}`).join('&') : '';
+        return axios._get("Certificates",`${this.host}/certificate${query ? '?'+ qs : ''}`)
     },
-  });
+    getCertificatesByCohort: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+        return axios.get(`${this.host}/certificate/cohort/?${qs}`)
+    },
+    addBulkCertificates: (payload) => {
+        return axios._post("Re-attemps certificates", `${this.host}/certificate/`, payload)
+    }
+})
+  
   events = () => ({
     getCheckins: (query) => {
       // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
@@ -331,21 +338,6 @@ class BreatheCodeClient {
     },
     getAcademyEventType: () => {
       return axios._get("Event Type", `${this.host}/events/academy/eventype`);
-    },
-  });
-
-  certificates = () => ({
-    getAllCertificates: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join("&")
-          : "";
-      return axios._get(
-        "Certificates",
-        `${this.host}/certificate${query ? "?" + qs : ""}`
-      );
     },
   });
 
