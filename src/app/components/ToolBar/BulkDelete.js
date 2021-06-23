@@ -22,7 +22,7 @@ const defaultToolbarSelectStyles = {
 };
 
 const BulkDelete = (props) => {
-  const { classes, onBulkDelete, setSelectedRows } = props;
+  const { classes, onBulkDelete, setSelectedRows, deleting } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [idsArr, setIdsArr] = useState([]);
 
@@ -36,13 +36,14 @@ const BulkDelete = (props) => {
 
   const deleteBulkEntities = (e) => {
     e.preventDefault();
-    bc.admissions()
-      .deleteStudentBulk(idsArr)
-      .then((d) => {
+    deleting(idsArr)
+      .then((status) => {
         setOpenDialog(false);
-        if (d.status >= 200 && d.status < 300) {
+        if (status >= 200 && status < 300) {
           setSelectedRows([]);
-          if (onBulkDelete) onBulkDelete();
+          if (onBulkDelete) {
+            onBulkDelete();
+          }
           return true;
         }
         throw Error("Items could not be deleted");

@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import { Breadcrumb } from "matx";
-import {
-  Icon,
-  IconButton,
-  Button,
-  Tooltip,
-} from "@material-ui/core";
+import { Icon, IconButton, Button, Tooltip } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 
 import bc from "app/services/breathecode";
 import CustomToolbarSelectCertificates from "./certificates-utils/CertificateCustomToolbar";
-import { SmartMUIDataTable } from "app/components/SmartDataTable"
+import { SmartMUIDataTable } from "app/components/SmartDataTable";
 
 var relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -142,7 +137,7 @@ const Certificates = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
-          if(items[i].status == "PERSISTED"){
+          if (items[i].status == "PERSISTED") {
             return (
               <div className='flex items-center'>
                 <div className='flex-grow'></div>
@@ -166,7 +161,7 @@ const Certificates = () => {
                         </IconButton>
                       </Tooltip>
                     </a>
-  
+
                     <a
                       href={`https://certificate.breatheco.de/${items[
                         i
@@ -186,10 +181,8 @@ const Certificates = () => {
             );
           } else {
             return (
-                <span className="flex items-center">
-                  {items[i].status_text} 
-                </span>
-            )
+              <span className='flex items-center'>{items[i].status_text}</span>
+            );
           }
         },
       },
@@ -240,20 +233,37 @@ const Certificates = () => {
             columns={columns}
             items={items}
             options={{
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows, loadData) => {
-                return <CustomToolbarSelectCertificates 
-                          selectedRows={selectedRows} 
-                          displayData={displayData} 
-                          setSelectedRows={setSelectedRows} 
-                          items={items} 
-                          loadData={loadData}/>
-              }
+              customToolbarSelect: (
+                selectedRows,
+                displayData,
+                setSelectedRows,
+                loadData
+              ) => {
+                return (
+                  <CustomToolbarSelectCertificates
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={items}
+                    loadData={loadData}
+                  />
+                );
+              },
             }}
             search={async (querys) => {
-              const { data } = await bc.certificates().getAllCertificates(querys);
+              const { data } = await bc
+                .certificates()
+                .getAllCertificates(querys);
               setItems(data.results);
               return data;
-            }}/>
+            }}
+            deleting={async (querys) => {
+              const { status } = await bc
+                .admissions()
+                .deleteCertificatesBulk(querys);
+              return status;
+            }}
+          />
         </div>
       </div>
     </div>

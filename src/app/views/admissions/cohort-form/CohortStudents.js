@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,23 +44,17 @@ const CohortStudents = ({ slug, cohort_id }) => {
   // Redux actions and store
 
   const query = useQuery();
-  const history = useHistory();
 
   const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const handlePaginationNextPage = () => {
-    setQueryOffset((prevQueryOffset) => prevQueryOffset + queryLimit);
+    setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
   useEffect(() => {
     getCohortStudents();
-  }, []);
-
-  useEffect(() => {
-    onLoadMoreStudents();
-  }, [queryOffset]);
+  }, [queryLimit]);
 
   const changeStudentStatus = (value, name, studentId, i) => {
     console.log(value, name, i);
@@ -84,7 +78,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
   };
 
   const getCohortStudents = () => {
-    let currentStudentList = studenList;
     setIsLoading(true);
     let query = {
       cohorts: slug,
@@ -95,42 +88,16 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .getAllUserCohorts(query)
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
-          const { results } = data.data;
+          const { results, next } = data.data;
+          if (next === null) setHasMore(false);
           setIsLoading(false);
-          results.length < 1
-            ? setStudentsList(currentStudentList)
-            : setStudentsList(results);
-        }
-      })
-      .catch((error) => error);
-  };
-
-  const onLoadMoreStudents = () => {
-    let currentStudentList = studenList;
-    setIsLoading(true);
-    let query = {
-      cohorts: slug,
-      limit: queryLimit,
-      offset: queryOffset,
-    };
-    bc.admissions()
-      .getAllUserCohorts(query)
-      .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
-          const { results } = data.data;
-          setIsLoading(false);
-          results.length < 1
-            ? setStudentsList(currentStudentList)
-            : setStudentsList([...studenList, ...results]);
-          setHasMore(results.length > 0);
+          results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }
       })
       .catch((error) => error);
   };
 
   const addUserToCohort = (user_id) => {
-    if (!hasMore) setHasMore(true);
-    setQueryOffset(0);
     bc.admissions()
       .addUserCohort(cohort_id, {
         user: user_id,
@@ -139,13 +106,12 @@ const CohortStudents = ({ slug, cohort_id }) => {
         educational_status: "ACTIVE",
       })
       .then((data) => {
-        if (data.status >= 200) getCohortStudents();
+        if (data.status >= 200 && data.status < 300) getCohortStudents();
       })
       .catch((error) => error);
   };
 
   const deleteUserFromCohort = () => {
-    setQueryOffset(0);
     bc.admissions()
       .deleteUserCohort(cohort_id, currentStd.id)
       .then((data) => {
