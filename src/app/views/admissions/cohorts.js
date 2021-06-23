@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
-import { Grow, Icon, IconButton, TextField, Button, Chip } from "@material-ui/core";
+import {
+  Grow,
+  Icon,
+  IconButton,
+  TextField,
+  Button,
+  Chip,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
@@ -124,17 +131,21 @@ const Cohorts = () => {
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
-                {(dayjs().isAfter(dayjs(item?.ending_date)) &&
-                  !["ENDED", "DELETED"].includes(item?.stage)) ? 
-                    <Chip
-                        size="small"
-                        icon={<Icon fontSize="small">error</Icon>}
-                        label="Out of sync"
-                        color="secondary"
-                    />
-                    :
-                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
-                }
+                {dayjs().isAfter(dayjs(item?.ending_date)) &&
+                !["ENDED", "DELETED"].includes(item?.stage) ? (
+                  <Chip
+                    size='small'
+                    icon={<Icon fontSize='small'>error</Icon>}
+                    label='Out of sync'
+                    color='secondary'
+                  />
+                ) : (
+                  <Chip
+                    size='small'
+                    label={item?.stage}
+                    color={stageColors[item?.stage]}
+                  />
+                )}
               </div>
             </div>
           );
@@ -318,7 +329,13 @@ const Cohorts = () => {
                     key={items}
                     history={history}
                     id={"cohorts"}
-                    reRender={handleLoadingData}
+                    deleting={async (querys) => {
+                      const { status } = await bc
+                        .admissions()
+                        .deleteCohortsBulk(querys);
+                      return status;
+                    }}
+                    onBulkDelete={handleLoadingData}
                   />
                 );
               },

@@ -25,7 +25,8 @@ const CustomToolbarSelect = (props) => {
         items={props.items}
         key={props.key}
         history={props.history}
-        // reRender={handleLoadingData}
+        deleting={props.deleting}
+        onBulkDelete={props.onBulkDelete}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -43,24 +43,18 @@ const CohortStudents = ({ slug, cohort_id }) => {
     const [user, setUser] = useState(null);
     // Redux actions and store
 
-    const query = useQuery();
-    const history = useHistory();
+  const query = useQuery();
 
-    const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-    const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-    const [hasMore, setHasMore] = useState(false);
+  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
+  const [hasMore, setHasMore] = useState(true);
 
-    const handlePaginationNextPage = () => {
-        setQueryOffset((prevQueryOffset) => prevQueryOffset + queryLimit);
-    };
+  const handlePaginationNextPage = () => {
+    setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
+  };
 
-    useEffect(() => {
-        getCohortStudents();
-    }, []);
-
-    useEffect(() => {
-        onLoadMoreStudents();
-    }, [queryOffset]);
+  useEffect(() => {
+    getCohortStudents();
+  }, [queryLimit]);
 
     const changeStudentStatus = (value, name, studentId, i) => {
         console.log(value, name, i);
@@ -83,89 +77,62 @@ const CohortStudents = ({ slug, cohort_id }) => {
             });
     };
 
-    const getCohortStudents = () => {
-        let currentStudentList = studenList;
-        setIsLoading(true);
-        let query = {
-            cohorts: slug,
-            limit: queryLimit,
-            offset: 0,
-        };
-        bc.admissions()
-            .getAllUserCohorts(query)
-            .then((data) => {
-                if (data.status >= 200 && data.status < 300) {
-                    const { results } = data.data;
-                    setIsLoading(false);
-                    results.length < 1
-                        ? setStudentsList(currentStudentList)
-                        : setStudentsList(results);
-                }
-            })
-            .catch((error) => error);
-    };
 
-    const onLoadMoreStudents = () => {
-        let currentStudentList = studenList;
-        setIsLoading(true);
-        let query = {
-            cohorts: slug,
-            limit: queryLimit,
-            offset: queryOffset,
-        };
-        bc.admissions()
-            .getAllUserCohorts(query)
-            .then((data) => {
-                if (data.status >= 200 && data.status < 300) {
-                    const { results } = data.data;
-                    setIsLoading(false);
-                    results.length < 1
-                        ? setStudentsList(currentStudentList)
-                        : setStudentsList([...studenList, ...results]);
-                    setHasMore(results.length > 0);
-                }
-            })
-            .catch((error) => error);
+  const getCohortStudents = () => {
+    setIsLoading(true);
+    let query = {
+      cohorts: slug,
+      limit: queryLimit,
+      offset: 0,
     };
+    bc.admissions()
+      .getAllUserCohorts(query)
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          const { results, next } = data.data;
+          if (next === null) setHasMore(false);
+          setIsLoading(false);
+          results.length < 1 ? setStudentsList([]) : setStudentsList(results);
+        }
+      })
+      .catch((error) => error);
+  };
 
-    const addUserToCohort = (user_id) => {
-        if (!hasMore) setHasMore(true);
-        setQueryOffset(0);
-        bc.admissions()
-            .addUserCohort(cohort_id, {
-                user: user_id,
-                role: "STUDENT",
-                finantial_status: null,
-                educational_status: "ACTIVE",
-            })
-            .then((data) => {
-                if (data.status >= 200) getCohortStudents();
-            })
-            .catch((error) => error);
-    };
+  const addUserToCohort = (user_id) => {
+    bc.admissions()
+      .addUserCohort(cohort_id, {
+        user: user_id,
+        role: "STUDENT",
+        finantial_status: null,
+        educational_status: "ACTIVE",
+      })
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) getCohortStudents();
+      })
+      .catch((error) => error);
+  };
 
-    const deleteUserFromCohort = () => {
-        setQueryOffset(0);
-        bc.admissions()
-            .deleteUserCohort(cohort_id, currentStd.id)
-            .then((data) => {
-                if (data.status === 204) getCohortStudents();
-            })
-            .catch((error) => error);
-        setOpenDialog(false);
-    };
-    return (
-        <Card className='p-4'>
-            {/* This Dialog opens the modal to delete the user in the cohort */}
-            <Dialog
-                open={openDialog}
-                onClose={() => setOpenDialog(false)}
-                aria-labelledby='alert-dialog-title'
-                aria-describedby='alert-dialog-description'
-            >
-                <DialogTitle id='alert-dialog-title'>
-                    Are you sure you want to delete this user from cohort{" "}
-                    {slug.toUpperCase()}?
+  const deleteUserFromCohort = () => {
+    bc.admissions()
+      .deleteUserCohort(cohort_id, currentStd.id)
+      .then((data) => {
+        if (data.status === 204) getCohortStudents();
+      })
+      .catch((error) => error);
+    setOpenDialog(false);
+  };
+  return (
+    <Card className='p-4'>
+      {/* This Dialog opens the modal to delete the user in the cohort */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>
+          Are you sure you want to delete this user from cohort{" "}
+          {slug.toUpperCase()}?
         </DialogTitle>
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)} color='primary'>
