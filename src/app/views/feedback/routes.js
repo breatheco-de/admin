@@ -14,6 +14,12 @@ const routes = [
         beta: true,
     },
     {
+        path: "/feedback/surveys/:id",
+        exact: true,
+        component: React.lazy(() => import("./survey-dashboard")),
+        beta: true,
+    },
+    {
         path: "/feedback/survey/new",
         exact: true,
         component: React.lazy(() => import("./survey-form/newSurvey.js")),

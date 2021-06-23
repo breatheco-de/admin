@@ -30,6 +30,10 @@ export const themeColors = {
         main: "#7467ef",
         contrastText: textLight.primary,
       },
+      warning: {
+        main: "#EFA32E",
+        contrastText: textLight.primary,
+      },
       error: errorColor,
       text: textLight,
     },
@@ -49,6 +53,10 @@ export const themeColors = {
         main: "#1976d2",
         contrastText: textLight.primary,
       },
+      warning: {
+        main: "#EFA32E",
+        contrastText: textLight.primary,
+      },
       text: textLight,
     },
   },
@@ -65,6 +73,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#ff9e43",
+        contrastText: textLight.primary,
+      },
+      warning: {
+        main: "#EFA32E",
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -94,6 +106,10 @@ export const themeColors = {
         paper: "#222A45",
         default: "#1a2038",
       },
+      warning: {
+        main: "#EFA32E",
+        contrastText: textLight.primary,
+      },
     },
   },
   purple1: {
@@ -107,6 +123,10 @@ export const themeColors = {
       error: errorColor,
       text: textLight,
     },
+    warning: {
+      main: "#EFA32E",
+      contrastText: textLight.primary,
+    },
   },
   purple2: {
     palette: {
@@ -117,6 +137,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#ff9e43",
+        contrastText: textLight.primary,
+      },
+      warning: {
+        main: "#EFA32E",
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -132,6 +156,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#ff9e43",
+        contrastText: textLight.primary,
+      },
+      warning: {
+        main: "#EFA32E",
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -152,6 +180,10 @@ export const themeColors = {
         main: "#ff9e43",
         contrastText: textLight.primary,
       },
+      warning: {
+        main: "#EFA32E",
+        contrastText: textLight.primary,
+      },
       error: errorColor,
       background: {
         paper: "#222A45",
@@ -170,6 +202,10 @@ export const themeColors = {
         main: "#FFAF38",
         contrastText: textLight.primary,
       },
+      warning: {
+        main: "#EFA32E",
+        contrastText: textLight.primary,
+      },
       error: errorColor,
       text: textLight,
     },
@@ -183,6 +219,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#FF4F30",
+        contrastText: textLight.primary,
+      },
+      warning: {
+        main: "#EFA32E",
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -201,6 +241,10 @@ export const themeColors = {
       },
       secondary: {
         main: "#FFAF38",
+        contrastText: textLight.primary,
+      },
+      warning: {
+        main: "#EFA32E",
         contrastText: textLight.primary,
       },
       error: errorColor,

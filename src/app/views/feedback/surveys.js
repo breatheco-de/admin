@@ -11,6 +11,8 @@ import {
   TextField,
   Button,
   LinearProgress,
+  Tooltip,
+  Chip
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
@@ -37,7 +39,7 @@ const EventList = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/answer")
+      .get(process.env.REACT_APP_API_HOST + "/v1/feedback/academy/survey")
       .then(({ data }) => {
         setIsLoading(false);
         if (isAlive) setItems(data);
@@ -54,6 +56,29 @@ const EventList = () => {
       },
     },
     {
+      name: "cohort", // field name in the row object
+      label: "Cohort", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (i) => {
+          let item = items[i];
+          return (
+            <div className='flex items-center'>
+              <div className='ml-3'>
+                <Link
+                  to={"/admissions/cohorts/" + item?.cohort?.slug}
+                  style={{ textDecoration: "underline" }}
+                >
+                  <h5 className='my-0 text-15'>{item?.cohort?.name}</h5>
+                </Link>
+                <small className='text-muted'>{item?.cohort?.slug}</small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "status", // field name in the row object
       label: "Status", // column title that will be shown in table
       options: {
@@ -64,14 +89,7 @@ const EventList = () => {
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
-                <small
-                  className={
-                    "border-radius-4 px-2 pt-2px " + stageColors[item?.status]
-                  }
-                >
-                  {item?.status}
-                </small>
-                <br />
+                <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
               </div>
             </div>
           );
@@ -79,7 +97,7 @@ const EventList = () => {
       },
     },
     {
-      name: "created_at",
+      name: "sent_at",
       label: "Sent date",
       options: {
         filter: true,
@@ -98,19 +116,30 @@ const EventList = () => {
       },
     },
     {
-      name: "score",
+      name: "avg_score",
       label: "Score",
       options: {
         filter: true,
-        customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <LinearProgress
-              color='primary'
-              value={items[i].score * 10}
-              variant='determinate'
-            />
-          </div>
-        ),
+        customBodyRenderLite: (i) => {
+          const color =
+          items[i].avg_score > 7
+            ? "text-green"
+            : items[i].avg_score < 7
+            ? "text-error"
+            : "text-orange";
+          if (items[i].avg_score){
+            return (
+              <div className='flex items-center'>
+                <LinearProgress
+                  color='secondary'
+                  value={parseInt(items[i].avg_score) * 10}
+                  variant='determinate'
+                />
+                <small className={color}>{items[i].avg_score}</small>
+              </div>
+            );
+          } else return "No avg yet";
+        },
       },
     },
     {
@@ -121,12 +150,12 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className='flex items-center'>
             <div className='flex-grow'></div>
-            <Link to={"/admissions/cohorts/" + items[dataIndex].slug}>
-              <IconButton>
-                <Icon>edit</Icon>
-              </IconButton>
-            </Link>
-            <Link to='/pages/view-customer'>
+            <Tooltip title='Copy survey link'>
+                <IconButton>
+                  <Icon>assignment</Icon>
+                </IconButton>
+              </Tooltip>
+            <Link to='/feedback/surveys/1'>
               <IconButton>
                 <Icon>arrow_right_alt</Icon>
               </IconButton>
