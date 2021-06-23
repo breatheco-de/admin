@@ -376,7 +376,7 @@ const Answers = () => {
                         <Grid item md={6} xs={6}>
                             <div className="flex items-center">
                                 <Avatar className='w-48 h-48' src={answer.user.imgUrl} />
-                                <div className='ml-3'>
+                                <div className='ml-3 mt-3'>
                                     <h3 className='my-0 text-15'>
                                         {answer.user.first_name} {answer.user.last_name}
                                     </h3>
@@ -385,50 +385,50 @@ const Answers = () => {
                         </Grid>
                         <Grid item md={6} xs={6}>
                             {answer.score === null ? (
-                                <Card className="bg-gray items-center flex justify-between p-3">
+                                <Card className="bg-gray items-center flex justify-between p-4">
                                     <div>
-                                        <span className="font-normal text-white uppercase">
+                                        <h5 className="font-normal text-white uppercase pt-2 mr-3">
                                             Waiting fot answer
-                                        </span>
+                                        </h5>
                                     </div>
                                 </Card>                            
                             ) : answer.score > 7 ? (
-                                <Card className="bg-green items-center flex justify-between p-3">
+                                <Card className="bg-green items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="font-normal text-white uppercase">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {answer.score}
-                                        </span>
+                                        </h2>
                                     </div>
                                 </Card>
                             ) : answer.score < 7 ? (
-                                <Card className="bg-error items-center flex justify-between p-3">
+                                <Card className="bg-error items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="font-normal text-white uppercase">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {answer.score}
-                                        </span>
+                                        </h2>
                                     </div>
                                 </Card>
                             ) : (
-                                <Card className="bg-secondary items-center flex justify-between p-3">
+                                <Card className="bg-secondary items-center flex justify-between p-4">
                                     <div>
                                         <span className="text-white uppercase">
                                             TOTAL SCORE:
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="font-normal text-white uppercase">
+                                        <h2 className="font-normal text-white uppercase pt-2 mr-3">
                                             {answer.score}
-                                        </span>
+                                        </h2>
                                     </div>
                                 </Card>
                             )}                                
