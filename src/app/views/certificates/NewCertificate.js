@@ -14,7 +14,7 @@ import ResponseDialog from "./ResponseDialog";
 const NewCertificate = () => {
   const { type } = useParams();
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-  const [specialties, setSpecialties] = useState([]);
+  // const [specialties, setSpecialties] = useState([]);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [responseData, setResponseData] = React.useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -23,22 +23,22 @@ const NewCertificate = () => {
   const session = JSON.parse(localStorage.getItem("bc-session"));
   let history = useHistory();
 
-  const getSpecialties = () => {
-    axios
-      .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
-      .then(({ data }) => setSpecialties(data))
-      .catch((error) =>
-        setMsg({
-          alert: true,
-          type: "error",
-          text: error.details || error.detail,
-        })
-      );
-  };
+  // const getSpecialties = () => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
+  //     .then(({ data }) => setSpecialties(data))
+  //     .catch((error) =>
+  //       setMsg({
+  //         alert: true,
+  //         type: "error",
+  //         text: error.details || error.detail,
+  //       })
+  //     );
+  // };
 
-  useEffect(() => {
-    getSpecialties();
-  }, []);
+  // useEffect(() => {
+  //   getSpecialties();
+  // }, []);
 
   const postCerfiticate = (values) => {
     // student certificate

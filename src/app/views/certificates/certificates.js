@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Breadcrumb } from "matx";
 import { Icon, IconButton, Button, Tooltip } from "@material-ui/core";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { MatxLoading } from "matx";
 
@@ -19,7 +19,7 @@ const statusColors = {
 };
 
 const Certificates = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [items, setItems] = useState([]);
 
   const columns = [
@@ -57,8 +57,8 @@ const Certificates = () => {
       options: {
         filter: true,
         filterType: "multiselect",
-        customBodyRender: (value, tableMeta, updateValue) => {
-          let item = items[tableMeta.rowIndex];
+        customBodyRender: (value, tableMeta) => {
+          const item = items[tableMeta.rowIndex];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -94,8 +94,7 @@ const Certificates = () => {
         filter: true,
         display: false,
         customBodyRenderLite: (i) => {
-          let item = items[i];
-
+          const item = items[i];
           return (
             <div className='flex items-center'>
               <div className='ml-3'>
@@ -121,8 +120,8 @@ const Certificates = () => {
       options: {
         filter: true,
         filterType: "multiselect",
-        customBodyRender: (value, tableMeta, updateValue) => {
-          let item = items[tableMeta.rowIndex];
+        customBodyRender: (value, tableMeta) => {
+          const item = items[tableMeta.rowIndex];
           return (
             <Link to={"/admissions/cohorts/" + item.cohort.slug}>
               {value.name}
