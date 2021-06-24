@@ -4,8 +4,8 @@ import {
   UPLOAD_MEDIA_FILE,
   UPDATE_MEDIA_FILE,
   DELETE_MEDIA_FILE,
-  CREATE_CATEGORY
-} from "../actions/MediaActions";
+  CREATE_CATEGORY,
+} from '../actions/MediaActions';
 
 const initialState = {
   productList: [],
@@ -13,7 +13,7 @@ const initialState = {
   refresh: false,
   pagination: {},
   next: null,
-  previous: null
+  previous: null,
 };
 
 const MediaReducer = function (state = initialState, action) {
@@ -24,39 +24,39 @@ const MediaReducer = function (state = initialState, action) {
         productList: [...action.payload.results],
         refresh: false,
         next: action.payload.next,
-        previous:action.payload.previous,
-        pagination: action.payload.pagination
+        previous: action.payload.previous,
+        pagination: action.payload.pagination,
       };
     }
     case GET_CATEGORY_LIST: {
       return {
         ...state,
-        categoryList: [...action.payload]
+        categoryList: [...action.payload],
       };
     }
     case UPLOAD_MEDIA_FILE: {
       return {
         ...state,
-        refresh: true
-      }
+        refresh: true,
+      };
     }
     case UPDATE_MEDIA_FILE: {
       return {
         ...state,
-        refresh: true
-      }
+        refresh: true,
+      };
     }
     case DELETE_MEDIA_FILE: {
       return {
         ...state,
         refresh: true,
-      }
+      };
     }
     case CREATE_CATEGORY: {
       return {
         ...state,
-        refresh: true
-      }
+        refresh: true,
+      };
     }
     default: {
       return {

@@ -1,38 +1,39 @@
-import { differenceInSeconds } from "date-fns";
+import { differenceInSeconds } from 'date-fns';
 import { toast } from 'react-toastify';
-import axios from "./axios";
+import axios from './axios';
+
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
-  autoClose: 8000
-}
+  autoClose: 8000,
+};
 
 export const convertHexToRGB = (hex) => {
   // check if it's a rgba
-  if (hex.match("rgba")) {
-    let triplet = hex.slice(5).split(",").slice(0, -1).join(",");
+  if (hex.match('rgba')) {
+    const triplet = hex.slice(5).split(',').slice(0, -1).join(',');
     return triplet;
   }
 
   let c;
   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-    c = hex.substring(1).split("");
+    c = hex.substring(1).split('');
     if (c.length === 3) {
       c = [c[0], c[0], c[1], c[1], c[2], c[2]];
     }
-    c = "0x" + c.join("");
+    c = `0x${c.join('')}`;
 
-    return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",");
+    return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
   }
 };
 
 export function debounce(func, wait, immediate) {
-  var timeout;
+  let timeout;
   return function () {
-    var context = this,
-      args = arguments;
+    const context = this;
+    const args = arguments;
     clearTimeout(timeout);
-    timeout = setTimeout(function () {
+    timeout = setTimeout(() => {
       timeout = null;
       if (!immediate) func.apply(context, args);
     }, wait);
@@ -42,14 +43,14 @@ export function debounce(func, wait, immediate) {
 
 export function isMobile() {
   if (window) {
-    return window.matchMedia(`(max-width: 767px)`).matches;
+    return window.matchMedia('(max-width: 767px)').matches;
   }
   return false;
 }
 
 export function isMdScreen() {
   if (window) {
-    return window.matchMedia(`(max-width: 1199px)`).matches;
+    return window.matchMedia('(max-width: 1199px)').matches;
   }
   return false;
 }
@@ -62,16 +63,15 @@ function currentYPosition(elm) {
   // Firefox, Chrome, Opera, Safari
   if (window.pageYOffset) return window.pageYOffset;
   // Internet Explorer 6 - standards mode
-  if (document.documentElement && document.documentElement.scrollTop)
-    return document.documentElement.scrollTop;
+  if (document.documentElement && document.documentElement.scrollTop) return document.documentElement.scrollTop;
   // Internet Explorer 6, 7 and 8
   if (document.body.scrollTop) return document.body.scrollTop;
   return 0;
 }
 
 function elmYPosition(elm) {
-  var y = elm.offsetTop;
-  var node = elm;
+  let y = elm.offsetTop;
+  let node = elm;
   while (node.offsetParent && node.offsetParent !== document.body) {
     node = node.offsetParent;
     y += node.offsetTop;
@@ -80,34 +80,34 @@ function elmYPosition(elm) {
 }
 
 export function scrollTo(scrollableElement, elmID) {
-  var elm = document.getElementById(elmID);
+  const elm = document.getElementById(elmID);
 
   if (!elmID || !elm) {
     return;
   }
 
-  var startY = currentYPosition(scrollableElement);
-  var stopY = elmYPosition(elm);
+  const startY = currentYPosition(scrollableElement);
+  const stopY = elmYPosition(elm);
 
-  var distance = stopY > startY ? stopY - startY : startY - stopY;
+  const distance = stopY > startY ? stopY - startY : startY - stopY;
   if (distance < 100) {
     scrollTo(0, stopY);
     return;
   }
-  var speed = Math.round(distance / 50);
+  let speed = Math.round(distance / 50);
   if (speed >= 20) speed = 20;
-  var step = Math.round(distance / 25);
-  var leapY = stopY > startY ? startY + step : startY - step;
-  var timer = 0;
+  const step = Math.round(distance / 25);
+  let leapY = stopY > startY ? startY + step : startY - step;
+  let timer = 0;
   if (stopY > startY) {
-    for (var i = startY; i < stopY; i += step) {
+    for (let i = startY; i < stopY; i += step) {
       setTimeout(
         (function (leapY) {
           return () => {
             scrollableElement.scrollTo(0, leapY);
           };
-        })(leapY),
-        timer * speed
+        }(leapY)),
+        timer * speed,
       );
       leapY += step;
       if (leapY > stopY) leapY = stopY;
@@ -121,8 +121,8 @@ export function scrollTo(scrollableElement, elmID) {
         return () => {
           scrollableElement.scrollTo(0, leapY);
         };
-      })(leapY),
-      timer * speed
+      }(leapY)),
+      timer * speed,
     );
     leapY -= step;
     if (leapY < stopY) leapY = stopY;
@@ -132,32 +132,30 @@ export function scrollTo(scrollableElement, elmID) {
 }
 
 export function getTimeDifference(date) {
-  let difference = differenceInSeconds(new Date(), date);
+  const difference = differenceInSeconds(new Date(), date);
 
   if (difference < 60) return `${Math.floor(difference)} sec`;
-  else if (difference < 3600) return `${Math.floor(difference / 60)} min`;
-  else if (difference < 86400) return `${Math.floor(difference / 3660)} h`;
-  else if (difference < 86400 * 30)
-    return `${Math.floor(difference / 86400)} d`;
-  else if (difference < 86400 * 30 * 12)
-    return `${Math.floor(difference / 86400 / 30)} mon`;
-  else return `${(difference / 86400 / 30 / 12).toFixed(1)} y`;
+  if (difference < 3600) return `${Math.floor(difference / 60)} min`;
+  if (difference < 86400) return `${Math.floor(difference / 3660)} h`;
+  if (difference < 86400 * 30) return `${Math.floor(difference / 86400)} d`;
+  if (difference < 86400 * 30 * 12) return `${Math.floor(difference / 86400 / 30)} mon`;
+  return `${(difference / 86400 / 30 / 12).toFixed(1)} y`;
 }
 
 export function generateRandomId() {
-  let tempId = Math.random().toString();
-  let uid = tempId.substr(2, tempId.length - 1);
+  const tempId = Math.random().toString();
+  const uid = tempId.substr(2, tempId.length - 1);
   return uid;
 }
 
 export function getQueryParam(prop) {
-  var params = {};
-  var search = decodeURIComponent(
-    window.location.href.slice(window.location.href.indexOf("?") + 1)
+  const params = {};
+  const search = decodeURIComponent(
+    window.location.href.slice(window.location.href.indexOf('?') + 1),
   );
-  var definitions = search.split("&");
-  definitions.forEach(function (val, key) {
-    var parts = val.split("=", 2);
+  const definitions = search.split('&');
+  definitions.forEach((val, key) => {
+    const parts = val.split('=', 2);
     params[parts[0]] = parts[1];
   });
   return prop && prop in params ? params[prop] : params;
@@ -167,40 +165,40 @@ export function classList(classes) {
   return Object.entries(classes)
     .filter((entry) => entry[1])
     .map((entry) => entry[0])
-    .join(" ");
+    .join(' ');
 }
 
 export function resolveResponse(res) {
-  console.log(axios.scopes[res.config.url], "este es el scope");
+  console.log(axios.scopes[res.config.url], 'este es el scope');
   const methods = {
-    put: "updated",
-    post: "created",
-    delete:"deleted"
-  }
-  if (res.config.method !== "get" && res.status >= 200) {
+    put: 'updated',
+    post: 'created',
+    delete: 'deleted',
+  };
+  if (res.config.method !== 'get' && res.status >= 200) {
     return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
   }
 }
 
-export function resolveError(error){
-  console.log(error.response)
-  if (typeof error.response.data === "object" && error.response.data.status_code === undefined && error.response !== undefined) {
-    for (let item in error.response.data) {
+export function resolveError(error) {
+  console.log(error.response);
+  if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
+    for (const item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {
-        for (let str of error.response.data[item]) {
-         return toast.error(`${item.toUpperCase()}: ${str}`, toastOption);
+        for (const str of error.response.data[item]) {
+          return toast.error(`${item.toUpperCase()}: ${str}`, toastOption);
         }
       } else {
-        for (let key in error.response.data[item]) {
+        for (const key in error.response.data[item]) {
           return toast.error(`${key.toUpperCase()}: ${error.response.data[item][key][0]}`, toastOption);
-         }
+        }
       }
     }
   }
-  if (error.response.status === 404) return toast.error(error.response.data.detail || "Not found", toastOption)
-  else if (error.response.status === 403) {
-    if(error.response.data.detail.includes("capability")) return toast.warning("You don´t have the permissions required", toastOption)
-  } else if (error.response.status === 500) return toast.error("Internal server error, try again later", toastOption)
-  else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption)
-  else return toast.error('Something went wrong!', toastOption)
+  if (error.response.status === 404) return toast.error(error.response.data.detail || 'Not found', toastOption);
+  if (error.response.status === 403) {
+    if (error.response.data.detail.includes('capability')) return toast.warning('You don´t have the permissions required', toastOption);
+  } else if (error.response.status === 500) return toast.error('Internal server error, try again later', toastOption);
+  else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption);
+  else return toast.error('Something went wrong!', toastOption);
 }

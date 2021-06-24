@@ -1,25 +1,26 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { useHistory } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CertificatesResult from './certificates-utils/CertificatesResults'
+import CertificatesResult from './certificates-utils/CertificatesResults';
 
-export default function ResponseDialog({ openDialog, setOpenDialog, responseData, isLoading, cohortId }) {
-
-let history = useHistory();
+export default function ResponseDialog({
+  openDialog, setOpenDialog, responseData, isLoading, cohortId,
+}) {
+  const history = useHistory();
 
   const handleClose = () => {
     setOpenDialog(false);
   };
 
   const handleClick = () => {
-      handleClose();
-      history.push(`/certificates/cohort/${cohortId}`)
-  }
+    handleClose();
+    history.push(`/certificates/cohort/${cohortId}`);
+  };
 
   const descriptionElementRef = React.useRef(null);
   React.useEffect(() => {
@@ -34,26 +35,25 @@ let history = useHistory();
   return (
     <div>
       <Dialog
-        maxWidth={'xl'}
-        fullWidth={true}
+        maxWidth="xl"
+        fullWidth
         open={openDialog}
         onClose={handleClose}
-        scroll={"paper"}
+        scroll="paper"
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
         <DialogTitle id="scroll-dialog-title">Results</DialogTitle>
-        <DialogContent dividers={true} >
+        <DialogContent dividers>
           <DialogContentText
             children={<ResponseContent responseData={responseData} isLoading={isLoading} />}
             id="scroll-dialog-description"
             ref={descriptionElementRef}
             tabIndex={-1}
-          >
-          </DialogContentText>
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=> handleClick()} color="primary">
+          <Button onClick={() => handleClick()} color="primary">
             Close
           </Button>
         </DialogActions>
@@ -63,11 +63,9 @@ let history = useHistory();
 }
 
 const ResponseContent = ({ responseData, isLoading }) => {
+  const { data } = responseData;
 
-  const { data } = responseData
-  
   return (
-    <CertificatesResult certificates={data}/>
-  )
-}
-
+    <CertificatesResult certificates={data} />
+  );
+};

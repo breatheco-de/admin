@@ -1,23 +1,23 @@
-import JwtLogin from "./login/JwtLogin.jsx";
-import NotFound from "./notfound";
-import JwtRegister from "./register/JwtRegister";
-import Choose from "./choose";
+import JwtLogin from './login/JwtLogin.jsx';
+import NotFound from './notfound';
+import JwtRegister from './register/JwtRegister';
+import Choose from './choose';
 
 const sessionRoutes = [
   {
-    path: "/session/signup",
+    path: '/session/signup',
     component: JwtRegister,
   },
   {
-    path: "/session/signin",
+    path: '/session/signin',
     component: JwtLogin,
   },
   {
-    path: "/session/404",
+    path: '/session/404',
     component: NotFound,
   },
   {
-    path: "/session/choose",
+    path: '/session/choose',
     component: Choose,
   },
 ];

@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
-import A from "@material-ui/core/Link";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-import { MatxLoading } from "matx";
-import bc from "app/services/breathecode";
-import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
+import React, { useState, useEffect } from 'react';
+import { Breadcrumb, MatxLoading } from 'matx';
+import MUIDataTable from 'mui-datatables';
+import {
+  Grow, Icon, IconButton, TextField, Button,
+} from '@material-ui/core';
+import A from '@material-ui/core/Link';
+import { Link, useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-var relativeTime = require("dayjs/plugin/relativeTime");
+import bc from 'app/services/breathecode';
+
+import { useQuery } from '../../hooks/useQuery';
+import { DownloadCsv } from '../../components/DownloadCsv';
+
+const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const stageColors = {
-  DRAFT: "bg-gray",
-  STARTED: "text-white bg-warning",
-  ENDED: "text-white bg-green",
-  DELETED: "light-gray",
+  DRAFT: 'bg-gray',
+  STARTED: 'text-white bg-warning',
+  ENDED: 'text-white bg-green',
+  DELETED: 'light-gray',
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != "")
-    return user.first_name + " " + user.last_name;
-  else return "No name";
+  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  return 'No name';
 };
 
 const AttendeeList = () => {
@@ -36,14 +38,14 @@ const AttendeeList = () => {
   const [querys, setQuerys] = useState({});
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
 
   useEffect(() => {
     setIsLoading(true);
-    let q = {
-      limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0,
+    const q = {
+      limit: query.get('limit') !== null ? query.get('limit') : 10,
+      offset: query.get('offset') !== null ? query.get('offset') : 0,
     };
     setQuerys(q);
     bc.events()
@@ -62,7 +64,7 @@ const AttendeeList = () => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
-    console.log("page: ", rowsPerPage);
+    console.log('page: ', rowsPerPage);
     bc.events()
       .getCheckins({
         limit: rowsPerPage,
@@ -70,17 +72,17 @@ const AttendeeList = () => {
       })
       .then(({ data }) => {
         setIsLoading(false);
-        setItems({ ...data, page: page });
+        setItems({ ...data, page });
       })
       .catch((error) => {
         setIsLoading(false);
       });
-    let q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
+    const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
     setQuerys(q);
     history.replace(
       `/events/attendees?${Object.keys(q)
         .map((key) => `${key}=${q[key]}`)
-        .join("&")}`
+        .join('&')}`,
     );
   };
 
@@ -98,47 +100,47 @@ const AttendeeList = () => {
 
   const columns = [
     {
-      name: "id", // field name in the row object
-      label: "ID", // column title that will be shown in table
+      name: 'id', // field name in the row object
+      label: 'ID', // column title that will be shown in table
       options: {
         filter: true,
       },
     },
     {
-      name: "name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: 'name', // field name in the row object
+      label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
-        filterList: query.get("name") !== null ? [query.get("name")] : [],
+        filterList: query.get('name') !== null ? [query.get('name')] : [],
         customBodyRenderLite: (dataIndex) => {
-          let { attendee, ...rest } = items.results[dataIndex];
+          const { attendee, ...rest } = items.results[dataIndex];
           return (
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
                 {attendee !== null
                   ? name(attendee)
-                  : rest.first_name + " " + rest.last_name}
+                  : `${rest.first_name} ${rest.last_name}`}
               </h5>
-              <small className='text-muted'>{rest?.email || rest.email}</small>
+              <small className="text-muted">{rest?.email || rest.email}</small>
             </div>
           );
         },
       },
     },
     {
-      name: "status", // field name in the row object
-      label: "Status", // column title that will be shown in table
+      name: 'status', // field name in the row object
+      label: 'Status', // column title that will be shown in table
       options: {
         filter: true,
-        filterList: query.get("status") !== null ? [query.get("status")] : [],
+        filterList: query.get('status') !== null ? [query.get('status')] : [],
         customBodyRenderLite: (dataIndex) => {
-          let item = items.results[dataIndex];
+          const item = items.results[dataIndex];
           return (
-            <div className='flex items-center'>
-              <div className='ml-3'>
+            <div className="flex items-center">
+              <div className="ml-3">
                 <small
                   className={
-                    "border-radius-4 px-2 pt-2px " + stageColors[item?.status]
+                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
                   }
                 >
                   {item?.status}
@@ -150,34 +152,34 @@ const AttendeeList = () => {
       },
     },
     {
-      name: "title", // field name in the row object
-      label: "Title", // column title that will be shown in table
+      name: 'title', // field name in the row object
+      label: 'Title', // column title that will be shown in table
       options: {
         filter: true,
-        filterList: query.get("title") !== null ? [query.get("title")] : [],
+        filterList: query.get('title') !== null ? [query.get('title')] : [],
         customBodyRenderLite: (dataIndex) => {
-          let { event } = items.results[dataIndex];
+          const { event } = items.results[dataIndex];
           return (
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>{event.title}</h5>
+            <div className="ml-3">
+              <h5 className="my-0 text-15">{event.title}</h5>
             </div>
           );
         },
       },
     },
     {
-      name: "url",
-      label: "Landing URL",
+      name: 'url',
+      label: 'Landing URL',
       options: {
         filter: true,
-        filterList: query.get("url") !== null ? [query.get("url")] : [],
+        filterList: query.get('url') !== null ? [query.get('url')] : [],
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
+          <div className="flex items-center">
+            <div className="ml-3">
               <A
-                className='px-2 pt-2px border-radius-4 text-white bg-green cursor-pointer'
+                className="px-2 pt-2px border-radius-4 text-white bg-green cursor-pointer"
                 href={items.results[i].url}
-                rel='noopener'
+                rel="noopener"
               >
                 URL
               </A>
@@ -187,19 +189,19 @@ const AttendeeList = () => {
       },
     },
     {
-      name: "starting_at",
-      label: "Starting Date",
+      name: 'starting_at',
+      label: 'Starting Date',
       options: {
         filter: true,
         filterList:
-          query.get("starting_at") !== null ? [query.get("starting_at")] : [],
+          query.get('starting_at') !== null ? [query.get('starting_at')] : [],
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(items.results[i].event.starting_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(items.results[i].event.starting_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(items.results[i].event.starting_at).fromNow()}
               </small>
             </div>
@@ -208,19 +210,19 @@ const AttendeeList = () => {
       },
     },
     {
-      name: "ending_at",
-      label: "Ending Date",
+      name: 'ending_at',
+      label: 'Ending Date',
       options: {
         filter: true,
         filterList:
-          query.get("ending_at") !== null ? [query.get("ending_at")] : [],
+          query.get('ending_at') !== null ? [query.get('ending_at')] : [],
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(items.results[i].event.ending_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(items.results[i].event.ending_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(items.results[i].event.ending_at).fromNow()}
               </small>
             </div>
@@ -229,14 +231,14 @@ const AttendeeList = () => {
       },
     },
     {
-      name: "action",
-      label: " ",
+      name: 'action',
+      label: ' ',
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => (
-          <div className='flex items-center'>
-            <div className='flex-grow'></div>
-            <Link to={"/events/EditEvent/" + items.results[dataIndex].id}>
+          <div className="flex items-center">
+            <div className="flex-grow" />
+            <Link to={`/events/EditEvent/${items.results[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -248,30 +250,30 @@ const AttendeeList = () => {
   ];
 
   return (
-    <div className='m-sm-30'>
-      <div className='mb-sm-30'>
-        <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Event", path: "/" },
-                { name: "Event List" },
+                { name: 'Event', path: '/' },
+                { name: 'Event List' },
               ]}
             />
           </div>
         </div>
       </div>
-      <div className='overflow-auto'>
-        <div className='min-w-750'>
+      <div className="overflow-auto">
+        <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"Event Attendees"}
+            title="Event Attendees"
             data={items.results}
             columns={columns}
             options={{
               customToolbar: () => {
-                let singlePageTableCsv = `/v1/events/academy/checkin?limit=${queryLimit}&offset=${queryOffset}`;
-                let allPagesTableCsv = `/v1/events/academy/checkin`;
+                const singlePageTableCsv = `/v1/events/academy/checkin?limit=${queryLimit}&offset=${queryOffset}`;
+                const allPagesTableCsv = '/v1/events/academy/checkin';
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -280,8 +282,8 @@ const AttendeeList = () => {
                 );
               },
               download: false,
-              filterType: "textField",
-              responsive: "standard",
+              filterType: 'textField',
+              responsive: 'standard',
               serverSide: true,
               elevation: 0,
               count: items.count,
@@ -290,59 +292,56 @@ const AttendeeList = () => {
                 changedColumn,
                 filterList,
                 type,
-                changedColumnIndex
+                changedColumnIndex,
               ) => {
                 let q;
-                if (type === "reset") {
+                if (type === 'reset') {
                   q = {
                     limit: querys.limit ? querys.limit : 10,
                     offset: querys.offset ? querys.offset : 0,
                   };
+                } else if (
+                  filterList[changedColumnIndex][0] === undefined
+                    || type === 'chip'
+                ) {
+                  q = { ...querys };
+                  delete q[changedColumn];
                 } else {
-                  if (
-                    filterList[changedColumnIndex][0] === undefined ||
-                    type === "chip"
-                  ) {
-                    q = { ...querys };
-                    delete q[changedColumn];
-                  } else
-                    q = {
-                      ...querys,
-                      [changedColumn]: filterList[changedColumnIndex][0],
-                    };
+                  q = {
+                    ...querys,
+                    [changedColumn]: filterList[changedColumnIndex][0],
+                  };
                 }
                 setQuerys(q);
                 history.replace(
                   `/events/attendees?${Object.keys(q)
                     .map((key) => `${key}=${q[key]}`)
-                    .join("&")}`
+                    .join('&')}`,
                 );
               },
               customFilterDialogFooter: (
                 currentFilterList,
-                applyNewFilters
-              ) => {
-                return (
-                  <div style={{ marginTop: "40px" }}>
-                    <Button
-                      variant='contained'
-                      onClick={() => handleFilterSubmit()}
-                    >
-                      Apply Filters
-                    </Button>
-                  </div>
-                );
-              },
+                applyNewFilters,
+              ) => (
+                <div style={{ marginTop: '40px' }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleFilterSubmit()}
+                  >
+                    Apply Filters
+                  </Button>
+                </div>
+              ),
               rowsPerPage:
                 querys.limit === undefined ? 10 : parseInt(querys.limit),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 switch (action) {
-                  case "changePage":
+                  case 'changePage':
                     console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
-                  case "changeRowsPerPage":
+                  case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                 }
@@ -351,34 +350,32 @@ const AttendeeList = () => {
                 searchText,
                 handleSearch,
                 hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+                options,
+              ) => (
+                <Grow appear in timeout={300}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onChange={({ target: { value } }) => handleSearch(value)}
+                    InputProps={{
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Grow>
+              ),
             }}
           />
         </div>
