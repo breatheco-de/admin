@@ -80,6 +80,7 @@ const Cohort = () => {
         { label: "Change cohort current day", value: "current_day" },
         { label: "Cohort Detailed Report", value: "cohort_deport" },
         { label: "Review Assingments", value: "assignments" },
+        { label: "Review Attendance", value: "attendance" },
         { label: "Instant NPS Survey", value: "new_survey" },
         { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
     ];
@@ -186,6 +187,7 @@ const Cohort = () => {
                             if(value === "privacy") makePrivate();
 
                             if(value === "assignments") window.open(`https://assignments.breatheco.de/?token=${localStorage.getItem("accessToken")}&cohort=${slug}`)
+                            if(value === "attendancy") window.open(`https://attendance.breatheco.de/?token=${localStorage.getItem("accessToken")}&cohort_slug=${slug}`)
                         }}>
                         <Button>
                             <Icon>playlist_add</Icon>
