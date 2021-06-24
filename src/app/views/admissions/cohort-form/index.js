@@ -79,6 +79,7 @@ const Cohort = () => {
         { label: "Change cohort stage", value: "stage" },
         { label: "Change cohort current day", value: "current_day" },
         { label: "Cohort Detailed Report", value: "cohort_deport" },
+        { label: "Review Assingments", value: "assignments" },
         { label: "Instant NPS Survey", value: "new_survey" },
         { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
     ];
@@ -173,18 +174,18 @@ const Cohort = () => {
                         options={options}
                         icon="more_horiz"
                         onSelect={({ value }) => {
-                            value === "current_day"
-                                ? setCohortDayDialog(true)
-                                : setCohortDayDialog(false)
-                            value === "stage"
-                                ? setStageDialog(true)
-                                : setStageDialog(false)
-                            value === "new_survey"
-                                ? setSurveyDialog(true)
-                                : setSurveyDialog(false)
-                            if(value === "privacy"){
-                                makePrivate();
-                            }
+                            if(value === "current_day") setCohortDayDialog(true)
+                            else setCohortDayDialog(false)
+
+                            if(value === "stage") setStageDialog(true);
+                            else setStageDialog(false)
+
+                            if(value === "new_survey") setSurveyDialog(true)
+                            else setSurveyDialog(false)
+
+                            if(value === "privacy") makePrivate();
+
+                            if(value === "assignments") window.open(`https://assignments.breatheco.de/?token=${localStorage.getItem("accessToken")}&cohort=${slug}`)
                         }}>
                         <Button>
                             <Icon>playlist_add</Icon>
