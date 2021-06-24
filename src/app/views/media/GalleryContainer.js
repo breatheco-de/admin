@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -8,13 +8,12 @@ import {
   IconButton,
   TablePagination,
   Hidden,
-} from "@material-ui/core";
-import { uploadFiles } from "app/redux/actions/MediaActions";
-import {StyledDropzone} from "../../components/Dropzone"
-import GridMediaCard from "./GridMediaCard"
-import ListMediaCard from "./ListMediaCard"
-import * as _ from "lodash";
-import { useState } from "react";
+} from '@material-ui/core';
+import { uploadFiles } from 'app/redux/actions/MediaActions';
+import * as _ from 'lodash';
+import { StyledDropzone } from '../../components/Dropzone';
+import GridMediaCard from './GridMediaCard';
+import ListMediaCard from './ListMediaCard';
 
 const ShopContainer = ({
   orderBy,
@@ -28,17 +27,17 @@ const ShopContainer = ({
   handleChangePage,
   setRowsPerPage,
   onOpenDialog,
-  pagination
+  pagination,
 }) => {
   const [upload, setUpload] = useState(false);
-  React.useEffect(()=> {
-    console.log(page)
-  }, [page])
+  React.useEffect(() => {
+    console.log(page);
+  }, [page]);
   return (
-    <Fragment>
+    <>
       <div className="relative h-full w-full">
-        {!upload ? <Button size="medium" variant="contained" color="primary" className='mt-2' onClick={() => setUpload(true)}>Upload</Button> :
-        <StyledDropzone uploadFiles={uploadFiles} hideZone={() => setUpload(false)}/>}
+        {!upload ? <Button size="medium" variant="contained" color="primary" className="mt-2" onClick={() => setUpload(true)}>Upload</Button>
+          : <StyledDropzone uploadFiles={uploadFiles} hideZone={() => setUpload(false)} />}
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
             <Button
@@ -64,28 +63,26 @@ const ShopContainer = ({
               <MenuItem value="created_at">Recents First</MenuItem>
               <MenuItem value="-created_at">Oldests First</MenuItem>
             </TextField>
-            <IconButton onClick={() => toggleView("grid")}>
-              <Icon color={view === "grid" ? "primary" : "inherit"}>
+            <IconButton onClick={() => toggleView('grid')}>
+              <Icon color={view === 'grid' ? 'primary' : 'inherit'}>
                 view_comfy
               </Icon>
             </IconButton>
-            <IconButton onClick={() => toggleView("list")}>
-              <Icon color={view === "list" ? "primary" : "inherit"}>list</Icon>
+            <IconButton onClick={() => toggleView('list')}>
+              <Icon color={view === 'list' ? 'primary' : 'inherit'}>list</Icon>
             </IconButton>
           </div>
         </div>
-        <Grid container spacing={2} direction="row" style={{alignItems:"stretch"}}>
-          {productList.map((product) =>
-              view === "grid" ? (
-                <Grid item key={product.id} lg={3} md={3} sm={12} xs={12} >
-                  <GridMediaCard media={product} onOpenDialog={() =>{console.log(product); onOpenDialog(product)}} key={product.id}></GridMediaCard>
-                </Grid>
-              ) : (
-                <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>
-                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product)}  key={product.id}></ListMediaCard>
-                </Grid>
-              )
-            )}
+        <Grid container spacing={2} direction="row" style={{ alignItems: 'stretch' }}>
+          {productList.map((product) => (view === 'grid' ? (
+            <Grid item key={product.id} lg={3} md={3} sm={12} xs={12}>
+              <GridMediaCard media={product} onOpenDialog={() => { console.log(product); onOpenDialog(product); }} key={product.id} />
+            </Grid>
+          ) : (
+            <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>
+              <ListMediaCard product={product} onOpenDialog={() => onOpenDialog(product)} key={product.id} />
+            </Grid>
+          )))}
         </Grid>
       </div>
       <TablePagination
@@ -97,7 +94,7 @@ const ShopContainer = ({
         onChangePage={handleChangePage}
         onChangeRowsPerPage={setRowsPerPage}
       />
-    </Fragment>
+    </>
   );
 };
 

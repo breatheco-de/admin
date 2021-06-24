@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { MatxLoading } from "matx";
+import React, { useState, useEffect } from 'react';
+import { Breadcrumb, MatxLoading } from 'matx';
+import MUIDataTable from 'mui-datatables';
+
 import {
   Avatar,
   Grow,
@@ -9,13 +9,14 @@ import {
   IconButton,
   TextField,
   Tooltip,
-} from "@material-ui/core";
-import dayjs from "dayjs";
-import bc from "app/services/breathecode";
-import { DownloadCsv } from "../../components/DownloadCsv";
-import CopyInviteModal from "app/components/InviteDetails";
+} from '@material-ui/core';
+import dayjs from 'dayjs';
+import bc from 'app/services/breathecode';
+import CopyInviteModal from 'app/components/InviteDetails';
+import { DownloadCsv } from '../../components/DownloadCsv';
 
-let relativeTime = require("dayjs/plugin/relativeTime");
+const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const Students = () => {
@@ -33,7 +34,7 @@ const Students = () => {
   useEffect(() => {
     setIsLoading(true);
     bc.auth()
-      .getAcademyMembers({ status: "invited" })
+      .getAcademyMembers({ status: 'invited' })
       .then(({ data }) => {
         console.log(data);
         setIsLoading(false);
@@ -49,27 +50,28 @@ const Students = () => {
 
   const columns = [
     {
-      name: "first_name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: 'first_name', // field name in the row object
+      label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let user =
-            userList[dataIndex].user !== null
-              ? userList[dataIndex]
-              : {
-                  ...userList[dataIndex],
-                  user: { first_name: "", last_name: "", imgUrl: "" },
-                };
+          const user = userList[dataIndex].user !== null
+            ? userList[dataIndex]
+            : {
+              ...userList[dataIndex],
+              user: { first_name: '', last_name: '', imgUrl: '' },
+            };
 
           return (
-            <div className='flex items-center'>
-              <Avatar className='w-48 h-48' src={user.user?.imgUrl} />
-              <div className='ml-3'>
-                <h5 className='my-0 text-15'>
-                  {user.user?.first_name} {user.user?.last_name}
+            <div className="flex items-center">
+              <Avatar className="w-48 h-48" src={user.user?.imgUrl} />
+              <div className="ml-3">
+                <h5 className="my-0 text-15">
+                  {user.user?.first_name}
+                  {' '}
+                  {user.user?.last_name}
                 </h5>
-                <small className='text-muted'>{user?.email}</small>
+                <small className="text-muted">{user?.email}</small>
               </div>
             </div>
           );
@@ -77,17 +79,17 @@ const Students = () => {
       },
     },
     {
-      name: "created_at",
-      label: "Created At",
+      name: 'created_at',
+      label: 'Created At',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(userList[i].created_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(userList[i].created_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(userList[i].created_at).fromNow()}
               </small>
             </div>
@@ -96,14 +98,14 @@ const Students = () => {
       },
     },
     {
-      name: "role",
-      label: "Role",
+      name: 'role',
+      label: 'Role',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
+          const item = userList[dataIndex];
           return (
-            <div className='MUIDataTableBodyCell-root-326'>
+            <div className="MUIDataTableBodyCell-root-326">
               {item.role.name.toUpperCase()}
             </div>
           );
@@ -111,23 +113,24 @@ const Students = () => {
       },
     },
     {
-      name: "action",
-      label: " ",
+      name: 'action',
+      label: ' ',
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          let item =
-            userList[dataIndex].user !== null
-              ? userList[dataIndex]
-              : {
-                  ...userList[dataIndex],
-                  user: { first_name: "", last_name: "", imgUrl: "", id: "" },
-                };
+          const item = userList[dataIndex].user !== null
+            ? userList[dataIndex]
+            : {
+              ...userList[dataIndex],
+              user: {
+                first_name: '', last_name: '', imgUrl: '', id: '',
+              },
+            };
           return (
-            <div className='flex items-center'>
-              <div className='flex-grow'></div>
+            <div className="flex items-center">
+              <div className="flex-grow" />
               <CopyInviteModal user={item.id} />
-              <Tooltip title='Resend Invite'>
+              <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
@@ -140,30 +143,30 @@ const Students = () => {
   ];
 
   return (
-    <div className='m-sm-30'>
-      <div className='mb-sm-30'>
-        <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Admin", path: "/" },
-                { name: "Invites" },
+                { name: 'Admin', path: '/' },
+                { name: 'Invites' },
               ]}
             />
           </div>
         </div>
       </div>
-      <div className='overflow-auto'>
-        <div className='min-w-750'>
+      <div className="overflow-auto">
+        <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"Invites"}
+            title="Invites"
             data={userList}
             columns={columns}
             options={{
               customToolbar: () => {
-                let singlePageTableCsv = `/v1/auth/academy/member?status=invited`;
-                let allPagesTableCsv = `/v1/auth/academy/member?status=invited`;
+                const singlePageTableCsv = '/v1/auth/academy/member?status=invited';
+                const allPagesTableCsv = '/v1/auth/academy/member?status=invited';
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -172,8 +175,8 @@ const Students = () => {
                 );
               },
               download: false,
-              filterType: "textField",
-              responsive: "standard",
+              filterType: 'textField',
+              responsive: 'standard',
               // selectableRows: "none", // set checkbox for each row
               // search: false, // set search option
               // filter: false, // set data filter option
@@ -187,34 +190,32 @@ const Students = () => {
                 searchText,
                 handleSearch,
                 hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+                options,
+              ) => (
+                <Grow appear in timeout={300}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onChange={({ target: { value } }) => handleSearch(value)}
+                    InputProps={{
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Grow>
+              ),
             }}
           />
         </div>

@@ -1,236 +1,236 @@
-import { authRoles } from "./auth/authRoles";
+import { authRoles } from './auth/authRoles';
 
 export const navigations = [
-    {
-        name: "Dashboard",
-        path: "/dashboard/analytics",
-        icon: "dashboard",
-    },
-    {
-        name: "Growth",
-        path: "/dashboard/analytics-2",
-        icon: "show_chart",
-        beta: true
-    },
-    {
-        name: "Admin",
-        icon: "account_circle",
-        children: [
-            {
-                name: "Staff",
-                path: "/admin/staff",
-                iconText: "STA",
-            },
-            {
-                name: "Invites",
-                path: "/admin/invites",
-                iconText: "STA",
-            },
-        ],
-    },
-    {
-        name: "Admissions",
-        icon: "school",
-        auth: authRoles.contry_manager,
-        children: [
-            {
-                name: "Cohorts",
-                path: "/admissions/cohorts",
-                iconText: "CO",
-            },
-            {
-                name: "Students",
-                path: "/admissions/students",
-                iconText: "STU",
-            }
-        ],
-    },
-    {
-        name: "Leads",
-        icon: "monetization_on",
-        children: [
-            {
-                name: "Leads Log",
-                path: "/leads/list",
-                iconText: "OL",
-            },
-        ],
-    },
-    {
-        name: "Feedback",
-        icon: "record_voice_over",
-        children: [
-            {
-                name: "Answers",
-                path: "/feedback/answers",
-                iconText: "OL",
-            },
-            {
-                beta: true,
-                name: "Surveys",
-                path: "/feedback/surveys",
-                iconText: "OL",
-            },
-        ],
-    },
-    {
-        name: "Events & Workshops",
-        icon: "event",
-        children: [
-            {
-                name: "Settings",
-                path: "/events/settings",
-                iconText: "OL",
-                beta: true,
-            },
-            {
-                name: "Event List",
-                path: "/events/list",
-                iconText: "OL",
-            },
-            {
-                name: "Attendees",
-                path: "/events/attendees",
-                iconText: "OL",
-                beta: true,
-            },
-        ],
-    },
-    {
-        path: "/certificates",
-        name: "Certificates",
-        icon: "card_membership",
-    },
-    {
-        name: "Media Gallery",
-        icon: "collections",
-        path: "/media/gallery",
-    },
-    {
+  {
+    name: 'Dashboard',
+    path: '/dashboard/analytics',
+    icon: 'dashboard',
+  },
+  {
+    name: 'Growth',
+    path: '/dashboard/analytics-2',
+    icon: 'show_chart',
+    beta: true,
+  },
+  {
+    name: 'Admin',
+    icon: 'account_circle',
+    children: [
+      {
+        name: 'Staff',
+        path: '/admin/staff',
+        iconText: 'STA',
+      },
+      {
+        name: 'Invites',
+        path: '/admin/invites',
+        iconText: 'STA',
+      },
+    ],
+  },
+  {
+    name: 'Admissions',
+    icon: 'school',
+    auth: authRoles.contry_manager,
+    children: [
+      {
+        name: 'Cohorts',
+        path: '/admissions/cohorts',
+        iconText: 'CO',
+      },
+      {
+        name: 'Students',
+        path: '/admissions/students',
+        iconText: 'STU',
+      },
+    ],
+  },
+  {
+    name: 'Leads',
+    icon: 'monetization_on',
+    children: [
+      {
+        name: 'Leads Log',
+        path: '/leads/list',
+        iconText: 'OL',
+      },
+    ],
+  },
+  {
+    name: 'Feedback',
+    icon: 'record_voice_over',
+    children: [
+      {
+        name: 'Answers',
+        path: '/feedback/answers',
+        iconText: 'OL',
+      },
+      {
         beta: true,
-        label: "Components",
-        type: "label",
-    },
-    {
+        name: 'Surveys',
+        path: '/feedback/surveys',
+        iconText: 'OL',
+      },
+    ],
+  },
+  {
+    name: 'Events & Workshops',
+    icon: 'event',
+    children: [
+      {
+        name: 'Settings',
+        path: '/events/settings',
+        iconText: 'OL',
         beta: true,
-        name: "Components",
-        icon: "favorite",
-        badge: { value: "30+", color: "secondary" },
-        children: [
-            {
-                name: "Auto Complete",
-                path: "/material/autocomplete",
-                iconText: "A",
-            },
-            {
-                name: "Buttons",
-                path: "/material/buttons",
-                iconText: "B",
-            },
-            {
-                name: "Checkbox",
-                path: "/material/checkbox",
-                iconText: "C",
-            },
-            {
-                name: "Dialog",
-                path: "/material/dialog",
-                iconText: "D",
-            },
-            {
-                name: "Drag and Drop",
-                iconText: "D",
-                path: "/others/drag-and-drop",
-            },
-            {
-                name: "Expansion Panel",
-                path: "/material/expansion-panel",
-                iconText: "E",
-            },
-            {
-                name: "Form",
-                path: "/material/form",
-                iconText: "F",
-            },
-            {
-                name: "Icons",
-                path: "/material/icons",
-                iconText: "I",
-            },
-            {
-                name: "Menu",
-                path: "/material/menu",
-                iconText: "M",
-            },
-            {
-                name: "Progress",
-                path: "/material/progress",
-                iconText: "P",
-            },
-            {
-                name: "Radio",
-                path: "/material/radio",
-                iconText: "R",
-            },
-            {
-                name: "Switch",
-                path: "/material/switch",
-                iconText: "S",
-            },
-            {
-                name: "Slider",
-                path: "/material/slider",
-                iconText: "S",
-            },
-            {
-                name: "Snackbar",
-                path: "/material/snackbar",
-                iconText: "S",
-            },
-            {
-                name: "Table",
-                path: "/material/table",
-                iconText: "T",
-            },
-        ],
-    },
-    {
+      },
+      {
+        name: 'Event List',
+        path: '/events/list',
+        iconText: 'OL',
+      },
+      {
+        name: 'Attendees',
+        path: '/events/attendees',
+        iconText: 'OL',
         beta: true,
-        name: "Utilities",
-        icon: "format_list_bulleted",
-        children: [
-            {
-                name: "Color",
-                path: "/utilities/color",
-                iconText: "C",
-                auth: authRoles.admin,
-            },
-            {
-                name: "Spacing",
-                path: "/utilities/spacing",
-                iconText: "S",
-                auth: authRoles.admin,
-            },
-            {
-                name: "Typography",
-                path: "/utilities/typography",
-                iconText: "T",
-            },
-            {
-                name: "Display",
-                path: "/utilities/display",
-                iconText: "D",
-            },
-            {
-                name: "Position",
-                path: "/utilities/position",
-                iconText: "P",
-            },
-            {
-                name: "Shadow",
-                path: "/utilities/shadow",
-                iconText: "S",
-            },
-        ],
-    },
+      },
+    ],
+  },
+  {
+    path: '/certificates',
+    name: 'Certificates',
+    icon: 'card_membership',
+  },
+  {
+    name: 'Media Gallery',
+    icon: 'collections',
+    path: '/media/gallery',
+  },
+  {
+    beta: true,
+    label: 'Components',
+    type: 'label',
+  },
+  {
+    beta: true,
+    name: 'Components',
+    icon: 'favorite',
+    badge: { value: '30+', color: 'secondary' },
+    children: [
+      {
+        name: 'Auto Complete',
+        path: '/material/autocomplete',
+        iconText: 'A',
+      },
+      {
+        name: 'Buttons',
+        path: '/material/buttons',
+        iconText: 'B',
+      },
+      {
+        name: 'Checkbox',
+        path: '/material/checkbox',
+        iconText: 'C',
+      },
+      {
+        name: 'Dialog',
+        path: '/material/dialog',
+        iconText: 'D',
+      },
+      {
+        name: 'Drag and Drop',
+        iconText: 'D',
+        path: '/others/drag-and-drop',
+      },
+      {
+        name: 'Expansion Panel',
+        path: '/material/expansion-panel',
+        iconText: 'E',
+      },
+      {
+        name: 'Form',
+        path: '/material/form',
+        iconText: 'F',
+      },
+      {
+        name: 'Icons',
+        path: '/material/icons',
+        iconText: 'I',
+      },
+      {
+        name: 'Menu',
+        path: '/material/menu',
+        iconText: 'M',
+      },
+      {
+        name: 'Progress',
+        path: '/material/progress',
+        iconText: 'P',
+      },
+      {
+        name: 'Radio',
+        path: '/material/radio',
+        iconText: 'R',
+      },
+      {
+        name: 'Switch',
+        path: '/material/switch',
+        iconText: 'S',
+      },
+      {
+        name: 'Slider',
+        path: '/material/slider',
+        iconText: 'S',
+      },
+      {
+        name: 'Snackbar',
+        path: '/material/snackbar',
+        iconText: 'S',
+      },
+      {
+        name: 'Table',
+        path: '/material/table',
+        iconText: 'T',
+      },
+    ],
+  },
+  {
+    beta: true,
+    name: 'Utilities',
+    icon: 'format_list_bulleted',
+    children: [
+      {
+        name: 'Color',
+        path: '/utilities/color',
+        iconText: 'C',
+        auth: authRoles.admin,
+      },
+      {
+        name: 'Spacing',
+        path: '/utilities/spacing',
+        iconText: 'S',
+        auth: authRoles.admin,
+      },
+      {
+        name: 'Typography',
+        path: '/utilities/typography',
+        iconText: 'T',
+      },
+      {
+        name: 'Display',
+        path: '/utilities/display',
+        iconText: 'D',
+      },
+      {
+        name: 'Position',
+        path: '/utilities/position',
+        iconText: 'P',
+      },
+      {
+        name: 'Shadow',
+        path: '/utilities/shadow',
+        iconText: 'S',
+      },
+    ],
+  },
 ];
