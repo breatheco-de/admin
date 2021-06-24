@@ -1,5 +1,5 @@
 function loadHeader() {
-  var headerHTML = `<div class="brand mr-md">
+  const headerHTML = `<div class="brand mr-md">
   <a href="#">Matx React</a>
   <small>v1.0.0</small>
 </div>
@@ -12,10 +12,10 @@ function loadHeader() {
 
 <a href="https://ui-lib.com/downloads/matx-pro-react-material-design-admin-template" class="btn btn-raised btn-raised-success">Buy</a>`;
 
-  $(".doc-header").html(headerHTML);
+  $('.doc-header').html(headerHTML);
 
   // Collapsible sidebar
-  $(".sidebar-toggle").on("click", function() {
-    $(".wrapper").toggleClass("sidebar-open");
+  $('.sidebar-toggle').on('click', () => {
+    $('.wrapper').toggleClass('sidebar-open');
   });
 }
