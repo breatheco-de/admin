@@ -47,7 +47,7 @@ export const AddEventbriteOrganization = ({ initialValues }) => (
           <Grid item md={4}>
             <Button fullWidth color="primary" variant="contained" type="submit">
               Submit
-                </Button>
+            </Button>
           </Grid>
           <Grid item md={12}>Status: Persisted (Success with 3 events...)</Grid>
         </Grid>

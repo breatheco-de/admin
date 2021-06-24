@@ -62,84 +62,84 @@ const CustomDialog = ({
               <Grid container spacing={2} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
                   URL
-                        </Grid>
+                </Grid>
                 <Grid item md={8} sm={6} xs={10}>
                   <TextField
-                      label="URL"
-                      name="url"
-                      size="medium"
-                      disabled
-                      fullWidth
-                      variant="outlined"
-                      value={values.url}
-                      onChange={handleChange}
-                    />
+                    label="URL"
+                    name="url"
+                    size="medium"
+                    disabled
+                    fullWidth
+                    variant="outlined"
+                    value={values.url}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={2} sm={2} xs={2}>
                   <CopyToClipboard
-                      text={values.url}
-                      onCopy={() => setCopied(true)}
-                    >
-                      <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : 'Copy'}</Button>
-                    </CopyToClipboard>
+                    text={values.url}
+                    onCopy={() => setCopied(true)}
+                  >
+                    <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : 'Copy'}</Button>
+                  </CopyToClipboard>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Mime Type
-                        </Grid>
+                </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                      label="Mime"
-                      name="mime"
-                      fullWidth
-                      size="medium"
-                      variant="outlined"
-                      value={values.mime}
-                      disabled
-                      onChange={handleChange}
-                    />
+                    label="Mime"
+                    name="mime"
+                    fullWidth
+                    size="medium"
+                    variant="outlined"
+                    value={values.mime}
+                    disabled
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   File name
-                        </Grid>
+                </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                      label="Name"
-                      name="name"
-                      fullWidth
-                      size="medium"
-                      variant="outlined"
-                      value={values.name}
-                      onChange={handleChange}
-                    />
+                    label="Name"
+                    name="name"
+                    fullWidth
+                    size="medium"
+                    variant="outlined"
+                    value={values.name}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Slug
-                        </Grid>
+                </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                      label="Slug"
-                      name="slug"
-                      fullWidth
-                      size="medium"
-                      variant="outlined"
-                      value={values.slug}
-                      onChange={handleChange}
-                    />
+                    label="Slug"
+                    name="slug"
+                    fullWidth
+                    size="medium"
+                    variant="outlined"
+                    value={values.slug}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Categories
-                        </Grid>
+                </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
-                      onChange={(category) => { setCategory(category); setFieldValue('categories', category); console.log(category, formInitialValues); }}
-                      width="100%"
-                      label="Categories"
-                      value={category}
-                      multiple
-                      debounced={false}
-                      asyncSearch={() => bc.media().getAllCategories()}
-                      getOptionLabel={(option) => `${option.name}`}
-                    />
+                    onChange={(category) => { setCategory(category); setFieldValue('categories', category); console.log(category, formInitialValues); }}
+                    width="100%"
+                    label="Categories"
+                    value={category}
+                    multiple
+                    debounced={false}
+                    asyncSearch={() => bc.media().getAllCategories()}
+                    getOptionLabel={(option) => `${option.name}`}
+                  />
                 </Grid>
               </Grid>
             </DialogContent>

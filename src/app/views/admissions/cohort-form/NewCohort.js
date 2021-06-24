@@ -7,18 +7,18 @@ import {
   TextField,
   Button,
   Checkbox,
-  FormControlLabel } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+  FormControlLabel,
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles } from "@material-ui/core/styles";
-import { Breadcrumb } from "matx";
-import bc from "app/services/breathecode";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
-
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { makeStyles } from '@material-ui/core/styles';
+import { Breadcrumb } from 'matx';
+import bc from 'app/services/breathecode';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   neverEnd: {
@@ -64,7 +64,8 @@ const NewCohort = () => {
       .then((data) => {
         if (data.status == 201) {
           history.push('/admissions/cohorts');
-        } })
+        }
+      })
       .catch((error) => console.log(error));
   };
 
@@ -72,12 +73,12 @@ const NewCohort = () => {
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
-        routeSegments={[
+          routeSegments={[
             { name: 'Admin', path: '/admin' },
             { name: 'Cohort', path: '/admissions/cohorts' },
             { name: 'New Cohort' },
           ]}
-      />
+        />
       </div>
 
       <Card elevation={3}>
@@ -136,28 +137,29 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                    onChange={(certificate) => setCert(certificate)}
-                    width="30%"
-                    className="mr-2 ml-2"
-                    asyncSearch={() => bc.admissions().getCertificates()}
-                    size="small"
-                    label="Certificate"
-                    required
-                    getOptionLabel={(option) => `${option.name}`}
-                    value={cert}
-                  />
+                      onChange={(certificate) => setCert(certificate)}
+                      width="30%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getCertificates()}
+                      size="small"
+                      label="Certificate"
+                      required
+                      getOptionLabel={(option) => `${option.name}`}
+                      value={cert}
+                    />
                     {cert !== null ? (
                       <AsyncAutocomplete
-                          debounced={false}
-                          onChange={(v) => setVersion(v)}
-                          width={"20%"}
-                          key={cert.slug}
-                          asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug, academy.id)}
-                          size={"small"}
-                          label="Version"
-                          required={true}
-                          getOptionLabel={option => `${option.version}`}
-                          value={version} />
+                        debounced={false}
+                        onChange={(v) => setVersion(v)}
+                        width="20%"
+                        key={cert.slug}
+                        asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug, academy.id)}
+                        size="small"
+                        label="Version"
+                        required
+                        getOptionLabel={(option) => `${option.version}`}
+                        value={version}
+                      />
                     ) : ''}
                   </div>
                 </Grid>
@@ -166,65 +168,65 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <KeyboardDatePicker
-                          className="m-2"
-                          margin="none"
-                          label="Date"
-                          inputVariant="outlined"
-                          type="text"
-                          size="small"
-                          autoOk
-                          value={newCohort.kickoff_date}
-                          format="MMMM dd, yyyy"
-                          onChange={(date) => setNewCohort({
-                              ...newCohort, kickoff_date: date,
-                            })}
-                        />
-                    </MuiPickersUtilsProvider>
+                    <KeyboardDatePicker
+                      className="m-2"
+                      margin="none"
+                      label="Date"
+                      inputVariant="outlined"
+                      type="text"
+                      size="small"
+                      autoOk
+                      value={newCohort.kickoff_date}
+                      format="MMMM dd, yyyy"
+                      onChange={(date) => setNewCohort({
+                        ...newCohort, kickoff_date: date,
+                      })}
+                    />
+                  </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
                   End date
                 </Grid>
                 <Grid item md={3} sm={4} xs={12}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <KeyboardDatePicker
-                          name="ending_date"
-                          className="m-2"
-                          margin="none"
-                          label="End date"
-                          inputVariant="outlined"
-                          type="text"
-                          size="small"
-                          value={newCohort.ending_date}
-                          format="MMMM dd, yyyy"
-                          onChange={(date) => setNewCohort({
-                            ...newCohort,
-                            ending_date: date,
-                            never_ends: false,
-                          })}
-                          disabled={!neverEnd}
-                          required
-                        />
-                    </MuiPickersUtilsProvider>
+                    <KeyboardDatePicker
+                      name="ending_date"
+                      className="m-2"
+                      margin="none"
+                      label="End date"
+                      inputVariant="outlined"
+                      type="text"
+                      size="small"
+                      value={newCohort.ending_date}
+                      format="MMMM dd, yyyy"
+                      onChange={(date) => setNewCohort({
+                        ...newCohort,
+                        ending_date: date,
+                        never_ends: false,
+                      })}
+                      disabled={!neverEnd}
+                      required
+                    />
+                  </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item md={3} sm={4} xs={12}>
                   <FormControlLabel
-                      control={(
-                        <Checkbox
-                          checked={checked}
-                          onChange={handleNeverEnd}
-                          name="ending_date"
-                          color="primary"
-                        />
+                    control={(
+                      <Checkbox
+                        checked={checked}
+                        onChange={handleNeverEnd}
+                        name="ending_date"
+                        color="primary"
+                      />
                       )}
-                      label="This cohort never ends."
-                    />
+                    label="This cohort never ends."
+                  />
                 </Grid>
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
-                    Create
-                  </Button>
+                  Create
+                </Button>
               </div>
             </form>
           )}

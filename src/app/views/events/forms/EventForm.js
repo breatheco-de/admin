@@ -151,206 +151,206 @@ const EventForm = () => {
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={1} sm={4} xs={12}>
                   Event Title
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      label="Event Title"
-                      name="title"
-                      required
-                      size="small"
-                      fullWidth
-                      variant="outlined"
-                      value={values.title}
-                      onChange={handleChange}
-                    />
+                    label="Event Title"
+                    name="title"
+                    required
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={values.title}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Banner URL
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <MediaInput
-                      size="small"
-                      placeholder="Banner URL"
-                      value={values.banner}
-                      handleChange={setFieldValue}
-                      name="banner"
-                      fullWidth
-                      inputProps={{ style: { padding: '10px' } }}
-                    />
+                    size="small"
+                    placeholder="Banner URL"
+                    value={values.banner}
+                    handleChange={setFieldValue}
+                    name="banner"
+                    fullWidth
+                    inputProps={{ style: { padding: '10px' } }}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Landing URL
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <MediaInput
-                      placeholder="Landing URL"
-                      size="small"
-                      value={values.url}
-                      handleChange={setFieldValue}
-                      name="url"
-                      fullWidth
-                      inputProps={{ style: { padding: '10px' } }}
-                    />
+                    placeholder="Landing URL"
+                    size="small"
+                    value={values.url}
+                    handleChange={setFieldValue}
+                    name="url"
+                    fullWidth
+                    inputProps={{ style: { padding: '10px' } }}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Capacity
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      label="Capacity"
-                      name="capacity"
-                      size="small"
-                      type="number"
-                      required
-                      fullWidth
-                      variant="outlined"
-                      value={values.capacity}
-                      onChange={handleChange}
-                    />
+                    label="Capacity"
+                    name="capacity"
+                    size="small"
+                    type="number"
+                    required
+                    fullWidth
+                    variant="outlined"
+                    value={values.capacity}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Starting At
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      className="min-w-188"
-                      name="starting_at"
-                      size="small"
-                      required
-                      fullWidth
-                      variant="outlined"
-                      type="datetime-local"
-                      value={values.starting_at}
-                      onChange={handleChange}
-                    />
+                    className="min-w-188"
+                    name="starting_at"
+                    size="small"
+                    required
+                    fullWidth
+                    variant="outlined"
+                    type="datetime-local"
+                    value={values.starting_at}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Ending At
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      className="min-w-188"
-                      name="ending_at"
-                      size="small"
-                      required
-                      fullWidth
-                      type="datetime-local"
-                      variant="outlined"
-                      value={values.ending_at}
-                      onChange={handleChange}
-                    />
+                    className="min-w-188"
+                    name="ending_at"
+                    size="small"
+                    required
+                    fullWidth
+                    type="datetime-local"
+                    variant="outlined"
+                    value={values.ending_at}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Language
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
-                      <TextField
-                          className="m-2 min-w-188"
-                          label="Language"
-                          name="lang"
-                          size="small"
-                          required
-                          variant="outlined"
-                          select
-                          fullWidth
-                          value={values.lang}
-                          onChange={handleChange}
-                        >
-                          {['EN', 'ES'].map((item, ind) => (
-                              <MenuItem value={item.toLowerCase()} key={ind}>
-                                  {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </div>
+                    <TextField
+                      className="m-2 min-w-188"
+                      label="Language"
+                      name="lang"
+                      size="small"
+                      required
+                      variant="outlined"
+                      select
+                      fullWidth
+                      value={values.lang}
+                      onChange={handleChange}
+                    >
+                      {['EN', 'ES'].map((item, ind) => (
+                        <MenuItem value={item.toLowerCase()} key={ind}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Host
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      label="Host"
-                      name="host"
-                      size="small"
-                      fullWidth
-                      variant="outlined"
-                      value={values.host}
-                      onChange={handleChange}
-                    />
+                    label="Host"
+                    name="host"
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={values.host}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Venue
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
-                      onChange={(venue) => setVenue(venue)}
-                      asyncSearch={() => bc.events().getAcademyVenues()}
-                      size="small"
-                      label="Venue"
-                      debounced={false}
-                      required={false}
-                      getOptionLabel={(option) => `${option.title}`}
-                      value={venue}
-                    />
+                    onChange={(venue) => setVenue(venue)}
+                    asyncSearch={() => bc.events().getAcademyVenues()}
+                    size="small"
+                    label="Venue"
+                    debounced={false}
+                    required={false}
+                    getOptionLabel={(option) => `${option.title}`}
+                    value={venue}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Event Type
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
-                      onChange={(eventType) => setEventType(eventType)}
-                      asyncSearch={() => bc.events().getAcademyEventType()}
-                      size="small"
-                      debounced={false}
-                      label="Event type"
-                      required
-                      getOptionLabel={(option) => `${option.name}`}
-                      value={eventType}
-                    />
+                    onChange={(eventType) => setEventType(eventType)}
+                    asyncSearch={() => bc.events().getAcademyEventType()}
+                    size="small"
+                    debounced={false}
+                    label="Event type"
+                    required
+                    getOptionLabel={(option) => `${option.name}`}
+                    value={eventType}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Event Description
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      label="Event Description"
-                      name="description"
-                      size="small"
-                      multiline
-                      required
-                      fullWidth
-                      variant="outlined"
-                      value={values.description}
-                      onChange={handleChange}
-                    />
+                    label="Event Description"
+                    name="description"
+                    size="small"
+                    multiline
+                    required
+                    fullWidth
+                    variant="outlined"
+                    value={values.description}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Short description
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
-                      label="Short Description"
-                      name="excerpt"
-                      size="small"
-                      fullWidth
-                      multiline
-                      required
-                      variant="outlined"
-                      value={values.excerpt}
-                      onChange={handleChange}
-                    />
+                    label="Short Description"
+                    name="excerpt"
+                    size="small"
+                    fullWidth
+                    multiline
+                    required
+                    variant="outlined"
+                    value={values.excerpt}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Online Event
-                          </Grid>
+                </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <Checkbox
-                      checked={values.online_event}
-                      onChange={handleChange}
-                      name="online_event"
-                      color="primary"
-                    />
+                    checked={values.online_event}
+                    onChange={handleChange}
+                    name="online_event"
+                    color="primary"
+                  />
                 </Grid>
               </Grid>
               <div className="mt-6">

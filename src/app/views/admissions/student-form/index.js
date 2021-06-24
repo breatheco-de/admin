@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   Icon,
@@ -8,15 +8,15 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-} from "@material-ui/core";
-import { useParams } from "react-router-dom";
-import StudentCohorts from "./StudentCohorts";
-import StudentDetails from "./StudentDetails";
-import DowndownMenu from "../../../components/DropdownMenu";
-import axios from "../../../../axios";
-import bc from "app/services/breathecode";
-import dayjs from "dayjs";
-import { toast } from "react-toastify";
+} from '@material-ui/core';
+import { useParams } from 'react-router-dom';
+import bc from 'app/services/breathecode';
+import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
+import StudentCohorts from './StudentCohorts';
+import StudentDetails from './StudentDetails';
+import DowndownMenu from '../../../components/DropdownMenu';
+import axios from '../../../../axios';
 
 toast.configure();
 const toastOption = {
@@ -25,12 +25,13 @@ const toastOption = {
 };
 
 const options = [
-  { label: "Send password reset", value: "password_reset" },
-  { label: "Open student profile", value: "student_profile" },
-  { label: "Change Role", value: "change_role" },
+  { label: 'Send password reset', value: 'password_reset' },
+  { label: 'Open student profile', value: 'student_profile' },
+  { label: 'Change Role', value: 'change_role' },
 ];
 
-let LocalizedFormat = require("dayjs/plugin/localizedFormat");
+const LocalizedFormat = require('dayjs/plugin/localizedFormat');
+
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
@@ -51,7 +52,7 @@ const Student = () => {
       .then((res) => {
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
-          toast.success("Password reset url copied", toastOption);
+          toast.success('Password reset url copied', toastOption);
         }
       })
       .catch((error) => error);
@@ -61,46 +62,48 @@ const Student = () => {
     getMemberById();
   }, []);
   return (
-    <div className='m-sm-30'>
-      <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="flex flex-wrap justify-between mb-6">
         {/* This Dialog opens the modal to delete the user in the cohort */}
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id='alert-dialog-title'>
+          <DialogTitle id="alert-dialog-title">
             An email to reset password will be sent to
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id='alert-dialog-description'>
+            <DialogContentText id="alert-dialog-description">
               {member?.user.email}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color='primary'>
+            <Button onClick={() => setOpenDialog(false)} color="primary">
               Close
             </Button>
-            <Button color='primary' autoFocus onClick={() => passwordReset()}>
+            <Button color="primary" autoFocus onClick={() => passwordReset()}>
               Send
             </Button>
           </DialogActions>
         </Dialog>
         <div>
-          <h3 className='mt-0 mb-4 font-medium text-28'>
-            {member?.user.first_name + " " + member?.user.last_name}
+          <h3 className="mt-0 mb-4 font-medium text-28">
+            {`${member?.user.first_name} ${member?.user.last_name}`}
           </h3>
-          <div className='flex'>
-            Member since: {dayjs(member?.created_at).format("LL")}
+          <div className="flex">
+            Member since:
+            {' '}
+            {dayjs(member?.created_at).format('LL')}
           </div>
         </div>
         <DowndownMenu
           options={options}
-          icon='more_horiz'
+          icon="more_horiz"
           onSelect={({ value }) => {
-            setOpenDialog(value === "password_reset" ? true : false);
-            setOpenRoleDialog(value === "change_role" ? true : false);
+            setOpenDialog(value === 'password_reset');
+            setOpenRoleDialog(value === 'change_role');
           }}
         >
           <Button>
