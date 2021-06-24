@@ -89,7 +89,7 @@ const ShopContainer = ({
                 </Grid>
               ) : (
                 <Grid item key={product.id} lg={12} md={12} sm={12} xs={12}>
-                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product)}  key={product.id}></ListMediaCard>
+                  <ListMediaCard product={product} onOpenDialog={()=> onOpenDialog(product)}  key={product.id} onSelected={handleSelectedMedia} isSelected={selected}></ListMediaCard>
                 </Grid>
               )
             )}

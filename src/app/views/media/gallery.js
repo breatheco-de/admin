@@ -155,6 +155,10 @@ const Gallery = () => {
      history.replace(`/media/gallery?${Object.keys(q).map(key => `${key}=${q[key]}`).join('&')}`)
   };
 
+  const onSubmitBulkEdit = (values) =>{
+    dispatch(bulkEditMedia(selected.map(m =>{ return { categories: m.categories.filter(c => !values.includes(c.id.toString())).map(c => c.id).concat(...values), id:m.id } })))
+  }
+ 
   useEffect(() => {
     let keys = pgQuery.keys();
     let result = {}
@@ -197,7 +201,7 @@ const Gallery = () => {
             onNewCategory={(values) => dispatch(createCategory(values))}
           ></SideNav> : <BulkEdit 
           categoryList={categoryList} 
-          onClick={(values) => dispatch(bulkEditMedia(selected.map(m =>{ return { categories:values, id:m.id } })))}
+          onClick={onSubmitBulkEdit}
           clear={()=> dispatch(clearSelectedMedia())}
           />}
         </MatxSidenav>

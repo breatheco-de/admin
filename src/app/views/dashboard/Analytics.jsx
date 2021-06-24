@@ -50,7 +50,7 @@ const Analytics = () => {
 
     useEffect(() => {
         const { academy } = getSession();
-        if(!academy) return null;
+        if(!academy) return;
         
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),
