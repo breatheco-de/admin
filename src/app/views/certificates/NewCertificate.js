@@ -12,9 +12,8 @@ import { AsyncAutocomplete } from "../../components/Autocomplete";
 import ResponseDialog from "./ResponseDialog";
 
 const NewCertificate = () => {
-  const { type } = useParams();
+  const { slug } = useParams();
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
-  // const [specialties, setSpecialties] = useState([]);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [responseData, setResponseData] = React.useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -23,76 +22,61 @@ const NewCertificate = () => {
   const session = JSON.parse(localStorage.getItem("bc-session"));
   let history = useHistory();
 
-  // const getSpecialties = () => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
-  //     .then(({ data }) => setSpecialties(data))
-  //     .catch((error) =>
-  //       setMsg({
-  //         alert: true,
-  //         type: "error",
-  //         text: error.details || error.detail,
-  //       })
-  //     );
-  // };
-
-  // useEffect(() => {
-  //   getSpecialties();
-  // }, []);
-
-  const postCerfiticate = (values) => {
-    // student certificate
-    if (type === "single") {
-      axios
-        .post(
-          `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${student.cohort.id}/student/${student.user.id}`,
-          values
-        )
-        .then((data) => {
-          if (data.status >= 200 && data.status < 300) {
-            setMsg({
-              alert: true,
-              type: "success",
-              text: "Certificate added successfully",
-            });
-          }
+  const generateSingleStudentCertificate = (payload) => {
+    const { cohort, user } = student;
+    axios
+      .post(
+        `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}/student/${user.id}`,
+        payload
+      )
+      .then((data) => {
+        if (data !== undefined && data.status >= 200 && data.status < 300) {
+          setMsg({
+            alert: true,
+            type: "success",
+            text: "Certificate added successfully",
+          });
           setTimeout(function () {
             history.push("/certificates");
           }, 1000);
-        })
-        .catch(
-          (error) =>
-            console.log("error", error) ||
-            setMsg({
-              alert: true,
-              type: "error",
-              text: error.detail || "Unknown error, check cerficate fields",
-            })
-        );
-    }
-    if (type === "all") {
-      //all certificates
-      setIsLoading(true);
-      axios
-        .post(
-          `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}`,
-          values
-        )
-        .then((data) => {
-          if (data !== undefined && data.status >= 200 && data.status < 300) {
-            setResponseData(data);
-            setIsLoading(false);
-            setOpenDialog(true);
-          }
-        })
-        .catch((error) => {
-          setMsg({
-            alert: true,
-            type: "error",
-            text: error.message,
-          });
+        }
+      })
+      .catch((error) => {
+        setMsg({
+          alert: true,
+          type: "error",
+          text: error.message,
         });
-    }
+      });
+  };
+
+  const generateAllCohortCertificates = (payload) => {
+    setIsLoading(true);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}`,
+        payload
+      )
+      .then((data) => {
+        if (data !== undefined && data.status >= 200 && data.status < 300) {
+          setResponseData(data);
+          setIsLoading(false);
+          setOpenDialog(true);
+        }
+      })
+      .catch((error) => {
+        setMsg({
+          alert: true,
+          type: "error",
+          text: error.message,
+        });
+      });
+  };
+
+  const generateCerfiticate = (payload) => {
+    slug === "single"
+      ? generateSingleStudentCertificate(payload)
+      : generateAllCohortCertificates(payload);
   };
 
   return (
@@ -109,7 +93,7 @@ const NewCertificate = () => {
           routeSegments={[
             { name: "Certificates", path: "/certificates" },
             {
-              name: type === "single" ? "New Certificate" : "All Certificates",
+              name: slug === "single" ? "New Certificate" : "All Certificates",
             },
           ]}
         />
@@ -118,7 +102,7 @@ const NewCertificate = () => {
       <Card elevation={3}>
         <div className='flex p-4'>
           <h4 className='m-0'>
-            {type === "single"
+            {slug === "single"
               ? "Create Student Certificate"
               : "Create all cohort certificates"}
           </h4>
@@ -127,7 +111,7 @@ const NewCertificate = () => {
 
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => postCerfiticate(values)}
+          onSubmit={(values) => generateCerfiticate(values)}
           enableReinitialize={true}
         >
           {({
@@ -143,7 +127,7 @@ const NewCertificate = () => {
           }) => (
             <form className='p-4' onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems='center'>
-                {type === "all" && (
+                {slug === "all" && (
                   <>
                     <Grid item md={2} sm={4} xs={12}>
                       <div className='flex mb-6'>Cohort</div>
@@ -166,7 +150,7 @@ const NewCertificate = () => {
                     </Grid>
                   </>
                 )}
-                {type === "single" ? (
+                {slug === "single" ? (
                   <>
                     <Grid item md={2} sm={4} xs={12}>
                       Student
