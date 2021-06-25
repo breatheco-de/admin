@@ -8,6 +8,8 @@ import { Breadcrumb } from 'matx';
 import axios from '../../../axios';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import ResponseDialog from './ResponseDialog';
+import bc from 'app/services/breathecode';
+import { getSession } from '../../redux/actions/SessionActions'
 
 const NewCertificate = () => {
   const { certificateSlug } = useParams();
@@ -17,44 +19,24 @@ const NewCertificate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cohort, setCohort] = useState([]);
   const [student, setStudent] = useState([]);
-  const session = JSON.parse(localStorage.getItem('bc-session'));
+  const session = getSession()
   const history = useHistory();
-
-  const generateSingleStudentCertificate = (payload) => {
+  
+  const handleSingleStudentCertificate = (payload) => {
     const { cohort, user } = student;
-    axios
-      .post(
-        `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}/student/${user.id}`,
-        payload
-      )
+    bc.certificates().generateSingleStudentCertificate(cohort.id, user.id, payload)
       .then((data) => {
         if (data !== undefined && data.status >= 200 && data.status < 300) {
-          setMsg({
-            alert: true,
-            type: "success",
-            text: "Certificate added successfully",
-          });
           setTimeout(function () {
             history.push("/certificates");
           }, 1000);
         }
       })
-      .catch((error) => {
-        setMsg({
-          alert: true,
-          type: "error",
-          text: error.message,
-        });
-      });
-  };
+    };
 
-  const generateAllCohortCertificates = (payload) => {
+  const handleAllCohortCertificates = (payload) => {
     setIsLoading(true);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_HOST}/v1/certificate/cohort/${cohort.id}`,
-        payload
-      )
+    bc.certificates().generateAllCohortCertificates(cohort.id, payload)
       .then((data) => {
         if (data !== undefined && data.status >= 200 && data.status < 300) {
           setResponseData(data);
@@ -62,17 +44,10 @@ const NewCertificate = () => {
           setOpenDialog(true);
         }
       })
-      .catch((error) => {
-        setMsg({
-          alert: true,
-          type: "error",
-          text: error.message,
-        });
-      });
-  };
+    };
 
   const generateCerfiticate = (payload) => {
-    certificateSlug === "single" ? generateSingleStudentCertificate(payload) : generateAllCohortCertificates(payload);
+    certificateSlug === "single" ? handleSingleStudentCertificate(payload) : handleAllCohortCertificates(payload);
   };
 
   return (

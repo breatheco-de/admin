@@ -284,6 +284,12 @@ class BreatheCodeClient {
     },
     addBulkCertificates: (payload) => {
         return axios._post("Re-attemps certificates", `${this.host}/certificate/`, payload)
+    },
+    generateSingleStudentCertificate: (cohortID, userID, payload) => {
+      return axios._post("Student Certificate", `${this.host}/certificate/cohort/${cohortID}/student/${userID}`, payload)
+    },
+    generateAllCohortCertificates: (cohortID, payload) => {
+      return axios._post("All Cohort Certificates", `${this.host}/certificate/cohort/${cohortID}`, payload)
     }
 })
   
