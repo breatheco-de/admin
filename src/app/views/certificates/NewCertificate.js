@@ -7,7 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import {
   Grid, Card, Divider, Button,
 } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
+import { Breadcrumb } from '../../../matx';
 import axios from '../../../axios';
 
 import { AsyncAutocomplete } from '../../components/Autocomplete';
