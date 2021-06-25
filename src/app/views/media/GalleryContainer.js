@@ -44,8 +44,6 @@ const ShopContainer = ({
   return (
     <Fragment>
       <div className="relative h-full w-full">
-        {!upload ? <Button size="medium" variant="contained" color="primary" className='mt-2' onClick={() => setUpload(true)}>Upload</Button> :
-        <StyledDropzone uploadFiles={uploadFiles} hideZone={() => setUpload(false)}/>}
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
             <Button
@@ -58,9 +56,12 @@ const ShopContainer = ({
             </Button>
           </Hidden>
           <div className="flex items-center justify-end flex-grow">
+          {!upload ? <Button size="medium" variant="contained" color="primary" className='mt-2 mr-3 float-right' onClick={() => setUpload(true)}>Upload</Button> :
+        <StyledDropzone uploadFiles={uploadFiles} hideZone={() => setUpload(false)}/>}
             <TextField
               select
               name="orderBy"
+              className="mt-1"
               onChange={handleSortChange}
               value={orderBy}
               InputProps={{

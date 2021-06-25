@@ -202,6 +202,7 @@ const Gallery = () => {
           ></SideNav> : <BulkEdit 
           categoryList={categoryList} 
           onClick={onSubmitBulkEdit}
+          total={selected.length}
           clear={()=> dispatch(clearSelectedMedia())}
           />}
         </MatxSidenav>

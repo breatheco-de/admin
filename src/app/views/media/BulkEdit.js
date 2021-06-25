@@ -9,7 +9,7 @@ import {
   } from "@material-ui/core";
   import DeleteIcon from "@material-ui/icons/Delete";
   import ClearIcon from '@material-ui/icons/Clear';
-export const BulkEdit = ({categoryList, onClick, clear}) => {
+export const BulkEdit = ({categoryList, onClick, clear, total}) => {
     const [categories, setCategories] = useState([]);
     const handleCategoryChange = (event) => {
       let target = event.target;
@@ -24,6 +24,7 @@ export const BulkEdit = ({categoryList, onClick, clear}) => {
     return (
       <div className="px-4"> 
         <Card elevation={3} className="p-4 mb-4">
+          <h5 className="m-0 mb-4">Apply to {total} images</h5>
           <div className="d-flex">
           <Tooltip title={"Delete Selected Media"}>
             <IconButton>
@@ -38,7 +39,7 @@ export const BulkEdit = ({categoryList, onClick, clear}) => {
           </div>
         </Card>
         <Card elevation={3} className="relative p-4 mb-4">
-          <h5 className="m-0 mb-4">Category</h5>
+          <h5 className="m-0 mb-4">Apply categories to {total} images</h5>
           {categoryList.map((category) => (
             <div
               key={category.slug}

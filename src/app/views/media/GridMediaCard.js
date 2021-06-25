@@ -70,9 +70,11 @@ const GridMediaCard = ({ media, onOpenDialog, onSelected, isSelected }) => {
       }}
     >
       <div className="flex justify-center items-center relative" >
-        <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
+        {!selected ? <span className="product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer" onClick={onOpenDialog}>
           <Icon>mode_edit</Icon>
-        </span>
+        </span> : <span className="product-price font-medium bg-white text-green py-1 px-3 m-0">
+          <Icon>done</Icon>
+        </span>}
         <img className={clsx("w-full", classes.img)} src={media.mime.includes('pdf') ? type.pdf : media.mime.includes('video') ? type.pdf : media.thumbnail} alt={media.slug} />
         <div className={clsx(`image-box-overlay flex justify-center items-center ${selected ? "selected":""}`)}></div>
       </div>

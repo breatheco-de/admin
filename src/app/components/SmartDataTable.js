@@ -108,8 +108,8 @@ export const SmartMUIDataTable = (props) => {
   };
 
   // TODO: Pass a prop that identifies the view to build this url dinamically
-  let singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-  let allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}`;
+  let singlePageTableCsv = `/v1/auth/academy/${props.view}limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
+  let allPagesTableCsv = `/v1/auth/academy/${props.view}like=${queryLike}`;
 
   return (
     <MUIDataTable
@@ -136,7 +136,6 @@ export const SmartMUIDataTable = (props) => {
             />
           );
         },
-
         onColumnSortChange: (changedColumn, direction) => {
           if (direction == "asc") {
             handlePageChange(
@@ -265,4 +264,5 @@ SmartMUIDataTable.propTypes = {
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,
+  view: PropTypes.string
 };
