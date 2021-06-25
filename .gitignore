@@ -33,3 +33,5 @@ yarn-error.log*
 !.gitpod.yml
 !.gitpod.Dockerfile
 .vercel
+
+!.eslintrc.json

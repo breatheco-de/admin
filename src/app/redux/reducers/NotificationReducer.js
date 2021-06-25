@@ -2,12 +2,12 @@ import {
   GET_NOTIFICATION,
   CREATE_NOTIFICATION,
   DELETE_ALL_NOTIFICATION,
-  DELETE_NOTIFICATION
-} from "../actions/NotificationActions";
+  DELETE_NOTIFICATION,
+} from '../actions/NotificationActions';
 
 const initialState = [];
 
-const NotificationReducer = function(state = initialState, action) {
+const NotificationReducer = function (state = initialState, action) {
   switch (action.type) {
     case GET_NOTIFICATION: {
       return [...action.payload];

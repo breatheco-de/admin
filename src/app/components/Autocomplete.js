@@ -1,15 +1,15 @@
 // *https://www.registers.service.gov.uk/registers/country/use-the-api*
-import React from "react";
-import { TextField, CircularProgress } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import useDebounce from "../hooks/useDebounce";
-import PropTypes from "prop-types";
+import React from 'react';
+import { TextField, CircularProgress } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import PropTypes from 'prop-types';
+import useDebounce from '../hooks/useDebounce';
 
 export function AsyncAutocomplete(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = React.useState('');
   const [cache, setCache] = React.useState({});
   // Searching status (whether there is pending API request)
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
@@ -31,12 +31,11 @@ export function AsyncAutocomplete(props) {
       setOptions(cache[searchTerm]);
       setLoading(false);
       console.log(cache);
-    } else
+    } else {
       asyncSearch(searchTerm)
         .then(({ data }) => {
           setLoading(false);
-          if (!Array.isArray(data))
-            throw Error("incoming search data must be an array");
+          if (!Array.isArray(data)) throw Error('incoming search data must be an array');
           setOptions(data);
           setCache({
             ...cache,
@@ -45,6 +44,7 @@ export function AsyncAutocomplete(props) {
           console.log(options);
         })
         .catch((error) => console.log(error));
+    }
   };
 
   React.useEffect(() => {
@@ -67,7 +67,7 @@ export function AsyncAutocomplete(props) {
     <>
       <Autocomplete
         {...rest}
-        style={{ width: width }}
+        style={{ width }}
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
@@ -83,9 +83,9 @@ export function AsyncAutocomplete(props) {
             {...params}
             label={label}
             fullWidth
-            onKeyPress={e => {
-              if(e.key=="Enter"){
-                e.preventDefault()
+            onKeyPress={(e) => {
+              if (e.key == 'Enter') {
+                e.preventDefault();
                 return false;
               }
             }}
@@ -93,16 +93,16 @@ export function AsyncAutocomplete(props) {
               setSearchTerm(e.target.value);
             }}
             required={required}
-            variant='outlined'
+            variant="outlined"
             InputProps={{
               ...params.InputProps,
               endAdornment: (
-                <React.Fragment>
+                <>
                   {loading ? (
-                    <CircularProgress color='inherit' size={20} />
+                    <CircularProgress color="inherit" size={20} />
                   ) : null}
                   {params.InputProps.endAdornment}
-                </React.Fragment>
+                </>
               ),
             }}
           />

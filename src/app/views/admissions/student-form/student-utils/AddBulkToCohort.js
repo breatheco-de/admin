@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import { withStyles } from "@material-ui/core/styles";
-import { AsyncAutocomplete } from "../../../../components/Autocomplete";
-import bc from "../../../../services/breathecode";
-
+import React, { useState, useEffect, useMemo } from 'react';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import { withStyles } from '@material-ui/core/styles';
 import {
   DialogTitle,
   Dialog,
@@ -11,15 +8,17 @@ import {
   Tooltip,
   DialogActions,
   IconButton,
-} from "@material-ui/core";
+} from '@material-ui/core';
+import { AsyncAutocomplete } from '../../../../components/Autocomplete';
+import bc from '../../../../services/breathecode';
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
   iconContainer: {
-    marginRight: "24px",
+    marginRight: '24px',
   },
   inverseIcon: {
-    transform: "rotate(90deg)",
+    transform: 'rotate(90deg)',
   },
 };
 
@@ -29,25 +28,21 @@ const AddBulkToCohort = (props) => {
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
 
-  const selected = useMemo(() => {
-    return props.selectedRows.data.map((item) => item.index);
-  }, [props.selectedRows]);
-
- 
+  const selected = useMemo(() => props.selectedRows.data.map((item) => item.index), [props.selectedRows]);
 
   useEffect(() => {
     setBulk(
       selected.map((item) => {
-            const { user } = props.items[item];
-            const userExists = !(user === null || user === undefined);
-            return {
-              user: userExists ? props.items[item].user.id : null,
-              id: props.items[item].id,
-              role: "STUDENT",
-              finantial_status: null,
-              educational_status: null,
-            };
-      })
+        const { user } = props.items[item];
+        const userExists = !(user === null || user === undefined);
+        return {
+          user: userExists ? props.items[item].user.id : null,
+          id: props.items[item].id,
+          role: 'STUDENT',
+          finantial_status: null,
+          educational_status: null,
+        };
+      }),
     );
   }, [selected]);
   const addBulkToCohort = (e) => {
@@ -60,7 +55,7 @@ const AddBulkToCohort = (props) => {
   };
   return (
     <>
-      <Tooltip title={"Add bulk to cohort"}>
+      <Tooltip title="Add bulk to cohort">
         <IconButton
           className={classes.iconButton}
           onClick={() => setOpenDialog(true)}
@@ -74,43 +69,39 @@ const AddBulkToCohort = (props) => {
         onClose={() => {
           setOpenDialog(false);
         }}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
         <form>
-          <DialogTitle id='alert-dialog-title'>
-              Add in bulk students to a cohort
-              <div className='mt-4'>
-                <AsyncAutocomplete
-                  onChange={(cohort) => setCohort(cohort)}
-                  width={"100%"}
-                  size='medium'
-                  label='Cohort'
-                  required={true}
-                  getOptionLabel={(option) =>
-                    `${option.name}, (${option.slug})`
-                  }
-                  asyncSearch={() => bc.admissions().getAllCohorts()}
-                />
-              </div>
-            
+          <DialogTitle id="alert-dialog-title">
+            Add in bulk students to a cohort
+            <div className="mt-4">
+              <AsyncAutocomplete
+                onChange={(cohort) => setCohort(cohort)}
+                width="100%"
+                size="medium"
+                label="Cohort"
+                required
+                getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                asyncSearch={() => bc.admissions().getAllCohorts()}
+              />
+            </div>
+
           </DialogTitle>
           <DialogActions>
             <Button
               onClick={() => {
                 setOpenDialog(false);
               }}
-              color='primary'
+              color="primary"
             >
               Cancel
             </Button>
             <Button
-              color='primary'
-              type='submit'
+              color="primary"
+              type="submit"
               autoFocus
-              onClick={(e) =>
-                addBulkToCohort(e)
-              }
+              onClick={(e) => addBulkToCohort(e)}
             >
               Save
             </Button>
@@ -123,5 +114,5 @@ const AddBulkToCohort = (props) => {
 };
 
 export default withStyles(defaultToolbarSelectStyles, {
-  name: "AddBulkToCohort",
+  name: 'AddBulkToCohort',
 })(AddBulkToCohort);
