@@ -3,6 +3,7 @@ import { Grid, Card, TextField, Button } from "@material-ui/core";
 import DoughnutChart from "../charts/echarts/Doughnut";
 import ModifiedAreaChart from "./shared/ModifiedAreaChart";
 import StatCards from "./shared/StatCards";
+import { getSession } from "../../redux/actions/SessionActions"
 import { useTheme } from "@material-ui/styles";
 import BC from "../../services/breathecode";
 import dayjs from "dayjs";
@@ -48,8 +49,9 @@ const Analytics = () => {
     const [renderNewDates, setRenderNewDates] = useState(false);
 
     useEffect(() => {
-        const { academy } = JSON.parse(localStorage.getItem("bc-session"));
-        if(academy === undefined || academy.id === undefined) return null;
+        const session = getSession();
+        const academy = session.academy;
+        if(!academy) return null;
         
         BC.marketing().getLeads({
             start: params.start.format('YYYY-MM-DD'),

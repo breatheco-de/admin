@@ -73,27 +73,30 @@ const Cohort = () => {
   const [stage, setStage] = useState('');
   const classes = useStyles();
 
-  const options = [
-    { label: 'Change cohort stage', value: 'stage' },
-    { label: 'Change cohort current day', value: 'current_day' },
-    { label: 'Cohort Detailed Report', value: 'cohort_deport' },
-    { label: 'Instant NPS Survey', value: 'new_survey' },
-    { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
-  ];
-  const [newSurvey, setNewSurvey] = useState(
-    {
-      cohort: slug,
-      max_assistants: 2,
-      max_teachers: 2,
-      duration: '1 00:00:00',
-      send_now: true,
-    },
-  );
-  const [openSurveyDialog, setSurveyDialog] = useState(false);
+    const options = [
+        { label: "Change cohort stage", value: "stage" },
+        { label: "Change cohort current day", value: "current_day" },
+        { label: "Cohort Detailed Report", value: "cohort_deport" },
+        { label: "Review Assingments", value: "assignments" },
+        { label: "Review Attendance", value: "attendance" },
+        { label: "Instant NPS Survey", value: "new_survey" },
+        { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
+    ];
+    const [newSurvey, setNewSurvey] = useState(
+        {
+            cohort: slug,
+            max_assistants: 2,
+            max_teachers: 2,
+            duration: "1 00:00:00",
+            send_now: true
+        }
+    );
+    const [openSurveyDialog, setSurveyDialog] = useState(false);
 
-  const handleClickOpen = () => {
-    setSurveyDialog(true);
-  };
+    const handleClickOpen = () => {
+        setSurveyDialog(true);
+    };
+
 
   const handleClose = () => {
     setCohortDayDialog(false);

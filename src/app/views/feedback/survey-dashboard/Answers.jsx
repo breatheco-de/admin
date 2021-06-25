@@ -33,16 +33,16 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const TopSellingTable = () => {
+const Answers = () => {
   const classes = useStyles();
 
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
-        <span className="card-title">top selling products</span>
+        <span className="card-title">12 Answers have been collected:</span>
         <Select size="small" defaultValue="this_month" disableUnderline>
-          <MenuItem value="this_month">This Month</MenuItem>
-          <MenuItem value="last_month">Last Month</MenuItem>
+          <MenuItem value="this_month">Responses only</MenuItem>
+          <MenuItem value="last_month">Include unanswered</MenuItem>
         </Select>
       </div>
       <div className="overflow-auto">
@@ -56,9 +56,6 @@ const TopSellingTable = () => {
               </TableCell>
               <TableCell className="px-0" colSpan={2}>
                 Score
-              </TableCell>
-              <TableCell className="px-0" colSpan={2}>
-                Stock Status
               </TableCell>
               <TableCell className="px-0" colSpan={1}>
                 Action
@@ -80,27 +77,9 @@ const TopSellingTable = () => {
                     ? (product.price / 1000).toFixed(1) + "k"
                     : product.price}
                 </TableCell>
-
-                <TableCell className="px-0" align="left" colSpan={2}>
-                  {product.available ? (
-                    product.available < 20 ? (
-                      <small className="border-radius-4 bg-secondary text-white px-2 py-2px">
-                        {product.available} available
-                      </small>
-                    ) : (
-                      <small className="border-radius-4 bg-primary text-white px-2 py-2px">
-                        in stock
-                      </small>
-                    )
-                  ) : (
-                    <small className="border-radius-4 bg-error text-white px-2 py-2px">
-                      out of stock
-                    </small>
-                  )}
-                </TableCell>
                 <TableCell className="px-0" colSpan={1}>
                   <IconButton>
-                    <Icon color="primary">edit</Icon>
+                    <Icon color="primary">arrow_right_alt</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -145,4 +124,4 @@ const productList = [
   },
 ];
 
-export default TopSellingTable;
+export default Answers;

@@ -169,7 +169,6 @@ export function classList(classes) {
 }
 
 export function resolveResponse(res) {
-  console.log(axios.scopes[res.config.url], 'este es el scope');
   const methods = {
     put: 'updated',
     post: 'created',
