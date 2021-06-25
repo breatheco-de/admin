@@ -49,7 +49,8 @@ const Analytics = () => {
     const [renderNewDates, setRenderNewDates] = useState(false);
 
     useEffect(() => {
-        const { academy } = getSession();
+        const session = getSession();
+        const academy = session.academy;
         if(!academy) return null;
         
         BC.marketing().getLeads({

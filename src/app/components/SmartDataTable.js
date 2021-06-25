@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { useQuery } from "../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-import { withStyles } from "@material-ui/core/styles";
-import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField } from "@material-ui/core";
+import { withStyles } from '@material-ui/core/styles';
+import MUIDataTable from 'mui-datatables';
+import {
+  Grow, Icon, IconButton, TextField,
+} from '@material-ui/core';
+import { useQuery } from '../hooks/useQuery';
 
-import { DownloadCsv } from "./DownloadCsv";
-import BulkDelete from "./ToolBar/BulkDelete";
+import { DownloadCsv } from './DownloadCsv';
+import BulkDelete from './ToolBar/BulkDelete';
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
   iconContainer: {
-    marginRight: "24px",
+    marginRight: '24px',
   },
   inverseIcon: {
-    transform: "rotate(90deg)",
+    transform: 'rotate(90deg)',
   },
 };
 
-const DefaultToobar = ({ children, ...props }) => {
-  return (
-    <div className={props.classes.iconContainer}>
-      <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
-      {children}
-    </div>
-  );
-};
+const DefaultToobar = ({ children, ...props }) => (
+  <div className={props.classes.iconContainer}>
+    <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
+    {children}
+  </div>
+);
 
 const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
-  name: "SmartMUIDataTable",
+  name: 'SmartMUIDataTable',
 })(DefaultToobar);
 
 export const SmartMUIDataTable = (props) => {
@@ -43,10 +43,10 @@ export const SmartMUIDataTable = (props) => {
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [queryLike, setQueryLike] = useState(query.get("like") || "");
-  const [querySort, setQuerySort] = useState(query.get("sort") || " ");
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
+  const [queryLike, setQueryLike] = useState(query.get('like') || '');
+  const [querySort, setQuerySort] = useState(query.get('sort') || ' ');
   const [querys, setQuerys] = useState({
     limit: queryLimit,
     offset: queryOffset,
@@ -83,7 +83,7 @@ export const SmartMUIDataTable = (props) => {
     setQueryOffset(rowsPerPage * page);
     setQueryLike(_like);
     setQuerySort(_sort);
-    let query = {
+    const query = {
       limit: rowsPerPage,
       offset: page * rowsPerPage,
       like: _like,
@@ -95,11 +95,11 @@ export const SmartMUIDataTable = (props) => {
       .then((data) => {
         setIsLoading(false);
         setItems(data.results);
-        setTable({ count: data.count, page: page });
+        setTable({ count: data.count, page });
         history.replace(
           `${history.location.pathname}?${Object.keys(query)
-            .map((key) => key + "=" + query[key])
-            .join("&")}`
+            .map((key) => `${key}=${query[key]}`)
+            .join('&')}`,
         );
       })
       .catch((error) => {
@@ -108,8 +108,8 @@ export const SmartMUIDataTable = (props) => {
   };
 
   // TODO: Pass a prop that identifies the view to build this url dinamically
-  let singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-  let allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}`;
+  const singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
+  const allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}`;
 
   return (
     <MUIDataTable
@@ -118,8 +118,8 @@ export const SmartMUIDataTable = (props) => {
       columns={props.columns}
       options={{
         download: false,
-        filterType: "textField",
-        responsive: "standard",
+        filterType: 'textField',
+        responsive: 'standard',
         serverSide: true,
         elevation: 0,
         count: table.count,
@@ -128,30 +128,28 @@ export const SmartMUIDataTable = (props) => {
         rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
-        customToolbar: () => {
-          return (
-            <DownloadCsv
-              singlePageTableCsv={singlePageTableCsv}
-              allPagesTableCsv={allPagesTableCsv}
-            />
-          );
-        },
+        customToolbar: () => (
+          <DownloadCsv
+            singlePageTableCsv={singlePageTableCsv}
+            allPagesTableCsv={allPagesTableCsv}
+          />
+        ),
 
         onColumnSortChange: (changedColumn, direction) => {
-          if (direction == "asc") {
+          if (direction == 'asc') {
             handlePageChange(
               querys.offset,
               querys.limit,
               querys.like,
-              changedColumn
+              changedColumn,
             );
           }
-          if (direction == "desc") {
+          if (direction == 'desc') {
             handlePageChange(
               querys.offset,
               querys.limit,
               querys.like,
-              `-${changedColumn}`
+              `-${changedColumn}`,
             );
           }
         },
@@ -160,9 +158,9 @@ export const SmartMUIDataTable = (props) => {
           changedColumn,
           filterList,
           type,
-          changedColumnIndex
+          changedColumnIndex,
         ) => {
-          let q = {
+          const q = {
             ...querys,
             [changedColumn]: filterList[changedColumnIndex][0],
           };
@@ -170,19 +168,20 @@ export const SmartMUIDataTable = (props) => {
           history.replace(
             `${props.historyReplace}?${Object.keys(q)
               .map((key) => `${key}=${q[key]}`)
-              .join("&")}`
+              .join('&')}`,
           );
         },
 
         customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
           let children = null;
-          if (props.options?.customToolbarSelect)
+          if (props.options?.customToolbarSelect) {
             children = props.options.customToolbarSelect(
               selectedRows,
               displayData,
               setSelectedRows,
-              loadData
+              loadData,
             );
+          }
           return (
             <StyledDefaultToobar
               selectedRows={selectedRows}
@@ -190,6 +189,7 @@ export const SmartMUIDataTable = (props) => {
               setSelectedRows={setSelectedRows}
               items={props.items}
               onBulkDelete={loadData}
+              deleting={props.deleting}
             >
               {children}
             </StyledDefaultToobar>
@@ -198,61 +198,59 @@ export const SmartMUIDataTable = (props) => {
 
         onTableChange: (action, tableState) => {
           switch (action) {
-            case "changePage":
+            case 'changePage':
               handlePageChange(
                 tableState.page,
                 tableState.rowsPerPage,
                 querys.like,
-                querys.sort
+                querys.sort,
               );
               break;
-            case "changeRowsPerPage":
+            case 'changeRowsPerPage':
               handlePageChange(
                 tableState.page,
                 tableState.rowsPerPage,
                 querys.like,
-                querys.sort
+                querys.sort,
               );
               break;
           }
         },
 
-        customSearchRender: (searchText, handleSearch, hideSearch, options) => {
-          return (
-            <Grow appear in={true} timeout={300}>
-              <TextField
-                variant='outlined'
-                size='small'
-                fullWidth
-                onKeyPress={(e) => {
-                  if (e.key == "Enter") {
-                    handlePageChange(
-                      querys.offset,
-                      querys.limit,
-                      e.target.value,
-                      querys.sort
-                    );
-                  }
-                }}
-                InputProps={{
-                  style: {
-                    paddingRight: 0,
-                  },
-                  startAdornment: (
-                    <Icon className='mr-2' fontSize='small'>
-                      search
-                    </Icon>
-                  ),
-                  endAdornment: (
-                    <IconButton onClick={hideSearch}>
-                      <Icon fontSize='small'>clear</Icon>
-                    </IconButton>
-                  ),
-                }}
-              />
-            </Grow>
-          );
-        },
+        customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+          <Grow appear in timeout={300}>
+            <TextField
+              variant="outlined"
+              size="small"
+              fullWidth
+              onKeyPress={(e) => {
+                if (e.key == 'Enter') {
+                  handlePageChange(
+                    querys.offset,
+                    querys.limit,
+                    e.target.value,
+                    querys.sort,
+                  );
+                }
+              }}
+              InputProps={{
+                style: {
+                  paddingRight: 0,
+                },
+                startAdornment: (
+                  <Icon className="mr-2" fontSize="small">
+                    search
+                  </Icon>
+                ),
+                endAdornment: (
+                  <IconButton onClick={hideSearch}>
+                    <Icon fontSize="small">clear</Icon>
+                  </IconButton>
+                ),
+              }}
+            />
+          </Grow>
+        ),
       }}
     />
   );

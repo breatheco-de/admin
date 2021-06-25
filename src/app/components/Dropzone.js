@@ -1,7 +1,7 @@
-import {  Button } from '@material-ui/core';
-import React, {useMemo,} from 'react';
-import {useDropzone} from 'react-dropzone';
-import { useDispatch } from "react-redux";
+import { Button } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useDispatch } from 'react-redux';
 
 const baseStyle = {
   flex: 1,
@@ -16,19 +16,19 @@ const baseStyle = {
   backgroundColor: '#fafafa',
   color: '#bdbdbd',
   outline: 'none',
-  transition: 'border .24s ease-in-out'
+  transition: 'border .24s ease-in-out',
 };
 
 const activeStyle = {
-  borderColor: '#2196f3'
+  borderColor: '#2196f3',
 };
 
 const acceptStyle = {
-  borderColor: '#00e676'
+  borderColor: '#00e676',
 };
 
 const rejectStyle = {
-  borderColor: '#ff1744'
+  borderColor: '#ff1744',
 };
 
 export function StyledDropzone(props) {
@@ -39,41 +39,51 @@ export function StyledDropzone(props) {
     isDragActive,
     isDragAccept,
     isDragReject,
-    acceptedFiles
+    acceptedFiles,
   } = useDropzone();
 
-  const acceptedFileItems =  acceptedFiles.map(file => {
-    return (
-    <div key={file.path} className='card m-1 p-1'>
-      {file.path} - {file.size} bytes
+  const acceptedFileItems = acceptedFiles.map((file) => (
+    <div key={file.path} className="card m-1 p-1">
+      {file.path}
+      {' '}
+      -
+      {file.size}
+      {' '}
+      bytes
     </div>
-  )});
+  ));
 
   const style = useMemo(() => ({
     ...baseStyle,
     ...(isDragActive ? activeStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
+    ...(isDragReject ? rejectStyle : {}),
   }), [
     isDragActive,
     isDragReject,
-    isDragAccept
+    isDragAccept,
   ]);
 
   return (
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
-        <div className="flex">
-            {acceptedFileItems}
-        </div>
-        {acceptedFiles.length > 0 ? <Button variant="contained" color="primary" onClick={e =>{
+    <div {...getRootProps({ style })}>
+      <input {...getInputProps()} />
+      <p>Drag 'n' drop some files here, or click to select files</p>
+      <div className="flex">
+        {acceptedFileItems}
+      </div>
+      {acceptedFiles.length > 0 ? (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={(e) => {
             e.stopPropagation();
             dispatch(props.uploadFiles(acceptedFiles));
             props.hideZone();
-            }}>
-            Save
-        </Button> : ""}
-      </div>
+          }}
+        >
+          Save
+        </Button>
+      ) : ''}
+    </div>
   );
 }

@@ -106,7 +106,7 @@ const DoughnutChart = ({ height, color = [], option }) => {
         series: defaultOption.series.map((s, i) => ({ ...s, ...option.series[i] })),
         color: [...color],
     }
-    console.log("newOptions", newOptions);
+
     return (
         <ReactEcharts
             style={{ height: height }}

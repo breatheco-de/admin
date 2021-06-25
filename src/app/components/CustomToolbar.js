@@ -1,16 +1,16 @@
-import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 
-import BulkDelete from "../components/ToolBar/BulkDelete";
-import AddBulkToCohort from "../components/AddBulkToCohort";
+import BulkDelete from './ToolBar/BulkDelete';
+import AddBulkToCohort from './AddBulkToCohort';
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
   iconContainer: {
-    marginRight: "24px",
+    marginRight: '24px',
   },
   inverseIcon: {
-    transform: "rotate(90deg)",
+    transform: 'rotate(90deg)',
   },
 };
 
@@ -26,12 +26,13 @@ const CustomToolbarSelect = (props) => {
         items={props.items}
         key={props.key}
         history={props.history}
-        // reRender={handleLoadingData}
+        deleting={props.deleting}
+        onBulkDelete={props.onBulkDelete}
       />
     </div>
   );
 };
 
 export default withStyles(defaultToolbarSelectStyles, {
-  name: "CustomToolbarSelect",
+  name: 'CustomToolbarSelect',
 })(CustomToolbarSelect);

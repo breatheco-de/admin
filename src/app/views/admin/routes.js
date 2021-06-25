@@ -1,25 +1,25 @@
-import React from "react";
+import React from 'react';
 
 const routes = [
-    {
-        path: "/admin/staff/new",
-        exact: true,
-        component: React.lazy(() => import("./staff-form/NewStaff")),
-    },
-    {
-        path: "/admin/staff/:staff_id",
-        exact: true,
-        component: React.lazy(() => import("./staff-form")),
-    },
-    {
-        path: "/admin/staff",
-        component: React.lazy(() => import("./staff")),
-    },
-    {
-        path: "/admin/invites",
-        exact: true,
-        component: React.lazy(() => import("./invites")),
-    }
+  {
+    path: '/admin/staff/new',
+    exact: true,
+    component: React.lazy(() => import('./staff-form/NewStaff')),
+  },
+  {
+    path: '/admin/staff/:staff_id',
+    exact: true,
+    component: React.lazy(() => import('./staff-form')),
+  },
+  {
+    path: '/admin/staff',
+    component: React.lazy(() => import('./staff')),
+  },
+  {
+    path: '/admin/invites',
+    exact: true,
+    component: React.lazy(() => import('./invites')),
+  },
 ];
 
 export default routes;

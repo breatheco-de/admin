@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Formik } from "formik";
+import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik';
 import {
   Grid,
   Card,
   Divider,
   TextField,
   Button,
-  Checkbox
-} from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+  Checkbox,
+  FormControlLabel,
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles } from "@material-ui/core/styles";
-import { Breadcrumb } from "matx";
-import bc from "app/services/breathecode";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
-import { FormControlLabel } from "@material-ui/core";
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { makeStyles } from '@material-ui/core/styles';
+import { Breadcrumb } from 'matx';
+import bc from 'app/services/breathecode';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   neverEnd: {
-      color: palette.text.secondary,
+    color: palette.text.secondary,
   },
 }));
 
@@ -31,51 +31,52 @@ const NewCohort = () => {
   const startDate = new Date();
   const [cert, setCert] = useState(null);
   const [version, setVersion] = useState(null);
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [newCohort, setNewCohort] = useState({
-    name: "",
-    slug: "",
+    name: '',
+    slug: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
-  })
-  const { academy } = JSON.parse(localStorage.getItem("bc-session"));
+  });
+  const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
     setNeverEnd(!neverEnd);
     setNewCohort({
-      ...newCohort, 
-          ending_date: null,
-          never_ends: true
-    })
+      ...newCohort,
+      ending_date: null,
+      never_ends: true,
+    });
   };
-  
+
   const createCohort = (event) => {
     setNewCohort({
-      ...newCohort, [event.target.name]: event.target.value
-    })
-  }
+      ...newCohort, [event.target.name]: event.target.value,
+    });
+  };
 
   const postCohort = (values) => {
-     bc.admissions().addCohort({...values, syllabus: `${cert.slug}.v${version.version}`})
-      .then((data) =>{
-        if(data.status == 201){
-          history.push("/admissions/cohorts")
-        }})
-      .catch(error => console.log(error))
+    bc.admissions().addCohort({ ...values, syllabus: `${cert.slug}.v${version.version}` })
+      .then((data) => {
+        if (data.status == 201) {
+          history.push('/admissions/cohorts');
+        }
+      })
+      .catch((error) => console.log(error));
   };
-  
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-      <Breadcrumb
+        <Breadcrumb
           routeSegments={[
-            { name: "Admin", path: "/admin" },
-            { name: "Cohort", path: "/admissions/cohorts" },
-            { name: "New Cohort" },
+            { name: 'Admin', path: '/admin' },
+            { name: 'Cohort', path: '/admissions/cohorts' },
+            { name: 'New Cohort' },
           ]}
         />
       </div>
@@ -89,7 +90,7 @@ const NewCohort = () => {
         <Formik
           initialValues={newCohort}
           onSubmit={(newCohort) => postCohort(newCohort)}
-          enableReinitialize={true}
+          enableReinitialize
         >
           {({
             values,
@@ -135,93 +136,97 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
-                  <AsyncAutocomplete
-                    onChange={(certificate) => setCert(certificate)}
-                    width={"30%"}
-                    className="mr-2 ml-2"
-                    asyncSearch={() => bc.admissions().getCertificates()}
-                    size={"small"}
-                    label="Certificate"
-                    required={true}
-                    getOptionLabel={option => `${option.name}`}
-                    value={cert} />
-                      {cert !== null ? <AsyncAutocomplete
-                      debounced={false}
-                      onChange={(v) => setVersion(v)}
-                      width={"20%"}
-                      key={cert.slug}
-                      asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug, academy.id)}
-                      size={"small"}
-                      label="Version"
-                      required={true}
-                      getOptionLabel={option => `${option.version}`}
-                      value={version} /> : ""}
+                    <AsyncAutocomplete
+                      onChange={(certificate) => setCert(certificate)}
+                      width="30%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getCertificates()}
+                      size="small"
+                      label="Certificate"
+                      required
+                      getOptionLabel={(option) => `${option.name}`}
+                      value={cert}
+                    />
+                    {cert !== null ? (
+                      <AsyncAutocomplete
+                        debounced={false}
+                        onChange={(v) => setVersion(v)}
+                        width="20%"
+                        key={cert.slug}
+                        asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug, academy.id)}
+                        size="small"
+                        label="Version"
+                        required
+                        getOptionLabel={(option) => `${option.version}`}
+                        value={version}
+                      />
+                    ) : ''}
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                    Start date
+                  Start date
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                            className="m-2"
-                            margin="none"
-                            label="Date"
-                            inputVariant="outlined"
-                            type="text"
-                            size="small"
-                            autoOk={true}
-                            value={newCohort.kickoff_date}
-                            format="MMMM dd, yyyy"
-                            onChange={(date) => setNewCohort({
-                              ...newCohort, kickoff_date: date
-                            })}
-                        />
-                    </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item md={2} sm={4} xs={12} className={neverEnd ? "" : classes.neverEnd}>
-                    End date
-                </Grid>
-                <Grid item md={3} sm={4} xs={12}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <KeyboardDatePicker
-                          name="ending_date"
-                          className="m-2"
-                          margin="none"
-                          label="End date"
-                          inputVariant="outlined"
-                          type="text"
-                          size="small"
-                          value={newCohort.ending_date}
-                          format="MMMM dd, yyyy"
-                          onChange={(date) => setNewCohort({
-                            ...newCohort, 
-                                ending_date: date,
-                                never_ends: false,
-                          })}
-                          disabled={neverEnd ? false : true}
-                          required
-                        />
-                    </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item md={3} sm={4} xs={12}>
-                    <FormControlLabel 
-                      control ={
-                        <Checkbox
-                          checked={checked}
-                          onChange={handleNeverEnd}
-                          name="ending_date"
-                          color="primary"
-                        />
-                      }
-                      label="This cohort never ends."
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      className="m-2"
+                      margin="none"
+                      label="Date"
+                      inputVariant="outlined"
+                      type="text"
+                      size="small"
+                      autoOk
+                      value={newCohort.kickoff_date}
+                      format="MMMM dd, yyyy"
+                      onChange={(date) => setNewCohort({
+                        ...newCohort, kickoff_date: date,
+                      })}
                     />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
+                  End date
+                </Grid>
+                <Grid item md={3} sm={4} xs={12}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      name="ending_date"
+                      className="m-2"
+                      margin="none"
+                      label="End date"
+                      inputVariant="outlined"
+                      type="text"
+                      size="small"
+                      value={newCohort.ending_date}
+                      format="MMMM dd, yyyy"
+                      onChange={(date) => setNewCohort({
+                        ...newCohort,
+                        ending_date: date,
+                        never_ends: false,
+                      })}
+                      disabled={!neverEnd}
+                      required
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item md={3} sm={4} xs={12}>
+                  <FormControlLabel
+                    control={(
+                      <Checkbox
+                        checked={checked}
+                        onChange={handleNeverEnd}
+                        name="ending_date"
+                        color="primary"
+                      />
+                      )}
+                    label="This cohort never ends."
+                  />
                 </Grid>
               </Grid>
               <div className="mt-6">
-                  <Button color="primary" variant="contained" type="submit">
-                    Create
-                  </Button>
+                <Button color="primary" variant="contained" type="submit">
+                  Create
+                </Button>
               </div>
             </form>
           )}

@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
 const ListRoute = [
   {
-    path: "/matx-list",
+    path: '/matx-list',
     exact: true,
-    component: React.lazy(() => import("./AppList"))
+    component: React.lazy(() => import('./AppList')),
   },
   {
-    path: "/infinite-scroll",
+    path: '/infinite-scroll',
     exact: true,
-    component: React.lazy(() => import("./InfiniteList"))
-  }
+    component: React.lazy(() => import('./InfiniteList')),
+  },
 ];
 
 export default ListRoute;

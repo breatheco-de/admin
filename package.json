@@ -63,13 +63,24 @@
     "victory": "^32.3.3",
     "yup": "^0.29.3"
   },
+  "lint-staged": {
+    "*.js": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && pretty-quick --staged"
+    }
+  },
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "docs": "python -m http.server 9000 --directory ./docs",
-    "ghp": "react-scripts build && gh-pages -d build"
+    "ghp": "react-scripts build && gh-pages -d build",
+    "lint": "eslint ./src",
+    "lint-fix": "eslint ./src --fix",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -86,8 +97,17 @@
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^5.2.0",
     "customize-cra": "^0.9.1",
-    "eslint-plugin-react-hooks": "0.0.0-8d7535e54",
+    "eslint": "^7.29.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "gh-pages": "^2.1.1",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1",
+    "pretty-quick": "^3.1.1",
     "react-app-rewired": "^2.1.6"
   }
 }

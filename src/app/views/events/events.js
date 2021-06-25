@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
-import A from "@material-ui/core/Link";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-import { MatxLoading } from "matx";
-import bc from "app/services/breathecode";
-import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
+import React, { useState, useEffect } from 'react';
+import { Breadcrumb, MatxLoading } from 'matx';
+import MUIDataTable from 'mui-datatables';
+import {
+  Grow, Icon, IconButton, TextField, Button,
+} from '@material-ui/core';
+import A from '@material-ui/core/Link';
+import { Link, useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-var relativeTime = require("dayjs/plugin/relativeTime");
+import bc from 'app/services/breathecode';
+
+import { useQuery } from '../../hooks/useQuery';
+import { DownloadCsv } from '../../components/DownloadCsv';
+
+const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const stageColors = {
-  DRAFT: "bg-gray",
-  STARTED: "text-white bg-warning",
-  ENDED: "text-white bg-green",
-  DELETED: "light-gray",
+  DRAFT: 'bg-gray',
+  STARTED: 'text-white bg-warning',
+  ENDED: 'text-white bg-green',
+  DELETED: 'light-gray',
 };
 
 const EventList = () => {
@@ -31,15 +34,15 @@ const EventList = () => {
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
 
   useEffect(() => {
     setIsLoading(true);
     bc.events()
       .getAcademyEvents({
-        limit: query.get("limit") !== null ? query.get("limit") : 10,
-        offset: query.get("offset") !== null ? query.get("offset") : 0,
+        limit: query.get('limit') !== null ? query.get('limit') : 10,
+        offset: query.get('offset') !== null ? query.get('offset') : 0,
       })
       .then(({ data }) => {
         console.log(data);
@@ -56,7 +59,7 @@ const EventList = () => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
-    console.log("page: ", rowsPerPage);
+    console.log('page: ', rowsPerPage);
     bc.events()
       .getAcademyEvents({
         limit: rowsPerPage,
@@ -65,9 +68,9 @@ const EventList = () => {
       .then(({ data }) => {
         setIsLoading(false);
         setItems(data.results);
-        setTable({ count: data.count, page: page });
+        setTable({ count: data.count, page });
         history.replace(
-          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`
+          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
         );
       })
       .catch((error) => {
@@ -77,25 +80,25 @@ const EventList = () => {
 
   const columns = [
     {
-      name: "id", // field name in the row object
-      label: "ID", // column title that will be shown in table
+      name: 'id', // field name in the row object
+      label: 'ID', // column title that will be shown in table
       options: {
         filter: true,
       },
     },
     {
-      name: "status", // field name in the row object
-      label: "Status", // column title that will be shown in table
+      name: 'status', // field name in the row object
+      label: 'Status', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = items[dataIndex];
+          const item = items[dataIndex];
           return (
-            <div className='flex items-center'>
-              <div className='ml-3'>
+            <div className="flex items-center">
+              <div className="ml-3">
                 <small
                   className={
-                    "border-radius-4 px-2 pt-2px " + stageColors[item?.status]
+                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
                   }
                 >
                   {item?.status}
@@ -108,21 +111,21 @@ const EventList = () => {
       },
     },
     {
-      name: "title", // field name in the row object
-      label: "Title", // column title that will be shown in table
+      name: 'title', // field name in the row object
+      label: 'Title', // column title that will be shown in table
     },
     {
-      name: "url",
-      label: "Landing URL",
+      name: 'url',
+      label: 'Landing URL',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
+          <div className="flex items-center">
+            <div className="ml-3">
               <A
-                className='px-2 pt-2px border-radius-4 text-white bg-green'
+                className="px-2 pt-2px border-radius-4 text-white bg-green"
                 href={items[i].url}
-                rel='noopener'
+                rel="noopener"
               >
                 URL
               </A>
@@ -132,17 +135,17 @@ const EventList = () => {
       },
     },
     {
-      name: "starting_at",
-      label: "Starting Date",
+      name: 'starting_at',
+      label: 'Starting Date',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(items[i].starting_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(items[i].starting_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(items[i].starting_at).fromNow()}
               </small>
             </div>
@@ -151,17 +154,17 @@ const EventList = () => {
       },
     },
     {
-      name: "ending_at",
-      label: "Ending Date",
+      name: 'ending_at',
+      label: 'Ending Date',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(items[i].ending_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(items[i].ending_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(items[i].ending_at).fromNow()}
               </small>
             </div>
@@ -170,14 +173,14 @@ const EventList = () => {
       },
     },
     {
-      name: "action",
-      label: " ",
+      name: 'action',
+      label: ' ',
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => (
-          <div className='flex items-center'>
-            <div className='flex-grow'></div>
-            <Link to={"/events/EditEvent/" + items[dataIndex].id}>
+          <div className="flex items-center">
+            <div className="flex-grow" />
+            <Link to={`/events/EditEvent/${items[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -189,42 +192,42 @@ const EventList = () => {
   ];
 
   return (
-    <div className='m-sm-30'>
-      <div className='mb-sm-30'>
-        <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Event", path: "/" },
-                { name: "Event List" },
+                { name: 'Event', path: '/' },
+                { name: 'Event List' },
               ]}
             />
           </div>
 
-          <div className=''>
+          <div className="">
             <Link
-              to='/events/NewEvent'
-              color='primary'
-              className='btn btn-primary'
+              to="/events/NewEvent"
+              color="primary"
+              className="btn btn-primary"
             >
-              <Button variant='contained' color='primary'>
+              <Button variant="contained" color="primary">
                 Add new event
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className='overflow-auto'>
-        <div className='min-w-750'>
+      <div className="overflow-auto">
+        <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"All Events"}
+            title="All Events"
             data={items}
             columns={columns}
             options={{
               customToolbar: () => {
-                let singlePageTableCsv = `/v1/events/academy/event?limit=${queryLimit}&offset=${queryOffset}&like=${""}`;
-                let allPagesTableCsv = `/v1/events/academy/event?like=${""}`;
+                const singlePageTableCsv = `/v1/events/academy/event?limit=${queryLimit}&offset=${queryOffset}&like=${''}`;
+                const allPagesTableCsv = `/v1/events/academy/event?like=${''}`;
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -233,22 +236,22 @@ const EventList = () => {
                 );
               },
               download: false,
-              filterType: "textField",
-              responsive: "standard",
+              filterType: 'textField',
+              responsive: 'standard',
               serverSide: true,
               elevation: 0,
               count: table.count,
               page: table.page,
-              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
+              rowsPerPage: parseInt(query.get('limit'), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 console.log(action, tableState);
                 switch (action) {
-                  case "changePage":
+                  case 'changePage':
                     console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
-                  case "changeRowsPerPage":
+                  case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                 }
@@ -257,34 +260,32 @@ const EventList = () => {
                 searchText,
                 handleSearch,
                 hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+                options,
+              ) => (
+                <Grow appear in timeout={300}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onChange={({ target: { value } }) => handleSearch(value)}
+                    InputProps={{
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Grow>
+              ),
             }}
           />
         </div>

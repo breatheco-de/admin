@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 
 const pagesRoutes = [
   {
-    path: "/leads/list",
+    path: '/leads/list',
     exact: true,
-    component: React.lazy(() => import("./leads")),
+    component: React.lazy(() => import('./leads')),
   },
   {
-    path: "/leads/list/new",
-    exact: true, 
-    component: React.lazy(() => import("./leads-form/NewLead")),
+    path: '/leads/list/new',
+    exact: true,
+    component: React.lazy(() => import('./leads-form/NewLead')),
   },
 ];
 
