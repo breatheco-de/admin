@@ -10,7 +10,7 @@ import { AsyncAutocomplete } from '../../components/Autocomplete';
 import ResponseDialog from './ResponseDialog';
 
 const NewCertificate = () => {
-  const { slug } = useParams();
+  const { certificateSlug } = useParams();
   const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
   const [openDialog, setOpenDialog] = React.useState(false);
   const [responseData, setResponseData] = React.useState({});
@@ -72,9 +72,7 @@ const NewCertificate = () => {
   };
 
   const generateCerfiticate = (payload) => {
-    slug === "single"
-      ? generateSingleStudentCertificate(payload)
-      : generateAllCohortCertificates(payload);
+    certificateSlug === "single" ? generateSingleStudentCertificate(payload) : generateAllCohortCertificates(payload);
   };
 
   return (
@@ -91,7 +89,7 @@ const NewCertificate = () => {
           routeSegments={[
             { name: 'Certificates', path: '/certificates' },
             {
-              name: slug === "single" ? "New Certificate" : "All Certificates",
+              name: certificateSlug === "single" ? "New Certificate" : "All Certificates",
             },
           ]}
         />
@@ -100,7 +98,7 @@ const NewCertificate = () => {
       <Card elevation={3}>
         <div className='flex p-4'>
           <h4 className='m-0'>
-            {slug === "single"
+            {certificateSlug === "single"
               ? "Create Student Certificate"
               : "Create all cohort certificates"}
           </h4>
@@ -125,7 +123,7 @@ const NewCertificate = () => {
           }) => (
             <form className='p-4' onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems='center'>
-                {slug === "all" && (
+                {certificateSlug === "all" && (
                   <>
                     <Grid item md={2} sm={4} xs={12}>
                       <div className="flex mb-6">Cohort</div>
@@ -144,7 +142,7 @@ const NewCertificate = () => {
                     </Grid>
                   </>
                 )}
-                {slug === "single" ? (
+                {certificateSlug === "single" ? (
                   <>
                     <Grid item md={2} sm={4} xs={12}>
                       Student

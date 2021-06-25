@@ -18,7 +18,7 @@ const statusColors = {
 };
 
 const Certificates = () => {
-  const [isLoading] = useState(false);
+  const isLoading = false;
   const [items, setItems] = useState([]);
 
   const columns = [
