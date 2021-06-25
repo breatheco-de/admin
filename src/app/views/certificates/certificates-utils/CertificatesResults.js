@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 });
 
 function createData(name, calories, fat) {
-  return { name, calories, fat};
+  return { name, calories, fat };
 }
 
 const rows = [
@@ -24,7 +24,7 @@ const rows = [
   createData('Eclair', 262, 16.0),
 ];
 
-export default function CertificatesResult({certificates}) {
+export default function CertificatesResult({ certificates }) {
   const classes = useStyles();
 
   return (
@@ -33,8 +33,8 @@ export default function CertificatesResult({certificates}) {
         <TableHead>
           <TableRow>
             <TableCell>Student</TableCell>
-            <TableCell >Status</TableCell>
-            <TableCell >Message</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Message</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -43,8 +43,8 @@ export default function CertificatesResult({certificates}) {
               <TableCell component="th" scope="row">
                 {`${row.user.first_name} ${row.user.last_name}`}
               </TableCell>
-              <TableCell >{row.status}</TableCell>
-              <TableCell >{row.status_text}</TableCell>
+              <TableCell>{row.status}</TableCell>
+              <TableCell>{row.status_text}</TableCell>
             </TableRow>
           ))}
         </TableBody>

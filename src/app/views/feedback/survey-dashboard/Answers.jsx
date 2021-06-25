@@ -39,7 +39,7 @@ const Answers = () => {
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
-        <span className="card-title">Survey answers</span>
+        <span className="card-title">12 Answers have been collected:</span>
         <Select size="small" defaultValue="this_month" disableUnderline>
           <MenuItem value="this_month">Responses only</MenuItem>
           <MenuItem value="last_month">Include unanswered</MenuItem>

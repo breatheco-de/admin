@@ -6,16 +6,16 @@ import clsx from "clsx";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   mediaCard: {
-    "& .product-price": {
-      position: "absolute",
+    '& .product-price': {
+      position: 'absolute',
       right: 0,
       top: 24,
       borderTopLeftRadius: 26,
       borderBottomLeftRadius: 26,
       zIndex: 4,
     },
-    "& .image-box-overlay": {
-      position: "absolute",
+    '& .image-box-overlay': {
+      position: 'absolute',
       top: 0,
       bottom: 0,
       left: 0,
@@ -23,10 +23,10 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       background: "rgba(25, 118, 210, 0.54)",
       zIndex: 2,
       opacity: 0,
-      transition: "all 250ms ease-in-out",
+      transition: 'all 250ms ease-in-out',
     },
-    "&:hover": {
-      "& .image-box-overlay": {
+    '&:hover': {
+      '& .image-box-overlay': {
         opacity: 1,
       },
     },

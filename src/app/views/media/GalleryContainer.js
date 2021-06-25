@@ -1,4 +1,4 @@
-import React, { Fragment,useState } from "react";
+import React, { Fragment, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -30,7 +30,7 @@ const ShopContainer = ({
   handleChangePage,
   setRowsPerPage,
   onOpenDialog,
-  pagination
+  pagination,
 }) => {
   const [upload, setUpload] = useState(false);
   const { selected = [] } = useSelector((state) => state.ecommerce);
@@ -42,7 +42,7 @@ const ShopContainer = ({
     else dispatch(selectMedia(selected.concat(value)))
   }
   return (
-    <Fragment>
+    <>
       <div className="relative h-full w-full">
         <div className="flex items-center justify-between mb-4">
           <Hidden mdUp>
@@ -72,13 +72,13 @@ const ShopContainer = ({
               <MenuItem value="created_at">Recents First</MenuItem>
               <MenuItem value="-created_at">Oldests First</MenuItem>
             </TextField>
-            <IconButton onClick={() => toggleView("grid")}>
-              <Icon color={view === "grid" ? "primary" : "inherit"}>
+            <IconButton onClick={() => toggleView('grid')}>
+              <Icon color={view === 'grid' ? 'primary' : 'inherit'}>
                 view_comfy
               </Icon>
             </IconButton>
-            <IconButton onClick={() => toggleView("list")}>
-              <Icon color={view === "list" ? "primary" : "inherit"}>list</Icon>
+            <IconButton onClick={() => toggleView('list')}>
+              <Icon color={view === 'list' ? 'primary' : 'inherit'}>list</Icon>
             </IconButton>
           </div>
         </div>
@@ -105,7 +105,7 @@ const ShopContainer = ({
         onChangePage={handleChangePage}
         onChangeRowsPerPage={setRowsPerPage}
       />
-    </Fragment>
+    </>
   );
 };
 

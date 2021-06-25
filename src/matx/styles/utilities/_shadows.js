@@ -1,13 +1,13 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
 export const shadowStyles = makeStyles(({ palette, ...theme }) => ({
-  "@global": {
+  '@global': {
     ...generateShadows(theme),
   },
 }));
 
 const generateShadows = (theme) => {
-  let classList = {};
+  const classList = {};
 
   theme.shadows.forEach((shadow, ind) => {
     classList[`.elevation-z${ind}`] = {
