@@ -1,18 +1,18 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Slider from "@material-ui/core/Slider";
-import Input from "@material-ui/core/Input";
-import VolumeUp from "@material-ui/icons/VolumeUp";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+import Input from '@material-ui/core/Input';
+import VolumeUp from '@material-ui/icons/VolumeUp';
 
 const useStyles = makeStyles({
   root: {
-    width: 250
+    width: 250,
   },
   input: {
-    width: 42
-  }
+    width: 42,
+  },
 });
 
 export default function InputSlider() {
@@ -23,8 +23,8 @@ export default function InputSlider() {
     setValue(newValue);
   };
 
-  const handleInputChange = event => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
+  const handleInputChange = (event) => {
+    setValue(event.target.value === '' ? '' : Number(event.target.value));
   };
 
   const handleBlur = () => {
@@ -46,7 +46,7 @@ export default function InputSlider() {
         </Grid>
         <Grid item xs>
           <Slider
-            value={typeof value === "number" ? value : 0}
+            value={typeof value === 'number' ? value : 0}
             onChange={handleSliderChange}
             aria-labelledby="input-slider"
           />
@@ -62,8 +62,8 @@ export default function InputSlider() {
               step: 10,
               min: 0,
               max: 100,
-              type: "number",
-              "aria-labelledby": "input-slider"
+              type: 'number',
+              'aria-labelledby': 'input-slider',
             }}
           />
         </Grid>

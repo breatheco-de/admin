@@ -1,28 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles"
-import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+/* eslint-disable react/destructuring-assignment */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
-const styles = theme => ({
+const styles = (theme) => ({
   close: {
-    padding: theme.spacing(0.5)
-  }
+    padding: theme.spacing(0.5),
+  },
 });
 
 class ConsecutiveSnackbars extends React.Component {
   queue = [];
 
+  // eslint-disable-next-line react/state-in-constructor
   state = {
-    open: false
+    open: false,
   };
 
-  handleClick = message => () => {
+  handleClick = (message) => () => {
     this.queue.push({
       message,
-      key: new Date().getTime()
+      key: new Date().getTime(),
     });
 
     if (this.state.open) {
@@ -38,13 +40,13 @@ class ConsecutiveSnackbars extends React.Component {
     if (this.queue.length > 0) {
       this.setState({
         messageInfo: this.queue.shift(),
-        open: true
+        open: true,
       });
     }
   };
 
   handleClose = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
     this.setState({ open: false });
@@ -60,20 +62,20 @@ class ConsecutiveSnackbars extends React.Component {
 
     return (
       <div>
-        <Button onClick={this.handleClick("Message A")}>Show message A</Button>
-        <Button onClick={this.handleClick("Message B")}>Show message B</Button>
+        <Button onClick={this.handleClick('Message A')}>Show message A</Button>
+        <Button onClick={this.handleClick('Message B')}>Show message B</Button>
         <Snackbar
           key={messageInfo.key}
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left"
+            vertical: 'bottom',
+            horizontal: 'left',
           }}
           open={this.state.open}
           autoHideDuration={6000}
           onClose={this.handleClose}
           onExited={this.handleExited}
           ContentProps={{
-            "aria-describedby": "message-id"
+            'aria-describedby': 'message-id',
           }}
           message={<span id="message-id">{messageInfo.message}</span>}
           action={[
@@ -93,7 +95,7 @@ class ConsecutiveSnackbars extends React.Component {
               onClick={this.handleClose}
             >
               <CloseIcon />
-            </IconButton>
+            </IconButton>,
           ]}
         />
       </div>
@@ -102,7 +104,8 @@ class ConsecutiveSnackbars extends React.Component {
 }
 
 ConsecutiveSnackbars.propTypes = {
-  classes: PropTypes.object.isRequired
+  // eslint-disable-next-line react/forbid-prop-types
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ConsecutiveSnackbars);

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import RootReducer from './reducers/RootReducer';
@@ -14,8 +15,10 @@ if (
   devtools = window.__REDUX_DEVTOOLS_EXTENSION__();
 }
 
-export const Store = createStore(
+const Store = createStore(
   RootReducer,
   initialState,
   compose(applyMiddleware(...middlewares), devtools),
 );
+
+export default Store;

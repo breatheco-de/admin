@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/no-array-index-key */
+import React from 'react';
 import {
   IconButton,
   Table,
@@ -8,71 +9,71 @@ import {
   TableCell,
   Icon,
   TablePagination,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 const subscribarList = [
   {
-    name: "john doe",
-    date: "18 january, 2019",
+    name: 'john doe',
+    date: '18 january, 2019',
     amount: 1000,
-    status: "close",
-    company: "ABC Fintech LTD.",
+    status: 'close',
+    company: 'ABC Fintech LTD.',
   },
   {
-    name: "kessy bryan",
-    date: "10 january, 2019",
+    name: 'kessy bryan',
+    date: '10 january, 2019',
     amount: 9000,
-    status: "open",
-    company: "My Fintech LTD.",
+    status: 'open',
+    company: 'My Fintech LTD.',
   },
   {
-    name: "kessy bryan",
-    date: "10 january, 2019",
+    name: 'kessy bryan',
+    date: '10 january, 2019',
     amount: 9000,
-    status: "open",
-    company: "My Fintech LTD.",
+    status: 'open',
+    company: 'My Fintech LTD.',
   },
   {
-    name: "james cassegne",
-    date: "8 january, 2019",
+    name: 'james cassegne',
+    date: '8 january, 2019',
     amount: 5000,
-    status: "close",
-    company: "Collboy Tech LTD.",
+    status: 'close',
+    company: 'Collboy Tech LTD.',
   },
   {
-    name: "lucy brown",
-    date: "1 january, 2019",
+    name: 'lucy brown',
+    date: '1 january, 2019',
     amount: 89000,
-    status: "open",
-    company: "ABC Fintech LTD.",
+    status: 'open',
+    company: 'ABC Fintech LTD.',
   },
   {
-    name: "lucy brown",
-    date: "1 january, 2019",
+    name: 'lucy brown',
+    date: '1 january, 2019',
     amount: 89000,
-    status: "open",
-    company: "ABC Fintech LTD.",
+    status: 'open',
+    company: 'ABC Fintech LTD.',
   },
   {
-    name: "lucy brown",
-    date: "1 january, 2019",
+    name: 'lucy brown',
+    date: '1 january, 2019',
     amount: 89000,
-    status: "open",
-    company: "ABC Fintech LTD.",
+    status: 'open',
+    company: 'ABC Fintech LTD.',
   },
   {
-    name: "lucy brown",
-    date: "1 january, 2019",
+    name: 'lucy brown',
+    date: '1 january, 2019',
     amount: 89000,
-    status: "open",
-    company: "ABC Fintech LTD.",
+    status: 'open',
+    company: 'ABC Fintech LTD.',
   },
   {
-    name: "lucy brown",
-    date: "1 january, 2019",
+    name: 'lucy brown',
+    date: '1 january, 2019',
     amount: 89000,
-    status: "open",
-    company: "ABC Fintech LTD.",
+    status: 'open',
+    company: 'ABC Fintech LTD.',
   },
 ];
 
@@ -120,7 +121,8 @@ const PaginationTable = () => {
                   {subscriber.status}
                 </TableCell>
                 <TableCell className="px-0 capitalize">
-                  ${subscriber.amount}
+                  $
+                  {subscriber.amount}
                 </TableCell>
                 <TableCell className="px-0">
                   <IconButton>
@@ -140,10 +142,10 @@ const PaginationTable = () => {
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
-          "aria-label": "Previous Page",
+          'aria-label': 'Previous Page',
         }}
         nextIconButtonProps={{
-          "aria-label": "Next Page",
+          'aria-label': 'Next Page',
         }}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}

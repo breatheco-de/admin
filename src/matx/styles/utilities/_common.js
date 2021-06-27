@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export const commonStyles = makeStyles(({ palette, ...theme }) => ({
+const commonStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.circular-image-small': {
       height: '48px',
@@ -60,3 +60,5 @@ export const commonStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
 }));
+
+export default commonStyles;

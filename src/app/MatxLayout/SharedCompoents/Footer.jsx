@@ -1,21 +1,22 @@
-import React from "react";
-import { ThemeProvider, makeStyles, useTheme } from "@material-ui/core/styles";
-import { Button, Toolbar, AppBar } from "@material-ui/core";
-import { useSelector } from "react-redux";
-import clsx from "clsx";
+import React from 'react';
+import { ThemeProvider, makeStyles, useTheme } from '@material-ui/core/styles';
+import { Toolbar, AppBar } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import clsx from 'clsx';
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   footer: {
-    minHeight: "var(--topbar-height)",
-    "@media (max-width: 499px)": {
-      display: "table",
-      width: "100%",
-      minHeight: "auto",
-      padding: "1rem 0",
-      "& .container": {
-        flexDirection: "column !important",
-        "& a": {
-          margin: "0 0 16px !important",
+    minHeight: 'var(--topbar-height)',
+    '@media (max-width: 499px)': {
+      display: 'table',
+      width: '100%',
+      minHeight: 'auto',
+      padding: '1rem 0',
+      '& .container': {
+        flexDirection: 'column !important',
+        '& a': {
+          margin: '0 0 16px !important',
         },
       },
     },
@@ -35,11 +36,13 @@ const Footer = () => {
   return (
     <ThemeProvider theme={footerTheme}>
       <AppBar color="primary" position="static" className={classes.appbar}>
-        <Toolbar className={clsx("flex items-center", classes.footer)}>
+        <Toolbar className={clsx('flex items-center', classes.footer)}>
           <div className="flex items-center container w-full">
-            <span className="m-auto"></span>
+            <span className="m-auto" />
             <p className="m-0">
-               <a href="http://breatheco.de">BreatheCode</a>, all rights reserved.
+              <a href="http://breatheco.de">BreatheCode</a>
+              , all rights
+              reserved.
             </p>
           </div>
         </Toolbar>

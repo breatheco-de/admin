@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+import React from 'react';
 import {
   Icon,
   Slider,
@@ -6,7 +7,7 @@ import {
   IconButton,
   InputAdornment,
   Hidden,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 const ListTopbar = ({
   viewMode,
@@ -15,7 +16,7 @@ const ListTopbar = ({
   handleInputChange,
   handleViewChange,
 }) => {
-  let marks = [{ value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }];
+  const marks = [{ value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }];
 
   return (
     <div className="flex flex-wrap items-center justify-between">
@@ -29,12 +30,12 @@ const ListTopbar = ({
               </InputAdornment>
             ),
           }}
-        ></TextField>
+        />
       </div>
 
       <div className="flex items-center">
         <Hidden xsDown>
-          {viewMode === "grid" && (
+          {viewMode === 'grid' && (
             <Slider
               className="w-120 mr-4"
               value={sliderValue}
@@ -46,15 +47,15 @@ const ListTopbar = ({
             />
           )}
           <IconButton
-            color={viewMode === "grid" ? "primary" : "default"}
-            onClick={() => handleViewChange("grid")}
+            color={viewMode === 'grid' ? 'primary' : 'default'}
+            onClick={() => handleViewChange('grid')}
           >
             <Icon>view_comfy</Icon>
           </IconButton>
 
           <IconButton
-            color={viewMode === "list" ? "primary" : "default"}
-            onClick={() => handleViewChange("list")}
+            color={viewMode === 'list' ? 'primary' : 'default'}
+            onClick={() => handleViewChange('list')}
           >
             <Icon>list</Icon>
           </IconButton>

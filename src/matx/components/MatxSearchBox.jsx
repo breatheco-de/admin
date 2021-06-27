@@ -1,29 +1,30 @@
-import React, { useState } from "react";
-import { Icon, IconButton } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import React, { useState } from 'react';
+import { Icon, IconButton } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   root: {
     backgroundColor: palette.primary.dark,
     color: palette.primary.contrastText,
-    "&::placeholder": {
+    '&::placeholder': {
       color: palette.primary.contrastText,
     },
   },
   searchBoxHolder: {
-    position: "absolute",
-    width: "100%",
+    position: 'absolute',
+    width: '100%',
     top: 0,
     left: 0,
     zIndex: 9,
-    height: "var(--topbar-height)",
+    height: 'var(--topbar-height)',
   },
   searchBox: {
-    outline: "none",
-    border: "none",
-    fontSize: "1rem",
-    height: "calc(100% - 5px)",
+    outline: 'none',
+    border: 'none',
+    fontSize: '1rem',
+    height: 'calc(100% - 5px)',
   },
 }));
 
@@ -37,7 +38,7 @@ const MatxSearchBox = () => {
   };
 
   return (
-    <React.Fragment>
+    <>
       {!open && (
         <IconButton onClick={toggle}>
           <Icon>search</Icon>
@@ -47,27 +48,27 @@ const MatxSearchBox = () => {
       {open && (
         <div
           className={clsx(
-            "flex items-center",
+            'flex items-center',
             classes.root,
-            classes.searchBoxHolder
+            classes.searchBoxHolder,
           )}
         >
           <input
             className={clsx(
-              "px-4 search-box w-full",
+              'px-4 search-box w-full',
               classes.root,
-              classes.searchBox
+              classes.searchBox,
             )}
             type="text"
             placeholder="Search here..."
-            autoFocus
+            // autoFocus
           />
           <IconButton onClick={toggle} className="align-middle mx-4">
             <Icon>close</Icon>
           </IconButton>
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

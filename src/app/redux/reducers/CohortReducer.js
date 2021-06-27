@@ -1,10 +1,10 @@
-import { AccordionActions } from '@material-ui/core';
+// import { AccordionActions } from '@material-ui/core';
 import {
-  COHORT_GET_USERS,
-  COHORT_REMOVE_USER,
+  // COHORT_GET_USERS,
+  // COHORT_REMOVE_USER,
   COHORT_ADD_USER,
-  COHORT_UPDATE_USER_INFO,
-  GET_COHORT,
+  // COHORT_UPDATE_USER_INFO,
+  // GET_COHORT,
 } from '../actions/CohortActions';
 
 const initialState = {};
@@ -17,7 +17,8 @@ const CohortReducer = (state = initialState, actions) => {
         status: { ...actions.payload },
       };
     }
-    default: return { ...state };
+    default:
+      return { ...state };
   }
 };
 

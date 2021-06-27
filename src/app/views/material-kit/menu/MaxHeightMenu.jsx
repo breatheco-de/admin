@@ -1,24 +1,24 @@
-import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { Icon } from "@material-ui/core";
+import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { Icon } from '@material-ui/core';
 
 const options = [
-  "None",
-  "Atria",
-  "Callisto",
-  "Dione",
-  "Ganymede",
-  "Hangouts Call",
-  "Luna",
-  "Oberon",
-  "Phobos",
-  "Pyxis",
-  "Sedna",
-  "Titania",
-  "Triton",
-  "Umbriel"
+  'None',
+  'Atria',
+  'Callisto',
+  'Dione',
+  'Ganymede',
+  'Hangouts Call',
+  'Luna',
+  'Oberon',
+  'Phobos',
+  'Pyxis',
+  'Sedna',
+  'Titania',
+  'Triton',
+  'Umbriel',
 ];
 
 const ITEM_HEIGHT = 48;
@@ -39,7 +39,7 @@ function MaxHeightMenu() {
     <div>
       <IconButton
         aria-label="More"
-        aria-owns={open ? "long-menu" : undefined}
+        aria-owns={open ? 'long-menu' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
       >
@@ -53,14 +53,14 @@ function MaxHeightMenu() {
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
-            width: 200
-          }
+            width: 200,
+          },
         }}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <MenuItem
             key={option}
-            selected={option === "Pyxis"}
+            selected={option === 'Pyxis'}
             onClick={handleClose}
           >
             {option}

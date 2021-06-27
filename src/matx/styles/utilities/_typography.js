@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export const typographyStyles = makeStyles(({ palette, ...theme }) => ({
+// eslint-disable-next-line no-unused-vars
+const typographyStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6': {
       margin: '0 0 0.5rem',
@@ -65,3 +66,5 @@ export const typographyStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
 }));
+
+export default typographyStyles;

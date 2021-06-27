@@ -1,19 +1,19 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Checkbox from '@material-ui/core/Checkbox';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: 'flex',
   },
   formControl: {
-    margin: theme.spacing(2)
-  }
+    margin: theme.spacing(2),
+  },
 }));
 
 export default function FormGroupCheckbox() {
@@ -21,15 +21,15 @@ export default function FormGroupCheckbox() {
   const [state, setState] = React.useState({
     gilad: true,
     jason: false,
-    antoine: false
+    antoine: false,
   });
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     setState({ ...state, [name]: event.target.checked });
   };
 
   const { gilad, jason, antoine } = state;
-  const error = [gilad, jason, antoine].filter(v => v).length !== 2;
+  const error = [gilad, jason, antoine].filter((v) => v).length !== 2;
 
   return (
     <div className={classes.root}>
@@ -37,33 +37,33 @@ export default function FormGroupCheckbox() {
         <FormLabel component="legend">Assign responsibility</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={gilad}
-                onChange={handleChange("gilad")}
+                onChange={handleChange('gilad')}
                 value="gilad"
               />
-            }
+            )}
             label="Gilad Gray"
           />
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={jason}
-                onChange={handleChange("jason")}
+                onChange={handleChange('jason')}
                 value="jason"
               />
-            }
+            )}
             label="Jason Killian"
           />
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={antoine}
-                onChange={handleChange("antoine")}
+                onChange={handleChange('antoine')}
                 value="antoine"
               />
-            }
+            )}
             label="Antoine Llorca"
           />
         </FormGroup>
@@ -78,33 +78,33 @@ export default function FormGroupCheckbox() {
         <FormLabel component="legend">Pick two</FormLabel>
         <FormGroup>
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={gilad}
-                onChange={handleChange("gilad")}
+                onChange={handleChange('gilad')}
                 value="gilad"
               />
-            }
+            )}
             label="Gilad Gray"
           />
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={jason}
-                onChange={handleChange("jason")}
+                onChange={handleChange('jason')}
                 value="jason"
               />
-            }
+            )}
             label="Jason Killian"
           />
           <FormControlLabel
-            control={
+            control={(
               <Checkbox
                 checked={antoine}
-                onChange={handleChange("antoine")}
+                onChange={handleChange('antoine')}
                 value="antoine"
               />
-            }
+            )}
             label="Antoine Llorca"
           />
         </FormGroup>

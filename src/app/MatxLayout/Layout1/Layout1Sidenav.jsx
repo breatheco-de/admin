@@ -1,52 +1,52 @@
-import React from "react";
-import { Switch, Hidden } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
+import React from 'react';
+import { Switch, Hidden } from '@material-ui/core';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { merge } from 'lodash';
 import {
   setLayoutSettings,
   setDefaultSettings,
-} from "app/redux/actions/LayoutActions";
-import Sidenav from "../SharedCompoents/Sidenav";
-import Brand from "../SharedCompoents/Brand";
-import { merge } from "lodash";
-import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import { convertHexToRGB } from "utils";
+} from '../../redux/actions/LayoutActions';
+
+import { convertHexToRGB } from '../../../utils';
+import Brand from '../SharedCompoents/Brand';
+import Sidenav from '../SharedCompoents/Sidenav';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   sidenav: ({ width, primaryRGB, bgImgURL }) => ({
-    position: "fixed",
+    position: 'fixed',
     top: 0,
     left: 0,
-    height: "100vh",
-    width: width,
+    height: '100vh',
+    width,
     boxShadow: theme.shadows[8],
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "top",
-    backgroundSize: "cover",
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'top',
+    backgroundSize: 'cover',
     zIndex: 111,
-    overflow: "hidden",
+    overflow: 'hidden',
     color: palette.text.primary,
-    transition: "all 250ms ease-in-out",
+    transition: 'all 250ms ease-in-out',
     backgroundImage: `linear-gradient(to bottom, rgba(${primaryRGB}, 0.96), rgba(${primaryRGB}, 0.96)), url(${bgImgURL})`,
-    "&:hover": {
-      width: "var(--sidenav-width)",
-      "& .sidenavHoverShow": {
-        display: "block",
+    '&:hover': {
+      width: 'var(--sidenav-width)',
+      '& .sidenavHoverShow': {
+        display: 'block',
       },
-      "& .compactNavItem": {
-        width: "100%",
-        maxWidth: "100%",
-        "& .nav-bullet": {
-          display: "block",
+      '& .compactNavItem': {
+        width: '100%',
+        maxWidth: '100%',
+        '& .nav-bullet': {
+          display: 'block',
         },
-        "& .nav-bullet-text": {
-          display: "none",
+        '& .nav-bullet-text': {
+          display: 'none',
         },
       },
     },
   }),
   hideOnCompact: {
-    display: "none",
+    display: 'none',
   },
   userInfo: {},
 }));
@@ -56,15 +56,15 @@ const Layout1Sidenav = () => {
   const dispatch = useDispatch();
 
   const { settings } = useSelector((state) => state.layout);
-  const leftSidebar = settings.layout1Settings.leftSidebar;
+  const { leftSidebar } = settings.layout1Settings;
   const { mode } = leftSidebar;
 
   const getSidenavWidth = () => {
     switch (mode) {
-      case "compact":
-        return "var(--sidenav-compact-width)";
+      case 'compact':
+        return 'var(--sidenav-compact-width)';
       default:
-        return "var(--sidenav-width)";
+        return 'var(--sidenav-width)';
     }
   };
 
@@ -89,7 +89,7 @@ const Layout1Sidenav = () => {
   };
 
   const handleSidenavToggle = () => {
-    updateSidebarMode({ mode: mode === "compact" ? "full" : "compact" });
+    updateSidebarMode({ mode: mode === 'compact' ? 'full' : 'compact' });
   };
 
   return (
@@ -99,7 +99,7 @@ const Layout1Sidenav = () => {
           <Hidden smDown>
             <Switch
               onChange={handleSidenavToggle}
-              checked={leftSidebar.mode !== "full"}
+              checked={leftSidebar.mode !== 'full'}
               color="secondary"
               size="small"
             />

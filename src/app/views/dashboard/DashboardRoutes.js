@@ -1,5 +1,5 @@
 import React from 'react';
-import { authRoles } from '../../auth/authRoles';
+import authRoles from '../../auth/authRoles';
 
 const dashboardRoutes = [
   {

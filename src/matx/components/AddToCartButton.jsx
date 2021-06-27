@@ -1,10 +1,11 @@
-import React from "react";
-import { Button, Icon } from "@material-ui/core";
-import clsx from "clsx";
+/* eslint-disable react/prop-types */
+import React from 'react';
+import { Button, Icon } from '@material-ui/core';
+import clsx from 'clsx';
 
 const AddToCartButton = ({
   className,
-  color,
+  // color,
   amount,
   totalUnit,
   handleAddProduct,
@@ -33,7 +34,7 @@ const AddToCartButton = ({
         </Button>
       )}
       {amount > 0 && (
-        <div className={clsx("flex justify-between w-160", className)}>
+        <div className={clsx('flex justify-between w-160', className)}>
           <Button
             className="p-2 min-w-32"
             variant="contained"

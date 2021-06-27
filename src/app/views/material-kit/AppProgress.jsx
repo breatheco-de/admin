@@ -1,15 +1,15 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { LinearProgress, CircularProgress } from "@material-ui/core";
-import { Breadcrumb, SimpleCard } from "matx";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { LinearProgress, CircularProgress } from '@material-ui/core';
+import { Breadcrumb, SimpleCard } from '../../../matx';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   progress: {
-    margin: theme.spacing(2)
-  }
+    margin: theme.spacing(2),
+  },
 }));
 
 const AppProgress = () => {
@@ -18,7 +18,7 @@ const AppProgress = () => {
 
   React.useEffect(() => {
     function progress() {
-      setCompleted(oldCompleted => {
+      setCompleted((oldCompleted) => {
         if (oldCompleted === 100) {
           return 0;
         }
@@ -38,8 +38,8 @@ const AppProgress = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: "Material", path: "/material" },
-            { name: "Prgress" }
+            { name: 'Material', path: '/material' },
+            { name: 'Prgress' },
           ]}
         />
       </div>
