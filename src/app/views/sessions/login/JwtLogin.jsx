@@ -73,7 +73,7 @@ const JwtLogin = () => {
         classes.cardHolder,
       )}
     >
-      <Card className={classes.card}>
+      <Card data-cy="login_card" className={classes.card}>
         <Grid container>
           <Grid item lg={5} md={5} sm={5} xs={12}>
             <div className="p-8 flex justify-center items-center h-full">
@@ -86,8 +86,12 @@ const JwtLogin = () => {
           </Grid>
           <Grid item lg={7} md={7} sm={7} xs={12}>
             <div className="p-8 h-full bg-light-gray relative">
-              <ValidatorForm onSubmit={handleFormSubmit}>
+              <ValidatorForm
+                data-cy="login_form" 
+                onSubmit={handleFormSubmit}
+              >
                 <TextValidator
+                  data-cy="email"
                   className="mb-6 w-full"
                   variant="outlined"
                   size="small"
@@ -103,6 +107,7 @@ const JwtLogin = () => {
                   ]}
                 />
                 <TextValidator
+                  data-cy="password"
                   className="mb-3 w-full"
                   label="Password"
                   variant="outlined"
