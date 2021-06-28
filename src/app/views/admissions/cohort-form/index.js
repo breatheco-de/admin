@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import {
     Grid,
     Icon,
+    IconButton,
     Select,
     ListItem,
     ListItemText,
@@ -74,6 +75,10 @@ const Cohort = () => {
     const [currentDay, setCurrentDay] = useState(0);
     const [stage, setStage] = useState("");
     const classes = useStyles();
+
+    const [open, setOpen] = useState(false);
+    const handleClickOpenModal = () => {setOpen(true);};
+    const handleCloseModal = () => {setOpen(false);};
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -377,6 +382,7 @@ const Cohort = () => {
                         bc.feedback().addNewSurvey({
                             ...newSurvey, cohort: cohort.id
                         });
+                        handleClickOpenModal(true)
                     }}
                 >
                     {({
@@ -454,6 +460,27 @@ const Cohort = () => {
                             </DialogActions>
                         </form>)}
                 </Formik>
+            </Dialog>
+
+            <Dialog
+                open={open}
+                onClose={handleCloseModal}
+            >
+                <div className="px-sm-24 pt-sm-24">
+                    <div className="flex items-center">
+                        <div className="flex items-center flex-grow">
+                            <p className="m-0 mb-4 text-small text-muted">
+                                Test#1
+                            </p>
+                        </div>
+                        <IconButton size="small" onClick={handleCloseModal}>
+                            <Icon>clear</Icon>
+                        </IconButton>
+                    </div>
+                    <DialogTitle id="simple-dialog-title">
+                        Test#1
+                    </DialogTitle>
+                </div>
             </Dialog>
         </>
     );
