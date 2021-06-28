@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
 import {
   Card,
   Checkbox,
@@ -6,27 +7,27 @@ import {
   Grid,
   Button,
   CircularProgress,
-} from "@material-ui/core";
-import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+} from '@material-ui/core';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
-import { makeStyles } from "@material-ui/core/styles";
-import history from "history.js";
-import clsx from "clsx";
-import useAuth from 'app/hooks/useAuth';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import useAuth from '../../../hooks/useAuth';
+import history from '../../../../history';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
-    background: "#1A2038",
+    background: '#1A2038',
   },
   card: {
     maxWidth: 800,
     borderRadius: 12,
-    margin: "1rem",
+    margin: '1rem',
   },
   buttonProgress: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     marginTop: -12,
     marginLeft: -12,
   },
@@ -34,21 +35,21 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const JwtLogin = () => {
   const [loading, setLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState({email: "", password: ''});
+  const [userInfo, setUserInfo] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const { login, user } = useAuth();
 
   const classes = useStyles();
 
   React.useEffect(() => {
-      if(user){
-          if(!user.role) history.push("/session/choose");
-          else history.push("/");
-      } 
-  },[user])
+    if (user) {
+      if (!user.role) history.push('/session/choose');
+      else history.push('/');
+    }
+  }, [user]);
 
   const handleChange = ({ target: { name, value } }) => {
-    let temp = { ...userInfo };
+    const temp = { ...userInfo };
     temp[name] = value;
     setUserInfo(temp);
   };
@@ -57,8 +58,8 @@ const JwtLogin = () => {
     setLoading(true);
     try {
       await login(userInfo.email, userInfo.password);
-      history.push("/");
-    } catch(e) {
+      history.push('/');
+    } catch (e) {
       console.log(e);
       setMessage(e.message);
       setLoading(false);
@@ -68,8 +69,8 @@ const JwtLogin = () => {
   return (
     <div
       className={clsx(
-        "flex justify-center items-center  min-h-full-screen",
-        classes.cardHolder
+        'flex justify-center items-center  min-h-full-screen',
+        classes.cardHolder,
       )}
     >
       <Card className={classes.card}>
@@ -95,10 +96,10 @@ const JwtLogin = () => {
                   type="email"
                   name="email"
                   value={userInfo.email}
-                  validators={["required", "isEmail"]}
+                  validators={['required', 'isEmail']}
                   errorMessages={[
-                    "this field is required",
-                    "email is not valid",
+                    'this field is required',
+                    'email is not valid',
                   ]}
                 />
                 <TextValidator
@@ -110,24 +111,22 @@ const JwtLogin = () => {
                   name="password"
                   type="password"
                   value={userInfo.password}
-                  validators={["required"]}
-                  errorMessages={["this field is required"]}
+                  validators={['required']}
+                  errorMessages={['this field is required']}
                 />
                 <FormControlLabel
                   className="mb-3 min-w-288"
                   name="agreement"
                   onChange={handleChange}
-                  control={
+                  control={(
                     <Checkbox
                       size="small"
-                      onChange={({ target: { checked } }) =>
-                        handleChange({
-                          target: { name: "agreement", value: checked },
-                        })
-                      }
+                      onChange={({ target: { checked } }) => handleChange({
+                        target: { name: 'agreement', value: checked },
+                      })}
                       checked={userInfo.agreement || true}
                     />
-                  }
+                  )}
                   label="Remeber me"
                 />
 
@@ -151,18 +150,26 @@ const JwtLogin = () => {
                     )}
                   </div>
                   <span className="mr-2 ml-5">or</span>
-                    <Button
-                        onClick={() => window.location.href=`${process.env.REACT_APP_API_HOST}/v1/auth/github?url=${window.location.href}`}
-                        variant="contained"
-                        className={classes.socialButton}
-                    >
-                        <img style={{ height: "20px", marginRight: "5px" }} src="/assets/images/logos/github.svg" alt="" />
-                        With Github
-                    </Button>
+                  <Button
+                    onClick={() => {
+                      window.location.href = `${process.env.REACT_APP_API_HOST}/v1/auth/github?url=${window.location.href}`;
+                    }}
+                    variant="contained"
+                    className={classes.socialButton}
+                  >
+                    <img
+                      style={{ height: '20px', marginRight: '5px' }}
+                      src="/assets/images/logos/github.svg"
+                      alt=""
+                    />
+                    With Github
+                  </Button>
                 </div>
                 <Button
                   className="text-primary"
-                  onClick={() => window.location.href=`${process.env.REACT_APP_API_HOST}/v1/auth/password/reset`}
+                  onClick={() => {
+                    window.location.href = `${process.env.REACT_APP_API_HOST}/v1/auth/password/reset`;
+                  }}
                 >
                   Forgot password?
                 </Button>

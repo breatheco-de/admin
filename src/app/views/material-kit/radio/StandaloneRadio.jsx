@@ -1,22 +1,23 @@
-import React from "react";
-import { withStyles } from "@material-ui/core/styles"
-import { green } from "@material-ui/core/colors";
-import Radio from "@material-ui/core/Radio";
-import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
-import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import Radio from '@material-ui/core/Radio';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 const GreenRadio = withStyles({
   root: {
     color: green[400],
-    "&$checked": {
-      color: green[600]
-    }
+    '&$checked': {
+      color: green[600],
+    },
   },
-  checked: {}
-})(props => <Radio color="default" {...props} />);
+  checked: {},
+// eslint-disable-next-line react/jsx-props-no-spreading
+})((props) => <Radio color="default" {...props} />);
 
 export default function StandaloneRadio() {
-  const [selectedValue, setSelectedValue] = React.useState("a");
+  const [selectedValue, setSelectedValue] = React.useState('a');
 
   function handleChange(event) {
     setSelectedValue(event.target.value);
@@ -25,41 +26,41 @@ export default function StandaloneRadio() {
   return (
     <div>
       <Radio
-        checked={selectedValue === "a"}
+        checked={selectedValue === 'a'}
         onChange={handleChange}
         value="a"
         name="radio-button-demo"
-        inputProps={{ "aria-label": "A" }}
+        inputProps={{ 'aria-label': 'A' }}
       />
       <Radio
-        checked={selectedValue === "b"}
+        checked={selectedValue === 'b'}
         onChange={handleChange}
         value="b"
         name="radio-button-demo"
-        inputProps={{ "aria-label": "B" }}
+        inputProps={{ 'aria-label': 'B' }}
       />
       <GreenRadio
-        checked={selectedValue === "c"}
+        checked={selectedValue === 'c'}
         onChange={handleChange}
         value="c"
         name="radio-button-demo"
-        inputProps={{ "aria-label": "C" }}
+        inputProps={{ 'aria-label': 'C' }}
       />
       <Radio
-        checked={selectedValue === "d"}
+        checked={selectedValue === 'd'}
         onChange={handleChange}
         value="d"
         color="default"
         name="radio-button-demo"
-        inputProps={{ "aria-label": "D" }}
+        inputProps={{ 'aria-label': 'D' }}
       />
       <Radio
-        checked={selectedValue === "e"}
+        checked={selectedValue === 'e'}
         onChange={handleChange}
         value="e"
         color="default"
         name="radio-button-demo"
-        inputProps={{ "aria-label": "E" }}
+        inputProps={{ 'aria-label': 'E' }}
         icon={<RadioButtonUncheckedIcon fontSize="small" />}
         checkedIcon={<RadioButtonCheckedIcon fontSize="small" />}
       />

@@ -1,3 +1,4 @@
 import axios from 'axios';
 
-export const getAllList = () => axios.get('/api/list/all');
+const getAllList = () => axios.get('/api/list/all');
+export default getAllList;

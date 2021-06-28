@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import UserReducer from './UserReducer';
 import LayoutReducer from './LayoutReducer';
-import ScrumBoardReducer from './ScrumBoardReducer';
+// import ScrumBoardReducer from './ScrumBoardReducer';
 import NotificationReducer from './NotificationReducer';
 import EcommerceReducer from './MediaReducer';
 import NavigationReducer from './NavigationReducer';

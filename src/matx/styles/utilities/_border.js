@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export const borderStyles = makeStyles(({ palette, ...theme }) => ({
+// eslint-disable-next-line no-unused-vars
+const borderStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.border-radius-0': { borderRadius: '0px !important', overflow: 'hidden' },
     '.border-radius-4': { borderRadius: '4px !important', overflow: 'hidden' },
@@ -28,3 +29,5 @@ export const borderStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
 }));
+
+export default borderStyles;

@@ -1,39 +1,39 @@
-import React from "react";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import React from 'react';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 export default function LabelledSwitch() {
   const [state, setState] = React.useState({
     checkedA: true,
-    checkedB: true
+    checkedB: true,
   });
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     setState({ ...state, [name]: event.target.checked });
   };
 
   return (
     <FormGroup row>
       <FormControlLabel
-        control={
+        control={(
           <Switch
             checked={state.checkedA}
-            onChange={handleChange("checkedA")}
+            onChange={handleChange('checkedA')}
             value="checkedA"
           />
-        }
+        )}
         label="Secondary"
       />
       <FormControlLabel
-        control={
+        control={(
           <Switch
             checked={state.checkedB}
-            onChange={handleChange("checkedB")}
+            onChange={handleChange('checkedB')}
             value="checkedB"
             color="primary"
           />
-        }
+        )}
         label="Primary"
       />
       <FormControlLabel

@@ -1,27 +1,26 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
+import React from 'react';
+import { Redirect } from 'react-router-dom';
 
-import dashboardRoutes from "./views/dashboard/DashboardRoutes";
+import dashboardRoutes from './views/dashboard/DashboardRoutes';
 
-import adminRoutes from "./views/admin/routes";
-import admissionsRoutes from "./views/admissions/routes";
-import eventsRoutes from "./views/events/routes";
+import adminRoutes from './views/admin/routes';
+import admissionsRoutes from './views/admissions/routes';
+import eventsRoutes from './views/events/routes';
 
-import certificatesRoutes from "./views/certificates/certificatesRoutes"
+import certificatesRoutes from './views/certificates/certificatesRoutes';
 
-import feedbackRoutes from "./views/feedback/routes";
-import mediaRoutes from "./views/media/routes";
+import feedbackRoutes from './views/feedback/routes';
+import mediaRoutes from './views/media/routes';
 
+import materialRoutes from './views/material-kit/MaterialRoutes';
+import pageLayoutRoutes from './views/page-layouts/PageLayoutRoutees';
+import ListRoute from './views/list/ListRoute';
 
-import materialRoutes from "./views/material-kit/MaterialRoutes";
-import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
-import ListRoute from "./views/list/ListRoute";
-
-import pagesRoutes from "./views/leads/pagesRoutes";
+import pagesRoutes from './views/leads/pagesRoutes';
 
 const redirectRoute = [
   {
-    path: "/",
+    path: '/',
     exact: true,
     component: () => <Redirect to="/dashboard/analytics" />,
   },

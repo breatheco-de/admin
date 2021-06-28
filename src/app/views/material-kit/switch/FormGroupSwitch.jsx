@@ -1,19 +1,19 @@
-import React from "react";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Switch from "@material-ui/core/Switch";
+import React from 'react';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Switch from '@material-ui/core/Switch';
 
 export default function FormGroupSwitch() {
   const [state, setState] = React.useState({
     gilad: true,
     jason: false,
-    antoine: true
+    antoine: true,
   });
 
-  const handleChange = name => event => {
+  const handleChange = (name) => (event) => {
     setState({ ...state, [name]: event.target.checked });
   };
 
@@ -22,33 +22,33 @@ export default function FormGroupSwitch() {
       <FormLabel component="legend">Assign responsibility</FormLabel>
       <FormGroup>
         <FormControlLabel
-          control={
+          control={(
             <Switch
               checked={state.gilad}
-              onChange={handleChange("gilad")}
+              onChange={handleChange('gilad')}
               value="gilad"
             />
-          }
+          )}
           label="Gilad Gray"
         />
         <FormControlLabel
-          control={
+          control={(
             <Switch
               checked={state.jason}
-              onChange={handleChange("jason")}
+              onChange={handleChange('jason')}
               value="jason"
             />
-          }
+          )}
           label="Jason Killian"
         />
         <FormControlLabel
-          control={
+          control={(
             <Switch
               checked={state.antoine}
-              onChange={handleChange("antoine")}
+              onChange={handleChange('antoine')}
               value="antoine"
             />
-          }
+          )}
           label="Antoine Llorca"
         />
       </FormGroup>

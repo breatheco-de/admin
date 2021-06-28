@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Badge,
   Card,
@@ -6,45 +7,46 @@ import {
   Grid,
   Icon,
   IconButton,
-} from "@material-ui/core";
-import React, { Fragment } from "react";
-import DummyChart from "./DummyChart";
-import ProfileBarChart from "./ProfileBarChart";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
+} from '@material-ui/core';
+import React, { Fragment } from 'react';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import DummyChart from './DummyChart';
+import ProfileBarChart from './ProfileBarChart';
 
+// eslint-disable-next-line no-unused-vars
 const usestyles = makeStyles(({ palette, ...theme }) => ({
   profileContent: {
     marginTop: -345,
     paddingTop: 74,
     paddingRight: 30,
     paddingLeft: 4,
-    "& .menu-button": {
-      display: "none",
+    '& .menu-button': {
+      display: 'none',
     },
 
-    "@media only screen and (max-width: 959px)": {
+    '@media only screen and (max-width: 959px)': {
       marginTop: -390,
       paddingTop: 24,
       paddingRight: 16,
       paddingLeft: 16,
     },
 
-    "@media only screen and (max-width: 767px)": {
+    '@media only screen and (max-width: 767px)': {
       marginTop: -410,
       paddingTop: 16,
       paddingRight: 16,
       paddingLeft: 16,
-      "& .menu-button": {
-        display: "flex",
+      '& .menu-button': {
+        display: 'flex',
       },
     },
   },
 
   cardLeftVerticalLine: {
-    "&:after": {
+    '&:after': {
       content: '" "',
-      position: "absolute",
+      position: 'absolute',
       height: 35,
       width: 5,
       top: -30,
@@ -54,9 +56,9 @@ const usestyles = makeStyles(({ palette, ...theme }) => ({
 
   cardGrayBox: {
     height: 220,
-    width: "calc(100% - 16px)",
+    width: 'calc(100% - 16px)',
     borderRadius: 8,
-    backgroundColor: "rgba(var(--body), 0.1)",
+    backgroundColor: 'rgba(var(--body), 0.1)',
   },
 }));
 
@@ -64,8 +66,56 @@ const UserProfileContent = ({ toggleSidenav }) => {
   const classes = usestyles();
   const theme = useTheme();
 
+  const projectSummery = [
+    {
+      title: 'Project Created',
+      amount: 11,
+    },
+    {
+      title: 'Project Completed',
+      amount: 15,
+    },
+    {
+      title: 'Project Published',
+      amount: 25,
+    },
+  ];
+
+  const paymentList = [
+    {
+      img: '/assets/images/payment-methods/master-card.png',
+      type: 'Master Card',
+      product: 'Bundled product',
+      amount: 909,
+    },
+    {
+      img: '/assets/images/payment-methods/paypal.png',
+      type: 'Master Card',
+      product: 'Bundled product',
+      amount: 303,
+    },
+    {
+      img: '/assets/images/payment-methods/visa.png',
+      type: 'Paypal',
+      product: 'Bundled product',
+      amount: 330,
+    },
+    {
+      img: '/assets/images/payment-methods/maestro.png',
+      type: 'Paypal',
+      product: 'Bundled product',
+      amount: 909,
+    },
+    {
+      img: '/assets/images/payment-methods/maestro.png',
+      type: 'Master Card',
+      product: 'Bundled product',
+      amount: 909,
+    },
+  ];
+
   return (
-    <Fragment>
+    <>
       <div className={classes.profileContent}>
         <div className="flex justify-end menu-button">
           <IconButton onClick={toggleSidenav}>
@@ -171,13 +221,13 @@ const UserProfileContent = ({ toggleSidenav }) => {
           </Grid>
 
           <Grid item lg={8} md={8} sm={12} xs={12}>
-            <div className="py-3"></div>
+            <div className="py-3" />
             <Card className="overflow-unset flex py-4">
               <div className="w-100 min-w-100 text-center">
                 <Fab className="relative mt--14" size="medium" color="primary">
                   <Icon>trending_up</Icon>
                 </Fab>
-                <div className="py-3"></div>
+                <div className="py-3" />
                 <IconButton size="small">
                   <Icon>favorite</Icon>
                 </IconButton>
@@ -195,7 +245,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
                   </h5>
                   <span className="text-muted">12/03/2019</span>
                 </div>
-                <Divider className="mb-4"></Divider>
+                <Divider className="mb-4" />
                 <div className={classes.cardGrayBox}>
                   <img
                     className="h-full w-full border-radius-4"
@@ -205,13 +255,13 @@ const UserProfileContent = ({ toggleSidenav }) => {
                 </div>
               </div>
             </Card>
-            <div className="py-7"></div>
+            <div className="py-7" />
             <Card className="overflow-unset flex py-4">
               <div className="w-100 min-w-100 text-center">
                 <Fab
                   className={clsx(
-                    "relative mt--14",
-                    classes.cardLeftVerticalLine
+                    'relative mt--14',
+                    classes.cardLeftVerticalLine,
                   )}
                   size="medium"
                   color="primary"
@@ -226,21 +276,21 @@ const UserProfileContent = ({ toggleSidenav }) => {
                   </h5>
                   <span className="text-muted">12/03/2019</span>
                 </div>
-                <Divider></Divider>
+                <Divider />
                 <p className="m-0 pt-3">
-                  Lorem Ipsum is simply dummy text of the printing and
+                  {`Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s
+                  standard dummy text ever since the 1500s`}
                 </p>
               </div>
             </Card>
-            <div className="py-7"></div>
+            <div className="py-7" />
             <Card className="overflow-unset flex py-4">
               <div className="w-100 min-w-100 text-center">
                 <Fab
                   className={clsx(
-                    "relative mt--14",
-                    classes.cardLeftVerticalLine
+                    'relative mt--14',
+                    classes.cardLeftVerticalLine,
                   )}
                   size="medium"
                   color="primary"
@@ -255,11 +305,11 @@ const UserProfileContent = ({ toggleSidenav }) => {
                   </h5>
                   <span className="text-muted">12/03/2019</span>
                 </div>
-                <Divider></Divider>
+                <Divider />
                 <p className="m-0 pt-3">
-                  Lorem Ipsum is simply dummy text of the printing and
+                  {`Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s
+                  standard dummy text ever since the 1500s`}
                 </p>
               </div>
             </Card>
@@ -268,6 +318,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
           <Grid item lg={4} md={4} sm={12} xs={12}>
             <Card>
               {paymentList.map((method, index) => (
+                // eslint-disable-next-line react/no-array-index-key
                 <Fragment key={index}>
                   <div className="py-4 px-6 flex flex-wrap items-center justify-between">
                     <div className="flex flex-wrap items-center">
@@ -290,58 +341,10 @@ const UserProfileContent = ({ toggleSidenav }) => {
             </Card>
           </Grid>
         </Grid>
-        <div className="py-2"></div>
+        <div className="py-2" />
       </div>
-    </Fragment>
+    </>
   );
 };
-
-const projectSummery = [
-  {
-    title: "Project Created",
-    amount: 11,
-  },
-  {
-    title: "Project Completed",
-    amount: 15,
-  },
-  {
-    title: "Project Published",
-    amount: 25,
-  },
-];
-
-const paymentList = [
-  {
-    img: "/assets/images/payment-methods/master-card.png",
-    type: "Master Card",
-    product: "Bundled product",
-    amount: 909,
-  },
-  {
-    img: "/assets/images/payment-methods/paypal.png",
-    type: "Master Card",
-    product: "Bundled product",
-    amount: 303,
-  },
-  {
-    img: "/assets/images/payment-methods/visa.png",
-    type: "Paypal",
-    product: "Bundled product",
-    amount: 330,
-  },
-  {
-    img: "/assets/images/payment-methods/maestro.png",
-    type: "Paypal",
-    product: "Bundled product",
-    amount: 909,
-  },
-  {
-    img: "/assets/images/payment-methods/maestro.png",
-    type: "Master Card",
-    product: "Bundled product",
-    amount: 909,
-  },
-];
 
 export default UserProfileContent;

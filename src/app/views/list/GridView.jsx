@@ -1,23 +1,27 @@
-import React from "react";
-import { Card, Icon, Grid, Checkbox, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+/* eslint-disable react/prop-types */
+import React from 'react';
+import {
+  Card, Icon, Grid, Checkbox, Button,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   gridCard: {
-    "& .grid__card-overlay": {
-      position: "absolute",
+    '& .grid__card-overlay': {
+      position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
       zIndex: 2,
       opacity: 0,
-      transition: "all 250ms ease-in-out",
-      background: "rgba(0, 0, 0, 0.67)",
+      transition: 'all 250ms ease-in-out',
+      background: 'rgba(0, 0, 0, 0.67)',
 
-      "& > div:nth-child(2)": {
-        position: "absolute",
+      '& > div:nth-child(2)': {
+        position: 'absolute',
         top: 0,
         bottom: 0,
         right: 0,
@@ -25,21 +29,21 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
         zIndex: -1,
       },
     },
-    "& .grid__card-bottom": {
-      "& .email": {
-        display: "none",
+    '& .grid__card-bottom': {
+      '& .email': {
+        display: 'none',
       },
     },
-    "&:hover": {
-      "& .grid__card-overlay": {
+    '&:hover': {
+      '& .grid__card-overlay': {
         opacity: 1,
       },
-      "& .grid__card-bottom": {
-        "& .email": {
-          display: "block",
+      '& .grid__card-bottom': {
+        '& .email': {
+          display: 'block',
         },
-        "& .date": {
-          display: "none",
+        '& .date': {
+          display: 'none',
         },
       },
     },
@@ -59,6 +63,7 @@ const calculateColumnPerRow = (value) => {
   if (value === 100) {
     return 6;
   }
+  return 0;
 };
 
 const GridView = ({ list = [], sliderValue }) => {
@@ -67,10 +72,10 @@ const GridView = ({ list = [], sliderValue }) => {
   return (
     <div>
       <Grid container spacing={2}>
-        {list.map((item, index) => (
+        {list.map((item) => (
           <Grid item sm={calculateColumnPerRow(sliderValue)} key={item.id}>
             <Card
-              className={clsx("flex-column h-full", classes.gridCard)}
+              className={clsx('flex-column h-full', classes.gridCard)}
               elevation={6}
             >
               <div className="grid__card-top text-center relative">
@@ -81,7 +86,7 @@ const GridView = ({ list = [], sliderValue }) => {
                 />
                 <div className="grid__card-overlay flex-column">
                   <div className="flex items-center justify-between">
-                    <Checkbox className="text-white"></Checkbox>
+                    <Checkbox className="text-white" />
                     <div className="flex items-center">
                       <Icon
                         fontSize="small"

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import React, { useState, useEffect } from 'react';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import {
   Button,
   Icon,
@@ -8,13 +8,13 @@ import {
   RadioGroup,
   FormControlLabel,
   Checkbox,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
-import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
+} from '@material-ui/pickers';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
 
 const SimpleForm = () => {
   const [state, setState] = useState({
@@ -22,7 +22,8 @@ const SimpleForm = () => {
   });
 
   useEffect(() => {
-    ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
+    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+      // eslint-disable-next-line no-console
       console.log(value);
 
       if (value !== state.password) {
@@ -30,10 +31,10 @@ const SimpleForm = () => {
       }
       return true;
     });
-    return () => ValidatorForm.removeValidationRule("isPasswordMatch");
+    return () => ValidatorForm.removeValidationRule('isPasswordMatch');
   }, [state.password]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = () => {
     // console.log("submitted");
     // console.log(event);
   };
@@ -73,13 +74,13 @@ const SimpleForm = () => {
               onChange={handleChange}
               type="text"
               name="username"
-              value={username || ""}
+              value={username || ''}
               validators={[
-                "required",
-                "minStringLength: 4",
-                "maxStringLength: 9",
+                'required',
+                'minStringLength: 4',
+                'maxStringLength: 9',
               ]}
-              errorMessages={["this field is required"]}
+              errorMessages={['this field is required']}
             />
             <TextValidator
               className="mb-4 w-full"
@@ -87,9 +88,9 @@ const SimpleForm = () => {
               onChange={handleChange}
               type="text"
               name="firstName"
-              value={firstName || ""}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
+              value={firstName || ''}
+              validators={['required']}
+              errorMessages={['this field is required']}
             />
             <TextValidator
               className="mb-4 w-full"
@@ -97,9 +98,9 @@ const SimpleForm = () => {
               onChange={handleChange}
               type="email"
               name="email"
-              value={email || ""}
-              validators={["required", "isEmail"]}
-              errorMessages={["this field is required", "email is not valid"]}
+              value={email || ''}
+              validators={['required', 'isEmail']}
+              errorMessages={['this field is required', 'email is not valid']}
             />
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -110,11 +111,11 @@ const SimpleForm = () => {
                 label="Date picker"
                 inputVariant="standard"
                 type="text"
-                autoOk={true}
+                autoOk
                 value={date}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
-                  "aria-label": "change date",
+                  'aria-label': 'change date',
                 }}
               />
             </MuiPickersUtilsProvider>
@@ -124,13 +125,13 @@ const SimpleForm = () => {
               onChange={handleChange}
               type="number"
               name="creditCard"
-              value={creditCard || ""}
+              value={creditCard || ''}
               validators={[
-                "required",
-                "minStringLength:16",
-                "maxStringLength: 16",
+                'required',
+                'minStringLength:16',
+                'maxStringLength: 16',
               ]}
-              errorMessages={["this field is required"]}
+              errorMessages={['this field is required']}
             />
           </Grid>
 
@@ -141,9 +142,9 @@ const SimpleForm = () => {
               onChange={handleChange}
               type="text"
               name="mobile"
-              value={mobile || ""}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
+              value={mobile || ''}
+              validators={['required']}
+              errorMessages={['this field is required']}
             />
             <TextValidator
               className="mb-4 w-full"
@@ -151,9 +152,9 @@ const SimpleForm = () => {
               onChange={handleChange}
               name="password"
               type="password"
-              value={password || ""}
-              validators={["required"]}
-              errorMessages={["this field is required"]}
+              value={password || ''}
+              validators={['required']}
+              errorMessages={['this field is required']}
             />
             <TextValidator
               className="mb-4 w-full"
@@ -161,16 +162,16 @@ const SimpleForm = () => {
               onChange={handleChange}
               name="confirmPassword"
               type="password"
-              value={confirmPassword || ""}
-              validators={["required", "isPasswordMatch"]}
+              value={confirmPassword || ''}
+              validators={['required', 'isPasswordMatch']}
               errorMessages={[
-                "this field is required",
+                'this field is required',
                 "password didn't match",
               ]}
             />
             <RadioGroup
               className="mb-4"
-              value={gender || ""}
+              value={gender || ''}
               name="gender"
               onChange={handleChange}
               row

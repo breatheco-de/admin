@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   MenuItem,
@@ -7,31 +7,31 @@ import {
   Icon,
   Hidden,
   useMediaQuery,
-} from "@material-ui/core";
-import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from "matx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
+} from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from '../../../matx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   headerBG: {
     height: 200,
     background: palette.primary.main,
     backgroundImage: "url('/assets/images/home-bg-black.png')",
-    backgroundSize: "contain",
+    backgroundSize: 'contain',
   },
   sidenavHolder: {
     marginTop: -200,
   },
   sidenav: {
-    background: "transparent !important",
-    [theme.breakpoints.down("sm")]: {
-      background: "var(--bg-default) !important",
+    background: 'transparent !important',
+    [theme.breakpoints.down('sm')]: {
+      background: 'var(--bg-default) !important',
     },
   },
   sidenavHeader: {
-    color: "rgba(255,255,255,0.87) !important",
-    [theme.breakpoints.down("sm")]: {
-      color: "inherit !important",
+    color: 'rgba(255,255,255,0.87) !important',
+    [theme.breakpoints.down('sm')]: {
+      color: 'inherit !important',
     },
   },
 }));
@@ -41,7 +41,7 @@ const LeftSidebarCard = () => {
 
   const classes = useStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleSidenav = () => {
     setOpen(!open);
@@ -71,7 +71,7 @@ const LeftSidebarCard = () => {
                   </IconButton>
                 </div>
               </Hidden>
-              <h6 className={clsx("pl-9 p-6", classes.sidenavHeader)}>
+              <h6 className={clsx('pl-9 p-6', classes.sidenavHeader)}>
                 Sidebar header
               </h6>
               <div className="py-17" />
@@ -98,7 +98,7 @@ const LeftSidebarCard = () => {
                   </IconButton>
                 </Hidden>
                 <Hidden mdDown>
-                  <div className="pl-4"></div>
+                  <div className="pl-4" />
                 </Hidden>
                 <div className="py-4">Card toolbar</div>
               </div>

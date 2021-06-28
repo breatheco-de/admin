@@ -1,34 +1,36 @@
-import React from "react";
-import { Grid, Card, IconButton, Icon } from "@material-ui/core";
+import React from 'react';
+import {
+  Grid, Card, IconButton, Icon,
+} from '@material-ui/core';
 
 const StatCard3 = () => {
   const statList = [
     {
-      icon: "people",
+      icon: 'people',
       amount: 10495,
-      title: "New Members",
+      title: 'New Members',
     },
     {
-      icon: "location_on_outlined",
+      icon: 'location_on_outlined',
       amount: 30942,
-      title: "Places added",
+      title: 'Places added',
     },
     {
-      icon: "keyboard_voice",
+      icon: 'keyboard_voice',
       amount: 45269,
-      title: "Support Members",
+      title: 'Support Members',
     },
     {
-      icon: "card_giftcard",
+      icon: 'card_giftcard',
       amount: 20965,
-      title: "Tags Used",
+      title: 'Tags Used',
     },
   ];
 
   return (
     <div>
       <Grid container spacing={3}>
-        {statList.map((item, ind) => (
+        {statList.map((item) => (
           <Grid key={item.title} item md={3} sm={6} xs={12}>
             <Card elevation={3} className="p-5 flex">
               <div>
