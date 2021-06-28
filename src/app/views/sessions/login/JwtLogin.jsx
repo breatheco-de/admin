@@ -86,10 +86,7 @@ const JwtLogin = () => {
           </Grid>
           <Grid item lg={7} md={7} sm={7} xs={12}>
             <div className="p-8 h-full bg-light-gray relative">
-              <ValidatorForm
-                data-cy="login_form"
-                onSubmit={handleFormSubmit}
-              >
+              <ValidatorForm data-cy="login_form" onSubmit={handleFormSubmit}>
                 <TextValidator
                   data-cy="email"
                   className="mb-6 w-full"
@@ -140,6 +137,7 @@ const JwtLogin = () => {
                 <div className="flex flex-wrap items-center mb-4">
                   <div className="relative">
                     <Button
+                      data-cy="submit_button"
                       variant="contained"
                       color="primary"
                       disabled={loading}

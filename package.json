@@ -123,6 +123,8 @@
     "test": "node scripts/test.js",
     "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "node scripts/build.js && gh-pages -d build",
+    "cy:start": "cypress open",
+    "cy:run": "cypress run",
     "lint": "eslint ./src",
     "lint-fix": "eslint ./src --fix",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\""
@@ -143,6 +145,7 @@
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^5.2.0",
     "customize-cra": "^0.9.1",
+    "cypress": "^7.6.0",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-node": "^4.1.0",
