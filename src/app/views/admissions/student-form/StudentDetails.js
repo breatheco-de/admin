@@ -87,13 +87,10 @@ const StudentDetails = ({
   }, [user]);
 
   const updateStudentProfile = (values) => {
-    console.log('the values', values, crt_user);
-    console.log(std_id);
     bc.auth()
       .updateAcademyStudent(std_id, values)
       .then(({ data }) => {
         setCrtUser({ ...crt_user, ...data });
-        console.log(crt_user);
       })
       .catch((error) => error);
   };

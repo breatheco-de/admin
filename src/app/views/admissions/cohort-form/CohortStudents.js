@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Avatar,
   Grid,
@@ -57,7 +57,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
   }, [queryLimit]);
 
   const changeStudentStatus = (value, name, studentId, i) => {
-    console.log(value, name, i);
     const s_status = {
       role: studenList[i].role,
       finantial_status: studenList[i].finantial_status,
@@ -69,7 +68,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
         [name]: value,
       })
       .then((data) => {
-        console.log(data);
         if (data.status >= 200) getCohortStudents();
       })
       .catch((error) => {
@@ -89,7 +87,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           const { results, next } = data.data;
-          if (next === null) setHasMore(false);
+          next === null ? setHasMore(false): setHasMore(true);
           setIsLoading(false);
           results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }
