@@ -1,9 +1,7 @@
 import React from 'react';
-import bc from 'app/services/breathecode';
 import {
   Icon, IconButton, Tooltip, Menu, MenuItem,
 } from '@material-ui/core';
-import axios from '../../axios';
 
 export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -36,19 +34,15 @@ export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
   };
   const handleDownloadSingle = () => {
     (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}${singlePageTableCsv}`, {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        })
-        .then(({ data }) => {
-          console.log("data single dowload csv", data)
+      singlePageTableCsv()
+        .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
     })();
     handleClose();
   };
+  
   return (
     <>
       <Tooltip title="csv">

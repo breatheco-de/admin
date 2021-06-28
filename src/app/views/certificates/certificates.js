@@ -256,10 +256,10 @@ const Certificates = () => {
                 .deleteCertificatesBulk(querys);
               return status;
             }}
-            dowloadAllCSV={async (querys) => {
+            downloadCSV={async (querys) => {
               const {data} = await bc
                 .certificates()
-                .downloadAllPagesTableCSV(querys);
+                .downloadCSV(querys);
               return data
             }}
           />

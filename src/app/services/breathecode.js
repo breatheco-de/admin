@@ -291,15 +291,14 @@ class BreatheCodeClient {
     generateAllCohortCertificates: (cohortID, payload) => {
       return axios._post("All Cohort Certificates", `${this.host}/certificate/cohort/${cohortID}`, payload)
     },
-    downloadAllPagesTableCSV: (query) => {
+    downloadCSV: (query) => {
       const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-      return axios._post("Complete Table CSV", `${this.host}/certificate?${qs}`, {}, {
+      return axios._post("All Pages Table CSV", `${this.host}/certificate?${qs}`, {}, {
         headers: { Accept: 'text/csv' },
         responseType: 'blob'
       })
-    }
-
-})
+    },
+  })
   
   events = () => ({
     getCheckins: (query) => {

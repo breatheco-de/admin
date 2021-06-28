@@ -107,10 +107,6 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
-  // TODO: Pass a prop that identifies the view to build this url dinamically
-  const singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-  const allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}`;
-
   return (
     <MUIDataTable
       title={props.title}
@@ -130,8 +126,8 @@ export const SmartMUIDataTable = (props) => {
         viewColumns: true,
         customToolbar: () => (
           <DownloadCsv
-            singlePageTableCsv={singlePageTableCsv}
-            allPagesTableCsv={() => props.dowloadAllCSV(queryLike)}
+            singlePageTableCsv={() => props.downloadCSV(querys)}
+            allPagesTableCsv={() => props.downloadCSV(queryLike)}
           />
         ),
 
