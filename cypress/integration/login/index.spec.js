@@ -60,6 +60,7 @@ describe('Login Screen', () => {
         cy.log('**-------- Password Label --------**');
         cy.get('[data-cy=login_form]').find('label').contains('Password');
 
+        cy.log('**-------- Submit --------**');
         cy.log('Submit');
         cy.get('[data-cy=submit_button]').click();
 
@@ -92,8 +93,10 @@ describe('Login Screen', () => {
         cy.log('**-------- Password Label --------**');
         cy.get('[data-cy=login_form]').find('label').contains('Password');
 
+        cy.log('**-------- Submit --------**');
         cy.log('Submit');
         cy.get('[data-cy=submit_button]').click();
+        cy.get('[data-cy=login_form]').find('.text-error');
 
         cy.log('**-------- Clean Data --------**');
         cy.get('[data-cy=login_form]')
