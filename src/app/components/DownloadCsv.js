@@ -26,12 +26,8 @@ export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
 
   const handleDownloadAll = () => {
     (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}${allPagesTableCsv}`, {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        })
-        .then(({ data }) => {
+      allPagesTableCsv()
+        .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
@@ -46,6 +42,7 @@ export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
           responseType: 'blob',
         })
         .then(({ data }) => {
+          console.log("data single dowload csv", data)
           downloadFile(data);
         })
         .catch((error) => console.log(error));

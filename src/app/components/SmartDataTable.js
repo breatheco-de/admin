@@ -131,7 +131,7 @@ export const SmartMUIDataTable = (props) => {
         customToolbar: () => (
           <DownloadCsv
             singlePageTableCsv={singlePageTableCsv}
-            allPagesTableCsv={allPagesTableCsv}
+            allPagesTableCsv={() => props.dowloadAllCSV(queryLike)}
           />
         ),
 

@@ -256,6 +256,12 @@ const Certificates = () => {
                 .deleteCertificatesBulk(querys);
               return status;
             }}
+            dowloadAllCSV={async (querys) => {
+              const {data} = await bc
+                .certificates()
+                .downloadAllPagesTableCSV(querys);
+              return data
+            }}
           />
         </div>
       </div>
