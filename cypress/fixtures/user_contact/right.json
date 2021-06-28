@@ -1,0 +1,30 @@
+[
+  {
+    "firstName": "Brake",
+    "lastName": "Mahony",
+    "email": "brakemah@gmail.com",
+    "password": "123456789",
+    "comment": "hello"
+  },
+  {
+    "firstName": "Rowan",
+    "lastName": "Dash",
+    "email": "rodash@outlook.com",
+    "password": "1234415325",
+    "comment": "Im Rowan Dash"
+  },
+  {
+    "firstName": "Bucky",
+    "lastName": "Forest",
+    "email": "bforest@hotmail.com",
+    "password": "548293282",
+    "comment": "im testing"
+  },
+  {
+    "firstName": "Rocky",
+    "lastName": "Mohawk",
+    "email": "mohawk@gmail.com",
+    "password": "583849233",
+    "comment": "testing form with cypress"
+  }
+]
