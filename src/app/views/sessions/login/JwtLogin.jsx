@@ -87,7 +87,7 @@ const JwtLogin = () => {
           <Grid item lg={7} md={7} sm={7} xs={12}>
             <div className="p-8 h-full bg-light-gray relative">
               <ValidatorForm
-                data-cy="login_form" 
+                data-cy="login_form"
                 onSubmit={handleFormSubmit}
               >
                 <TextValidator
