@@ -73,7 +73,7 @@ const Sidenav = ({ children }) => {
 };
 
 Sidenav.defaultProps = {
-  children: {},
+  children: null,
 };
 Sidenav.propTypes = {
   children: PropTypes.node,

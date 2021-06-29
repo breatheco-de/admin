@@ -13,25 +13,25 @@ const toastOption = {
 };
 const axiosInstance = axios.create();
 axiosInstance.scopes = {};
-axiosInstance._put = () => {
+axiosInstance._put = function(){
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.put(url, ...rest);
 };
 
-axiosInstance._post = () => {
+axiosInstance._post = function(){
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.post(url, ...rest);
 };
 
-axiosInstance._get = () => {
+axiosInstance._get = function(){
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.get(url, ...rest);
 };
 
-axiosInstance._delete = () => {
+axiosInstance._delete = function(){
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.delete(url, ...rest);
