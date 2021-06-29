@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
-import ReactEcharts from 'echarts-for-react';
-import { merge } from 'lodash';
+import React from "react";
+import ReactEcharts from "echarts-for-react";
+import { merge } from "lodash";
 
 const defaultOption = {
   grid: {
@@ -13,16 +12,16 @@ const defaultOption = {
   legend: {},
   tooltip: {
     show: true,
-    trigger: 'axis',
+    trigger: "axis",
 
     axisPointer: {
-      type: 'cross',
+      type: "cross",
       lineStyle: {
         opacity: 0,
       },
     },
     crossStyle: {
-      color: '#000',
+      color: "#000",
     },
   },
   series: [
@@ -31,17 +30,17 @@ const defaultOption = {
       smooth: true,
       lineStyle: {
         width: 2,
-        color: '#fff',
+        color: "#fff",
       },
     },
   ],
   xAxis: {
     show: true,
-    type: 'category',
+    type: "category",
     showGrid: false,
     boundaryGap: false,
     axisLabel: {
-      color: '#ccc',
+      color: "#ccc",
       margin: 20,
     },
     axisLine: {
@@ -52,19 +51,19 @@ const defaultOption = {
     },
   },
   yAxis: {
-    type: 'value',
+    type: "value",
     min: 10,
     max: 60,
     axisLabel: {
-      color: '#ccc',
+      color: "#ccc",
       margin: 20,
       fontSize: 13,
-      fontFamily: 'roboto',
+      fontFamily: "roboto",
     },
     splitLine: {
       show: true,
       lineStyle: {
-        color: 'rgba(255, 255, 255, .1)',
+        color: "rgba(255, 255, 255, .1)",
       },
     },
 
@@ -77,7 +76,7 @@ const defaultOption = {
   },
   color: [
     {
-      type: 'linear',
+      type: "linear",
       x: 0,
       y: 0,
       x2: 0,
@@ -85,11 +84,11 @@ const defaultOption = {
       colorStops: [
         {
           offset: 0,
-          color: 'rgba(255,255,255,0.3)', // color at 0% position
+          color: "rgba(255,255,255,0.3)", // color at 0% position
         },
         {
           offset: 1,
-          color: 'rgba(255,255,255,0)', // color at 100% position
+          color: "rgba(255,255,255,0)", // color at 100% position
         },
       ],
       global: false, // false by default
@@ -97,11 +96,13 @@ const defaultOption = {
   ],
 };
 
-const ModifiedAreaChart = ({ height, option }) => (
-  <ReactEcharts
-    style={{ height }}
-    option={merge({}, defaultOption, option)}
-  />
-);
+const ModifiedAreaChart = ({ height, option }) => {
+  return (
+    <ReactEcharts
+      style={{ height: height }}
+      option={merge({}, defaultOption, option)}
+    />
+  );
+};
 
 export default ModifiedAreaChart;

@@ -1,28 +1,23 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable react/prop-types */
-import React, {
-  useState, useRef, useCallback, useEffect,
-} from 'react';
-import { Icon } from '@material-ui/core';
-import TouchRipple from '@material-ui/core/ButtonBase';
-import { useLocation } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useRef, useCallback } from "react";
+import { Icon } from "@material-ui/core";
+import TouchRipple from "@material-ui/core/ButtonBase";
+import { useLocation } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import { useEffect } from "react";
+import clsx from "clsx";
 
-import clsx from 'clsx';
-
-// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   expandIcon: {
-    transition: 'transform 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms',
-    transform: 'rotate(90deg)',
+    transition: "transform 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms",
+    transform: "rotate(90deg)",
   },
   collapseIcon: {
-    transition: 'transform 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms',
-    transform: 'rotate(0deg)',
+    transition: "transform 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms",
+    transform: "rotate(0deg)",
   },
-  'expansion-panel': {
-    overflow: 'hidden',
-    transition: 'max-height 0.3s cubic-bezier(0, 0, 0.2, 1)',
+  "expansion-panel": {
+    overflow: "hidden",
+    transition: "max-height 0.3s cubic-bezier(0, 0, 0.2, 1)",
   },
   highlight: {
     background: palette.primary.main,
@@ -35,19 +30,19 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
   compactNavItem: {
     width: 44,
-    overflow: 'hidden',
-    justifyContent: 'center !important',
-    '& $itemText': {
-      display: 'none',
+    overflow: "hidden",
+    justifyContent: "center !important",
+    "& $itemText": {
+      display: "none",
     },
-    '& $itemIcon': {
-      display: 'none',
+    "& $itemIcon": {
+      display: "none",
     },
   },
   itemIcon: {},
   itemText: {
-    fontSize: '0.875rem',
-    paddingLeft: '0.8rem',
+    fontSize: "0.875rem",
+    paddingLeft: "0.8rem",
   },
   bulletIcon: {
     background: palette.text.secondary,
@@ -60,20 +55,7 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
   const elementRef = useRef(null);
   const componentHeight = useRef(0);
   const { pathname } = useLocation();
-  const {
-    name, icon, iconText, badge,
-  } = item;
-
-  const calcaulateHeight = useCallback((node) => {
-    if (node.name !== 'child') {
-      for (const child of node.children) {
-        calcaulateHeight(child);
-      }
-    }
-
-    if (node.name === 'child') componentHeight.current += node.scrollHeight;
-    else componentHeight.current += 44; // here 44 is node height
-  }, []);
+  const { name, icon, iconText, badge } = item;
 
   const handleClick = () => {
     componentHeight.current = 0;
@@ -81,14 +63,26 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
     setCollapsed(!collapsed);
   };
 
+  const calcaulateHeight = useCallback((node) => {
+    if (node.name !== "child") {
+      for (let child of node.children) {
+        calcaulateHeight(child);
+      }
+    }
+
+    if (node.name === "child") componentHeight.current += node.scrollHeight;
+    else componentHeight.current += 44; //here 44 is node height
+    return;
+  }, []);
+
   useEffect(() => {
     if (!elementRef) return;
 
     calcaulateHeight(elementRef.current);
 
     // OPEN DROPDOWN IF CHILD IS ACTIVE
-    for (const child of elementRef.current.children) {
-      if (child.getAttribute('href') === pathname) {
+    for (let child of elementRef.current.children) {
+      if (child.getAttribute("href") === pathname) {
         setCollapsed(false);
       }
     }
@@ -98,9 +92,9 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
     <div>
       <TouchRipple
         className={clsx({
-          'flex justify-between h-44 border-radius-4 mb-2 w-full pr-4 has-submenu compactNavItem whitespace-pre overflow-hidden': true,
+          "flex justify-between h-44 border-radius-4 mb-2 w-full pr-4 has-submenu compactNavItem whitespace-pre overflow-hidden": true,
           [classes.navItem]: true,
-          [classes.compactNavItem]: mode === 'compact',
+          [classes.compactNavItem]: mode === "compact",
           open: !collapsed,
         })}
         onClick={handleClick}
@@ -112,13 +106,13 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
           {iconText && (
             <div
               className={clsx(
-                'w-4 h-4 rounded bg-white ml-5 mr-2',
-                classes.bulletIcon,
+                "w-4 h-4 rounded bg-white ml-5 mr-2",
+                classes.bulletIcon
               )}
-            />
+            ></div>
           )}
           <span
-            className={clsx('align-middle sidenavHoverShow', classes.itemText)}
+            className={clsx("align-middle sidenavHoverShow", classes.itemText)}
           >
             {name}
           </span>
@@ -127,8 +121,8 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
           <div
             className={clsx(
               `rounded bg-${item.badge.color} px-1 py-1px`,
-              'sidenavHoverShow',
-              classes.itemIcon,
+              "sidenavHoverShow",
+              classes.itemIcon
             )}
           >
             {badge.value}
@@ -136,7 +130,7 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
         )}
         <div
           className={clsx({
-            'item-arrow sidenavHoverShow': true,
+            "item-arrow sidenavHoverShow": true,
             [classes.itemIcon]: true,
             [classes.collapseIcon]: collapsed,
             [classes.expandIcon]: !collapsed,
@@ -150,11 +144,11 @@ const MatxVerticalNavExpansionPanel = ({ item, children, mode }) => {
 
       <div
         ref={elementRef}
-        className={clsx(classes['expansion-panel'], 'submenu')}
+        className={clsx(classes["expansion-panel"], "submenu")}
         style={
           collapsed
-            ? { maxHeight: '0px' }
-            : { maxHeight: `${componentHeight.current}px` }
+            ? { maxHeight: "0px" }
+            : { maxHeight: componentHeight.current + "px" }
         }
       >
         {children}

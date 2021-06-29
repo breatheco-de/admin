@@ -1,25 +1,23 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
-import { IconButton, Icon } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import RectangleAvatar from './RectangleAvatar';
+import React from "react";
+import RectangleAvatar from "./RectangleAvatar";
+import { IconButton, Icon } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 
-// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   root: {
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 300ms ease',
-    '&:hover': {
-      background: 'rgba(0,0,0, .08)',
-      paddingLeft: '8px',
-      overflow: 'hidden',
-      '& .action-icon, & .rectangle-box': {
+    borderRadius: "8px",
+    cursor: "pointer",
+    transition: "all 300ms ease",
+    "&:hover": {
+      background: "rgba(0,0,0, .08)",
+      paddingLeft: "8px",
+      overflow: "hidden",
+      "& .action-icon, & .rectangle-box": {
         opacity: 1,
       },
     },
-    '& .action-icon, & .rectangle-box': {
+    "& .action-icon, & .rectangle-box": {
       opacity: 0.76,
     },
   },
@@ -36,12 +34,12 @@ const MatxListItem1 = ({
   const classes = useStyles();
 
   return (
-    <div className={clsx('py-2 flex items-center', classes.root)}>
+    <div className={clsx("py-2 flex items-center", classes.root)}>
       <RectangleAvatar
         color={iconColor}
         icon={bulletIcon}
         iconText={iconText}
-      />
+      ></RectangleAvatar>
 
       <div className="ml-4 flex-grow">
         <h6 className="m-0 text-13 font-normal text-body">{title}</h6>

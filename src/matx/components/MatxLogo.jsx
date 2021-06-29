@@ -1,11 +1,10 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
 
-// eslint-disable-next-line react/prop-types
-const MatxLogo = ({ className }) => {
-  const settings = useSelector((state) => state.layout.settings);
+const MatxLogo = ({className}) => {
+  const settings = useSelector(state => state.layout.settings);  
   const theme = settings.themes[settings.activeTheme];
-
+  
   return (
     <svg
       width="24px"
@@ -39,25 +38,25 @@ const MatxLogo = ({ className }) => {
                 <polygon
                   id="path-1"
                   points="136.269985 0.8695976 186.615824 50.367072 186.615824 186.98041 50.7100649 186.98041 0.4346189 136.704964"
-                />
+                ></polygon>
               </g>
               <g id="path-1-link" fill={theme.palette.primary.light}>
                 <polygon
                   id="path-1"
                   points="136.269985 0.8695976 186.615824 50.367072 186.615824 186.98041 50.7100649 186.98041 0.4346189 136.704964"
-                />
+                ></polygon>
               </g>
             </g>
             <polygon
               id="Path-3"
               fill={theme.palette.primary.light}
               points="13 238.415212 13 0 249.898437 238.415212"
-            />
+            ></polygon>
             <polygon
               id="Path-4"
               fill={theme.palette.primary.main}
               points="252.486992 0 252.486992 238.799226 13 238.799226"
-            />
+            ></polygon>
           </g>
         </g>
       </g>

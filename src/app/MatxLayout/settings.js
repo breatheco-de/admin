@@ -2,7 +2,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { forEach, merge } from 'lodash';
 import layout1Settings from './Layout1/Layout1Settings';
 import layout2Settings from './Layout2/Layout2Settings';
-import themeColors from './MatxTheme/themeColors';
+import { themeColors } from './MatxTheme/themeColors';
 import themeOptions from './MatxTheme/themeOptions';
 
 function createMatxThemes() {
@@ -15,11 +15,11 @@ function createMatxThemes() {
 }
 const themes = createMatxThemes();
 
-const MatxLayoutSettings = {
+export const MatxLayoutSettings = {
   activeLayout: 'layout1', // layout1, layout2
   activeTheme: 'blue', // View all valid theme colors inside MatxTheme/themeColors.js
   perfectScrollbar: true,
-  beta: process.env.NODE_ENV !== 'production',
+  beta: process.env.NODE_ENV != 'production',
   themes,
   layout1Settings, // open Layout1/Layout1Settings.js
   layout2Settings, // open Layout1/Layout2Settings.js
@@ -31,5 +31,3 @@ const MatxLayoutSettings = {
     theme: 'slateDark1', // View all valid theme colors inside MatxTheme/themeColors.js
   },
 };
-
-export default MatxLayoutSettings;

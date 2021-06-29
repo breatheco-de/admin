@@ -1,7 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-// eslint-disable-next-line no-unused-vars
-const animationStyles = makeStyles(({ palette, ...theme }) => ({
+export const animationStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.fade-in': {
       animation: 'fade-in 1s cubic-bezier(0.17, 0.67, 0.83, 0.67)',
@@ -14,5 +13,3 @@ const animationStyles = makeStyles(({ palette, ...theme }) => ({
     '.spin': { animation: 'spin 3s infinite linear' },
   },
 }));
-
-export default animationStyles;

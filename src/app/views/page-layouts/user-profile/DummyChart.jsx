@@ -1,8 +1,8 @@
-import React from 'react';
-import { EchartCreator } from '../../../../matx';
+import React from "react";
+import { EchartCreator } from "matx";
 
 const option = {
-  backgroundColor: 'rgba(0, 0, 0, 0)',
+  backgroundColor: "rgba(0, 0, 0, 0)",
   grid: {
     left: 0,
     top: 0,
@@ -27,7 +27,7 @@ const option = {
     },
   },
   yAxis: {
-    type: 'value',
+    type: "value",
     axisLine: {
       show: false,
     },
@@ -43,18 +43,19 @@ const option = {
         [51.73530129825366, 6.117848837602899],
         [78.23529411764707, 34.80069535650455],
       ],
-      type: 'line',
+      type: "line",
       smooth: true,
       symbolSize: 0,
       lineStyle: {
         width: 2,
-        color: ['rgba(255,255,255,0.87'],
+        color: ["rgba(255,255,255,0.87"],
       },
     },
   ],
 };
 
-// eslint-disable-next-line react/prop-types
-const DummyChart = ({ height }) => <EchartCreator height={height} option={option} />;
+const DummyChart = ({ height }) => {
+  return <EchartCreator height={height} option={option} />;
+};
 
 export default DummyChart;

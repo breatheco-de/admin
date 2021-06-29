@@ -4,8 +4,6 @@
     "es2021": true
   },
   "extends": ["plugin:react/recommended", "airbnb"],
-  // solution for error in case of state of class component `queue = [];`
-  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -14,7 +12,5 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": {
-    "import/no-named-as-default": 0
-  }
+  "rules": {}
 }

@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import React from 'react';
+import React from "react";
 import {
   Icon,
   Badge,
@@ -8,47 +6,47 @@ import {
   Button,
   IconButton,
   Drawer,
-} from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { ThemeProvider, useTheme, makeStyles } from '@material-ui/core/styles';
-
-import clsx from 'clsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { getTimeDifference } from '../../../utils';
+} from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { ThemeProvider, useTheme } from "@material-ui/core/styles";
+import { getTimeDifference } from "utils.js";
 import {
   getNotification,
   deleteAllNotification,
   deleteNotification,
-} from '../../redux/actions/NotificationActions';
+} from "../../redux/actions/NotificationActions";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   notification: {
-    width: 'var(--sidenav-width)',
-    '& .notification__topbar': {
-      height: 'var(--topbar-height)',
+    width: "var(--sidenav-width)",
+    "& .notification__topbar": {
+      height: "var(--topbar-height)",
     },
   },
   notificationCard: {
-    '&:hover': {
-      '& .delete-button': {
-        cursor: 'pointer',
-        display: 'unset',
+    "&:hover": {
+      "& .delete-button": {
+        cursor: "pointer",
+        display: "unset",
         right: 0,
         marginTop: 6,
         top: 0,
         zIndex: 2,
       },
-      '& .card__topbar__time': {
-        display: 'none',
+      "& .card__topbar__time": {
+        display: "none",
       },
     },
-    '& .delete-button': {
-      display: 'none',
-      position: 'absolute',
+    "& .delete-button": {
+      display: "none",
+      position: "absolute",
       right: 0,
       marginTop: 9,
     },
-    '& .card__topbar__button': {
+    "& .card__topbar__button": {
       borderRadius: 15,
       opacity: 0.9,
     },
@@ -87,7 +85,7 @@ const NotificationBar = ({ container }) => {
         onClick={handleDrawerToggle}
         style={{
           color:
-            parentThemePalette.type === 'light'
+            parentThemePalette.type === "light"
               ? parentThemePalette.text.secondary
               : parentThemePalette.text.primary,
         }}
@@ -98,10 +96,10 @@ const NotificationBar = ({ container }) => {
       </IconButton>
 
       <Drawer
-        width="100px"
+        width={"100px"}
         container={container}
         variant="temporary"
-        anchor="right"
+        anchor={"right"}
         open={panelOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
@@ -117,7 +115,7 @@ const NotificationBar = ({ container }) => {
           {notifcationList.map((notification) => (
             <div
               key={notification.id}
-              className={clsx('relative', classes.notificationCard)}
+              className={clsx("relative", classes.notificationCard)}
             >
               <IconButton
                 size="small"
@@ -146,9 +144,7 @@ const NotificationBar = ({ container }) => {
                       </span>
                     </div>
                     <small className="card__topbar__time text-muted">
-                      {getTimeDifference(new Date(notification.timestamp))}
-                      {' '}
-                      ago
+                      {getTimeDifference(new Date(notification.timestamp))} ago
                     </small>
                   </div>
                   <div className="px-4 pt-2 pb-4">

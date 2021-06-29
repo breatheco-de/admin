@@ -1,4 +1,4 @@
-import history from '../../../history';
+import history from 'history.js';
 
 export const SET_USER_DATA = 'USER_SET_DATA';
 export const REMOVE_USER_DATA = 'USER_REMOVE_DATA';

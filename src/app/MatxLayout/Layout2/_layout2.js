@@ -1,7 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-// eslint-disable-next-line no-unused-vars
-const layout2Styles = makeStyles(({ palette, ...theme }) => ({
+export const layout2Styles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.layout2': {
       transition: 'all 0.15s ease',
@@ -26,14 +25,13 @@ const layout2Styles = makeStyles(({ palette, ...theme }) => ({
       zIndex: '99',
     },
     '.horizontal-nav ul.menu > li': { float: 'left' },
-    '.horizontal-nav ul.menu > li > div > a, .horizontal-nav ul.menu > li > div > div':
-      {
-        borderBottom: '2px solid',
-        height: '48px',
-        boxSizing: 'border-box',
-        borderColor: 'transparent',
-        margin: '0 6px',
-      },
+    '.horizontal-nav ul.menu > li > div > a, .horizontal-nav ul.menu > li > div > div': {
+      borderBottom: '2px solid',
+      height: '48px',
+      boxSizing: 'border-box',
+      borderColor: 'transparent',
+      margin: '0 6px',
+    },
     '.horizontal-nav ul li': {
       position: 'relative',
       margin: '0px',
@@ -50,11 +48,10 @@ const layout2Styles = makeStyles(({ palette, ...theme }) => ({
       textDecoration: 'none',
       boxSizing: 'border-box',
     },
-    '.horizontal-nav a .material-icons, .horizontal-nav label .material-icons':
-      {
-        fontSize: '14px',
-        margin: '0 4px',
-      },
+    '.horizontal-nav a .material-icons, .horizontal-nav label .material-icons': {
+      fontSize: '14px',
+      margin: '0 4px',
+    },
     '.horizontal-nav ul ul': {
       opacity: '0',
       visibility: 'hidden',
@@ -66,12 +63,11 @@ const layout2Styles = makeStyles(({ palette, ...theme }) => ({
       transition: 'all 0.3s ease-in-out',
       zIndex: '-1',
     },
-    '.horizontal-nav ul li:hover > div > div > ul, .horizontal-nav ul li:hover > div > ul, .horizontal-nav li:hover > ul':
-      {
-        opacity: '1',
-        visibility: 'visible',
-        transform: 'translateY(0)',
-      },
+    '.horizontal-nav ul li:hover > div > div > ul, .horizontal-nav ul li:hover > div > ul, .horizontal-nav li:hover > ul': {
+      opacity: '1',
+      visibility: 'visible',
+      transform: 'translateY(0)',
+    },
     '.horizontal-nav ul ul li': {
       width: '170px',
       float: 'none',
@@ -100,5 +96,3 @@ const layout2Styles = makeStyles(({ palette, ...theme }) => ({
     '.horizontal-nav li > a:only-child:after': { content: '" "' },
   },
 }));
-
-export default layout2Styles;

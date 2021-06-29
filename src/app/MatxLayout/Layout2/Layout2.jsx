@@ -1,19 +1,19 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext } from "react";
 
-import { ThemeProvider } from '@material-ui/core/styles';
-import { Hidden } from '@material-ui/core';
-import Scrollbar from 'react-perfect-scrollbar';
-import { renderRoutes } from 'react-router-config';
-import { useTheme } from '@material-ui/styles';
-import clsx from 'clsx';
-import { useSelector } from 'react-redux';
-import AppContext from '../../appContext';
-import layout2Styles from './_layout2';
-import Layout2Topbar from './Layout2Topbar';
-import Layout2Navbar from './Layout2Navbar';
-import Footer from '../SharedCompoents/Footer';
-import SidenavTheme from '../MatxTheme/SidenavTheme/SidenavTheme';
-import Layout1Sidenav from '../Layout1/Layout1Sidenav';
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Hidden } from "@material-ui/core";
+import AppContext from "app/appContext";
+import Footer from "../SharedCompoents/Footer";
+import Layout2Navbar from "./Layout2Navbar";
+import Layout2Topbar from "./Layout2Topbar";
+import Scrollbar from "react-perfect-scrollbar";
+import { renderRoutes } from "react-router-config";
+import { useTheme } from "@material-ui/styles";
+import clsx from "clsx";
+import { useSelector } from "react-redux";
+import { layout2Styles } from "app/MatxLayout/Layout2/_layout2";
+import SidenavTheme from "../MatxTheme/SidenavTheme/SidenavTheme";
+import Layout1Sidenav from "../Layout1/Layout1Sidenav";
 
 const Layout2 = () => {
   // import layout2 styels
@@ -23,26 +23,26 @@ const Layout2 = () => {
   const { routes } = useContext(AppContext);
   const { settings } = useSelector(({ layout }) => layout);
 
-  const { layout2Settings } = settings;
-  const topbarTheme = settings.themes[layout2Settings.topbar.theme];
-  const navbarTheme = settings.themes[layout2Settings.navbar.theme];
+  let { layout2Settings } = settings;
+  let topbarTheme = settings.themes[layout2Settings.topbar.theme];
+  let navbarTheme = settings.themes[layout2Settings.navbar.theme];
   const {
     leftSidebar: { mode: sidenavMode, show: showSidenav },
   } = layout2Settings;
 
-  const layoutClasses = {
+  let layoutClasses = {
     [settings.activeLayout]: true,
-    'bg-default text-primary': true,
+    "bg-default text-primary": true,
     [`sidenav-${layout2Settings.leftSidebar.mode}`]: true,
     [`layout-${layout2Settings.mode} theme-${theme.palette.type}`]: true,
   };
 
   return (
-    <>
+    <Fragment>
       <div
         className={clsx(
           layoutClasses,
-          'flex-grow flex-column relative overflow-hidden h-full-screen',
+          "flex-grow flex-column relative overflow-hidden h-full-screen"
         )}
       >
         {layout2Settings.topbar.show && (
@@ -59,7 +59,7 @@ const Layout2 = () => {
           )}
         </Hidden>
 
-        {showSidenav && sidenavMode !== 'close' && (
+        {showSidenav && sidenavMode !== "close" && (
           <SidenavTheme>
             <Layout1Sidenav />
           </SidenavTheme>
@@ -87,7 +87,7 @@ const Layout2 = () => {
 
         {settings.footer.show && settings.footer.fixed && <Footer />}
       </div>
-    </>
+    </Fragment>
   );
 };
 

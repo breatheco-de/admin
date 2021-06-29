@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, Icon } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
-import ModifiedAreaChart from './ModifiedAreaChart';
+import React from "react";
+import ModifiedAreaChart from "./ModifiedAreaChart";
+import { Card, Icon } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 
 const FollowerCard2 = () => {
   const { palette } = useTheme();
@@ -32,24 +32,24 @@ const FollowerCard2 = () => {
           },
           tooltip: {
             axisPointer: {
-              type: 'line',
+              type: "line",
             },
           },
           series: [
             {
               data: [34, 45, 31, 45, 31, 43, 26],
-              type: 'line',
+              type: "line",
             },
           ],
           xAxis: {
-            data: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            data: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
           },
           yAxis: {
             show: false,
           },
           color: [
             {
-              type: 'linear',
+              type: "linear",
               colorStops: [
                 {
                   offset: 0,

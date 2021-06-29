@@ -1,7 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-// eslint-disable-next-line no-unused-vars
-const positioningStyles = makeStyles(({ palette, ...theme }) => ({
+export const positioningStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.hidden': { display: 'none' },
     '.block': { display: 'block !important' },
@@ -34,5 +33,3 @@ const positioningStyles = makeStyles(({ palette, ...theme }) => ({
     '.y-center': { top: '50%', transform: 'translateY(-50%)' },
   },
 }));
-
-export default positioningStyles;

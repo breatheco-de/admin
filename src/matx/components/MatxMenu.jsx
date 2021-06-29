@@ -1,12 +1,10 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
-import React, { Fragment } from 'react';
-import Menu from '@material-ui/core/Menu';
+import React, { Fragment } from "react";
+import Menu from "@material-ui/core/Menu";
 
 const MatxMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const children = React.Children.toArray(props.children);
-  const { shouldCloseOnItemClick = true, horizontalPosition = 'left' } = props;
+  let { shouldCloseOnItemClick = true, horizontalPosition = "left" } = props;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -17,10 +15,10 @@ const MatxMenu = (props) => {
   };
 
   return (
-    <>
-      <button type="button" className="inline-block" onClick={handleClick}>
+    <Fragment>
+      <div className="inline-block" onClick={handleClick}>
         {props.menuButton}
-      </button>
+      </div>
       <Menu
         elevation={8}
         getContentAnchorEl={null}
@@ -28,26 +26,24 @@ const MatxMenu = (props) => {
         open={!!anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: "bottom",
           horizontal: horizontalPosition,
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: "top",
           horizontal: horizontalPosition,
         }}
       >
         {children.map((child, index) => (
-          <button
-            type="button"
+          <div
             onClick={shouldCloseOnItemClick ? handleClose : () => {}}
-            // eslint-disable-next-line react/no-array-index-key
             key={index}
           >
             {child}
-          </button>
+          </div>
         ))}
       </Menu>
-    </>
+    </Fragment>
   );
 };
 

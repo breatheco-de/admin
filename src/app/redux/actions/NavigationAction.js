@@ -6,7 +6,6 @@ const getfilteredNavigations = (navList = [], role) => navList.reduce((array, na
       array.push(nav);
     }
   } else if (nav.children) {
-    // eslint-disable-next-line no-param-reassign
     nav.children = getfilteredNavigations(nav.children, role);
     array.push(nav);
   } else {

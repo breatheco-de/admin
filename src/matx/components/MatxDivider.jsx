@@ -1,15 +1,14 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 
-// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   divider: {
     // borderBottom: `1px solid ${palette.divider}`,
-    textAlign: 'center',
-    position: 'relative',
+    textAlign: "center",
+    position: "relative",
     height: 16,
-    '&::after': {
+    "&::after": {
       position: 'absolute',
       content: '""',
       top: '10px',
@@ -17,19 +16,18 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       width: '100%',
       height: '1px',
       backgroundColor: palette.divider,
-      zIndex: 1,
+      zIndex: 1
     },
-    '& span': {
-      position: 'relative',
-      background: '#fff',
+    "& span": {
+      position: "relative",
+      background: "#fff",
       padding: '4px 6px',
       color: palette.text.secondary,
-      zIndex: 5,
+      zIndex: 5
     },
   },
 }));
 
-// eslint-disable-next-line react/prop-types
 const MatxDivider = ({ text, className }) => {
   const classes = useStyles();
   return (

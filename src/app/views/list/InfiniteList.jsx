@@ -1,12 +1,11 @@
-/* eslint-disable no-param-reassign */
-import React, { useState, useEffect } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import qwest from 'qwest';
-import { Grid, Card, CircularProgress } from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import qwest from "qwest";
+import { Grid, Card, CircularProgress } from "@material-ui/core";
 
 const api = {
-  baseUrl: 'https://api.soundcloud.com',
-  client_id: 'caf73ef1e709f839664ab82bef40fa96',
+  baseUrl: "https://api.soundcloud.com",
+  client_id: "caf73ef1e709f839664ab82bef40fa96",
 };
 
 const InfiniteList = () => {
@@ -15,10 +14,12 @@ const InfiniteList = () => {
   const [nextHref, setNextHref] = useState(null);
   const [isAlive, setIsAlive] = useState(true);
 
-  useEffect(() => () => setIsAlive(false), []);
+  useEffect(() => {
+    return () => setIsAlive(false);
+  }, []);
 
   const loadItems = () => {
-    let url = `${api.baseUrl}/users/8665091/favorites`;
+    let url = api.baseUrl + "/users/8665091/favorites";
 
     if (nextHref) {
       url = nextHref;
@@ -34,11 +35,11 @@ const InfiniteList = () => {
         },
         {
           cache: true,
-        },
+        }
       )
-      .then((xhr, resp) => {
+      .then(function (xhr, resp) {
         if (resp) {
-          const tracks = trackList;
+          let tracks = trackList;
           resp.collection.map((track) => {
             if (track.artwork_url == null) {
               track.artwork_url = track.user.avatar_url;
@@ -62,7 +63,7 @@ const InfiniteList = () => {
 
   const loader = (
     <div className="w-full text-center p-6" key="loader">
-      <CircularProgress variant="indeterminate" />
+      <CircularProgress variant="indeterminate"></CircularProgress>
     </div>
   );
 
@@ -76,7 +77,7 @@ const InfiniteList = () => {
         useWindow={false}
       >
         <Grid container spacing={2}>
-          {trackList.map((track) => (
+          {trackList.map((track, i) => (
             <Grid
               item
               lg={3}
