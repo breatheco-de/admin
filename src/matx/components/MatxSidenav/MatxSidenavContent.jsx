@@ -1,13 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
 
-const MatxSidenavContent = ({ children }) => <div className="relative flex-grow h-full">{children}</div>;
-
-MatxSidenavContent.defaultProps = {
-  children: {},
-};
-MatxSidenavContent.propTypes = {
-  children: PropTypes.node,
+const MatxSidenavContent = ({ children }) => {
+  return <div className="relative flex-grow h-full">{children}</div>;
 };
 
 export default MatxSidenavContent;

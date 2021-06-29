@@ -1,7 +1,6 @@
 import { makeStyles, lighten } from '@material-ui/core/styles';
 
-// eslint-disable-next-line no-unused-vars
-const colorStyles = makeStyles(({ palette, ...theme }) => ({
+export const colorStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.bg-primary': { background: `${palette.primary.main} !important` },
     '.bg-secondary': { background: `${palette.secondary.main} !important` },
@@ -93,5 +92,3 @@ const colorStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
 }));
-
-export default colorStyles;

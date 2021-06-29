@@ -1,99 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const generateHeightWidh = (
-  start = 0,
-  end = 400,
-  increament = 4,
-  unit = 'px',
-) => {
-  const classList = {};
-
-  for (let i = start; i <= end; i += increament) {
-    classList[`.w-${i}`] = {
-      width: `${i}${unit} !important`,
-    };
-    classList[`.min-w-${i}`] = {
-      minWidth: `${i}${unit} !important`,
-    };
-    classList[`.max-w-${i}`] = {
-      maxWidth: `${i}${unit} !important`,
-    };
-    classList[`.h-${i}`] = {
-      height: `${i}${unit} !important`,
-    };
-    classList[`.min-h-${i}`] = {
-      minHeight: `${i}${unit} !important`,
-    };
-    classList[`.max-h-${i}`] = {
-      maxHeight: `${i}${unit} !important`,
-    };
-  }
-
-  return classList;
-};
-
-const generateMarginPadding = (
-  start = 0,
-  end = 25,
-  increament = 0.25,
-  unit = 'rem',
-) => {
-  const classList = {};
-
-  for (let i = start; i <= end; i += 1) {
-    classList[`.m-${i}${unit === 'px' ? 'px' : ''}`] = {
-      margin: `${i * increament}${unit} !important`,
-    };
-    classList[`.mt-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginTop: `${i * increament}${unit} !important`,
-    };
-    classList[`.mb-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginBottom: `${i * increament}${unit} !important`,
-    };
-    classList[`.mr-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginRight: `${i * increament}${unit} !important`,
-    };
-    classList[`.ml-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginLeft: `${i * increament}${unit} !important`,
-    };
-    classList[`.mx-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginLeft: `${i * increament}${unit} !important`,
-      marginRight: `${i * increament}${unit} !important`,
-    };
-    classList[`.my-${i}${unit === 'px' ? 'px' : ''}`] = {
-      marginTop: `${i * increament}${unit} !important`,
-      marginBottom: `${i * increament}${unit} !important`,
-    };
-
-    classList[`.p-${i}${unit === 'px' ? 'px' : ''}`] = {
-      padding: `${i * increament}${unit} !important`,
-    };
-    classList[`.pt-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingTop: `${i * increament}${unit} !important`,
-    };
-    classList[`.pb-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingBottom: `${i * increament}${unit} !important`,
-    };
-    classList[`.pr-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingRight: `${i * increament}${unit} !important`,
-    };
-    classList[`.pl-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingLeft: `${i * increament}${unit} !important`,
-    };
-    classList[`.px-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingLeft: `${i * increament}${unit} !important`,
-      paddingRight: `${i * increament}${unit} !important`,
-    };
-    classList[`.py-${i}${unit === 'px' ? 'px' : ''}`] = {
-      paddingTop: `${i * increament}${unit} !important`,
-      paddingBottom: `${i * increament}${unit} !important`,
-    };
-  }
-
-  return classList;
-};
-
-const spacingStyles = makeStyles(({ palette, ...theme }) => ({
+export const spacingStyles = makeStyles(({ palette, ...theme }) => ({
   '@global': {
     '.px-80': {
       paddingRight: '80px',
@@ -187,4 +94,95 @@ const spacingStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-export default spacingStyles;
+const generateMarginPadding = (
+  start = 0,
+  end = 25,
+  increament = 0.25,
+  unit = 'rem',
+) => {
+  const classList = {};
+
+  for (let i = start; i <= end; i++) {
+    classList[`.m-${i}${unit === 'px' ? 'px' : ''}`] = {
+      margin: `${i * increament}${unit} !important`,
+    };
+    classList[`.mt-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginTop: `${i * increament}${unit} !important`,
+    };
+    classList[`.mb-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginBottom: `${i * increament}${unit} !important`,
+    };
+    classList[`.mr-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginRight: `${i * increament}${unit} !important`,
+    };
+    classList[`.ml-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginLeft: `${i * increament}${unit} !important`,
+    };
+    classList[`.mx-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginLeft: `${i * increament}${unit} !important`,
+      marginRight: `${i * increament}${unit} !important`,
+    };
+    classList[`.my-${i}${unit === 'px' ? 'px' : ''}`] = {
+      marginTop: `${i * increament}${unit} !important`,
+      marginBottom: `${i * increament}${unit} !important`,
+    };
+
+    classList[`.p-${i}${unit === 'px' ? 'px' : ''}`] = {
+      padding: `${i * increament}${unit} !important`,
+    };
+    classList[`.pt-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingTop: `${i * increament}${unit} !important`,
+    };
+    classList[`.pb-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingBottom: `${i * increament}${unit} !important`,
+    };
+    classList[`.pr-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingRight: `${i * increament}${unit} !important`,
+    };
+    classList[`.pl-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingLeft: `${i * increament}${unit} !important`,
+    };
+    classList[`.px-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingLeft: `${i * increament}${unit} !important`,
+      paddingRight: `${i * increament}${unit} !important`,
+    };
+    classList[`.py-${i}${unit === 'px' ? 'px' : ''}`] = {
+      paddingTop: `${i * increament}${unit} !important`,
+      paddingBottom: `${i * increament}${unit} !important`,
+    };
+  }
+
+  return classList;
+};
+
+const generateHeightWidh = (
+  start = 0,
+  end = 400,
+  increament = 4,
+  unit = 'px',
+) => {
+  const classList = {};
+
+  for (let i = start; i <= end; i += increament) {
+    classList[`.w-${i}`] = {
+      width: `${i}${unit} !important`,
+    };
+    classList[`.min-w-${i}`] = {
+      minWidth: `${i}${unit} !important`,
+    };
+    classList[`.max-w-${i}`] = {
+      maxWidth: `${i}${unit} !important`,
+    };
+    classList[`.h-${i}`] = {
+      height: `${i}${unit} !important`,
+    };
+    classList[`.min-h-${i}`] = {
+      minHeight: `${i}${unit} !important`,
+    };
+    classList[`.max-h-${i}`] = {
+      maxHeight: `${i}${unit} !important`,
+    };
+  }
+
+  return classList;
+};

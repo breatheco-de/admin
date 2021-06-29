@@ -1,39 +1,39 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Switch from '@material-ui/core/Switch';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import Switch from "@material-ui/core/Switch";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: 'fit-content',
+    display: "flex",
+    flexDirection: "column",
+    margin: "auto",
+    width: "fit-content"
   },
   formControl: {
     marginTop: theme.spacing(2),
-    minWidth: 120,
+    minWidth: 120
   },
   formControlLabel: {
-    marginTop: theme.spacing(1),
-  },
+    marginTop: theme.spacing(1)
+  }
 }));
 
 export default function MaxWidthDialog() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [fullWidth, setFullWidth] = React.useState(true);
-  const [maxWidth, setMaxWidth] = React.useState('sm');
+  const [maxWidth, setMaxWidth] = React.useState("sm");
 
   function handleClickOpen() {
     setOpen(true);
@@ -52,7 +52,7 @@ export default function MaxWidthDialog() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         Open max-width dialog
       </Button>
@@ -75,8 +75,8 @@ export default function MaxWidthDialog() {
                 value={maxWidth}
                 onChange={handleMaxWidthChange}
                 inputProps={{
-                  name: 'max-width',
-                  id: 'max-width',
+                  name: "max-width",
+                  id: "max-width"
                 }}
               >
                 <MenuItem value={false}>false</MenuItem>
@@ -89,13 +89,13 @@ export default function MaxWidthDialog() {
             </FormControl>
             <FormControlLabel
               className={classes.formControlLabel}
-              control={(
+              control={
                 <Switch
                   checked={fullWidth}
                   onChange={handleFullWidthChange}
                   value="fullWidth"
                 />
-              )}
+              }
               label="Full width"
             />
           </form>
@@ -106,6 +106,6 @@ export default function MaxWidthDialog() {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </React.Fragment>
   );
 }

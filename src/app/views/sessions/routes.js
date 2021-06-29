@@ -1,4 +1,4 @@
-import JwtLogin from './login/JwtLogin';
+import JwtLogin from './login/JwtLogin.jsx';
 import NotFound from './notfound';
 import JwtRegister from './register/JwtRegister';
 import Choose from './choose';

@@ -1,43 +1,42 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { Fragment } from 'react';
-import { TextField } from '@material-ui/core';
-import { Autocomplete, createFilterOptions } from '@material-ui/lab';
+import React, { Fragment } from "react";
+import { TextField } from "@material-ui/core";
+import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 
 const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
+  { label: "Afghanistan" },
+  { label: "Aland Islands" },
+  { label: "Albania" },
+  { label: "Algeria" },
+  { label: "American Samoa" },
+  { label: "Andorra" },
+  { label: "Angola" },
+  { label: "Anguilla" },
+  { label: "Antarctica" },
+  { label: "Antigua and Barbuda" },
+  { label: "Argentina" },
+  { label: "Armenia" },
+  { label: "Aruba" },
+  { label: "Australia" },
+  { label: "Austria" },
+  { label: "Azerbaijan" },
+  { label: "Bahamas" },
+  { label: "Bahrain" },
+  { label: "Bangladesh" },
+  { label: "Barbados" },
+  { label: "Belarus" },
+  { label: "Belgium" },
+  { label: "Belize" },
+  { label: "Benin" },
+  { label: "Bermuda" },
+  { label: "Bhutan" },
+  { label: "Bolivia, Plurinational State of" },
+  { label: "Bonaire, Sint Eustatius and Saba" },
+  { label: "Bosnia and Herzegovina" },
+  { label: "Botswana" },
+  { label: "Bouvet Island" },
+  { label: "Brazil" },
+  { label: "British Indian Ocean Territory" },
+  { label: "Brunei Darussalam" }
 ];
 
 const filter = createFilterOptions();
@@ -46,10 +45,10 @@ const AutocompleteCombo = () => {
   const [value, setValue] = React.useState(null);
 
   const handleChange = (event, newValue) => {
-    console.log(value);
+    console.log(value)
     if (newValue && newValue.inputValue) {
       setValue({
-        label: newValue.inputValue,
+        label: newValue.inputValue
       });
       return;
     }
@@ -57,24 +56,24 @@ const AutocompleteCombo = () => {
   };
 
   const filterOptions = (options, params) => {
-    console.log(value);
+    console.log(value)
     const filtered = filter(options, params);
-    if (params.inputValue !== '') {
+    if (params.inputValue !== "") {
       filtered.push({
         inputValue: params.inputValue,
-        label: `Add "${params.inputValue}"`,
+        label: `Add "${params.inputValue}"`
       });
     }
     return filtered;
   };
 
   return (
-    <>
+    <Fragment>
       <Autocomplete
         className="mb-4 w-300"
         options={suggestions}
-        getOptionLabel={(option) => option.label}
-        renderInput={(params) => (
+        getOptionLabel={option => option.label}
+        renderInput={params => (
           <TextField
             {...params}
             label="Combo box"
@@ -90,9 +89,9 @@ const AutocompleteCombo = () => {
         onChange={handleChange}
         filterOptions={filterOptions}
         options={suggestions}
-        getOptionLabel={(option) => {
+        getOptionLabel={option => {
           // e.g value selected with enter, right from the input
-          if (typeof option === 'string') {
+          if (typeof option === "string") {
             return option;
           }
           if (option.inputValue) {
@@ -100,10 +99,10 @@ const AutocompleteCombo = () => {
           }
           return option.label;
         }}
-        renderOption={(option) => option.label}
+        renderOption={option => option.label}
         style={{ width: 300 }}
         freeSolo
-        renderInput={(params) => (
+        renderInput={params => (
           <TextField
             {...params}
             label="Free solo with text demo"
@@ -116,9 +115,11 @@ const AutocompleteCombo = () => {
       <Autocomplete
         className="mb-4 w-300"
         options={suggestions}
-        getOptionLabel={(option) => option.label}
-        getOptionDisabled={(option) => option === suggestions[0] || option === suggestions[2]}
-        renderInput={(params) => (
+        getOptionLabel={option => option.label}
+        getOptionDisabled={option =>
+          option === suggestions[0] || option === suggestions[2]
+        }
+        renderInput={params => (
           <TextField
             {...params}
             label="Disabled option"
@@ -127,7 +128,7 @@ const AutocompleteCombo = () => {
           />
         )}
       />
-    </>
+    </Fragment>
   );
 };
 

@@ -1,7 +1,3 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
-/* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { resolveResponse, resolveError } from './utils';

@@ -1,6 +1,5 @@
-import authRoles from './auth/authRoles';
+import { authRoles } from './auth/authRoles';
 
-// eslint-disable-next-line import/prefer-default-export
 export const navigations = [
   {
     name: 'Dashboard',

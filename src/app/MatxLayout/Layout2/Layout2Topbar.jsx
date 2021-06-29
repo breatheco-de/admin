@@ -1,29 +1,27 @@
-import React from 'react';
-import {
-  Icon, IconButton, Hidden, MenuItem, Avatar,
-} from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { merge } from 'lodash';
-import { logoutUser } from '../../redux/actions/UserActions';
-import { setLayoutSettings } from '../../redux/actions/LayoutActions';
-import { MatxMenu, MatxToolbarMenu, MatxSearchBox } from '../../../matx';
-import NotificationBar from '../SharedCompoents/NotificationBar';
+import React from "react";
+import { Icon, IconButton, Hidden, MenuItem, Avatar } from "@material-ui/core";
+import { MatxMenu, MatxToolbarMenu, MatxSearchBox } from "matx";
+import { setLayoutSettings } from "app/redux/actions/LayoutActions";
+import { useDispatch, useSelector } from "react-redux";
+import NotificationBar from "../SharedCompoents/NotificationBar";
+import { makeStyles } from "@material-ui/core/styles";
+import { logoutUser } from "app/redux/actions/UserActions";
+import clsx from "clsx";
+import { merge } from "lodash";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   root: {
     backgroundColor: palette.primary.main,
     borderColor: palette.divider,
-    display: 'table',
-    height: 'var(--topbar-height)',
-    borderBottom: '1px solid transparent',
-    paddingTop: '1rem',
-    paddingBottom: '1rem',
+    display: "table",
+    height: "var(--topbar-height)",
+    borderBottom: "1px solid transparent",
+    paddingTop: "1rem",
+    paddingBottom: "1rem",
     zIndex: 98,
-    paddingLeft: '1.75rem',
-    [theme.breakpoints.down('sm')]: {
-      paddingLeft: '1rem',
+    paddingLeft: "1.75rem",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: "1rem",
     },
   },
   brandText: {
@@ -48,15 +46,16 @@ const Layout2Topbar = () => {
               ...sidebarSettings,
             },
           },
-        }),
-      ),
+        })
+      )
     );
   };
 
   const handleSidebarToggle = () => {
-    const { layout2Settings } = settings;
+    let { layout2Settings } = settings;
 
-    const mode = layout2Settings.leftSidebar.mode === 'close' ? 'mobile' : 'close';
+    let mode =
+      layout2Settings.leftSidebar.mode === "close" ? "mobile" : "close";
 
     updateSidebarMode({ mode });
   };
@@ -66,7 +65,7 @@ const Layout2Topbar = () => {
   };
 
   return (
-    <div className={clsx('relative w-full', classes.root)}>
+    <div className={clsx("relative w-full", classes.root)}>
       <div className="flex justify-between items-center h-full">
         <div className="flex items-center h-full">
           <img
@@ -75,7 +74,7 @@ const Layout2Topbar = () => {
             alt="company-logo"
           />
         </div>
-        <div className="mx-auto" />
+        <div className="mx-auto"></div>
         <div className="flex items-center">
           <MatxToolbarMenu offsetTop="80px">
             <MatxSearchBox />
@@ -83,12 +82,12 @@ const Layout2Topbar = () => {
             <NotificationBar />
 
             <MatxMenu
-              menuButton={(
+              menuButton={
                 <Avatar
                   className="cursor-pointer mx-2"
                   src="/assets/images/face-7.jpg"
                 />
-              )}
+              }
             >
               <MenuItem className={classes.menuItem}>
                 <Icon> home </Icon>

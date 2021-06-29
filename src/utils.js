@@ -1,12 +1,3 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable func-names */
-/* eslint-disable no-shadow */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 import { differenceInSeconds } from 'date-fns';
 import { toast } from 'react-toastify';
 import axios from './axios';
@@ -32,7 +23,7 @@ export const convertHexToRGB = (hex) => {
     }
     c = `0x${c.join('')}`;
 
-    return [(c > 16) && 255, (c > 8) && 255, c && 255].join(',');
+    return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
   }
 };
 
@@ -72,8 +63,7 @@ function currentYPosition(elm) {
   // Firefox, Chrome, Opera, Safari
   if (window.pageYOffset) return window.pageYOffset;
   // Internet Explorer 6 - standards mode
-  if (document.documentElement
-    && document.documentElement.scrollTop) return document.documentElement.scrollTop;
+  if (document.documentElement && document.documentElement.scrollTop) return document.documentElement.scrollTop;
   // Internet Explorer 6, 7 and 8
   if (document.body.scrollTop) return document.body.scrollTop;
   return 0;
@@ -121,7 +111,7 @@ export function scrollTo(scrollableElement, elmID) {
       );
       leapY += step;
       if (leapY > stopY) leapY = stopY;
-      timer += 1;
+      timer++;
     }
     return;
   }
@@ -136,7 +126,7 @@ export function scrollTo(scrollableElement, elmID) {
     );
     leapY -= step;
     if (leapY < stopY) leapY = stopY;
-    timer += 1;
+    timer++;
   }
   return false;
 }
@@ -164,7 +154,7 @@ export function getQueryParam(prop) {
     window.location.href.slice(window.location.href.indexOf('?') + 1),
   );
   const definitions = search.split('&');
-  definitions.forEach((val) => {
+  definitions.forEach((val, key) => {
     const parts = val.split('=', 2);
     params[parts[0]] = parts[1];
   });
@@ -185,22 +175,13 @@ export function resolveResponse(res) {
     delete: 'deleted',
   };
   if (res.config.method !== 'get' && res.status >= 200) {
-    return toast.success(
-      `${axios.scopes[res.config.url]} ${
-        methods[res.config.method]
-      } successfully`,
-      toastOption,
-    );
+    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
   }
 }
 
 export function resolveError(error) {
   console.log(error.response);
-  if (
-    typeof error.response.data === 'object'
-    && error.response.data.status_code === undefined
-    && error.response !== undefined
-  ) {
+  if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
     for (const item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {
         for (const str of error.response.data[item]) {
@@ -208,24 +189,15 @@ export function resolveError(error) {
         }
       } else {
         for (const key in error.response.data[item]) {
-          return toast.error(
-            `${key.toUpperCase()}: ${error.response.data[item][key][0]}`,
-            toastOption,
-          );
+          return toast.error(`${key.toUpperCase()}: ${error.response.data[item][key][0]}`, toastOption);
         }
       }
     }
   }
   if (error.response.status === 404) return toast.error(error.response.data.detail || 'Not found', toastOption);
   if (error.response.status === 403) {
-    if (error.response.data.detail.includes('capability')) {
-      return toast.warning(
-        'You don´t have the permissions required',
-        toastOption,
-      );
-    }
+    if (error.response.data.detail.includes('capability')) return toast.warning('You don´t have the permissions required', toastOption);
   } else if (error.response.status === 500) return toast.error('Internal server error, try again later', toastOption);
-  else if (error.response.status >= 400) {
-    return toast.error(error.response.data.detail, toastOption);
-  } else return toast.error('Something went wrong!', toastOption);
+  else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption);
+  else return toast.error('Something went wrong!', toastOption);
 }

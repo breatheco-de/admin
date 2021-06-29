@@ -1,5 +1,10 @@
-/* eslint-disable import/prefer-default-export */
 import { makeStyles } from '@material-ui/core/styles';
+
+export const shadowStyles = makeStyles(({ palette, ...theme }) => ({
+  '@global': {
+    ...generateShadows(theme),
+  },
+}));
 
 const generateShadows = (theme) => {
   const classList = {};
@@ -12,9 +17,3 @@ const generateShadows = (theme) => {
 
   return classList;
 };
-
-export const shadowStyles = makeStyles(({ palette, ...theme }) => ({
-  '@global': {
-    ...generateShadows(theme),
-  },
-}));

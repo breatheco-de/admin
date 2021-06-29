@@ -1,17 +1,17 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import React from "react";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default function PositionedSnackbar() {
   const [state, setState] = React.useState({
     open: false,
-    vertical: 'top',
-    horizontal: 'center',
+    vertical: "top",
+    horizontal: "center"
   });
 
   const { vertical, horizontal, open } = state;
 
-  const handleClick = (newState) => () => {
+  const handleClick = newState => () => {
     setState({ open: true, ...newState });
   };
 
@@ -21,26 +21,26 @@ export default function PositionedSnackbar() {
 
   return (
     <div>
-      <Button onClick={handleClick({ vertical: 'top', horizontal: 'center' })}>
+      <Button onClick={handleClick({ vertical: "top", horizontal: "center" })}>
         Top-Center
       </Button>
-      <Button onClick={handleClick({ vertical: 'top', horizontal: 'right' })}>
+      <Button onClick={handleClick({ vertical: "top", horizontal: "right" })}>
         Top-Right
       </Button>
       <Button
-        onClick={handleClick({ vertical: 'bottom', horizontal: 'right' })}
+        onClick={handleClick({ vertical: "bottom", horizontal: "right" })}
       >
         Bottom-Right
       </Button>
       <Button
-        onClick={handleClick({ vertical: 'bottom', horizontal: 'center' })}
+        onClick={handleClick({ vertical: "bottom", horizontal: "center" })}
       >
         Bottom-Center
       </Button>
-      <Button onClick={handleClick({ vertical: 'bottom', horizontal: 'left' })}>
+      <Button onClick={handleClick({ vertical: "bottom", horizontal: "left" })}>
         Bottom-Left
       </Button>
-      <Button onClick={handleClick({ vertical: 'top', horizontal: 'left' })}>
+      <Button onClick={handleClick({ vertical: "top", horizontal: "left" })}>
         Top-Left
       </Button>
       <Snackbar
@@ -49,7 +49,7 @@ export default function PositionedSnackbar() {
         open={open}
         onClose={handleClose}
         ContentProps={{
-          'aria-describedby': 'message-id',
+          "aria-describedby": "message-id"
         }}
         message={<span id="message-id">I love snacks</span>}
       />

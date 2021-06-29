@@ -1,31 +1,31 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Card,
   Checkbox,
   FormControlLabel,
   Grid,
   Button,
-} from '@material-ui/core';
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
-import useAuth from '../../../hooks/useAuth';
-import history from '../../../../history';
+} from "@material-ui/core";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import { Link } from "react-router-dom";
+import useAuth from 'app/hooks/useAuth';
+import history from "history.js";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
-    background: '#1A2038',
+    background: "#1A2038",
   },
   card: {
     maxWidth: 800,
     borderRadius: 12,
-    margin: '1rem',
+    margin: "1rem",
   },
 }));
 
 const JwtRegister = () => {
+  
   const [state, setState] = useState({});
   const classes = useStyles();
   const { register } = useAuth();
@@ -40,21 +40,19 @@ const JwtRegister = () => {
   const handleFormSubmit = (event) => {
     try {
       register(state.email, state.username, state.password);
-      history.push('/');
-    } catch (e) {
+      history.push("/");
+    } catch(e) {
       console.log(e);
     }
   };
 
-  const {
-    username, email, password, agreement,
-  } = state;
+  let { username, email, password, agreement } = state;
 
   return (
     <div
       className={clsx(
-        'flex justify-center items-center  min-h-full-screen',
-        classes.cardHolder,
+        "flex justify-center items-center  min-h-full-screen",
+        classes.cardHolder
       )}
     >
       <Card className={classes.card}>
@@ -79,9 +77,9 @@ const JwtRegister = () => {
                   onChange={handleChange}
                   type="text"
                   name="username"
-                  value={username || ''}
-                  validators={['required']}
-                  errorMessages={['this field is required']}
+                  value={username || ""}
+                  validators={["required"]}
+                  errorMessages={["this field is required"]}
                 />
                 <TextValidator
                   className="mb-6 w-full"
@@ -91,11 +89,11 @@ const JwtRegister = () => {
                   onChange={handleChange}
                   type="email"
                   name="email"
-                  value={email || ''}
-                  validators={['required', 'isEmail']}
+                  value={email || ""}
+                  validators={["required", "isEmail"]}
                   errorMessages={[
-                    'this field is required',
-                    'email is not valid',
+                    "this field is required",
+                    "email is not valid",
                   ]}
                 />
                 <TextValidator
@@ -106,16 +104,18 @@ const JwtRegister = () => {
                   onChange={handleChange}
                   name="password"
                   type="password"
-                  value={password || ''}
-                  validators={['required']}
-                  errorMessages={['this field is required']}
+                  value={password || ""}
+                  validators={["required"]}
+                  errorMessages={["this field is required"]}
                 />
                 <FormControlLabel
                   className="mb-4"
                   name="agreement"
-                  onChange={(e) => handleChange({
-                    target: { name: 'agreement', value: e.target.checked },
-                  })}
+                  onChange={(e) =>
+                    handleChange({
+                      target: { name: "agreement", value: e.target.checked },
+                    })
+                  }
                   control={
                     <Checkbox size="small" checked={agreement || false} />
                   }

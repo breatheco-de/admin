@@ -1,8 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { convertHexToRGB } from '../../utils';
+import { convertHexToRGB } from 'utils';
 
-const generateFontProperty = (fontObject) => `${fontObject.fontWeight} ${fontObject.fontSize}/${fontObject.lineHeight} ${fontObject.fontFamily}`;
-// eslint-disable-next-line import/prefer-default-export
 export const variableStyles = makeStyles((theme) => ({
   '@global': {
     ':root': {
@@ -46,3 +44,5 @@ export const variableStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+const generateFontProperty = (fontObject) => `${fontObject.fontWeight} ${fontObject.fontSize}/${fontObject.lineHeight} ${fontObject.fontFamily}`;

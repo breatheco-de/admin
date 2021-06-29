@@ -1,26 +1,25 @@
-/* eslint-disable react/require-default-props */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
-import Typography from '@material-ui/core/Typography';
-import { blue } from '@material-ui/core/colors';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import PersonIcon from "@material-ui/icons/Person";
+import AddIcon from "@material-ui/icons/Add";
+import Typography from "@material-ui/core/Typography";
+import { blue } from "@material-ui/core/colors";
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
+const emails = ["username@gmail.com", "user02@gmail.com"];
 const useStyles = makeStyles({
   avatar: {
     backgroundColor: blue[100],
-    color: blue[600],
-  },
+    color: blue[600]
+  }
 });
 
 function SimpleDialog(props) {
@@ -39,12 +38,11 @@ function SimpleDialog(props) {
     <Dialog
       onClose={handleClose}
       aria-labelledby="simple-dialog-title"
-      // eslint-disable-next-line react/jsx-props-no-spreading
       {...other}
     >
       <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
       <List>
-        {emails.map((email) => (
+        {emails.map(email => (
           <ListItem
             button
             onClick={() => handleListItemClick(email)}
@@ -59,7 +57,7 @@ function SimpleDialog(props) {
           </ListItem>
         ))}
 
-        <ListItem button onClick={() => handleListItemClick('addAccount')}>
+        <ListItem button onClick={() => handleListItemClick("addAccount")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -75,7 +73,7 @@ function SimpleDialog(props) {
 SimpleDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
-  selectedValue: PropTypes.string,
+  selectedValue: PropTypes.string
 };
 
 export default function SimpleDialogDemo() {
@@ -86,17 +84,14 @@ export default function SimpleDialogDemo() {
     setOpen(true);
   }
 
-  const handleClose = (value) => {
+  const handleClose = value => {
     setOpen(false);
     setSelectedValue(value);
   };
 
   return (
     <div>
-      <Typography variant="subtitle1">
-        Selected:
-        {selectedValue}
-      </Typography>
+      <Typography variant="subtitle1">Selected: {selectedValue}</Typography>
       <br />
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         Open simple dialog

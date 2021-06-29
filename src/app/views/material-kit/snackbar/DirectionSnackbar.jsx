@@ -1,9 +1,7 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import Slide from '@material-ui/core/Slide';
+import React from "react";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import Slide from "@material-ui/core/Slide";
 
 function TransitionLeft(props) {
   return <Slide {...props} direction="left" />;
@@ -22,12 +20,11 @@ function TransitionDown(props) {
 }
 
 class DirectionSnackbar extends React.Component {
-  // eslint-disable-next-line react/state-in-constructor
   state = {
-    open: false,
+    open: false
   };
 
-  handleClick = (Transition) => () => {
+  handleClick = Transition => () => {
     this.setState({ open: true, Transition });
   };
 
@@ -47,7 +44,7 @@ class DirectionSnackbar extends React.Component {
           onClose={this.handleClose}
           TransitionComponent={this.state.Transition}
           ContentProps={{
-            'aria-describedby': 'message-id',
+            "aria-describedby": "message-id"
           }}
           message={<span id="message-id">I love snacks</span>}
         />
