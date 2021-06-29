@@ -108,8 +108,8 @@ export const AuthProvider = ({ children }) => {
       const message = e.details || e.detail || Array.isArray(e.non_field_errors)
         ? e.non_field_errors[0]
         : 'Unable to login'; // res1.data.non_field_errors;
-        console.log(e);
-        throw Error(message);
+      console.log(e);
+      throw Error(message);
     }
 
     const res2 = await axios._get(

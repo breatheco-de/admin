@@ -49,7 +49,8 @@ const JwtLogin = () => {
   }, [user]);
 
   const handleChange = ({ target: { name, value } }) => {
-    const temp = { ...userInfo };
+    // eslint-disable-next-line prefer-const
+    let temp = { ...userInfo };
     temp[name] = value;
     setUserInfo(temp);
   };
@@ -60,7 +61,7 @@ const JwtLogin = () => {
       await login(userInfo.email, userInfo.password);
       history.push('/');
     } catch (e) {
-      console.log(e);
+      console.log('Event Error', e);
       setMessage(e.message);
       setLoading(false);
     }
