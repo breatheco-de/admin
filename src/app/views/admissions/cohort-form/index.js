@@ -77,8 +77,8 @@ const Cohort = () => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
-    const handleClickOpenModal = () => {setOpen(true);};
-    const handleCloseModal = () => {setOpen(false);};
+    // const handleClickOpenModal = () => {setOpen(true);};
+    // const handleCloseModal = () => {setOpen(false);};
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -100,11 +100,13 @@ const Cohort = () => {
 
     const handleClickOpen = () => {
         setSurveyDialog(true);
+        setOpen(true);
     };
 
     const handleClose = () => {
-        setCohortDayDialog(false)
+        setCohortDayDialog(false);
         setSurveyDialog(false);
+        setOpen(false);
     };
 
     const updateSurvey = event => {
@@ -229,7 +231,7 @@ const Cohort = () => {
                 <Formik
                     initialValues = {{
                         stage: stage,
-                        current_day: currentDay
+                        current_day: currentDay,
                     }}
                     enableReinitialize = {true}
                     validationSchema = {ProfileSchema}
@@ -380,9 +382,9 @@ const Cohort = () => {
                     enableReinitialize={true}
                     onSubmit={() => {
                         bc.feedback().addNewSurvey({
-                            ...newSurvey, cohort: cohort.id
+                            ...newSurvey, cohort: cohort.id,
                         });
-                        handleClickOpenModal(true)
+                        handleClickOpen(true)
                     }}
                 >
                     {({
@@ -464,22 +466,38 @@ const Cohort = () => {
 
             <Dialog
                 open={open}
-                onClose={handleCloseModal}
+                onClose={handleClose}
+                aria-labelledby="simple-dialog-title"
             >
                 <div className="px-sm-24 pt-sm-24">
-                    <div className="flex items-center">
-                        <div className="flex items-center flex-grow">
-                            <p className="m-0 mb-4 text-small text-muted">
-                                Test#1
-                            </p>
-                        </div>
-                        <IconButton size="small" onClick={handleCloseModal}>
-                            <Icon>clear</Icon>
-                        </IconButton>
-                    </div>
                     <DialogTitle id="simple-dialog-title">
-                        Test#1
+                        Invite Link
                     </DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            label="URL"
+                            name="url"
+                            disabled
+                            size="small"
+                            variant="outlined"
+                            // value={values.slug}
+                            // onChange={handleChange}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button className="mb-3 bg-primary text-white">
+                            Copy
+                        </Button>
+                        <Button color="danger" variant="contained" className="mb-3" onClick={handleClose}>
+                            Close
+                        </Button>
+                        {/* <Button
+                            color="danger"
+                            variant="contained"
+                            onClick={handleClose}>
+                            Close
+                        </Button> */}
+                    </DialogActions>
                 </div>
             </Dialog>
         </>
