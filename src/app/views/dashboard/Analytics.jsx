@@ -102,7 +102,7 @@ const Analytics = () => {
             .then(({ data }) => {
                 setFeedback(data.filter(a => a.score));
             })
-    }, [renderNewDates])
+    }, [renderNewDates, params.end, params.start])
 
     return (
         <Fragment>
