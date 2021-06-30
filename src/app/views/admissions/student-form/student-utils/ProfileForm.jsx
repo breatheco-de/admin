@@ -17,7 +17,9 @@ export const ProfileForm = ({ initialValues }) => {
 
   const postAcademyStudentProfile = (values) => {
     console.log(cohort);
-    const requestValues = cohort !== null ? { ...values, cohort: cohort.id, invite: true } : { ...values, invite: true };
+    const requestValues = cohort !== null
+      ? { ...values, cohort: cohort.id, invite: true }
+      : { ...values, invite: true };
     bc.auth().addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
@@ -35,14 +37,14 @@ export const ProfileForm = ({ initialValues }) => {
     >
       {({
         values,
-        errors,
-        touched,
+        // errors,
+        // touched,
         handleChange,
-        handleBlur,
+        // handleBlur,
         handleSubmit,
-        isSubmitting,
-        setSubmitting,
-        setFieldValue,
+        // isSubmitting,
+        // setSubmitting,
+        // setFieldValue,
       }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">

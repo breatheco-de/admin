@@ -19,10 +19,7 @@ import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
 
 const StudentDetails = ({
-  user,
-  std_id,
-  openRoleDialog,
-  setOpenRoleDialog,
+  user, std_id, openRoleDialog, setOpenRoleDialog,
 }) => {
   const initialValues = {
     first_name: user?.first_name,
@@ -100,20 +97,16 @@ const StudentDetails = ({
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar
-          className="w-84 h-84"
-          src={user?.user?.github?.avatar_url || ''}
-        />
-        <h5 className="mt-4 mb-2">
-          {`${crt_user?.first_name} ${crt_user?.last_name}`}
-        </h5>
-        <div
+        <Avatar className="w-84 h-84" src={user?.user?.github?.avatar_url || ''} />
+        <h5 className="mt-4 mb-2">{`${crt_user?.first_name} ${crt_user?.last_name}`}</h5>
+        <button
+          type="button"
           className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
           onClick={() => setRoleDialog(true)}
           style={{ cursor: 'pointer' }}
         >
           {role.length ? role.toUpperCase() : user?.role.name.toUpperCase()}
-        </div>
+        </button>
       </div>
       <Divider />
       <Formik
@@ -123,14 +116,14 @@ const StudentDetails = ({
       >
         {({
           values,
-          errors,
-          touched,
+          // errors,
+          // touched,
           handleChange,
-          handleBlur,
+          // handleBlur,
           handleSubmit,
-          isSubmitting,
-          setSubmitting,
-          setFieldValue,
+          // isSubmitting,
+          // setSubmitting,
+          // setFieldValue,
         }) => (
           <form className="p-4" onSubmit={handleSubmit}>
             <Table className="mb-4">

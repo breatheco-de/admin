@@ -28,7 +28,9 @@ const AddBulkToCohort = (props) => {
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
 
-  const selected = useMemo(() => props.selectedRows.data.map((item) => item.index), [props.selectedRows]);
+  const selected = useMemo(() => {
+    props.selectedRows.data.map((item) => item.index), [props.selectedRows];
+  });
 
   useEffect(() => {
     setBulk(

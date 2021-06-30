@@ -357,14 +357,17 @@ const Cohorts = () => {
                     );
                     break;
                   case 'filterChange':
-                  // console.log(action, tableState)
+                    // console.log(action, tableState)
+                    break;
+                  default:
+                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
               customSearchRender: (
-                searchText,
+                // searchText,
                 handleSearch,
                 hideSearch,
-                options,
+                // options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField

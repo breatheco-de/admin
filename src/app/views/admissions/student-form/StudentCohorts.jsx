@@ -32,6 +32,20 @@ const StudentCohorts = ({ std_id }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cohort, setCohort] = useState(null);
+
+  const getStudentCohorts = () => {
+    setIsLoading(true);
+    bc.admissions().getAllUserCohorts({
+      users: std_id,
+    })
+      .then(({ data }) => {
+        console.log(data);
+        setIsLoading(false);
+        data.length < 1 ? setStdCohorts([]) : setStdCohorts(data);
+      })
+      .catch((error) => error);
+  };
+
   useEffect(() => {
     getStudentCohorts();
   }, []);
@@ -44,23 +58,12 @@ const StudentCohorts = ({ std_id }) => {
       educational_status: stdCohorts[i].educational_status,
     };
     console.log(s_status);
-    bc.admissions().updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, { ...s_status, [name]: value })
+    bc.admissions().updateCohortUserInfo(
+      stdCohorts[i].cohort.id, studentId, { ...s_status, [name]: value },
+    )
       .then((data) => {
         console.log(data);
         if (data.status >= 200) getStudentCohorts();
-      })
-      .catch((error) => error);
-  };
-
-  const getStudentCohorts = () => {
-    setIsLoading(true);
-    bc.admissions().getAllUserCohorts({
-      users: std_id,
-    })
-      .then(({ data }) => {
-        console.log(data);
-        setIsLoading(false);
-        data.length < 1 ? setStdCohorts([]) : setStdCohorts(data);
       })
       .catch((error) => error);
   };
@@ -168,7 +171,9 @@ const StudentCohorts = ({ std_id }) => {
                     size="small"
                     variant="outlined"
                     value={s.finantial_status}
-                    onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
+                    onChange={({ target: { name, value } }) => {
+                      changeStudentStatus(value, name, s.user.id, i);
+                    }}
                     select
                   >
                     {['FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item, ind) => (
@@ -186,7 +191,9 @@ const StudentCohorts = ({ std_id }) => {
                     size="small"
                     variant="outlined"
                     value={s.educational_status}
-                    onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
+                    onChange={({ target: { name, value } }) => {
+                      changeStudentStatus(value, name, s.user.id, i);
+                    }}
                     select
                   >
                     {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED'].map((item, ind) => (

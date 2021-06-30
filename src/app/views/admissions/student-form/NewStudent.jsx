@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import {
-  Card,
-  Divider,
-  Button,
-} from '@material-ui/core';
+import { Card, Divider, Button } from '@material-ui/core';
 import { Breadcrumb } from 'matx';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { AsyncAutocomplete } from 'app/components/Autocomplete';
@@ -59,27 +55,31 @@ const NewStudent = () => {
               const filtered = filter(options, params);
               if (params.inputValue !== '') {
                 filtered.push({
-                  newUser: <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowForm({
-                        show: true,
-                        data: {
-                          first_name: params.inputValue,
-                        },
-                      });
-                    }}
-                  >
-                    Invite '
-                    {params.inputValue}
-                    ' to Breathecode
-                  </Button>,
+                  newUser: (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowForm({
+                          show: true,
+                          data: {
+                            first_name: params.inputValue,
+                          },
+                        });
+                      }}
+                    >
+                      {`Invite '
+                      ${params.inputValue}
+                      ' to Breathecode`}
+                    </Button>
+                  ),
                   first_name: params.inputValue,
                 });
               }
               return filtered;
             }}
-            getOptionLabel={(option) => (option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`)}
+            getOptionLabel={(option) => (option.newUser
+              ? option.newUser
+              : `${option.first_name} ${option.last_name}, (${option.email})`)}
           />
         </div>
         {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ''}

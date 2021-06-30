@@ -93,15 +93,15 @@ const NewCohort = () => {
           enableReinitialize
         >
           {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
+            // values,
+            // errors,
+            // touched,
+            // handleChange,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
-            setFieldValue,
+            // isSubmitting,
+            // setSubmitting,
+            // setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
@@ -153,7 +153,9 @@ const NewCohort = () => {
                         onChange={(v) => setVersion(v)}
                         width="20%"
                         key={cert.slug}
-                        asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert.slug, academy.id)}
+                        asyncSearch={() => {
+                          bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
+                        }}
                         size="small"
                         label="Version"
                         required
