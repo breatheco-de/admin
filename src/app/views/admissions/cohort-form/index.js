@@ -77,8 +77,8 @@ const Cohort = () => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
-    // const handleClickOpenModal = () => {setOpen(true);};
-    // const handleCloseModal = () => {setOpen(false);};
+    const handleClickOpenModal = () => {setOpen(true);};
+    const handleCloseModal = () => {setOpen(false);};
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -100,13 +100,11 @@ const Cohort = () => {
 
     const handleClickOpen = () => {
         setSurveyDialog(true);
-        setOpen(true);
     };
 
     const handleClose = () => {
         setCohortDayDialog(false);
         setSurveyDialog(false);
-        setOpen(false);
     };
 
     const updateSurvey = event => {
@@ -126,7 +124,7 @@ const Cohort = () => {
                 setStage(data.stage)
                 setMaxSyllabusDays(data.syllabus.certificate.duration_in_days);
             })
-            .catch(error => console.log(error));;
+            .catch(error => console.log(error));
     }, [])  
 
     useEffect(() => {
@@ -314,7 +312,7 @@ const Cohort = () => {
                 <DialogTitle id="simple-dialog-title">
                     Change cohort current day <br />
                     <small className="text-muted">{`This syllabus has a maximum duration of ${maxSyllabusDays} days.`}</small>
-                </DialogTitle>                          
+                </DialogTitle>
                 <Formik
                     initialValues = {{
                         current_day: currentDay
@@ -382,9 +380,9 @@ const Cohort = () => {
                     enableReinitialize={true}
                     onSubmit={() => {
                         bc.feedback().addNewSurvey({
-                            ...newSurvey, cohort: cohort.id,
+                            ...newSurvey, cohort: cohort.id
                         });
-                        handleClickOpen(true)
+                        handleClickOpenModal(true)
                     }}
                 >
                     {({
@@ -466,7 +464,7 @@ const Cohort = () => {
 
             <Dialog
                 open={open}
-                onClose={handleClose}
+                onClose={handleCloseModal}
                 aria-labelledby="simple-dialog-title"
             >
                 <div className="px-sm-24 pt-sm-24">
@@ -488,7 +486,7 @@ const Cohort = () => {
                         <Button className="mb-3 bg-primary text-white">
                             Copy
                         </Button>
-                        <Button color="danger" variant="contained" className="mb-3" onClick={handleClose}>
+                        <Button color="danger" variant="contained" className="mb-3" onClick={handleCloseModal}>
                             Close
                         </Button>
                         {/* <Button
