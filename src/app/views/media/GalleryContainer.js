@@ -15,7 +15,7 @@ import {StyledDropzone} from "../../components/Dropzone";
 import GridMediaCard from "./GridMediaCard";
 import ListMediaCard from "./ListMediaCard";
 import * as _ from "lodash";
-import SelectedMenu from "../material-kit/menu/SelectedMenu";
+// import SelectedMenu from "../material-kit/menu/SelectedMenu";
 
 
 const ShopContainer = ({
