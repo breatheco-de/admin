@@ -333,7 +333,7 @@ const AttendeeList = () => {
                 </div>
               ),
               rowsPerPage:
-                querys.limit === undefined ? 10 : parseInt(querys.limit),
+                querys.limit === undefined ? 10 : parseInt(querys.limit, 10),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 switch (action) {
@@ -344,6 +344,8 @@ const AttendeeList = () => {
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
+                  default:
+                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
               customSearchRender: (
