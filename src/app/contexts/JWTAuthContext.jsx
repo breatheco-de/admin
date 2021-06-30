@@ -1,3 +1,8 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable react/prop-types */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { createContext, useEffect, useReducer } from 'react';
 import axios from 'axios.js';
 import { MatxLoading } from 'matx';
