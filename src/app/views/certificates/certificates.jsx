@@ -69,7 +69,7 @@ const Certificates = () => {
                         `border-radius-4 px-2 pt-2px${statusColors[value]}`
                       }
                     >
-                      {value.toUpperCase()}
+                      {String(value).toUpperCase()}
                     </small>
                   </Tooltip>
                 ) : (
@@ -78,7 +78,7 @@ const Certificates = () => {
                       `border-radius-4 px-2 pt-2px${statusColors[value]}`
                     }
                   >
-                    {value.toUpperCase()}
+                    {String(value).toUpperCase()}
                   </small>
                 )}
               </div>

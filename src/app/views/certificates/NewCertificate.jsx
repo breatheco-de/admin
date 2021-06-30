@@ -25,6 +25,14 @@ const NewCertificate = () => {
   const session = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
 
+  const initialValues = {
+    academy: '',
+    specialty: '',
+    slug: 'default',
+    signed_by: '',
+    signed_by_role: 'Director',
+  };
+
   const getSpecialties = () => {
     axios
       .get(`${process.env.REACT_APP_API_HOST}/v1/certificate/specialty`)
@@ -130,15 +138,15 @@ const NewCertificate = () => {
           enableReinitialize
         >
           {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
+            // values,
+            // errors,
+            // touched,
+            // handleChange,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
-            setFieldValue,
+            // isSubmitting,
+            // setSubmitting,
+            // setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
@@ -211,14 +219,6 @@ const NewCertificate = () => {
       </Card>
     </div>
   );
-};
-
-const initialValues = {
-  academy: '',
-  specialty: '',
-  slug: 'default',
-  signed_by: '',
-  signed_by_role: 'Director',
 };
 
 export default NewCertificate;

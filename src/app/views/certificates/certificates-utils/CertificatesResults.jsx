@@ -14,15 +14,15 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, calories, fat) {
-  return { name, calories, fat };
-}
+// function createData(name, calories, fat) {
+//   return { name, calories, fat };
+// }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Eclair', 262, 16.0),
-];
+// const rows = [
+//   createData('Frozen yoghurt', 159, 6.0),
+//   createData('Ice cream sandwich', 237, 9.0),
+//   createData('Eclair', 262, 16.0),
+// ];
 
 export default function CertificatesResult({ certificates }) {
   const classes = useStyles();
