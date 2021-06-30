@@ -1,3 +1,8 @@
+/* eslint-disable prefer-rest-params */
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-console */
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { resolveResponse, resolveError } from './utils';
@@ -9,25 +14,25 @@ const toastOption = {
 };
 const axiosInstance = axios.create();
 axiosInstance.scopes = {};
-axiosInstance._put = function(){
+axiosInstance._put = () => {
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.put(url, ...rest);
 };
 
-axiosInstance._post = function(){
+axiosInstance._post = () => {
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.post(url, ...rest);
 };
 
-axiosInstance._get = function(){
+axiosInstance._get = () => {
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.get(url, ...rest);
 };
 
-axiosInstance._delete = function(){
+axiosInstance._delete = () => {
   const [scopeName, url, ...rest] = arguments;
   this.scopes[url] = scopeName;
   return this.delete(url, ...rest);
@@ -47,9 +52,12 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-axiosInstance.interceptors.request.use((response) => response, (error) => {
-  toast.error('Something went wrong!', toastOption);
-  return Promise.reject(error);
-});
+axiosInstance.interceptors.request.use(
+  (response) => response,
+  (error) => {
+    toast.error('Something went wrong!', toastOption);
+    return Promise.reject(error);
+  },
+);
 
 export default axiosInstance;

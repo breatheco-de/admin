@@ -118,7 +118,7 @@
     }
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "docs": "python -m http.server 9000 --directory ./docs",
