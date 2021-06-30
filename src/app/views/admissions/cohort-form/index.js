@@ -380,12 +380,14 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => { 
-                            if(response.status == 200 || response.status == 201){
-                                setUrl(response.public_url)
-                                console.log(`Hola ${response.public_url}`)
-                                handleClickOpenModal(true)
-                            }})
+                        // bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => { 
+                        //     if(response.status == 200 || response.status == 201){
+                        //         setUrl(response.public_url)
+                        //         console.log(`Hola ${response.public_url}`)
+                        //         handleClickOpenModal(true)
+                        //     }}
+                        // )
+                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => {console.log(response.data.public_url)})
                     }}
                 >
                     {({
