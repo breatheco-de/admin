@@ -42,7 +42,7 @@ const Students = () => {
           setUserList(data);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
@@ -190,7 +190,7 @@ const Students = () => {
                 searchText,
                 handleSearch,
                 hideSearch,
-                options,
+                // options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField

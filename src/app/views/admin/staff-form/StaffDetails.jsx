@@ -81,13 +81,14 @@ const StaffDetails = ({ user, staff_id }) => {
         <h5 className="mt-4 mb-2">
           {`${user?.first_name} ${user?.last_name}`}
         </h5>
-        <div
+        <button
+          type="button"
           className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
           onClick={() => setRoleDialog(true)}
           style={{ cursor: 'pointer' }}
         >
           {role.length ? role.toUpperCase() : user?.role.name.toUpperCase()}
-        </div>
+        </button>
       </div>
       <Divider />
       <Formik
@@ -97,14 +98,14 @@ const StaffDetails = ({ user, staff_id }) => {
       >
         {({
           values,
-          errors,
-          touched,
+          // errors,
+          // touched,
           handleChange,
-          handleBlur,
+          // handleBlur,
           handleSubmit,
-          isSubmitting,
-          setSubmitting,
-          setFieldValue,
+          // isSubmitting,
+          // setSubmitting,
+          // setFieldValue,
         }) => (
           <form className="p-4" onSubmit={handleSubmit}>
             <Table className="mb-4">

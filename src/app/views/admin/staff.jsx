@@ -33,7 +33,7 @@ const roleColors = {
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
 
@@ -51,12 +51,6 @@ const Staff = () => {
   const [_roles, setRoles] = useState(null);
   const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
   const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-
-  const handleLoadingData = () => {
-    setIsLoading(true);
-    getAcademyMembers();
-    return () => setIsAlive(false);
-  };
 
   const getAcademyMembers = () => {
     bc.auth()
@@ -85,12 +79,18 @@ const Staff = () => {
                 setTable({ count: data.count });
               }
             })
-            .catch((error) => {
+            .catch(() => {
               setIsLoading(false);
             });
         }
       })
       .catch((error) => console.log(error));
+  };
+
+  const handleLoadingData = () => {
+    setIsLoading(true);
+    getAcademyMembers();
+    return () => setIsAlive(false);
   };
 
   const handlePageChange = (page, rowsPerPage) => {
@@ -113,7 +113,7 @@ const Staff = () => {
           `/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
         );
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -206,7 +206,7 @@ const Staff = () => {
                 >
                   {item.status.toUpperCase()}
                 </small>
-                {item.status == 'INVITED' && (
+                {item.status === 'INVITED' && (
                   <small className="text-muted d-block">
                     Needs to accept invite
                   </small>
@@ -336,13 +336,15 @@ const Staff = () => {
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
+                  default:
+                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
               customSearchRender: (
-                searchText,
+                // searchText,
                 handleSearch,
                 hideSearch,
-                options,
+                // options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField

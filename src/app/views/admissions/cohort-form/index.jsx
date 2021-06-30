@@ -4,8 +4,8 @@ import {
   Grid,
   Icon,
   Select,
-  ListItem,
-  ListItemText,
+  // ListItem,
+  // ListItemText,
   DialogTitle,
   Dialog,
   Button,
@@ -14,8 +14,8 @@ import {
   DialogContent,
   DialogContentText,
   MenuItem,
-  FormControlLabel,
-  Checkbox,
+  // FormControlLabel,
+  // Checkbox,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { MatxLoading } from 'matx';
@@ -73,30 +73,27 @@ const Cohort = () => {
   const [stage, setStage] = useState('');
   const classes = useStyles();
 
-    const options = [
-        { label: "Change cohort stage", value: "stage" },
-        { label: "Change cohort current day", value: "current_day" },
-        { label: "Cohort Detailed Report", value: "cohort_deport" },
-        { label: "Review Assingments", value: "assignments" },
-        { label: "Review Attendance", value: "attendance" },
-        { label: "Instant NPS Survey", value: "new_survey" },
-        { label: cohort?.private ? "Mark as public":"Mark as private", value: "privacy" }
-    ];
-    const [newSurvey, setNewSurvey] = useState(
-        {
-            cohort: slug,
-            max_assistants: 2,
-            max_teachers: 2,
-            duration: "1 00:00:00",
-            send_now: true
-        }
-    );
-    const [openSurveyDialog, setSurveyDialog] = useState(false);
+  const options = [
+    { label: 'Change cohort stage', value: 'stage' },
+    { label: 'Change cohort current day', value: 'current_day' },
+    { label: 'Cohort Detailed Report', value: 'cohort_deport' },
+    { label: 'Review Assingments', value: 'assignments' },
+    { label: 'Review Attendance', value: 'attendance' },
+    { label: 'Instant NPS Survey', value: 'new_survey' },
+    { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
+  ];
+  const [newSurvey, setNewSurvey] = useState({
+    cohort: slug,
+    max_assistants: 2,
+    max_teachers: 2,
+    duration: '1 00:00:00',
+    send_now: true,
+  });
+  const [openSurveyDialog, setSurveyDialog] = useState(false);
 
-    const handleClickOpen = () => {
-        setSurveyDialog(true);
-    };
-
+  const handleClickOpen = () => {
+    setSurveyDialog(true);
+  };
 
   const handleClose = () => {
     setCohortDayDialog(false);
@@ -106,13 +103,15 @@ const Cohort = () => {
   const updateSurvey = (event) => {
     console.log('update survey', event.target.name, event.target.value);
     setNewSurvey({
-      ...newSurvey, [event.target.name]: event.target.value,
+      ...newSurvey,
+      [event.target.name]: event.target.value,
     });
   };
 
   useEffect(() => {
     setIsLoading(true);
-    bc.admissions().getCohort(slug)
+    bc.admissions()
+      .getCohort(slug)
       .then(({ data }) => {
         setIsLoading(false);
         setCurrentDay(data.current_day);
@@ -130,7 +129,12 @@ const Cohort = () => {
   }, [stage]);
 
   const makePrivate = () => {
-    bc.admissions().updateCohort(cohort.id, { ...cohort, private: !cohort.private, syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}` })
+    bc.admissions()
+      .updateCohort(cohort.id, {
+        ...cohort,
+        private: !cohort.private,
+        syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`,
+      })
       .then((data) => {
         setCohort({ ...cohort, private: !cohort.private });
       })
@@ -140,11 +144,13 @@ const Cohort = () => {
   const updateCohort = (values) => {
     const { ending_date, ...rest } = values;
     if (values.never_ends) {
-      bc.admissions().updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
+      bc.admissions()
+        .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
         .then((data) => data)
         .catch((error) => console.log(error));
     } else {
-      bc.admissions().updateCohort(cohort.id, { ...values, private: cohort.private })
+      bc.admissions()
+        .updateCohort(cohort.id, { ...values, private: cohort.private })
         .then((data) => data)
         .catch((error) => console.log(error));
     }
@@ -166,7 +172,12 @@ const Cohort = () => {
               {slug}
             </h3>
             <div className="flex">
-              <div className="px-3 text-11 py-3px border-radius-4 text-white bg-green " onClick={() => setStageDialog(true)} style={{ cursor: 'pointer' }}>
+              <div
+                aria-hidden="true"
+                className="px-3 text-11 py-3px border-radius-4 text-white bg-green "
+                onClick={() => setStageDialog(true)}
+                style={{ cursor: 'pointer' }}
+              >
                 {cohort && cohort.stage}
               </div>
             </div>
@@ -176,15 +187,9 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-              value === 'current_day'
-                ? setCohortDayDialog(true)
-                : setCohortDayDialog(false);
-              value === 'stage'
-                ? setStageDialog(true)
-                : setStageDialog(false);
-              value === 'new_survey'
-                ? setSurveyDialog(true)
-                : setSurveyDialog(false);
+              value === 'current_day' ? setCohortDayDialog(true) : setCohortDayDialog(false);
+              value === 'stage' ? setStageDialog(true) : setStageDialog(false);
+              value === 'new_survey' ? setSurveyDialog(true) : setSurveyDialog(false);
               if (value === 'privacy') {
                 makePrivate();
               }
@@ -210,17 +215,13 @@ const Cohort = () => {
                 isPrivate={cohort.private}
                 onSubmit={updateCohort}
               />
-            ) : ''}
+            ) : (
+              ''
+            )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? (
-              <CohortStudents
-                slug={slug}
-                cohort_id={cohort.id}
-              />
-            ) : ''}
+            {cohort !== null ? <CohortStudents slug={slug} cohort_id={cohort.id} /> : ''}
           </Grid>
-
         </Grid>
       </div>
       <Dialog
@@ -254,16 +255,13 @@ const Cohort = () => {
             setStageDialog(false);
           }}
         >
-          {({
-            errors,
-            touched,
-            handleSubmit,
-          }) => (
-            <form className="p-4" onSubmit={handleSubmit} className="d-flex justify-content-center mt-0">
+          {({ errors, touched, handleSubmit }) => (
+            <form
+              className="p-4 d-flex justify-content-center mt-0"
+              onSubmit={handleSubmit}
+            >
               <DialogContent>
-                <DialogContentText className={classes.dialogue}>
-                  Select a stage:
-                          </DialogContentText>
+                <DialogContentText className={classes.dialogue}>Select a stage:</DialogContentText>
                 <TextField
                   select
                   className={classes.select}
@@ -273,18 +271,18 @@ const Cohort = () => {
                   variant="outlined"
                   defaultValue={cohort.stage}
                   onChange={(e) => {
-                      setStage(e.target.value);
-                    }}
+                    setStage(e.target.value);
+                  }}
                 >
                   {stageMap.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                    ))}
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </TextField>
                 <DialogContentText className={classes.dialogue}>
                   Select a current day:
-                          </DialogContentText>
+                </DialogContentText>
                 <TextField
                   error={errors.current_day && touched.current_day}
                   helperText={touched.current_day && errors.current_day}
@@ -292,28 +290,22 @@ const Cohort = () => {
                   name="current_day"
                   size="small"
                   variant="outlined"
-                  value={stage == 'ENDED' ? maxSyllabusDays : currentDay}
-                  onChange={(e) => { setCurrentDay(e.target.value); }}
+                  value={stage === 'ENDED' ? maxSyllabusDays : currentDay}
+                  onChange={(e) => {
+                    setCurrentDay(e.target.value);
+                  }}
                 />
               </DialogContent>
               <DialogActions className={classes.button}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="submit"
-                >
-                            Send now
+                <Button color="primary" variant="contained" type="submit">
+                  Send now
                 </Button>
               </DialogActions>
             </form>
           )}
         </Formik>
       </Dialog>
-      <Dialog
-        onClose={handleClose}
-        open={cohortDayDialog}
-        aria-labelledby="simple-dialog-title"
-      >
+      <Dialog onClose={handleClose} open={cohortDayDialog} aria-labelledby="simple-dialog-title">
         <DialogTitle id="simple-dialog-title">
           Change cohort current day
           {' '}
@@ -340,16 +332,15 @@ const Cohort = () => {
             handleClose();
           }}
         >
-          {({
-            errors,
-            touched,
-            handleSubmit,
-          }) => (
-            <form className="p-4" onSubmit={handleSubmit} className="d-flex justify-content-center mt-0">
+          {({ errors, touched, handleSubmit }) => (
+            <form
+              className="p-4 d-flex justify-content-center mt-0"
+              onSubmit={handleSubmit}
+            >
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>
                   Select a current day:
-                          </DialogContentText>
+                </DialogContentText>
                 <TextField
                   error={errors.current_day && touched.current_day}
                   helperText={touched.current_day && errors.current_day}
@@ -359,47 +350,36 @@ const Cohort = () => {
                   size="small"
                   variant="outlined"
                   defaultValue={cohort.current_day}
-                  onChange={(e) => { setCurrentDay(e.target.value); }}
+                  onChange={(e) => {
+                    setCurrentDay(e.target.value);
+                  }}
                 />
               </DialogContent>
               <DialogActions className={classes.button}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="submit"
-                >
-                            Send now
+                <Button color="primary" variant="contained" type="submit">
+                  Send now
                 </Button>
               </DialogActions>
             </form>
           )}
         </Formik>
       </Dialog>
-      <Dialog
-        onClose={handleClose}
-        open={openSurveyDialog}
-        aria-labelledby="simple-dialog-title"
-      >
-        <DialogTitle id="simple-dialog-title">
-          New Instant Survey
-        </DialogTitle>
+      <Dialog onClose={handleClose} open={openSurveyDialog} aria-labelledby="simple-dialog-title">
+        <DialogTitle id="simple-dialog-title">New Instant Survey</DialogTitle>
         <Formik
           initialValues={newSurvey}
           enableReinitialize
           onSubmit={() => {
             bc.feedback().addNewSurvey({
-              ...newSurvey, cohort: cohort.id,
+              ...newSurvey,
+              cohort: cohort.id,
             });
           }}
         >
-          {({
-            handleSubmit,
-          }) => (
+          {({ handleSubmit }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <DialogContent>
-                <DialogContentText className={classes.dialogue}>
-                  Cohort:
-                                </DialogContentText>
+                <DialogContentText className={classes.dialogue}>Cohort:</DialogContentText>
                 <TextField
                   type="text"
                   label="Cohort"
@@ -410,7 +390,7 @@ const Cohort = () => {
                 />
                 <DialogContentText className={classes.dialogue}>
                   Max assistants to ask:
-                                </DialogContentText>
+                </DialogContentText>
                 <TextField
                   type="number"
                   label="Max assistants"
@@ -422,7 +402,7 @@ const Cohort = () => {
                 />
                 <DialogContentText className={classes.dialogue}>
                   Max assistants of teachers:
-                                </DialogContentText>
+                </DialogContentText>
                 <TextField
                   type="number"
                   label="Max teachers"
@@ -432,9 +412,7 @@ const Cohort = () => {
                   defaultValue={newSurvey.max_teachers}
                   onChange={updateSurvey}
                 />
-                <DialogContentText className={classes.dialogue}>
-                  Duration:
-                                </DialogContentText>
+                <DialogContentText className={classes.dialogue}>Duration:</DialogContentText>
                 <Select
                   native
                   label="Duration"
@@ -451,20 +429,11 @@ const Cohort = () => {
                 </Select>
               </DialogContent>
               <DialogActions>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="submit"
-                  onClick={handleClose}
-                >
-                                    Send now
+                <Button color="primary" variant="contained" type="submit" onClick={handleClose}>
+                  Send now
                 </Button>
-                <Button
-                  color="danger"
-                  variant="contained"
-                  onClick={handleClose}
-                >
-                                    Close
+                <Button color="danger" variant="contained" onClick={handleClose}>
+                  Close
                 </Button>
               </DialogActions>
             </form>

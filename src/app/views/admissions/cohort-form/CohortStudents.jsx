@@ -34,14 +34,14 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 }));
 
 const CohortStudents = ({ slug, cohort_id }) => {
-    const classes = useStyles();
-    const [isLoading, setIsLoading] = useState(false);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [studenList, setStudentsList] = useState([]);
-    const [currentStd, setCurrentStd] = useState({});
-    const [openRoleDialog, setRoleDialog] = useState(false);
-    const [user, setUser] = useState(null);
-    // Redux actions and store
+  const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [studenList, setStudentsList] = useState([]);
+  const [currentStd, setCurrentStd] = useState({});
+  const [openRoleDialog, setRoleDialog] = useState(false);
+  const [user, setUser] = useState(null);
+  // Redux actions and store
 
   const query = useQuery();
 
@@ -51,32 +51,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
   const handlePaginationNextPage = () => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
-
-  useEffect(() => {
-    getCohortStudents();
-  }, [queryLimit]);
-
-    const changeStudentStatus = (value, name, studentId, i) => {
-        console.log(value, name, i);
-        const s_status = {
-            role: studenList[i].role,
-            finantial_status: studenList[i].finantial_status,
-            educational_status: studenList[i].educational_status,
-        };
-        bc.admissions()
-            .updateCohortUserInfo(cohort_id, studentId, {
-                ...s_status,
-                [name]: value,
-            })
-            .then((data) => {
-                console.log(data);
-                if (data.status >= 200) getCohortStudents();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
 
   const getCohortStudents = () => {
     setIsLoading(true);
@@ -96,6 +70,31 @@ const CohortStudents = ({ slug, cohort_id }) => {
         }
       })
       .catch((error) => error);
+  };
+
+  useEffect(() => {
+    getCohortStudents();
+  }, [queryLimit]);
+
+  const changeStudentStatus = (value, name, studentId, i) => {
+    console.log(value, name, i);
+    const s_status = {
+      role: studenList[i].role,
+      finantial_status: studenList[i].finantial_status,
+      educational_status: studenList[i].educational_status,
+    };
+    bc.admissions()
+      .updateCohortUserInfo(cohort_id, studentId, {
+        ...s_status,
+        [name]: value,
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.status >= 200) getCohortStudents();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addUserToCohort = (user_id) => {
@@ -140,11 +139,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Disagree
           </Button>
-          <Button
-            color="primary"
-            autoFocus
-            onClick={() => deleteUserFromCohort()}
-          >
+          <Button color="primary" autoFocus onClick={() => deleteUserFromCohort()}>
             Agree
           </Button>
         </DialogActions>
@@ -156,7 +151,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
           {format(new Date(), 'MMM dd, yyyy')}
           {' '}
           at
-          {' '}
           {format(new Date(), 'HH:mm:aa')}
         </div>
       </div>
@@ -177,8 +171,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
           >
             Add to cohort
           </Button>
-                </AsyncAutocomplete>
-            </div>
+        </AsyncAutocomplete>
+      </div>
 
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
@@ -190,15 +184,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
                   <Grid item lg={6} md={6} sm={6} xs={6}>
                     <div className="flex">
                       <Avatar
-                        className={clsx(
-                          'h-full w-full mb-6 mr-2',
-                          classes.avatar,
-                        )}
-                        src={
-                          s.user.profile !== undefined
-                            ? s.user.profile.avatar_url
-                            : ''
-                        }
+                        className={clsx('h-full w-full mb-6 mr-2', classes.avatar)}
+                        src={s.user.profile !== undefined ? s.user.profile.avatar_url : ''}
                       />
                       <div className="flex-grow">
                         <Link to={`/admissions/students/${s.user.id}`}>
@@ -213,8 +200,9 @@ const CohortStudents = ({ slug, cohort_id }) => {
                         </p>
                         <p className="mt-0 mb-6px text-13">
                           <small
+                            aria-hidden="true"
                             onClick={() => {
-                                handlePaginationNextPage();
+                              handlePaginationNextPage();
                             }}
                             className="border-radius-4 px-2 pt-2px bg-secondary"
                             style={{ cursor: 'pointer' }}
@@ -225,14 +213,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                       </div>
                     </div>
                   </Grid>
-                  <Grid
-                    item
-                    lg={2}
-                    md={2}
-                    sm={2}
-                    xs={2}
-                    className="text-center"
-                  >
+                  <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                     <TextField
                       className="min-w-100"
                       label="Finantial Status"
@@ -240,10 +221,32 @@ const CohortStudents = ({ slug, cohort_id }) => {
                       size="small"
                       variant="outlined"
                       value={s.finantial_status || ''}
-                      onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
+                      onChange={({ target: { name, value } }) => {
+                        changeStudentStatus(value, name, s.user.id, i);
+                      }}
                       select
                     >
-                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map(
+                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map((item, ind) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item lg={2} md={4} sm={2} xs={2} className="text-center">
+                    <TextField
+                      className="min-w-100"
+                      label="Educational Status"
+                      name="educational_status"
+                      size="small"
+                      variant="outlined"
+                      value={s.educational_status || ''}
+                      onChange={({ target: { name, value } }) => {
+                        changeStudentStatus(value, name, s.user.id, i);
+                      }}
+                      select
+                    >
+                      {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''].map(
                         (item, ind) => (
                           <MenuItem value={item} key={item}>
                             {item}
@@ -252,46 +255,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                       )}
                     </TextField>
                   </Grid>
-                  <Grid
-                    item
-                    lg={2}
-                    md={4}
-                    sm={2}
-                    xs={2}
-                    className="text-center"
-                  >
-                    <TextField
-                      className="min-w-100"
-                      label="Educational Status"
-                      name="educational_status"
-                      size="small"
-                      variant="outlined"
-                      value={s.educational_status || ''}
-                      onChange={({ target: { name, value } }) => changeStudentStatus(value, name, s.user.id, i)}
-                      select
-                    >
-                      {[
-                        'ACTIVE',
-                        'POSTPONED',
-                        'SUSPENDED',
-                        'GRADUATED',
-                        'DROPPED',
-                        '',
-                      ].map((item, ind) => (
-                        <MenuItem value={item} key={item}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid
-                    item
-                    lg={2}
-                    md={2}
-                    sm={2}
-                    xs={2}
-                    className="text-center"
-                  >
+                  <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                     <div className="flex justify-end items-center">
                       <IconButton
                         onClick={() => {
@@ -326,29 +290,24 @@ const CohortStudents = ({ slug, cohort_id }) => {
         open={openRoleDialog}
         aria-labelledby="simple-dialog-title"
       >
-                <DialogTitle id='simple-dialog-title'>Select a Cohort Role</DialogTitle>
-                <List>
-                    {["TEACHER", "ASSISTANT", "REVIEWER", "STUDENT"].map((role, i) => (
-                        <ListItem
-                            button
-                            onClick={() => {
-                                changeStudentStatus(
-                                    role,
-                                    "role",
-                                    currentStd.id,
-                                    currentStd.positionInArray
-                                );
-                                setRoleDialog(false);
-                            }}
-                            key={i}
-                        >
-                            <ListItemText primary={role} />
-                        </ListItem>
-                    ))}
-                </List>
-            </Dialog>
-        </Card>
-    );
+        <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
+        <List>
+          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
+            <ListItem
+              button
+              onClick={() => {
+                changeStudentStatus(role, 'role', currentStd.id, currentStd.positionInArray);
+                setRoleDialog(false);
+              }}
+              key={i}
+            >
+              <ListItemText primary={role} />
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
+    </Card>
+  );
 };
 
 export default CohortStudents;

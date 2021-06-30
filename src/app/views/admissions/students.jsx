@@ -21,7 +21,7 @@ const statusColors = {
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
 
@@ -49,13 +49,9 @@ const Students = () => {
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {user !== null
-                    ? name(user)
-                    : `${rest.first_name} ${rest.last_name}`}
+                  {user !== null ? name(user) : `${rest.first_name} ${rest.last_name}`}
                 </h5>
-                <small className="text-muted">
-                  {user?.email || rest.email}
-                </small>
+                <small className="text-muted">{user?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -70,12 +66,8 @@ const Students = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].created_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].created_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -91,17 +83,11 @@ const Students = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px${statusColors[item.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
                   {item.status.toUpperCase()}
                 </small>
-                {item.status == 'INVITED' && (
-                  <small className="text-muted d-block">
-                    Needs to accept invite
-                  </small>
+                {item.status === 'INVITED' && (
+                  <small className="text-muted d-block">Needs to accept invite</small>
                 )}
               </div>
             </div>
@@ -120,7 +106,10 @@ const Students = () => {
             : {
               ...items[dataIndex],
               user: {
-                first_name: '', last_name: '', imgUrl: '', id: '',
+                first_name: '',
+                last_name: '',
+                imgUrl: '',
+                id: '',
               },
             };
           return item.status === 'INVITED' ? (
@@ -136,11 +125,7 @@ const Students = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link
-                to={`/admissions/students/${
-                  item.user !== null ? item.user.id : ''
-                }`}
-              >
+              <Link to={`/admissions/students/${item.user !== null ? item.user.id : ''}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -159,12 +144,7 @@ const Students = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Admissions', path: '/' },
-                { name: 'Students' },
-              ]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Students' }]} />
           </div>
 
           <div className="">
@@ -183,14 +163,10 @@ const Students = () => {
             title="All Students"
             columns={columns}
             items={items}
-            view={"student?"}
-            singlePage={""}
+            view="student?"
+            singlePage=""
             options={{
-              customToolbarSelect: (
-                selectedRows,
-                displayData,
-                setSelectedRows,
-              ) => (
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
                 <AddBulkToCohort
                   selectedRows={selectedRows}
                   displayData={displayData}
@@ -205,9 +181,7 @@ const Students = () => {
               return data;
             }}
             deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStudentBulk(querys);
+              const { status } = await bc.admissions().deleteStudentBulk(querys);
               return status;
             }}
           />

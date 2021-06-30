@@ -74,13 +74,13 @@ const NewStaff = () => {
         >
           {({
             values,
-            errors,
-            touched,
+            // errors,
+            // touched,
             handleChange,
-            handleBlur,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
+            // isSubmitting,
+            // setSubmitting,
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
