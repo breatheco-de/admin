@@ -79,6 +79,7 @@ const Cohort = () => {
     const [open, setOpen] = useState(false);
     const handleClickOpenModal = () => {setOpen(true);};
     const handleCloseModal = () => {setOpen(false);};
+    const [url, setUrl] = useState(false);
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -379,8 +380,12 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id});
-                        handleClickOpenModal(true)
+                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => { 
+                            if(response.status == 200 || response.status == 201){
+                                setUrl(response.public_url)
+                                console.log(`Hola ${response.public_url}`)
+                                handleClickOpenModal(true)
+                            }})
                     }}
                 >
                     {({
