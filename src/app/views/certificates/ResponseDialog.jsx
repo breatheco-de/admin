@@ -46,11 +46,14 @@ export default function ResponseDialog({
         <DialogTitle id="scroll-dialog-title">Results</DialogTitle>
         <DialogContent dividers>
           <DialogContentText
-            children={<ResponseContent responseData={responseData} isLoading={isLoading} />}
+            // PROPOSAL:
+            // children={<ResponseContent responseData={responseData} isLoading={isLoading} />}
             id="scroll-dialog-description"
             ref={descriptionElementRef}
             tabIndex={-1}
-          />
+          >
+            <ResponseContent responseData={responseData} isLoading={isLoading} />
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClick()} color="primary">
