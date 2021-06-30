@@ -102,6 +102,7 @@ export const AuthProvider = ({ children }) => {
       setSession(res1.data.token);
     } catch (e) {
       const message = e.details || e.detail || Array.isArray(e.non_field_errors) ? e.non_field_errors[0] : 'Unable to login';// res1.data.non_field_errors;
+      console.error(e);
       throw Error(message);
     }
 
