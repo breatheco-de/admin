@@ -183,6 +183,8 @@ const Students = () => {
             title="All Students"
             columns={columns}
             items={items}
+            view={"student?"}
+            singlePage={""}
             options={{
               customToolbarSelect: (
                 selectedRows,
