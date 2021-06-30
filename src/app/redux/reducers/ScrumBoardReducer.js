@@ -13,101 +13,101 @@ import {
   UPDATE_CARD,
   MOVE_CARD,
   REORDER_LIST,
-  REORDER_CARD_LIST
-} from "../actions/ScrumBoardActions";
+  REORDER_CARD_LIST,
+} from '../actions/ScrumBoardActions';
 
 const initialState = {};
 
-const ScrumBoardReducer = function(state = initialState, action) {
+const ScrumBoardReducer = function (state = initialState, action) {
   switch (action.type) {
     case GET_ALL_MEMBERS: {
       return {
         ...state,
-        memberList: [...action.payload]
+        memberList: [...action.payload],
       };
     }
     case GET_ALL_LABELS: {
       return {
         ...state,
-        labelList: [...action.payload]
+        labelList: [...action.payload],
       };
     }
     case GET_ALL_BOARD: {
       return {
         ...state,
-        boardList: [...action.payload]
+        boardList: [...action.payload],
       };
     }
     case ADD_BOARD: {
       return {
         ...state,
-        boardList: [...action.payload]
+        boardList: [...action.payload],
       };
     }
     case GET_BOARD_BY_ID: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case ADD_MEMBER_IN_BOARD: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case DELETE_MEMBER_FROM_BOARD: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case ADD_LIST: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case RENAME_LIST: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case DELETE_LIST: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case REORDER_LIST: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case ADD_CARD: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case UPDATE_CARD: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case REORDER_CARD_LIST: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     case MOVE_CARD: {
       return {
         ...state,
-        board: { ...action.payload }
+        board: { ...action.payload },
       };
     }
     default: {

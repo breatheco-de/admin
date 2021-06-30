@@ -1,29 +1,29 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Card,
   Divider,
-  Button
-} from "@material-ui/core";
-import { Breadcrumb } from "matx";
-import { ProfileForm } from "./student-utils/ProfileForm";
-import { createFilterOptions } from "@material-ui/lab/Autocomplete";
-import {AsyncAutocomplete} from "app/components/Autocomplete";
-import bc from "app/services/breathecode";
+  Button,
+} from '@material-ui/core';
+import { Breadcrumb } from 'matx';
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { AsyncAutocomplete } from 'app/components/Autocomplete';
+import bc from 'app/services/breathecode';
+import { ProfileForm } from './student-utils/ProfileForm';
 
 const filter = createFilterOptions();
 const NewStudent = () => {
-  const [msg, setMsg] = useState({ alert: false, type: "", text: "" })
+  const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
   const [showForm, setShowForm] = useState({
     show: false,
     data: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      address: "",
-      phone: "",
-      cohort: ""
-    }
+      first_name: '',
+      last_name: '',
+      email: '',
+      address: '',
+      phone: '',
+      cohort: '',
+    },
   });
 
   return (
@@ -31,9 +31,9 @@ const NewStudent = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: "Admin", path: "/admin" },
-            { name: "Students", path: "/admissions/students" },
-            { name: "New Student" },
+            { name: 'Admin', path: '/admin' },
+            { name: 'Students', path: '/admissions/students' },
+            { name: 'New Student' },
           ]}
         />
       </div>
@@ -45,46 +45,47 @@ const NewStudent = () => {
         <div className="m-3">
           <Alert severity="success">
             <AlertTitle>On Adding a new student</AlertTitle>
-              You can search for current users or create a new one
-        </Alert>
+            You can search for current users or create a new one
+          </Alert>
         </div>
         <div className="flex m-4">
-        <AsyncAutocomplete
-          onChange={(user) => setShowForm({data:{...showForm.data, ...user}, show:true})}
-          width={"100%"}
-          label="Search Users"
-          asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
-          debounced={true}
-          filterOptions={(options, params) => {
-            const filtered = filter(options, params);
-            if (params.inputValue !== '') {
+          <AsyncAutocomplete
+            onChange={(user) => setShowForm({ data: { ...showForm.data, ...user }, show: true })}
+            width="100%"
+            label="Search Users"
+            asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
+            debounced
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+              if (params.inputValue !== '') {
                 filtered.push({
-                    newUser: <Button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setShowForm({
-                                show: true,
-                                data: {
-                                    first_name: params.inputValue,
-                                }
-                            });
-                        }}
-                    >
-                        Invite '{params.inputValue}' to Breathecode
+                  newUser: <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowForm({
+                        show: true,
+                        data: {
+                          first_name: params.inputValue,
+                        },
+                      });
+                    }}
+                  >
+                    Invite '
+                    {params.inputValue}
+                    ' to Breathecode
                   </Button>,
-                    first_name: params.inputValue
+                  first_name: params.inputValue,
                 });
-            }
-            return filtered;
-        }}
-        getOptionLabel={option => option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`}
-        />
+              }
+              return filtered;
+            }}
+            getOptionLabel={(option) => (option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`)}
+          />
         </div>
-        {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ""}
+        {showForm.show ? <ProfileForm initialValues={showForm.data} /> : ''}
       </Card>
     </div>
   );
 };
-
 
 export default NewStudent;

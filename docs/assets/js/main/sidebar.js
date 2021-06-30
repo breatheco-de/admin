@@ -1,5 +1,5 @@
 function loadSidebar() {
-  var sidebarHTML = `<ul class="sidebar__list">
+  const sidebarHTML = `<ul class="sidebar__list">
 <li>
   <a href="index.html"></a>
   <ul>
@@ -32,9 +32,9 @@ function loadSidebar() {
 
 </ul>
 `;
-  var $sidebar = $(".doc-content__sidebar").html(sidebarHTML);
-  var path = window.location.pathname;
-  var page = path.split("/").pop();
+  const $sidebar = $('.doc-content__sidebar').html(sidebarHTML);
+  const path = window.location.pathname;
+  const page = path.split('/').pop();
 
-  $sidebar.find('.sidebar__list [href="' + path + '"]').addClass("active");
+  $sidebar.find(`.sidebar__list [href="${path}"]`).addClass('active');
 }

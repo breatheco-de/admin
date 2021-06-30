@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Breadcrumb } from "matx";
-import MUIDataTable from "mui-datatables";
-import { MatxLoading } from "matx";
+import React, { useState, useEffect } from 'react';
+import { Breadcrumb, MatxLoading } from 'matx';
+import MUIDataTable from 'mui-datatables';
+
 import {
   Avatar,
   Grow,
@@ -10,37 +10,38 @@ import {
   TextField,
   Button,
   Tooltip,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-import bc from "app/services/breathecode";
-import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
-import CustomToolbar from "../../components/CustomToolbar";
+} from '@material-ui/core';
+import { Link, useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
+import bc from 'app/services/breathecode';
+import InviteDetails from 'app/components/InviteDetails';
+import { useQuery } from '../../hooks/useQuery';
 
-let relativeTime = require("dayjs/plugin/relativeTime");
+import { DownloadCsv } from '../../components/DownloadCsv';
+import CustomToolbar from '../../components/CustomToolbar';
+
+const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const statusColors = {
-  INVITED: "text-white bg-error",
-  ACTIVE: "text-white bg-green",
+  INVITED: 'text-white bg-error',
+  ACTIVE: 'text-white bg-green',
 };
 const roleColors = {
-  admin: "text-black bg-gray",
+  admin: 'text-black bg-gray',
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != "")
-    return user.first_name + " " + user.last_name;
-  else return "No name";
+  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  return 'No name';
 };
 
 const Staff = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  let [role, setRole] = useState(null);
+  const [role, setRole] = useState(null);
   const [table, setTable] = useState({
     count: 100,
     page: 0,
@@ -48,8 +49,8 @@ const Staff = () => {
   const query = useQuery();
   const history = useHistory();
   const [_roles, setRoles] = useState(null);
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
 
   const handleLoadingData = () => {
     setIsLoading(true);
@@ -62,23 +63,23 @@ const Staff = () => {
       .getRoles()
       .then((res) => {
         if (res.status === 200) {
-          let r = res.data
-            .filter((r) => r.slug !== "student")
+          const r = res.data
+            .filter((r) => r.slug !== 'student')
             .map((r) => r.slug);
           setRole(r);
-          setRoles(r.join(","));
+          setRoles(r.join(','));
           bc.auth()
             .getAcademyMembers({
-              roles: r.join(","),
-              limit: query.get("limit") !== null ? query.get("limit") : 10,
-              offset: query.get("offset") !== null ? query.get("offset") : 0,
+              roles: r.join(','),
+              limit: query.get('limit') !== null ? query.get('limit') : 10,
+              offset: query.get('offset') !== null ? query.get('offset') : 0,
             })
             .then(({ data }) => {
               console.log(data);
               setIsLoading(false);
               if (isAlive) {
-                let filterUserNull = data.results.filter(
-                  (item) => item.user !== null
+                const filterUserNull = data.results.filter(
+                  (item) => item.user !== null,
                 );
                 setUserList(filterUserNull);
                 setTable({ count: data.count });
@@ -96,20 +97,20 @@ const Staff = () => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
-    console.log("page: ", rowsPerPage);
+    console.log('page: ', rowsPerPage);
     bc.auth()
       .getAcademyMembers({
-        roles: role.join(","),
+        roles: role.join(','),
         limit: rowsPerPage,
         offset: page * rowsPerPage,
       })
       .then(({ data }) => {
         setIsLoading(false);
-        let filterUserNull = data.results.filter((item) => item.user !== null);
+        const filterUserNull = data.results.filter((item) => item.user !== null);
         setUserList(filterUserNull);
-        setTable({ count: data.count, page: page });
+        setTable({ count: data.count, page });
         history.replace(
-          `/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`
+          `/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
         );
       })
       .catch((error) => {
@@ -131,12 +132,12 @@ const Staff = () => {
 
   const columns = [
     {
-      name: "first_name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: 'first_name', // field name in the row object
+      label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let { user } = userList[dataIndex];
+          const { user } = userList[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
@@ -150,17 +151,17 @@ const Staff = () => {
       },
     },
     {
-      name: "created_at",
-      label: "Created At",
+      name: 'created_at',
+      label: 'Created At',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(userList[i].created_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(userList[i].created_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(userList[i].created_at).fromNow()}
               </small>
             </div>
@@ -169,17 +170,17 @@ const Staff = () => {
       },
     },
     {
-      name: "role",
-      label: "Role",
+      name: 'role',
+      label: 'Role',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
+          const item = userList[dataIndex];
           return (
             <small
               className={
-                "border-radius-4 px-2 pt-2px " +
-                (roleColors[item.role.slug] || "bg-light")
+                `border-radius-4 px-2 pt-2px ${
+                  roleColors[item.role.slug] || 'bg-light'}`
               }
             >
               {item.role.name.toUpperCase()}
@@ -189,24 +190,24 @@ const Staff = () => {
       },
     },
     {
-      name: "status",
-      label: "Status",
+      name: 'status',
+      label: 'Status',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let item = userList[dataIndex];
+          const item = userList[dataIndex];
           return (
-            <div className='flex items-center'>
-              <div className='ml-3'>
+            <div className="flex items-center">
+              <div className="ml-3">
                 <small
                   className={
-                    "border-radius-4 px-2 pt-2px" + statusColors[item.status]
+                    `border-radius-4 px-2 pt-2px${statusColors[item.status]}`
                   }
                 >
                   {item.status.toUpperCase()}
                 </small>
-                {item.status == "INVITED" && (
-                  <small className='text-muted d-block'>
+                {item.status == 'INVITED' && (
+                  <small className="text-muted d-block">
                     Needs to accept invite
                   </small>
                 )}
@@ -217,32 +218,34 @@ const Staff = () => {
       },
     },
     {
-      name: "action",
-      label: " ",
+      name: 'action',
+      label: ' ',
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          let item =
-            userList[dataIndex].user !== null
-              ? userList[dataIndex]
-              : {
-                  ...userList[dataIndex],
-                  user: { first_name: "", last_name: "", imgUrl: "", id: "" },
-                };
-          return item.status === "INVITED" ? (
-            <div className='flex items-center'>
-              <div className='flex-grow'></div>
-              <Tooltip title='Resend Invite'>
+          const item = userList[dataIndex].user !== null
+            ? userList[dataIndex]
+            : {
+              ...userList[dataIndex],
+              user: {
+                first_name: '', last_name: '', imgUrl: '', id: '',
+              },
+            };
+          return item.status === 'INVITED' ? (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <InviteDetails user={item.id} />
+              <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
             </div>
           ) : (
-            <div className='flex items-center'>
-              <div className='flex-grow'></div>
+            <div className="flex items-center">
+              <div className="flex-grow" />
               <Link to={`/admin/staff/${item.user.id}`}>
-                <Tooltip title='Edit'>
+                <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
                   </IconButton>
@@ -256,35 +259,35 @@ const Staff = () => {
   ];
 
   return (
-    <div className='m-sm-30'>
-      <div className='mb-sm-30'>
-        <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
-              routeSegments={[{ name: "Admin", path: "/" }, { name: "Staff" }]}
+              routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]}
             />
           </div>
 
-          <div className=''>
-            <Link to={`/admin/staff/new`}>
-              <Button variant='contained' color='primary'>
+          <div className="">
+            <Link to="/admin/staff/new">
+              <Button variant="contained" color="primary">
                 Add new staff member
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className='overflow-auto'>
-        <div className='min-w-750'>
+      <div className="overflow-auto">
+        <div className="min-w-750">
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title={"Staff Members"}
+            title="Staff Members"
             data={userList}
             columns={columns}
             options={{
               customToolbar: () => {
-                let singlePageTableCsv = `/v1/auth/academy/member?roles=${_roles}&limit=${queryLimit}&offset=${queryOffset}`;
-                let allPagesTableCsv = `/v1/auth/academy/member?roles=${_roles}`;
+                const singlePageTableCsv = `/v1/auth/academy/member?roles=${_roles}&limit=${queryLimit}&offset=${queryOffset}`;
+                const allPagesTableCsv = `/v1/auth/academy/member?roles=${_roles}`;
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -293,40 +296,44 @@ const Staff = () => {
                 );
               },
               download: false,
-              filterType: "textField",
-              responsive: "standard",
+              filterType: 'textField',
+              responsive: 'standard',
               serverSide: true,
               elevation: 0,
               count: table.count,
               page: table.page,
-              rowsPerPage: parseInt(query.get("limit"), 10) || 10,
+              rowsPerPage: parseInt(query.get('limit'), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customToolbarSelect: (
                 selectedRows,
                 displayData,
-                setSelectedRows
-              ) => {
-                return (
-                  <CustomToolbar
-                    selectedRows={selectedRows}
-                    displayData={displayData}
-                    setSelectedRows={setSelectedRows}
-                    items={userList}
-                    key={userList}
-                    history={history}
-                    id={"staff"}
-                    reRender={handleLoadingData}
-                  />
-                );
-              },
+                setSelectedRows,
+              ) => (
+                <CustomToolbar
+                  selectedRows={selectedRows}
+                  displayData={displayData}
+                  setSelectedRows={setSelectedRows}
+                  items={userList}
+                  key={userList}
+                  history={history}
+                  id="staff"
+                  deleting={async (querys) => {
+                    const { status } = await bc
+                      .admissions()
+                      .deleteStaffBulk(querys);
+                    return status;
+                  }}
+                  onBulkDelete={handleLoadingData}
+                />
+              ),
               onTableChange: (action, tableState) => {
                 console.log(action, tableState);
                 switch (action) {
-                  case "changePage":
+                  case 'changePage':
                     console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
-                  case "changeRowsPerPage":
+                  case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                 }
@@ -335,34 +342,32 @@ const Staff = () => {
                 searchText,
                 handleSearch,
                 hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+                options,
+              ) => (
+                <Grow appear in timeout={300}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onChange={({ target: { value } }) => handleSearch(value)}
+                    InputProps={{
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Grow>
+              ),
             }}
           />
         </div>

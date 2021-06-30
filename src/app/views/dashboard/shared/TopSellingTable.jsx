@@ -52,10 +52,10 @@ const TopSellingTable = () => {
           <TableHead>
             <TableRow>
               <TableCell className="px-6" colSpan={4}>
-                Name
+                Student
               </TableCell>
               <TableCell className="px-0" colSpan={2}>
-                Revenue
+                Score
               </TableCell>
               <TableCell className="px-0" colSpan={2}>
                 Stock Status

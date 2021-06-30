@@ -1,26 +1,26 @@
-import React, { useState } from "react";
-import axios from "axios.js";
+import React, { useState } from 'react';
+import axios from 'axios.js';
 import {
   Card,
   Grid,
   Select,
   MenuItem,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import history from "history.js";
-import clsx from "clsx";
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import history from 'history.js';
+import clsx from 'clsx';
 import useAuth from 'app/hooks/useAuth';
 
-import bc from "app/services/breathecode";
+import bc from 'app/services/breathecode';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   cardHolder: {
-    background: "#1A2038",
+    background: '#1A2038',
   },
   card: {
     maxWidth: 800,
     borderRadius: 12,
-    margin: "1rem",
+    margin: '1rem',
   },
 }));
 
@@ -30,40 +30,47 @@ const Choose = () => {
   const classes = useStyles();
 
   const handleChange = async (event) => {
-      const { role, academy } = event.target.value;
+    const { role, academy } = event.target.value;
 
-      if(role && role !== ""){
-        choose({ role, academy });
-        axios.defaults.headers.common['Academy'] = academy.id;
-        const { data } = await bc.admissions().getMyAcademy()
-        localStorage.setItem("bc-session", JSON.stringify({ role, academy }));
-        if(history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
-        else history.push("/");
-      }
-  }
-  if(!user) return history.push("/session/login");
+    if (role && role !== '') {
+      choose({ role, academy });
+      axios.defaults.headers.common.Academy = academy.id;
+      const { data } = await bc.admissions().getMyAcademy();
+      localStorage.setItem('bc-session', JSON.stringify({ role, academy }));
+      if (history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
+      else history.push('/');
+    }
+  };
+  if (!user) return history.push('/session/login');
 
-  const roles = [{ role: "", academy: { name: "Click me to select"} }].concat(user.roles.filter(r => r.role.toUpperCase() != "STUDENT"));
+  const roles = [{ role: '', academy: { name: 'Click me to select' } }].concat(user.roles.filter((r) => r.role.toUpperCase() != 'STUDENT'));
   return (
     <div
       className={clsx(
-        "flex justify-center items-center  min-h-full-screen",
-        classes.cardHolder
+        'flex justify-center items-center  min-h-full-screen',
+        classes.cardHolder,
       )}
     >
       <Card className={classes.card}>
         <Grid container>
           <Grid item xs={12}>
             <div className="p-8 h-full bg-light-gray relative">
-                <h2>Select your academy/role</h2>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={roles[0]}
-                    onChange={handleChange}
-                >
-                    {roles.map((r,i) => <MenuItem key={i} value={r}>{r.academy?.name}: {r.role}</MenuItem>)}
-                </Select>
+              <h2>Select your academy/role</h2>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={roles[0]}
+                onChange={handleChange}
+              >
+                {roles.map((r, i) => (
+                  <MenuItem key={i} value={r}>
+                    {r.academy?.name}
+                    :
+                    {' '}
+                    {r.role}
+                  </MenuItem>
+                ))}
+              </Select>
             </div>
           </Grid>
         </Grid>

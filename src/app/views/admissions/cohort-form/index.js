@@ -379,9 +379,7 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey({
-                            ...newSurvey, cohort: cohort.id
-                        });
+                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id});
                         handleClickOpenModal(true)
                     }}
                 >

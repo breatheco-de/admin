@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Grow, Icon, IconButton, TextField, Button } from "@material-ui/core";
-import { Breadcrumb } from "matx";
-import { Link } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import bc from "../../services/breathecode";
-import dayjs from "dayjs";
-import { useQuery } from "../../hooks/useQuery";
-import { useHistory } from "react-router-dom";
-import { DownloadCsv } from "../../components/DownloadCsv";
-import BulkDelete from "../../components/ToolBar/BulkDelete";
-import CustomToolbar from "../../components/CustomToolbar";
+import React, { useState, useEffect } from 'react';
+import {
+  Grow, Icon, IconButton, TextField, Button,
+} from '@material-ui/core';
+import { Breadcrumb } from 'matx';
+import { Link, useHistory } from 'react-router-dom';
+import MUIDataTable from 'mui-datatables';
+import dayjs from 'dayjs';
+import bc from '../../services/breathecode';
+import { useQuery } from '../../hooks/useQuery';
 
-let relativeTime = require("dayjs/plugin/relativeTime");
+import { DownloadCsv } from '../../components/DownloadCsv';
+import BulkDelete from '../../components/ToolBar/BulkDelete';
+import CustomToolbar from '../../components/CustomToolbar';
+
+const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const stageColors = {
-  google: "bg-gray",
-  facebook: "bg-secondary",
-  coursereport: "text-white bg-warning",
-  ActiveCampaign: "text-white bg-error",
-  bing: "text-white bg-green",
+  google: 'bg-gray',
+  facebook: 'bg-secondary',
+  coursereport: 'text-white bg-warning',
+  ActiveCampaign: 'text-white bg-error',
+  bing: 'text-white bg-green',
 };
 
 const Leads = () => {
@@ -31,15 +34,15 @@ const Leads = () => {
   const [querys, setQuerys] = useState({});
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get("limit") || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get("offset") || 0);
-  const [queryLike, setQueryLike] = useState(query.get("like") || "");
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
+  const [queryLike, setQueryLike] = useState(query.get('like') || '');
 
   const handleLoadingData = () => {
     setIsLoading(true);
-    let q = {
-      limit: query.get("limit") !== null ? query.get("limit") : 10,
-      offset: query.get("offset") !== null ? query.get("offset") : 0,
+    const q = {
+      limit: query.get('limit') !== null ? query.get('limit') : 10,
+      offset: query.get('offset') !== null ? query.get('offset') : 0,
     };
     setQuerys(q);
     bc.marketing()
@@ -69,17 +72,17 @@ const Leads = () => {
       })
       .then(({ data }) => {
         setIsLoading(false);
-        setItems({ ...data, page: page });
+        setItems({ ...data, page });
       })
       .catch((error) => {
         setIsLoading(false);
       });
-    let q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
+    const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
     setQuerys(q);
     history.replace(
       `/leads/list?${Object.keys(q)
         .map((key) => `${key}=${q[key]}`)
-        .join("&")}`
+        .join('&')}`,
     );
   };
 
@@ -96,96 +99,96 @@ const Leads = () => {
   };
   const columns = [
     {
-      name: "id",
-      label: "ID",
+      name: 'id',
+      label: 'ID',
       options: {
-        filterList: query.get("id") !== null ? [query.get("id")] : [],
+        filterList: query.get('id') !== null ? [query.get('id')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>{items.results[dataIndex].id}</span>
+          <span className="ellipsis">{items.results[dataIndex].id}</span>
         ),
       },
     },
     {
-      name: "first_name", // field name in the row object
-      label: "Name", // column title that will be shown in table
+      name: 'first_name', // field name in the row object
+      label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          let lead = items.results[dataIndex];
+          const lead = items.results[dataIndex];
           return (
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {lead.first_name + " " + lead.last_name}
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {`${lead.first_name} ${lead.last_name}`}
               </h5>
-              <small className='text-muted'>{lead?.email || lead.email}</small>
+              <small className="text-muted">{lead?.email || lead.email}</small>
             </div>
           );
         },
       },
     },
     {
-      name: "course",
-      label: "Course",
+      name: 'course',
+      label: 'Course',
       options: {
         display: false,
-        filterList: query.get("course") !== null ? [query.get("course")] : [],
+        filterList: query.get('course') !== null ? [query.get('course')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>{items.results[dataIndex].course}</span>
+          <span className="ellipsis">{items.results[dataIndex].course}</span>
         ),
       },
     },
     {
-      name: "lead_type",
-      label: "Lead Type",
+      name: 'lead_type',
+      label: 'Lead Type',
       options: {
         filterList:
-          query.get("lead_type") !== null ? [query.get("lead_type")] : [],
+          query.get('lead_type') !== null ? [query.get('lead_type')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>
+          <span className="ellipsis">
             {items.results[dataIndex].lead_type
               ? items.results[dataIndex].lead_type
-              : "---"}
+              : '---'}
           </span>
         ),
       },
     },
     {
-      name: "utm_url",
-      label: "Utm URL",
+      name: 'utm_url',
+      label: 'Utm URL',
       options: {
-        filterList: query.get("utm_url") !== null ? [query.get("utm_url")] : [],
+        filterList: query.get('utm_url') !== null ? [query.get('utm_url')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>
+          <span className="ellipsis">
             {items.results[dataIndex].utm_url
               ? items.results[dataIndex].utm_url
-              : "---"}
+              : '---'}
           </span>
         ),
       },
     },
     {
-      name: "utm_medium",
-      label: "Utm Medium",
+      name: 'utm_medium',
+      label: 'Utm Medium',
       options: {
         filterList:
-          query.get("utm_medium") !== null ? [query.get("utm_medium")] : [],
+          query.get('utm_medium') !== null ? [query.get('utm_medium')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>
+          <span className="ellipsis">
             {items.results[dataIndex].utm_medium
               ? items.results[dataIndex].utm_medium
-              : "---"}
+              : '---'}
           </span>
         ),
       },
     },
     {
-      name: "utm_source",
-      label: "Utm Source",
+      name: 'utm_source',
+      label: 'Utm Source',
       options: {
         filter: true,
-        filterType: "multiselect",
+        filterType: 'multiselect',
         filterList:
-          query.get("utm_source") !== null ? [query.get("utm_source")] : [],
+          query.get('utm_source') !== null ? [query.get('utm_source')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span
             className={`ellipsis ${
@@ -194,41 +197,41 @@ const Leads = () => {
           >
             {items.results[dataIndex].utm_source
               ? items.results[dataIndex].utm_source
-              : "---"}
+              : '---'}
           </span>
         ),
       },
     },
     {
-      name: "tags",
-      label: "Tags",
+      name: 'tags',
+      label: 'Tags',
       options: {
         filter: true,
-        filterType: "multiselect",
-        filterList: query.get("tags") !== null ? [query.get("tags")] : [],
+        filterType: 'multiselect',
+        filterList: query.get('tags') !== null ? [query.get('tags')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className='ellipsis'>
+          <span className="ellipsis">
             {items.results[dataIndex].tags
               ? items.results[dataIndex].tags
-              : "---"}
+              : '---'}
           </span>
         ),
       },
     },
     {
-      name: "created_at",
-      label: "Created At",
+      name: 'created_at',
+      label: 'Created At',
       options: {
         filter: true,
         filterList:
-          query.get("created_at") !== null ? [query.get("created_at")] : [],
+          query.get('created_at') !== null ? [query.get('created_at')] : [],
         customBodyRenderLite: (i) => (
-          <div className='flex items-center'>
-            <div className='ml-3'>
-              <h5 className='my-0 text-15'>
-                {dayjs(items.results[i].created_at).format("MM-DD-YYYY")}
+          <div className="flex items-center">
+            <div className="ml-3">
+              <h5 className="my-0 text-15">
+                {dayjs(items.results[i].created_at).format('MM-DD-YYYY')}
               </h5>
-              <small className='text-muted'>
+              <small className="text-muted">
                 {dayjs(items.results[i].created_at).fromNow()}
               </small>
             </div>
@@ -239,40 +242,40 @@ const Leads = () => {
   ];
 
   return (
-    <div className='m-sm-30'>
-      <div className='mb-sm-30'>
-        <div className='flex flex-wrap justify-between mb-6'>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Pages", path: "/leads/list" },
-                { name: "Order List" },
+                { name: 'Pages', path: '/leads/list' },
+                { name: 'Order List' },
               ]}
             />
           </div>
-          <div className=''>
+          <div className="">
             <Link
-              to='/leads/list/new'
-              color='primary'
-              className='btn btn-primary'
+              to="/leads/list/new"
+              color="primary"
+              className="btn btn-primary"
             >
-              <Button variant='contained' color='primary'>
+              <Button variant="contained" color="primary">
                 Add new lead
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className='overflow-auto'>
-        <div className='min-w-750'>
+      <div className="overflow-auto">
+        <div className="min-w-750">
           <MUIDataTable
-            title={"All Leads"}
+            title="All Leads"
             data={items.results}
             columns={columns}
             options={{
               customToolbar: () => {
-                let singlePageTableCsv = `/v1/marketing/academy/lead?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                let allPagesTableCsv = `/v1/marketing/academy/lead?like=${queryLike}`;
+                const singlePageTableCsv = `/v1/marketing/academy/lead?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
+                const allPagesTableCsv = `/v1/marketing/academy/lead?like=${queryLike}`;
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -281,8 +284,8 @@ const Leads = () => {
                 );
               },
               download: false,
-              filterType: "textField",
-              responsive: "standard",
+              filterType: 'textField',
+              responsive: 'standard',
               elevation: 0,
               serverSide: true,
               page: items.page,
@@ -291,32 +294,31 @@ const Leads = () => {
                 changedColumn,
                 filterList,
                 type,
-                changedColumnIndex
+                changedColumnIndex,
               ) => {
                 let q;
-                if (type === "reset") {
+                if (type === 'reset') {
                   q = {
                     limit: querys.limit ? querys.limit : 10,
                     offset: querys.offset ? querys.offset : 0,
                   };
+                } else if (
+                  filterList[changedColumnIndex][0] === undefined
+                    || type === 'chip'
+                ) {
+                  q = { ...querys };
+                  delete q[changedColumn];
                 } else {
-                  if (
-                    filterList[changedColumnIndex][0] === undefined ||
-                    type === "chip"
-                  ) {
-                    q = { ...querys };
-                    delete q[changedColumn];
-                  } else
-                    q = {
-                      ...querys,
-                      [changedColumn]: filterList[changedColumnIndex][0],
-                    };
+                  q = {
+                    ...querys,
+                    [changedColumn]: filterList[changedColumnIndex][0],
+                  };
                 }
                 setQuerys(q);
                 history.replace(
                   `/leads/list?${Object.keys(q)
                     .map((key) => `${key}=${q[key]}`)
-                    .join("&")}`
+                    .join('&')}`,
                 );
               },
               rowsPerPage:
@@ -325,81 +327,82 @@ const Leads = () => {
               customToolbarSelect: (
                 selectedRows,
                 displayData,
-                setSelectedRows
-              ) => {
-                return (
-                  <BulkDelete
-                    selectedRows={selectedRows}
-                    displayData={displayData}
-                    setSelectedRows={setSelectedRows}
-                    items={items.results}
-                    key={items.results}
-                    history={history}
-                    reRender={handleLoadingData}
-                  />
-                );
-              },
+                setSelectedRows,
+              ) => (
+                <CustomToolbar
+                  selectedRows={selectedRows}
+                  displayData={displayData}
+                  setSelectedRows={setSelectedRows}
+                  items={items.results}
+                  key={items.results}
+                  history={history}
+                  id="staff"
+                  deleting={async (querys) => {
+                    const { status } = await bc
+                      .admissions()
+                      .deleteLeadsBulk(querys);
+                    return status;
+                  }}
+                  onBulkDelete={handleLoadingData}
+                />
+              ),
               onTableChange: (action, tableState) => {
                 switch (action) {
-                  case "changePage":
+                  case 'changePage':
                     console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
-                  case "changeRowsPerPage":
+                  case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
-                  case "filterChange":
-                  //console.log(action, tableState)
+                  case 'filterChange':
+                  // console.log(action, tableState)
                 }
               },
               customFilterDialogFooter: (
                 currentFilterList,
-                applyNewFilters
-              ) => {
-                return (
-                  <div style={{ marginTop: "40px" }}>
-                    <Button
-                      variant='contained'
-                      onClick={() => handleFilterSubmit()}
-                    >
-                      Apply Filters
-                    </Button>
-                  </div>
-                );
-              },
+                applyNewFilters,
+              ) => (
+                <div style={{ marginTop: '40px' }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleFilterSubmit()}
+                  >
+                    Apply Filters
+                  </Button>
+                </div>
+              ),
               onRowsDelete: (data) => console.log(data),
               customSearchRender: (
                 searchText,
                 handleSearch,
                 hideSearch,
-                options
-              ) => {
-                return (
-                  <Grow appear in={true} timeout={300}>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className='mr-2' fontSize='small'>
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize='small'>clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                );
-              },
+                options,
+              ) => (
+                <Grow appear in timeout={300}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    onChange={({ target: { value } }) => handleSearch(value)}
+                    InputProps={{
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </Grow>
+              ),
             }}
           />
         </div>

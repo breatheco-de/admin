@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState } from 'react';
 import {
   Card,
   TextField,
@@ -15,9 +15,9 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  Grid
-} from "@material-ui/core";
-import { Formik } from "formik";
+  Grid,
+} from '@material-ui/core';
+import { Formik } from 'formik';
 
 const Sidenav = ({
   query,
@@ -29,11 +29,11 @@ const Sidenav = ({
   handleTypeChange,
   handleCategoryChange,
   handleClearAllFilter,
-  onNewCategory
+  onNewCategory,
 }) => {
-  const [dialog, setDialog] = useState(false)
+  const [dialog, setDialog] = useState(false);
   return (
-    <Fragment>
+    <>
       <div className="pl-4 flex items-center mb-4 mt-2">
         <TextField
           className="bg-paper flex-grow mr-4"
@@ -52,7 +52,7 @@ const Sidenav = ({
             ),
           }}
           fullWidth
-        ></TextField>
+        />
         <Hidden smUp>
           <Icon onClick={toggleSidenav}>clear</Icon>
         </Hidden>
@@ -115,9 +115,9 @@ const Sidenav = ({
                 }
                 label={<span className="capitalize">{category.name}</span>}
               />
-              {/*<small className="badge bg-light-primary text-primary">
+              {/* <small className="badge bg-light-primary text-primary">
                 {category.medias}
-              </small>*/}
+              </small> */}
             </div>
           ))}
           {/* <Button
@@ -135,7 +135,7 @@ const Sidenav = ({
           Clear All Filteres
         </Button>
       </div>
-      {/* DIALOG*/}
+      {/* DIALOG */}
       <Dialog
         onClose={() => setDialog(false)}
         open={dialog}
@@ -144,13 +144,13 @@ const Sidenav = ({
         <DialogTitle id="simple-dialog-title">New Category</DialogTitle>
         <Formik
           initialValues={{
-            name:''
+            name: '',
           }}
           onSubmit={(values) => {
-            setDialog(false)
-            onNewCategory(values)
+            setDialog(false);
+            onNewCategory(values);
           }}
-          enableReinitialize={true}
+          enableReinitialize
         >
           {({
             values,
@@ -164,7 +164,7 @@ const Sidenav = ({
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
-              <DialogContent className='px-5'>
+              <DialogContent className="px-5">
                 <Grid container spacing={2} alignItems="center">
                   <Grid item md={2} sm={4} xs={12}>
                     Category name
@@ -195,7 +195,7 @@ const Sidenav = ({
           )}
         </Formik>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 

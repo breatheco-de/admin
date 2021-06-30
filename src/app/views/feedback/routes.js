@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const routes = [
     {
@@ -11,6 +11,12 @@ const routes = [
         path: "/feedback/surveys",
         exact: true,
         component: React.lazy(() => import("./surveys.js")),
+        beta: true,
+    },
+    {
+        path: "/feedback/surveys/:id",
+        exact: true,
+        component: React.lazy(() => import("./survey-dashboard")),
         beta: true,
     },
     {
