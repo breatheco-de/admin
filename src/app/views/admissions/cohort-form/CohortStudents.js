@@ -87,7 +87,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           const { results, next } = data.data;
-          next === null ? setHasMore(false): setHasMore(true);
+          setHasMore(next !== null)
           setIsLoading(false);
           results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }

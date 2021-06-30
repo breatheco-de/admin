@@ -43,15 +43,11 @@ export const SmartMUIDataTable = (props) => {
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
-  const [querySort, setQuerySort] = useState(query.get('sort') || ' ');
   const [querys, setQuerys] = useState({
-    limit: queryLimit,
-    offset: queryOffset,
-    like: queryLike,
-    sort: querySort,
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+    like: query.get('like') || '',
+    sort: query.get('sort') || ' ',
   });
 
   const loadData = () => {
@@ -66,6 +62,7 @@ export const SmartMUIDataTable = (props) => {
         }
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
@@ -79,17 +76,11 @@ export const SmartMUIDataTable = (props) => {
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    setQuerySort(_sort);
-    const query = {
-      limit: rowsPerPage,
-      offset: page * rowsPerPage,
-      like: _like,
-      sort: _sort,
-    };
-    setQuerys(query);
+    setQuerys({...query, limit: rowsPerPage});
+    setQuerys({...query, offset: rowsPerPage * page })
+    setQuerys({...query, like: _like })
+    setQuerys({...query, sort: _sort })
+    
     props
       .search(query)
       .then((data) => {
@@ -103,6 +94,7 @@ export const SmartMUIDataTable = (props) => {
         );
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
@@ -126,8 +118,8 @@ export const SmartMUIDataTable = (props) => {
         viewColumns: true,
         customToolbar: () => (
           <DownloadCsv
-            singlePageTableCsv={() => props.downloadCSV(querys)}
-            allPagesTableCsv={() => props.downloadCSV(queryLike)}
+            getAllPagesCSV={() => props.downloadCSV(querys.like)}
+            getSinglePageCSV={() => props.downloadCSV(querys)}
           />
         ),
 
@@ -153,7 +145,6 @@ export const SmartMUIDataTable = (props) => {
         onFilterChange: (
           changedColumn,
           filterList,
-          type,
           changedColumnIndex,
         ) => {
           const q = {
@@ -213,7 +204,7 @@ export const SmartMUIDataTable = (props) => {
           }
         },
 
-        customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+        customSearchRender: ( hideSearch ) => (
           <Grow appear in timeout={300}>
             <TextField
               variant="outlined"
