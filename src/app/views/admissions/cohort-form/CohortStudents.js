@@ -34,14 +34,14 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 }));
 
 const CohortStudents = ({ slug, cohort_id }) => {
-  const classes = useStyles();
-  const [isLoading, setIsLoading] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [studenList, setStudentsList] = useState([]);
-  const [currentStd, setCurrentStd] = useState({});
-  const [openRoleDialog, setRoleDialog] = useState(false);
-  const [user, setUser] = useState(null);
-  // Redux actions and store
+    const classes = useStyles();
+    const [isLoading, setIsLoading] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [studenList, setStudentsList] = useState([]);
+    const [currentStd, setCurrentStd] = useState({});
+    const [openRoleDialog, setRoleDialog] = useState(false);
+    const [user, setUser] = useState(null);
+    // Redux actions and store
 
   const query = useQuery();
 
@@ -56,26 +56,27 @@ const CohortStudents = ({ slug, cohort_id }) => {
     getCohortStudents();
   }, [queryLimit]);
 
-  const changeStudentStatus = (value, name, studentId, i) => {
-    console.log(value, name, i);
-    const s_status = {
-      role: studenList[i].role,
-      finantial_status: studenList[i].finantial_status,
-      educational_status: studenList[i].educational_status,
+    const changeStudentStatus = (value, name, studentId, i) => {
+        console.log(value, name, i);
+        const s_status = {
+            role: studenList[i].role,
+            finantial_status: studenList[i].finantial_status,
+            educational_status: studenList[i].educational_status,
+        };
+        bc.admissions()
+            .updateCohortUserInfo(cohort_id, studentId, {
+                ...s_status,
+                [name]: value,
+            })
+            .then((data) => {
+                console.log(data);
+                if (data.status >= 200) getCohortStudents();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
-    bc.admissions()
-      .updateCohortUserInfo(cohort_id, studentId, {
-        ...s_status,
-        [name]: value,
-      })
-      .then((data) => {
-        console.log(data);
-        if (data.status >= 200) getCohortStudents();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
 
   const getCohortStudents = () => {
     setIsLoading(true);
@@ -176,8 +177,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
           >
             Add to cohort
           </Button>
-        </AsyncAutocomplete>
-      </div>
+                </AsyncAutocomplete>
+            </div>
 
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
@@ -213,11 +214,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
                         <p className="mt-0 mb-6px text-13">
                           <small
                             onClick={() => {
-                              setRoleDialog(true);
-                              setCurrentStd({
-                                id: s.user.id,
-                                positionInArray: i,
-                              });
+                                handlePaginationNextPage();
                             }}
                             className="border-radius-4 px-2 pt-2px bg-secondary"
                             style={{ cursor: 'pointer' }}
@@ -329,29 +326,29 @@ const CohortStudents = ({ slug, cohort_id }) => {
         open={openRoleDialog}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
-        <List>
-          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
-            <ListItem
-              button
-              onClick={() => {
-                changeStudentStatus(
-                  role,
-                  'role',
-                  currentStd.id,
-                  currentStd.positionInArray,
-                );
-                setRoleDialog(false);
-              }}
-              key={i}
-            >
-              <ListItemText primary={role} />
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
-    </Card>
-  );
+                <DialogTitle id='simple-dialog-title'>Select a Cohort Role</DialogTitle>
+                <List>
+                    {["TEACHER", "ASSISTANT", "REVIEWER", "STUDENT"].map((role, i) => (
+                        <ListItem
+                            button
+                            onClick={() => {
+                                changeStudentStatus(
+                                    role,
+                                    "role",
+                                    currentStd.id,
+                                    currentStd.positionInArray
+                                );
+                                setRoleDialog(false);
+                            }}
+                            key={i}
+                        >
+                            <ListItemText primary={role} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Dialog>
+        </Card>
+    );
 };
 
 export default CohortStudents;

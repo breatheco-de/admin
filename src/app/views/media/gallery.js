@@ -7,14 +7,18 @@ import {
   updateFileInfo,
   deleteFile,
   createCategory,
-} from 'app/redux/actions/MediaActions';
-import { debounce } from 'lodash';
-import { useHistory } from 'react-router-dom';
-import { openDialog, closeDialog } from '../../redux/actions/DialogActions';
+  bulkEditMedia,
+  clearSelectedMedia
+} from "app/redux/actions/MediaActions";
+import {openDialog, closeDialog} from '../../redux/actions/DialogActions';
 import Dialog from '../../components/Dialog';
 import SideNav from './SideNav';
 import GalleryContainer from './GalleryContainer';
 import { useQuery } from '../../hooks/useQuery';
+import { useHistory } from 'react-router-dom';
+import { BulkEdit } from "./BulkEdit";
+import { debounce } from "lodash";
+
 
 // Dropzone depency for drag and drop
 
@@ -32,6 +36,7 @@ const Gallery = () => {
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
+  const { selected = [] } = useSelector((state) => state.ecommerce);
   const { refresh } = useSelector((state) => state.ecommerce);
   const history = useHistory();
   const { show, value } = useSelector((state) => state.dialog);
@@ -149,6 +154,10 @@ const Gallery = () => {
     history.replace(`/media/gallery?${Object.keys(q).map((key) => `${key}=${q[key]}`).join('&')}`);
   };
 
+  const onSubmitBulkEdit = (values) =>{
+    dispatch(bulkEditMedia(selected.map(m =>{ return { categories: m.categories.filter(c => !values.includes(c.id.toString())).map(c => c.id).concat(...values), id:m.id } })))
+  }
+ 
   useEffect(() => {
     const keys = pgQuery.keys();
     const result = {};
@@ -178,7 +187,7 @@ const Gallery = () => {
           onSubmit={(values) => dispatch(updateFileInfo(value.id, { ...values, categories: values.categories.map((c) => c.id) }))}
         />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
-          <SideNav
+          {selected.length < 1 ? <SideNav
             query={query}
             categories={categories}
             type={type}
@@ -189,7 +198,12 @@ const Gallery = () => {
             handleCategoryChange={handleCategoryChange}
             handleClearAllFilter={handleClearAllFilter}
             onNewCategory={(values) => dispatch(createCategory(values))}
-          />
+          ></SideNav> : <BulkEdit 
+          categoryList={categoryList} 
+          onClick={onSubmitBulkEdit}
+          total={selected.length}
+          clear={()=> dispatch(clearSelectedMedia())}
+          />}
         </MatxSidenav>
         <MatxSidenavContent>
           <GalleryContainer

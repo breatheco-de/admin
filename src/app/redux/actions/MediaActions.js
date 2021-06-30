@@ -1,12 +1,14 @@
 import bc from '../../services/breathecode';
 
-export const GET_PRODUCT_LIST = 'GET_PRODUCT_LIST';
-export const GET_CATEGORY_LIST = 'GET_CATEGORY_LIST';
-export const UPLOAD_MEDIA_FILE = 'UPLOAD_MEDIA_FILE';
-export const UPDATE_MEDIA_FILE = 'UPDATE_MEDIA_FILE';
-export const DELETE_MEDIA_FILE = 'DELETE_MEDIA_FILE';
-export const CREATE_CATEGORY = 'CREATE_CATEGORY';
-
+export const GET_PRODUCT_LIST = "GET_PRODUCT_LIST";
+export const GET_CATEGORY_LIST = "GET_CATEGORY_LIST";
+export const UPLOAD_MEDIA_FILE = "UPLOAD_MEDIA_FILE";
+export const UPDATE_MEDIA_FILE = "UPDATE_MEDIA_FILE";
+export const DELETE_MEDIA_FILE = "DELETE_MEDIA_FILE";
+export const CREATE_CATEGORY = "CREATE_CATEGORY";
+export const MEDIA_SELECTED = "MEDIA_SELECTED";
+export const CLEAN_MEDIA_SELECTED = "CLEAN_MEDIA_SELECTED";
+  
 export const getProductList = (pagination) => (dispatch) => {
   delete pagination.count;
   bc.media().getMedia(pagination).then((res) => dispatch({
@@ -59,8 +61,31 @@ export const deleteFile = (id) => (dispatch) => {
 };
 
 export const createCategory = (values) => (dispatch) => {
-  bc.media().createCategory(values).then((res) => dispatch({
-    type: CREATE_CATEGORY,
-    payload: res,
-  }));
+  bc.media().createCategory(values).then( res => dispatch({
+    type:CREATE_CATEGORY,
+    payload: res
+  }))
+}
+
+export const selectMedia = (value) => (dispatch) => {
+  dispatch({
+    type:MEDIA_SELECTED,
+    payload: value
+  })
 };
+
+export const bulkEditMedia = (value) => (distpach) => {
+  console.log(value)
+  bc.media().updateMediaBulk(value).then(res => {
+    distpach({
+    type:CLEAN_MEDIA_SELECTED,
+    payload: res
+    })
+  })
+}
+
+export const clearSelectedMedia = () => (distpach) => {
+  distpach({
+    type:CLEAN_MEDIA_SELECTED
+  })
+}
