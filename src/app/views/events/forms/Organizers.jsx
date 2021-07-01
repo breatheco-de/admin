@@ -43,11 +43,11 @@ export const Organizers = ({ initialValues, className }) => (
               order.placed
             </TableCell>
             <TableCell className="pl-0 capitalize" align="left">
-              <small className={'border-radius-4 px-2 pt-2px ' + 'text-white bg-warning'}>Error</small>
+              <small className={'border-radius-4 px-2 pt-2px ' + 'text-white bg-warning'}>
+                Error
+              </small>
             </TableCell>
-            <TableCell className="pl-0">
-              5 days ago
-            </TableCell>
+            <TableCell className="pl-0">5 days ago</TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="pl-sm-24 capitalize" align="left">
@@ -57,11 +57,9 @@ export const Organizers = ({ initialValues, className }) => (
               order.placed
             </TableCell>
             <TableCell className="pl-0 capitalize" align="left">
-              <small className={'border-radius-4 px-2 pt-2px ' + 'text-white bg-error'}>Error</small>
+              <small className="border-radius-4 px-2 pt-2px text-white bg-error">Error</small>
             </TableCell>
-            <TableCell className="pl-0">
-              5 days ago
-            </TableCell>
+            <TableCell className="pl-0">5 days ago</TableCell>
           </TableRow>
         </TableBody>
       </Table>

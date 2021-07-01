@@ -2,18 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
-  Grid,
-  Card,
-  Divider,
-  TextField,
-  MenuItem,
-  Button,
-  Checkbox,
+  Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
 } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
 import { useParams, useHistory } from 'react-router-dom';
 import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
+import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { MediaInput } from '../../../components/MediaInput';
 
@@ -43,8 +37,13 @@ const EventForm = () => {
 
   useEffect(() => {
     if (id) {
-      bc.events().getAcademyEvent(id)
-        .then(({ data }) => setEvent({ ...data, starting_at: dayjs(data.starting_at).format('YYYY-MM-DDTHH:mm:ss'), ending_at: dayjs(data.ending_at).format('YYYY-MM-DDTHH:mm:ss') }))
+      bc.events()
+        .getAcademyEvent(id)
+        .then(({ data }) => setEvent({
+          ...data,
+          starting_at: dayjs(data.starting_at).format('YYYY-MM-DDTHH:mm:ss'),
+          ending_at: dayjs(data.ending_at).format('YYYY-MM-DDTHH:mm:ss'),
+        }))
         .catch((error) => error);
     }
   }, []);
@@ -56,12 +55,13 @@ const EventForm = () => {
     };
     if (id) {
       const { academy, ...rest } = values;
-      bc.events().updateAcademyEvent(id, {
-        ...rest,
-        starting_at: dayjs(rest.starting_at).utc().format(),
-        ending_at: dayjs(rest.ending_at).utc().format(),
-        ...venueAndType,
-      })
+      bc.events()
+        .updateAcademyEvent(id, {
+          ...rest,
+          starting_at: dayjs(rest.starting_at).utc().format(),
+          ending_at: dayjs(rest.ending_at).utc().format(),
+          ...venueAndType,
+        })
         .then(({ data }) => {
           setEvent({
             title: '',
@@ -82,12 +82,13 @@ const EventForm = () => {
         })
         .catch((error) => error);
     } else {
-      bc.events().addAcademyEvent({
-        ...values,
-        starting_at: dayjs(values.starting_at).utc().format(),
-        ending_at: dayjs(values.ending_at).utc().format(),
-        ...venueAndType,
-      })
+      bc.events()
+        .addAcademyEvent({
+          ...values,
+          starting_at: dayjs(values.starting_at).utc().format(),
+          ending_at: dayjs(values.ending_at).utc().format(),
+          ...venueAndType,
+        })
         .then(({ data }) => {
           setEvent({
             title: '',
@@ -120,31 +121,27 @@ const EventForm = () => {
         />
       </div>
       <Card elevation={3}>
-
         <div className="flex p-4">
           <h4 className="m-0">{id ? 'Edit Event' : 'Create a new Event'}</h4>
         </div>
         <Divider className="mb-2" />
         {!id && (
-        <Alert severity="warning">
-          <AlertTitle>Before you add a new event</AlertTitle>
-          Usually events get added automatically from EventBrite, please only manually add events that are NOT going to be published thru Eventbrite.
-        </Alert>
+          <Alert severity="warning">
+            <AlertTitle>Before you add a new event</AlertTitle>
+            Usually events get added automatically from EventBrite, please only manually add events
+            that are NOT going to be published thru Eventbrite.
+          </Alert>
         )}
-        <Formik
-          initialValues={event}
-          onSubmit={(values) => postEvent(values)}
-          enableReinitialize
-        >
+        <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize>
           {({
             values,
-            errors,
-            touched,
+            // errors,
+            // touched,
             handleChange,
-            handleBlur,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
+            // isSubmitting,
+            // setSubmitting,
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
