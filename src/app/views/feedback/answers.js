@@ -461,7 +461,7 @@ const Answers = () => {
                     ) : (
                         <p className="m-0 text-muted">
                             Waiting for comments
-                                        </p>
+                        </p>
                     )}
                 </div>
               </div>

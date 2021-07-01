@@ -380,13 +380,20 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => { 
-                            if(response.status == 200 || response.status == 201){
+                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => {
+                            console.log(`Entrando en respuesta ${response}`)
+                            if(response === "undefined"){
+                                console.log(`Error1 ${response}`)
+                                handleClickOpenModal(false)
+                            }else if(response === "undefined"){
+                                console.log(`Error2 ${response}`)
+                                handleClickOpenModal(false)
+                            }else{
                                 setUrl(response.data.public_url)
-                                console.log(`Hola ${response.data.public_url}`)
-                                handleClickOpenModal(true)
-                            }}
-                        )
+                                console.log(response.data.public_url)
+                                handleClickOpenModal(true) 
+                            }   
+                        })
                         // bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => {console.log(response.data.public_url) handleClickOpenModal(true)})
                     }}
                 >
@@ -468,20 +475,20 @@ const Cohort = () => {
             </Dialog>
 
             <Dialog
-                open={open}
                 onClose={handleCloseModal}
+                open={open}
                 aria-labelledby="simple-dialog-title"
             >
                 <div className="px-sm-24 pt-sm-24">
                     <DialogTitle id="simple-dialog-title">
                         Invite Link
                     </DialogTitle>
-                    <DialogContent>
+                    <DialogContent>                                
                         <TextField
                             label="URL"
                             name="url"
                             disabled
-                            size="large"
+                            size="small"
                             variant="outlined"
                             value={url}
                             // onChange={handleChange}
@@ -494,12 +501,6 @@ const Cohort = () => {
                         <Button color="danger" variant="contained" className="mb-3" onClick={handleCloseModal}>
                             Close
                         </Button>
-                        {/* <Button
-                            color="danger"
-                            variant="contained"
-                            onClick={handleClose}>
-                            Close
-                        </Button> */}
                     </DialogActions>
                 </div>
             </Dialog>
