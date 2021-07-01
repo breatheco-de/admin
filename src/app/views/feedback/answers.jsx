@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, Fragment } from 'react';
 import { Breadcrumb, MatxLoading, MatxMenu } from 'matx';
 import MUIDataTable from 'mui-datatables';
@@ -16,18 +17,18 @@ import {
   DialogActions,
   Divider,
   Card,
-  MenuItem,
-  Input,
-  FormControlLabel,
-  Checkbox,
-  Tooltip,
+  // MenuItem,
+  // Input,
+  // FormControlLabel,
+  // Checkbox,
+  // Tooltip,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import bc from 'app/services/breathecode';
 
-import axios from '../../../axios';
+// import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
@@ -57,8 +58,12 @@ const Answers = () => {
   const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
   const [queryLike, setQueryLike] = useState(query.get('like') || '');
   const [open, setOpen] = useState(false);
-  const handleClickOpen = () => { setOpen(true); };
-  const handleClose = () => { setOpen(false); };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const [answer, setanswer] = useState({
     color: '',
@@ -160,9 +165,7 @@ const Answers = () => {
                 <h5 className="my-0 text-15">
                   {dayjs(items.results[i].created_at).format('MM-DD-YYYY')}
                 </h5>
-                <small className="text-muted">
-                  {dayjs(items.results[i].created_at).fromNow()}
-                </small>
+                <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
               </div>
             ) : (
               <div className="ml-3">No information</div>
@@ -188,7 +191,7 @@ const Answers = () => {
               <div className="flex items-center">
                 <LinearProgress
                   color="secondary"
-                  value={parseInt(items.results[i].score) * 10}
+                  value={parseInt(items.results[i].score, 10) * 10}
                   variant="determinate"
                 />
                 <small className={color}>{items.results[i].score}</small>
@@ -206,9 +209,7 @@ const Answers = () => {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
-            {items.results[i].comment
-              ? items.results[i].comment.substring(0, 100)
-              : 'No comments'}
+            {items.results[i].comment ? items.results[i].comment.substring(0, 100) : 'No comments'}
           </div>
         ),
       },
@@ -223,10 +224,11 @@ const Answers = () => {
             <div className="flex items-center">
               <div className="flex-grow" />
               <span>
-                <IconButton onClick={() => {
-                  handleClickOpen(true);
-                  setanswer(items.results[dataIndex]);
-                }}
+                <IconButton
+                  onClick={() => {
+                    handleClickOpen(true);
+                    setanswer(items.results[dataIndex]);
+                  }}
                 >
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -252,11 +254,7 @@ const Answers = () => {
           </div>
 
           <div className="">
-            <Link
-              to="/feedback/survey/new"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
@@ -289,12 +287,7 @@ const Answers = () => {
               elevation: 0,
               page: items.page,
               count: items.count,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex,
-              ) => {
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 const q = { [changedColumn]: filterList[changedColumnIndex][0] };
                 setQuerys(q);
                 history.replace(
@@ -315,17 +308,12 @@ const Answers = () => {
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'filterChange':
-                                    // console.log(action, tableState)
+                  // console.log(action, tableState)
                 }
               },
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options,
-              ) => (
+              customSearchRender: (searchText, handleSearch, hideSearch, options) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"
@@ -333,20 +321,20 @@ const Answers = () => {
                     fullWidth
                     onChange={({ target: { value } }) => handleSearch(value)}
                     InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                            <Icon className="mr-2" fontSize="small">
-                                search
-                                                    </Icon>
-                        ),
-                        endAdornment: (
-                            <IconButton onClick={hideSearch}>
-                                <Icon fontSize="small">clear</Icon>
-                              </IconButton>
-                        ),
-                      }}
+                      style: {
+                        paddingRight: 0,
+                      },
+                      startAdornment: (
+                        <Icon className="mr-2" fontSize="small">
+                          search
+                        </Icon>
+                      ),
+                      endAdornment: (
+                        <IconButton onClick={hideSearch}>
+                          <Icon fontSize="small">clear</Icon>
+                        </IconButton>
+                      ),
+                    }}
                   />
                 </Grow>
               ),
@@ -355,17 +343,11 @@ const Answers = () => {
         </div>
       </div>
 
-      <Dialog
-        onClose={handleClose}
-        open={open}
-        aria-labelledby="simple-dialog-title"
-      >
+      <Dialog onClose={handleClose} open={open} aria-labelledby="simple-dialog-title">
         <div className="px-sm-24 pt-sm-24">
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
-              <p className="m-0 mb-4 text-small text-muted">
-                Answer with details
-              </p>
+              <p className="m-0 mb-4 text-small text-muted">Answer with details</p>
             </div>
             <IconButton size="small" onClick={handleClose}>
               <Icon>clear</Icon>
@@ -378,10 +360,10 @@ const Answers = () => {
                   <Avatar className="w-48 h-48" src={answer.user.imgUrl} />
                   <div className="ml-3 mt-3">
                     <h3 className="my-0 text-15">
-                        {answer.user.first_name}
-                        {' '}
-                        {answer.user.last_name}
-                      </h3>
+                      {answer.user.first_name}
+                      {' '}
+                      {answer.user.last_name}
+                    </h3>
                   </div>
                 </div>
               </Grid>
@@ -389,50 +371,38 @@ const Answers = () => {
                 {answer.score === null ? (
                   <Card className="bg-gray items-center flex justify-between p-4">
                     <div>
-                        <h5 className="font-normal text-white uppercase pt-2 mr-3">
-                            Waiting fot answer
-                                        </h5>
-                      </div>
+                      <h5 className="font-normal text-white uppercase pt-2 mr-3">
+                        Waiting fot answer
+                      </h5>
+                    </div>
                   </Card>
                 ) : answer.score > 7 ? (
                   <Card className="bg-green items-center flex justify-between p-4">
-                      <div>
-                          <span className="text-white uppercase">
-                              TOTAL SCORE:
-                                  </span>
-                        </div>
-                      <div>
-                          <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                              {answer.score}
-                            </h2>
-                        </div>
-                    </Card>
+                    <div>
+                      <span className="text-white uppercase">TOTAL SCORE:</span>
+                    </div>
+                    <div>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                    </div>
+                  </Card>
                 ) : answer.score < 7 ? (
                   <Card className="bg-error items-center flex justify-between p-4">
-                      <div>
-                          <span className="text-white uppercase">
-                              TOTAL SCORE:
-                                  </span>
-                        </div>
-                      <div>
-                          <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                              {answer.score}
-                            </h2>
-                        </div>
-                    </Card>
+                    <div>
+                      <span className="text-white uppercase">TOTAL SCORE:</span>
+                    </div>
+                    <div>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                    </div>
+                  </Card>
                 ) : (
                   <Card className="bg-secondary items-center flex justify-between p-4">
-                      <div>
-                          <span className="text-white uppercase">
-                              TOTAL SCORE:
-                                  </span>
-                        </div>
-                      <div>
-                          <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                              {answer.score}
-                            </h2>
-                        </div>
-                    </Card>
+                    <div>
+                      <span className="text-white uppercase">TOTAL SCORE:</span>
+                    </div>
+                    <div>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                    </div>
+                  </Card>
                 )}
               </Grid>
             </Grid>
@@ -453,16 +423,11 @@ const Answers = () => {
             <div>
               <div className="comments">
                 <div className="mb-4">
-                  {answer.comment
-                    ? (
-                        <p className="m-0 text-muted">
-                            {answer.comment.substring(0, 10000)}
-                          </p>
-                    ) : (
-                        <p className="m-0 text-muted">
-                            Waiting for comments
-                                        </p>
-                    )}
+                  {answer.comment ? (
+                    <p className="m-0 text-muted">{answer.comment.substring(0, 10000)}</p>
+                  ) : (
+                    <p className="m-0 text-muted">Waiting for comments</p>
+                  )}
                 </div>
               </div>
             </div>
