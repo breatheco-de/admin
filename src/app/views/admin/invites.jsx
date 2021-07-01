@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
 
 import {
@@ -11,8 +10,9 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
-import CopyInviteModal from 'app/components/InviteDetails';
+import { Breadcrumb, MatxLoading } from '../../../matx';
+import bc from '../../services/breathecode';
+import CopyInviteModal from '../../components/InviteDetails';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
 const relativeTime = require('dayjs/plugin/relativeTime');

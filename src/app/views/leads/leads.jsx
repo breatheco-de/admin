@@ -10,7 +10,7 @@ import bc from '../../services/breathecode';
 import { useQuery } from '../../hooks/useQuery';
 
 import { DownloadCsv } from '../../components/DownloadCsv';
-import BulkDelete from '../../components/ToolBar/BulkDelete';
+// import BulkDelete from '../../components/ToolBar/BulkDelete';
 import CustomToolbar from '../../components/CustomToolbar';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -322,7 +322,7 @@ const Leads = () => {
                 );
               },
               rowsPerPage:
-                querys.limit === undefined ? 10 : parseInt(querys.limit),
+                querys.limit === undefined ? 10 : parseInt(querys.limit, 10),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               customToolbarSelect: (
                 selectedRows,
@@ -357,11 +357,14 @@ const Leads = () => {
                     break;
                   case 'filterChange':
                   // console.log(action, tableState)
+                    break;
+                  default:
+                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
               customFilterDialogFooter: (
-                currentFilterList,
-                applyNewFilters,
+                // currentFilterList,
+                // applyNewFilters,
               ) => (
                 <div style={{ marginTop: '40px' }}>
                   <Button
@@ -374,10 +377,10 @@ const Leads = () => {
               ),
               onRowsDelete: (data) => console.log(data),
               customSearchRender: (
-                searchText,
+                // searchText,
                 handleSearch,
                 hideSearch,
-                options,
+                // options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField
