@@ -14,10 +14,10 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
-import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { makeStyles } from '@material-ui/core/styles';
+import { Breadcrumb } from '../../../../matx';
+import bc from '../../../services/breathecode';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   select: {
@@ -39,7 +39,7 @@ const NewSurvey = () => {
     },
   );
   const [id, setId] = useState(null);
-  const [cohortNameInDialog, setCohortNameInDialog] = useState(null);
+  // const [cohortNameInDialog, setCohortNameInDialog] = useState(null);
 
   const history = useHistory();
   const classes = useStyles();
@@ -69,7 +69,7 @@ const NewSurvey = () => {
         </MenuItem>
       )));
     }
-  }, [listCohorts != undefined]);
+  }, [listCohorts !== undefined]);
 
   const updateSurvey = (event) => {
     setNewSurvey({ ...newSurvey, [event.target.name]: event.target.value });
@@ -107,15 +107,15 @@ const NewSurvey = () => {
           enableReinitialize
         >
           {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
+            // values,
+            // errors,
+            // touched,
+            // handleChange,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
-            setFieldValue,
+            // isSubmitting,
+            // setSubmitting,
+            // setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
