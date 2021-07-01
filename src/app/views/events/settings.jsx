@@ -1,11 +1,7 @@
 import React from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import {
-  Grid,
-  Card,
-  Divider,
-} from '@material-ui/core';
-import { Breadcrumb } from 'matx';
+import { Grid, Card, Divider } from '@material-ui/core';
+import { Breadcrumb } from '../../../matx';
 import { AddEventbriteOrganization } from './forms/AddEventbriteOrganization';
 import { WebhookInfo } from './forms/WebhookInfo';
 import { Organizers } from './forms/Organizers';

@@ -1,16 +1,9 @@
 import React from 'react';
 import { Formik } from 'formik';
-import {
-  Grid,
-  TextField,
-  Button,
-} from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 
 export const AddEventbriteOrganization = ({ initialValues }) => (
-  <Formik
-    initialValues={initialValues}
-    enableReinitialize
-  >
+  <Formik initialValues={initialValues} enableReinitialize>
     {({
       values,
       errors,
@@ -49,7 +42,9 @@ export const AddEventbriteOrganization = ({ initialValues }) => (
               Submit
             </Button>
           </Grid>
-          <Grid item md={12}>Status: Persisted (Success with 3 events...)</Grid>
+          <Grid item md={12}>
+            Status: Persisted (Success with 3 events...)
+          </Grid>
         </Grid>
       </form>
     )}

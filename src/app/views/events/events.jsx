@@ -254,6 +254,8 @@ const EventList = () => {
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
+                  default:
+                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
               customSearchRender: (
