@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import React, { useState, useEffect, useCallback } from 'react';
 import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from 'matx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,17 +9,16 @@ import {
   deleteFile,
   createCategory,
   bulkEditMedia,
-  clearSelectedMedia
-} from "app/redux/actions/MediaActions";
-import {openDialog, closeDialog} from '../../redux/actions/DialogActions';
+  clearSelectedMedia,
+} from 'app/redux/actions/MediaActions';
+import { useHistory } from 'react-router-dom';
+import { debounce } from 'lodash';
+import { openDialog, closeDialog } from '../../redux/actions/DialogActions';
 import Dialog from '../../components/Dialog';
 import SideNav from './SideNav';
 import GalleryContainer from './GalleryContainer';
 import { useQuery } from '../../hooks/useQuery';
-import { useHistory } from 'react-router-dom';
-import { BulkEdit } from "./BulkEdit";
-import { debounce } from "lodash";
-
+import { BulkEdit } from './BulkEdit';
 
 // Dropzone depency for drag and drop
 
@@ -28,11 +28,15 @@ const Gallery = () => {
   const [open, setOpen] = useState(true);
   const [view, setView] = useState('grid');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(pgQuery.get('limit') !== null ? pgQuery.get('limit') : 10);
+  const [rowsPerPage, setRowsPerPage] = useState(
+    pgQuery.get('limit') !== null ? pgQuery.get('limit') : 10,
+  );
   const [orderBy, setOrderBy] = useState('default');
   const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
   const [type, setType] = useState(pgQuery.get('type') !== null ? pgQuery.get('type') : 'all');
-  const [categories, setCategories] = useState(pgQuery.get('categories') !== null ? [...pgQuery.get('categories').split(',')] : []);
+  const [categories, setCategories] = useState(
+    pgQuery.get('categories') !== null ? [...pgQuery.get('categories').split(',')] : [],
+  );
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
@@ -49,7 +53,11 @@ const Gallery = () => {
     console.log(newPage, rowsPerPage, event.target);
     dispatch(getProductList({ ...pagination, limit: rowsPerPage, offset: newPage * rowsPerPage }));
     const pg = { ...pagination, limit: rowsPerPage, offset: newPage * rowsPerPage };
-    history.replace(`/media/gallery?${Object.keys(pg).map((key) => `${key}=${pg[key]}`).join('&')}`);
+    history.replace(
+      `/media/gallery?${Object.keys(pg)
+        .map((key) => `${key}=${pg[key]}`)
+        .join('&')}`,
+    );
   };
 
   const toggleView = (view) => setView(view);
@@ -65,7 +73,11 @@ const Gallery = () => {
       dispatch(getProductList(pagination));
     } else {
       dispatch(getProductList({ ...pagination, sort: e.target.value }));
-      history.replace(`/media/gallery?${Object.keys({ ...pagination, sort: e.target.value }).map((key) => `${key}=${{ ...pagination, sort: e.target.value }[key]}`).join('&')}`);
+      history.replace(
+        `/media/gallery?${Object.keys({ ...pagination, sort: e.target.value })
+          .map((key) => `${key}=${{ ...pagination, sort: e.target.value }[key]}`)
+          .join('&')}`,
+      );
     }
     setOrderBy(e.target.value);
   };
@@ -75,19 +87,33 @@ const Gallery = () => {
       if (query === '') {
         delete pagination.like;
         dispatch(getProductList(pagination));
-        history.replace(`/media/gallery?${Object.keys(pagination).map((key) => `${key}=${pagination[key]}`).join('&')}`);
+        history.replace(
+          `/media/gallery?${Object.keys(pagination)
+            .map((key) => `${key}=${pagination[key]}`)
+            .join('&')}`,
+        );
       } else {
-        dispatch(getProductList({
-          ...pagination,
-          like: query,
-        }));
-        history.replace(`/media/gallery?${Object.keys({
-          ...pagination,
-          like: query,
-        }).map((key) => `${key}=${{
-          ...pagination,
-          like: query,
-        }[key]}`).join('&')}`);
+        dispatch(
+          getProductList({
+            ...pagination,
+            like: query,
+          }),
+        );
+        history.replace(
+          `/media/gallery?${Object.keys({
+            ...pagination,
+            like: query,
+          })
+            .map(
+              (key) => `${key}=${
+                {
+                  ...pagination,
+                  like: query,
+                }[key]
+              }`,
+            )
+            .join('&')}`,
+        );
       }
     }, 300),
     [productList],
@@ -100,14 +126,24 @@ const Gallery = () => {
     if (eventValue === 'all') {
       delete pagination.type;
       dispatch(getProductList(pagination));
-      history.replace(`/media/gallery?${Object.keys(pagination).map((key) => `${key}=${pagination[key]}`).join('&')}`);
+      history.replace(
+        `/media/gallery?${Object.keys(pagination)
+          .map((key) => `${key}=${pagination[key]}`)
+          .join('&')}`,
+      );
       return;
     }
-    dispatch(getProductList({
-      ...pagination,
-      type: eventValue,
-    }));
-    history.replace(`/media/gallery?${Object.keys({ ...pagination, type: eventValue }).map((key) => `${key}=${{ ...pagination, type: eventValue }[key]}`).join('&')}`);
+    dispatch(
+      getProductList({
+        ...pagination,
+        type: eventValue,
+      }),
+    );
+    history.replace(
+      `/media/gallery?${Object.keys({ ...pagination, type: eventValue })
+        .map((key) => `${key}=${{ ...pagination, type: eventValue }[key]}`)
+        .join('&')}`,
+    );
   };
 
   const handleCategoryChange = (event) => {
@@ -115,23 +151,39 @@ const Gallery = () => {
     let tempCategories = [];
     if (target.checked) {
       tempCategories = [...categories, target.name];
-      dispatch(getProductList({
-        ...pagination,
-        categories: tempCategories.join(','),
-      }));
-      history.replace(`/media/gallery?${Object.keys({ ...pagination, categories: tempCategories.join(',') }).map((key) => `${key}=${{ ...pagination, categories: tempCategories.join(',') }[key]}`).join('&')}`);
+      dispatch(
+        getProductList({
+          ...pagination,
+          categories: tempCategories.join(','),
+        }),
+      );
+      history.replace(
+        `/media/gallery?${Object.keys({ ...pagination, categories: tempCategories.join(',') })
+          .map((key) => `${key}=${{ ...pagination, categories: tempCategories.join(',') }[key]}`)
+          .join('&')}`,
+      );
     } else {
       tempCategories = categories.filter((item) => item !== target.name);
       if (tempCategories.length < 1) {
         delete pagination.categories;
         dispatch(getProductList(pagination));
-        history.replace(`/media/gallery?${Object.keys(pagination).map((key) => `${key}=${pagination[key]}`).join('&')}`);
+        history.replace(
+          `/media/gallery?${Object.keys(pagination)
+            .map((key) => `${key}=${pagination[key]}`)
+            .join('&')}`,
+        );
       } else {
-        dispatch(getProductList({
-          ...pagination,
-          categories: tempCategories.join(','),
-        }));
-        history.replace(`/media/gallery?${Object.keys({ ...pagination, categories: tempCategories.join(',') }).map((key) => `${key}=${{ ...pagination, categories: tempCategories.join(',') }[key]}`).join('&')}`);
+        dispatch(
+          getProductList({
+            ...pagination,
+            categories: tempCategories.join(','),
+          }),
+        );
+        history.replace(
+          `/media/gallery?${Object.keys({ ...pagination, categories: tempCategories.join(',') })
+            .map((key) => `${key}=${{ ...pagination, categories: tempCategories.join(',') }[key]}`)
+            .join('&')}`,
+        );
       }
     }
     setCategories(tempCategories);
@@ -139,7 +191,11 @@ const Gallery = () => {
   const handleRowsPerPage = (e) => {
     dispatch(getProductList({ ...pagination, limit: e.target.value }));
     const pg = { ...pagination, limit: e.target.value };
-    history.replace(`/media/gallery?${Object.keys(pg).map((key) => `${key}=${pg[key]}`).join('&')}`);
+    history.replace(
+      `/media/gallery?${Object.keys(pg)
+        .map((key) => `${key}=${pg[key]}`)
+        .join('&')}`,
+    );
     setRowsPerPage(e.target.value);
   };
   const handleClearAllFilter = () => {
@@ -151,13 +207,27 @@ const Gallery = () => {
     setType('all');
     setCategories([]);
     dispatch(getProductList(q));
-    history.replace(`/media/gallery?${Object.keys(q).map((key) => `${key}=${q[key]}`).join('&')}`);
+    history.replace(
+      `/media/gallery?${Object.keys(q)
+        .map((key) => `${key}=${q[key]}`)
+        .join('&')}`,
+    );
   };
 
-  const onSubmitBulkEdit = (values) =>{
-    dispatch(bulkEditMedia(selected.map(m =>{ return { categories: m.categories.filter(c => !values.includes(c.id.toString())).map(c => c.id).concat(...values), id:m.id } })))
-  }
- 
+  const onSubmitBulkEdit = (values) => {
+    dispatch(
+      bulkEditMedia(
+        selected.map((m) => ({
+          categories: m.categories
+            .filter((c) => !values.includes(c.id.toString()))
+            .map((c) => c.id)
+            .concat(...values),
+          id: m.id,
+        })),
+      ),
+    );
+  };
+
   useEffect(() => {
     const keys = pgQuery.keys();
     const result = {};
@@ -184,26 +254,35 @@ const Gallery = () => {
             url: value.url,
           }}
           onDelete={() => dispatch(deleteFile(value.id))}
-          onSubmit={(values) => dispatch(updateFileInfo(value.id, { ...values, categories: values.categories.map((c) => c.id) }))}
+          onSubmit={(values) => dispatch(
+            updateFileInfo(value.id, {
+              ...values,
+              categories: values.categories.map((c) => c.id),
+            }),
+          )}
         />
         <MatxSidenav width="288px" open={open} toggleSidenav={toggleSidenav}>
-          {selected.length < 1 ? <SideNav
-            query={query}
-            categories={categories}
-            type={type}
-            categoryList={categoryList}
-            toggleSidenav={toggleSidenav}
-            handleSearch={handleSearch}
-            handleTypeChange={handleTypeChange}
-            handleCategoryChange={handleCategoryChange}
-            handleClearAllFilter={handleClearAllFilter}
-            onNewCategory={(values) => dispatch(createCategory(values))}
-          ></SideNav> : <BulkEdit 
-          categoryList={categoryList} 
-          onClick={onSubmitBulkEdit}
-          total={selected.length}
-          clear={()=> dispatch(clearSelectedMedia())}
-          />}
+          {selected.length < 1 ? (
+            <SideNav
+              query={query}
+              categories={categories}
+              type={type}
+              categoryList={categoryList}
+              toggleSidenav={toggleSidenav}
+              handleSearch={handleSearch}
+              handleTypeChange={handleTypeChange}
+              handleCategoryChange={handleCategoryChange}
+              handleClearAllFilter={handleClearAllFilter}
+              onNewCategory={(values) => dispatch(createCategory(values))}
+            />
+          ) : (
+            <BulkEdit
+              categoryList={categoryList}
+              onClick={onSubmitBulkEdit}
+              total={selected.length}
+              clear={() => dispatch(clearSelectedMedia())}
+            />
+          )}
         </MatxSidenav>
         <MatxSidenavContent>
           <GalleryContainer

@@ -61,12 +61,7 @@ const Sidenav = ({
         <Card elevation={3} className="p-4 mb-4">
           <h5 className="m-0 mb-4">Type</h5>
           <FormControl component="fieldset" className="w-full">
-            <RadioGroup
-              aria-label="status"
-              name="status"
-              value={type}
-              onChange={handleTypeChange}
-            >
+            <RadioGroup aria-label="status" name="status" value={type} onChange={handleTypeChange}>
               <FormControlLabel
                 className="h-32"
                 value="image"
@@ -102,17 +97,12 @@ const Sidenav = ({
         <Card elevation={3} className="relative p-4 mb-4">
           <h5 className="m-0 mb-4">Category</h5>
           {categoryList.map((category) => (
-            <div
-              key={category.slug}
-              className="flex items-center justify-between"
-            >
+            <div key={category.slug} className="flex items-center justify-between">
               <FormControlLabel
                 className="flex-grow"
                 name={category.id.toString()}
                 onChange={handleCategoryChange}
-                control={
-                  <Checkbox checked={categories.includes(category.id.toString())} />
-                }
+                control={<Checkbox checked={categories.includes(category.id.toString())} />}
                 label={<span className="capitalize">{category.name}</span>}
               />
               {/* <small className="badge bg-light-primary text-primary">
@@ -127,20 +117,12 @@ const Sidenav = ({
             onClick={() => setDialog(true)}
           >Add Category</Button> */}
         </Card>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClearAllFilter}
-        >
+        <Button variant="contained" color="primary" onClick={handleClearAllFilter}>
           Clear All Filteres
         </Button>
       </div>
       {/* DIALOG */}
-      <Dialog
-        onClose={() => setDialog(false)}
-        open={dialog}
-        aria-labelledby="simple-dialog-title"
-      >
+      <Dialog onClose={() => setDialog(false)} open={dialog} aria-labelledby="simple-dialog-title">
         <DialogTitle id="simple-dialog-title">New Category</DialogTitle>
         <Formik
           initialValues={{
@@ -154,14 +136,14 @@ const Sidenav = ({
         >
           {({
             values,
-            errors,
-            touched,
+            // errors,
+            // touched,
             handleChange,
-            handleBlur,
+            // handleBlur,
             handleSubmit,
-            isSubmitting,
-            setSubmitting,
-            setFieldValue,
+            // isSubmitting,
+            // setSubmitting,
+            // setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <DialogContent className="px-5">
