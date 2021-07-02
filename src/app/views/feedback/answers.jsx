@@ -423,24 +423,11 @@ const Answers = () => {
             <div>
               <div className="comments">
                 <div className="mb-4">
-<<<<<<< HEAD:src/app/views/feedback/answers.js
-                  {answer.comment
-                    ? (
-                        <p className="m-0 text-muted">
-                            {answer.comment.substring(0, 10000)}
-                          </p>
-                    ) : (
-                        <p className="m-0 text-muted">
-                            Waiting for comments
-                        </p>
-                    )}
-=======
                   {answer.comment ? (
                     <p className="m-0 text-muted">{answer.comment.substring(0, 10000)}</p>
                   ) : (
                     <p className="m-0 text-muted">Waiting for comments</p>
                   )}
->>>>>>> 5a8d381540e81c5b36f0554155583dbb350be9f6:src/app/views/feedback/answers.jsx
                 </div>
               </div>
             </div>
