@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { Breadcrumb, MatxLoading } from 'matx';
-import {
-  Icon, IconButton, Button, Tooltip,
-} from '@material-ui/core';
-import { Link, useParams } from 'react-router-dom';
+import {Icon, IconButton, Button, Tooltip} from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-
 import bc from 'app/services/breathecode';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import CustomToolbarSelectCertificates from './certificates-utils/CertificateCustomToolbar';
@@ -21,7 +18,7 @@ const statusColors = {
 };
 
 const Certificates = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = false;
   const [items, setItems] = useState([]);
 
   const columns = [
@@ -56,8 +53,8 @@ const Certificates = () => {
 
       options: {
         filter: true,
-        filterType: 'multiselect',
-        customBodyRender: (value, tableMeta, updateValue) => {
+        filterType: "multiselect",
+        customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
             <div className="flex items-center">
@@ -95,7 +92,6 @@ const Certificates = () => {
         display: false,
         customBodyRenderLite: (i) => {
           const item = items[i];
-
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -120,8 +116,8 @@ const Certificates = () => {
       label: 'Cohort', // column title that will be shown in table
       options: {
         filter: true,
-        filterType: 'multiselect',
-        customBodyRender: (value, tableMeta, updateValue) => {
+        filterType: "multiselect",
+        customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
             <Link to={`/admissions/cohorts/${item.cohort.slug}`}>
@@ -259,6 +255,12 @@ const Certificates = () => {
                 .admissions()
                 .deleteCertificatesBulk(querys);
               return status;
+            }}
+            downloadCSV={async (querys) => {
+              const {data} = await bc
+                .certificates()
+                .downloadCSV(querys);
+              return data
             }}
           />
         </div>

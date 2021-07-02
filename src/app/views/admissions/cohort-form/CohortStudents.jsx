@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Avatar,
   Grid,
@@ -52,6 +52,29 @@ const CohortStudents = ({ slug, cohort_id }) => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
+  useEffect(() => {
+    getCohortStudents();
+  }, [queryLimit]);
+
+  const changeStudentStatus = (value, name, studentId, i) => {
+    const s_status = {
+      role: studenList[i].role,
+      finantial_status: studenList[i].finantial_status,
+      educational_status: studenList[i].educational_status,
+    };
+    bc.admissions()
+      .updateCohortUserInfo(cohort_id, studentId, {
+        ...s_status,
+        [name]: value,
+      })
+      .then((data) => {
+        if (data.status >= 200) getCohortStudents();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const getCohortStudents = () => {
     setIsLoading(true);
     const query = {
@@ -64,37 +87,12 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           const { results, next } = data.data;
-          if (next === null) setHasMore(false);
+          setHasMore(next !== null)
           setIsLoading(false);
           results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }
       })
       .catch((error) => error);
-  };
-
-  useEffect(() => {
-    getCohortStudents();
-  }, [queryLimit]);
-
-  const changeStudentStatus = (value, name, studentId, i) => {
-    console.log(value, name, i);
-    const s_status = {
-      role: studenList[i].role,
-      finantial_status: studenList[i].finantial_status,
-      educational_status: studenList[i].educational_status,
-    };
-    bc.admissions()
-      .updateCohortUserInfo(cohort_id, studentId, {
-        ...s_status,
-        [name]: value,
-      })
-      .then((data) => {
-        console.log(data);
-        if (data.status >= 200) getCohortStudents();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const addUserToCohort = (user_id) => {

@@ -3,8 +3,10 @@ import {
   Icon, IconButton, Tooltip, Menu, MenuItem,
 } from '@material-ui/core';
 
-export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
+const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  console.log("allPages",getAllPagesCSV)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,7 +34,6 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
     })();
     handleClose();
   };
-  
   const handleDownloadSingle = () => {
     (() => {
       getSinglePageCSV()
@@ -59,8 +60,10 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleDownloadSingle}>Dowload Current Page</MenuItem>
-        <MenuItem onClick={handleDownloadAll}>Download All</MenuItem>
+        <MenuItem onClick={handleDownloadAll}>All</MenuItem>
       </Menu>
     </>
   );
 };
+
+export default DownloadCsv;
