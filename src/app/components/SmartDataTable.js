@@ -128,13 +128,14 @@ export const SmartMUIDataTable = (props) => {
         rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
-        customToolbar: () => (
-          <DownloadCsv
-            singlePageTableCsv={singlePageTableCsv}
-            allPagesTableCsv={allPagesTableCsv}
-          />
-        ),
-
+        customToolbar: () => {
+          return (
+            <DownloadCsv
+              singlePageTableCsv={singlePageTableCsv}
+              allPagesTableCsv={allPagesTableCsv}
+            />
+          );
+        },
         onColumnSortChange: (changedColumn, direction) => {
           if (direction == 'asc') {
             handlePageChange(
@@ -262,4 +263,5 @@ SmartMUIDataTable.propTypes = {
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,
+  view: PropTypes.string
 };

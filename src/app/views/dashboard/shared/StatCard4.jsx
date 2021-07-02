@@ -1,27 +1,29 @@
-import React from "react";
-import { Grid, Card, IconButton, Icon } from "@material-ui/core";
+import React from 'react';
+import {
+  Grid, Card, IconButton, Icon,
+} from '@material-ui/core';
 
 const StatCard4 = () => {
   const statList = [
     {
-      icon: "colorize",
+      icon: 'colorize',
       amount: 48,
-      title: "New Posts",
+      title: 'New Posts',
     },
     {
-      icon: "attachment",
+      icon: 'attachment',
       amount: 291,
-      title: "Attached Files",
+      title: 'Attached Files',
     },
     {
-      icon: "mode_comment",
+      icon: 'mode_comment',
       amount: 291,
-      title: "Comments",
+      title: 'Comments',
     },
     {
-      icon: "remove_red_eye",
+      icon: 'remove_red_eye',
       amount: 110,
-      title: "Total Views",
+      title: 'Total Views',
     },
   ];
 
@@ -30,10 +32,7 @@ const StatCard4 = () => {
       <Grid container spacing={3}>
         {statList.map((item, ind) => (
           <Grid key={item.title} item md={6} xs={12}>
-            <Card
-              elevation={3}
-              className="p-5 flex-column justify-center items-center"
-            >
+            <Card elevation={3} className="p-5 flex-column justify-center items-center">
               <div className="mb-6px">
                 <IconButton className="p-3 bg-light-gray">
                   <Icon className="text-muted">{item.icon}</Icon>

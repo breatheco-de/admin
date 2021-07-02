@@ -1,8 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-
-import BulkDelete from './ToolBar/BulkDelete';
-import AddBulkToCohort from './AddBulkToCohort';
+import BulkDelete from "../components/ToolBar/BulkDelete";
 
 const defaultToolbarSelectStyles = {
   iconButton: {},

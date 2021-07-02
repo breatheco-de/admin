@@ -1,20 +1,18 @@
-import React from "react";
-import { SimpleCard } from "matx";
-import HorizontalStepper from "./HorizontalStepper";
-import VerticalStepper from "./VerticalStepper";
+import React from 'react';
+import { SimpleCard } from '../../../matx';
+import HorizontalStepper from './HorizontalStepper';
+import VerticalStepper from './VerticalStepper';
 
-const WizardForm = () => {
-  return (
-    <div className="m-sm-30">
-      <SimpleCard title="Horizontal Stepper">
-        <HorizontalStepper></HorizontalStepper>
-      </SimpleCard>
-      <div className="py-3"></div>
-      <SimpleCard title="Vertical Stepper">
-        <VerticalStepper></VerticalStepper>
-      </SimpleCard>
-    </div>
-  );
-};
+const WizardForm = () => (
+  <div className="m-sm-30">
+    <SimpleCard title="Horizontal Stepper">
+      <HorizontalStepper />
+    </SimpleCard>
+    <div className="py-3" />
+    <SimpleCard title="Vertical Stepper">
+      <VerticalStepper />
+    </SimpleCard>
+  </div>
+);
 
 export default WizardForm;
