@@ -15,6 +15,7 @@ import {
     DialogContent,
     DialogContentText,
     MenuItem,
+    Tooltip,
     FormControlLabel,
     Checkbox
 } from "@material-ui/core";
@@ -26,6 +27,13 @@ import DowndownMenu from "../../../components/DropdownMenu";
 import bc from "app/services/breathecode";
 import * as Yup from 'yup';
 import { makeStyles } from "@material-ui/core/styles";
+import { toast } from 'react-toastify';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     dialogue: {
@@ -76,10 +84,13 @@ const Cohort = () => {
     const [stage, setStage] = useState("");
     const classes = useStyles();
 
-    const [open, setOpen] = useState(false);
-    const handleClickOpenModal = () => {setOpen(true);};
-    const handleCloseModal = () => {setOpen(false);};
-    const [url, setUrl] = useState(false);
+    // const [open, setOpen] = useState(false);
+    // const handleClickOpenModal = () => {setOpen(true);};
+    // const handleCloseModal = () => {setOpen(false);};
+    // const [url, setUrl] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const [inviteLink, setInviteLink] = useState('');
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -380,21 +391,14 @@ const Cohort = () => {
                     initialValues={newSurvey}
                     enableReinitialize={true}
                     onSubmit={() => {
-                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => {
-                            console.log(`Entrando en respuesta ${response}`)
-                            if(response === "undefined"){
-                                console.log(`Error1 ${response}`)
-                                handleClickOpenModal(false)
-                            }else if(response === "undefined"){
-                                console.log(`Error2 ${response}`)
-                                handleClickOpenModal(false)
-                            }else{
-                                setUrl(response.data.public_url)
-                                console.log(response.data.public_url)
-                                handleClickOpenModal(true) 
-                            }   
+                        bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(res => {
+                            if (res === undefined) setOpenDialog(false);
+                            if (res.data) {
+                                setInviteLink(res.data.public_url);
+                            }
+                            setOpenDialog(true)
                         })
-                        // bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(response => {console.log(response.data.public_url) handleClickOpenModal(true)})
+                        .catch((error) => error);
                     }}
                 >
                     {({
@@ -474,35 +478,55 @@ const Cohort = () => {
                 </Formik>
             </Dialog>
 
+            <Tooltip title="Copy invite link">
+                <IconButton
+                onClick={() => {
+                    setOpenDialog(true);
+                    // getMemberInvite(user); 
+                }}
+                >
+                    <Icon>assignment</Icon>
+                </IconButton>
+            </Tooltip>
             <Dialog
-                onClose={handleCloseModal}
-                open={open}
-                aria-labelledby="simple-dialog-title"
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                aria-labelledby="form-dialog-title"
+                fullWidth
             >
-                <div className="px-sm-24 pt-sm-24">
-                    <DialogTitle id="simple-dialog-title">
-                        Invite Link
-                    </DialogTitle>
-                    <DialogContent>                                
+                <form className="p-4">
+                <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2} alignItems="center">
+                    <Grid item md={12} sm={12} xs={10}>
                         <TextField
-                            label="URL"
-                            name="url"
-                            disabled
-                            size="small"
-                            variant="outlined"
-                            value={url}
-                            // onChange={handleChange}
+                        label="URL"
+                        name="url"
+                        size="medium"
+                        disabled
+                        fullWidth
+                        variant="outlined"
+                        value={inviteLink}
                         />
-                    </DialogContent>
+                    </Grid>
+                    </Grid>
+                </DialogContent>
+                <Grid className="p-2">
                     <DialogActions>
-                        <Button className="mb-3 bg-primary text-white">
+                        <Button
+                            className="bg-primary text-white"
+                            onClick={() => {
+                            navigator.clipboard.writeText(inviteLink);
+                            toast.success('Invite url copied successfuly', toastOption);
+                            }}
+                            autoFocus
+                        >
                             Copy
                         </Button>
-                        <Button color="danger" variant="contained" className="mb-3" onClick={handleCloseModal}>
-                            Close
-                        </Button>
+                        <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>Close</Button>
                     </DialogActions>
-                </div>
+                </Grid>
+                </form>
             </Dialog>
         </>
     );
