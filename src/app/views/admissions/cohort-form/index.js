@@ -84,13 +84,8 @@ const Cohort = () => {
     const [stage, setStage] = useState("");
     const classes = useStyles();
 
-    // const [open, setOpen] = useState(false);
-    // const handleClickOpenModal = () => {setOpen(true);};
-    // const handleCloseModal = () => {setOpen(false);};
-    // const [url, setUrl] = useState(false);
-
     const [openDialog, setOpenDialog] = useState(false);
-    const [inviteLink, setInviteLink] = useState('');
+    const [url, setUrl] = useState('');
 
     const options = [
         { label: "Change cohort stage", value: "stage" },
@@ -394,7 +389,7 @@ const Cohort = () => {
                         bc.feedback().addNewSurvey({...newSurvey, cohort: cohort.id}).then(res => {
                             if (res === undefined) setOpenDialog(false);
                             if (res.data) {
-                                setInviteLink(res.data.public_url);
+                                setUrl(res.data.public_url);
                             }
                             setOpenDialog(true)
                         })
@@ -482,7 +477,6 @@ const Cohort = () => {
                 <IconButton
                 onClick={() => {
                     setOpenDialog(true);
-                    // getMemberInvite(user); 
                 }}
                 >
                     <Icon>assignment</Icon>
@@ -506,7 +500,7 @@ const Cohort = () => {
                         disabled
                         fullWidth
                         variant="outlined"
-                        value={inviteLink}
+                        value={url}
                         />
                     </Grid>
                     </Grid>
@@ -516,7 +510,7 @@ const Cohort = () => {
                         <Button
                             className="bg-primary text-white"
                             onClick={() => {
-                            navigator.clipboard.writeText(inviteLink);
+                            navigator.clipboard.writeText(url);
                             toast.success('Invite url copied successfuly', toastOption);
                             }}
                             autoFocus
