@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import qwest from "qwest";
-import { Grid, Card, CircularProgress } from "@material-ui/core";
+import React, { useState, useEffect } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import qwest from 'qwest';
+import { Grid, Card, CircularProgress } from '@material-ui/core';
 
 const api = {
-  baseUrl: "https://api.soundcloud.com",
-  client_id: "caf73ef1e709f839664ab82bef40fa96",
+  baseUrl: 'https://api.soundcloud.com',
+  client_id: 'caf73ef1e709f839664ab82bef40fa96',
 };
 
 const InfiniteList = () => {
@@ -14,12 +14,10 @@ const InfiniteList = () => {
   const [nextHref, setNextHref] = useState(null);
   const [isAlive, setIsAlive] = useState(true);
 
-  useEffect(() => {
-    return () => setIsAlive(false);
-  }, []);
+  useEffect(() => () => setIsAlive(false), []);
 
   const loadItems = () => {
-    let url = api.baseUrl + "/users/8665091/favorites";
+    let url = `${api.baseUrl}/users/8665091/favorites`;
 
     if (nextHref) {
       url = nextHref;
@@ -35,11 +33,11 @@ const InfiniteList = () => {
         },
         {
           cache: true,
-        }
+        },
       )
-      .then(function (xhr, resp) {
+      .then((xhr, resp) => {
         if (resp) {
-          let tracks = trackList;
+          const tracks = trackList;
           resp.collection.map((track) => {
             if (track.artwork_url == null) {
               track.artwork_url = track.user.avatar_url;
@@ -63,7 +61,7 @@ const InfiniteList = () => {
 
   const loader = (
     <div className="w-full text-center p-6" key="loader">
-      <CircularProgress variant="indeterminate"></CircularProgress>
+      <CircularProgress variant="indeterminate" />
     </div>
   );
 
@@ -77,16 +75,8 @@ const InfiniteList = () => {
         useWindow={false}
       >
         <Grid container spacing={2}>
-          {trackList.map((track, i) => (
-            <Grid
-              item
-              lg={3}
-              md={3}
-              xs={12}
-              sm={6}
-              className="track"
-              key={track.title}
-            >
+          {trackList.map((track) => (
+            <Grid item lg={3} md={3} xs={12} sm={6} className="track" key={track.title}>
               <Card className="p-4 flex justify-center h-full" elevation={6}>
                 <a href={track.permalink_url} className="text-center">
                   <img

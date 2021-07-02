@@ -385,6 +385,9 @@ class BreatheCodeClient {
       createCategory: (payload) => {
         return axios._post("Category", `${this.host}/media/category`, payload);
       },
+      updateMediaBulk: (payload) => {
+        return axios._put("Media", `${this.host}/media/info`, payload);
+      } 
     };
   }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   TextField,
   Typography,
@@ -8,12 +8,12 @@ import {
   StepLabel,
   Step,
   Stepper,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "90%",
+    width: '90%',
   },
   button: {
     marginTop: theme.spacing(1),
@@ -27,20 +27,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getSteps = () => {
-  return ["Select campaign settings", "Create an ad group", "Create an ad"];
-};
+const getSteps = () => ['Select campaign settings', 'Create an ad group', 'Create an ad'];
 
 const getStepContent = (step) => {
   switch (step) {
     case 0:
-      return <TextField label="First Name"></TextField>;
+      return <TextField label="First Name" />;
     case 1:
-      return <TextField label="Last Name"></TextField>;
+      return <TextField label="Last Name" />;
     case 2:
-      return <TextField label="Address"></TextField>;
+      return <TextField label="Address" />;
     default:
-      return "";
+      return '';
   }
 };
 
@@ -84,7 +82,7 @@ export default function VerticalStepper() {
                     onClick={handleNext}
                     className={classes.button}
                   >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </div>
               </div>

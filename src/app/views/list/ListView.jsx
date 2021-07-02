@@ -1,34 +1,28 @@
-import React from "react";
+import React from 'react';
 import {
-  Card,
-  Icon,
-  Avatar,
-  MenuItem,
-  IconButton,
-  Grid,
-  Hidden,
-} from "@material-ui/core";
-import { MatxMenu } from "matx";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+  Card, Icon, Avatar, MenuItem, IconButton, Grid, Hidden,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { MatxMenu } from '../../../matx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   listCard: {
-    "& .project-image": {
+    '& .project-image': {
       height: 75,
       width: 100,
     },
-    "& .card__button-group": {
-      display: "none",
-      position: "absolute",
+    '& .card__button-group': {
+      display: 'none',
+      position: 'absolute',
       top: 0,
       bottom: 0,
       right: 0,
       zIndex: 1,
     },
-    "&:hover": {
-      "& .card__button-group": {
-        display: "flex",
+    '&:hover': {
+      '& .card__button-group': {
+        display: 'flex',
       },
     },
   },
@@ -43,8 +37,8 @@ const ListView = ({ list = [] }) => {
         <Card
           className={clsx({
             [classes.listCard]: true,
-            "card p-2 relative": true,
-            "mb-4": index < list.length,
+            'card p-2 relative': true,
+            'mb-4': index < list.length,
           })}
           key={item.id}
           elevation={3}
@@ -52,11 +46,7 @@ const ListView = ({ list = [] }) => {
           <Grid container justify="space-between" alignItems="center">
             <Grid item md={6}>
               <div className="flex items-center">
-                <img
-                  className="project-image w-full"
-                  src={item.projectImage}
-                  alt="project"
-                />
+                <img className="project-image w-full" src={item.projectImage} alt="project" />
                 <div className="ml-4">
                   <p className="m-0 mb-2">{item.projectName}</p>
                   <div className="flex">
@@ -77,34 +67,22 @@ const ListView = ({ list = [] }) => {
             </Grid>
             <Grid item md={2}>
               <div className="flex items-center">
-                <Avatar src={item.userImage}></Avatar>
+                <Avatar src={item.userImage} />
                 <span className="ml-4">{item.userName}</span>
               </div>
             </Grid>
             <Grid item md={2}>
               <div className="card__button-group items-center bg-paper">
-                <Icon
-                  fontSize="small"
-                  className="mr-4 text-muted cursor-pointer"
-                >
+                <Icon fontSize="small" className="mr-4 text-muted cursor-pointer">
                   filter_none
                 </Icon>
-                <Icon
-                  fontSize="small"
-                  className="mr-4 text-muted cursor-pointer"
-                >
+                <Icon fontSize="small" className="mr-4 text-muted cursor-pointer">
                   share
                 </Icon>
-                <Icon
-                  fontSize="small"
-                  className="mr-4 text-muted cursor-pointer"
-                >
+                <Icon fontSize="small" className="mr-4 text-muted cursor-pointer">
                   edit
                 </Icon>
-                <Icon
-                  fontSize="small"
-                  className="mr-4 text-muted cursor-pointer"
-                >
+                <Icon fontSize="small" className="mr-4 text-muted cursor-pointer">
                   delete
                 </Icon>
               </div>
@@ -112,23 +90,31 @@ const ListView = ({ list = [] }) => {
               <div className="card__drop-menu text-right">
                 <Hidden smDown>
                   <MatxMenu
-                    menuButton={
+                    menuButton={(
                       <IconButton>
                         <Icon>more_horiz</Icon>
                       </IconButton>
-                    }
+                    )}
                   >
                     <MenuItem className="flex items-center">
-                      <Icon className="mr-4">filter_none</Icon> Duplicate
+                      <Icon className="mr-4">filter_none</Icon>
+                      {' '}
+                      Duplicate
                     </MenuItem>
                     <MenuItem className="flex items-center">
-                      <Icon className="mr-4">share</Icon> Share
+                      <Icon className="mr-4">share</Icon>
+                      {' '}
+                      Share
                     </MenuItem>
                     <MenuItem className="flex items-center">
-                      <Icon className="mr-4">edit</Icon> Edit
+                      <Icon className="mr-4">edit</Icon>
+                      {' '}
+                      Edit
                     </MenuItem>
                     <MenuItem className="flex items-center">
-                      <Icon className="mr-4">delete</Icon> Delete
+                      <Icon className="mr-4">delete</Icon>
+                      {' '}
+                      Delete
                     </MenuItem>
                   </MatxMenu>
                 </Hidden>

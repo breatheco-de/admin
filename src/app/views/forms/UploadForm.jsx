@@ -1,16 +1,18 @@
-import React, { useState } from "react";
-import { Breadcrumb, SimpleCard, MatxProgressBar } from "matx";
-import { Fab, Icon, Card, Grid, Divider, Button } from "@material-ui/core";
-import clsx from "clsx";
+import React, { useState } from 'react';
+import { Breadcrumb, SimpleCard, MatxProgressBar } from 'matx';
+import {
+  Fab, Icon, Card, Grid, Divider, Button,
+} from '@material-ui/core';
+import clsx from 'clsx';
 
 const UploadForm = () => {
   const [files, setFiles] = useState([]);
   const [queProgress, setQueProgress] = useState(0);
-  const [dargClass, setDragClass] = useState("");
+  const [dargClass, setDragClass] = useState('');
 
   const handleFileSelect = (event) => {
-    let files = event.target.files;
-    let list = [];
+    const { files } = event.target;
+    const list = [];
 
     for (const iterator of files) {
       list.push({
@@ -25,15 +27,15 @@ const UploadForm = () => {
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    setDragClass("drag-shadow");
+    setDragClass('drag-shadow');
   };
 
   const handleDrop = (event) => {
     event.preventDefault();
     event.persist();
 
-    let files = event.dataTransfer.files;
-    let list = [];
+    const { files } = event.dataTransfer;
+    const list = [];
 
     for (const iterator of files) {
       list.push({
@@ -44,18 +46,18 @@ const UploadForm = () => {
       });
     }
 
-    setDragClass("");
+    setDragClass('');
     setFiles(list);
 
     return false;
   };
 
   const handleDragStart = (event) => {
-    setDragClass("drag-shadow");
+    setDragClass('drag-shadow');
   };
 
   const handleSingleRemove = (index) => {
-    let tempList = [...files];
+    const tempList = [...files];
     tempList.splice(index, 1);
     setFiles([...tempList]);
   };
@@ -66,8 +68,8 @@ const UploadForm = () => {
   };
 
   const uploadSingleFile = (index) => {
-    let allFiles = [...files];
-    let file = files[index];
+    const allFiles = [...files];
+    const file = files[index];
 
     allFiles[index] = { ...file, uploading: true, error: false };
 
@@ -75,7 +77,7 @@ const UploadForm = () => {
   };
 
   const uploadAllFile = () => {
-    let allFiles = [];
+    const allFiles = [];
 
     files.map((item) => {
       allFiles.push({
@@ -92,8 +94,8 @@ const UploadForm = () => {
   };
 
   const handleSingleCancel = (index) => {
-    let allFiles = [...files];
-    let file = files[index];
+    const allFiles = [...files];
+    const file = files[index];
 
     allFiles[index] = { ...file, uploading: false, error: true };
 
@@ -101,7 +103,7 @@ const UploadForm = () => {
   };
 
   const handleCancelAll = () => {
-    let allFiles = [];
+    const allFiles = [];
 
     files.map((item) => {
       allFiles.push({
@@ -117,24 +119,17 @@ const UploadForm = () => {
     setQueProgress(0);
   };
 
-  let isEmpty = !!!files.length;
+  const isEmpty = !files.length;
 
   return (
     <div className="upload-form m-sm-30">
       <div className="mb-sm-30">
-        <Breadcrumb
-          routeSegments={[{ name: "Others", path: "/" }, { name: "Upload" }]}
-        />
+        <Breadcrumb routeSegments={[{ name: 'Others', path: '/' }, { name: 'Upload' }]} />
       </div>
       <SimpleCard title="File Upload">
         <div className="flex flex-wrap mb-6">
           <label htmlFor="upload-single-file">
-            <Fab
-              className="capitalize"
-              color="primary"
-              component="span"
-              variant="extended"
-            >
+            <Fab className="capitalize" color="primary" component="span" variant="extended">
               <div className="flex items-center">
                 <Icon className="pr-8">cloud_upload</Icon>
                 <span>Single File</span>
@@ -147,14 +142,9 @@ const UploadForm = () => {
             id="upload-single-file"
             type="file"
           />
-          <div className="px-4"></div>
+          <div className="px-4" />
           <label htmlFor="upload-multiple-file">
-            <Fab
-              className="capitalize"
-              color="primary"
-              component="span"
-              variant="extended"
-            >
+            <Fab className="capitalize" color="primary" component="span" variant="extended">
               <div className="flex items-center">
                 <Icon className="pr-8">cloud_upload</Icon>
                 <span>Multiple File</span>
@@ -172,8 +162,8 @@ const UploadForm = () => {
 
         <div
           className={clsx(
-            "h-200 w-full border-radius-4 bg-light-gray mb-6 flex justify-center items-center",
-            dargClass
+            'h-200 w-full border-radius-4 bg-light-gray mb-6 flex justify-center items-center',
+            dargClass,
           )}
           onDragEnter={handleDragStart}
           onDragOver={handleDragOver}
@@ -183,20 +173,19 @@ const UploadForm = () => {
             <span>Drop your files here</span>
           ) : (
             <h5 className="m-0">
-              {files.length} file{files.length > 1 ? "s" : ""} selected...
+              {files.length}
+              {' '}
+              file
+              {files.length > 1 ? 's' : ''}
+              {' '}
+              selected...
             </h5>
           )}
         </div>
 
         <Card className="mb-6" elevation={2}>
           <div className="p-4">
-            <Grid
-              container
-              spacing={2}
-              justify="center"
-              alignItems="center"
-              direction="row"
-            >
+            <Grid container spacing={2} justify="center" alignItems="center" direction="row">
               <Grid item lg={4} md={4}>
                 Name
               </Grid>
@@ -214,29 +203,27 @@ const UploadForm = () => {
               </Grid>
             </Grid>
           </div>
-          <Divider></Divider>
+          <Divider />
 
           {isEmpty && <p className="px-4">Que is empty</p>}
 
           {files.map((item, index) => {
-            let { file, uploading, error, progress } = item;
+            const {
+              file, uploading, error, progress,
+            } = item;
             return (
               <div className="px-4 py-4" key={file.name}>
-                <Grid
-                  container
-                  spacing={2}
-                  justify="center"
-                  alignItems="center"
-                  direction="row"
-                >
+                <Grid container spacing={2} justify="center" alignItems="center" direction="row">
                   <Grid item lg={4} md={4} sm={12} xs={12}>
                     {file.name}
                   </Grid>
                   <Grid item lg={1} md={1} sm={12} xs={12}>
-                    {(file.size / 1024 / 1024).toFixed(1)} MB
+                    {(file.size / 1024 / 1024).toFixed(1)}
+                    {' '}
+                    MB
                   </Grid>
                   <Grid item lg={2} md={2} sm={12} xs={12}>
-                    <MatxProgressBar value={progress}></MatxProgressBar>
+                    <MatxProgressBar value={progress} />
                   </Grid>
                   <Grid item lg={1} md={1} sm={12} xs={12}>
                     {error && <Icon color="error">error</Icon>}
@@ -282,15 +269,10 @@ const UploadForm = () => {
         <div>
           <p className="m-0">Queue progress:</p>
           <div className="py-4">
-            <MatxProgressBar value={queProgress}></MatxProgressBar>
+            <MatxProgressBar value={queProgress} />
           </div>
           <div className="flex">
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={isEmpty}
-              onClick={uploadAllFile}
-            >
+            <Button variant="contained" color="primary" disabled={isEmpty} onClick={uploadAllFile}>
               Upload All
             </Button>
             <Button
@@ -303,11 +285,7 @@ const UploadForm = () => {
               Cancel All
             </Button>
             {!isEmpty && (
-              <Button
-                variant="contained"
-                className="bg-error"
-                onClick={handleAllRemove}
-              >
+              <Button variant="contained" className="bg-error" onClick={handleAllRemove}>
                 Remove All
               </Button>
             )}

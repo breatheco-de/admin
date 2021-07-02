@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableHead,
@@ -11,10 +11,10 @@ import {
   Icon,
   Select,
   MenuItem,
-} from "@material-ui/core";
-import { FieldArray } from "formik";
-import { Autocomplete } from "@material-ui/lab";
-import { getProductList, calculateAmount } from "./InvoiceFormService";
+} from '@material-ui/core';
+import { FieldArray } from 'formik';
+import { Autocomplete } from '@material-ui/lab';
+import { getProductList, calculateAmount } from './InvoiceFormService';
 
 const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
   const [isAlive, setIsAlive] = useState(true);
@@ -78,7 +78,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                       variant="outlined"
                       type="number"
                       fullWidth
-                      defaultValue={item.quantity || ""}
+                      defaultValue={item.quantity || ''}
                       onChange={handleChange}
                     />
                   </TableCell>
@@ -89,7 +89,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                       variant="outlined"
                       type="number"
                       fullWidth
-                      value={item.price || ""}
+                      value={item.price || ''}
                       onChange={handleChange}
                     />
                   </TableCell>
@@ -100,7 +100,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                       variant="outlined"
                       type="number"
                       fullWidth
-                      value={item.discount || ""}
+                      value={item.discount || ''}
                       onChange={handleChange}
                       InputProps={{
                         style: {
@@ -112,7 +112,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                             margin="none"
                             variant="standard"
                             disableUnderline
-                            value={item.discountType || "%"}
+                            value={item.discountType || '%'}
                             onChange={handleChange}
                           >
                             <MenuItem value="$">$</MenuItem>
@@ -126,10 +126,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                     {calculateAmount(item).toFixed(2)}
                   </TableCell>
                   <TableCell colSpan={1} className="p-0" align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => arrayHelpers.remove(ind)}
-                    >
+                    <IconButton size="small" onClick={() => arrayHelpers.remove(ind)}>
                       <Icon color="error" fontSize="small">
                         clear
                       </Icon>

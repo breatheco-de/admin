@@ -249,4 +249,5 @@ SmartMUIDataTable.propTypes = {
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,
+  view: PropTypes.string
 };

@@ -1,17 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
-  TextField,
-  Icon,
-  Button,
-  StepLabel,
-  Step,
-  Stepper,
-  Grid,
-} from "@material-ui/core";
+  TextField, Icon, Button, StepLabel, Step, Stepper, Grid,
+} from '@material-ui/core';
 
-const getSteps = () => {
-  return ["First Name", "Last Name", "Address"];
-};
+const getSteps = () => ['First Name', 'Last Name', 'Address'];
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
@@ -35,11 +27,11 @@ function getStepContent(stepIndex) {
         </form>
       );
     case 1:
-      return <TextField label="Company Name"></TextField>;
+      return <TextField label="Company Name" />;
     case 2:
-      return <TextField label="Address"></TextField>;
+      return <TextField label="Address" />;
     default:
-      return "";
+      return '';
   }
 }
 
@@ -72,7 +64,9 @@ export default function HorizontalStepper() {
         {activeStep === steps.length ? (
           <div>
             <div className="flex items-center mb-4">
-              <Icon>done</Icon> <span className="ml-2">Done</span>
+              <Icon>done</Icon>
+              {' '}
+              <span className="ml-2">Done</span>
             </div>
             <Button variant="contained" color="secondary" onClick={handleReset}>
               Reset
@@ -90,13 +84,8 @@ export default function HorizontalStepper() {
               >
                 Back
               </Button>
-              <Button
-                className="ml-4"
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              <Button className="ml-4" variant="contained" color="primary" onClick={handleNext}>
+                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </div>
           </div>

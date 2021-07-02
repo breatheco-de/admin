@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import Scrollbar from "react-perfect-scrollbar";
 import { useDispatch, useSelector } from "react-redux";
-
+import PropTypes from "prop-types";
 import { navigations } from "../../navigations";
 import { MatxVerticalNav } from "matx";
 import { setLayoutSettings } from "app/redux/actions/LayoutActions";
@@ -69,4 +69,10 @@ const Sidenav = ({ children }) => {
   );
 };
 
+Sidenav.defaultProps = {
+  children: null,
+};
+Sidenav.propTypes = {
+  children: PropTypes.node,
+};
 export default Sidenav;
