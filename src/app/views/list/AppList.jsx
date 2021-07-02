@@ -1,32 +1,31 @@
-import React, { useState, useMemo, useEffect } from "react";
-import ListTopbar from "./ListTopbar";
-import { getAllList } from "./ListService";
-import ListView from "./ListView";
-import GridView from "./GridView";
-import { Hidden } from "@material-ui/core";
-import { debounce } from "lodash";
+import React, { useState, useMemo, useEffect } from 'react';
+import { Hidden } from '@material-ui/core';
+import { debounce } from 'lodash';
+import ListTopbar from './ListTopbar';
+import { getAllList } from './ListService';
+import ListView from './ListView';
+import GridView from './GridView';
 
 const AppList = () => {
   const [originalList, setOriginalList] = useState([]);
   const [sliderValue, setSliderValue] = useState(50);
   const [list, setList] = useState([]);
-  const [viewMode, setViewMode] = useState("grid");
-
-  const handleInputChange = (event) => {
-    let { value } = event.target;
-    search(value);
-  };
+  const [viewMode, setViewMode] = useState('grid');
 
   const search = useMemo(
-    () =>
-      debounce((query) => {
-        let tempList = originalList.filter((item) =>
-          item.projectName.toLowerCase().match(query.toLowerCase())
-        );
-        setList([...tempList]);
-      }, 200),
-    [originalList]
+    () => debounce((query) => {
+      const tempList = originalList.filter(
+        (item) => item.projectName.toLowerCase().match(query.toLowerCase()),
+      );
+      setList([...tempList]);
+    }, 200),
+    [originalList],
   );
+
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    search(value);
+  };
 
   const handleSldierChange = (event, value) => {
     setSliderValue(value);
@@ -52,18 +51,18 @@ const AppList = () => {
           handleInputChange={handleInputChange}
           handleSldierChange={handleSldierChange}
           sliderValue={sliderValue}
-        ></ListTopbar>
+        />
       </div>
       <Hidden xsDown>
-        {viewMode === "list" ? (
-          <ListView list={list}></ListView>
+        {viewMode === 'list' ? (
+          <ListView list={list} />
         ) : (
-          <GridView list={list} sliderValue={sliderValue}></GridView>
+          <GridView list={list} sliderValue={sliderValue} />
         )}
       </Hidden>
 
       <Hidden smUp>
-        <GridView list={list} sliderValue={sliderValue}></GridView>
+        <GridView list={list} sliderValue={sliderValue} />
       </Hidden>
     </div>
   );

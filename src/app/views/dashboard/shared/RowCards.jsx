@@ -1,22 +1,15 @@
-import React, { Fragment } from "react";
-import { format } from "date-fns";
+import React, { Fragment } from 'react';
+import { format } from 'date-fns';
 import {
-  Grid,
-  Card,
-  Icon,
-  IconButton,
-  Checkbox,
-  Fab,
-  Avatar,
-  Hidden,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+  Grid, Card, Icon, IconButton, Checkbox, Fab, Avatar, Hidden,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   projectName: {
     marginLeft: 24,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       marginLeft: 4,
     },
   },
@@ -38,24 +31,20 @@ const RowCards = () => {
                     <Icon>star_outline</Icon>
                   </Fab>
                 ) : (
-                  <Fab
-                    className="ml-4 bg-green box-shadow-none text-white"
-                    size="small"
-                  >
+                  <Fab className="ml-4 bg-green box-shadow-none text-white" size="small">
                     <Icon>date_range</Icon>
                   </Fab>
                 )}
               </Hidden>
-              <span className={clsx("font-medium", classes.projectName)}>
-                Project {id}
+              <span className={clsx('font-medium', classes.projectName)}>
+                Project
+                {id}
               </span>
             </div>
           </Grid>
 
           <Grid item md={3} xs={4}>
-            <div className="text-muted">
-              {format(new Date().getTime(), "MM/dd/yyyy hh:mma")}
-            </div>
+            <div className="text-muted">{format(new Date().getTime(), 'MM/dd/yyyy hh:mma')}</div>
           </Grid>
 
           <Hidden smDown>
