@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
+import { MatxLoading } from 'matx';
 import {
   Grow, Icon, IconButton, TextField,
 } from '@material-ui/core';
@@ -36,7 +37,6 @@ const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
 export const SmartMUIDataTable = (props) => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
   const [table, setTable] = useState({
     count: 100,
     page: 0,
@@ -57,7 +57,6 @@ export const SmartMUIDataTable = (props) => {
       .then((data) => {
         setIsLoading(false);
         if (isAlive) {
-          setItems(data.results);
           setTable({ count: data.count });
         }
       })
@@ -76,16 +75,18 @@ export const SmartMUIDataTable = (props) => {
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
-    setQuerys({...query, limit: rowsPerPage});
-    setQuerys({...query, offset: rowsPerPage * page })
-    setQuerys({...query, like: _like })
-    setQuerys({...query, sort: _sort })
+    const query = {
+      limit: rowsPerPage,
+      offset: rowsPerPage * page,
+      like: _like,
+      sort: _sort
+    }
+    setQuerys(query)
     
     props
       .search(query)
       .then((data) => {
         setIsLoading(false);
-        setItems(data.results);
         setTable({ count: data.count, page });
         history.replace(
           `${history.location.pathname}?${Object.keys(query)
@@ -99,7 +100,8 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
-  return (
+  return (<>
+    {isLoading && <MatxLoading />}
     <MUIDataTable
       title={props.title}
       data={props.items}
@@ -239,13 +241,13 @@ export const SmartMUIDataTable = (props) => {
           </Grow>
         ),
       }}
-    />
+    /></>
   );
 };
 
 SmartMUIDataTable.propTypes = {
   title: PropTypes.string,
-  items: PropTypes.array,
+  items: PropTypes.object,
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,

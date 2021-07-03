@@ -5,14 +5,13 @@ import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import InviteDetails from 'app/components/InviteDetails';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 
+import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
-
 dayjs.extend(relativeTime);
 
 const statusColors = {
@@ -27,7 +26,6 @@ const name = (user) => {
 
 const Students = () => {
   const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const resendInvite = (user) => {
     bc.auth()
@@ -158,7 +156,6 @@ const Students = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
           <SmartMUIDataTable
             title="All Students"
             columns={columns}

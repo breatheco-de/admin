@@ -7,10 +7,10 @@ const pagesRoutes = [
     component: React.lazy(() => import('./leads')),
   },
   {
-    path: '/leads/upcoming',
+    path: '/leads/won',
     exact: true,
     beta: true,
-    component: React.lazy(() => import('./upcoming')),
+    component: React.lazy(() => import('./won.jsx')),
   },
   {
     path: '/leads/list/new',

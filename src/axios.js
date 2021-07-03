@@ -44,6 +44,7 @@ axiosInstance.interceptors.response.use(
         Promise.reject(
             (error.response && error.response.data) || "Something went wrong!"
         )
+        return error.response
     }
 );
 
