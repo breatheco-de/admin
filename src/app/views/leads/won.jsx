@@ -136,7 +136,7 @@ const Leads = () => {
                 </IconButton>
               </Tooltip>}
               <Tooltip title="More details">
-                <IconButton onClick={() => null}>
+                <IconButton onClick={() => item.user && history.push(`/admissions/students/${item.user.id}`)}>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
               </Tooltip>
