@@ -8,7 +8,7 @@ import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
@@ -44,14 +44,13 @@ const AttendeeList = () => {
   useEffect(() => {
     setIsLoading(true);
     const q = {
-      limit: query.get('limit') !== null ? query.get('limit') : 10,
-      offset: query.get('offset') !== null ? query.get('offset') : 0,
+      limit: queryLimit,
+      offset: queryOffset,
     };
     setQuerys(q);
     bc.events()
       .getCheckins(q)
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (isAlive) {
           setItems(data);
@@ -64,7 +63,6 @@ const AttendeeList = () => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
     bc.events()
       .getCheckins({
         limit: rowsPerPage,
