@@ -293,7 +293,7 @@ class BreatheCodeClient {
     },
     downloadCSV: (query) => {
       const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
-      return axios._post("All Pages Table CSV", `${this.host}/certificate?${qs}`, {}, {
+      return axios._get("All Pages Table CSV", `${this.host}/certificate?${qs}`,{
         headers: { Accept: 'text/csv' },
         responseType: 'blob'
       })
@@ -351,6 +351,13 @@ class BreatheCodeClient {
     },
     getAcademyEventType: () => {
       return axios._get("Event Type", `${this.host}/events/academy/eventype`);
+    },
+    downloadCSV: (query) => {
+      const qs = Object.keys(query).map(key => `${key}=${query[key]}`).join('&');
+      return axios._get("Download CSV", `${this.host}/events/academy/checkin${query ? "?" + qs : ""}`, {
+        headers: { Accept: 'text/csv' },
+        responseType: 'blob'
+      })
     },
   });
 

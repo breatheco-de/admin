@@ -92,6 +92,7 @@ const AttendeeList = () => {
         setItems({ ...data });
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
@@ -270,12 +271,16 @@ const AttendeeList = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/events/academy/checkin?limit=${queryLimit}&offset=${queryOffset}`;
-                const allPagesTableCsv = '/v1/events/academy/checkin';
+                const downloadCSV = async (querys= {}) => {
+                  const {data} = await bc
+                    .events()
+                    .downloadCSV(querys);
+                  return data
+                }
                 return (
                   <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
+                    getAllPagesCSV={() => downloadCSV()}
+                    getSinglePageCSV={() => downloadCSV(querys)}
                   />
                 );
               },
@@ -317,10 +322,7 @@ const AttendeeList = () => {
                     .join('&')}`,
                 );
               },
-              customFilterDialogFooter: (
-                currentFilterList,
-                applyNewFilters,
-              ) => (
+              customFilterDialogFooter: () => (
                 <div style={{ marginTop: '40px' }}>
                   <Button
                     variant="contained"
@@ -347,10 +349,8 @@ const AttendeeList = () => {
                 }
               },
               customSearchRender: (
-                searchText,
                 handleSearch,
                 hideSearch,
-                options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField

@@ -8,7 +8,7 @@ import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
@@ -41,11 +41,10 @@ const EventList = () => {
     setIsLoading(true);
     bc.events()
       .getAcademyEvents({
-        limit: query.get('limit') !== null ? query.get('limit') : 10,
-        offset: query.get('offset') !== null ? query.get('offset') : 0,
+        limit: queryLimit,
+        offset: queryOffset,
       })
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (isAlive) {
           setItems(data.results);
@@ -59,7 +58,6 @@ const EventList = () => {
     setIsLoading(true);
     setQueryLimit(rowsPerPage);
     setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
     bc.events()
       .getAcademyEvents({
         limit: rowsPerPage,
@@ -74,6 +72,7 @@ const EventList = () => {
         );
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
@@ -259,10 +258,8 @@ const EventList = () => {
                 }
               },
               customSearchRender: (
-                searchText,
                 handleSearch,
                 hideSearch,
-                options,
               ) => (
                 <Grow appear in timeout={300}>
                   <TextField
