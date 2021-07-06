@@ -248,6 +248,9 @@ class BreatheCodeClient {
   });
 
   feedback = () => ({
+    getSurveys: () => {
+      return axios._get("Academy Surveys", `${this.host}/feedback/academy/survey`)
+    },
     getAnswers: (query) => {
       // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
       const qs = Object.keys(query)
