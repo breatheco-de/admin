@@ -137,6 +137,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
+                      debounced={false}
                       onChange={(certificate) => setCert(certificate)}
                       width="30%"
                       className="mr-2 ml-2"
@@ -154,7 +155,7 @@ const NewCohort = () => {
                         width="20%"
                         key={cert.slug}
                         asyncSearch={() => {
-                          bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
+                          return bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
                         }}
                         size="small"
                         label="Version"
