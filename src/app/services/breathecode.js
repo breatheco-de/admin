@@ -128,6 +128,12 @@ class BreatheCodeClient {
           payload
         );
       },
+      getUserByEmail: (email) => {
+        return axios._get(
+          "User",
+          `${this.host}/auth/user/${email}`
+        );
+      },
       getAllUsers: (query) => {
         return axios._get("Users", `${this.host}/auth/user?like=${query}`);
       },

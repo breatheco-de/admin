@@ -36,6 +36,13 @@ const EventList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
 
+  const resendInvite = (user) => {
+    bc.auth()
+      .resendInvite(user)
+      .then(({ data }) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     setIsLoading(true);
     bc.feedback().getSurveys()
@@ -84,7 +91,6 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -142,21 +148,44 @@ const EventList = () => {
       label: ' ',
       options: {
         filter: false,
-        customBodyRenderLite: () => (
-          <div className="flex items-center">
-            <div className="flex-grow" />
-            <Tooltip title="Copy survey link">
-              <IconButton>
-                <Icon>assignment</Icon>
-              </IconButton>
-            </Tooltip>
-            <Link to="/feedback/surveys/1">
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
-              </IconButton>
-            </Link>
-          </div>
-        ),
+        customBodyRenderLite: (dataIndex) => {
+          const item = items[dataIndex].user !== null
+            ? items[dataIndex]
+            : {
+              ...items[dataIndex],
+              user: {
+                first_name: '',
+                last_name: '',
+                imgUrl: '',
+                id: '',
+              },
+            };
+          return item.status === 'PENDING' ? (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <InviteDetails user={item.id} />
+              <Tooltip title="Copy survey link">
+                <IconButton onClick={() => resendInvite(item.id)}>
+                  <Icon>refresh</Icon>
+                </IconButton>
+              </Tooltip>
+              <Link to="/feedback/surveys/1">
+                <IconButton>
+                  <Icon>arrow_right_alt</Icon>
+                </IconButton>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Link to={`/feedback/surveys/${item.user !== null ? item.user.id : ''}`}>
+                <IconButton>
+                  <Icon>arrow_right_alt</Icon>
+                </IconButton>
+              </Link>
+            </div>
+          );
+        },
       },
     },
   ];

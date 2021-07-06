@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res1 = await axios._post('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, { email, password });
-      setSession(res1.data.token);
+      if(res1.status === 200) setSession(res1.data ? res1.data.token : res1.token);
     } catch (e) {
       const message = e.details || e.detail || Array.isArray(e.non_field_errors) ? e.non_field_errors[0] : 'Unable to login';// res1.data.non_field_errors;
       console.error(e);

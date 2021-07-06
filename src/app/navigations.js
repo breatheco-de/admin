@@ -50,6 +50,12 @@ export const navigations = [
     icon: 'monetization_on',
     children: [
       {
+        beta: true,
+        name: 'Won Leads',
+        path: '/leads/won',
+        iconText: 'OL',
+      },
+      {
         name: 'Leads Log',
         path: '/leads/list',
         iconText: 'OL',
