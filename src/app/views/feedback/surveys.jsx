@@ -15,7 +15,6 @@ import bc from '../../services/breathecode';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
-import axios from '../../../axios';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
