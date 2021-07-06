@@ -162,10 +162,10 @@ const EventList = () => {
                 id: '',
               },
             };
-          return item.status === 'PENDING' ? (
+        return item.status === 'PENDING' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <InviteDetails user={item.public_url} />
+              <InviteDetails user={item.id} onClick={console.log(item.public_url)}/>
               <Link to="/feedback/surveys/1">
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
@@ -175,12 +175,12 @@ const EventList = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Tooltip title="Copy survey link">
+              <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to={`/feedback/surveys/${item.user !== null ? item.user.id : ''}`}>
+              <Link to="/feedback/surveys/1">
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
