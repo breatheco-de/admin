@@ -101,7 +101,11 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const survey = items[dataIndex];
-          return survey.duration === '00000.0' && survey.sent_at == null ? (
+          console.log(`Este es Survey`, items[dataIndex])
+          console.log(dayjs(items[dataIndex].created_at).format('H:MM:ss'))
+          console.log(dayjs(items[dataIndex].created_at))
+          console.log(`Esta es la duracion`, survey.duration)
+          return survey.duration === dayjs(items[dataIndex].created_at) ? (
             <div className="flex items-center">
               <div className="ml-3">
                 <Chip size="small" label={survey?.status} color={stageColors[survey?.status]} />
@@ -165,7 +169,7 @@ const EventList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
+          // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
           const survey = items[dataIndex]
           return survey.status === 'PENDING' ? (
             <div className="flex items-center">
@@ -189,8 +193,7 @@ const EventList = () => {
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="Resend Survey">
-                {/* <IconButton onClick={() => resendSurvey(survey.id)}> */}
-                <IconButton >
+                <IconButton onClick={() => resendSurvey(survey.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
