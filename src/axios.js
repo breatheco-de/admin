@@ -62,4 +62,5 @@ export default {
   post: axiosInstance._post,
   put: axiosInstance._put,
   delete: axiosInstance._delete,
+  instance: axiosInstance,
 };

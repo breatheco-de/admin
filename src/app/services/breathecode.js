@@ -1,5 +1,5 @@
 import axios from '../../axios';
-
+console.log('AXIOS_', axios);
 class BreatheCodeClient {
   constructor() {
     this.host = `${process.env.REACT_APP_API_HOST}/v1`;
