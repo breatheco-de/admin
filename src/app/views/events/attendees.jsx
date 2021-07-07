@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
-import {
-  Grow, Icon, IconButton, TextField, Button,
-} from '@material-ui/core';
+import { Grow, Icon, IconButton, TextField, Button } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -25,7 +23,8 @@ const stageColors = {
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  if (user && user.first_name && user.first_name != '')
+    return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
 
@@ -35,17 +34,18 @@ const AttendeeList = () => {
   const [items, setItems] = useState({
     page: 0,
   });
-  const [querys, setQuerys] = useState({});
   const query = useQuery();
+  const [querys, setQuerys] = useState({
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+  });
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
 
   useEffect(() => {
     setIsLoading(true);
     const q = {
-      limit: queryLimit,
-      offset: queryOffset,
+      limit: query.get('limit') || 10,
+      offset: query.get('offset') || 0,
     };
     setQuerys(q);
     bc.events()
@@ -61,8 +61,7 @@ const AttendeeList = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
+    setQuerys({ limit: rowsPerPage, offset: page * rowsPerPage });
     bc.events()
       .getCheckins({
         limit: rowsPerPage,
@@ -73,6 +72,7 @@ const AttendeeList = () => {
         setItems({ ...data, page });
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -80,7 +80,7 @@ const AttendeeList = () => {
     history.replace(
       `/events/attendees?${Object.keys(q)
         .map((key) => `${key}=${q[key]}`)
-        .join('&')}`,
+        .join('&')}`
     );
   };
 
@@ -92,7 +92,7 @@ const AttendeeList = () => {
         setItems({ ...data });
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         setIsLoading(false);
       });
   };
@@ -114,13 +114,13 @@ const AttendeeList = () => {
         customBodyRenderLite: (dataIndex) => {
           const { attendee, ...rest } = items.results[dataIndex];
           return (
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
                 {attendee !== null
                   ? name(attendee)
                   : `${rest.first_name} ${rest.last_name}`}
               </h5>
-              <small className="text-muted">{rest?.email || rest.email}</small>
+              <small className='text-muted'>{rest?.email || rest.email}</small>
             </div>
           );
         },
@@ -135,12 +135,12 @@ const AttendeeList = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = items.results[dataIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
+            <div className='flex items-center'>
+              <div className='ml-3'>
                 <small
-                  className={
-                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
-                  }
+                  className={`border-radius-4 px-2 pt-2px ${
+                    stageColors[item?.status]
+                  }`}
                 >
                   {item?.status}
                 </small>
@@ -159,8 +159,8 @@ const AttendeeList = () => {
         customBodyRenderLite: (dataIndex) => {
           const { event } = items.results[dataIndex];
           return (
-            <div className="ml-3">
-              <h5 className="my-0 text-15">{event.title}</h5>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>{event.title}</h5>
             </div>
           );
         },
@@ -173,12 +173,12 @@ const AttendeeList = () => {
         filter: true,
         filterList: query.get('url') !== null ? [query.get('url')] : [],
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
+          <div className='flex items-center'>
+            <div className='ml-3'>
               <A
-                className="px-2 pt-2px border-radius-4 text-white bg-green cursor-pointer"
+                className='px-2 pt-2px border-radius-4 text-white bg-green cursor-pointer'
                 href={items.results[i].url}
-                rel="noopener"
+                rel='noopener'
               >
                 URL
               </A>
@@ -195,12 +195,12 @@ const AttendeeList = () => {
         filterList:
           query.get('starting_at') !== null ? [query.get('starting_at')] : [],
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
+          <div className='flex items-center'>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
                 {dayjs(items.results[i].event.starting_at).format('MM-DD-YYYY')}
               </h5>
-              <small className="text-muted">
+              <small className='text-muted'>
                 {dayjs(items.results[i].event.starting_at).fromNow()}
               </small>
             </div>
@@ -216,12 +216,12 @@ const AttendeeList = () => {
         filterList:
           query.get('ending_at') !== null ? [query.get('ending_at')] : [],
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
+          <div className='flex items-center'>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
                 {dayjs(items.results[i].event.ending_at).format('MM-DD-YYYY')}
               </h5>
-              <small className="text-muted">
+              <small className='text-muted'>
                 {dayjs(items.results[i].event.ending_at).fromNow()}
               </small>
             </div>
@@ -235,8 +235,8 @@ const AttendeeList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="flex-grow" />
+          <div className='flex items-center'>
+            <div className='flex-grow' />
             <Link to={`/events/EditEvent/${items.results[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
@@ -249,9 +249,9 @@ const AttendeeList = () => {
   ];
 
   return (
-    <div className="m-sm-30">
-      <div className="mb-sm-30">
-        <div className="flex flex-wrap justify-between mb-6">
+    <div className='m-sm-30'>
+      <div className='mb-sm-30'>
+        <div className='flex flex-wrap justify-between mb-6'>
           <div>
             <Breadcrumb
               routeSegments={[
@@ -262,21 +262,19 @@ const AttendeeList = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div className='overflow-auto'>
+        <div className='min-w-750'>
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title="Event Attendees"
+            title='Event Attendees'
             data={items.results}
             columns={columns}
             options={{
               customToolbar: () => {
-                const downloadCSV = async (querys= {}) => {
-                  const {data} = await bc
-                    .events()
-                    .downloadCSV(querys);
-                  return data
-                }
+                const downloadCSV = async (querys = {}) => {
+                  const { data } = await bc.events().downloadCSV(querys);
+                  return data;
+                };
                 return (
                   <DownloadCsv
                     getAllPagesCSV={() => downloadCSV()}
@@ -295,7 +293,7 @@ const AttendeeList = () => {
                 changedColumn,
                 filterList,
                 type,
-                changedColumnIndex,
+                changedColumnIndex
               ) => {
                 let q;
                 if (type === 'reset') {
@@ -304,8 +302,8 @@ const AttendeeList = () => {
                     offset: querys.offset ? querys.offset : 0,
                   };
                 } else if (
-                  filterList[changedColumnIndex][0] === undefined
-                    || type === 'chip'
+                  filterList[changedColumnIndex][0] === undefined ||
+                  type === 'chip'
                 ) {
                   q = { ...querys };
                   delete q[changedColumn];
@@ -319,13 +317,13 @@ const AttendeeList = () => {
                 history.replace(
                   `/events/attendees?${Object.keys(q)
                     .map((key) => `${key}=${q[key]}`)
-                    .join('&')}`,
+                    .join('&')}`
                 );
               },
               customFilterDialogFooter: () => (
                 <div style={{ marginTop: '40px' }}>
                   <Button
-                    variant="contained"
+                    variant='contained'
                     onClick={() => handleFilterSubmit()}
                   >
                     Apply Filters
@@ -348,14 +346,11 @@ const AttendeeList = () => {
                     console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
-              customSearchRender: (
-                handleSearch,
-                hideSearch,
-              ) => (
+              customSearchRender: (handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
-                    variant="outlined"
-                    size="small"
+                    variant='outlined'
+                    size='small'
                     fullWidth
                     onChange={({ target: { value } }) => handleSearch(value)}
                     InputProps={{
@@ -363,13 +358,13 @@ const AttendeeList = () => {
                         paddingRight: 0,
                       },
                       startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
+                        <Icon className='mr-2' fontSize='small'>
                           search
                         </Icon>
                       ),
                       endAdornment: (
                         <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
+                          <Icon fontSize='small'>clear</Icon>
                         </IconButton>
                       ),
                     }}

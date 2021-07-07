@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
-import {
-  Grow, Icon, IconButton, TextField, Button,
-} from '@material-ui/core';
+import { Grow, Icon, IconButton, TextField, Button } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -34,15 +32,17 @@ const EventList = () => {
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
+  const [querys, setQuerys] = useState({
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+  });
 
   useEffect(() => {
     setIsLoading(true);
     bc.events()
       .getAcademyEvents({
-        limit: queryLimit,
-        offset: queryOffset,
+        limit: query.get('limit') || 10,
+        offset: query.get('offset') || 0,
       })
       .then(({ data }) => {
         setIsLoading(false);
@@ -56,8 +56,7 @@ const EventList = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
+    setQuerys({ limit: rowsPerPage, offset: page * rowsPerPage });
     bc.events()
       .getAcademyEvents({
         limit: rowsPerPage,
@@ -68,11 +67,11 @@ const EventList = () => {
         setItems(data.results);
         setTable({ count: data.count, page });
         history.replace(
-          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
+          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`
         );
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         setIsLoading(false);
       });
   };
@@ -93,12 +92,12 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
+            <div className='flex items-center'>
+              <div className='ml-3'>
                 <small
-                  className={
-                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
-                  }
+                  className={`border-radius-4 px-2 pt-2px ${
+                    stageColors[item?.status]
+                  }`}
                 >
                   {item?.status}
                 </small>
@@ -119,12 +118,12 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
+          <div className='flex items-center'>
+            <div className='ml-3'>
               <A
-                className="px-2 pt-2px border-radius-4 text-white bg-green"
+                className='px-2 pt-2px border-radius-4 text-white bg-green'
                 href={items[i].url}
-                rel="noopener"
+                rel='noopener'
               >
                 URL
               </A>
@@ -139,12 +138,12 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
+          <div className='flex items-center'>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
                 {dayjs(items[i].starting_at).format('MM-DD-YYYY')}
               </h5>
-              <small className="text-muted">
+              <small className='text-muted'>
                 {dayjs(items[i].starting_at).fromNow()}
               </small>
             </div>
@@ -158,12 +157,12 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
+          <div className='flex items-center'>
+            <div className='ml-3'>
+              <h5 className='my-0 text-15'>
                 {dayjs(items[i].ending_at).format('MM-DD-YYYY')}
               </h5>
-              <small className="text-muted">
+              <small className='text-muted'>
                 {dayjs(items[i].ending_at).fromNow()}
               </small>
             </div>
@@ -177,8 +176,8 @@ const EventList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="flex-grow" />
+          <div className='flex items-center'>
+            <div className='flex-grow' />
             <Link to={`/events/EditEvent/${items[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
@@ -191,9 +190,9 @@ const EventList = () => {
   ];
 
   return (
-    <div className="m-sm-30">
-      <div className="mb-sm-30">
-        <div className="flex flex-wrap justify-between mb-6">
+    <div className='m-sm-30'>
+      <div className='mb-sm-30'>
+        <div className='flex flex-wrap justify-between mb-6'>
           <div>
             <Breadcrumb
               routeSegments={[
@@ -203,29 +202,31 @@ const EventList = () => {
             />
           </div>
 
-          <div className="">
+          <div className=''>
             <Link
-              to="/events/NewEvent"
-              color="primary"
-              className="btn btn-primary"
+              to='/events/NewEvent'
+              color='primary'
+              className='btn btn-primary'
             >
-              <Button variant="contained" color="primary">
+              <Button variant='contained' color='primary'>
                 Add new event
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div className='overflow-auto'>
+        <div className='min-w-750'>
           {isLoading && <MatxLoading />}
           <MUIDataTable
-            title="All Events"
+            title='All Events'
             data={items}
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/events/academy/event?limit=${queryLimit}&offset=${queryOffset}&like=${''}`;
+                const singlePageTableCsv = `/v1/events/academy/event?limit=${
+                  querys.limit
+                }&offset=${querys.offset}&like=${''}`;
                 const allPagesTableCsv = `/v1/events/academy/event?like=${''}`;
                 return (
                   <DownloadCsv
@@ -257,14 +258,11 @@ const EventList = () => {
                     console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
-              customSearchRender: (
-                handleSearch,
-                hideSearch,
-              ) => (
+              customSearchRender: (handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
-                    variant="outlined"
-                    size="small"
+                    variant='outlined'
+                    size='small'
                     fullWidth
                     onChange={({ target: { value } }) => handleSearch(value)}
                     InputProps={{
@@ -272,13 +270,13 @@ const EventList = () => {
                         paddingRight: 0,
                       },
                       startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
+                        <Icon className='mr-2' fontSize='small'>
                           search
                         </Icon>
                       ),
                       endAdornment: (
                         <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
+                          <Icon fontSize='small'>clear</Icon>
                         </IconButton>
                       ),
                     }}
