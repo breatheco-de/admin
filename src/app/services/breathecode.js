@@ -4,7 +4,7 @@ class BreatheCodeClient {
   constructor() {
     this.host = `${process.env.REACT_APP_API_HOST}/v1`;
   }
-  admissions = () => {
+  admissions() {
     return {
       updateCohortUserInfo: (cohort, user, payload) => {
         return axios._put(
@@ -213,7 +213,8 @@ class BreatheCodeClient {
       },
     };
   }
-  marketing = () => ({
+  marketing() { 
+  return {
     getLeads: (query) => {
       // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
       const qs =
@@ -248,9 +249,11 @@ class BreatheCodeClient {
       ),
     addNewLead: (newLead) =>
       axios._post('New lead', `${this.host}/marketing/lead`, newLead),
-  });
+  }
+};
 
-  feedback = () => ({
+  feedback() {
+    return {
     getSurveys: () => {
       return axios._get(
         'Academy Surveys',
@@ -279,9 +282,11 @@ class BreatheCodeClient {
         `${this.host}/feedback/academy/survey/${id}`,
         survey
       ),
-  });
+  }
+};
 
-  certificates = () => ({
+  certificates() {
+    return {
     getAllCertificates: (query) => {
       const qs =
         query !== undefined
@@ -333,11 +338,13 @@ class BreatheCodeClient {
           headers: { Accept: 'text/csv' },
           responseType: 'blob',
         }
-      );
-    },
-  });
+      )
+    }
+  }
+}
 
-  events = () => ({
+  events() {
+    return {
     getCheckins: (query) => {
       // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
       const qs =
@@ -399,10 +406,11 @@ class BreatheCodeClient {
         {
           headers: { Accept: 'text/csv' },
           responseType: 'blob',
-        }
-      );
-    },
-  });
+        },
+      )
+    }
+  }
+};
 
   media() {
     return {
@@ -438,11 +446,11 @@ class BreatheCodeClient {
       updateMediaBulk: (payload) => {
         return axios._put('Media', `${this.host}/media/info`, payload);
       },
-    };
+    }
   }
-
+};
   getItem(key) {
-    let value = this.ls.getItem(key);
+    let value = this.ls.getItem(key)
     try {
       return JSON.parse(value);
     } catch (e) {
