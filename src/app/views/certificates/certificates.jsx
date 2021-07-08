@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Breadcrumb, MatxLoading } from 'matx';
-import {Icon, IconButton, Button, Tooltip} from '@material-ui/core';
+import { Icon, IconButton, Button, Tooltip } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
@@ -41,8 +41,8 @@ const Certificates = () => {
               items[i].user !== null ? items[i].user.id : ''
             }`}
           >
-            {items[i]
-                && `${items[i].user.first_name} ${items[i].user.last_name}`}
+            {items[i] &&
+              `${items[i].user.first_name} ${items[i].user.last_name}`}
           </Link>
         ),
       },
@@ -53,27 +53,23 @@ const Certificates = () => {
 
       options: {
         filter: true,
-        filterType: "multiselect",
+        filterType: 'multiselect',
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
+            <div className='flex items-center'>
+              <div className='ml-3'>
                 {item.status_text !== null ? (
                   <Tooltip title={item.status_text}>
                     <small
-                      className={
-                        `border-radius-4 px-2 pt-2px${statusColors[value]}`
-                      }
+                      className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}
                     >
                       {String(value).toUpperCase()}
                     </small>
                   </Tooltip>
                 ) : (
                   <small
-                    className={
-                      `border-radius-4 px-2 pt-2px${statusColors[value]}`
-                    }
+                    className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}
                   >
                     {String(value).toUpperCase()}
                   </small>
@@ -93,14 +89,14 @@ const Certificates = () => {
         customBodyRenderLite: (i) => {
           const item = items[i];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-15">
+            <div className='flex items-center'>
+              <div className='ml-3'>
+                <h5 className='my-0 text-15'>
                   {item.expires_at !== null
                     ? dayjs(item.expires_at).format('MM-DD-YYYY')
                     : '-'}
                 </h5>
-                <small className="text-muted">
+                <small className='text-muted'>
                   {item.expires_at !== null
                     ? dayjs(item.expires_at).format('MM-DD-YYYY')
                     : '-'}
@@ -116,7 +112,7 @@ const Certificates = () => {
       label: 'Cohort', // column title that will be shown in table
       options: {
         filter: true,
-        filterType: "multiselect",
+        filterType: 'multiselect',
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
@@ -135,15 +131,15 @@ const Certificates = () => {
         customBodyRenderLite: (i) => {
           if (items[i].status == 'PERSISTED') {
             return (
-              <div className="flex items-center">
-                <div className="flex-grow" />
-                {items[i].preview_url !== null
-                && items[i].preview_url !== undefined ? (
+              <div className='flex items-center'>
+                <div className='flex-grow' />
+                {items[i].preview_url !== null &&
+                items[i].preview_url !== undefined ? (
                   <>
                     <a
                       href={items[i].preview_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
                       <Tooltip
                         title={
@@ -162,22 +158,22 @@ const Certificates = () => {
                       href={`https://certificate.breatheco.de/${items[
                         i
                       ].preview_url.slice(56)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
-                      <Tooltip title="Image">
+                      <Tooltip title='Image'>
                         <IconButton>
                           <Icon>search</Icon>
                         </IconButton>
                       </Tooltip>
                     </a>
                   </>
-                  ) : null}
+                ) : null}
               </div>
             );
           }
           return (
-            <span className="flex items-center">{items[i].status_text}</span>
+            <span className='flex items-center'>{items[i].status_text}</span>
           );
         },
       },
@@ -185,17 +181,27 @@ const Certificates = () => {
   ];
 
   return (
-    <div className="m-sm-30">
-      <div className="mb-sm-30">
-        <div className="flex flex-wrap justify-between mb-6">
+    <div className='m-sm-30'>
+      <div className='mb-sm-30'>
+        <div className='flex flex-wrap justify-between mb-6'>
           <div>
             <Breadcrumb
               routeSegments={[{ name: 'Certificates', path: '/certificates' }]}
             />
           </div>
 
-          <div className="">
+          <div className=''>
             <Link
+              to='/certificates/new'
+              color='primary'
+              className='btn btn-primary'
+            >
+              <Button variant='contained' color='primary'>
+                Generate Certificates
+              </Button>
+            </Link>
+
+            {/* <Link
               to="/certificates/new/single"
               color="primary"
               className="btn btn-primary"
@@ -216,15 +222,15 @@ const Certificates = () => {
               <Button variant="contained" color="primary">
                 Add cohort Certificates
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div className='overflow-auto'>
+        <div className='min-w-750'>
           {isLoading && <MatxLoading />}
           <SmartMUIDataTable
-            title="All Certificates"
+            title='All Certificates'
             columns={columns}
             items={items}
             options={{
@@ -232,7 +238,7 @@ const Certificates = () => {
                 selectedRows,
                 displayData,
                 setSelectedRows,
-                loadData,
+                loadData
               ) => (
                 <CustomToolbarSelectCertificates
                   selectedRows={selectedRows}
@@ -257,10 +263,8 @@ const Certificates = () => {
               return status;
             }}
             downloadCSV={async (querys) => {
-              const {data} = await bc
-                .certificates()
-                .downloadCSV(querys);
-              return data
+              const { data } = await bc.certificates().downloadCSV(querys);
+              return data;
             }}
           />
         </div>
