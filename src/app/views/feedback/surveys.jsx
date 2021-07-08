@@ -120,7 +120,8 @@ const EventList = () => {
           // console.log(survey.id, `${horas}:${minutos}:${segundos}`)
 
           const horas = dayjs(survey.datetime).format('H')
-            horas === 0 ? dayjs(survey.datetime).format('1') : ""
+          console.log(horas)
+            horas === 0 ? dayjs(survey.datetime).format('1') : dayjs(survey.datetime).format('H')
           const acumHoras = horas * 60
           const minutos = dayjs(survey.datetime).format('mm')
           const acumMinutos = acumHoras + parseInt(minutos)
