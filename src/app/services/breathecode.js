@@ -118,7 +118,7 @@ class BreatheCodeClient {
       getMyAcademy: () =>
         axios._get('My Academy', `${this.host}/admissions/academy/me`),
     };
-  };
+  }
   auth() {
     return {
       addStudent: (payload) => {
@@ -213,204 +213,204 @@ class BreatheCodeClient {
       },
     };
   }
-  marketing() { 
-  return {
-    getLeads: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Lead report',
-        `${this.host}/marketing/report/lead${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyLeads: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Academy lead',
-        `${this.host}/marketing/academy/lead${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyTags: () =>
-      axios._get('Academy tags', `${this.host}/marketing/academy/tag`),
-    getAcademyAutomations: () =>
-      axios._get(
-        'Academy automations',
-        `${this.host}/marketing/academy/automation`
-      ),
-    addNewLead: (newLead) =>
-      axios._post('New lead', `${this.host}/marketing/lead`, newLead),
+  marketing() {
+    return {
+      getLeads: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Lead report',
+          `${this.host}/marketing/report/lead${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyLeads: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy lead',
+          `${this.host}/marketing/academy/lead${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyTags: () =>
+        axios._get('Academy tags', `${this.host}/marketing/academy/tag`),
+      getAcademyAutomations: () =>
+        axios._get(
+          'Academy automations',
+          `${this.host}/marketing/academy/automation`
+        ),
+      addNewLead: (newLead) =>
+        axios._post('New lead', `${this.host}/marketing/lead`, newLead),
+    };
   }
-};
 
   feedback() {
     return {
-    getSurveys: () => {
-      return axios._get(
-        'Academy Surveys',
-        `${this.host}/feedback/academy/survey`
-      );
-    },
-    getAnswers: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios._get(
-        'Academy answers',
-        `${this.host}/feedback/academy/answer?${qs}`
-      );
-    },
-    addNewSurvey: (newSurvey) =>
-      axios._post(
-        'New Survey',
-        `${this.host}/feedback/academy/survey`,
-        newSurvey
-      ),
-    updateSurvey: (survey, id) =>
-      axios._put(
-        'Survey',
-        `${this.host}/feedback/academy/survey/${id}`,
-        survey
-      ),
+      getSurveys: () => {
+        return axios._get(
+          'Academy Surveys',
+          `${this.host}/feedback/academy/survey`
+        );
+      },
+      getAnswers: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Academy answers',
+          `${this.host}/feedback/academy/answer?${qs}`
+        );
+      },
+      addNewSurvey: (newSurvey) =>
+        axios._post(
+          'New Survey',
+          `${this.host}/feedback/academy/survey`,
+          newSurvey
+        ),
+      updateSurvey: (survey, id) =>
+        axios._put(
+          'Survey',
+          `${this.host}/feedback/academy/survey/${id}`,
+          survey
+        ),
+    };
   }
-};
 
   certificates() {
     return {
-    getAllCertificates: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Certificates',
-        `${this.host}/certificate${query ? '?' + qs : ''}`
-      );
-    },
-    getCertificatesByCohort: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios.get(`${this.host}/certificate/cohort/?${qs}`);
-    },
-    addBulkCertificates: (payload) => {
-      return axios._post(
-        'Re-attemps certificates',
-        `${this.host}/certificate/`,
-        payload
-      );
-    },
-    generateSingleStudentCertificate: (cohortID, userID, payload) => {
-      return axios._post(
-        'Student Certificate',
-        `${this.host}/certificate/cohort/${cohortID}/student/${userID}`,
-        payload
-      );
-    },
-    generateAllCohortCertificates: (cohortID, payload) => {
-      return axios._post(
-        'All Cohort Certificates',
-        `${this.host}/certificate/cohort/${cohortID}`,
-        payload
-      );
-    },
-    downloadCSV: (query) => {
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios._get(
-        'All Pages Table CSV',
-        `${this.host}/certificate?${qs}`,
-        {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        }
-      )
-    }
+      getAllCertificates: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Certificates',
+          `${this.host}/certificate${query ? '?' + qs : ''}`
+        );
+      },
+      getCertificatesByCohort: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios.get(`${this.host}/certificate/cohort/?${qs}`);
+      },
+      addBulkCertificates: (payload) => {
+        return axios._post(
+          'Re-attemps certificates',
+          `${this.host}/certificate/`,
+          payload
+        );
+      },
+      generateSingleStudentCertificate: (cohortID, userID, payload) => {
+        return axios._post(
+          'Student Certificate',
+          `${this.host}/certificate/cohort/${cohortID}/student/${userID}`,
+          payload
+        );
+      },
+      generateAllCohortCertificates: (cohortID, payload) => {
+        return axios._post(
+          'All Cohort Certificates',
+          `${this.host}/certificate/cohort/${cohortID}`,
+          payload
+        );
+      },
+      downloadCSV: (query) => {
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'All Pages Table CSV',
+          `${this.host}/certificate?${qs}`,
+          {
+            headers: { Accept: 'text/csv' },
+            responseType: 'blob',
+          }
+        );
+      },
+    };
   }
-}
 
   events() {
     return {
-    getCheckins: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Event',
-        `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`
-      );
-    },
-    addAcademyEvent: (payload) => {
-      return axios._post(
-        'Academy event',
-        `${this.host}/events/academy/event`,
-        payload
-      );
-    },
-    updateAcademyEvent: (event, payload) => {
-      return axios._put(
-        'Academy event',
-        `${this.host}/events/academy/event/${event}`,
-        payload
-      );
-    },
-    getAcademyEvents: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Academy event',
-        `${this.host}/events/academy/event${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyEvent: (event) => {
-      return axios._get(
-        'Academy event',
-        `${this.host}/events/academy/event/${event}`
-      );
-    },
-    getAcademyVenues: () => {
-      return axios._get('Venues', `${this.host}/events/academy/venues`);
-    },
-    getAcademyEventType: () => {
-      return axios._get('Event Type', `${this.host}/events/academy/eventype`);
-    },
-    downloadCSV: (query) => {
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios._get(
-        'Download CSV',
-        `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`,
-        {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        },
-      )
-    }
+      getCheckins: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Event',
+          `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`
+        );
+      },
+      addAcademyEvent: (payload) => {
+        return axios._post(
+          'Academy event',
+          `${this.host}/events/academy/event`,
+          payload
+        );
+      },
+      updateAcademyEvent: (event, payload) => {
+        return axios._put(
+          'Academy event',
+          `${this.host}/events/academy/event/${event}`,
+          payload
+        );
+      },
+      getAcademyEvents: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy event',
+          `${this.host}/events/academy/event${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyEvent: (event) => {
+        return axios._get(
+          'Academy event',
+          `${this.host}/events/academy/event/${event}`
+        );
+      },
+      getAcademyVenues: () => {
+        return axios._get('Venues', `${this.host}/events/academy/venues`);
+      },
+      getAcademyEventType: () => {
+        return axios._get('Event Type', `${this.host}/events/academy/eventype`);
+      },
+      downloadCSV: (query) => {
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Download CSV',
+          `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`,
+          {
+            headers: { Accept: 'text/csv' },
+            responseType: 'blob',
+          }
+        );
+      },
+    };
   }
-};
 
   media() {
     return {
@@ -434,23 +434,22 @@ class BreatheCodeClient {
           `${this.host}/media${query ? '?' + qs : ''}`
         );
       },
-      updateMedia: (media, payload) => {
-        return axios._put('Media', `${this.host}/media/info/${media}`, payload);
-      },
-      deleteMedia: (media) => {
-        return axios._delete('Media', `${this.host}/media/info/${media}`);
-      },
-      createCategory: (payload) => {
-        return axios._post('Category', `${this.host}/media/category`, payload);
-      },
-      updateMediaBulk: (payload) => {
-        return axios._put('Media', `${this.host}/media/info`, payload);
-      },
-    }
+      updateMedia: (media, payload) =>
+        axios._put('Media', `${this.host}/media/info/${media}`, payload),
+
+      deleteMedia: (media) =>
+        axios._delete('Media', `${this.host}/media/info/${media}`),
+
+      createCategory: (payload) =>
+        axios._post('Category', `${this.host}/media/category`, payload),
+
+      updateMediaBulk: (payload) =>
+        axios._put('Media', `${this.host}/media/info`, payload),
+    };
   }
-};
+
   getItem(key) {
-    let value = this.ls.getItem(key)
+    let value = this.ls.getItem(key);
     try {
       return JSON.parse(value);
     } catch (e) {
