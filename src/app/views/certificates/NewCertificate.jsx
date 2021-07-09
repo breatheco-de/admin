@@ -59,6 +59,12 @@ const NewCertificate = () => {
   };
 
   const handleChange = ({ slug, cohort, student }) => {
+    if (cohort === null || student === null) {
+      setCertificateSlug('');
+      setState({ ...state, student: '', cohort: '' });
+      return;
+    }
+    if (slug === undefined) throw new Error('Invalid Action!');
     setCertificateSlug(slug);
     if (slug === 'all') setState({ ...state, cohort });
     if (slug === 'single') setState({ ...state, student });
@@ -78,10 +84,7 @@ const NewCertificate = () => {
           routeSegments={[
             { name: 'Certificates', path: '/certificates' },
             {
-              name:
-                certificateSlug === 'single'
-                  ? 'New Certificate'
-                  : 'All Certificates',
+              name: 'Generate Certificates',
             },
           ]}
         />
@@ -101,11 +104,12 @@ const NewCertificate = () => {
             <form className='p-4' onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems='center'>
                 <Grid item md={2} sm={4} xs={12}>
-                  <div className='flex mb-6'>Cohort</div>
+                  Cohort
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
                     size='small'
+                    disabled={certificateSlug === 'single'}
                     width='100%'
                     asyncSearch={() =>
                       axios.get(
@@ -125,6 +129,7 @@ const NewCertificate = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
                     size='small'
+                    disabled={certificateSlug === 'all'}
                     key={state.cohort.slug}
                     width='100%'
                     asyncSearch={() =>
@@ -135,7 +140,6 @@ const NewCertificate = () => {
                     onChange={(student) =>
                       handleChange({ slug: 'single', student })
                     }
-                    value={state.student}
                     getOptionLabel={(option) =>
                       option.length !== 0 &&
                       `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`
@@ -143,6 +147,12 @@ const NewCertificate = () => {
                     label='Student'
                   />
                 </Grid>
+                {/* <Grid item md={2} sm={4} xs={12}>
+                  Layout Design
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <input />
+                </Grid> */}
               </Grid>
               <div className='mt-6'>
                 <Button color='primary' variant='contained' type='submit'>
