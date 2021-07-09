@@ -179,7 +179,6 @@ const Certificates = () => {
       },
     },
   ];
-
   return (
     <div className='m-sm-30'>
       <div className='mb-sm-30'>
@@ -189,7 +188,6 @@ const Certificates = () => {
               routeSegments={[{ name: 'Certificates', path: '/certificates' }]}
             />
           </div>
-
           <div className=''>
             <Link
               to='/certificates/new'
@@ -200,29 +198,6 @@ const Certificates = () => {
                 Generate Certificates
               </Button>
             </Link>
-
-            {/* <Link
-              to="/certificates/new/single"
-              color="primary"
-              className="btn btn-primary"
-            >
-              <Button
-                style={{ marginRight: 5 }}
-                variant="contained"
-                color="primary"
-              >
-                Add studend certificate
-              </Button>
-            </Link>
-            <Link
-              to="/certificates/new/all"
-              color="primary"
-              className="btn btn-primary"
-            >
-              <Button variant="contained" color="primary">
-                Add cohort Certificates
-              </Button>
-            </Link> */}
           </div>
         </div>
       </div>

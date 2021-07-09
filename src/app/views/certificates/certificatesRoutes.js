@@ -16,11 +16,6 @@ const certificatesRoutes = [
     exact: true,
     component: React.lazy(() => import('./certificates')),
   },
-  {
-    path: '/certificates/new/:certificateSlug',
-    exact: true,
-    component: React.lazy(() => import('./NewCertificate')),
-  },
 ];
 
 export default certificatesRoutes;

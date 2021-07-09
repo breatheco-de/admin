@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
-import { Grid, Card, Divider, Button } from '@material-ui/core';
+import { Grid, Card, Divider, Button, TextField } from '@material-ui/core';
 import { Breadcrumb } from 'matx';
 import axios from '../../../axios';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
@@ -21,10 +21,12 @@ const NewCertificate = () => {
     student: '',
     academy: '',
     specialty: '',
-    layout_slug: 'vanilla',
+    layout_slug: '',
     signed_by: '',
     signed_by_role: 'Director',
   });
+
+  console.log('session:', session);
 
   const generatingSingleStudentCertificate = (payload) => {
     const { cohort, user } = state.student;
@@ -120,7 +122,7 @@ const NewCertificate = () => {
                     getOptionLabel={(option) =>
                       `${option.name}, (${option.slug})`
                     }
-                    label='Cohort'
+                    label='Select a Cohort'
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -144,15 +146,24 @@ const NewCertificate = () => {
                       option.length !== 0 &&
                       `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`
                     }
-                    label='Student'
+                    label='Select a Student'
                   />
                 </Grid>
-                {/* <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={2} sm={4} xs={12}>
                   Layout Design
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <input />
-                </Grid> */}
+                  <TextField
+                    label='Layout Design'
+                    name='name'
+                    size='small'
+                    variant='outlined'
+                    value={state.layout_slug}
+                    onChange={({ target }) =>
+                      setState({ ...state, layout_slug: target.value })
+                    }
+                  />
+                </Grid>
               </Grid>
               <div className='mt-6'>
                 <Button color='primary' variant='contained' type='submit'>
