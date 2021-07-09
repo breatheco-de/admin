@@ -124,6 +124,7 @@ const Cohorts = () => {
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
+          console.log(item)
           console.log(
             'for kickoffdate:',
             dayjs().isBefore(dayjs(item?.kickoff_date)),

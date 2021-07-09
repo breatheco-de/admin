@@ -22,8 +22,14 @@ import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
 import axios from '../../../axios';
 import bc from 'app/services/breathecode';
-import InviteDetails from 'app/components/InviteDetails';
 import { DownloadCsv } from '../../components/DownloadCsv';
+import { toast } from 'react-toastify';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -100,57 +106,15 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const survey = items[dataIndex];
+          const item = items[dataIndex];
 
-          console.log(`Comienzo`, dayjs(survey.created_at).format('H:mm:ss'))
-          console.log(`Hora Real`, dayjs(survey.datetime).format('H:mm:ss'))
-          // const time = dayjs(survey.created_at).format('H:MM:ss')
-          // console.log(`Este es Survey`, items[dataIndex])
-          // console.log(survey.id, `enviado `, dayjs(survey.created_at).format('H:mm:ss'))
-          // console.log(`hora actual`, dayjs(survey.created_at).fromNow())
-          // console.log(dayjs(survey.created_at).format('H:MM:ss'))
-          // console.log(`Esta es la duracion`, survey.duration)
-
-          // const segundos = parseInt(survey.duration / 60)
-          //   if(segundos >= 60){
-          //     parseInt(survey.duration / 60)
-          //   }
-          // const minutos = parseInt(segundos / 60)
-          // const horas = parseInt(24 - minutos)
-          // console.log(survey.id, `${horas}:${minutos}:${segundos}`)
-
-          const horas = dayjs(survey.datetime).format('H')
-          console.log(horas)
-            horas === 0 ? dayjs(survey.datetime).format('1') : dayjs(survey.datetime).format('H')
-          const acumHoras = horas * 60
-          const minutos = dayjs(survey.datetime).format('mm')
-          const acumMinutos = acumHoras + parseInt(minutos)
-          const segundos = parseInt(acumMinutos/60)
-          const resultado = parseInt(segundos * 3600)
-          console.log(resultado)
-
-          // if(survey.duration === 172800){
-          //   const segundos = survey.duration / 60
-          //   const minutos = segundos / 60
-          //   const horas = 24 - minutos
-          //   console.log(survey.id,`${horas}:${minutos}:${segundos}`)
-          // }
-          
-          // return (
-          //   survey.duration === 3600 ? (
-          //     <div className="flex items-center">
-          //       <div className="ml-3">
-          //         <Chip size="small" label={survey?.status} color={stageColors[survey?.status]} />
-          //       </div>
-          //     </div>
-          //   ) : (
-          //     <div className="flex items-center">
-          //       <div className="ml-3">
-          //         <Chip size="small" label="EXPIRED" color="bg-error" />
-          //       </div>
-          //     </div>
-          //   )
-          // );
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+              </div>
+            </div>
+          );
         },
       },
     },
@@ -162,8 +126,7 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              {/* <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5> */}
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('H:mm:ss')}</h5>
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
               <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
             </div>
           </div>
