@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { addHours } from 'date-fns'
 import { Breadcrumb, MatxLoading } from '../../../matx';
 import axios from '../../../axios';
 import bc from 'app/services/breathecode';
@@ -107,14 +108,89 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
+          // console.log(dayjs(item.datetime))
+          
+          if(parseInt(item.duration) === 3600){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1)
 
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-              </div>
-            </div>
-          );
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 10800){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 86400){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 12)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 172800){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }
         },
       },
     },
