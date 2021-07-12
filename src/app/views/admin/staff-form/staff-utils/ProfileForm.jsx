@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Grid,
-  TextField,
-} from '@material-ui/core';
+import React from 'react';
+import { Grid, TextField } from '@material-ui/core';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  values: PropTypes.string.isRequired,
+};
 
 export const ProfileForm = ({ handleChange, values }) => (
   <>
@@ -78,3 +81,5 @@ export const ProfileForm = ({ handleChange, values }) => (
     </Grid>
   </>
 );
+
+ProfileForm.propTypes = propTypes;

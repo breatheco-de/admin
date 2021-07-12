@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Formik, yupToFormErrors } from 'formik';
-import {
-  Grid,
-  TextField,
-  Button,
-} from '@material-ui/core';
+import { Formik } from 'formik';
+import { Grid, TextField, Button } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
-import bc from 'app/services/breathecode';
+import PropTypes from 'prop-types';
+import bc from '../../../../services/breathecode';
 import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
+
+const propTypes = {
+  initialValues: PropTypes.number.isRequired,
+};
 
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState(null);
@@ -20,7 +21,8 @@ export const ProfileForm = ({ initialValues }) => {
     const requestValues = cohort !== null
       ? { ...values, cohort: cohort.id, invite: true }
       : { ...values, invite: true };
-    bc.auth().addAcademyStudent(requestValues)
+    bc.auth()
+      .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
           history.push('/admissions/students');
@@ -123,7 +125,7 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                onChange={(cohort) => setCohort(cohort)}
+                onChange={(c) => setCohort(c)}
                 width="30%"
                 size="small"
                 label="Cohort"
@@ -142,3 +144,5 @@ export const ProfileForm = ({ initialValues }) => {
     </Formik>
   );
 };
+
+ProfileForm.propTypes = propTypes;

@@ -4,8 +4,6 @@ import {
   Grid,
   Icon,
   Select,
-  // ListItem,
-  // ListItemText,
   DialogTitle,
   Dialog,
   Button,
@@ -14,19 +12,17 @@ import {
   DialogContent,
   DialogContentText,
   MenuItem,
-  // FormControlLabel,
-  // Checkbox,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { MatxLoading } from 'matx';
-import bc from 'app/services/breathecode';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
+import { MatxLoading } from '../../../../matx';
+import bc from '../../../services/breathecode';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
 import CohortStudents from './CohortStudents';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+const useStyles = makeStyles(() => ({
   dialogue: {
     color: 'rgba(52, 49, 76, 1)',
   },
@@ -91,10 +87,6 @@ const Cohort = () => {
   });
   const [openSurveyDialog, setSurveyDialog] = useState(false);
 
-  const handleClickOpen = () => {
-    setSurveyDialog(true);
-  };
-
   const handleClose = () => {
     setCohortDayDialog(false);
     setSurveyDialog(false);
@@ -123,7 +115,7 @@ const Cohort = () => {
   }, []);
 
   useEffect(() => {
-    if (stage == 'ENDED') {
+    if (stage === 'ENDED') {
       setCurrentDay(maxSyllabusDays);
     }
   }, [stage]);
@@ -135,17 +127,17 @@ const Cohort = () => {
         private: !cohort.private,
         syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`,
       })
-      .then((data) => {
+      .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
       })
       .catch((error) => console.log(error));
   };
 
   const updateCohort = (values) => {
-    const { ending_date, ...rest } = values;
+    const { endingDate, ...rest } = values;
     if (values.never_ends) {
       bc.admissions()
-        .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
+        .updateCohort(cohort.id, { ...rest, private: cohort.private, endingDate: null })
         .then((data) => data)
         .catch((error) => console.log(error));
     } else {
@@ -187,9 +179,15 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-              value === 'current_day' ? setCohortDayDialog(true) : setCohortDayDialog(false);
-              value === 'stage' ? setStageDialog(true) : setStageDialog(false);
-              value === 'new_survey' ? setSurveyDialog(true) : setSurveyDialog(false);
+              if (value === 'current_day') {
+                setCohortDayDialog(true);
+              } else setCohortDayDialog(false);
+              if (value === 'stage') {
+                setStageDialog(true);
+              } else setStageDialog(false);
+              if (value === 'new_survey') {
+                setSurveyDialog(true);
+              } else setSurveyDialog(false);
               if (value === 'privacy') {
                 makePrivate();
               }
@@ -256,10 +254,7 @@ const Cohort = () => {
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form
-              className="p-4 d-flex justify-content-center mt-0"
-              onSubmit={handleSubmit}
-            >
+            <form className="p-4 d-flex justify-content-center mt-0" onSubmit={handleSubmit}>
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>Select a stage:</DialogContentText>
                 <TextField
@@ -308,7 +303,6 @@ const Cohort = () => {
       <Dialog onClose={handleClose} open={cohortDayDialog} aria-labelledby="simple-dialog-title">
         <DialogTitle id="simple-dialog-title">
           Change cohort current day
-          {' '}
           <br />
           <small className="text-muted">{`This syllabus has a maximum duration of ${maxSyllabusDays} days.`}</small>
         </DialogTitle>
@@ -333,10 +327,7 @@ const Cohort = () => {
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form
-              className="p-4 d-flex justify-content-center mt-0"
-              onSubmit={handleSubmit}
-            >
+            <form className="p-4 d-flex justify-content-center mt-0" onSubmit={handleSubmit}>
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>
                   Select a current day:

@@ -16,32 +16,39 @@ import {
   DialogActions,
   IconButton,
 } from '@material-ui/core';
-import { MatxLoading } from 'matx';
-import { AsyncAutocomplete } from 'app/components/Autocomplete';
-import bc from 'app/services/breathecode';
+import PropTypes from 'prop-types';
+import { MatxLoading } from '../../../../matx';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import bc from '../../../services/breathecode';
 import axios from '../../../../axios';
 
-const StudentCohorts = ({ std_id }) => {
-  const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
+const propTypes = {
+  stdId: PropTypes.number.isRequired,
+};
+
+const StudentCohorts = ({ stdId }) => {
+  const [setMsg] = useState({ alert: false, type: '', text: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
   const [currentStd, setCurrentStd] = useState({});
   const [openRoleDialog, setRoleDialog] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [allCohorts, setAllCohorts] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [cohort, setCohort] = useState(null);
 
   const getStudentCohorts = () => {
     setIsLoading(true);
-    bc.admissions().getAllUserCohorts({
-      users: std_id,
-    })
+    bc.admissions()
+      .getAllUserCohorts({
+        users: stdId,
+      })
       .then(({ data }) => {
         console.log(data);
         setIsLoading(false);
-        data.length < 1 ? setStdCohorts([]) : setStdCohorts(data);
+        if (data.length < 1) {
+          setStdCohorts([]);
+        } else {
+          setStdCohorts(data);
+        }
       })
       .catch((error) => error);
   };
@@ -52,15 +59,14 @@ const StudentCohorts = ({ std_id }) => {
 
   const changeStudentStatus = (value, name, studentId, i) => {
     console.log(value, name, i);
-    const s_status = {
+    const sStatus = {
       role: stdCohorts[i].role.toUpperCase(),
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status,
     };
-    console.log(s_status);
-    bc.admissions().updateCohortUserInfo(
-      stdCohorts[i].cohort.id, studentId, { ...s_status, [name]: value },
-    )
+    console.log(sStatus);
+    bc.admissions()
+      .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, { ...sStatus, [name]: value })
       .then((data) => {
         console.log(data);
         if (data.status >= 200) getStudentCohorts();
@@ -69,7 +75,8 @@ const StudentCohorts = ({ std_id }) => {
   };
 
   const deleteUserFromCohort = () => {
-    bc.admissions().deleteUserCohort(currentStd.cohort_id, currentStd.id)
+    bc.admissions()
+      .deleteUserCohort(currentStd.cohort_id, currentStd.id)
       .then((data) => {
         if (data.status === 204) getStudentCohorts();
       })
@@ -79,14 +86,16 @@ const StudentCohorts = ({ std_id }) => {
   const addUserToCohort = () => {
     if (cohort === null) setMsg({ alert: true, type: 'warning', text: 'Select a cohort' });
     else {
-      bc.admissions().addUserCohort(cohort.id, {
-        user: std_id,
-        role: 'STUDENT',
-        finantial_status: null,
-        educational_status: 'ACTIVE',
-      }).then((data) => {
-        if (data.status >= 200) getStudentCohorts();
-      })
+      bc.admissions()
+        .addUserCohort(cohort.id, {
+          user: stdId,
+          role: 'STUDENT',
+          finantial_status: null,
+          educational_status: 'ACTIVE',
+        })
+        .then((data) => {
+          if (data.status >= 200) getStudentCohorts();
+        })
         .catch((error) => error);
     }
   };
@@ -121,13 +130,16 @@ const StudentCohorts = ({ std_id }) => {
 
       <div className="flex mb-6">
         <AsyncAutocomplete
-          onChange={(cohort) => setCohort(cohort)}
+          onChange={(c) => setCohort(c)}
           width="100%"
           label="Search Cohorts"
           getOptionLabel={(option) => `${option.name}, (${option.slug})`}
           asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
         >
-          <Button className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre" onClick={() => addUserToCohort()}>
+          <Button
+            className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre"
+            onClick={() => addUserToCohort()}
+          >
             Add to cohort
           </Button>
         </AsyncAutocomplete>
@@ -141,9 +153,7 @@ const StudentCohorts = ({ std_id }) => {
                   <div className="flex">
                     <div className="flex-grow">
                       <Link to={`/admissions/cohorts/${s.cohort.slug}`}>
-                        <h6 className="mt-0 mb-0 text-15 text-primary">
-                          {s.cohort.name}
-                        </h6>
+                        <h6 className="mt-0 mb-0 text-15 text-primary">{s.cohort.name}</h6>
                       </Link>
                       <p className="mt-0 mb-6px text-13">
                         <span className="font-medium">{s.cohort.kickoff_date}</span>
@@ -154,7 +164,12 @@ const StudentCohorts = ({ std_id }) => {
                             setRoleDialog(true);
                             setCurrentStd({ id: s.user.id, positionInArray: i });
                           }}
+                          onKeyDown={() => {
+                            setRoleDialog(true);
+                            setCurrentStd({ id: s.user.id, positionInArray: i });
+                          }}
                           className="border-radius-4 px-2 pt-2px bg-secondary"
+                          role="none"
                           style={{ cursor: 'pointer' }}
                         >
                           {s.role}
@@ -176,8 +191,8 @@ const StudentCohorts = ({ std_id }) => {
                     }}
                     select
                   >
-                    {['FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item, ind) => (
-                      <MenuItem value={item} key={item}>
+                    {['FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item) => (
+                      <MenuItem value={item} key={item.id}>
                         {item}
                       </MenuItem>
                     ))}
@@ -196,8 +211,8 @@ const StudentCohorts = ({ std_id }) => {
                     }}
                     select
                   >
-                    {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED'].map((item, ind) => (
-                      <MenuItem value={item} key={item}>
+                    {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED'].map((item) => (
+                      <MenuItem value={item} key={item.id}>
                         {item}
                       </MenuItem>
                     ))}
@@ -205,10 +220,15 @@ const StudentCohorts = ({ std_id }) => {
                 </Grid>
                 <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                   <div className="flex justify-end items-center">
-                    <IconButton onClick={() => {
-                      setCurrentStd({ id: s.user.id, positionInArray: i, cohort_id: s.cohort.id });
-                      setOpenDialog(true);
-                    }}
+                    <IconButton
+                      onClick={() => {
+                        setCurrentStd({
+                          id: s.user.id,
+                          positionInArray: i,
+                          cohort_id: s.cohort.id,
+                        });
+                        setOpenDialog(true);
+                      }}
                     >
                       <Icon fontSize="small">delete</Icon>
                     </IconButton>
@@ -227,14 +247,13 @@ const StudentCohorts = ({ std_id }) => {
       >
         <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
         <List>
-          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
+          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role) => (
             <ListItem
               button
               onClick={() => {
                 changeStudentStatus(role, 'role', currentStd.id, currentStd.positionInArray);
                 setRoleDialog(false);
               }}
-              key={i}
             >
               <ListItemText primary={role} />
             </ListItem>
@@ -244,5 +263,7 @@ const StudentCohorts = ({ std_id }) => {
     </Card>
   );
 };
+
+StudentCohorts.propTypes = propTypes;
 
 export default StudentCohorts;

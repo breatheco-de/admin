@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Card, Divider, Button } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import { AsyncAutocomplete } from 'app/components/Autocomplete';
+import { Breadcrumb } from '../../../../matx';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import bc from '../../../services/breathecode';
 import { useQuery } from '../../../hooks/useQuery';
-import bc from 'app/services/breathecode';
 import { ProfileForm } from './student-utils/ProfileForm';
-//atob
+
 const filter = createFilterOptions();
 const NewStudent = () => {
   const query = useQuery();
-  const baseData = query.has("data") ? JSON.parse(atob(query.get("data"))) : null;
-  console.log("baseData", query, baseData)
-  const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
+  const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
+  console.log('baseData', query, baseData);
   const [showForm, setShowForm] = useState({
-    show: baseData ? true : false,
+    show: !!baseData,
     data: {
       first_name: '',
       last_name: '',
@@ -23,7 +22,7 @@ const NewStudent = () => {
       address: '',
       phone: '',
       cohort: '',
-      ...baseData
+      ...baseData,
     },
   });
 
@@ -43,8 +42,8 @@ const NewStudent = () => {
           <h4 className="m-0">Add a New Student</h4>
         </div>
         <Divider className="mb-2 flex" />
-        {
-          !showForm.show ? <>
+        {!showForm.show ? (
+          <>
             <div className="m-3">
               <Alert severity="success">
                 <AlertTitle>On Adding a new student</AlertTitle>
@@ -53,7 +52,9 @@ const NewStudent = () => {
             </div>
             <div className="flex m-4">
               <AsyncAutocomplete
-                onChange={(user) => setShowForm({ data: { ...showForm.data, ...user }, show: true })}
+                onChange={(user) => {
+                  setShowForm({ data: { ...showForm.data, ...user }, show: true });
+                }}
                 width="100%"
                 label="Search Users"
                 asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
@@ -89,10 +90,10 @@ const NewStudent = () => {
                   : `${option.first_name} ${option.last_name}, (${option.email})`)}
               />
             </div>
-            </>
-            :
-            <ProfileForm initialValues={showForm.data} />
-        }
+          </>
+        ) : (
+          <ProfileForm initialValues={showForm.data} />
+        )}
       </Card>
     </div>
   );

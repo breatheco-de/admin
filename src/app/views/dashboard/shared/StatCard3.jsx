@@ -30,8 +30,8 @@ const StatCard3 = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        {statList.map((item, ind) => (
-          <Grid key={item.title} item md={3} sm={6} xs={12}>
+        {statList.map((item) => (
+          <Grid key={item.id} item md={3} sm={6} xs={12}>
             <Card elevation={3} className="p-5 flex">
               <div>
                 <IconButton size="small" className="p-2 bg-light-gray">

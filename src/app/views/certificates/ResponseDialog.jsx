@@ -6,10 +6,27 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import PropTypes from 'prop-types';
 import CertificatesResult from './certificates-utils/CertificatesResults';
+// needs multiple differnt prop validations for same variable??
+const propTypes = {
+  openDialog: PropTypes.number.isRequired,
+  setOpenDialog: PropTypes.string.isRequired,
+  responseData: PropTypes.string.isRequired,
+  isLoading: PropTypes.string.isRequired,
+  cohortId: PropTypes.string.isRequired,
+};
+
+const propTypesRC = {
+  responseData: PropTypes.string.isRequired,
+};
 
 export default function ResponseDialog({
-  openDialog, setOpenDialog, responseData, isLoading, cohortId,
+  openDialog,
+  setOpenDialog,
+  responseData,
+  isLoading,
+  cohortId,
 }) {
   const history = useHistory();
 
@@ -65,10 +82,11 @@ export default function ResponseDialog({
   );
 }
 
-const ResponseContent = ({ responseData, isLoading }) => {
+const ResponseContent = ({ responseData }) => {
   const { data } = responseData;
 
-  return (
-    <CertificatesResult certificates={data} />
-  );
+  return <CertificatesResult certificates={data} />;
 };
+
+ResponseDialog.propTypes = propTypes;
+ResponseContent.propTypes = propTypesRC;

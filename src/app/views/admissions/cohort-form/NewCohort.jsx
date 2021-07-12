@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import {
   Grid,
@@ -10,17 +10,14 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
-import { Breadcrumb } from 'matx';
-import bc from 'app/services/breathecode';
+import { Breadcrumb } from '../../../../matx';
+import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
     color: palette.text.secondary,
   },
@@ -55,14 +52,16 @@ const NewCohort = () => {
 
   const createCohort = (event) => {
     setNewCohort({
-      ...newCohort, [event.target.name]: event.target.value,
+      ...newCohort,
+      [event.target.name]: event.target.value,
     });
   };
 
   const postCohort = (values) => {
-    bc.admissions().addCohort({ ...values, syllabus: `${cert.slug}.v${version.version}` })
+    bc.admissions()
+      .addCohort({ ...values, syllabus: `${cert.slug}.v${version.version}` })
       .then((data) => {
-        if (data.status == 201) {
+        if (data.status === 201) {
           history.push('/admissions/cohorts');
         }
       })
@@ -87,22 +86,8 @@ const NewCohort = () => {
         </div>
         <Divider className="mb-2" />
 
-        <Formik
-          initialValues={newCohort}
-          onSubmit={(newCohort) => postCohort(newCohort)}
-          enableReinitialize
-        >
-          {({
-            // values,
-            // errors,
-            // touched,
-            // handleChange,
-            // handleBlur,
-            handleSubmit,
-            // isSubmitting,
-            // setSubmitting,
-            // setFieldValue,
-          }) => (
+        <Formik initialValues={newCohort} onSubmit={(e) => postCohort(e)} enableReinitialize>
+          {({ handleSubmit }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
@@ -155,7 +140,7 @@ const NewCohort = () => {
                         width="20%"
                         key={cert.slug}
                         asyncSearch={() => {
-                          return bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
+                          bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
                         }}
                         size="small"
                         label="Version"
@@ -163,7 +148,9 @@ const NewCohort = () => {
                         getOptionLabel={(option) => `${option.version}`}
                         value={version}
                       />
-                    ) : ''}
+                    ) : (
+                      ''
+                    )}
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -182,7 +169,8 @@ const NewCohort = () => {
                       value={newCohort.kickoff_date}
                       format="MMMM dd, yyyy"
                       onChange={(date) => setNewCohort({
-                        ...newCohort, kickoff_date: date,
+                        ...newCohort,
+                        kickoff_date: date,
                       })}
                     />
                   </MuiPickersUtilsProvider>
@@ -221,7 +209,7 @@ const NewCohort = () => {
                         name="ending_date"
                         color="primary"
                       />
-                      )}
+                    )}
                     label="This cohort never ends."
                   />
                 </Grid>

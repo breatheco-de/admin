@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import {
-  Grow,
-  Icon,
-  IconButton,
-  TextField,
-  Button,
-  Chip,
+  Grow, Icon, IconButton, TextField, Button, Chip,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-
 import MUIDataTable from 'mui-datatables';
-
-import bc from 'app/services/breathecode';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { Breadcrumb, MatxLoading } from '../../../matx';
+import bc from '../../services/breathecode';
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
 import CustomToolbar from '../../components/CustomToolbar';
@@ -36,7 +28,7 @@ const Cohorts = () => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
-  const [table, setTable] = useState({
+  const [setTable] = useState({
     count: 100,
     page: 0,
   });
@@ -68,7 +60,7 @@ const Cohorts = () => {
           setTable({ count: data.count });
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
@@ -84,26 +76,26 @@ const Cohorts = () => {
     setQueryOffset(rowsPerPage * page);
     setQueryLike(_like);
     setQuerySort(_sort);
-    const query = {
+    const q = {
       limit: rowsPerPage,
       offset: page * rowsPerPage,
       like: _like,
       sort: _sort,
     };
-    setQuerys(query);
+    setQuerys(q);
     bc.admissions()
-      .getAllCohorts(query)
+      .getAllCohorts(q)
       .then(({ data }) => {
         setIsLoading(false);
         setItems(data.results);
         setTable({ count: data.count, page });
         history.replace(
-          `/admissions/cohorts?${Object.keys(query)
-            .map((key) => `${key}=${query[key]}`)
+          `/admissions/cohorts?${Object.keys(q)
+            .map((key) => `${key}=${q[key]}`)
             .join('&')}`,
         );
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -124,10 +116,7 @@ const Cohorts = () => {
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          console.log(
-            'for kickoffdate:',
-            dayjs().isBefore(dayjs(item?.kickoff_date)),
-          );
+          console.log('for kickoffdate:', dayjs().isBefore(dayjs(item?.kickoff_date)));
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -140,11 +129,7 @@ const Cohorts = () => {
                     color="secondary"
                   />
                   ) : (
-                    <Chip
-                      size="small"
-                      label={item?.stage}
-                      color={stageColors[item?.stage]}
-                    />
+                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
                   )}
               </div>
             </div>
@@ -182,17 +167,12 @@ const Cohorts = () => {
       label: 'Kickoff Date',
       options: {
         filter: true,
-        filterList:
-          query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
+        filterList: query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].kickoff_date).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].kickoff_date).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].kickoff_date).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].kickoff_date).fromNow()}</small>
             </div>
           </div>
         ),
@@ -203,8 +183,7 @@ const Cohorts = () => {
       label: 'Certificate',
       options: {
         filter: true,
-        filterList:
-          query.get('certificate') !== null ? [query.get('certificate')] : [],
+        filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
         customBodyRenderLite: (i) => items[i].syllabus.certificate?.name,
       },
     },
@@ -233,19 +212,12 @@ const Cohorts = () => {
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
-              routeSegments={[
-                { name: 'Admin', path: '/admissions' },
-                { name: 'Cohorts' },
-              ]}
+              routeSegments={[{ name: 'Admin', path: '/admissions' }, { name: 'Cohorts' }]}
             />
           </div>
 
           <div className="">
-            <Link
-              to="/admissions/cohorts/new"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new cohort
               </Button>
@@ -262,21 +234,11 @@ const Cohorts = () => {
             columns={columns}
             options={{
               onColumnSortChange: (changedColumn, direction) => {
-                if (direction == 'asc') {
-                  handlePageChange(
-                    queryLimit,
-                    queryOffset,
-                    queryLike,
-                    changedColumn,
-                  );
+                if (direction === 'asc') {
+                  handlePageChange(queryLimit, queryOffset, queryLike, changedColumn);
                 }
-                if (direction == 'desc') {
-                  handlePageChange(
-                    queryLimit,
-                    queryOffset,
-                    queryLike,
-                    `-${changedColumn}`,
-                  );
+                if (direction === 'desc') {
+                  handlePageChange(queryLimit, queryOffset, queryLike, `-${changedColumn}`);
                 }
               },
               customToolbar: () => {
@@ -296,12 +258,7 @@ const Cohorts = () => {
               elevation: 0,
               page: items.page,
               count: items.count,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex,
-              ) => {
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 const q = {
                   ...querys,
                   [changedColumn]: filterList[changedColumnIndex][0],
@@ -315,11 +272,7 @@ const Cohorts = () => {
               },
               rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (
-                selectedRows,
-                displayData,
-                setSelectedRows,
-              ) => (
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
                 <CustomToolbar
                   selectedRows={selectedRows}
                   displayData={displayData}
@@ -328,10 +281,8 @@ const Cohorts = () => {
                   key={items}
                   history={history}
                   id="cohorts"
-                  deleting={async (querys) => {
-                    const { status } = await bc
-                      .admissions()
-                      .deleteCohortsBulk(querys);
+                  deleting={async (quer) => {
+                    const { status } = await bc.admissions().deleteCohortsBulk(quer);
                     return status;
                   }}
                   onBulkDelete={handleLoadingData}
@@ -341,20 +292,10 @@ const Cohorts = () => {
                 switch (action) {
                   case 'changePage':
                     console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike,
-                      querySort,
-                    );
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike, querySort);
                     break;
                   case 'changeRowsPerPage':
-                    handlePageChange(
-                      tableState.page,
-                      tableState.rowsPerPage,
-                      queryLike,
-                      querySort,
-                    );
+                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike, querySort);
                     break;
                   case 'filterChange':
                     // console.log(action, tableState)
@@ -376,13 +317,8 @@ const Cohorts = () => {
                     fullWidth
                     onChange={({ target: { value } }) => handleSearch(value)}
                     onKeyPress={(e) => {
-                      if (e.key == 'Enter') {
-                        handlePageChange(
-                          queryOffset,
-                          queryLimit,
-                          e.target.value,
-                          querySort,
-                        );
+                      if (e.key === 'Enter') {
+                        handlePageChange(queryOffset, queryLimit, e.target.value, querySort);
                       }
                     }}
                     InputProps={{

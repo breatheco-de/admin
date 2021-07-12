@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Snackbar from '@material-ui/core/Snackbar';
 import {
-  Grid,
-  Card,
-  Divider,
-  Button,
-  TextField,
+  Grid, Card, Divider, Button, TextField,
 } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
 import { useHistory } from 'react-router-dom';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import bc from 'app/services/breathecode';
+import { Breadcrumb } from '../../../../matx';
+import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
 const filter = createFilterOptions();
@@ -34,7 +30,8 @@ const NewStaff = () => {
     console.log(values);
     const refactor = user.id !== '' ? { user: user.id } : { email: values.email, invite: true, ...values };
     console.log(refactor);
-    bc.auth().addAcademyMember({ ...refactor, role: role.slug !== '' ? role.slug : '' })
+    bc.auth()
+      .addAcademyMember({ ...refactor, role: role.slug !== '' ? role.slug : '' })
       .then((data) => {
         setShowForm(false);
         if (data.status === 201) {
@@ -43,17 +40,22 @@ const NewStaff = () => {
           history.push('/admin/staff');
         }
       })
-      .catch((error) => setShowForm(false));
+      .catch(() => setShowForm(false));
+  };
+
+  const initialValues = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    address: '',
   };
 
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
-          routeSegments={[
-            { name: 'Admin', path: '/admin/staff' },
-            { name: 'New Staff' },
-          ]}
+          routeSegments={[{ name: 'Admin', path: '/admin/staff' }, { name: 'New Staff' }]}
         />
       </div>
       <Card elevation={3}>
@@ -73,15 +75,7 @@ const NewStaff = () => {
           enableReinitialize
         >
           {({
-            values,
-            // errors,
-            // touched,
-            handleChange,
-            // handleBlur,
-            handleSubmit,
-            // isSubmitting,
-            // setSubmitting,
-            setFieldValue,
+            values, handleChange, handleSubmit, setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
@@ -91,31 +85,35 @@ const NewStaff = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
                     id="user"
-                    onChange={(user) => setUser(user)}
+                    onChange={(e) => setUser(e)}
                     size="small"
                     width="50%"
                     value={user}
                     label="User"
                     debounced
-                    renderOption={(option) => (option.newUser ? option.newUser : `${option.first_name} ${option.last_name}, (${option.email})`)}
+                    renderOption={(option) => (option.newUser
+                      ? option.newUser
+                      : `${option.first_name} ${option.last_name}, (${option.email})`)}
                     getOptionLabel={(option) => option.email}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm || '')}
                     filterOptions={(options, params) => {
                       const filtered = filter(options, params);
                       if (params.inputValue !== '') {
                         filtered.push({
-                          newUser: <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShowForm(true);
-                              if (params.inputValue.includes('@'))setFieldValue('email', params.inputValue);
-                              else setFieldValue('first_name', params.inputValue);
-                            }}
-                          >
-                            Invite '
-                            {params.inputValue}
-                            ' to Breathecode
-                                   </Button>,
+                          newUser: (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowForm(true);
+                                if (params.inputValue.includes('@')) setFieldValue('email', params.inputValue);
+                                else setFieldValue('first_name', params.inputValue);
+                              }}
+                            >
+                              Invite
+                              {params.inputValue}
+                              to Breathecode
+                            </Button>
+                          ),
                         });
                       }
                       return filtered;
@@ -128,7 +126,7 @@ const NewStaff = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
                     id="roles"
-                    onChange={(role) => setRole(role)}
+                    onChange={(e) => setRole(e)}
                     width="50%"
                     asyncSearch={() => bc.auth().getRoles()}
                     size="small"
@@ -140,9 +138,8 @@ const NewStaff = () => {
                     value={role}
                   />
                 </Grid>
-                { showForm ? (
+                {showForm ? (
                   <>
-                    {' '}
                     <Grid item md={2} sm={4} xs={12}>
                       Name
                     </Grid>
@@ -214,7 +211,9 @@ const NewStaff = () => {
                       />
                     </Grid>
                   </>
-                ) : ''}
+                ) : (
+                  ''
+                )}
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
@@ -225,23 +224,21 @@ const NewStaff = () => {
           )}
         </Formik>
         {msg.alert ? (
-          <Snackbar open={msg.alert} autoHideDuration={15000} onClose={() => setMsg({ alert: false, text: '', type: '' })}>
+          <Snackbar
+            open={msg.alert}
+            autoHideDuration={15000}
+            onClose={() => setMsg({ alert: false, text: '', type: '' })}
+          >
             <Alert onClose={() => setMsg({ alert: false, text: '', type: '' })} severity={msg.type}>
               {msg.text}
             </Alert>
           </Snackbar>
-        ) : ''}
+        ) : (
+          ''
+        )}
       </Card>
     </div>
   );
-};
-
-const initialValues = {
-  first_name: '',
-  last_name: '',
-  email: '',
-  phone: '',
-  address: '',
 };
 
 export default NewStaff;

@@ -2,19 +2,19 @@ import React from 'react';
 
 const certificatesRoutes = [
   {
-    path: "/certificates",
+    path: '/certificates',
     exact: true,
-    component: React.lazy(() => import("./certificates")),
+    component: React.lazy(() => import('./certificates')),
   },
   {
-    path: "/certificates/cohort/:cohortId",
+    path: '/certificates/cohort/:cohortId',
     exact: true,
-    component: React.lazy(() => import("./certificates")),
+    component: React.lazy(() => import('./certificates')),
   },
   {
-    path: "/certificates/new/:certificateSlug",
+    path: '/certificates/new/:certificateSlug',
     exact: true,
-    component: React.lazy(() => import("./NewCertificate")),
+    component: React.lazy(() => import('./NewCertificate')),
   },
 ];
 

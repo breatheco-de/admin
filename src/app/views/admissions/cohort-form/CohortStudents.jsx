@@ -18,13 +18,18 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { format } from 'date-fns';
 import clsx from 'clsx';
-import { MatxLoading } from 'matx';
-import bc from 'app/services/breathecode';
+import PropTypes from 'prop-types';
+import { MatxLoading } from '../../../../matx';
+import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { useQuery } from '../../../hooks/useQuery';
+
+const propTypes = {
+  slug: PropTypes.number.isRequired,
+  cohortId: PropTypes.string.isRequired,
+};
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -33,7 +38,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const CohortStudents = ({ slug, cohort_id }) => {
+const CohortStudents = ({ slug, cohortId }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -52,19 +57,41 @@ const CohortStudents = ({ slug, cohort_id }) => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
+  const getCohortStudents = () => {
+    setIsLoading(true);
+    const q = {
+      cohorts: slug,
+      limit: queryLimit,
+      offset: 0,
+    };
+    bc.admissions()
+      .getAllUserCohorts(q)
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          const { results, next } = data.data;
+          setHasMore(next !== null);
+          setIsLoading(false);
+          if (results.length < 1) {
+            setStudentsList([]);
+          } else setStudentsList(results);
+        }
+      })
+      .catch((error) => error);
+  };
+
   useEffect(() => {
     getCohortStudents();
   }, [queryLimit]);
 
   const changeStudentStatus = (value, name, studentId, i) => {
-    const s_status = {
+    const sStatus = {
       role: studenList[i].role,
       finantial_status: studenList[i].finantial_status,
       educational_status: studenList[i].educational_status,
     };
     bc.admissions()
-      .updateCohortUserInfo(cohort_id, studentId, {
-        ...s_status,
+      .updateCohortUserInfo(cohortId, studentId, {
+        ...sStatus,
         [name]: value,
       })
       .then((data) => {
@@ -75,30 +102,10 @@ const CohortStudents = ({ slug, cohort_id }) => {
       });
   };
 
-  const getCohortStudents = () => {
-    setIsLoading(true);
-    const query = {
-      cohorts: slug,
-      limit: queryLimit,
-      offset: 0,
-    };
+  const addUserToCohort = (userId) => {
     bc.admissions()
-      .getAllUserCohorts(query)
-      .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
-          const { results, next } = data.data;
-          setHasMore(next !== null)
-          setIsLoading(false);
-          results.length < 1 ? setStudentsList([]) : setStudentsList(results);
-        }
-      })
-      .catch((error) => error);
-  };
-
-  const addUserToCohort = (user_id) => {
-    bc.admissions()
-      .addUserCohort(cohort_id, {
-        user: user_id,
+      .addUserCohort(cohortId, {
+        user: userId,
         role: 'STUDENT',
         finantial_status: null,
         educational_status: 'ACTIVE',
@@ -111,13 +118,14 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
   const deleteUserFromCohort = () => {
     bc.admissions()
-      .deleteUserCohort(cohort_id, currentStd.id)
+      .deleteUserCohort(cohortId, currentStd.id)
       .then((data) => {
         if (data.status === 204) getCohortStudents();
       })
       .catch((error) => error);
     setOpenDialog(false);
   };
+
   return (
     <Card className="p-4">
       {/* This Dialog opens the modal to delete the user in the cohort */}
@@ -129,7 +137,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
       >
         <DialogTitle id="alert-dialog-title">
           Are you sure you want to delete this user from cohort
-          {' '}
           {slug.toUpperCase()}
           ?
         </DialogTitle>
@@ -156,7 +163,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
       <div className="flex mb-6">
         <AsyncAutocomplete
-          onChange={(user) => setUser(user)}
+          onChange={(user_) => setUser(user_)}
           width="100%"
           label="Search Users"
           asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
@@ -177,7 +184,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
         <div className="min-w-600">
           {studenList.length > 0
             && studenList.map((s, i) => (
-              <div key={i} className="py-4">
+              <div key={i.id} className="py-4">
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
                     <div className="flex">
@@ -189,7 +196,6 @@ const CohortStudents = ({ slug, cohort_id }) => {
                         <Link to={`/admissions/students/${s.user.id}`}>
                           <h6 className="mt-0 mb-0 text-15 text-primary">
                             {s.user.first_name}
-                            {' '}
                             {s.user.last_name}
                           </h6>
                         </Link>
@@ -224,8 +230,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
                       }}
                       select
                     >
-                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map((item, ind) => (
-                        <MenuItem value={item} key={item}>
+                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map((item) => (
+                        <MenuItem value={item} key={item.id}>
                           {item}
                         </MenuItem>
                       ))}
@@ -245,8 +251,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
                       select
                     >
                       {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''].map(
-                        (item, ind) => (
-                          <MenuItem value={item} key={item}>
+                        (item) => (
+                          <MenuItem value={item} key={item.id}>
                             {item}
                           </MenuItem>
                         ),
@@ -290,14 +296,14 @@ const CohortStudents = ({ slug, cohort_id }) => {
       >
         <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
         <List>
-          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
+          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role) => (
             <ListItem
+              key={role.id}
               button
               onClick={() => {
                 changeStudentStatus(role, 'role', currentStd.id, currentStd.positionInArray);
                 setRoleDialog(false);
               }}
-              key={i}
             >
               <ListItemText primary={role} />
             </ListItem>
@@ -307,5 +313,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
     </Card>
   );
 };
+
+CohortStudents.propTypes = propTypes;
 
 export default CohortStudents;

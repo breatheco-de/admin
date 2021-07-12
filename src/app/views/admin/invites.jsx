@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MUIDataTable from 'mui-datatables';
-
 import {
-  Avatar,
-  Grow,
-  Icon,
-  IconButton,
-  TextField,
-  Tooltip,
+  Avatar, Grow, Icon, IconButton, TextField, Tooltip,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
@@ -86,12 +80,8 @@ const Students = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(userList[i].created_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(userList[i].created_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -105,9 +95,7 @@ const Students = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = userList[dataIndex];
           return (
-            <div className="MUIDataTableBodyCell-root-326">
-              {item.role.name.toUpperCase()}
-            </div>
+            <div className="MUIDataTableBodyCell-root-326">{item.role.name.toUpperCase()}</div>
           );
         },
       },
@@ -123,7 +111,10 @@ const Students = () => {
             : {
               ...userList[dataIndex],
               user: {
-                first_name: '', last_name: '', imgUrl: '', id: '',
+                first_name: '',
+                last_name: '',
+                imgUrl: '',
+                id: '',
               },
             };
           return (
@@ -147,12 +138,7 @@ const Students = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Admin', path: '/' },
-                { name: 'Invites' },
-              ]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Invites' }]} />
           </div>
         </div>
       </div>
@@ -177,21 +163,9 @@ const Students = () => {
               download: false,
               filterType: 'textField',
               responsive: 'standard',
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                // options,
-              ) => (
+              customSearchRender: (searchText, handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"
