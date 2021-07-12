@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
-import { Grid, Card, Divider, Button, TextField } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
+import {
+  Grid, Card, Divider, Button, TextField,
+} from '@material-ui/core';
+import { Breadcrumb } from '../../../matx';
+import bc from '../../services/breathecode';
 import axios from '../../../axios';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import ResponseDialog from './ResponseDialog';
-import bc from 'app/services/breathecode';
 import { getSession } from '../../redux/actions/SessionActions';
 
 const NewCertificate = () => {
@@ -26,7 +28,14 @@ const NewCertificate = () => {
     signed_by_role: 'Director',
   });
 
-  console.log('session:', session);
+  useEffect(() => {
+    bc.layout()
+      .getDefaultLayout()
+      .then(({ data }) => {
+        const defaultLayout = data.find((layoutDesign) => layoutDesign.is_default);
+        setState({ ...state, layout_slug: defaultLayout.slug });
+      });
+  }, []);
 
   const generatingSingleStudentCertificate = (payload) => {
     const { cohort, user } = state.student;
@@ -34,7 +43,7 @@ const NewCertificate = () => {
       .generateSingleStudentCertificate(cohort.id, user.id, payload)
       .then((data) => {
         if (data !== undefined && data.status >= 200 && data.status < 300) {
-          setTimeout(function () {
+          setTimeout(() => {
             history.push('/certificates');
           }, 1000);
         }
@@ -55,8 +64,7 @@ const NewCertificate = () => {
   };
 
   const generateCerfiticate = (payload) => {
-    if (certificateSlug === 'single')
-      generatingSingleStudentCertificate(payload);
+    if (certificateSlug === 'single') generatingSingleStudentCertificate(payload);
     else generatingAllCohortCertificates(payload);
   };
 
@@ -73,7 +81,7 @@ const NewCertificate = () => {
   };
 
   return (
-    <div className='m-sm-30'>
+    <div className="m-sm-30">
       <ResponseDialog
         setOpenDialog={setOpenDialog}
         openDialog={openDialog}
@@ -81,7 +89,7 @@ const NewCertificate = () => {
         isLoading={isLoading}
         cohortId={state.cohort.id}
       />
-      <div className='mb-sm-30'>
+      <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
             { name: 'Certificates', path: '/certificates' },
@@ -93,36 +101,30 @@ const NewCertificate = () => {
       </div>
 
       <Card elevation={3}>
-        <div className='flex p-4'>
-          <h4 className='m-0'>Generate Certificates</h4>
+        <div className="flex p-4">
+          <h4 className="m-0">Generate Certificates</h4>
         </div>
-        <Divider className='mb-2' />
+        <Divider className="mb-2" />
         <Formik
           initialValues={state}
           onSubmit={(values) => generateCerfiticate(values)}
-          enableReinitialize={true}
+          enableReinitialize
         >
           {({ handleSubmit }) => (
-            <form className='p-4' onSubmit={handleSubmit}>
-              <Grid container spacing={3} alignItems='center'>
+            <form className="p-4" onSubmit={handleSubmit}>
+              <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
                   Cohort
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
-                    size='small'
+                    size="small"
                     disabled={certificateSlug === 'single'}
-                    width='100%'
-                    asyncSearch={() =>
-                      axios.get(
-                        `${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`
-                      )
-                    }
+                    width="100%"
+                    asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
                     onChange={(cohort) => handleChange({ slug: 'all', cohort })}
-                    getOptionLabel={(option) =>
-                      `${option.name}, (${option.slug})`
-                    }
-                    label='Select a Cohort'
+                    getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                    label="Select a Cohort"
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -130,23 +132,17 @@ const NewCertificate = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <AsyncAutocomplete
-                    size='small'
+                    size="small"
                     disabled={certificateSlug === 'all'}
                     key={state.cohort.slug}
-                    width='100%'
-                    asyncSearch={() =>
-                      axios.get(
-                        `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`
-                      )
-                    }
-                    onChange={(student) =>
-                      handleChange({ slug: 'single', student })
-                    }
-                    getOptionLabel={(option) =>
-                      option.length !== 0 &&
-                      `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`
-                    }
-                    label='Select a Student'
+                    width="100%"
+                    asyncSearch={() => axios.get(
+                      `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`,
+                    )}
+                    onChange={(student) => handleChange({ slug: 'single', student })}
+                    getOptionLabel={(option) => option.length !== 0
+                      && `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`}
+                    label="Select a Student"
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -154,19 +150,17 @@ const NewCertificate = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                    label='Layout Design'
-                    name='name'
-                    size='small'
-                    variant='outlined'
+                    label="Layout Design"
+                    name="name"
+                    size="small"
+                    variant="outlined"
                     value={state.layout_slug}
-                    onChange={({ target }) =>
-                      setState({ ...state, layout_slug: target.value })
-                    }
+                    onChange={({ target }) => setState({ ...state, layout_slug: target.value })}
                   />
                 </Grid>
               </Grid>
-              <div className='mt-6'>
-                <Button color='primary' variant='contained' type='submit'>
+              <div className="mt-6">
+                <Button color="primary" variant="contained" type="submit">
                   Create
                 </Button>
               </div>

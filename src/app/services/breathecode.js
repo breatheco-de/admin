@@ -411,7 +411,14 @@ class BreatheCodeClient {
       },
     };
   }
-
+  layout() {
+    return {
+      getDefaultLayout: () => {
+        return axios._get('Layout', `${this.host}/certificate/academy/layout`);
+      }
+    }
+  }
+  
   media() {
     return {
       upload: (payload) => {
