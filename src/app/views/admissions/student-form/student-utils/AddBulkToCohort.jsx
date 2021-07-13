@@ -10,7 +10,7 @@ import bc from '../../../../services/breathecode';
 
 const propTypes = {
   classes: PropTypes.string.isRequired,
-  selectedRows: PropTypes.arrayOf(PropTypes.array).isRequired,,
+  selectedRows: PropTypes.arrayOf(PropTypes.array).isRequired,
   user: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(PropTypes.array).isRequired,
 };
