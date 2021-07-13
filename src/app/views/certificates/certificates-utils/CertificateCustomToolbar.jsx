@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import { withStyles } from '@material-ui/core/styles';
-import bc from 'app/services/breathecode';
 import { Tooltip, IconButton } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import bc from '../../../services/breathecode';
+
+const propTypes = {
+  classes: PropTypes.number.isRequired,
+  selectedRows: PropTypes.arrayOf(PropTypes.array).isRequired,
+  items: PropTypes.string.isRequired,
+  loadData: PropTypes.string.isRequired,
+  setSelectedRows: PropTypes.arrayOf(PropTypes.array).isRequired,
+};
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -15,14 +24,16 @@ const defaultToolbarSelectStyles = {
 };
 
 const CustomToolbarSelectCertificates = (props) => {
-  const { classes, selectedRows, items, loadData, setSelectedRows } = props;
+  const {
+    classes, selectedRows, items, loadData, setSelectedRows,
+  } = props;
   const [bulkCertificates, setBulkCertificates] = useState([]);
 
   useEffect(() => {
     const indexList = selectedRows.data.map((item) => item.index);
     let certificates = [];
     indexList.map((item, index) => {
-      if (index == 0) {
+      if (index === 0) {
         const certificate = {
           user_id: items[item].user.id,
           cohort_slug: items[item].cohort.slug,
@@ -36,6 +47,7 @@ const CustomToolbarSelectCertificates = (props) => {
         };
         certificates.push(certificate);
       }
+      return certificates;
     });
     setBulkCertificates(certificates);
   }, [selectedRows]);
@@ -67,6 +79,8 @@ const CustomToolbarSelectCertificates = (props) => {
     </Tooltip>
   );
 };
+
+CustomToolbarSelectCertificates.propTypes = propTypes;
 
 export default withStyles(defaultToolbarSelectStyles, {
   name: 'CustomToolbarSelectCertificates',

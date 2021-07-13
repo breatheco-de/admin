@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
+import { MatxLoading } from 'matx';
 import {
   Grow, Icon, IconButton, TextField,
 } from '@material-ui/core';
@@ -36,22 +37,17 @@ const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
 export const SmartMUIDataTable = (props) => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
   const [table, setTable] = useState({
     count: 100,
     page: 0,
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
-  const [querySort, setQuerySort] = useState(query.get('sort') || ' ');
   const [querys, setQuerys] = useState({
-    limit: queryLimit,
-    offset: queryOffset,
-    like: queryLike,
-    sort: querySort,
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+    like: query.get('like') || '',
+    sort: query.get('sort') || ' ',
   });
 
   const loadData = () => {
@@ -61,11 +57,11 @@ export const SmartMUIDataTable = (props) => {
       .then((data) => {
         setIsLoading(false);
         if (isAlive) {
-          setItems(data.results);
           setTable({ count: data.count });
         }
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
@@ -79,22 +75,18 @@ export const SmartMUIDataTable = (props) => {
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    setQuerySort(_sort);
     const query = {
       limit: rowsPerPage,
-      offset: page * rowsPerPage,
+      offset: rowsPerPage * page,
       like: _like,
-      sort: _sort,
-    };
-    setQuerys(query);
+      sort: _sort
+    }
+    setQuerys(query)
+    
     props
       .search(query)
       .then((data) => {
         setIsLoading(false);
-        setItems(data.results);
         setTable({ count: data.count, page });
         history.replace(
           `${history.location.pathname}?${Object.keys(query)
@@ -103,15 +95,13 @@ export const SmartMUIDataTable = (props) => {
         );
       })
       .catch((error) => {
+        console.log(error)
         setIsLoading(false);
       });
   };
 
-  // TODO: Pass a prop that identifies the view to build this url dinamically
-  const singlePageTableCsv = `/v1/auth/academy/student?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-  const allPagesTableCsv = `/v1/auth/academy/student?like=${queryLike}`;
-
-  return (
+  return (<>
+    {isLoading && <MatxLoading />}
     <MUIDataTable
       title={props.title}
       data={props.items}
@@ -128,14 +118,13 @@ export const SmartMUIDataTable = (props) => {
         rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
-        customToolbar: () => {
-          return (
-            <DownloadCsv
-              singlePageTableCsv={singlePageTableCsv}
-              allPagesTableCsv={allPagesTableCsv}
-            />
-          );
-        },
+        customToolbar: () => (
+          <DownloadCsv
+            getAllPagesCSV={() => props.downloadCSV(querys.like)}
+            getSinglePageCSV={() => props.downloadCSV(querys)}
+          />
+        ),
+
         onColumnSortChange: (changedColumn, direction) => {
           if (direction == 'asc') {
             handlePageChange(
@@ -158,7 +147,6 @@ export const SmartMUIDataTable = (props) => {
         onFilterChange: (
           changedColumn,
           filterList,
-          type,
           changedColumnIndex,
         ) => {
           const q = {
@@ -218,7 +206,7 @@ export const SmartMUIDataTable = (props) => {
           }
         },
 
-        customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+        customSearchRender: ( hideSearch ) => (
           <Grow appear in timeout={300}>
             <TextField
               variant="outlined"
@@ -253,13 +241,13 @@ export const SmartMUIDataTable = (props) => {
           </Grow>
         ),
       }}
-    />
+    /></>
   );
 };
 
 SmartMUIDataTable.propTypes = {
   title: PropTypes.string,
-  items: PropTypes.any,
+  items: PropTypes.object,
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,

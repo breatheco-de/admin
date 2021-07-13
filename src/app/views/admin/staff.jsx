@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
-
 import {
-  Avatar,
-  Grow,
-  Icon,
-  IconButton,
-  TextField,
-  Button,
-  Tooltip,
+  Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
-import InviteDetails from 'app/components/InviteDetails';
+import bc from '../../services/breathecode';
+import InviteDetails from '../../components/InviteDetails';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 import { useQuery } from '../../hooks/useQuery';
-
 import { DownloadCsv } from '../../components/DownloadCsv';
 import CustomToolbar from '../../components/CustomToolbar';
 
@@ -58,8 +50,8 @@ const Staff = () => {
       .then((res) => {
         if (res.status === 200) {
           const r = res.data
-            .filter((r) => r.slug !== 'student')
-            .map((r) => r.slug);
+            .filter((response) => response.slug !== 'student')
+            .map((resData) => resData.slug);
           setRole(r);
           setRoles(r.join(','));
           bc.auth()
@@ -72,9 +64,7 @@ const Staff = () => {
               console.log(data);
               setIsLoading(false);
               if (isAlive) {
-                const filterUserNull = data.results.filter(
-                  (item) => item.user !== null,
-                );
+                const filterUserNull = data.results.filter((item) => item.user !== null);
                 setUserList(filterUserNull);
                 setTable({ count: data.count });
               }
@@ -109,9 +99,7 @@ const Staff = () => {
         const filterUserNull = data.results.filter((item) => item.user !== null);
         setUserList(filterUserNull);
         setTable({ count: data.count, page });
-        history.replace(
-          `/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
-        );
+        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`);
       })
       .catch(() => {
         setIsLoading(false);
@@ -158,12 +146,8 @@ const Staff = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(userList[i].created_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(userList[i].created_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -178,10 +162,7 @@ const Staff = () => {
           const item = userList[dataIndex];
           return (
             <small
-              className={
-                `border-radius-4 px-2 pt-2px ${
-                  roleColors[item.role.slug] || 'bg-light'}`
-              }
+              className={`border-radius-4 px-2 pt-2px ${roleColors[item.role.slug] || 'bg-light'}`}
             >
               {item.role.name.toUpperCase()}
             </small>
@@ -199,17 +180,11 @@ const Staff = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px${statusColors[item.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
                   {item.status.toUpperCase()}
                 </small>
                 {item.status === 'INVITED' && (
-                  <small className="text-muted d-block">
-                    Needs to accept invite
-                  </small>
+                  <small className="text-muted d-block">Needs to accept invite</small>
                 )}
               </div>
             </div>
@@ -228,7 +203,10 @@ const Staff = () => {
             : {
               ...userList[dataIndex],
               user: {
-                first_name: '', last_name: '', imgUrl: '', id: '',
+                first_name: '',
+                last_name: '',
+                imgUrl: '',
+                id: '',
               },
             };
           return item.status === 'INVITED' ? (
@@ -263,9 +241,7 @@ const Staff = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]} />
           </div>
 
           <div className="">
@@ -304,11 +280,7 @@ const Staff = () => {
               page: table.page,
               rowsPerPage: parseInt(query.get('limit'), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (
-                selectedRows,
-                displayData,
-                setSelectedRows,
-              ) => (
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
                 <CustomToolbar
                   selectedRows={selectedRows}
                   displayData={displayData}
@@ -318,9 +290,7 @@ const Staff = () => {
                   history={history}
                   id="staff"
                   deleting={async (querys) => {
-                    const { status } = await bc
-                      .admissions()
-                      .deleteStaffBulk(querys);
+                    const { status } = await bc.admissions().deleteStaffBulk(querys);
                     return status;
                   }}
                   onBulkDelete={handleLoadingData}

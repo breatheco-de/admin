@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
-
 import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
-import InviteDetails from 'app/components/InviteDetails';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import InviteDetails from '../../components/InviteDetails';
+import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -27,7 +26,6 @@ const name = (user) => {
 
 const Students = () => {
   const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const resendInvite = (user) => {
     bc.auth()
@@ -158,7 +156,6 @@ const Students = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
           <SmartMUIDataTable
             title="All Students"
             columns={columns}

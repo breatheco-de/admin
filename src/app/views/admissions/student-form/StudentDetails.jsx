@@ -16,10 +16,18 @@ import {
   Dialog,
 } from '@material-ui/core';
 import { Formik } from 'formik';
-import bc from 'app/services/breathecode';
+import PropTypes from 'prop-types';
+import bc from '../../../services/breathecode';
+
+const propTypes = {
+  user: PropTypes.string.isRequired,
+  stdId: PropTypes.number.isRequired,
+  openRoleDialog: PropTypes.number.isRequired,
+  setOpenRoleDialog: PropTypes.number.isRequired,
+};
 
 const StudentDetails = ({
-  user, std_id, openRoleDialog, setOpenRoleDialog,
+  user, stdId, openRoleDialog, setOpenRoleDialog,
 }) => {
   const initialValues = {
     first_name: user?.first_name,
@@ -49,17 +57,17 @@ const StudentDetails = ({
       value: initialValues.address,
     },
   ];
-  const [crt_user, setCrtUser] = useState({});
+  const [crtUser, setCrtUser] = useState({});
   const [roles, setRoles] = useState(null);
   const [roleDialog, setRoleDialog] = useState(false);
   const [role, setRole] = useState('');
 
-  const updateRole = (role) => {
+  const updateRole = (currentRole) => {
     bc.auth()
-      .updateAcademyMember(std_id, { role })
+      .updateAcademyMember(stdId, { currentRole })
       .then(({ data, status }) => {
         if (status >= 200 && status < 300) {
-          setRole(roles.find((role) => role.slug === data.role).name);
+          setRole(roles.find((newRole) => newRole.slug === data.role).name);
         } else {
           throw Error('Could not update Role');
         }
@@ -80,17 +88,16 @@ const StudentDetails = ({
   }, []);
 
   useEffect(() => {
-    user ? setCrtUser(user) : setCrtUser({});
+    if (user) {
+      setCrtUser(user);
+    } else setCrtUser({});
   }, [user]);
 
   const updateStudentProfile = (values) => {
-    console.log('the values', values, crt_user);
-    console.log(std_id);
     bc.auth()
-      .updateAcademyStudent(std_id, values)
+      .updateAcademyStudent(stdId, values)
       .then(({ data }) => {
-        setCrtUser({ ...crt_user, ...data });
-        console.log(crt_user);
+        setCrtUser({ ...crtUser, ...data });
       })
       .catch((error) => error);
   };
@@ -98,7 +105,7 @@ const StudentDetails = ({
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src={user?.user?.github?.avatar_url || ''} />
-        <h5 className="mt-4 mb-2">{`${crt_user?.first_name} ${crt_user?.last_name}`}</h5>
+        <h5 className="mt-4 mb-2">{`${crtUser?.first_name} ${crtUser?.last_name}`}</h5>
         <button
           type="button"
           className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
@@ -114,17 +121,7 @@ const StudentDetails = ({
         onSubmit={(values) => updateStudentProfile(values)}
         enableReinitialize
       >
-        {({
-          values,
-          // errors,
-          // touched,
-          handleChange,
-          // handleBlur,
-          handleSubmit,
-          // isSubmitting,
-          // setSubmitting,
-          // setFieldValue,
-        }) => (
+        {({ values, handleChange, handleSubmit }) => (
           <form className="p-4" onSubmit={handleSubmit}>
             <Table className="mb-4">
               <TableBody>
@@ -141,7 +138,7 @@ const StudentDetails = ({
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
                     <div>{user?.user.github?.username}</div>
-                    {user?.user.github == undefined ? (
+                    {user?.user.github === undefined ? (
                       <small className="px-1 py-2px bg-light-error text-red border-radius-4">
                         GITHUB UNVERIFIED
                       </small>
@@ -152,8 +149,8 @@ const StudentDetails = ({
                     )}
                   </TableCell>
                 </TableRow>
-                {customerInfo.map((item, ind) => (
-                  <TableRow key={ind}>
+                {customerInfo.map((item) => (
+                  <TableRow key={item}>
                     <TableCell className="pl-4">{item.title}</TableCell>
                     <TableCell>
                       <TextField
@@ -189,15 +186,15 @@ const StudentDetails = ({
       >
         <DialogTitle id="simple-dialog-title">Change Member Role</DialogTitle>
         <List>
-          {roles?.map((role, i) => (
+          {roles?.map((presentRole) => (
             <ListItem
               button
               onClick={() => {
-                updateRole(role.slug);
+                updateRole(presentRole.slug);
                 setRoleDialog(false);
                 setOpenRoleDialog(false);
               }}
-              key={i}
+              key={presentRole}
             >
               <ListItemText primary={role.name.toUpperCase()} />
             </ListItem>
@@ -207,5 +204,7 @@ const StudentDetails = ({
     </Card>
   );
 };
+
+StudentDetails.propTypes = propTypes;
 
 export default StudentDetails;
