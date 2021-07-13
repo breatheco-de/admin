@@ -7,7 +7,7 @@ import bc from '../../../services/breathecode';
 
 const propTypes = {
   classes: PropTypes.number.isRequired,
-  selectedRows: PropTypes.string.isRequired,
+  selectedRows: PropTypes.arrayOf(PropTypes.array).isRequired,
   items: PropTypes.string.isRequired,
   loadData: PropTypes.string.isRequired,
   setSelectedRows: PropTypes.string.isRequired,
