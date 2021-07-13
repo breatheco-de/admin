@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Card, Divider, Button } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import { AsyncAutocomplete } from 'app/components/Autocomplete';
-import bc from 'app/services/breathecode';
+import { Breadcrumb } from '../../../../matx';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import bc from '../../../services/breathecode';
 import { ProfileForm } from './student-utils/ProfileForm';
 
 const filter = createFilterOptions();
 const NewStudent = () => {
-  const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
   const [showForm, setShowForm] = useState({
     show: false,
     data: {

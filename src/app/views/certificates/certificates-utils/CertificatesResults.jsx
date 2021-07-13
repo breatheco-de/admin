@@ -7,22 +7,17 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+  certificates: PropTypes.number.isRequired,
+};
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
-
-// function createData(name, calories, fat) {
-//   return { name, calories, fat };
-// }
-
-// const rows = [
-//   createData('Frozen yoghurt', 159, 6.0),
-//   createData('Ice cream sandwich', 237, 9.0),
-//   createData('Eclair', 262, 16.0),
-// ];
 
 export default function CertificatesResult({ certificates }) {
   const classes = useStyles();
@@ -52,3 +47,5 @@ export default function CertificatesResult({ certificates }) {
     </TableContainer>
   );
 }
+
+CertificatesResult.propTypes = propTypes;
