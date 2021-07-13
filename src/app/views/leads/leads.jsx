@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Grow, Icon, IconButton, TextField, Button,
-} from '@material-ui/core';
+import React, { useState } from 'react';
+import { Button} from '@material-ui/core';
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
-import { Link, useHistory } from 'react-router-dom';
-import MUIDataTable from 'mui-datatables';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../services/breathecode';
 import { useQuery } from '../../hooks/useQuery';
 
-import { DownloadCsv } from '../../components/DownloadCsv';
-// import BulkDelete from '../../components/ToolBar/BulkDelete';
-import CustomToolbar from '../../components/CustomToolbar';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -26,77 +21,9 @@ const stageColors = {
 };
 
 const Leads = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState({
-    page: 0,
-  });
-  const [querys, setQuerys] = useState({});
+  const [items, setItems] = useState([]);
   const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
 
-  const handleLoadingData = () => {
-    setIsLoading(true);
-    const q = {
-      limit: query.get('limit') !== null ? query.get('limit') : 10,
-      offset: query.get('offset') !== null ? query.get('offset') : 0,
-    };
-    setQuerys(q);
-    bc.marketing()
-      .getAcademyLeads(q)
-      .then(({ data }) => {
-        setIsLoading(false);
-        if (isAlive) {
-          setItems({ ...data });
-        }
-      })
-      .catch((error) => setIsLoading(false));
-    return () => setIsAlive(false);
-  };
-
-  useEffect(() => {
-    handleLoadingData();
-  }, []);
-
-  const handlePageChange = (page, rowsPerPage) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    bc.marketing()
-      .getAcademyLeads({
-        limit: rowsPerPage,
-        offset: page * rowsPerPage,
-      })
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItems({ ...data, page });
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-    const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
-    setQuerys(q);
-    history.replace(
-      `/leads/list?${Object.keys(q)
-        .map((key) => `${key}=${q[key]}`)
-        .join('&')}`,
-    );
-  };
-
-  const handleFilterSubmit = () => {
-    bc.marketing()
-      .getAcademyLeads(querys)
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItems({ ...data });
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
   const columns = [
     {
       name: 'id',
@@ -104,7 +31,7 @@ const Leads = () => {
       options: {
         filterList: query.get('id') !== null ? [query.get('id')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].id}</span>
+          <span className="ellipsis">{items[dataIndex].id}</span>
         ),
       },
     },
@@ -114,7 +41,7 @@ const Leads = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const lead = items.results[dataIndex];
+          const lead = items[dataIndex];
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
@@ -133,7 +60,7 @@ const Leads = () => {
         display: false,
         filterList: query.get('course') !== null ? [query.get('course')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items.results[dataIndex].course}</span>
+          <span className="ellipsis">{items[dataIndex].course}</span>
         ),
       },
     },
@@ -145,8 +72,8 @@ const Leads = () => {
           query.get('lead_type') !== null ? [query.get('lead_type')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">
-            {items.results[dataIndex].lead_type
-              ? items.results[dataIndex].lead_type
+            {items[dataIndex].lead_type
+              ? items[dataIndex].lead_type
               : '---'}
           </span>
         ),
@@ -159,8 +86,8 @@ const Leads = () => {
         filterList: query.get('utm_url') !== null ? [query.get('utm_url')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">
-            {items.results[dataIndex].utm_url
-              ? items.results[dataIndex].utm_url
+            {items[dataIndex].utm_url
+              ? items[dataIndex].utm_url
               : '---'}
           </span>
         ),
@@ -174,8 +101,8 @@ const Leads = () => {
           query.get('utm_medium') !== null ? [query.get('utm_medium')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">
-            {items.results[dataIndex].utm_medium
-              ? items.results[dataIndex].utm_medium
+            {items[dataIndex].utm_medium
+              ? items[dataIndex].utm_medium
               : '---'}
           </span>
         ),
@@ -192,11 +119,11 @@ const Leads = () => {
         customBodyRenderLite: (dataIndex) => (
           <span
             className={`ellipsis ${
-              stageColors[items.results[dataIndex].utm_source]
+              stageColors[items[dataIndex].utm_source]
             } border-radius-4 px-2 pt-2px text-center`}
           >
-            {items.results[dataIndex].utm_source
-              ? items.results[dataIndex].utm_source
+            {items[dataIndex].utm_source
+              ? items[dataIndex].utm_source
               : '---'}
           </span>
         ),
@@ -211,8 +138,8 @@ const Leads = () => {
         filterList: query.get('tags') !== null ? [query.get('tags')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">
-            {items.results[dataIndex].tags
-              ? items.results[dataIndex].tags
+            {items[dataIndex].tags
+              ? items[dataIndex].tags
               : '---'}
           </span>
         ),
@@ -229,10 +156,10 @@ const Leads = () => {
           <div className="flex items-center">
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {dayjs(items.results[i].created_at).format('MM-DD-YYYY')}
+                {dayjs(items[i].created_at).format('MM-DD-YYYY')}
               </h5>
               <small className="text-muted">
-                {dayjs(items.results[i].created_at).fromNow()}
+                {dayjs(items[i].created_at).fromNow()}
               </small>
             </div>
           </div>
@@ -268,146 +195,26 @@ const Leads = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          <MUIDataTable
+        <SmartMUIDataTable
             title="All Leads"
-            data={items.results}
             columns={columns}
-            options={{
-              customToolbar: () => {
-                const singlePageTableCsv = `/v1/marketing/academy/lead?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                const allPagesTableCsv = `/v1/marketing/academy/lead?like=${queryLike}`;
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              elevation: 0,
-              serverSide: true,
-              page: items.page,
-              count: items.count,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex,
-              ) => {
-                let q;
-                if (type === 'reset') {
-                  q = {
-                    limit: querys.limit ? querys.limit : 10,
-                    offset: querys.offset ? querys.offset : 0,
-                  };
-                } else if (
-                  filterList[changedColumnIndex][0] === undefined
-                    || type === 'chip'
-                ) {
-                  q = { ...querys };
-                  delete q[changedColumn];
-                } else {
-                  q = {
-                    ...querys,
-                    [changedColumn]: filterList[changedColumnIndex][0],
-                  };
-                }
-                setQuerys(q);
-                history.replace(
-                  `/leads/list?${Object.keys(q)
-                    .map((key) => `${key}=${q[key]}`)
-                    .join('&')}`,
-                );
-              },
-              rowsPerPage:
-                querys.limit === undefined ? 10 : parseInt(querys.limit, 10),
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (
-                selectedRows,
-                displayData,
-                setSelectedRows,
-              ) => (
-                <CustomToolbar
-                  selectedRows={selectedRows}
-                  displayData={displayData}
-                  setSelectedRows={setSelectedRows}
-                  items={items.results}
-                  key={items.results}
-                  history={history}
-                  id="staff"
-                  deleting={async (querys) => {
-                    const { status } = await bc
-                      .admissions()
-                      .deleteLeadsBulk(querys);
-                    return status;
-                  }}
-                  onBulkDelete={handleLoadingData}
-                />
-              ),
-              onTableChange: (action, tableState) => {
-                switch (action) {
-                  case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  case 'changeRowsPerPage':
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  case 'filterChange':
-                  // console.log(action, tableState)
-                    break;
-                  default:
-                    console.log(tableState.page, tableState.rowsPerPage);
-                }
-              },
-              customFilterDialogFooter: (
-                // currentFilterList,
-                // applyNewFilters,
-              ) => (
-                <div style={{ marginTop: '40px' }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleFilterSubmit()}
-                  >
-                    Apply Filters
-                  </Button>
-                </div>
-              ),
-              onRowsDelete: (data) => console.log(data),
-              customSearchRender: (
-                // searchText,
-                handleSearch,
-                hideSearch,
-                // options,
-              ) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={items}
+            view="leads?"
+            singlePage=""
+            historyReplace="/leads/list"
+            search={async (querys) => {
+              const { data } = await bc.marketing()
+              .getAcademyLeads(querys);
+              setItems(data.results);
+              return data;
             }}
-          />
+            deleting={async (querys) => {
+              const { status } = await bc
+                .admissions()
+                .deleteLeadsBulk(querys);
+              return status;
+            }}
+          /> 
         </div>
       </div>
     </div>

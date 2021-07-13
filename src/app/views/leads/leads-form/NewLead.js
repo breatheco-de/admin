@@ -13,7 +13,6 @@ import { Breadcrumb } from 'matx';
 import bc from 'app/services/breathecode';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
-import { NewReleasesRounded, TramRounded } from '@material-ui/icons';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
