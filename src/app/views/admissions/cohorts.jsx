@@ -116,7 +116,6 @@ const Cohorts = () => {
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          console.log('for kickoffdate:', dayjs().isBefore(dayjs(item?.kickoff_date)));
           return (
             <div className="flex items-center">
               <div className="ml-3">
