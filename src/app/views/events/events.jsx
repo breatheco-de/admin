@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
 import {
   Grow, Icon, IconButton, TextField, Button,
@@ -7,6 +6,7 @@ import {
 import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 
 import bc from '../../services/breathecode';
 
