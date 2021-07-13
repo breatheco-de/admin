@@ -23,7 +23,7 @@ const propTypes = {
   endDate: PropTypes.string.isRequired,
   startDate: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
-  onSubmit: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   syllabus: PropTypes.string.isRequired,
   neverEnds: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool.isRequired,
