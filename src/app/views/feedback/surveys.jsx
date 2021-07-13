@@ -151,7 +151,7 @@ const EventList = () => {
               )
             }
           }else if(parseInt(item.duration) === 86400){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 12)
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24)
 
             if(Finalizacion >= dayjs(item.datetime)){
               return(
