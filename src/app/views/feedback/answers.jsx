@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect, Fragment } from 'react';
-import { Breadcrumb, MatxLoading, MatxMenu } from 'matx';
+import React, { useState, useEffect } from 'react';
 import MUIDataTable from 'mui-datatables';
 import {
   Avatar,
@@ -17,18 +16,13 @@ import {
   DialogActions,
   Divider,
   Card,
-  // MenuItem,
-  // Input,
-  // FormControlLabel,
-  // Checkbox,
-  // Tooltip,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
-// import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
@@ -36,27 +30,19 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const stageColors = {
-  INACTIVE: 'bg-gray',
-  PREWORK: 'bg-secondary',
-  STARTED: 'text-white bg-warning',
-  FINAL_PROJECT: 'text-white bg-error',
-  ENDED: 'text-white bg-green',
-  DELETED: 'light-gray',
-};
-
 const Answers = () => {
+  const query = useQuery();
+  const history = useHistory();
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState({
     page: 0,
   });
-  const [querys, setQuerys] = useState({});
-  const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
+  const [querys, setQuerys] = useState({
+    limit: useState(query.get('limit') || 10),
+    offset: useState(query.get('offset') || 0),
+    like: '',
+  });
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,8 +72,8 @@ const Answers = () => {
   useEffect(() => {
     setIsLoading(true);
     const q = {
-      limit: query.get('limit') !== null ? query.get('limit') : 10,
-      offset: query.get('offset') !== null ? query.get('offset') : 0,
+      limit: query.get('limit') || 10,
+      offset: query.get('offset') || 0,
     };
     setQuerys(q);
     bc.feedback()
@@ -99,6 +85,7 @@ const Answers = () => {
         }
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     return () => setIsAlive(false);
@@ -106,8 +93,7 @@ const Answers = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
+    setQuerys({ limit: rowsPerPage, offset: rowsPerPage * page });
     bc.feedback()
       .getAnswers({
         limit: rowsPerPage,
@@ -118,6 +104,7 @@ const Answers = () => {
         setItems({ ...data, page });
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -271,8 +258,8 @@ const Answers = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/feedback/academy/answer?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                const allPagesTableCsv = `/v1/feedback/academy/answer?like=${queryLike}`;
+                const singlePageTableCsv = `/v1/feedback/academy/answer?limit=${querys.limit}&offset=${querys.offset}&like=${querys.like}`;
+                const allPagesTableCsv = `/v1/feedback/academy/answer?like=${querys.like}`;
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -288,7 +275,9 @@ const Answers = () => {
               page: items.page,
               count: items.count,
               onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                const q = { [changedColumn]: filterList[changedColumnIndex][0] };
+                const q = {
+                  [changedColumn]: filterList[changedColumnIndex][0],
+                };
                 setQuerys(q);
                 history.replace(
                   `/feedback/answers?${Object.keys(q)
@@ -301,14 +290,14 @@ const Answers = () => {
               onTableChange: (action, tableState) => {
                 switch (action) {
                   case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'filterChange':
-                  // console.log(action, tableState)
+                  default:
+                    console.log('Sorry this actions is not valid');
                 }
               },
               elevation: 0,

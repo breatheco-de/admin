@@ -42,13 +42,7 @@ const InvoiceForm = () => {
         <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
           {({
             values,
-            // errors,
-            // touched,
             handleChange,
-            // handleBlur,
-            // handleSubmit,
-            // isSubmitting,
-            // setSubmitting,
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
@@ -67,7 +61,7 @@ const InvoiceForm = () => {
                     value={values.customerName || ''}
                     onChange={handleChange}
                   >
-                    {customerList.map((item, ind) => (
+                    {customerList.map(item => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>
@@ -134,7 +128,7 @@ const InvoiceForm = () => {
                       onChange={handleChange}
                       select
                     >
-                      {paymentTermList.map((item, ind) => (
+                      {paymentTermList.map(item => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -176,7 +170,7 @@ const InvoiceForm = () => {
                     onChange={handleChange}
                     select
                   >
-                    {customerList.map((item, ind) => (
+                    {customerList.map(item => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>

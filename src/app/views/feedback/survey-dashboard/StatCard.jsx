@@ -1,8 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { 
-  // Grid,
   Card,
-  // Avatar
 } from '@material-ui/core';
 
 const dinamicBG = (score) => {
@@ -12,7 +11,7 @@ const dinamicBG = (score) => {
 };
 
 const StatCard = ({
-  score, imageUrl, label, className,
+  score, label, className,
 }) => (
   <Card elevation={3} className={`p-3 flex-column justify-center items-center ${className}`}>
     <h3
@@ -24,5 +23,17 @@ const StatCard = ({
     <p className="m-0 text-muted">{label}</p>
   </Card>
 );
+
+StatCard.propTypes = {
+  className: PropTypes.string,
+  score: PropTypes.number,
+  label: PropTypes.string,
+};
+
+StatCard.defaultProps = {
+  className: '',
+  score: 0,
+  label: '',
+};
 
 export default StatCard;

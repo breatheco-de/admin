@@ -14,7 +14,6 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
@@ -39,9 +38,7 @@ const NewSurvey = () => {
     },
   );
   const [id, setId] = useState(null);
-  // const [cohortNameInDialog, setCohortNameInDialog] = useState(null);
 
-  const history = useHistory();
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -64,7 +61,7 @@ const NewSurvey = () => {
   useEffect(() => {
     if (listCohorts != undefined) {
       setcohortName(listCohorts.map((item) => (
-        <MenuItem key={item.name} value={item.id} onCLick={console.log(item.name)}>
+        <MenuItem key={item.name} value={item.id}>
           {item.name}
         </MenuItem>
       )));
@@ -107,15 +104,7 @@ const NewSurvey = () => {
           enableReinitialize
         >
           {({
-            // values,
-            // errors,
-            // touched,
-            // handleChange,
-            // handleBlur,
             handleSubmit,
-            // isSubmitting,
-            // setSubmitting,
-            // setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
@@ -243,7 +232,6 @@ const NewSurvey = () => {
               bc.feedback().updateSurvey({
                 send_now: true,
               }, id);
-              console.log(newSurvey);
               handleClose();
             }}
           >

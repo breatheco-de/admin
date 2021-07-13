@@ -12,11 +12,12 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
+import PropTypes from 'prop-types'
 import { FieldArray } from 'formik';
 import { Autocomplete } from '@material-ui/lab';
 import { getProductList, calculateAmount } from './InvoiceFormService';
 
-const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
+const InvoiceItemTable = ({ values, handleChange }) => {
   const [isAlive, setIsAlive] = useState(true);
   const [productList, setProductList] = useState([]);
 
@@ -59,7 +60,7 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
                         renderInput={(params) => (
                           <TextField {...params} variant="outlined" fullWidth />
                         )}
-                        onChange={(event, newValue) => {
+                        onChange={(newValue) => {
                           handleChange({
                             target: {
                               name: `items[${ind}]`,
@@ -149,6 +150,15 @@ const InvoiceItemTable = ({ values, handleChange, setFieldValue }) => {
       )}
     </FieldArray>
   );
+};
+
+InvoiceItemTable.propTypes = {
+  values: PropTypes.object,
+  handleChange: PropTypes.func.isRequired,
+};
+
+InvoiceItemTable.defaultProps = {
+  values: {}
 };
 
 export default InvoiceItemTable;

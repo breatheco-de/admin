@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, IconButton, Icon } from '@material-ui/core';
+import PropTypes from 'prop-types'
+import { Card, Icon } from '@material-ui/core';
 import Chart from 'react-apexcharts';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
-// import { SettingsInputCompositeRounded } from '@material-ui/icons';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   icon: {
@@ -21,15 +21,11 @@ const feedback = {
   10: 'We are really impressed, hitting 10/10 is an amazing achievement and you should be proud of yourself',
 };
 
-const GaugeProgressCard = ({ score = 0 }) => {
+const GaugeProgressCard = ({ score }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [color, setColor] = useState(theme.palette.text.primary);
   const options = {
-    chart: {
-      // offsetX: 60,
-      // offsetY: -20,
-    },
     grid: {
       padding: {
         left: 0,
@@ -54,10 +50,9 @@ const GaugeProgressCard = ({ score = 0 }) => {
             color,
             fontSize: '24px',
             fontWeight: '600',
-            // offsetY: -40,
             offsetY: 38,
             show: true,
-            formatter: (val, opt) => `${val * 10}/10`,
+            formatter: (val) => `${val * 10}/10`,
           },
         },
         track: {
@@ -84,14 +79,13 @@ const GaugeProgressCard = ({ score = 0 }) => {
   };
 
   useEffect(() => {
-    setColor(
-      // TODO: change ternary for if and else functions
-      score < 7
-        ? theme.palette.text.error
-        : score < 8
-          ? theme.palette.warning
-          : theme.palette.text.primary,
-    );
+    let newColor;
+    if (score < 7) newColor = theme.palette.text.error
+    else {
+      if (score < 8) newColor = theme.palette.warning
+      else newColor = theme.palette.text.primary
+    }
+    setColor(newColor);
   }, [score]);
 
   return (
@@ -105,6 +99,14 @@ const GaugeProgressCard = ({ score = 0 }) => {
       <p className="m-0 text-muted text-center">{feedback[score]}</p>
     </Card>
   );
+};
+
+GaugeProgressCard.propTypes = {
+  score: PropTypes.number
+};
+
+GaugeProgressCard.defaultProps = {
+  score: 0
 };
 
 export default GaugeProgressCard;

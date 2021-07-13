@@ -25,23 +25,23 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   };
 
   const handleDownloadAll = () => {
-    (() => {
+    () => {
       getAllPagesCSV()
         .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
-    })();
+    }
     handleClose();
   };
   const handleDownloadSingle = () => {
-    (() => {
+    () => {
       getSinglePageCSV()
         .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
-    })();
+    }
     handleClose();
   };
   

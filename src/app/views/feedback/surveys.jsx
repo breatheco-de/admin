@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { useSelector } from 'react-redux';
 import {
-  // Avatar,
   Grow,
   Icon,
   IconButton,
@@ -12,11 +11,10 @@ import {
   Tooltip,
   Chip,
 } from '@material-ui/core';
+import bc from '../../services/breathecode';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
-import axios from '../../../axios';
-import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
@@ -48,10 +46,11 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
+    bc.feedback().getSurveys()
+      .then(({data}) => {
+        setIsLoading(false);
+        if (isAlive) setItems(data)
+      })
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -237,16 +236,9 @@ const EventList = () => {
               download: false,
               filterType: 'textField',
               responsive: 'standard',
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
               elevation: 0,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+              customSearchRender: (handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"

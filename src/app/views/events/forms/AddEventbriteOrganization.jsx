@@ -1,20 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { Formik } from 'formik';
 import { Grid, TextField, Button } from '@material-ui/core';
 
 export const AddEventbriteOrganization = ({ initialValues }) => (
   <Formik initialValues={initialValues} enableReinitialize>
-    {({
-      values,
-      errors,
-      touched,
-      handleChange,
-      handleBlur,
-      handleSubmit,
-      isSubmitting,
-      setSubmitting,
-      setFieldValue,
-    }) => (
+    {() => (
       <form className="p-4">
         <Grid container spacing={3} alignItems="center">
           <Grid item md={4}>
@@ -50,3 +41,11 @@ export const AddEventbriteOrganization = ({ initialValues }) => (
     )}
   </Formik>
 );
+
+AddEventbriteOrganization.propTypes = {
+  initialValues: PropTypes.object
+};
+
+AddEventbriteOrganization.defaultProps = {
+  initialValues: {}
+};
