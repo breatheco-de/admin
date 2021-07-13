@@ -12,14 +12,12 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "ignorePatterns": [
-    "**/config/*.js",
-    "**/scripts/*.js"
-  ],
+  "ignorePatterns": ["**/config/*.js", "**/scripts/*.js"],
   "rules": {
     "import/prefer-default-export": "off",
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
-    "jsx-a11y/label-has-associated-control": "off"
+    "jsx-a11y/label-has-associated-control": "off",
+    "linebreak-style": 0
   }
 }

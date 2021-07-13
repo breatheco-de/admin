@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { Formik, yupToFormErrors } from 'formik';
-import {
-  Grid,
-  TextField,
-  Button,
-} from '@material-ui/core';
-
+import { Formik } from 'formik';
+import { Grid, TextField, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import bc from 'app/services/breathecode';
+import PropTypes from 'prop-types';
+import bc from '../../../../services/breathecode';
 import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
+
+const propTypes = {
+  initialValues: PropTypes.string.isRequired,
+};
 
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState(null);
@@ -20,7 +20,8 @@ export const ProfileForm = ({ initialValues }) => {
     const requestValues = cohort !== null
       ? { ...values, cohort: cohort.id, invite: true }
       : { ...values, invite: true };
-    bc.auth().addAcademyStudent(requestValues)
+    bc.auth()
+      .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
           history.push('/admissions/students');
@@ -35,17 +36,7 @@ export const ProfileForm = ({ initialValues }) => {
       onSubmit={(values) => postAcademyStudentProfile(values)}
       enableReinitialize
     >
-      {({
-        values,
-        // errors,
-        // touched,
-        handleChange,
-        // handleBlur,
-        handleSubmit,
-        // isSubmitting,
-        // setSubmitting,
-        // setFieldValue,
-      }) => (
+      {({ values, handleChange, handleSubmit }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={1} sm={4} xs={12}>
@@ -123,7 +114,7 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                onChange={(cohort) => setCohort(cohort)}
+                onChange={(newCohort) => setCohort(newCohort)}
                 width="30%"
                 size="small"
                 label="Cohort"
@@ -142,3 +133,5 @@ export const ProfileForm = ({ initialValues }) => {
     </Formik>
   );
 };
+
+ProfileForm.propTypes = propTypes;

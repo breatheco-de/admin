@@ -2,15 +2,18 @@ import React, { useState, useEffect, useMemo } from 'react';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  DialogTitle,
-  Dialog,
-  Button,
-  Tooltip,
-  DialogActions,
-  IconButton,
+  DialogTitle, Dialog, Button, Tooltip, DialogActions, IconButton,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 import bc from '../../../../services/breathecode';
+
+const propTypes = {
+  classes: PropTypes.string.isRequired,
+  selectedRows: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired,
+  items: PropTypes.string.isRequired,
+};
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -23,14 +26,12 @@ const defaultToolbarSelectStyles = {
 };
 
 const AddBulkToCohort = (props) => {
-  const { classes } = props;
+  const { classes, selectedRows } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const [bulk, setBulk] = useState([]);
 
-  const selected = useMemo(() => {
-    props.selectedRows.data.map((item) => item.index), [props.selectedRows];
-  });
+  const selected = useMemo(() => props.selectedRows.data.map((item) => item.index), [selectedRows]);
 
   useEffect(() => {
     setBulk(
@@ -58,10 +59,7 @@ const AddBulkToCohort = (props) => {
   return (
     <>
       <Tooltip title="Add bulk to cohort">
-        <IconButton
-          className={classes.iconButton}
-          onClick={() => setOpenDialog(true)}
-        >
+        <IconButton className={classes.iconButton} onClick={() => setOpenDialog(true)}>
           <GroupAddIcon className={classes.icon} />
         </IconButton>
       </Tooltip>
@@ -79,7 +77,7 @@ const AddBulkToCohort = (props) => {
             Add in bulk students to a cohort
             <div className="mt-4">
               <AsyncAutocomplete
-                onChange={(cohort) => setCohort(cohort)}
+                onChange={(newCohort) => setCohort(newCohort)}
                 width="100%"
                 size="medium"
                 label="Cohort"
@@ -88,7 +86,6 @@ const AddBulkToCohort = (props) => {
                 asyncSearch={() => bc.admissions().getAllCohorts()}
               />
             </div>
-
           </DialogTitle>
           <DialogActions>
             <Button
@@ -99,12 +96,7 @@ const AddBulkToCohort = (props) => {
             >
               Cancel
             </Button>
-            <Button
-              color="primary"
-              type="submit"
-              autoFocus
-              onClick={(e) => addBulkToCohort(e)}
-            >
+            <Button color="primary" type="submit" autoFocus onClick={(e) => addBulkToCohort(e)}>
               Save
             </Button>
           </DialogActions>
@@ -114,6 +106,8 @@ const AddBulkToCohort = (props) => {
     </>
   );
 };
+
+AddBulkToCohort.propTypes = propTypes;
 
 export default withStyles(defaultToolbarSelectStyles, {
   name: 'AddBulkToCohort',
