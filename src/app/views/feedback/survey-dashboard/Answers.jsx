@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   Icon,
@@ -11,24 +11,23 @@ import {
   Avatar,
   MenuItem,
   Select,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   productTable: {
-    "& small": {
+    '& small': {
       height: 15,
       width: 50,
       borderRadius: 500,
-      boxShadow:
-        "0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)",
+      boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
     },
-    "& td": {
-      borderBottom: "none",
+    '& td': {
+      borderBottom: 'none',
     },
-    "& td:first-child": {
-      paddingLeft: "16px !important",
+    '& td:first-child': {
+      paddingLeft: '16px !important',
     },
   },
 }));
@@ -46,9 +45,7 @@ const Answers = () => {
         </Select>
       </div>
       <div className="overflow-auto">
-        <Table
-          className={clsx("whitespace-pre min-w-400", classes.productTable)}
-        >
+        <Table className={clsx('whitespace-pre min-w-400', classes.productTable)}>
           <TableHead>
             <TableRow>
               <TableCell className="px-6" colSpan={4}>
@@ -73,9 +70,7 @@ const Answers = () => {
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>
                   $
-                  {product.price > 999
-                    ? (product.price / 1000).toFixed(1) + "k"
-                    : product.price}
+                  {product.price > 999 ? `${(product.price / 1000).toFixed(1)}k` : product.price}
                 </TableCell>
                 <TableCell className="px-0" colSpan={1}>
                   <IconButton>
@@ -93,32 +88,32 @@ const Answers = () => {
 
 const productList = [
   {
-    imgUrl: "/assets/images/products/headphone-2.jpg",
-    name: "earphone",
+    imgUrl: '/assets/images/products/headphone-2.jpg',
+    name: 'earphone',
     price: 100,
     available: 15,
   },
   {
-    imgUrl: "/assets/images/products/headphone-3.jpg",
-    name: "earphone",
+    imgUrl: '/assets/images/products/headphone-3.jpg',
+    name: 'earphone',
     price: 1500,
     available: 30,
   },
   {
-    imgUrl: "/assets/images/products/iphone-2.jpg",
-    name: "iPhone x",
+    imgUrl: '/assets/images/products/iphone-2.jpg',
+    name: 'iPhone x',
     price: 1900,
     available: 35,
   },
   {
-    imgUrl: "/assets/images/products/iphone-1.jpg",
-    name: "iPhone x",
+    imgUrl: '/assets/images/products/iphone-1.jpg',
+    name: 'iPhone x',
     price: 100,
     available: 0,
   },
   {
-    imgUrl: "/assets/images/products/headphone-3.jpg",
-    name: "Head phone",
+    imgUrl: '/assets/images/products/headphone-3.jpg',
+    name: 'Head phone',
     price: 1190,
     available: 5,
   },

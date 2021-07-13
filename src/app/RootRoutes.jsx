@@ -13,7 +13,6 @@ import feedbackRoutes from "./views/feedback/routes";
 import mediaRoutes from "./views/media/routes";
 
 
-import materialRoutes from "./views/material-kit/MaterialRoutes";
 import pageLayoutRoutes from "./views/page-layouts/PageLayoutRoutees";
 import ListRoute from "./views/list/ListRoute";
 
@@ -40,7 +39,6 @@ const routes = [
   ...eventsRoutes,
   ...mediaRoutes,
   ...feedbackRoutes,
-  ...materialRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,
   ...pagesRoutes,

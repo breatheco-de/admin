@@ -1,21 +1,12 @@
-import React from "react";
-import { Formik } from "formik";
+import React from 'react';
+import { Formik } from 'formik';
 import {
-  Grid,
-  Card,
-  Divider,
-  TextField,
-  MenuItem,
-  Button,
-  Icon,
-} from "@material-ui/core";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import InvoiceItemTable from "./InvoiceItemTable";
-import { calculateAmount } from "./InvoiceFormService";
+  Grid, Card, Divider, TextField, MenuItem, Button, Icon,
+} from '@material-ui/core';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import InvoiceItemTable from './InvoiceItemTable';
+import { calculateAmount } from './InvoiceFormService';
 
 const InvoiceForm = () => {
   const calculateSubTotal = (itemList = []) => {
@@ -48,20 +39,16 @@ const InvoiceForm = () => {
         </div>
         <Divider className="mb-2" />
 
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          enableReinitialize={true}
-        >
+        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
           {({
             values,
-            errors,
-            touched,
+            // errors,
+            // touched,
             handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            setSubmitting,
+            // handleBlur,
+            // handleSubmit,
+            // isSubmitting,
+            // setSubmitting,
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
@@ -77,7 +64,7 @@ const InvoiceForm = () => {
                     size="small"
                     variant="outlined"
                     select
-                    value={values.customerName || ""}
+                    value={values.customerName || ''}
                     onChange={handleChange}
                   >
                     {customerList.map((item, ind) => (
@@ -130,10 +117,10 @@ const InvoiceForm = () => {
                         inputVariant="outlined"
                         type="text"
                         size="small"
-                        autoOk={true}
+                        autoOk
                         value={values.invoiceDate}
                         format="MMMM dd, yyyy"
-                        onChange={(date) => setFieldValue("invoiceDate", date)}
+                        onChange={(date) => setFieldValue('invoiceDate', date)}
                       />
                     </MuiPickersUtilsProvider>
 
@@ -143,7 +130,7 @@ const InvoiceForm = () => {
                       name="terms"
                       size="small"
                       variant="outlined"
-                      value={values.terms || ""}
+                      value={values.terms || ''}
                       onChange={handleChange}
                       select
                     >
@@ -162,10 +149,10 @@ const InvoiceForm = () => {
                         inputVariant="outlined"
                         type="text"
                         size="small"
-                        autoOk={true}
+                        autoOk
                         value={values.dueDate}
                         format="MMMM dd, yyyy"
-                        onChange={(date) => setFieldValue("dueDate", date)}
+                        onChange={(date) => setFieldValue('dueDate', date)}
                       />
                     </MuiPickersUtilsProvider>
                   </div>
@@ -185,7 +172,7 @@ const InvoiceForm = () => {
                     name="salesPersonName"
                     size="small"
                     variant="outlined"
-                    value={values.salesPersonName || ""}
+                    value={values.salesPersonName || ''}
                     onChange={handleChange}
                     select
                   >
@@ -227,12 +214,7 @@ const InvoiceForm = () => {
                   </Grid>
                   <Grid item xs={6}>
                     <Card className="bg-default p-4" elevation={0}>
-                      <Grid
-                        container
-                        spacing={3}
-                        justify="space-between"
-                        alignItems="center"
-                      >
+                      <Grid container spacing={3} justify="space-between" alignItems="center">
                         <Grid item xs={6}>
                           Sub Total
                         </Grid>
@@ -243,16 +225,14 @@ const InvoiceForm = () => {
                         </Grid>
                         <Grid item xs={6}>
                           <div className="flex items-center">
-                            <span className="whitespace-pre">
-                              Shipping Charges
-                            </span>
+                            <span className="whitespace-pre">Shipping Charges</span>
                             <TextField
                               className="ml-3"
                               name="shippingCharge"
                               size="small"
                               type="number"
                               variant="outlined"
-                              value={values.shippingCharge || ""}
+                              value={values.shippingCharge || ''}
                               onChange={handleChange}
                             />
                           </div>
@@ -268,7 +248,7 @@ const InvoiceForm = () => {
                               name="otherField"
                               size="small"
                               variant="outlined"
-                              value={values.otherField || ""}
+                              value={values.otherField || ''}
                               onChange={handleChange}
                             />
 
@@ -278,7 +258,7 @@ const InvoiceForm = () => {
                               size="small"
                               variant="outlined"
                               type="number"
-                              value={values[values.otherField] || ""}
+                              value={values[values.otherField] || ''}
                               onChange={handleChange}
                             />
                           </div>
@@ -294,9 +274,7 @@ const InvoiceForm = () => {
                         </Grid>
                         <Grid item xs={6}>
                           <div className="text-right">
-                            <h5 className="m-0">
-                              {calculateTotal(values).toFixed(2)}
-                            </h5>
+                            <h5 className="m-0">{calculateTotal(values).toFixed(2)}</h5>
                           </div>
                         </Grid>
                       </Grid>
@@ -336,7 +314,7 @@ const InvoiceForm = () => {
                     </label>
                     <input
                       className="hidden"
-                      onChange={(e) => setFieldValue("files", e.target.files)}
+                      onChange={(e) => setFieldValue('files', e.target.files)}
                       id="upload-multiple-file"
                       type="file"
                       multiple
@@ -359,28 +337,28 @@ const InvoiceForm = () => {
 };
 
 const paymentTermList = [
-  "NET 15",
-  "NET 30",
-  "NET 45",
-  "NET 60",
-  "Due end of the month",
-  "Due on receive",
+  'NET 15',
+  'NET 30',
+  'NET 45',
+  'NET 60',
+  'Due end of the month',
+  'Due on receive',
 ];
 
 const customerList = [
-  "customer 1",
-  "customer 2",
-  "customer 3",
-  "customer 4",
-  "customer 5",
-  "customer 6",
-  "customer 7",
-  "customer 8",
+  'customer 1',
+  'customer 2',
+  'customer 3',
+  'customer 4',
+  'customer 5',
+  'customer 6',
+  'customer 7',
+  'customer 8',
 ];
 
 const initialValues = {
-  customerType: "",
-  otherField: "Adjustment",
+  customerType: '',
+  otherField: 'Adjustment',
 };
 
 export default InvoiceForm;
