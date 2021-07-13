@@ -12,7 +12,7 @@ const propTypes = {
   classes: PropTypes.string.isRequired,
   selectedRows: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
-  items: PropTypes.string.isRequired,
+  items: PropTypes.arrayOf(PropTypes.array).isRequired,
 };
 
 const defaultToolbarSelectStyles = {

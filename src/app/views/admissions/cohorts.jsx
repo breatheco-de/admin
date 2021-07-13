@@ -120,7 +120,7 @@ const Cohorts = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                {dayjs().isAfter(dayjs(item?.endingDate))
+                {dayjs().isAfter(dayjs(item?.ending_date))
                 && !['ENDED', 'DELETED'].includes(item?.stage) ? (
                   <Chip
                     size="small"

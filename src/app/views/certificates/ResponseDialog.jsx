@@ -13,7 +13,7 @@ const propTypes = {
   openDialog: PropTypes.number.isRequired,
   setOpenDialog: PropTypes.string.isRequired,
   responseData: PropTypes.string.isRequired,
-  isLoading: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   cohortId: PropTypes.string.isRequired,
 };
 

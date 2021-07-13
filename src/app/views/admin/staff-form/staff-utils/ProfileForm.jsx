@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
   handleChange: PropTypes.string.isRequired,
-  values: PropTypes.string.isRequired,
+  values: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 export const ProfileForm = ({ handleChange, values }) => (

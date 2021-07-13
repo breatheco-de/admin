@@ -29,7 +29,6 @@ import { useQuery } from '../../../hooks/useQuery';
 const propTypes = {
   cohortId: PropTypes.string.isRequired,
   slug: PropTypes.string.isRequired,
-  toUpperCase: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({

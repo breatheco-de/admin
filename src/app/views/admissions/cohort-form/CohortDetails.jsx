@@ -26,7 +26,7 @@ const propTypes = {
   onSubmit: PropTypes.string.isRequired,
   syllabus: PropTypes.string.isRequired,
   neverEnds: PropTypes.string.isRequired,
-  isPrivate: PropTypes.string.isRequired,
+  isPrivate: PropTypes.bool.isRequired,
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {

@@ -8,7 +8,7 @@ import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 
 const propTypes = {
-  initialValues: PropTypes.string.isRequired,
+  initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 export const ProfileForm = ({ initialValues }) => {
