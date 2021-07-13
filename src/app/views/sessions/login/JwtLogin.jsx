@@ -48,6 +48,7 @@ const JwtLogin = () => {
   },[user])
 
   const handleChange = ({ target: { name, value } }) => {
+    // eslint-disable-next-line prefer-const
     let temp = { ...userInfo };
     temp[name] = value;
     setUserInfo(temp);

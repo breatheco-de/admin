@@ -1,11 +1,9 @@
 import React from 'react';
-import bc from 'app/services/breathecode';
 import {
   Icon, IconButton, Tooltip, Menu, MenuItem,
 } from '@material-ui/core';
-import axios from '../../axios';
 
-export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
+export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -26,32 +24,26 @@ export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
 
   const handleDownloadAll = () => {
     (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}${allPagesTableCsv}`, {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        })
-        .then(({ data }) => {
+      getAllPagesCSV()
+        .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
     })();
     handleClose();
   };
+  
   const handleDownloadSingle = () => {
     (() => {
-      axios
-        .get(`${process.env.REACT_APP_API_HOST}${singlePageTableCsv}`, {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        })
-        .then(({ data }) => {
+      getSinglePageCSV()
+        .then(( data ) => {
           downloadFile(data);
         })
         .catch((error) => console.log(error));
     })();
     handleClose();
   };
+  
   return (
     <>
       <Tooltip title="csv">
@@ -67,7 +59,7 @@ export const DownloadCsv = ({ singlePageTableCsv, allPagesTableCsv }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleDownloadSingle}>Dowload Current Page</MenuItem>
-        <MenuItem onClick={handleDownloadAll}>All</MenuItem>
+        <MenuItem onClick={handleDownloadAll}>Download All</MenuItem>
       </Menu>
     </>
   );

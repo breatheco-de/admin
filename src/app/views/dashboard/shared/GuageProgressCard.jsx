@@ -1,14 +1,14 @@
-import React from "react";
-import { Card, IconButton, Icon } from "@material-ui/core";
-import Chart from "react-apexcharts";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
+import React from 'react';
+import { Card, IconButton, Icon } from '@material-ui/core';
+import Chart from 'react-apexcharts';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   icon: {
-    position: "absolute",
-    top: "calc(50% - 24px)",
-    left: "calc(50% - 18px)",
+    position: 'absolute',
+    top: 'calc(50% - 24px)',
+    left: 'calc(50% - 18px)',
   },
 }));
 
@@ -33,34 +33,32 @@ const GaugeProgressCard = () => {
         offsetY: 0,
         hollow: {
           margin: 0,
-          size: "68%",
+          size: '68%',
         },
         dataLabels: {
-          showOn: "always",
+          showOn: 'always',
           name: {
             show: false,
           },
           value: {
             color: theme.palette.text.primary,
-            fontSize: "24px",
-            fontWeight: "600",
+            fontSize: '24px',
+            fontWeight: '600',
             // offsetY: -40,
             offsetY: 38,
             show: true,
-            formatter: (val, opt) => {
-              return val * 10 + "K";
-            },
+            formatter: (val, opt) => `${val * 10}K`,
           },
         },
         track: {
-          background: "#eee",
-          strokeWidth: "100%",
+          background: '#eee',
+          strokeWidth: '100%',
         },
       },
     },
-    colors: [theme.palette.primary.main, "#eee"],
+    colors: [theme.palette.primary.main, '#eee'],
     stroke: {
-      lineCap: "round",
+      lineCap: 'round',
     },
     responsive: [
       {
@@ -84,18 +82,11 @@ const GaugeProgressCard = () => {
         </IconButton>
       </div>
       <div className="relative">
-        <Chart
-          options={options}
-          series={[84.2]}
-          type="radialBar"
-          height={200}
-        />
-        <Icon className={clsx("text-muted text-36", classes.icon)}>people</Icon>
+        <Chart options={options} series={[84.2]} type="radialBar" height={200} />
+        <Icon className={clsx('text-muted text-36', classes.icon)}>people</Icon>
       </div>
       <h5 className="text-center font-medium mb-2">Awesome</h5>
-      <p className="m-0 text-muted text-center">
-        Close to reach 1000k folowers!
-      </p>
+      <p className="m-0 text-muted text-center">Close to reach 1000k folowers!</p>
     </Card>
   );
 };
