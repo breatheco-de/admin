@@ -50,7 +50,7 @@ const UserProfileSidenav = ({ user }) => {
     if (user) {
       axios
         .get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/user?users=${user.id}`)
-        .then((cu) => setCohorts(cu.map((cu) => cu.cohort)));
+        .then((cu) => setCohorts(cu.map((cup) => cup.cohort)));
     }
   }, [user]);
 
