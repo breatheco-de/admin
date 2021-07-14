@@ -13,6 +13,12 @@ export const navigations = [
     beta: true,
   },
   {
+    name: 'Student Report',
+    path: '/dashboard/student/1/cohort/1',
+    icon: 'show_chart',
+    beta: true,
+  },
+  {
     name: 'Admin',
     icon: 'account_circle',
     children: [

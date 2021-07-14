@@ -68,7 +68,6 @@ const Analytics = () => {
         by: 'location,created_at__date,course',
       })
       .then(({ data }) => {
-        console.log('data', data);
         const series = [];
         const xAxis = [];
         let total = 0;
@@ -82,7 +81,11 @@ const Analytics = () => {
           if (stamp.total_leads < min) min = stamp.total_leads;
         });
         setLeads({
-          series, xAxis, total, max, min,
+          series,
+          xAxis,
+          total,
+          max,
+          min,
         });
       });
 
@@ -118,7 +121,8 @@ const Analytics = () => {
       })
       .then(({ data }) => {
         setFeedback(data.filter((a) => a.score));
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log('DATA:::::::', err);
       });
   }, [renderNewDates]);
@@ -190,10 +194,7 @@ const Analytics = () => {
                     feedback.length === 0
                       ? 'No feedback yet'
                       : feedback.reduce(
-                        (total, current) => (
-                          current.score
-                            ? total + parseInt(current.score, 10)
-                            : total),
+                        (total, current) => (current.score ? total + parseInt(current.score, 10) : total),
                         0,
                       ) / feedback.length,
                 },
