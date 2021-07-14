@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import {
-  Grid, Card, Divider, Button, TextField,
+  Grid, Card, Divider, Button,
 } from '@material-ui/core';
 import { Breadcrumb } from '../../../matx';
 import bc from '../../services/breathecode';
@@ -28,25 +28,12 @@ const NewCertificate = () => {
     signed_by_role: 'Director',
   });
 
-  useEffect(() => {
-    bc.layout()
-      .getDefaultLayout()
-      .then(({ data }) => {
-        const defaultLayout = data.find((layoutDesign) => layoutDesign.is_default);
-        setState({ ...state, layout_slug: defaultLayout.slug });
-      });
-  }, []);
-
   const generatingSingleStudentCertificate = (payload) => {
     const { cohort, user } = state.student;
     bc.certificates()
       .generateSingleStudentCertificate(cohort.id, user.id, payload)
       .then((data) => {
-        if (data !== undefined && data.status >= 200 && data.status < 300) {
-          setTimeout(() => {
-            history.push('/certificates');
-          }, 1000);
-        }
+        if (data !== undefined && data.status >= 200 && data.status < 300) history.push('/certificates');
       });
   };
 
@@ -149,13 +136,17 @@ const NewCertificate = () => {
                   Layout Design
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Layout Design"
-                    name="name"
+                  <AsyncAutocomplete
+                    id="layoutDesign"
+                    onChange={(layoutDesign) => setState({ ...state, layout_slug: layoutDesign.slug })}
+                    width="50%"
+                    asyncSearch={() => bc.layout().getDefaultLayout()}
                     size="small"
-                    variant="outlined"
-                    value={state.layout_slug}
-                    onChange={({ target }) => setState({ ...state, layout_slug: target.value })}
+                    prefetch
+                    debaunced
+                    label="Layout Design"
+                    required
+                    getOptionLabel={(option) => `${option.slug}`}
                   />
                 </Grid>
               </Grid>
