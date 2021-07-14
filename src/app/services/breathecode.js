@@ -115,6 +115,12 @@ class BreatheCodeClient {
           `${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`
         );
       },
+      getSingleCohortStudent: (cohortID, studentID) => {
+        return axios._get(
+          "Single Cohort Student",
+          `${this.host}/admissions/academy/cohort/${cohortID}/user/${studentID}`
+        );
+      },
       getMyAcademy: () =>
         axios._get("My Academy", `${this.host}/admissions/academy/me`),
     };
