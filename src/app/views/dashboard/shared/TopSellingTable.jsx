@@ -16,7 +16,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+const useStyles = makeStyles(() => ({
   productTable: {
     '& small': {
       height: 15,
@@ -32,6 +32,39 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
 }));
+
+const productList = [
+  {
+    imgUrl: '/assets/images/products/headphone-2.jpg',
+    name: 'earphone',
+    price: 100,
+    available: 15,
+  },
+  {
+    imgUrl: '/assets/images/products/headphone-3.jpg',
+    name: 'earphone',
+    price: 1500,
+    available: 30,
+  },
+  {
+    imgUrl: '/assets/images/products/iphone-2.jpg',
+    name: 'iPhone x',
+    price: 1900,
+    available: 35,
+  },
+  {
+    imgUrl: '/assets/images/products/iphone-1.jpg',
+    name: 'iPhone x',
+    price: 100,
+    available: 0,
+  },
+  {
+    imgUrl: '/assets/images/products/headphone-3.jpg',
+    name: 'Head phone',
+    price: 1190,
+    available: 5,
+  },
+];
 
 const TopSellingTable = () => {
   const classes = useStyles();
@@ -64,8 +97,8 @@ const TopSellingTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productList.map((product, index) => (
-              <TableRow key={index} hover>
+            {productList.map((product) => (
+              <TableRow key={product.name} hover>
                 <TableCell className="px-0 capitalize" colSpan={4} align="left">
                   <div className="flex items-center">
                     <Avatar src={product.imgUrl} />
@@ -109,38 +142,5 @@ const TopSellingTable = () => {
     </Card>
   );
 };
-
-const productList = [
-  {
-    imgUrl: '/assets/images/products/headphone-2.jpg',
-    name: 'earphone',
-    price: 100,
-    available: 15,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'earphone',
-    price: 1500,
-    available: 30,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-2.jpg',
-    name: 'iPhone x',
-    price: 1900,
-    available: 35,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-1.jpg',
-    name: 'iPhone x',
-    price: 100,
-    available: 0,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'Head phone',
-    price: 1190,
-    available: 5,
-  },
-];
 
 export default TopSellingTable;

@@ -1,11 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Avatar, Button, Card, Grid, Icon,
+  Avatar, Card, Grid, Icon,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 // import useAuth from 'app/hooks/useAuth';
+import PropTypes from 'prop-types';
 import axios from '../../../../axios';
+
+const shortcutList = [
+  {
+    title: 'stars',
+    icon: 'star_outline',
+  },
+  {
+    title: 'events',
+    icon: 'email',
+  },
+  {
+    title: 'Photo',
+    icon: 'collections',
+  },
+  {
+    title: 'settings',
+    icon: 'brightness_7',
+  },
+  {
+    title: 'contacts',
+    icon: 'group',
+  },
+];
 
 const usestyles = makeStyles(({ palette, ...theme }) => ({
   sidenav: {
@@ -19,9 +43,9 @@ const usestyles = makeStyles(({ palette, ...theme }) => ({
 
 const UserProfileSidenav = ({ user }) => {
   const classes = usestyles();
-  const [cohorts, setCohorts] = useState();
+  const [cohorts, setCohorts] = useState(); // assigned but never used?
 
-  console.log('user', user);
+  // console.log('user', user);
   useEffect(() => {
     if (user) {
       axios
@@ -47,8 +71,8 @@ const UserProfileSidenav = ({ user }) => {
       </div>
       <div className="px-8 pt-2 bg-default">
         <Grid container spacing={3}>
-          {shortcutList.map((item, ind) => (
-            <Grid item key={ind}>
+          {shortcutList.map((item) => (
+            <Grid item key={item.title}>
               <Card className="w-104 h-104 flex items-center justify-center">
                 <div className="text-muted text-center">
                   <Icon>{item.icon}</Icon>
@@ -64,27 +88,11 @@ const UserProfileSidenav = ({ user }) => {
   );
 };
 
-const shortcutList = [
-  {
-    title: 'stars',
-    icon: 'star_outline',
-  },
-  {
-    title: 'events',
-    icon: 'email',
-  },
-  {
-    title: 'Photo',
-    icon: 'collections',
-  },
-  {
-    title: 'settings',
-    icon: 'brightness_7',
-  },
-  {
-    title: 'contacts',
-    icon: 'group',
-  },
-];
-
 export default UserProfileSidenav;
+
+UserProfileSidenav.defaultProps = {
+  user: null,
+};
+UserProfileSidenav.propTypes = {
+  user: PropTypes.objectOf(PropTypes.object),
+};
