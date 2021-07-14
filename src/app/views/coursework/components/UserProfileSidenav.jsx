@@ -43,7 +43,7 @@ const usestyles = makeStyles(({ palette, ...theme }) => ({
 
 const UserProfileSidenav = ({ user }) => {
   const classes = usestyles();
-  const [cohorts, setCohorts] = useState(); // assigned but never used?
+  const [, setCohorts] = useState(); // assigned but never used?
 
   // console.log('user', user);
   useEffect(() => {
