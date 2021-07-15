@@ -112,7 +112,6 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
-      "pretty-quick",
       "eslint --fix"
     ]
   },
