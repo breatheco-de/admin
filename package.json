@@ -153,7 +153,6 @@
     "husky": "^7.0.0",
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.1",
-    "pretty-quick": "^3.1.1",
     "react-app-rewired": "^2.1.6"
   },
   "jest": {
