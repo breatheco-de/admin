@@ -52,7 +52,7 @@ const Analytics2 = () => (
         <h3 className="mt-0 mb-4 font-medium text-28">Survey #23</h3>
         <div className="flex">
           <div
-            className="px-3 text-11 py-3px border-radius-4 text-white bg-green "
+            className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
             style={{ cursor: 'pointer' }}
           >
             PENDING

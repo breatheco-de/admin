@@ -4,7 +4,7 @@ import Chart from 'react-apexcharts';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+const useStyles = makeStyles(() => ({
   icon: {
     position: 'absolute',
     top: 'calc(50% - 24px)',
@@ -47,7 +47,7 @@ const GaugeProgressCard = () => {
             // offsetY: -40,
             offsetY: 38,
             show: true,
-            formatter: (val, opt) => `${val * 10}K`,
+            formatter: (val) => `${val * 10}K`,
           },
         },
         track: {
