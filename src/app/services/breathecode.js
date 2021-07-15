@@ -402,6 +402,14 @@ class BreatheCodeClient {
       } 
     };
   }
+  
+  assignments() { 
+    return {
+      getStudentAssignments: (studentID) => {
+        return axios._get("Student Assignments", `${this.host}/assignment/task/?stu_cohort=${studentID}`);
+      }
+    }
+  }
 
   getItem(key) {
     let value = this.ls.getItem(key);

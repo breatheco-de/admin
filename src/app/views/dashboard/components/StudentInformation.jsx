@@ -1,18 +1,22 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
 
 const StudentInformation = ({ data }) => {
-  const {
-    user, cohort, finantial_status, stage,
-  } = data;
+  const { user, finantial_status, educational_status } = data;
   return (
     <div>
       <h1>Student info</h1>
-      <img src={user?.profile.avatar_url} />
-      <h1>{user?.first_name + user?.last_name}</h1>
+      <img src={user?.profile.avatar_url} alt={user?.first_name} />
+      <p>{`${user?.first_name}  ${user?.last_name}`}</p>
       <p>{user?.email}</p>
-      <p>{finantial_status || 'not available'}</p>
+      <p>
+        Finantial Status:
+        {finantial_status || 'not available'}
+      </p>
+      <p>
+        Educational Status:
+        {educational_status || 'not available'}
+      </p>
     </div>
   );
 };

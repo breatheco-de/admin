@@ -4,15 +4,13 @@ import { useParams } from 'react-router-dom';
 import bc from '../../services/breathecode';
 import CohortInformation from './components/CohortInformation';
 import StudentInformation from './components/StudentInformation';
+import AssignmentsInformation from './components/AssignmentsInformation';
 
 const studentReport = () => {
   const { studentID, cohortID } = useParams();
-  const [query, setQuery] = useState({
-    roles: 'STUDENT',
-    users: studentID,
-  });
   const [cohortData, setCohortData] = useState({});
   const [studentData, setStudentData] = useState({});
+  const [studentAssignments, setStudentAssignments] = useState([]);
 
   useEffect(() => {
     bc.admissions()
@@ -29,10 +27,24 @@ const studentReport = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    bc.assignments()
+      .getStudentAssignments(studentID)
+      .then(({ data }) => {
+        setStudentAssignments(data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div>
       <CohortInformation data={cohortData} />
+      {' '}
+      <hr />
       <StudentInformation data={studentData} />
+      {' '}
+      <hr />
+      <AssignmentsInformation data={studentAssignments} />
     </div>
   );
 };
