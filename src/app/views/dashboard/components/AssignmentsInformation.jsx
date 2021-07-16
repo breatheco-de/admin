@@ -5,6 +5,7 @@ import AssignmentGrid from './AssignmentGrid';
 const AssignmentsInformation = ({ data }) => {
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
+
   return (
     <div>
       <h1>Assignments Information</h1>

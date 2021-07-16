@@ -411,6 +411,14 @@ class BreatheCodeClient {
     }
   }
 
+  registry() {
+    return {
+      getAsset: (associatedSlug) => {
+        return axios._get("Asset", `${this.host}/registry/asset/${associatedSlug}`);
+      }
+    }
+  }
+
   getItem(key) {
     let value = this.ls.getItem(key);
     try {
