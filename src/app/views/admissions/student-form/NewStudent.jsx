@@ -5,10 +5,13 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
+import { useQuery } from '../../../hooks/useQuery';
 import { ProfileForm } from './student-utils/ProfileForm';
+
 //atob
 const filter = createFilterOptions();
 const NewStudent = () => {
+  const query = useQuery();
   const baseData = query.has("data") ? JSON.parse(atob(query.get("data"))) : null;
   const [showForm, setShowForm] = useState({
     show: baseData ? true : false,
