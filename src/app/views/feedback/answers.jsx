@@ -53,7 +53,6 @@ const Answers = () => {
   });
 
 
-
   const columns = [
     {
       name: 'first_name', // field name in the row object
@@ -179,7 +178,11 @@ const Answers = () => {
           </div>
 
           <div className="">
-            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
+            <Link
+              to="/feedback/survey/new"
+              color="primary"
+              className="btn btn-primary"
+            >
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
@@ -205,11 +208,17 @@ const Answers = () => {
         </div>
       </div>
 
-      <Dialog onClose={handleClose} open={open} aria-labelledby="simple-dialog-title">
+      <Dialog
+        onClose={handleClose}
+        open={open}
+        aria-labelledby="simple-dialog-title"
+      >
         <div className="px-sm-24 pt-sm-24">
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
-              <p className="m-0 mb-4 text-small text-muted">Answer with details</p>
+              <p className="m-0 mb-4 text-small text-muted">
+                Answer with details
+              </p>
             </div>
             <IconButton size="small" onClick={handleClose}>
               <Icon>clear</Icon>
@@ -244,7 +253,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 ) : answer.score < 7 ? (
@@ -253,7 +264,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 ) : (
@@ -262,7 +275,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 )}
@@ -286,7 +301,9 @@ const Answers = () => {
               <div className="comments">
                 <div className="mb-4">
                   {answer.comment ? (
-                    <p className="m-0 text-muted">{answer.comment.substring(0, 10000)}</p>
+                    <p className="m-0 text-muted">
+                      {answer.comment.substring(0, 10000)}
+                    </p>
                   ) : (
                     <p className="m-0 text-muted">Waiting for comments</p>
                   )}
@@ -295,7 +312,10 @@ const Answers = () => {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
+            <Button
+              className="mb-3 bg-primary text-white"
+              onClick={handleClose}
+            >
               Close
             </Button>
           </DialogActions>

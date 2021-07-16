@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Card, Divider, Button } from '@material-ui/core';
-import { Breadcrumb } from 'matx';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import { AsyncAutocomplete } from 'app/components/Autocomplete';
+import { Breadcrumb } from '../../../../matx';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import bc from '../../../services/breathecode';
 import { useQuery } from '../../../hooks/useQuery';
-import bc from 'app/services/breathecode';
 import { ProfileForm } from './student-utils/ProfileForm';
+
 //atob
 const filter = createFilterOptions();
 const NewStudent = () => {
   const query = useQuery();
   const baseData = query.has("data") ? JSON.parse(atob(query.get("data"))) : null;
-  console.log("baseData", query, baseData)
-  const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
   const [showForm, setShowForm] = useState({
     show: baseData ? true : false,
     data: {

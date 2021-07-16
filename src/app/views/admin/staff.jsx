@@ -33,7 +33,6 @@ const name = (user) => {
 
 const Staff = () => {
   const [userList, setUserList] = useState([]);
-
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)
@@ -69,12 +68,8 @@ const Staff = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(userList[i].created_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(userList[i].created_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -89,10 +84,7 @@ const Staff = () => {
           const item = userList[dataIndex];
           return (
             <small
-              className={
-                `border-radius-4 px-2 pt-2px ${
-                  roleColors[item.role.slug] || 'bg-light'}`
-              }
+              className={`border-radius-4 px-2 pt-2px ${roleColors[item.role.slug] || 'bg-light'}`}
             >
               {item.role.name.toUpperCase()}
             </small>
@@ -110,17 +102,11 @@ const Staff = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px${statusColors[item.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
                   {item.status.toUpperCase()}
                 </small>
                 {item.status === 'INVITED' && (
-                  <small className="text-muted d-block">
-                    Needs to accept invite
-                  </small>
+                  <small className="text-muted d-block">Needs to accept invite</small>
                 )}
               </div>
             </div>
@@ -139,7 +125,10 @@ const Staff = () => {
             : {
               ...userList[dataIndex],
               user: {
-                first_name: '', last_name: '', imgUrl: '', id: '',
+                first_name: '',
+                last_name: '',
+                imgUrl: '',
+                id: '',
               },
             };
           return item.status === 'INVITED' ? (
@@ -174,9 +163,7 @@ const Staff = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]} />
           </div>
 
           <div className="">

@@ -45,10 +45,6 @@ const Cohorts = () => {
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          console.log(
-            'for kickoffdate:',
-            dayjs().isBefore(dayjs(item?.kickoff_date)),
-          );
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -61,11 +57,7 @@ const Cohorts = () => {
                     color="secondary"
                   />
                   ) : (
-                    <Chip
-                      size="small"
-                      label={item?.stage}
-                      color={stageColors[item?.stage]}
-                    />
+                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
                   )}
               </div>
             </div>
@@ -103,17 +95,12 @@ const Cohorts = () => {
       label: 'Kickoff Date',
       options: {
         filter: true,
-        filterList:
-          query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
+        filterList: query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].kickoff_date).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].kickoff_date).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].kickoff_date).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].kickoff_date).fromNow()}</small>
             </div>
           </div>
         ),
@@ -124,8 +111,7 @@ const Cohorts = () => {
       label: 'Certificate',
       options: {
         filter: true,
-        filterList:
-          query.get('certificate') !== null ? [query.get('certificate')] : [],
+        filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
         customBodyRenderLite: (i) => items[i].syllabus.certificate?.name,
       },
     },
@@ -154,19 +140,12 @@ const Cohorts = () => {
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <Breadcrumb
-              routeSegments={[
-                { name: 'Admin', path: '/admissions' },
-                { name: 'Cohorts' },
-              ]}
+              routeSegments={[{ name: 'Admin', path: '/admissions' }, { name: 'Cohorts' }]}
             />
           </div>
 
           <div className="">
-            <Link
-              to="/admissions/cohorts/new"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new cohort
               </Button>
