@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Grid, Card, Icon, IconButton, Tooltip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+const useStyles = makeStyles(({ palette }) => ({
   icon: {
     fontSize: '44px',
     opacity: 0.6,
@@ -98,3 +99,10 @@ const StatCards = ({ metrics }) => {
 };
 
 export default StatCards;
+
+StatCards.defaultProps = {
+  metrics: [],
+};
+StatCards.propTypes = {
+  metrics: PropTypes.arrayOf(PropTypes.array),
+};

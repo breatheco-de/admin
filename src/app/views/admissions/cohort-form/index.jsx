@@ -3,9 +3,8 @@ import { Formik } from 'formik';
 import {
   Grid,
   Icon,
+  IconButton,
   Select,
-  // ListItem,
-  // ListItemText,
   DialogTitle,
   Dialog,
   Button,
@@ -14,19 +13,25 @@ import {
   DialogContent,
   DialogContentText,
   MenuItem,
-  // FormControlLabel,
-  // Checkbox,
+  Tooltip,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { MatxLoading } from 'matx';
-import bc from 'app/services/breathecode';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
+import { toast } from 'react-toastify';
+import bc from '../../../services/breathecode';
+import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
 import CohortStudents from './CohortStudents';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
+
+const useStyles = makeStyles(() => ({
   dialogue: {
     color: 'rgba(52, 49, 76, 1)',
   },
@@ -73,12 +78,13 @@ const Cohort = () => {
   const [stage, setStage] = useState('');
   const classes = useStyles();
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [url, setUrl] = useState('');
+
   const options = [
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
     { label: 'Cohort Detailed Report', value: 'cohort_deport' },
-    { label: 'Review Assingments', value: 'assignments' },
-    { label: 'Review Attendance', value: 'attendance' },
     { label: 'Instant NPS Survey', value: 'new_survey' },
     { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
   ];
@@ -90,10 +96,6 @@ const Cohort = () => {
     send_now: true,
   });
   const [openSurveyDialog, setSurveyDialog] = useState(false);
-
-  const handleClickOpen = () => {
-    setSurveyDialog(true);
-  };
 
   const handleClose = () => {
     setCohortDayDialog(false);
@@ -123,7 +125,7 @@ const Cohort = () => {
   }, []);
 
   useEffect(() => {
-    if (stage == 'ENDED') {
+    if (stage === 'ENDED') {
       setCurrentDay(maxSyllabusDays);
     }
   }, [stage]);
@@ -135,17 +137,17 @@ const Cohort = () => {
         private: !cohort.private,
         syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`,
       })
-      .then((data) => {
+      .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
       })
       .catch((error) => console.log(error));
   };
 
   const updateCohort = (values) => {
-    const { ending_date, ...rest } = values;
+    const { endingDate, ...rest } = values;
     if (values.never_ends) {
       bc.admissions()
-        .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
+        .updateCohort(cohort.id, { ...rest, private: cohort.private, endingDate: null })
         .then((data) => data)
         .catch((error) => console.log(error));
     } else {
@@ -173,9 +175,10 @@ const Cohort = () => {
             </h3>
             <div className="flex">
               <div
-                aria-hidden="true"
                 className="px-3 text-11 py-3px border-radius-4 text-white bg-green "
                 onClick={() => setStageDialog(true)}
+                onKeyDown={() => setStageDialog(true)}
+                role="none"
                 style={{ cursor: 'pointer' }}
               >
                 {cohort && cohort.stage}
@@ -187,9 +190,15 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-              value === 'current_day' ? setCohortDayDialog(true) : setCohortDayDialog(false);
-              value === 'stage' ? setStageDialog(true) : setStageDialog(false);
-              value === 'new_survey' ? setSurveyDialog(true) : setSurveyDialog(false);
+              if (value === 'current_day') {
+                setCohortDayDialog(true);
+              } else setCohortDayDialog(false);
+              if (value === 'stage') {
+                setStageDialog(true);
+              } else setStageDialog(false);
+              if (value === 'new_survey') {
+                setSurveyDialog(true);
+              } else setSurveyDialog(false);
               if (value === 'privacy') {
                 makePrivate();
               }
@@ -207,7 +216,7 @@ const Cohort = () => {
               <CohortDetails
                 slug={slug}
                 language={cohort.language || 'en'}
-                endDate={cohort.ending_date}
+                endDate={cohort.endingDate}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
                 syllabus={cohort.syllabus}
@@ -220,7 +229,7 @@ const Cohort = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohort_id={cohort.id} /> : ''}
+            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
           </Grid>
         </Grid>
       </div>
@@ -244,22 +253,15 @@ const Cohort = () => {
               name: cohort.name,
               language: cohort.language,
               kickoff_date: cohort.kickoff_date,
-              ending_date: cohort.ending_date,
+              endingDate: cohort.endingDate,
               current_day: stage === 'ENDED' ? maxSyllabusDays : currentDay,
             });
-            setCohort({
-              ...cohort,
-              stage,
-              current_day: currentDay,
-            });
+            setCohort({ ...cohort, stage, current_day: currentDay });
             setStageDialog(false);
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form
-              className="p-4 d-flex justify-content-center mt-0"
-              onSubmit={handleSubmit}
-            >
+            <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4">
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>Select a stage:</DialogContentText>
                 <TextField
@@ -325,7 +327,7 @@ const Cohort = () => {
               name: cohort.name,
               language: cohort.language,
               kickoff_date: cohort.kickoff_date,
-              ending_date: cohort.ending_date,
+              endingDate: cohort.endingDate,
               current_day: currentDay,
             });
             setCohort({ ...cohort, current_day: currentDay });
@@ -333,10 +335,7 @@ const Cohort = () => {
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form
-              className="p-4 d-flex justify-content-center mt-0"
-              onSubmit={handleSubmit}
-            >
+            <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4">
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>
                   Select a current day:
@@ -370,10 +369,16 @@ const Cohort = () => {
           initialValues={newSurvey}
           enableReinitialize
           onSubmit={() => {
-            bc.feedback().addNewSurvey({
-              ...newSurvey,
-              cohort: cohort.id,
-            });
+            bc.feedback()
+              .addNewSurvey({ ...newSurvey, cohort: cohort.id })
+              .then((res) => {
+                if (res === undefined) setOpenDialog(false);
+                if (res.data) {
+                  setUrl(res.data.public_url);
+                }
+                setOpenDialog(true);
+              })
+              .catch((error) => error);
           }}
         >
           {({ handleSubmit }) => (
@@ -439,6 +444,58 @@ const Cohort = () => {
             </form>
           )}
         </Formik>
+      </Dialog>
+
+      <Tooltip title="Copy invite link">
+        <IconButton
+          onClick={() => {
+            setOpenDialog(true);
+          }}
+        >
+          <Icon>assignment</Icon>
+        </IconButton>
+      </Tooltip>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="form-dialog-title"
+        fullWidth
+      >
+        <form className="p-4">
+          <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item md={12} sm={12} xs={10}>
+                <TextField
+                  label="URL"
+                  name="url"
+                  size="medium"
+                  disabled
+                  fullWidth
+                  variant="outlined"
+                  value={url}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <Grid className="p-2">
+            <DialogActions>
+              <Button
+                className="bg-primary text-white"
+                onClick={() => {
+                  navigator.clipboard.writeText(url);
+                  toast.success('Invite url copied successfuly', toastOption);
+                }}
+                autoFocus
+              >
+                Copy
+              </Button>
+              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
+                Close
+              </Button>
+            </DialogActions>
+          </Grid>
+        </form>
       </Dialog>
     </>
   );
