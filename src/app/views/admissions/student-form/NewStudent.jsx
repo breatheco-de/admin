@@ -9,6 +9,7 @@ import { ProfileForm } from './student-utils/ProfileForm';
 //atob
 const filter = createFilterOptions();
 const NewStudent = () => {
+  const baseData = query.has("data") ? JSON.parse(atob(query.get("data"))) : null;
   const [showForm, setShowForm] = useState({
     show: baseData ? true : false,
     data: {
