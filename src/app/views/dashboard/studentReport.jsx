@@ -41,11 +41,11 @@ const studentReport = () => {
   }, []);
   return (
     <>
-      <div className="pb-24 pt-7 px-8 bg-primary">
+      <div className="pb-24 pt-7 px-8 bg-primary text-white flex">
         <Grid item lg={4} md={4} sm={12} xs={12}>
           <StudentInformation data={studentData} />
         </Grid>
-        <Grid item lg={4} md={4} sm={12} xs={12}>
+        <Grid item lg={8} md={4} sm={12} xs={12}>
           <CohortInformation data={cohortData} />
         </Grid>
       </div>
