@@ -229,7 +229,7 @@ const Cohort = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohort_id={cohort.id} /> : ''}
+            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
           </Grid>
         </Grid>
       </div>

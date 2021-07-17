@@ -175,12 +175,15 @@ class BreatheCodeClient {
         );
       },
       getAcademyMembers: (query) => {
-        const qs = Object.keys(query)
-          .map((key) => `${key}=${query[key]}`)
-          .join("&");
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join("&")
+            : "";
         return axios._get(
           "Academy member",
-          `${this.host}/auth/academy/member?${qs}`
+          `${this.host}/auth/academy/member${query ? "?" + qs : ""}`
         );
       },
       getAcademyStudents: (query) => {

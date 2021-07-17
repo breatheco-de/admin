@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import MUIDataTable from 'mui-datatables';
+import React, { useState } from 'react';
+import { Breadcrumb} from 'matx';
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
-  Avatar, Grow, Icon, IconButton, TextField, Button, Tooltip,
+  Avatar,
+  Icon,
+  IconButton,
+  Button,
+  Tooltip,
 } from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from '../../services/breathecode';
-import InviteDetails from '../../components/InviteDetails';
-import { Breadcrumb, MatxLoading } from '../../../matx';
-import { useQuery } from '../../hooks/useQuery';
-import { DownloadCsv } from '../../components/DownloadCsv';
-import CustomToolbar from '../../components/CustomToolbar';
+import bc from 'app/services/breathecode';
+import InviteDetails from 'app/components/InviteDetails';
+
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -30,93 +32,13 @@ const name = (user) => {
 };
 
 const Staff = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [role, setRole] = useState(null);
-  const [table, setTable] = useState({
-    count: 100,
-    page: 0,
-  });
-  const query = useQuery();
-  const history = useHistory();
-  const [_roles, setRoles] = useState(null);
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-
-  const getAcademyMembers = () => {
-    bc.auth()
-      .getRoles()
-      .then((res) => {
-        if (res.status === 200) {
-          const r = res.data
-            .filter((response) => response.slug !== 'student')
-            .map((resData) => resData.slug);
-          setRole(r);
-          setRoles(r.join(','));
-          bc.auth()
-            .getAcademyMembers({
-              roles: r.join(','),
-              limit: query.get('limit') !== null ? query.get('limit') : 10,
-              offset: query.get('offset') !== null ? query.get('offset') : 0,
-            })
-            .then(({ data }) => {
-              console.log(data);
-              setIsLoading(false);
-              if (isAlive) {
-                const filterUserNull = data.results.filter((item) => item.user !== null);
-                setUserList(filterUserNull);
-                setTable({ count: data.count });
-              }
-            })
-            .catch(() => {
-              setIsLoading(false);
-            });
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const handleLoadingData = () => {
-    setIsLoading(true);
-    getAcademyMembers();
-    return () => setIsAlive(false);
-  };
-
-  const handlePageChange = (page, rowsPerPage) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
-    bc.auth()
-      .getAcademyMembers({
-        roles: role.join(','),
-        limit: rowsPerPage,
-        offset: page * rowsPerPage,
-      })
-      .then(({ data }) => {
-        setIsLoading(false);
-        const filterUserNull = data.results.filter((item) => item.user !== null);
-        setUserList(filterUserNull);
-        setTable({ count: data.count, page });
-        history.replace(`/admin/staff?limit=${rowsPerPage}&offset=${page * rowsPerPage}`);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
-  };
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    getAcademyMembers();
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -255,91 +177,23 @@ const Staff = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <MUIDataTable
-            title="Staff Members"
-            data={userList}
+        <SmartMUIDataTable
+            title="All Staff"
             columns={columns}
-            options={{
-              customToolbar: () => {
-                const singlePageTableCsv = `/v1/auth/academy/member?roles=${_roles}&limit=${queryLimit}&offset=${queryOffset}`;
-                const allPagesTableCsv = `/v1/auth/academy/member?roles=${_roles}`;
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              serverSide: true,
-              elevation: 0,
-              count: table.count,
-              page: table.page,
-              rowsPerPage: parseInt(query.get('limit'), 10) || 10,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-                <CustomToolbar
-                  selectedRows={selectedRows}
-                  displayData={displayData}
-                  setSelectedRows={setSelectedRows}
-                  items={userList}
-                  key={userList}
-                  history={history}
-                  id="staff"
-                  deleting={async (querys) => {
-                    const { status } = await bc.admissions().deleteStaffBulk(querys);
-                    return status;
-                  }}
-                  onBulkDelete={handleLoadingData}
-                />
-              ),
-              onTableChange: (action, tableState) => {
-                console.log(action, tableState);
-                switch (action) {
-                  case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  case 'changeRowsPerPage':
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  default:
-                    console.log(tableState.page, tableState.rowsPerPage);
-                }
-              },
-              customSearchRender: (
-                // searchText,
-                handleSearch,
-                hideSearch,
-                // options,
-              ) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={userList}
+            view="staff?"
+            singlePage=""
+            historyReplace="/admin/staff"
+            search={async (querys) => {
+              const { data } = await bc.auth().getAcademyMembers(querys);
+              setUserList(data.results);
+              return data;
+            }}
+            deleting={async (querys) => {
+              const { status } = await bc
+                .admissions()
+                .deleteStaffBulk(querys);
+              return status;
             }}
           />
         </div>

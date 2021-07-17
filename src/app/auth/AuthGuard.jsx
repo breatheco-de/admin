@@ -11,9 +11,7 @@ const getUserRoleAuthStatus = (pathname, user, routes) => {
     ? matched.auth.includes(user.role)
     : true;
 
-  console.log('AXIOS_DEFAULT', axios);
-
-  axios.instance.defaults.headers.common.Academy = user
+  axios.defaults.headers.common.Academy = user
     ? user.academy
       ? user.academy.id
       : ''

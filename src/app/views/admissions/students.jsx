@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Breadcrumb } from 'matx';
 import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
@@ -161,6 +162,7 @@ const Students = () => {
             columns={columns}
             items={items}
             view="student?"
+            historyReplace="/admissions/students"
             singlePage=""
             options={{
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (

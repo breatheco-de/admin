@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
-import MUIDataTable from 'mui-datatables';
+import React, { useState } from 'react';
+import { Breadcrumb } from 'matx';
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
-  Grow, Icon, IconButton, TextField, Button,
+   Icon, IconButton,Button,
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-
 import bc from 'app/services/breathecode';
-
-import { useQuery } from '../../hooks/useQuery';
-import { DownloadCsv } from '../../components/DownloadCsv';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -25,59 +21,9 @@ const stageColors = {
 };
 
 const EventList = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [items, setItems] = useState([]);
-  const [table, setTable] = useState({
-    count: 100,
-    page: 0,
-  });
-  const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-
-  useEffect(() => {
-    setIsLoading(true);
-    bc.events()
-      .getAcademyEvents({
-        limit: query.get('limit') !== null ? query.get('limit') : 10,
-        offset: query.get('offset') !== null ? query.get('offset') : 0,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        setIsLoading(false);
-        if (isAlive) {
-          setItems(data.results);
-          setTable({ count: data.count });
-        }
-      });
-    return () => setIsAlive(false);
-  }, [isAlive]);
-
-  const handlePageChange = (page, rowsPerPage) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
-    bc.events()
-      .getAcademyEvents({
-        limit: rowsPerPage,
-        offset: page * rowsPerPage,
-      })
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItems(data.results);
-        setTable({ count: data.count, page });
-        history.replace(
-          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
-        );
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
-
+  
   const columns = [
     {
       name: 'id', // field name in the row object
@@ -219,75 +165,17 @@ const EventList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <MUIDataTable
+          <SmartMUIDataTable
             title="All Events"
-            data={items}
             columns={columns}
-            options={{
-              customToolbar: () => {
-                const singlePageTableCsv = `/v1/events/academy/event?limit=${queryLimit}&offset=${queryOffset}&like=${''}`;
-                const allPagesTableCsv = `/v1/events/academy/event?like=${''}`;
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              serverSide: true,
-              elevation: 0,
-              count: table.count,
-              page: table.page,
-              rowsPerPage: parseInt(query.get('limit'), 10) || 10,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              onTableChange: (action, tableState) => {
-                console.log(action, tableState);
-                switch (action) {
-                  case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  case 'changeRowsPerPage':
-                    handlePageChange(tableState.page, tableState.rowsPerPage);
-                    break;
-                  default:
-                    console.log(tableState.page, tableState.rowsPerPage);
-                }
-              },
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options,
-              ) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={items}
+            view="event?"
+            historyReplace="/events/list"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.events().getAcademyEvents(querys);
+              setItems(data.results);
+              return data;
             }}
           />
         </div>

@@ -71,7 +71,8 @@ const MediaReducer = function (state = initialState, action) {
     case CLEAN_MEDIA_SELECTED: {
       return {
         ...state,
-        selected:[]
+        selected:[],
+        refresh: true
       }
     }
     default: {
