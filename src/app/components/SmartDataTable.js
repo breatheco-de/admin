@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
 import { MatxLoading } from 'matx';
 import {
-  Grow, Icon, IconButton, TextField, Button
+  Grow, Icon, IconButton, TextField, Button,
 } from '@material-ui/core';
 import { useQuery } from '../hooks/useQuery';
 
@@ -58,8 +58,7 @@ export const SmartMUIDataTable = (props) => {
           setTable({ count: data.count });
         }
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -73,28 +72,26 @@ export const SmartMUIDataTable = (props) => {
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
-    const query = {
+    const q = {
       limit: rowsPerPage,
       offset: rowsPerPage * page,
-      ..._like && {_like},
-      ..._sort && {_sort}
-    }
-    console.log(query)
-    setQuerys(query)
+      ..._like && { _like },
+      ..._sort && { _sort },
+    };
+    setQuerys(query);
 
     props
-      .search(query)
+      .search(q)
       .then((data) => {
         setIsLoading(false);
         setTable({ count: data.count, page });
         history.replace(
-          `${history.location.pathname}?${Object.keys(query)
-            .map((key) => `${key}=${query[key]}`)
+          `${history.location.pathname}?${Object.keys(q)
+            .map((key) => `${key}=${q[key]}`)
             .join('&')}`,
         );
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -102,12 +99,11 @@ export const SmartMUIDataTable = (props) => {
   const handleFilterSubmit = () => {
     setIsLoading(true);
     props.search(querys)
-    .then(data => setIsLoading(false))
-    .catch((error) => {
-      console.log(error)
-      setIsLoading(false);
-    });
-  }
+      .then(() => setIsLoading(false))
+      .catch(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (<>
     {isLoading && <MatxLoading />}
@@ -285,5 +281,6 @@ SmartMUIDataTable.propTypes = {
   search: PropTypes.any,
   options: PropTypes.object,
   view: PropTypes.string,
-  historyReplace: PropTypes.string
+  historyReplace: PropTypes.string,
+  children: PropTypes.element,
 };

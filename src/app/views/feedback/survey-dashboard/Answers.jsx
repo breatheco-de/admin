@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState} from 'react';
+import PropTypes from 'prop-types';
 import {
   Card,
   Icon,
@@ -30,18 +31,22 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       paddingLeft: '16px !important',
     },
   },
+  score:{
+    color:'green',
+    padding:'2px'
+  }
 }));
 
-const Answers = () => {
+const Answers = ({answers = [], answered = []}) => {
   const classes = useStyles();
-
+  const [filter, setFilter] = useState('answered');
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
-        <span className="card-title">12 Answers have been collected:</span>
-        <Select size="small" defaultValue="this_month" disableUnderline>
-          <MenuItem value="this_month">Responses only</MenuItem>
-          <MenuItem value="last_month">Include unanswered</MenuItem>
+        <span className="card-title">{answered.length} Answers have been collected:</span>
+        <Select size="small" defaultValue="answered" disableUnderline onChange={ e => setFilter(e.target.value)}>
+          <MenuItem value="answered">Responses only</MenuItem>
+          <MenuItem value="all">Include unanswered</MenuItem>
         </Select>
       </div>
       <div className="overflow-auto">
@@ -59,18 +64,17 @@ const Answers = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {productList.map((product, index) => (
+          {filter == 'answered' ? <TableBody>
+            {answered.map((a, index) => (
               <TableRow key={index} hover>
                 <TableCell className="px-0 capitalize" colSpan={4} align="left">
                   <div className="flex items-center">
-                    <Avatar src={product.imgUrl} />
-                    <p className="m-0 ml-8">{product.name}</p>
+                    <Avatar src={a.imgUrl} />
+                    <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
                   </div>
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  $
-                  {product.price > 999 ? `${(product.price / 1000).toFixed(1)}k` : product.price}
+                  <small className={classes.score}>{a.score}</small>
                 </TableCell>
                 <TableCell className="px-0" colSpan={1}>
                   <IconButton>
@@ -79,44 +83,36 @@ const Answers = () => {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
+          </TableBody> : <TableBody>
+            {answers.map((a, index) => (
+              <TableRow key={index} hover>
+                <TableCell className="px-0 capitalize" colSpan={4} align="left">
+                  <div className="flex items-center">
+                    <Avatar src={a.imgUrl} />
+                    <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
+                  </div>
+                </TableCell>
+                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
+                  {a.score !== null ? <small className={classes.score}>{a.score}</small> : a.score}
+                </TableCell>
+                <TableCell className="px-0" colSpan={1}>
+                  <IconButton>
+                    <Icon color="primary">arrow_right_alt</Icon>
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>}
         </Table>
       </div>
     </Card>
   );
 };
 
-const productList = [
-  {
-    imgUrl: '/assets/images/products/headphone-2.jpg',
-    name: 'earphone',
-    price: 100,
-    available: 15,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'earphone',
-    price: 1500,
-    available: 30,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-2.jpg',
-    name: 'iPhone x',
-    price: 1900,
-    available: 35,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-1.jpg',
-    name: 'iPhone x',
-    price: 100,
-    available: 0,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'Head phone',
-    price: 1190,
-    available: 5,
-  },
-];
+
+Answers.propTypes = {
+  answered: PropTypes.array,
+  answers: PropTypes.array,
+};
 
 export default Answers;

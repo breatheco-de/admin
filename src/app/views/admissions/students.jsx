@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Breadcrumb } from 'matx';
-
+import dayjs from 'dayjs';
 import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import bc from 'app/services/breathecode';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
-import InviteDetails from 'app/components/InviteDetails';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import InviteDetails from '../../components/InviteDetails';
+import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 
-import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
+
 dayjs.extend(relativeTime);
 
 const statusColors = {

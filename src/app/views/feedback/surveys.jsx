@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import MUIDataTable from 'mui-datatables';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  // Avatar,
-  Grow,
   Icon,
   IconButton,
-  TextField,
   Button,
   LinearProgress,
   Tooltip,
@@ -14,9 +10,9 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { Breadcrumb, MatxLoading } from '../../../matx';
-import axios from '../../../axios';
-import { DownloadCsv } from '../../components/DownloadCsv';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import bc from '../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -32,19 +28,8 @@ const stageColors = {
 };
 
 const EventList = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const { settings } = useSelector(({ layout }) => layout);
-  const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -142,7 +127,9 @@ const EventList = () => {
       label: ' ',
       options: {
         filter: false,
-        customBodyRenderLite: (dataIndex) => (
+        customBodyRenderLite: (i) => {
+          const item = items[i];
+          return (
           <div className="flex items-center">
             <div className="flex-grow" />
             <Tooltip title="Copy survey link">
@@ -150,13 +137,13 @@ const EventList = () => {
                 <Icon>assignment</Icon>
               </IconButton>
             </Tooltip>
-            <Link to="/feedback/surveys/1">
+            <Link to={`/feedback/surveys/${item?.cohort?.slug}/${item?.id}`}>
               <IconButton>
                 <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Link>
           </div>
-        ),
+        )},
       },
     },
   ];
@@ -187,59 +174,17 @@ const EventList = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <MUIDataTable
-            title="All Events"
-            data={items}
+          <SmartMUIDataTable
+            title="All Surveys"
             columns={columns}
-            options={{
-              customToolbar: () => {
-                const singlePageTableCsv = '/v1/feedback/academy/answer';
-                const allPagesTableCsv = '/v1/feedback/academy/answer';
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
-              elevation: 0,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (searchText, handleSearch, hideSearch, options) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={items}
+            view="survey?"
+            historyReplace="/feedback/surveys"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.feedback().getSurveys(querys);
+              setItems(data.results);
+              return data;
             }}
           />
         </div>
