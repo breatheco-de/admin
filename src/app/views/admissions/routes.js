@@ -22,7 +22,7 @@ const routes = [
     component: React.lazy(() => import('./student-form/NewStudent')),
   },
   {
-    path: '/admissions/students/:std_id',
+    path: '/admissions/students/:stdId',
     exact: true,
     component: React.lazy(() => import('./student-form')),
   },
