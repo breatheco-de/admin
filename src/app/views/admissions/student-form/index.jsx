@@ -10,13 +10,12 @@ import {
   DialogContentText,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
-import axios from '../../../../axios';
 
 toast.configure();
 const toastOption = {
@@ -35,14 +34,14 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
-  const { std_id } = useParams();
+  const { stdId } = useParams();
   const [member, setMember] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
   const getMemberById = () => {
     bc.auth()
-      .getAcademyMember(std_id)
+      .getAcademyMember(stdId)
       .then(({ data }) => setMember(data))
       .catch((error) => error);
   };
@@ -94,7 +93,6 @@ const Student = () => {
           </h3>
           <div className="flex">
             Member since:
-            {' '}
             {dayjs(member?.created_at).format('LL')}
           </div>
         </div>
@@ -116,14 +114,14 @@ const Student = () => {
       <Grid container spacing={3}>
         <Grid item md={4} xs={12}>
           <StudentDetails
-            std_id={std_id}
+            stdId={stdId}
             user={member}
             openRoleDialog={openRoleDialog}
             setOpenRoleDialog={setOpenRoleDialog}
           />
         </Grid>
         <Grid item md={8} xs={12}>
-          <StudentCohorts std_id={std_id} />
+          <StudentCohorts stdId={stdId} />
         </Grid>
       </Grid>
     </div>

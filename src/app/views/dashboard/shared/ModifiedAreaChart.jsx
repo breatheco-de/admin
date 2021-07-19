@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react';
+import PropTypes from 'prop-types';
 import { merge } from 'lodash';
 
 const defaultOption = {
@@ -101,3 +102,13 @@ const ModifiedAreaChart = ({ height, option }) => (
 );
 
 export default ModifiedAreaChart;
+
+ModifiedAreaChart.defaultProps = {
+  height: '',
+  option: {},
+};
+
+ModifiedAreaChart.propTypes = {
+  height: PropTypes.string,
+  option: PropTypes.objectOf(PropTypes.object),
+};

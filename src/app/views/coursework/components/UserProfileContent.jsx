@@ -2,12 +2,61 @@ import {
   Badge, Card, Divider, Fab, Grid, Icon, IconButton,
 } from '@material-ui/core';
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import DummyChart from './DummyChart';
 import ProfileBarChart from './ProfileBarChart';
 
-const usestyles = makeStyles(({ palette, ...theme }) => ({
+const projectSummarys = [
+  {
+    title: 'Project Created',
+    amount: 11,
+  },
+  {
+    title: 'Project Completed',
+    amount: 15,
+  },
+  {
+    title: 'Project Published',
+    amount: 25,
+  },
+];
+
+const paymentOption = [
+  {
+    img: '/assets/images/payment-methods/master-card.png',
+    type: 'Master Card',
+    product: 'Bundled product',
+    amount: 909,
+  },
+  {
+    img: '/assets/images/payment-methods/paypal.png',
+    type: 'Master Card',
+    product: 'Bundled product',
+    amount: 303,
+  },
+  {
+    img: '/assets/images/payment-methods/visa.png',
+    type: 'Paypal',
+    product: 'Bundled product',
+    amount: 330,
+  },
+  {
+    img: '/assets/images/payment-methods/maestro.png',
+    type: 'Paypal',
+    product: 'Bundled product',
+    amount: 909,
+  },
+  {
+    img: '/assets/images/payment-methods/maestro.png',
+    type: 'Master Card',
+    product: 'Bundled product',
+    amount: 909,
+  },
+];
+
+const usestyles = makeStyles(({ palette }) => ({
   profileContent: {
     marginTop: -345,
     paddingTop: 74,
@@ -68,7 +117,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
         </div>
         <div className={classes.headerCardHolder}>
           <Grid container spacing={3}>
-            {projectSummery.map((project) => (
+            {projectSummarys.map((project) => (
               <Grid item lg={4} md={4} sm={12} xs={12} key={project.title}>
                 <Card className="h-96 bg-gray bg-default flex items-center justify-between p-4">
                   <div>
@@ -202,7 +251,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
                 <Divider />
                 <p className="m-0 pt-3">
                   Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                  Ipsum has been the industry's standard dummy text ever since the 1500s
+                  Ipsum has been the industry&#39;s standard dummy text ever since the 1500s
                 </p>
               </div>
             </Card>
@@ -225,7 +274,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
                 <Divider />
                 <p className="m-0 pt-3">
                   Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                  Ipsum has been the industry's standard dummy text ever since the 1500s
+                  Ipsum has been the industry&#39;s standard dummy text ever since the 1500s
                 </p>
               </div>
             </Card>
@@ -233,8 +282,8 @@ const UserProfileContent = ({ toggleSidenav }) => {
 
           <Grid item lg={4} md={4} sm={12} xs={12}>
             <Card>
-              {paymentList.map((method, index) => (
-                <Fragment key={index}>
+              {paymentOption.map((method, index) => (
+                <Fragment key={method}>
                   <div className="py-4 px-6 flex flex-wrap items-center justify-between">
                     <div className="flex flex-wrap items-center">
                       <div className="flex justify-center items-center bg-gray w-64 h-52 border-radius-4">
@@ -246,7 +295,7 @@ const UserProfileContent = ({ toggleSidenav }) => {
                       </div>
                     </div>
                   </div>
-                  {index !== paymentList.length - 1 && <Divider />}
+                  {index !== paymentOption.length - 1 && <Divider />}
                 </Fragment>
               ))}
             </Card>
@@ -258,52 +307,12 @@ const UserProfileContent = ({ toggleSidenav }) => {
   );
 };
 
-const projectSummery = [
-  {
-    title: 'Project Created',
-    amount: 11,
-  },
-  {
-    title: 'Project Completed',
-    amount: 15,
-  },
-  {
-    title: 'Project Published',
-    amount: 25,
-  },
-];
-
-const paymentList = [
-  {
-    img: '/assets/images/payment-methods/master-card.png',
-    type: 'Master Card',
-    product: 'Bundled product',
-    amount: 909,
-  },
-  {
-    img: '/assets/images/payment-methods/paypal.png',
-    type: 'Master Card',
-    product: 'Bundled product',
-    amount: 303,
-  },
-  {
-    img: '/assets/images/payment-methods/visa.png',
-    type: 'Paypal',
-    product: 'Bundled product',
-    amount: 330,
-  },
-  {
-    img: '/assets/images/payment-methods/maestro.png',
-    type: 'Paypal',
-    product: 'Bundled product',
-    amount: 909,
-  },
-  {
-    img: '/assets/images/payment-methods/maestro.png',
-    type: 'Master Card',
-    product: 'Bundled product',
-    amount: 909,
-  },
-];
-
 export default UserProfileContent;
+
+UserProfileContent.defaultProps = {
+  toggleSidenav: true,
+};
+
+UserProfileContent.propTypes = {
+  toggleSidenav: PropTypes.bool,
+};

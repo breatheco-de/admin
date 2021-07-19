@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import dayjs from 'dayjs';
+import { Breadcrumb } from 'matx';
 import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';

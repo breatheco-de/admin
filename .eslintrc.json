@@ -12,10 +12,7 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "ignorePatterns": [
-    "**/config/*.js",
-    "**/scripts/*.js"
-  ],
+  "ignorePatterns": ["**/config/*.js", "**/scripts/*.js"],
   "rules": {
     "import/prefer-default-export": "off",
     "import/no-named-as-default": "off",

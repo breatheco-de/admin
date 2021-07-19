@@ -7,12 +7,25 @@ import {
   LinearProgress,
   Tooltip,
   Chip,
+  Grid,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { addHours } from 'date-fns'
 import { Breadcrumb } from '../../../matx';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
-import bc from '../../services/breathecode';
+import axios from '../../../axios';
+import bc from 'app/services/breathecode';
+import { toast } from 'react-toastify';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -30,6 +43,25 @@ const stageColors = {
 const EventList = () => {
   const { settings } = useSelector(({ layout }) => layout);
   const [items, setItems] = useState([]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [url, setUrl] = useState('');
+
+  const resendSurvey = (user) => {
+    bc.auth()
+      .resendSurvey(user)
+      .then(({ data }) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
+      setIsLoading(false);
+      if (isAlive) setItems(data);
+    });
+    return () => setIsAlive(false);
+  }, [isAlive]);
 
   const columns = [
     {
@@ -69,14 +101,89 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
+          // console.log(dayjs(item.datetime))
+          
+          if(parseInt(item.duration) === 3600){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1)
 
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-              </div>
-            </div>
-          );
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 10800){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 86400){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }else if(parseInt(item.duration) === 172800){
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48)
+
+            if(Finalizacion >= dayjs(item.datetime)){
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }else {
+              return(
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  </div>
+                </div>
+              )
+            }
+          }
         },
       },
     },
@@ -127,49 +234,71 @@ const EventList = () => {
       label: ' ',
       options: {
         filter: false,
-        customBodyRenderLite: (i) => {
-          const item = items[i];
-          return (
-          <div className="flex items-center">
-            <div className="flex-grow" />
-            <Tooltip title="Copy survey link">
-              <IconButton>
-                <Icon>assignment</Icon>
-              </IconButton>
-            </Tooltip>
-            <Link to={`/feedback/surveys/${item?.cohort?.slug}/${item?.id}`}>
-              <IconButton>
-                <Icon>arrow_right_alt</Icon>
-              </IconButton>
-            </Link>
-          </div>
-        )},
+        customBodyRenderLite: (dataIndex) => {
+          // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
+          const survey = items[dataIndex]
+          return survey.status === 'PENDING' ? (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Tooltip title="Copy survey link">
+                <IconButton onClick={() => {
+                  console.log(survey.public_url);
+                  setOpenDialog(true)
+                  setUrl(survey.public_url);
+                }}>
+                  <Icon>assignment</Icon>
+                </IconButton>
+              </Tooltip>
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
+                <IconButton>
+                  <Icon>arrow_right_alt</Icon>
+                </IconButton>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Tooltip title="Resend Survey">
+                <IconButton onClick={() => resendSurvey(survey.id)}>
+                  <Icon>refresh</Icon>
+                </IconButton>
+              </Tooltip>
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
+                <IconButton>
+                  <Icon>arrow_right_alt</Icon>
+                </IconButton>
+              </Link>
+            </div>
+          );
+        },
       },
     },
   ];
 
   return (
-    <div className="m-sm-30">
-      <div className="mb-sm-30">
-        <div className="flex flex-wrap justify-between mb-6">
-          <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Feedback', path: '/feedback/surveys' },
-                { name: 'Survey List' },
-              ]}
-            />
-          </div>
-
-          {settings.beta && (
-            <div className="">
-              <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
-                <Button variant="contained" color="primary">
-                  Add new survey
-                </Button>
-              </Link>
+    <>
+      <div className="m-sm-30">
+        <div className="mb-sm-30">
+          <div className="flex flex-wrap justify-between mb-6">
+            <div>
+              <Breadcrumb
+                routeSegments={[
+                  { name: 'Feedback', path: '/feedback/surveys' },
+                  { name: 'Survey List' },
+                ]}
+              />
             </div>
-          )}
+
+            {settings.beta && (
+              <div className="">
+                <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
+                  <Button variant="contained" color="primary">
+                    Add new survey
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="overflow-auto">
@@ -189,7 +318,56 @@ const EventList = () => {
           />
         </div>
       </div>
-    </div>
+      <Tooltip title="Copy Survey link">
+        <IconButton
+          onClick={() => {
+            setOpenDialog(true);
+          }}
+        >
+          <Icon>assignment</Icon>
+        </IconButton>
+      </Tooltip>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        aria-labelledby="form-dialog-title"
+        fullWidth
+      >
+        <form className="p-4">
+          <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item md={12} sm={12} xs={10}>
+                <TextField
+                  label="URL"
+                  name="url"
+                  size="medium"
+                  disabled
+                  fullWidth
+                  variant="outlined"
+                  value={url}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <Grid className="p-2">
+            <DialogActions>
+              <Button
+                className="bg-primary text-white"
+                onClick={() => {
+                  navigator.clipboard.writeText(url);
+                  toast.success('Invite url copied successfuly', toastOption);
+                }}
+                autoFocus
+              >
+                Copy
+              </Button>
+              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>Close</Button>
+            </DialogActions>
+          </Grid>
+        </form>
+      </Dialog>
+    </>
   );
 };
 

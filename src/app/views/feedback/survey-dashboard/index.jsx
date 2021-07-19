@@ -50,7 +50,7 @@ const Survey = ({match}) => {
         <h3 className="mt-0 mb-4 font-medium text-28">Survey #{survey?.id}</h3>
         <div className="flex">
           <div
-            className="px-3 text-11 py-3px border-radius-4 text-white bg-green "
+            className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
             style={{ cursor: 'pointer' }}
           >
             PENDING
