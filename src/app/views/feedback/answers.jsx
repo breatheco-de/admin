@@ -23,7 +23,6 @@ import { Breadcrumb, MatxLoading } from '../../../matx';
 
 import bc from '../../services/breathecode';
 
-// import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
 
@@ -41,21 +40,18 @@ dayjs.extend(relativeTime);
 // };
 
 const Answers = () => {
+  const query = useQuery();
+  const history = useHistory();
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState({
     page: 0,
   });
-  const [querys, setQuerys] = useState({});
-  const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [
-    queryLike,
-    // setQueryLike
-  ] = useState(query.get('like') || '');
-
+  const [querys, setQuerys] = useState({
+    limit: useState(query.get('limit') || 10),
+    offset: useState(query.get('offset') || 0),
+    like: '',
+  });
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,8 +81,8 @@ const Answers = () => {
   useEffect(() => {
     setIsLoading(true);
     const q = {
-      limit: query.get('limit') !== null ? query.get('limit') : 10,
-      offset: query.get('offset') !== null ? query.get('offset') : 0,
+      limit: query.get('limit') || 10,
+      offset: query.get('offset') || 0,
     };
     setQuerys(q);
     bc.feedback()
@@ -97,7 +93,8 @@ const Answers = () => {
           setItems({ ...data });
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     return () => setIsAlive(false);
@@ -105,8 +102,7 @@ const Answers = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
+    setQuerys({ limit: rowsPerPage, offset: rowsPerPage * page });
     bc.feedback()
       .getAnswers({
         limit: rowsPerPage,
@@ -116,7 +112,8 @@ const Answers = () => {
         setIsLoading(false);
         setItems({ ...data, page });
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -164,9 +161,7 @@ const Answers = () => {
                 <h5 className="my-0 text-15">
                   {dayjs(items.results[i].created_at).format('MM-DD-YYYY')}
                 </h5>
-                <small className="text-muted">
-                  {dayjs(items.results[i].created_at).fromNow()}
-                </small>
+                <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
               </div>
             ) : (
               <div className="ml-3">No information</div>
@@ -210,9 +205,7 @@ const Answers = () => {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
-            {items.results[i].comment
-              ? items.results[i].comment.substring(0, 100)
-              : 'No comments'}
+            {items.results[i].comment ? items.results[i].comment.substring(0, 100) : 'No comments'}
           </div>
         ),
       },
@@ -257,11 +250,7 @@ const Answers = () => {
           </div>
 
           <div className="">
-            <Link
-              to="/feedback/survey/new"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
@@ -278,8 +267,8 @@ const Answers = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/feedback/academy/answer?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                const allPagesTableCsv = `/v1/feedback/academy/answer?like=${queryLike}`;
+                const singlePageTableCsv = `/v1/feedback/academy/answer?limit=${querys.limit}&offset=${querys.offset}&like=${querys.like}`;
+                const allPagesTableCsv = `/v1/feedback/academy/answer?like=${querys.like}`;
                 return (
                   <DownloadCsv
                     singlePageTableCsv={singlePageTableCsv}
@@ -294,12 +283,7 @@ const Answers = () => {
               elevation: 0,
               page: items.page,
               count: items.count,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex,
-              ) => {
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 const q = {
                   [changedColumn]: filterList[changedColumnIndex][0],
                 };
@@ -315,17 +299,14 @@ const Answers = () => {
               onTableChange: (action, tableState) => {
                 switch (action) {
                   case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'filterChange':
-                    // console.log(action, tableState)
-                    break;
                   default:
-                  // console.log(tableState.page, tableState.rowsPerPage);
+                    console.log('Sorry this actions is not valid');
                 }
               },
               customSearchRender: (searchText, handleSearch, hideSearch) => (
@@ -358,17 +339,11 @@ const Answers = () => {
         </div>
       </div>
 
-      <Dialog
-        onClose={handleClose}
-        open={open}
-        aria-labelledby="simple-dialog-title"
-      >
+      <Dialog onClose={handleClose} open={open} aria-labelledby="simple-dialog-title">
         <div className="px-sm-24 pt-sm-24">
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
-              <p className="m-0 mb-4 text-small text-muted">
-                Answer with details
-              </p>
+              <p className="m-0 mb-4 text-small text-muted">Answer with details</p>
             </div>
             <IconButton size="small" onClick={handleClose}>
               <Icon>clear</Icon>
@@ -403,9 +378,7 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                        {answer.score}
-                      </h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
                     </div>
                   </Card>
                 ) : answer.score < 7 ? (
@@ -414,9 +387,7 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                        {answer.score}
-                      </h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
                     </div>
                   </Card>
                 ) : (
@@ -425,9 +396,7 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
-                        {answer.score}
-                      </h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
                     </div>
                   </Card>
                 )}
@@ -451,9 +420,7 @@ const Answers = () => {
               <div className="comments">
                 <div className="mb-4">
                   {answer.comment ? (
-                    <p className="m-0 text-muted">
-                      {answer.comment.substring(0, 10000)}
-                    </p>
+                    <p className="m-0 text-muted">{answer.comment.substring(0, 10000)}</p>
                   ) : (
                     <p className="m-0 text-muted">Waiting for comments</p>
                   )}
@@ -462,10 +429,7 @@ const Answers = () => {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button
-              className="mb-3 bg-primary text-white"
-              onClick={handleClose}
-            >
+            <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
               Close
             </Button>
           </DialogActions>

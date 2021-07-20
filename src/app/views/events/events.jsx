@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
 import {
   Grow, Icon, IconButton, TextField, Button,
@@ -7,8 +6,9 @@ import {
 import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
@@ -34,18 +34,19 @@ const EventList = () => {
   });
   const query = useQuery();
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
+  const [querys, setQuerys] = useState({
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+  });
 
   useEffect(() => {
     setIsLoading(true);
     bc.events()
       .getAcademyEvents({
-        limit: query.get('limit') !== null ? query.get('limit') : 10,
-        offset: query.get('offset') !== null ? query.get('offset') : 0,
+        limit: query.get('limit') || 10,
+        offset: query.get('offset') || 0,
       })
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (isAlive) {
           setItems(data.results);
@@ -57,9 +58,7 @@ const EventList = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
+    setQuerys({ limit: rowsPerPage, offset: page * rowsPerPage });
     bc.events()
       .getAcademyEvents({
         limit: rowsPerPage,
@@ -69,11 +68,10 @@ const EventList = () => {
         setIsLoading(false);
         setItems(data.results);
         setTable({ count: data.count, page });
-        history.replace(
-          `/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`,
-        );
+        history.replace(`/events/list?limit=${rowsPerPage}&offset=${page * rowsPerPage}`);
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
   };
@@ -96,11 +94,7 @@ const EventList = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`}>
                   {item?.status}
                 </small>
                 <br />
@@ -142,12 +136,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].starting_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].starting_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].starting_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].starting_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -161,12 +151,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].ending_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].ending_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].ending_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].ending_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -196,20 +182,11 @@ const EventList = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Event', path: '/' },
-                { name: 'Event List' },
-              ]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Event List' }]} />
           </div>
 
           <div className="">
-            <Link
-              to="/events/NewEvent"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new event
               </Button>
@@ -226,7 +203,9 @@ const EventList = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/events/academy/event?limit=${queryLimit}&offset=${queryOffset}&like=${''}`;
+                const singlePageTableCsv = `/v1/events/academy/event?limit=${querys.limit}&offset=${
+                  querys.offset
+                }&like=${''}`;
                 const allPagesTableCsv = `/v1/events/academy/event?like=${''}`;
                 return (
                   <DownloadCsv
@@ -245,25 +224,17 @@ const EventList = () => {
               rowsPerPage: parseInt(query.get('limit'), 10) || 10,
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
-                console.log(action, tableState);
                 switch (action) {
                   case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'changeRowsPerPage':
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   default:
-                    console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options,
-              ) => (
+              customSearchRender: (handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"

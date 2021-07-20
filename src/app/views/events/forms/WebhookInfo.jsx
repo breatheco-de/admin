@@ -11,7 +11,7 @@ import {
   TableBody,
 } from '@material-ui/core';
 
-export const WebhookInfo = ({ initialValues }) => (
+export const WebhookInfo = () => (
   <Card container className="p-4">
     <div className="flex p-4">
       <h4 className="m-0">Webhook Log</h4>

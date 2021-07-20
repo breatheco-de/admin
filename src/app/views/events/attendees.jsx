@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, MatxLoading } from 'matx';
 import MUIDataTable from 'mui-datatables';
 import {
   Grow, Icon, IconButton, TextField, Button,
@@ -7,8 +6,9 @@ import {
 import A from '@material-ui/core/Link';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
 import { useQuery } from '../../hooks/useQuery';
 import { DownloadCsv } from '../../components/DownloadCsv';
@@ -25,7 +25,7 @@ const stageColors = {
 };
 
 const name = (user) => {
-  if (user && user.first_name && user.first_name != '') return `${user.first_name} ${user.last_name}`;
+  if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
 
@@ -35,23 +35,23 @@ const AttendeeList = () => {
   const [items, setItems] = useState({
     page: 0,
   });
-  const [querys, setQuerys] = useState({});
   const query = useQuery();
+  const [querys, setQuerys] = useState({
+    limit: query.get('limit') || 10,
+    offset: query.get('offset') || 0,
+  });
   const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
 
   useEffect(() => {
     setIsLoading(true);
     const q = {
-      limit: query.get('limit') !== null ? query.get('limit') : 10,
-      offset: query.get('offset') !== null ? query.get('offset') : 0,
+      limit: query.get('limit') || 10,
+      offset: query.get('offset') || 0,
     };
     setQuerys(q);
     bc.events()
       .getCheckins(q)
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (isAlive) {
           setItems(data);
@@ -62,9 +62,7 @@ const AttendeeList = () => {
 
   const handlePageChange = (page, rowsPerPage) => {
     setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    console.log('page: ', rowsPerPage);
+    setQuerys({ limit: rowsPerPage, offset: page * rowsPerPage });
     bc.events()
       .getCheckins({
         limit: rowsPerPage,
@@ -75,6 +73,7 @@ const AttendeeList = () => {
         setItems({ ...data, page });
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -94,6 +93,7 @@ const AttendeeList = () => {
         setItems({ ...data });
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
   };
@@ -117,9 +117,7 @@ const AttendeeList = () => {
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {attendee !== null
-                  ? name(attendee)
-                  : `${rest.first_name} ${rest.last_name}`}
+                {attendee !== null ? name(attendee) : `${rest.first_name} ${rest.last_name}`}
               </h5>
               <small className="text-muted">{rest?.email || rest.email}</small>
             </div>
@@ -138,11 +136,7 @@ const AttendeeList = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`}>
                   {item?.status}
                 </small>
               </div>
@@ -193,8 +187,7 @@ const AttendeeList = () => {
       label: 'Starting Date',
       options: {
         filter: true,
-        filterList:
-          query.get('starting_at') !== null ? [query.get('starting_at')] : [],
+        filterList: query.get('starting_at') !== null ? [query.get('starting_at')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -214,8 +207,7 @@ const AttendeeList = () => {
       label: 'Ending Date',
       options: {
         filter: true,
-        filterList:
-          query.get('ending_at') !== null ? [query.get('ending_at')] : [],
+        filterList: query.get('ending_at') !== null ? [query.get('ending_at')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -254,12 +246,7 @@ const AttendeeList = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Event', path: '/' },
-                { name: 'Event List' },
-              ]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Event List' }]} />
           </div>
         </div>
       </div>
@@ -272,12 +259,14 @@ const AttendeeList = () => {
             columns={columns}
             options={{
               customToolbar: () => {
-                const singlePageTableCsv = `/v1/events/academy/checkin?limit=${queryLimit}&offset=${queryOffset}`;
-                const allPagesTableCsv = '/v1/events/academy/checkin';
+                const downloadCSV = async (querys = {}) => {
+                  const { data } = await bc.events().downloadCSV(querys);
+                  return data;
+                };
                 return (
                   <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
+                    getAllPagesCSV={() => downloadCSV()}
+                    getSinglePageCSV={() => downloadCSV(querys)}
                   />
                 );
               },
@@ -288,22 +277,14 @@ const AttendeeList = () => {
               elevation: 0,
               count: items.count,
               page: items.page,
-              onFilterChange: (
-                changedColumn,
-                filterList,
-                type,
-                changedColumnIndex,
-              ) => {
+              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
                 let q;
                 if (type === 'reset') {
                   q = {
                     limit: querys.limit ? querys.limit : 10,
                     offset: querys.offset ? querys.offset : 0,
                   };
-                } else if (
-                  filterList[changedColumnIndex][0] === undefined
-                    || type === 'chip'
-                ) {
+                } else if (filterList[changedColumnIndex][0] === undefined || type === 'chip') {
                   q = { ...querys };
                   delete q[changedColumn];
                 } else {
@@ -319,21 +300,14 @@ const AttendeeList = () => {
                     .join('&')}`,
                 );
               },
-              customFilterDialogFooter: (
-                currentFilterList,
-                applyNewFilters,
-              ) => (
+              customFilterDialogFooter: () => (
                 <div style={{ marginTop: '40px' }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleFilterSubmit()}
-                  >
+                  <Button variant="contained" onClick={() => handleFilterSubmit()}>
                     Apply Filters
                   </Button>
                 </div>
               ),
-              rowsPerPage:
-                querys.limit === undefined ? 10 : parseInt(querys.limit, 10),
+              rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit, 10),
               rowsPerPageOptions: [10, 20, 40, 80, 100],
               onTableChange: (action, tableState) => {
                 switch (action) {
@@ -348,12 +322,7 @@ const AttendeeList = () => {
                     console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                options,
-              ) => (
+              customSearchRender: (handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"

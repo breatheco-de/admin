@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { useSelector } from 'react-redux';
 import {
-  // Avatar,
   Grow,
   Icon,
   IconButton,
@@ -19,12 +18,13 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { addHours } from 'date-fns'
+import { addHours } from 'date-fns';
+import InviteDetails from 'app/components/InviteDetails';
+import { toast } from 'react-toastify';
 import { Breadcrumb, MatxLoading } from '../../../matx';
 import axios from '../../../axios';
-import bc from 'app/services/breathecode';
 import { DownloadCsv } from '../../components/DownloadCsv';
-import { toast } from 'react-toastify';
+import bc from '../../services/breathecode';
 
 toast.configure();
 const toastOption = {
@@ -63,10 +63,12 @@ const EventList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
+    bc.feedback()
+      .getSurveys()
+      .then(({ data }) => {
+        setIsLoading(false);
+        if (isAlive) setItems(data);
+      });
     return () => setIsAlive(false);
   }, [isAlive]);
 
@@ -109,87 +111,86 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           // console.log(dayjs(item.datetime))
-          
-          if(parseInt(item.duration) === 3600){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1)
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+          if (parseInt(item.duration) === 3600) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1);
+
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 10800){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 10800) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 86400){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 86400) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 172800){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 172800) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
           }
         },
       },
@@ -243,16 +244,18 @@ const EventList = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
-          const survey = items[dataIndex]
+          const survey = items[dataIndex];
           return survey.status === 'PENDING' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="Copy survey link">
-                <IconButton onClick={() => {
-                  console.log(survey.public_url);
-                  setOpenDialog(true)
-                  setUrl(survey.public_url);
-                }}>
+                <IconButton
+                  onClick={() => {
+                    console.log(survey.public_url);
+                    setOpenDialog(true);
+                    setUrl(survey.public_url);
+                  }}
+                >
                   <Icon>assignment</Icon>
                 </IconButton>
               </Tooltip>
@@ -412,7 +415,9 @@ const EventList = () => {
               >
                 Copy
               </Button>
-              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>Close</Button>
+              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
+                Close
+              </Button>
             </DialogActions>
           </Grid>
         </form>

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import {
   Grid,
   IconButton,
@@ -12,7 +13,7 @@ import {
   TableBody,
 } from '@material-ui/core';
 
-export const Organizers = ({ initialValues, className }) => (
+export const Organizers = ({ className }) => (
   <Card container className={`p-4 ${className}`}>
     <div className="flex p-4">
       <h4 className="m-0">Your organizations</h4>
@@ -66,3 +67,11 @@ export const Organizers = ({ initialValues, className }) => (
     </Grid>
   </Card>
 );
+
+Organizers.propTypes = {
+  className: PropTypes.string
+};
+
+Organizers.defaultProps = {
+  className: ''
+};
