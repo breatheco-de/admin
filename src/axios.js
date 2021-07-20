@@ -55,4 +55,11 @@ axiosInstance.interceptors.request.use(response => {
     return Promise.reject(error)
 })
 
+// export default {
+//   get: axiosInstance._get,
+//   post: axiosInstance._post,
+//   put: axiosInstance._put,
+//   delete: axiosInstance._delete,
+//   instance: axiosInstance,
+// };
 export default axiosInstance;

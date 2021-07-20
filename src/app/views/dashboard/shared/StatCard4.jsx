@@ -27,6 +27,7 @@ const StatCard4 = ({ metrics }) => (
   //   },
   // ];
 
+<<<<<<< HEAD
   <div>
     <Grid container spacing={3}>
       {metrics.map((item, ind) => (
@@ -37,6 +38,29 @@ const StatCard4 = ({ metrics }) => (
                 <Icon className="text-muted">{item.icon}</Icon>
               </IconButton>
             </div>
+=======
+  return (
+    <div>
+      <Grid container spacing={3}>
+        {statList.map((item) => (
+          <Grid key={item.title} item md={6} xs={12}>
+            <Card elevation={3} className="p-5 flex-column justify-center items-center">
+              <div className="mb-6px">
+                <IconButton className="p-3 bg-light-gray">
+                  <Icon className="text-muted">{item.icon}</Icon>
+                </IconButton>
+              </div>
+
+              <h3 className="mt-1 text-32">{item.amount.toLocaleString()}</h3>
+              <p className="m-0 text-muted">{item.title}</p>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </div>
+  );
+};
+>>>>>>> a51e7589749ce2629c81b8b005d6be90362f6833
 
             <h3 className="mt-1 text-32">{item.value}</h3>
             <p className="m-0 text-muted">{item.title}</p>

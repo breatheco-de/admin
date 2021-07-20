@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect, Fragment } from 'react';
-import { Breadcrumb, MatxLoading, MatxMenu } from 'matx';
+import React, { useState, useEffect } from 'react';
 import MUIDataTable from 'mui-datatables';
 import {
   Avatar,
@@ -17,16 +16,12 @@ import {
   DialogActions,
   Divider,
   Card,
-  // MenuItem,
-  // Input,
-  // FormControlLabel,
-  // Checkbox,
-  // Tooltip,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Breadcrumb, MatxLoading } from '../../../matx';
 
-import bc from 'app/services/breathecode';
+import bc from '../../services/breathecode';
 
 // import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
@@ -36,14 +31,14 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const stageColors = {
-  INACTIVE: 'bg-gray',
-  PREWORK: 'bg-secondary',
-  STARTED: 'text-white bg-warning',
-  FINAL_PROJECT: 'text-white bg-error',
-  ENDED: 'text-white bg-green',
-  DELETED: 'light-gray',
-};
+// const stageColors = {
+//   INACTIVE: 'bg-gray',
+//   PREWORK: 'bg-secondary',
+//   STARTED: 'text-white bg-warning',
+//   FINAL_PROJECT: 'text-white bg-error',
+//   ENDED: 'text-white bg-green',
+//   DELETED: 'light-gray',
+// };
 
 const Answers = () => {
   const [isAlive, setIsAlive] = useState(true);
@@ -56,7 +51,11 @@ const Answers = () => {
   const history = useHistory();
   const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
   const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
+  const [
+    queryLike,
+    // setQueryLike
+  ] = useState(query.get('like') || '');
+
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -98,7 +97,7 @@ const Answers = () => {
           setItems({ ...data });
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
     return () => setIsAlive(false);
@@ -117,7 +116,7 @@ const Answers = () => {
         setIsLoading(false);
         setItems({ ...data, page });
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -165,7 +164,9 @@ const Answers = () => {
                 <h5 className="my-0 text-15">
                   {dayjs(items.results[i].created_at).format('MM-DD-YYYY')}
                 </h5>
-                <small className="text-muted">{dayjs(items.results[i].created_at).fromNow()}</small>
+                <small className="text-muted">
+                  {dayjs(items.results[i].created_at).fromNow()}
+                </small>
               </div>
             ) : (
               <div className="ml-3">No information</div>
@@ -209,7 +210,9 @@ const Answers = () => {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
-            {items.results[i].comment ? items.results[i].comment.substring(0, 100) : 'No comments'}
+            {items.results[i].comment
+              ? items.results[i].comment.substring(0, 100)
+              : 'No comments'}
           </div>
         ),
       },
@@ -254,7 +257,11 @@ const Answers = () => {
           </div>
 
           <div className="">
-            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
+            <Link
+              to="/feedback/survey/new"
+              color="primary"
+              className="btn btn-primary"
+            >
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
@@ -287,8 +294,15 @@ const Answers = () => {
               elevation: 0,
               page: items.page,
               count: items.count,
-              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                const q = { [changedColumn]: filterList[changedColumnIndex][0] };
+              onFilterChange: (
+                changedColumn,
+                filterList,
+                type,
+                changedColumnIndex,
+              ) => {
+                const q = {
+                  [changedColumn]: filterList[changedColumnIndex][0],
+                };
                 setQuerys(q);
                 history.replace(
                   `/feedback/answers?${Object.keys(q)
@@ -308,12 +322,13 @@ const Answers = () => {
                     handlePageChange(tableState.page, tableState.rowsPerPage);
                     break;
                   case 'filterChange':
-                  // console.log(action, tableState)
+                    // console.log(action, tableState)
+                    break;
+                  default:
+                  // console.log(tableState.page, tableState.rowsPerPage);
                 }
               },
-              elevation: 0,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+              customSearchRender: (searchText, handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"
@@ -343,11 +358,17 @@ const Answers = () => {
         </div>
       </div>
 
-      <Dialog onClose={handleClose} open={open} aria-labelledby="simple-dialog-title">
+      <Dialog
+        onClose={handleClose}
+        open={open}
+        aria-labelledby="simple-dialog-title"
+      >
         <div className="px-sm-24 pt-sm-24">
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
-              <p className="m-0 mb-4 text-small text-muted">Answer with details</p>
+              <p className="m-0 mb-4 text-small text-muted">
+                Answer with details
+              </p>
             </div>
             <IconButton size="small" onClick={handleClose}>
               <Icon>clear</Icon>
@@ -382,7 +403,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 ) : answer.score < 7 ? (
@@ -391,7 +414,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 ) : (
@@ -400,7 +425,9 @@ const Answers = () => {
                       <span className="text-white uppercase">TOTAL SCORE:</span>
                     </div>
                     <div>
-                      <h2 className="font-normal text-white uppercase pt-2 mr-3">{answer.score}</h2>
+                      <h2 className="font-normal text-white uppercase pt-2 mr-3">
+                        {answer.score}
+                      </h2>
                     </div>
                   </Card>
                 )}
@@ -424,7 +451,9 @@ const Answers = () => {
               <div className="comments">
                 <div className="mb-4">
                   {answer.comment ? (
-                    <p className="m-0 text-muted">{answer.comment.substring(0, 10000)}</p>
+                    <p className="m-0 text-muted">
+                      {answer.comment.substring(0, 10000)}
+                    </p>
                   ) : (
                     <p className="m-0 text-muted">Waiting for comments</p>
                   )}
@@ -433,7 +462,10 @@ const Answers = () => {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button className="mb-3 bg-primary text-white" onClick={handleClose}>
+            <Button
+              className="mb-3 bg-primary text-white"
+              onClick={handleClose}
+            >
               Close
             </Button>
           </DialogActions>
