@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import dashboardRoutes from './views/dashboard/dashboardRoutes';
+import dashboardRoutes from './views/dashboard/DashboardRoutes';
 
 import adminRoutes from './views/admin/routes';
 import admissionsRoutes from './views/admissions/routes';
