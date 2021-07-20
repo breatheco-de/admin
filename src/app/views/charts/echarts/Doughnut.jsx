@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactEcharts from 'echarts-for-react';
 import { useTheme } from '@material-ui/styles';
 
@@ -111,3 +112,15 @@ const DoughnutChart = ({ height, color = [], option }) => {
 };
 
 export default DoughnutChart;
+
+DoughnutChart.defaultProps = {
+  height: '',
+  color: [],
+  option: {},
+};
+
+DoughnutChart.propTypes = {
+  height: PropTypes.string,
+  color: PropTypes.arrayOf(PropTypes.array),
+  option: PropTypes.objectOf(PropTypes.object),
+};

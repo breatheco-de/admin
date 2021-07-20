@@ -68,7 +68,7 @@ const Analytics = () => {
         by: 'location,created_at__date,course',
       })
       .then(({ data }) => {
-        console.log('data', data);
+        // console.log('data', data);
         const series = [];
         const xAxis = [];
         let total = 0;
@@ -119,7 +119,7 @@ const Analytics = () => {
       .then(({ data }) => {
         setFeedback(data.filter((a) => a.score));
       }).catch((err) => {
-        console.log('DATA:::::::', err);
+        // console.log('DATA:::::::', err);
       });
   }, [renderNewDates]);
 

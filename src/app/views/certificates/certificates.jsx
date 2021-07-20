@@ -5,10 +5,10 @@ import {
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
-import bc from '../../services/breathecode';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import bc from '../../services/breathecode';
 import CustomToolbarSelectCertificates from './certificates-utils/CertificateCustomToolbar';
-
+// must use destructuring value assignment??
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -103,8 +103,9 @@ const Certificates = () => {
         filter: true,
         filterType: 'multiselect',
         customBodyRender: (value, tableMeta) => {
+          const { name } = value;
           const item = items[tableMeta.rowIndex];
-          return <Link to={`/admissions/cohorts/${item.cohort.slug}`}>{value.name}</Link>;
+          return <Link to={`/admissions/cohorts/${item.cohort.slug}`}>{name}</Link>;
         },
       },
     },

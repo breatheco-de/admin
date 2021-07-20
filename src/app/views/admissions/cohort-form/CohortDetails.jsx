@@ -14,10 +14,20 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import { Formik } from 'formik';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
-// import { formatISO } from 'date-fns';
+import PropTypes from 'prop-types';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 
+const propTypes = {
+  slug: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
+  startDate: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  syllabus: PropTypes.string.isRequired,
+  neverEnds: PropTypes.string.isRequired,
+  isPrivate: PropTypes.bool.isRequired,
+};
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
     border: '4px solid rgba(var(--body), 0.03)',
@@ -32,7 +42,7 @@ const CohortDetails = ({
   language,
   onSubmit,
   syllabus,
-  never_ends,
+  neverEnds,
   isPrivate,
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
@@ -48,32 +58,24 @@ const CohortDetails = ({
         initialValues={{
           slug,
           language,
-          ending_date: endDate,
+          endingDate: endDate,
           kickoff_date: startDate,
-          never_ends,
+          neverEnds,
         }}
         onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}` })}
         enableReinitialize
       >
         {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          setSubmitting,
-          setFieldValue,
+          values, handleChange, handleSubmit, setFieldValue,
         }) => (
           <form className="p-4" onSubmit={handleSubmit}>
             <Grid container spacing={3} alignItems="center">
               {isPrivate && (
-                <Grid item md={12} sm={12} xs={12}>
-                  <Alert severity="warning">
-                    <AlertTitle className="m-auto">This cohort is private</AlertTitle>
-                  </Alert>
-                </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <Alert severity="warning">
+                  <AlertTitle className="m-auto">This cohort is private</AlertTitle>
+                </Alert>
+              </Grid>
               )}
               <Grid item md={3} sm={4} xs={12}>
                 Cohort Slug
@@ -140,7 +142,7 @@ const CohortDetails = ({
                   onChange={handleChange}
                   select
                 >
-                  {['es', 'en'].map((item, ind) => (
+                  {['es', 'en'].map((item) => (
                     <MenuItem value={item} key={item}>
                       {item.toUpperCase()}
                     </MenuItem>
@@ -166,7 +168,7 @@ const CohortDetails = ({
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
-              {!values.never_ends ? (
+              {!values.neverEnds ? (
                 <>
                   <Grid item md={3} sm={4} xs={12}>
                     End date
@@ -181,11 +183,11 @@ const CohortDetails = ({
                         type="text"
                         size="small"
                         autoOk
-                        value={values.ending_date}
+                        value={values.endingDate}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
                           console.log(date);
-                          setFieldValue('ending_date', date.toISOString());
+                          setFieldValue('endingDate', date.toISOString());
                         }}
                       />
                     </MuiPickersUtilsProvider>
@@ -193,9 +195,9 @@ const CohortDetails = ({
                   <Grid item md={12} sm={12} xs={12}>
                     <FormControlLabel
                       className="flex-grow"
-                      name="never_ends"
+                      name="neverEnds"
                       onChange={handleChange}
-                      control={<Checkbox checked={values.never_ends} />}
+                      control={<Checkbox checked={values.neverEnds} />}
                       label="This cohort never ends"
                     />
                   </Grid>
@@ -204,9 +206,9 @@ const CohortDetails = ({
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel
                     className="flex-grow"
-                    name="never_ends"
+                    name="neverEnds"
                     onChange={handleChange}
-                    control={<Checkbox checked={values.never_ends} />}
+                    control={<Checkbox checked={values.neverEnds} />}
                     label="This cohort never ends"
                   />
                 </Grid>
@@ -221,5 +223,7 @@ const CohortDetails = ({
     </Card>
   );
 };
+
+CohortDetails.propTypes = propTypes;
 
 export default CohortDetails;

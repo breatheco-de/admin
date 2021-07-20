@@ -1,5 +1,6 @@
 import React from 'react';
-import { EchartCreator } from 'matx';
+import PropTypes from 'prop-types';
+import { EchartCreator } from '../../../../matx';
 
 const option = {
   backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -57,3 +58,10 @@ const option = {
 const DummyChart = ({ height }) => <EchartCreator height={height} option={option} />;
 
 export default DummyChart;
+
+DummyChart.defaultProps = {
+  height: '',
+};
+DummyChart.propTypes = {
+  height: PropTypes.string,
+};

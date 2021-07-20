@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import PropTypes from 'prop-types';
 
 const ProfileBarChart = ({ height, color }) => {
   const option = {
@@ -71,3 +72,12 @@ const ProfileBarChart = ({ height, color }) => {
 };
 
 export default ProfileBarChart;
+
+ProfileBarChart.defaultProps = {
+  height: '',
+  color: [],
+};
+ProfileBarChart.propTypes = {
+  height: PropTypes.string,
+  color: PropTypes.arrayOf(PropTypes.array),
+};

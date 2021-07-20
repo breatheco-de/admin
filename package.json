@@ -111,11 +111,13 @@
     "yup": "^0.29.3"
   },
   "lint-staged": {
-    "*.js": "eslint"
+    "src/**/*.{js,jsx}": [
+      "eslint --fix"
+    ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && pretty-quick --staged"
+      "pre-commit": "lint-staged"
     }
   },
   "scripts": {
@@ -124,9 +126,7 @@
     "test": "node scripts/test.js",
     "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "node scripts/build.js && gh-pages -d build",
-    "lint": "eslint ./src",
-    "lint-fix": "eslint ./src --fix",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
+    "lint": "eslint ./src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -150,10 +150,9 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "gh-pages": "^2.1.1",
-    "husky": "^6.0.0",
-    "lint-staged": "^11.0.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.0.1",
     "prettier": "^2.3.1",
-    "pretty-quick": "^3.1.1",
     "react-app-rewired": "^2.1.6"
   },
   "jest": {

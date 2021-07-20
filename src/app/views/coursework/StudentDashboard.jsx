@@ -4,16 +4,16 @@ import {
 } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router-dom';
-import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from 'matx';
 
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from '../../../matx';
 import axios from '../../../axios';
 import UserProfileContent from './components/UserProfileContent';
 import UserProfileSidenav from './components/UserProfileSidenav';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 
-const usestyles = makeStyles(({ palette, ...theme }) => ({
+const usestyles = makeStyles(() => ({
   headerBG: {
     height: 345,
     '@media only screen and (max-width: 959px)': {
@@ -24,9 +24,9 @@ const usestyles = makeStyles(({ palette, ...theme }) => ({
 
 const UserProfile = () => {
   const [open, setOpen] = useState(true);
-  const { std_id } = useParams();
+  const { stdId } = useParams();
   const history = useHistory();
-  const [profile, setProfile] = useState(std_id);
+  const [profile, setProfile] = useState(stdId);
   const theme = useTheme();
   const classes = usestyles();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -35,13 +35,13 @@ const UserProfile = () => {
     setOpen(!open);
   };
 
-  const getUser = (std_id) => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${std_id}`)
+  const getUser = (studentId) => {
+    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${studentId}`)
       .then((prof) => setProfile(prof));
   };
 
   useEffect(() => {
-    if (std_id) getUser(std_id);
+    if (stdId) getUser(stdId);
   }, []);
 
   useEffect(() => {
@@ -54,8 +54,8 @@ const UserProfile = () => {
       <div>
         <AsyncAutocomplete
           width="100%"
-          onChange={(profile) => {
-            setProfile(profile);
+          onChange={(newProfile) => {
+            setProfile(newProfile);
             history.push(`/coursework/student/${profile.user.id}`);
           }}
           asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student?like=${searchTerm}`)}

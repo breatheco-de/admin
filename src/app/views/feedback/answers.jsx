@@ -30,6 +30,15 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
+// const stageColors = {
+//   INACTIVE: 'bg-gray',
+//   PREWORK: 'bg-secondary',
+//   STARTED: 'text-white bg-warning',
+//   FINAL_PROJECT: 'text-white bg-error',
+//   ENDED: 'text-white bg-green',
+//   DELETED: 'light-gray',
+// };
+
 const Answers = () => {
   const query = useQuery();
   const history = useHistory();
@@ -300,9 +309,7 @@ const Answers = () => {
                     console.log('Sorry this actions is not valid');
                 }
               },
-              elevation: 0,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (searchText, handleSearch, hideSearch, options) => (
+              customSearchRender: (searchText, handleSearch, hideSearch) => (
                 <Grow appear in timeout={300}>
                   <TextField
                     variant="outlined"
