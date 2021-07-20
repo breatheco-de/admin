@@ -109,6 +109,12 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? "?" + qs : ""}`
         );
       },
+      getReport: (query) => {
+        return axios._get(
+          "Report",
+          `${this.host}/admissions/report`
+        );
+      },
       getAllCourseSyllabus: (query, academyID) => {
         return axios._get(
           "Syllabus",
