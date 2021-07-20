@@ -8,7 +8,6 @@ import bc from '../../../services/breathecode';
 import { useQuery } from '../../../hooks/useQuery';
 import { ProfileForm } from './student-utils/ProfileForm';
 
-//atob
 const filter = createFilterOptions();
 const NewStudent = () => {
   const query = useQuery();
