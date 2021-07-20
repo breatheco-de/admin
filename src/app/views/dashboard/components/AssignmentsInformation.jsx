@@ -1,23 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Grid } from '@material-ui/core';
+
 import AssignmentGrid from './AssignmentGrid';
+import StatCard4 from '../shared/StatCard4';
 
 const AssignmentsInformation = ({ data }) => {
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
 
+  const metrics = [
+    {
+      icon: 'colorize',
+      value: deliveredAssignments.length,
+      title: 'Projects Delivered',
+    },
+  ];
+
   return (
-    <div>
-      <h1>Assignments Information</h1>
-      <h5>
-        Projects Delivered:
-        {deliveredAssignments.length}
-      </h5>
-      <h5>Missing for delivery Assignments</h5>
-      {undeliveredAssignments.map((assignment) => (
-        <AssignmentGrid key={assignment.id} data={assignment} />
-      ))}
-    </div>
+    <>
+      <Grid item lg={4} md={4} sm={12} xs={12}>
+        <StatCard4 metrics={metrics} />
+      </Grid>
+      <Grid item lg={4} md={4} sm={12} xs={12}>
+        {undeliveredAssignments.map((assignment) => (
+          <AssignmentGrid key={assignment.id} data={assignment} />
+        ))}
+      </Grid>
+    </>
   );
 };
 

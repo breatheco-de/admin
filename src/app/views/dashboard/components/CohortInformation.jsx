@@ -26,13 +26,6 @@ const CohortInformation = ({ data }) => {
         { label: 'Stage', value: stage, icon: 'group' },
       ]}
     />
-    // <div>
-    //   <h1>Cohort Info</h1>
-    //   <p>{name}</p>
-    //   <p>{kickoff_date}</p>
-    //   <p>{ending_date}</p>
-    //   <p>{stage}</p>
-    // </div>
   );
 };
 

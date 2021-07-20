@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Grid, Card, TextField, Button,
-} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import bc from '../../services/breathecode';
 import CohortInformation from './components/CohortInformation';
@@ -45,11 +43,13 @@ const studentReport = () => {
         <Grid item lg={4} md={4} sm={12} xs={12}>
           <StudentInformation data={studentData} />
         </Grid>
-        <Grid item lg={8} md={4} sm={12} xs={12}>
+        <Grid item lg={8} md={8} sm={12} xs={12}>
           <CohortInformation data={cohortData} />
         </Grid>
       </div>
-      <AssignmentsInformation data={studentAssignments} />
+      <div className="pb-24 pt-7 px-8 bg-default text-grey flex">
+        <AssignmentsInformation data={studentAssignments} />
+      </div>
     </>
   );
 };
