@@ -209,10 +209,10 @@ const Analytics = () => {
                       ) / feedback.length,
                 },
                 { label: 'Event Tickets', value: 11, icon: 'group' },
-                { label: 'Active Students', value: `${admissionsReport?.students.active} from ${admissionsReport?.students.total} total`, icon: 'group' },
-                { label: 'Graduates', value: `${admissionsReport?.students.graduated} with ${admissionsReport?.students.dropped} drops`, icon: 'group' },
-                { label: 'Teachers', value: `${admissionsReport?.teachers.active.main}`, icon: 'group' },
-                { label: 'Assistants', value: `${admissionsReport?.teachers.active.assistant}`, icon: 'group' },
+                { label: 'Active Students', value: `${admissionsReport?.students?.active} from ${admissionsReport?.students?.total} total`, icon: 'group' },
+                { label: 'Graduates', value: `${admissionsReport?.students?.graduated} with ${admissionsReport?.students?.dropped} drops`, icon: 'group' },
+                { label: 'Teachers', value: `${admissionsReport?.teachers?.active.main}`, icon: 'group' },
+                { label: 'Assistants', value: `${admissionsReport?.teachers?.active.assistant}`, icon: 'group' },
               ]}
             />
 
