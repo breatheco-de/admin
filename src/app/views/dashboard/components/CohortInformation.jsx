@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import StatCards from '../shared/StatCards';
+import CohortDetailCards from '../shared/CohortDetailCards';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -14,7 +14,7 @@ const CohortInformation = ({ data }) => {
   const startDate = dayjs(kickoff_date).format('MM-DD-YYYY');
   const endingDate = dayjs(ending_date).format('MM-DD-YYYY');
   return (
-    <StatCards
+    <CohortDetailCards
       metrics={[
         { label: 'Name', value: name, icon: 'group' },
         { label: 'Start Date', value: startDate, icon: 'star' },

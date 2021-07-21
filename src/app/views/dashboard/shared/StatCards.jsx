@@ -19,10 +19,7 @@ const StatCards = ({ metrics }) => {
   return (
     <Grid container spacing={3} className="mb-3">
       <Grid item xs={12} md={6}>
-        <Card
-          className="flex flex-wrap justify-between items-center p-sm-24 bg-paper"
-          elevation={6}
-        >
+        <Card className="flex flex-wrap justify-between items-center p-sm-24" elevation={6}>
           <div className="flex items-center">
             <Icon className={classes.icon}>{metrics[0].icon}</Icon>
             <div className="ml-3">

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Grid } from '@material-ui/core';
 
 import AssignmentGrid from './AssignmentGrid';
-import StatCard4 from '../shared/StatCard4';
+import StudentDetailCard from '../shared/StudentDetailCard';
+import TimelineStudentActivity from './TimelineStudentActivity';
 
 const AssignmentsInformation = ({ data }) => {
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
@@ -15,14 +16,34 @@ const AssignmentsInformation = ({ data }) => {
       value: deliveredAssignments.length,
       title: 'Projects Delivered',
     },
+    {
+      icon: 'colorize',
+      value: deliveredAssignments.length,
+      title: 'Projects Delivered',
+    },
+    {
+      icon: 'colorize',
+      value: deliveredAssignments.length,
+      title: 'Projects Delivered',
+    },
+    {
+      icon: 'colorize',
+      value: deliveredAssignments.length,
+      title: 'Projects Delivered',
+    },
   ];
 
   return (
     <>
-      <Grid item lg={4} md={4} sm={12} xs={12}>
-        <StatCard4 metrics={metrics} />
+      <Grid item lg={3} md={3} sm={12} xs={12}>
+        <div className="px-8">
+          <StudentDetailCard metrics={metrics} />
+        </div>
       </Grid>
-      <Grid item lg={4} md={4} sm={12} xs={12}>
+      <Grid item lg={6} md={6} sm={12} xs={12}>
+        <TimelineStudentActivity />
+      </Grid>
+      <Grid item lg={3} md={3} sm={12} xs={12}>
         {undeliveredAssignments.map((assignment) => (
           <AssignmentGrid key={assignment.id} data={assignment} />
         ))}

@@ -34,6 +34,8 @@ const AssignmentGrid = ({ data }, classes) => {
   const { title, task_type, associated_slug } = data;
   const { created_at, difficulty } = assignmentsDetails;
 
+  console.log(assignmentsDetails);
+
   useEffect(() => {
     bc.registry()
       .getAsset(associated_slug)
