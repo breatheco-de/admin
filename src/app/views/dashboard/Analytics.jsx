@@ -39,6 +39,7 @@ const Analytics = () => {
     min: 0,
   });
   const [checkins, setCheckins] = useState([]);
+  const [admissionsReport, setAdmissionsReport] = useState(null);
   const [feedback, setFeedback] = useState([]);
   const [donutLeads, setDonutLeads] = useState({
     data: [
@@ -121,6 +122,16 @@ const Analytics = () => {
       }).catch((err) => {
         // console.log('DATA:::::::', err);
       });
+
+    BC.admissions().getReport({
+      start: params.start.format('YYYY-MM-DD'),
+      end: params.end.format('YYYY-MM-DD'),
+    })
+      .then(({ data }) => {
+        setAdmissionsReport(data);
+      }).catch((err) => {
+        console.log('Admissions Report Errer', err);
+      });
   }, [renderNewDates]);
 
   return (
@@ -198,6 +209,10 @@ const Analytics = () => {
                       ) / feedback.length,
                 },
                 { label: 'Event Tickets', value: 11, icon: 'group' },
+                { label: 'Active Students', value: `${admissionsReport?.students?.active} from ${admissionsReport?.students?.total} total`, icon: 'group' },
+                { label: 'Graduates', value: `${admissionsReport?.students?.graduated} with ${admissionsReport?.students?.dropped} drops`, icon: 'group' },
+                { label: 'Teachers', value: `${admissionsReport?.teachers?.active.main}`, icon: 'group' },
+                { label: 'Assistants', value: `${admissionsReport?.teachers?.active.assistant}`, icon: 'group' },
               ]}
             />
 

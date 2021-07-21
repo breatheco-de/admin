@@ -9,3 +9,9 @@ export function getSession(){
     }
     else return session
 }
+
+export function getToken(){
+    const token = localStorage.getItem("accessToken");
+    console.log("Access token", token)
+    return token
+}
