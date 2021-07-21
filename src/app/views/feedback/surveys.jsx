@@ -12,13 +12,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  TextField
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { addHours } from 'date-fns'
 import { Breadcrumb } from '../../../matx';
-import axios from '../../../axios';
 import bc from 'app/services/breathecode';
+import {SmartMUIDataTable} from '../../components/SmartDataTable';
 import { toast } from 'react-toastify';
 
 toast.configure();
@@ -53,15 +54,6 @@ const EventList = () => {
       .then(({ data }) => console.log(data))
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -318,15 +310,6 @@ const EventList = () => {
           />
         </div>
       </div>
-      <Tooltip title="Copy Survey link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip>
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

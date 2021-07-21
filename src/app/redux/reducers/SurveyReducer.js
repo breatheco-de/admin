@@ -1,15 +1,18 @@
 import {
     GET_SURVEY_ANSWERS ,
-    GET_SURVEY
-} from "../actions/SurveyActions";
+    GET_SURVEY,
+    LOADING
+} from '../actions/SurveyActions';
 
 const initialState = {
     answers: [],
     avgCohortScore: 0,
+    avgAcademyScore: 0,
     mentors: [],
     answered: [],
     overallScore:0,
-    survey: {}
+    survey: {},
+    isLoading: false
 };
 
 const SurveyReducer = function (state = initialState, action) {
@@ -19,9 +22,11 @@ const SurveyReducer = function (state = initialState, action) {
           ...state,
           answers: action.payload.answers,
           avgCohortScore: action.payload.avg_cohort_score,
+          avgAcademyScore: action.payload.avg_academy_score,
           mentors: action.payload.mentors,
           answered: action.payload.answered,
-          overallScore: action.payload.overall_score
+          overallScore: action.payload.overall_score,
+          isLoading: action.payload.is_loading
       }
     }
     case GET_SURVEY: {
@@ -29,6 +34,12 @@ const SurveyReducer = function (state = initialState, action) {
             ...state,
             survey: action.payload.survey
         }
+    }
+    case LOADING: {
+      return {
+        ...state,
+        isLoading: true
+      }
     }
     default: {
       return {
