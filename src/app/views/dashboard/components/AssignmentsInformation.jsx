@@ -1,12 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from '@material-ui/core';
+import { Grid, List } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import AssignmentGrid from './AssignmentGrid';
 import StudentDetailCard from '../shared/StudentDetailCard';
 import TimelineStudentActivity from './TimelineStudentActivity';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    maxWidth: '50ch',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '7px',
+  },
+  inline: {
+    display: 'inline',
+  },
+}));
+
 const AssignmentsInformation = ({ data }) => {
+  const classes = useStyles();
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
 
@@ -44,9 +58,16 @@ const AssignmentsInformation = ({ data }) => {
         <TimelineStudentActivity />
       </Grid>
       <Grid item lg={3} md={3} sm={12} xs={12}>
-        {undeliveredAssignments.map((assignment) => (
-          <AssignmentGrid key={assignment.id} data={assignment} />
-        ))}
+        <List className={classes.root}>
+          {undeliveredAssignments.map((assignment, index) => (
+            <AssignmentGrid
+              key={assignment.id}
+              data={assignment}
+              classes={classes}
+              isLastItem={undeliveredAssignments.length - 1 === index}
+            />
+          ))}
+        </List>
       </Grid>
     </>
   );
