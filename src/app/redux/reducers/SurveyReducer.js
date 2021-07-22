@@ -1,6 +1,7 @@
 import {
     GET_SURVEY_ANSWERS ,
     GET_SURVEY,
+    GET_ANSWERS_BY,
     LOADING
 } from '../actions/SurveyActions';
 
@@ -10,6 +11,7 @@ const initialState = {
     avgAcademyScore: 0,
     mentors: [],
     answered: [],
+    filteredAnswers: [],
     overallScore:0,
     survey: {},
     isLoading: false
@@ -26,7 +28,8 @@ const SurveyReducer = function (state = initialState, action) {
           mentors: action.payload.mentors,
           answered: action.payload.answered,
           overallScore: action.payload.overall_score,
-          isLoading: action.payload.is_loading
+          isLoading: action.payload.is_loading,
+          filteredAnswers: action.payload.answers
       }
     }
     case GET_SURVEY: {
@@ -41,6 +44,18 @@ const SurveyReducer = function (state = initialState, action) {
         isLoading: true
       }
     }
+    case GET_ANSWERS_BY: 
+      return {
+        ...state,
+        filteredAnswers: state.answers.filter(item => {
+          if(action.payload.query === 'all') return true;
+          if(action.payload.query === 'academy' && !item.cohort && !item.mentor) return true;
+          if(action.payload.query === 'cohort' && item.cohort) return true;
+          if(action.payload.query !== 'academy' && action.payload.query !== 'cohort' && item.mentor){
+            if(action.payload.query === `${item.mentor.first_name} ${item.mentor.last_name}`) return true;
+          }
+        }),
+      }
     default: {
       return {
         ...state

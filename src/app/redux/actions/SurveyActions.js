@@ -2,7 +2,8 @@ import bc from '../../services/breathecode';
 
 export const GET_SURVEY_ANSWERS = 'GET_SURVEY_ANSWERS';
 export const GET_SURVEY = 'GET_SURVEY';
-export const LOADING = 'LOADING'
+export const LOADING = 'LOADING';
+export const GET_ANSWERS_BY = 'GET_ANSWERS_BY';
 
 export const getSurveyAnswers = (query) => (distpach) => {
     //Loading starts 
@@ -82,3 +83,11 @@ export const getSurvey = (id) => (distpach) => {
     });
 } 
 
+export const getAnswersBy = (query) => (distpach) => {
+    distpach({
+        type: GET_ANSWERS_BY,
+        payload: {
+            query
+        }
+    })
+}

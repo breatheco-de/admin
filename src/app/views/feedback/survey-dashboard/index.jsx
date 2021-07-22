@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Icon, Button, Grid,
@@ -10,7 +10,7 @@ import Answers from './Answers';
 import GaugeProgressCard from './GuageProgressCard';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSurveyAnswers, getSurvey } from '../../../redux/actions/SurveyActions';
+import { getSurveyAnswers, getSurvey, getAnswersBy } from '../../../redux/actions/SurveyActions';
 
 const options = [
   { label: 'Copy survey public link', value: 'public_link' },
@@ -27,13 +27,21 @@ const Survey = ({ match }) => {
     answered = [],
     overallScore = 0,
     survey = {},
-    isLoading = false
+    isLoading = false,
+    filteredAnswers = []
   } = useSelector((state) => state.survey);
+  const [filter, setFilter] = useState('answered');
 
   useEffect(() => {
     dispatch(getSurveyAnswers({ survey: match.params.id }));
     dispatch(getSurvey(match.params.id));
   }, []);
+
+  const sortBy = (event) => {
+    const { target: { value } } = event;
+    dispatch(getAnswersBy(value));
+    setFilter(value);
+  }
 
   return (
     <div className="analytics m-sm-30">
@@ -89,7 +97,7 @@ const Survey = ({ match }) => {
             </Grid>
           </Grid>
           <Grid item md={8} xs={12}>
-            <Answers answered={answered} answers={answers} />
+            <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
           </Grid>
         </Grid>:<Grid container spacing={2}>
           <Grid item md={4} xs={12}>
@@ -112,7 +120,11 @@ const Survey = ({ match }) => {
             </Grid>
           </Grid>
           <Grid item md={8} xs={12}>
-            <Answers answered={answered} answers={answers} />
+            <Answers 
+            answered={answered} 
+            filteredAnswers={filteredAnswers} 
+            sortBy={sortBy} filter={filter} 
+            mentors={mentors}/>
           </Grid>
         </Grid>
         }
