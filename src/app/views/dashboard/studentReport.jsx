@@ -5,7 +5,7 @@ import { Grid } from '@material-ui/core';
 import bc from '../../services/breathecode';
 import CohortInformation from './components/CohortInformation';
 import StudentInformation from './components/StudentInformation';
-import AssignmentsInformation from './components/AssignmentsInformation';
+import StudentActivity from './components/StudentActivity';
 
 const studentReport = () => {
   const { studentID, cohortID } = useParams();
@@ -48,7 +48,7 @@ const studentReport = () => {
         </Grid>
       </div>
       <div className="pb-24 pt-7 px-8 bg-default text-grey flex">
-        <AssignmentsInformation data={studentAssignments} />
+        <StudentActivity data={studentAssignments} />
       </div>
     </>
   );

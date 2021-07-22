@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import AssignmentGrid from './AssignmentGrid';
 import StudentDetailCard from '../shared/StudentDetailCard';
-import TimelineStudentActivity from './TimelineStudentActivity';
+import StudentTimeline from './StudentTimeline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AssignmentsInformation = ({ data }) => {
+const StudentActivity = ({ data }) => {
   const classes = useStyles();
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
@@ -54,9 +54,7 @@ const AssignmentsInformation = ({ data }) => {
           <StudentDetailCard metrics={metrics} />
         </div>
       </Grid>
-      <Grid item lg={6} md={6} sm={12} xs={12}>
-        <TimelineStudentActivity />
-      </Grid>
+      <StudentTimeline />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <List className={classes.root}>
           {undeliveredAssignments.map((assignment, index) => (
@@ -73,8 +71,8 @@ const AssignmentsInformation = ({ data }) => {
   );
 };
 
-AssignmentsInformation.propTypes = {
+StudentActivity.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-export default AssignmentsInformation;
+export default StudentActivity;
