@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import {
   Grid, Card, Divider, Button,
@@ -12,7 +12,7 @@ import ResponseDialog from './ResponseDialog';
 import { getSession } from '../../redux/actions/SessionActions';
 
 const NewCertificate = () => {
-  const { certificateSlug } = useParams();
+  const [certificateSlug, setCertificateSlug] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
   const [responseData, setResponseData] = React.useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const NewCertificate = () => {
     student: '',
     academy: '',
     specialty: '',
-    slug: 'default',
+    layout_slug: '',
     signed_by: '',
     signed_by_role: 'Director',
   });
@@ -33,11 +33,7 @@ const NewCertificate = () => {
     bc.certificates()
       .generateSingleStudentCertificate(cohort.id, user.id, payload)
       .then((data) => {
-        if (data !== undefined && data.status >= 200 && data.status < 300) {
-          setTimeout(() => {
-            history.push('/certificates');
-          }, 1000);
-        }
+        if (data !== undefined && data.status >= 200 && data.status < 300) history.push('/certificates');
       });
   };
 
@@ -59,6 +55,18 @@ const NewCertificate = () => {
     else generatingAllCohortCertificates(payload);
   };
 
+  const handleChange = ({ slug, cohort, student }) => {
+    if (cohort === null || student === null) {
+      setCertificateSlug('');
+      setState({ ...state, student: '', cohort: '' });
+      return;
+    }
+    if (slug === undefined) throw new Error('Invalid Action!');
+    setCertificateSlug(slug);
+    if (slug === 'all') setState({ ...state, cohort });
+    if (slug === 'single') setState({ ...state, student });
+  };
+
   return (
     <div className="m-sm-30">
       <ResponseDialog
@@ -73,7 +81,7 @@ const NewCertificate = () => {
           routeSegments={[
             { name: 'Certificates', path: '/certificates' },
             {
-              name: certificateSlug === 'single' ? 'New Certificate' : 'All Certificates',
+              name: 'Generate Certificates',
             },
           ]}
         />
@@ -81,14 +89,9 @@ const NewCertificate = () => {
 
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">
-            {certificateSlug === 'single'
-              ? 'Create Student Certificate'
-              : 'Create all cohort certificates'}
-          </h4>
+          <h4 className="m-0">Generate Certificates</h4>
         </div>
         <Divider className="mb-2" />
-
         <Formik
           initialValues={state}
           onSubmit={(values) => generateCerfiticate(values)}
@@ -97,47 +100,55 @@ const NewCertificate = () => {
           {({ handleSubmit }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
-                {certificateSlug === 'all' && (
-                  <>
-                    <Grid item md={2} sm={4} xs={12}>
-                      <div className="flex mb-6">Cohort</div>
-                    </Grid>
-                    <Grid item md={10} sm={8} xs={12}>
-                      <AsyncAutocomplete
-                        size="small"
-                        width="100%"
-                        asyncSearch={() => axios.get(
-                          `${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`,
-                        )}
-                        onChange={(cohort) => setState({ ...state, cohort })}
-                        getOptionLabel={(option) => `${option.name}, (${option.slug})`}
-                        label="Cohort"
-                      />
-                    </Grid>
-                  </>
-                )}
-                {certificateSlug === 'single' && (
-                  <>
-                    <Grid item md={2} sm={4} xs={12}>
-                      Student
-                    </Grid>
-                    <Grid item md={10} sm={8} xs={12}>
-                      <AsyncAutocomplete
-                        size="small"
-                        key={state.cohort.slug}
-                        width="100%"
-                        asyncSearch={() => axios.get(
-                          `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`,
-                        )}
-                        onChange={(student) => setState({ ...state, student })}
-                        value={state.student}
-                        getOptionLabel={(option) => option.length !== 0
-                          && `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`}
-                        label="Student"
-                      />
-                    </Grid>
-                  </>
-                )}
+                <Grid item md={2} sm={4} xs={12}>
+                  Cohort
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    size="small"
+                    disabled={certificateSlug === 'single'}
+                    width="100%"
+                    asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+                    onChange={(cohort) => handleChange({ slug: 'all', cohort })}
+                    getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                    label="Select a Cohort"
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Student
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    size="small"
+                    disabled={certificateSlug === 'all'}
+                    key={state.cohort.slug}
+                    width="100%"
+                    asyncSearch={() => axios.get(
+                      `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`,
+                    )}
+                    onChange={(student) => handleChange({ slug: 'single', student })}
+                    getOptionLabel={(option) => option.length !== 0
+                      && `${option.user.first_name} ${option.user.last_name} (${option.cohort.name})`}
+                    label="Select a Student"
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Layout Design
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    id="layoutDesign"
+                    onChange={(layoutDesign) => setState({ ...state, layout_slug: layoutDesign.slug })}
+                    width="50%"
+                    asyncSearch={() => bc.layout().getDefaultLayout()}
+                    size="small"
+                    prefetch
+                    debaunced
+                    label="Layout Design"
+                    required
+                    getOptionLabel={(option) => `${option.slug}`}
+                  />
+                </Grid>
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">

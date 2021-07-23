@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Breadcrumb} from 'matx';
 import {
-  Grow, Icon, IconButton, TextField, Button, Chip,
+  Icon,
+  IconButton,
+  Button,
+  Chip,
 } from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import MUIDataTable from 'mui-datatables';
-import { Breadcrumb, MatxLoading } from '../../../matx';
-import bc from '../../services/breathecode';
+import bc from 'app/services/breathecode';
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { useQuery } from '../../hooks/useQuery';
-import { DownloadCsv } from '../../components/DownloadCsv';
-import CustomToolbar from '../../components/CustomToolbar';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -25,80 +26,8 @@ const stageColors = {
 };
 
 const Cohorts = () => {
-  const [isAlive, setIsAlive] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
-  const [setTable] = useState({
-    count: 100,
-    page: 0,
-  });
   const query = useQuery();
-  const history = useHistory();
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
-  const [queryOffset, setQueryOffset] = useState(query.get('offset') || 0);
-  const [queryLike, setQueryLike] = useState(query.get('like') || '');
-  const [querys, setQuerys] = useState({
-    limit: queryLimit,
-    offset: queryOffset,
-    like: queryLike,
-  });
-  const [querySort, setQuerySort] = useState(query.get('sort') || ' ');
-
-  const handleLoadingData = () => {
-    setIsLoading(true);
-    bc.admissions()
-      .getAllCohorts({
-        limit: queryLimit,
-        offset: queryOffset,
-        like: queryLike,
-        sort: querySort,
-      })
-      .then(({ data }) => {
-        setIsLoading(false);
-        if (isAlive) {
-          setItems(data.results);
-          setTable({ count: data.count });
-        }
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
-    return () => setIsAlive(false);
-  };
-
-  useEffect(() => {
-    handleLoadingData();
-  }, [isAlive]);
-
-  const handlePageChange = (page, rowsPerPage, _like, _sort) => {
-    setIsLoading(true);
-    setQueryLimit(rowsPerPage);
-    setQueryOffset(rowsPerPage * page);
-    setQueryLike(_like);
-    setQuerySort(_sort);
-    const queryData = {
-      limit: rowsPerPage,
-      offset: page * rowsPerPage,
-      like: _like,
-      sort: _sort,
-    };
-    setQuerys(queryData);
-    bc.admissions()
-      .getAllCohorts(query)
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItems(data.results);
-        setTable({ count: data.count, page });
-        history.replace(
-          `/admissions/cohorts?${Object.keys(query)
-            .map((key) => `${key}=${query[key]}`)
-            .join('&')}`,
-        );
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
-  };
 
   const columns = [
     {
@@ -183,7 +112,7 @@ const Cohorts = () => {
       options: {
         filter: true,
         filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
-        customBodyRenderLite: (i) => items[i].syllabus.certificate?.name,
+        customBodyRenderLite: (i) => items[i].syllabus?.certificate?.name,
       },
     },
     {
@@ -226,112 +155,23 @@ const Cohorts = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <MUIDataTable
+          <SmartMUIDataTable
             title="All Cohorts"
-            data={items}
             columns={columns}
-            options={{
-              onColumnSortChange: (changedColumn, direction) => {
-                if (direction === 'asc') {
-                  handlePageChange(queryLimit, queryOffset, queryLike, changedColumn);
-                }
-                if (direction === 'desc') {
-                  handlePageChange(queryLimit, queryOffset, queryLike, `-${changedColumn}`);
-                }
-              },
-              customToolbar: () => {
-                const singlePageTableCsv = `/v1/admissions/academy/cohort?limit=${queryLimit}&offset=${queryOffset}&like=${queryLike}`;
-                const allPagesTableCsv = `/v1/admissions/academy/cohort?like=${queryLike}`;
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              serverSide: true,
-              elevation: 0,
-              page: items.page,
-              count: items.count,
-              onFilterChange: (changedColumn, filterList, type, changedColumnIndex) => {
-                const q = {
-                  ...querys,
-                  [changedColumn]: filterList[changedColumnIndex][0],
-                };
-                setQuerys(q);
-                history.replace(
-                  `/admissions/cohorts?${Object.keys(q)
-                    .map((key) => `${key}=${q[key]}`)
-                    .join('&')}`,
-                );
-              },
-              rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-                <CustomToolbar
-                  selectedRows={selectedRows}
-                  displayData={displayData}
-                  setSelectedRows={setSelectedRows}
-                  items={items}
-                  key={items}
-                  history={history}
-                  id="cohorts"
-                  deleting={async (querysData) => {
-                    const { status } = await bc.admissions().deleteCohortsBulk(querysData);
-                    return status;
-                  }}
-                  onBulkDelete={handleLoadingData}
-                />
-              ),
-              onTableChange: (action, tableState) => {
-                switch (action) {
-                  case 'changePage':
-                    console.log(tableState.page, tableState.rowsPerPage);
-                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike, querySort);
-                    break;
-                  case 'changeRowsPerPage':
-                    handlePageChange(tableState.page, tableState.rowsPerPage, queryLike, querySort);
-                    break;
-                  case 'filterChange':
-                    break;
-                  default:
-                    console.log(tableState.page, tableState.rowsPerPage);
-                }
-              },
-              customSearchRender: (handleSearch, hideSearch) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        handlePageChange(queryOffset, queryLimit, e.target.value, querySort);
-                      }
-                    }}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={items}
+            view="cohorts?"
+            historyReplace="/admissions/cohorts"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.admissions().getAllCohorts(querys);
+              setItems(data.results);
+              return data;
+            }}
+            deleting={async (querys) => {
+              const { status } = await bc
+                .admissions()
+                .deleteCohortsBulk(querys);
+              return status;
             }}
           />
         </div>

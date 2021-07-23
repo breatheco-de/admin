@@ -1,28 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import MUIDataTable from 'mui-datatables';
-
+import React, { useState } from 'react';
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Avatar,
-  Grow,
   Icon,
   IconButton,
-  TextField,
   Tooltip,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import { Breadcrumb, MatxLoading } from '../../../matx';
+import { Breadcrumb} from '../../../matx';
 import bc from '../../services/breathecode';
 import CopyInviteModal from '../../components/InviteDetails';
-import { DownloadCsv } from '../../components/DownloadCsv';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
 const Students = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const [userList, setUserList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const resendInvite = (user) => {
     bc.auth()
@@ -30,23 +24,6 @@ const Students = () => {
       .then(({ data }) => console.log(data))
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    bc.auth()
-      .getAcademyMembers({ status: 'invited' })
-      .then(({ data }) => {
-        console.log(data);
-        setIsLoading(false);
-        if (isAlive) {
-          setUserList(data);
-        }
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -158,64 +135,17 @@ const Students = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <MUIDataTable
-            title="Invites"
-            data={userList}
+          <SmartMUIDataTable
+            title="All Invites"
             columns={columns}
-            options={{
-              customToolbar: () => {
-                const singlePageTableCsv = '/v1/auth/academy/member?status=invited';
-                const allPagesTableCsv = '/v1/auth/academy/member?status=invited';
-                return (
-                  <DownloadCsv
-                    singlePageTableCsv={singlePageTableCsv}
-                    allPagesTableCsv={allPagesTableCsv}
-                  />
-                );
-              },
-              download: false,
-              filterType: 'textField',
-              responsive: 'standard',
-              // selectableRows: "none", // set checkbox for each row
-              // search: false, // set search option
-              // filter: false, // set data filter option
-              // download: false, // set download option
-              // print: false, // set print option
-              // pagination: true, //set pagination option
-              // viewColumns: false, // set column option
-              elevation: 0,
-              rowsPerPageOptions: [10, 20, 40, 80, 100],
-              customSearchRender: (
-                searchText,
-                handleSearch,
-                hideSearch,
-                // options,
-              ) => (
-                <Grow appear in timeout={300}>
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={({ target: { value } }) => handleSearch(value)}
-                    InputProps={{
-                      style: {
-                        paddingRight: 0,
-                      },
-                      startAdornment: (
-                        <Icon className="mr-2" fontSize="small">
-                          search
-                        </Icon>
-                      ),
-                      endAdornment: (
-                        <IconButton onClick={hideSearch}>
-                          <Icon fontSize="small">clear</Icon>
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </Grow>
-              ),
+            items={userList}
+            view="invites?"
+            singlePage=""
+            historyReplace="/admin/invites"
+            search={async (querys) => {
+              const { data } = await bc.auth().getAcademyMembers({...querys, status:"INVITED"});
+              setUserList(data.results);
+              return data;
             }}
           />
         </div>

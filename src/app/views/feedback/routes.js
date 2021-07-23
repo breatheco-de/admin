@@ -14,7 +14,7 @@ const routes = [
     beta: true,
   },
   {
-    path: '/feedback/surveys/:id',
+    path: '/feedback/surveys/:cohort/:id',
     exact: true,
     component: React.lazy(() => import('./survey-dashboard')),
     beta: true,

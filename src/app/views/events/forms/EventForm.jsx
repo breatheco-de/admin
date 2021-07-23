@@ -5,7 +5,7 @@ import {
   Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
 } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
-import bc from 'app/services/breathecode';
+import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
@@ -135,13 +135,8 @@ const EventForm = () => {
         <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize>
           {({
             values,
-            // errors,
-            // touched,
             handleChange,
-            // handleBlur,
             handleSubmit,
-            // isSubmitting,
-            // setSubmitting,
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
