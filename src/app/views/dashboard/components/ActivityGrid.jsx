@@ -1,8 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Card, CardHeader, CardContent, IconButton,
+  Card, CardHeader, CardContent, IconButton, Badge,
 } from '@material-ui/core';
+import MailIcon from '@material-ui/icons/Mail';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
@@ -32,6 +33,11 @@ const ActivityGrid = () => {
           </IconButton>
           <IconButton aria-label="share">
             <ShareIcon />
+          </IconButton>
+          <IconButton className="p-3 bg-primary relative">
+            <Badge badgeContent={4} color="primary">
+              <MailIcon />
+            </Badge>
           </IconButton>
         </div>
         <CardContent>
