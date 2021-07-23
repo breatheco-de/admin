@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Card,
@@ -128,11 +128,10 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                   </IconButton>
                 </TableCell>
               </TableRow>
-            )) : <TableRow>
-              <div className="text-center p-2">
-                <p>There is no answers collected yet, but you can filter by unanswered questions</p>
-              </div>
-            </TableRow>}
+            )) : <caption>
+              There is no answers collected yet, but you can filter by unanswered questions
+            </caption>
+            }
           </TableBody> : <TableBody>
             {filteredAnswers.map((a, index) => (
               <TableRow key={index} hover>

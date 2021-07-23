@@ -112,7 +112,7 @@ const Cohorts = () => {
       options: {
         filter: true,
         filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
-        customBodyRenderLite: (i) => items[i].syllabus.certificate?.name,
+        customBodyRenderLite: (i) => items[i].syllabus?.certificate?.name,
       },
     },
     {

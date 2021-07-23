@@ -35,6 +35,7 @@ const Survey = ({ match }) => {
   useEffect(() => {
     dispatch(getSurveyAnswers({ survey: match.params.id }));
     dispatch(getSurvey(match.params.id));
+
   }, []);
 
   const sortBy = (event) => {
@@ -79,7 +80,7 @@ const Survey = ({ match }) => {
         {answered && answered.length > 0 ? <Grid container spacing={2}>
           <Grid item md={4} xs={12}>
             <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">This survey expires in 10 hours</AlertTitle>
+              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? "This survey expired": `This survey expires in ${survey.expires} hours`}</AlertTitle>
             </Alert>
             <GaugeProgressCard score={overallScore} />
             <Grid container spacing={2}>
@@ -102,7 +103,7 @@ const Survey = ({ match }) => {
         </Grid>:<Grid container spacing={2}>
           <Grid item md={4} xs={12}>
             <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">This survey expires in 10 hours</AlertTitle>
+              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? "This survey expired": `This survey expires in ${survey.expires} hours`}</AlertTitle>
             </Alert>
             <GaugeProgressCard score={0} />
             <Grid container spacing={2}>

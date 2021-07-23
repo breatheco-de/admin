@@ -1,4 +1,7 @@
 import bc from '../../services/breathecode';
+import dayjs from 'dayjs';
+var duration = require('dayjs/plugin/duration');
+dayjs.extend(duration);
 
 export const GET_SURVEY_ANSWERS = 'GET_SURVEY_ANSWERS';
 export const GET_SURVEY = 'GET_SURVEY';
@@ -73,13 +76,15 @@ export const getSurveyAnswers = (query) => (distpach) => {
 };
 
 export const getSurvey = (id) => (distpach) => {
+    const now = dayjs().format();
     bc.feedback().getSurvey(id).then(res => {
+        const duration = dayjs(res.data.created_at).add(dayjs(res.data.duration).$D, 'day');
         if(res.data) distpach({
             type: GET_SURVEY,
             payload: {
-                survey: res.data,
+                survey: {...res.data, expires: duration.diff(now, 'hour')},
             }
-        });
+        });        
     });
 } 
 

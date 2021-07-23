@@ -78,8 +78,7 @@ export const SmartMUIDataTable = (props) => {
       ..._like && { _like },
       ..._sort && { _sort },
     };
-    setQuerys(query);
-
+    setQuerys(q);
     props
       .search(q)
       .then((data) => {
@@ -120,7 +119,7 @@ export const SmartMUIDataTable = (props) => {
         count: table.count,
         page: table.page,
         selectableRowsHeader: false,
-        rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+        rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit),
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
         customToolbar: () => (
