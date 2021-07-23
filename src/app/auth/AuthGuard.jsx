@@ -7,15 +7,11 @@ import axios from '../../axios';
 const getUserRoleAuthStatus = (pathname, user, routes) => {
   const matched = routes.find((r) => r.path === pathname);
 
-  const authenticated = matched && matched.auth && matched.auth.length
-    ? matched.auth.includes(user.role)
-    : true;
+  const authenticated = matched && matched.auth && matched.auth.length ? matched.auth.includes(user.role) : true;
 
-  axios.defaults.headers.common.Academy = user
-    ? user.academy
-      ? user.academy.id
-      : ''
-    : '';
+  console.log('AXIOS_DEFAULT', axios);
+
+  axios.defaults.headers.common.Academy = user ? (user.academy ? user.academy.id : '') : '';
   return authenticated;
 };
 

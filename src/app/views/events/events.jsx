@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Breadcrumb } from 'matx';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import {
    Icon, IconButton,Button,
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
+import { Breadcrumb} from '../../../matx';
+
+import bc from '../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -42,11 +43,7 @@ const EventList = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`
-                  }
-                >
+                <small className={`border-radius-4 px-2 pt-2px ${stageColors[item?.status]}`}>
                   {item?.status}
                 </small>
                 <br />
@@ -88,12 +85,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].starting_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].starting_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].starting_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].starting_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -107,12 +100,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].ending_at).format('MM-DD-YYYY')}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].ending_at).fromNow()}
-              </small>
+              <h5 className="my-0 text-15">{dayjs(items[i].ending_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].ending_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -142,20 +131,11 @@ const EventList = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb
-              routeSegments={[
-                { name: 'Event', path: '/' },
-                { name: 'Event List' },
-              ]}
-            />
+            <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Event List' }]} />
           </div>
 
           <div className="">
-            <Link
-              to="/events/NewEvent"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Add new event
               </Button>

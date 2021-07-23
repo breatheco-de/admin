@@ -7,11 +7,10 @@ import {
   IconButton,
   Button,
   LinearProgress,
-
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import AnswerStatus from '../../components/AnswerStatus';
 
@@ -173,11 +172,7 @@ const Answers = () => {
           </div>
 
           <div className="">
-            <Link
-              to="/feedback/survey/new"
-              color="primary"
-              className="btn btn-primary"
-            >
+            <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
