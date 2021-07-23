@@ -162,16 +162,16 @@ const StaffDetails = ({ user, staffId }) => {
       >
         <DialogTitle id="simple-dialog-title">Change Member Role</DialogTitle>
         <List>
-          {roles?.map((presentRole) => (
+          {roles && roles.map((presentRole) => (
             <ListItem
               button
               onClick={() => {
                 updateRole(presentRole.slug);
                 setRoleDialog(false);
               }}
-              key={presentRole}
+              key={presentRole?.name}
             >
-              <ListItemText primary={role.name.toUpperCase()} />
+              <ListItemText primary={presentRole.name.toUpperCase()} />
             </ListItem>
           ))}
         </List>

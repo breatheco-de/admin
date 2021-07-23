@@ -109,6 +109,12 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? '?' + qs : ''}`
         );
       },
+      getReport: (query) => {
+        return axios._get(
+          "Report",
+          `${this.host}/admissions/report`
+        );
+      },
       getAllCourseSyllabus: (query, academyID) => {
         return axios._get(
           'Syllabus',
@@ -172,12 +178,15 @@ class BreatheCodeClient {
         );
       },
       getAcademyMembers: (query) => {
-        const qs = Object.keys(query)
-          .map((key) => `${key}=${query[key]}`)
-          .join('&');
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
         return axios._get(
           'Academy member',
-          `${this.host}/auth/academy/member?${qs}`
+          `${this.host}/auth/academy/member${query ? '?' + qs : ''}`
         );
       },
       getAcademyStudents: (query) => {
@@ -282,6 +291,18 @@ class BreatheCodeClient {
           `${this.host}/feedback/academy/survey/${id}`,
           survey
         ),
+        getSurveys: (query) => {
+      const qs =
+        query !== undefined
+          ? Object.keys(query)
+              .map((key) => `${key}=${query[key]}`)
+              .join('&')
+          : '';
+    return  axios._get('Academy survey',`${this.host}/feedback/academy/survey${query ? '?' + qs : ''}`)
+    },
+    getSurvey: (id) => {
+      return  axios._get('Academy survey',`${this.host}/feedback/academy/survey/${id}`)
+    }
     };
   }
 
@@ -441,17 +462,18 @@ class BreatheCodeClient {
           `${this.host}/media${query ? '?' + qs : ''}`
         );
       },
-      updateMedia: (media, payload) =>
-        axios._put('Media', `${this.host}/media/info/${media}`, payload),
-
-      deleteMedia: (media) =>
-        axios._delete('Media', `${this.host}/media/info/${media}`),
-
-      createCategory: (payload) =>
-        axios._post('Category', `${this.host}/media/category`, payload),
-
-      updateMediaBulk: (payload) =>
-        axios._put('Media', `${this.host}/media/info`, payload),
+      updateMedia: (media, payload) => {
+        return axios._put('Media', `${this.host}/media/info/${media}`, payload);
+      },
+      deleteMedia: (media) => {
+        return axios._delete('Media', `${this.host}/media/info/${media}`);
+      },
+      createCategory: (payload) => {
+        return axios._post('Category', `${this.host}/media/category`, payload);
+      },
+      updateMediaBulk: (payload) => {
+        return axios._put('Media', `${this.host}/media/info`, payload);
+      } 
     };
   }
 

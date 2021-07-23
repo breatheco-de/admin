@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
 import { MatxLoading } from 'matx';
 import {
-  Grow, Icon, IconButton, TextField,
+  Grow, Icon, IconButton, TextField, Button,
 } from '@material-ui/core';
 import { useQuery } from '../hooks/useQuery';
 
@@ -46,8 +46,6 @@ export const SmartMUIDataTable = (props) => {
   const [querys, setQuerys] = useState({
     limit: query.get('limit') || 10,
     offset: query.get('offset') || 0,
-    like: query.get('like') || '',
-    sort: query.get('sort') || ' ',
   });
 
   const loadData = () => {
@@ -60,8 +58,7 @@ export const SmartMUIDataTable = (props) => {
           setTable({ count: data.count });
         }
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -75,27 +72,34 @@ export const SmartMUIDataTable = (props) => {
 
   const handlePageChange = (page, rowsPerPage, _like, _sort) => {
     setIsLoading(true);
-    const query = {
+    const q = {
       limit: rowsPerPage,
       offset: rowsPerPage * page,
-      like: _like,
-      sort: _sort
-    }
-    setQuerys(query)
-    
+      ..._like && { _like },
+      ..._sort && { _sort },
+    };
+    setQuerys(q);
     props
-      .search(query)
+      .search(q)
       .then((data) => {
         setIsLoading(false);
         setTable({ count: data.count, page });
         history.replace(
-          `${history.location.pathname}?${Object.keys(query)
-            .map((key) => `${key}=${query[key]}`)
+          `${history.location.pathname}?${Object.keys(q)
+            .map((key) => `${key}=${q[key]}`)
             .join('&')}`,
         );
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleFilterSubmit = () => {
+    setIsLoading(true);
+    props.search(querys)
+      .then(() => setIsLoading(false))
+      .catch(() => {
         setIsLoading(false);
       });
   };
@@ -115,7 +119,7 @@ export const SmartMUIDataTable = (props) => {
         count: table.count,
         page: table.page,
         selectableRowsHeader: false,
-        rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+        rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit),
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
         customToolbar: () => (
@@ -147,12 +151,27 @@ export const SmartMUIDataTable = (props) => {
         onFilterChange: (
           changedColumn,
           filterList,
-          changedColumnIndex,
+          type,
+          changedColumnIndex
         ) => {
-          const q = {
-            ...querys,
-            [changedColumn]: filterList[changedColumnIndex][0],
-          };
+          let q;
+          if (type === 'reset') {
+            q = {
+              limit: querys.limit ? querys.limit : 10,
+              offset: querys.offset ? querys.offset : 0,
+            };
+          } else if (
+            filterList[changedColumnIndex][0] === undefined
+            || type === 'chip'
+          ) {
+            q = { ...querys };
+            delete q[changedColumn];
+          } else {
+            q = {
+              ...querys,
+              [changedColumn]: filterList[changedColumnIndex][0],
+            };
+          }
           setQuerys(q);
           history.replace(
             `${props.historyReplace}?${Object.keys(q)
@@ -205,8 +224,17 @@ export const SmartMUIDataTable = (props) => {
               break;
           }
         },
-
-        customSearchRender: ( hideSearch ) => (
+        customFilterDialogFooter: () => (
+          <div style={{ marginTop: '40px' }}>
+            <Button
+              variant="contained"
+              onClick={() => handleFilterSubmit()}
+            >
+              Apply Filters
+            </Button>
+          </div>
+        ),
+        customSearchRender: (hideSearch) => (
           <Grow appear in timeout={300}>
             <TextField
               variant="outlined"
@@ -251,5 +279,7 @@ SmartMUIDataTable.propTypes = {
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,
-  view: PropTypes.string
+  view: PropTypes.string,
+  historyReplace: PropTypes.string,
+  children: PropTypes.element,
 };

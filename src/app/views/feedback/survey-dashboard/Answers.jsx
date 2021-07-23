@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Card,
   Icon,
@@ -13,6 +14,7 @@ import {
   Select,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import AnswerStatus from '../../../components/AnswerStatus';
 import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -30,18 +32,61 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
       paddingLeft: '16px !important',
     },
   },
+  score: {
+    color: 'green',
+    padding: '2px',
+  },
+  about: {
+    padding: '4px',
+    marginLeft: '3px',
+    marginTop: '3px',
+  }
 }));
 
-const Answers = () => {
+const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors = [] }) => {
   const classes = useStyles();
+  const [answer, setAnswer] = useState({
+    color: '',
+    score: '',
+    title: '',
+    comment: '',
+    highest: '',
+    lowest: '',
+    user: {
+      imgUrl: '',
+      first_name: '',
+      last_name: '',
+    },
+    academy: {
+      name: '',
+      slug: '',
+    },
+  });
+  const [open, setOpen] = useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const getAboutStr = (item) => {
+    if (!item.mentor && !item.cohort) return 'About Academy';
+    if (item.cohort) return 'About Cohort';
+    if (item.mentor) return `${item.mentor.first_name} ${item.mentor.last_name}`;
+  }
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
-        <span className="card-title">12 Answers have been collected:</span>
-        <Select size="small" defaultValue="this_month" disableUnderline>
-          <MenuItem value="this_month">Responses only</MenuItem>
-          <MenuItem value="last_month">Include unanswered</MenuItem>
+        <span className="card-title">{answered.length === 0 ? 'No answers have been collected yet' : `${answered.length} answers have been collected`}</span>
+        <Select size="small" defaultValue="answered" disableUnderline onChange={sortBy}>
+          <MenuItem value="answered">Responses only</MenuItem>
+          <MenuItem value="all">Include unanswered</MenuItem>
+          <MenuItem value="cohort">Only Cohort</MenuItem>
+          <MenuItem value="academy">Only Academy</MenuItem>
+          {mentors.map(m => {
+            return <MenuItem value={m.name} key={m.name}>Only {m.name}</MenuItem>
+          })}
         </Select>
       </div>
       <div className="overflow-auto">
@@ -59,64 +104,73 @@ const Answers = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {productList.map((product, index) => (
+          {filter === 'answered' ? <TableBody>
+            {answered.length !== 0 ? answered.map((a, index) => (
               <TableRow key={index} hover>
                 <TableCell className="px-0 capitalize" colSpan={4} align="left">
                   <div className="flex items-center">
-                    <Avatar src={product.imgUrl} />
-                    <p className="m-0 ml-8">{product.name}</p>
+                    <Avatar src={a.imgUrl} />
+                    <div >
+                      <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
+                      <small className={clsx(classes.about, "m-0 ml-8")}>{getAboutStr(a)}</small>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  $
-                  {product.price > 999 ? `${(product.price / 1000).toFixed(1)}k` : product.price}
+                  <small className={classes.score}>{a.score}</small>
                 </TableCell>
                 <TableCell className="px-0" colSpan={1}>
-                  <IconButton>
+                  <IconButton onClick={() => {
+                    setAnswer(a);
+                    handleClickOpen();
+                  }}>
+                    <Icon color="primary">arrow_right_alt</Icon>
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            )) : <caption>
+              There is no answers collected yet, but you can filter by unanswered questions
+            </caption>
+            }
+          </TableBody> : <TableBody>
+            {filteredAnswers.map((a, index) => (
+              <TableRow key={index} hover>
+                <TableCell className="px-0 capitalize" colSpan={4} align="left">
+                  <div className="flex items-center">
+                    <Avatar src={a.imgUrl} />
+                    <div >
+                      <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
+                      <small className={clsx(classes.about, "m-0 ml-8")}>{getAboutStr(a)}</small>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
+                  <small className={classes.score}>{a.score !== null ? a.score : '?'}</small>
+                </TableCell>
+                <TableCell className="px-0" colSpan={1}>
+                  <IconButton onClick={() => {
+                    setAnswer(a);
+                    handleClickOpen();
+                  }}>
                     <Icon color="primary">arrow_right_alt</Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
+          </TableBody>}
         </Table>
       </div>
+      <AnswerStatus answer={answer} handleClose={handleClose} open={open} />
     </Card>
   );
 };
 
-const productList = [
-  {
-    imgUrl: '/assets/images/products/headphone-2.jpg',
-    name: 'earphone',
-    price: 100,
-    available: 15,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'earphone',
-    price: 1500,
-    available: 30,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-2.jpg',
-    name: 'iPhone x',
-    price: 1900,
-    available: 35,
-  },
-  {
-    imgUrl: '/assets/images/products/iphone-1.jpg',
-    name: 'iPhone x',
-    price: 100,
-    available: 0,
-  },
-  {
-    imgUrl: '/assets/images/products/headphone-3.jpg',
-    name: 'Head phone',
-    price: 1190,
-    available: 5,
-  },
-];
+Answers.propTypes = {
+  answered: PropTypes.array,
+  answers: PropTypes.array,
+  sortBy: PropTypes.func,
+  filter: PropTypes.string,
+  mentors: PropTypes.array
+};
 
 export default Answers;

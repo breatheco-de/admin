@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import MUIDataTable from 'mui-datatables';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Grow,
   Icon,
   IconButton,
-  TextField,
   Button,
   LinearProgress,
   Tooltip,
@@ -15,16 +12,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  TextField
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { addHours } from 'date-fns';
-import InviteDetails from 'app/components/InviteDetails';
+import { addHours } from 'date-fns'
+import { Breadcrumb } from '../../../matx';
+import bc from 'app/services/breathecode';
+import {SmartMUIDataTable} from '../../components/SmartDataTable';
 import { toast } from 'react-toastify';
-import { Breadcrumb, MatxLoading } from '../../../matx';
-import axios from '../../../axios';
-import { DownloadCsv } from '../../components/DownloadCsv';
-import bc from '../../services/breathecode';
 
 toast.configure();
 const toastOption = {
@@ -46,9 +42,7 @@ const stageColors = {
 };
 
 const EventList = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const { settings } = useSelector(({ layout }) => layout);
-  const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -60,17 +54,6 @@ const EventList = () => {
       .then(({ data }) => console.log(data))
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    bc.feedback()
-      .getSurveys()
-      .then(({ data }) => {
-        setIsLoading(false);
-        if (isAlive) setItems(data);
-      });
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -259,7 +242,7 @@ const EventList = () => {
                   <Icon>assignment</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to="/feedback/surveys/1">
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -273,7 +256,7 @@ const EventList = () => {
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to="/feedback/surveys/1">
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -310,76 +293,24 @@ const EventList = () => {
             )}
           </div>
         </div>
-        <div className="overflow-auto">
-          <div className="min-w-750">
-            {isLoading && <MatxLoading />}
-            <MUIDataTable
-              title="All Events"
-              data={items}
-              columns={columns}
-              options={{
-                customToolbar: () => {
-                  const singlePageTableCsv = '/v1/feedback/academy/answer';
-                  const allPagesTableCsv = '/v1/feedback/academy/answer';
-                  return (
-                    <DownloadCsv
-                      singlePageTableCsv={singlePageTableCsv}
-                      allPagesTableCsv={allPagesTableCsv}
-                    />
-                  );
-                },
-                download: false,
-                filterType: 'textField',
-                responsive: 'standard',
-                // selectableRows: "none", // set checkbox for each row
-                // search: false, // set search option
-                // filter: false, // set data filter option
-                // download: false, // set download option
-                // print: false, // set print option
-                // pagination: true, //set pagination option
-                // viewColumns: false, // set column option
-                elevation: 0,
-                rowsPerPageOptions: [10, 20, 40, 80, 100],
-                customSearchRender: (searchText, handleSearch, hideSearch, options) => (
-                  <Grow appear in timeout={300}>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className="mr-2" fontSize="small">
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize="small">clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                ),
-              }}
-            />
-          </div>
+      </div>
+      <div className="overflow-auto">
+        <div className="min-w-750">
+          <SmartMUIDataTable
+            title="All Surveys"
+            columns={columns}
+            items={items}
+            view="survey?"
+            historyReplace="/feedback/surveys"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.feedback().getSurveys(querys);
+              setItems(data.results);
+              return data;
+            }}
+          />
         </div>
       </div>
-
-      <Tooltip title="Copy Survey link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip>
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

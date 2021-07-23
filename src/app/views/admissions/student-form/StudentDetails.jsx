@@ -101,6 +101,7 @@ const StudentDetails = ({
       })
       .catch((error) => error);
   };
+
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
@@ -196,7 +197,7 @@ const StudentDetails = ({
               }}
               key={presentRole}
             >
-              <ListItemText primary={role.name.toUpperCase()} />
+              <ListItemText primary={presentRole.name?.toUpperCase()} />
             </ListItem>
           ))}
         </List>

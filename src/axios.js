@@ -24,7 +24,9 @@ axiosInstance._post = function () {
 axiosInstance._get = function () {
     const [scopeName, url, ...rest] = arguments;
     this.scopes[url] = scopeName;
-    return this.get(url, ...rest);
+    const resp = this.get(url, ...rest);
+    console.log("axios", resp)
+    return resp;
 }
 
 axiosInstance._delete = function () {

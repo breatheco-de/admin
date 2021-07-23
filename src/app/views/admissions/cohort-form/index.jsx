@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
+import { getToken, getSession } from "../../../redux/actions/SessionActions"
 import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
@@ -84,10 +85,12 @@ const Cohort = () => {
   const options = [
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
-    { label: 'Cohort Detailed Report', value: 'cohort_deport' },
+    { label: 'Assignments', value: 'assignments' },
+    { label: 'Attendancy', value: 'attendancy' },
     { label: 'Instant NPS Survey', value: 'new_survey' },
     { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
   ];
+
   const [newSurvey, setNewSurvey] = useState({
     cohort: slug,
     max_assistants: 2,
@@ -190,6 +193,10 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
+
+              const token = getToken();
+              const session = getSession();
+
               if (value === 'current_day') {
                 setCohortDayDialog(true);
               } else setCohortDayDialog(false);
@@ -201,6 +208,12 @@ const Cohort = () => {
               } else setSurveyDialog(false);
               if (value === 'privacy') {
                 makePrivate();
+              }
+
+              if (value === 'attendancy') {
+                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`)
+              } else if (value === 'assignments') {
+                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`)
               }
             }}
           >
@@ -229,7 +242,7 @@ const Cohort = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohort_id={cohort.id} /> : ''}
+            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
           </Grid>
         </Grid>
       </div>

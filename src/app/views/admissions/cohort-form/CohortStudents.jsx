@@ -177,7 +177,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         <div className="min-w-600">
           {studenList.length > 0
             && studenList.map((s, i) => (
-              <div key={s} className="py-4">
+              <div key={s.user.id} className="py-4">
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
                     <div className="flex">
@@ -200,7 +200,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                           <small
                             aria-hidden="true"
                             onClick={() => {
-                              handlePaginationNextPage();
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i });
                             }}
                             className="border-radius-4 px-2 pt-2px bg-secondary"
                             style={{ cursor: 'pointer' }}
