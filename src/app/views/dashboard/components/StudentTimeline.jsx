@@ -8,6 +8,8 @@ const StudentTimeline = () => {
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
         <ActivityGrid />
+        <ActivityGrid />
+        <ActivityGrid />
       </div>
     </Grid>
   );

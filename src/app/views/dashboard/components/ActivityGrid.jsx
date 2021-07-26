@@ -18,36 +18,45 @@ const useStyles = makeStyles(() => ({
     height: 0,
     paddingTop: '56.25%', // 16:9
   },
+  outsideIcon: {
+    position: 'relative',
+    top: 15,
+    left: 15,
+  },
 }));
 
 const ActivityGrid = () => {
   const classes = useStyles();
 
   return (
-    <Card>
-      <CardHeader title="Shrimp and Chorizo Paella" subheader={dayjs().format('MM-DD-YYYY')} />
-      <div className={classes.root}>
-        <div>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-          <IconButton className="p-3 bg-primary relative">
-            <Badge badgeContent={4} color="primary">
-              <MailIcon />
-            </Badge>
-          </IconButton>
-        </div>
-        <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            This impressive paella is a perfect party dish and a fun meal to cook together with your
-            guests. Add 1 cup of frozen peas along with the mussels, if you like.
-          </Typography>
-        </CardContent>
+    <div className="mb-8">
+      <div className={classes.outsideIcon}>
+        <IconButton className="p-3 bg-primary ">
+          <Badge badgeContent={4} color="primary">
+            <MailIcon />
+          </Badge>
+        </IconButton>
       </div>
-    </Card>
+      <Card>
+        <CardHeader title="Shrimp and Chorizo Paella" subheader={dayjs().format('MM-DD-YYYY')} />
+        <div className={classes.root}>
+          <div className="w-100  text-center">
+            <IconButton aria-label="add to favorites">
+              <FavoriteIcon />
+            </IconButton>
+            <IconButton aria-label="share">
+              <ShareIcon />
+            </IconButton>
+          </div>
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              This impressive paella is a perfect party dish and a fun meal to cook together with
+              your guests. Add 1 cup of frozen peas along with the mussels, if you like.
+            </Typography>
+          </CardContent>
+        </div>
+      </Card>
+    </div>
   );
 };
 
