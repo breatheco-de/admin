@@ -70,13 +70,13 @@ export const SmartMUIDataTable = (props) => {
     };
   }, [isAlive]);
 
-  const handlePageChange = (page, rowsPerPage, _like, _sort) => {
+  const handlePageChange = (page, rowsPerPage, like, sort) => {
     setIsLoading(true);
     const q = {
       limit: rowsPerPage,
       offset: rowsPerPage * page,
-      ..._like && { _like },
-      ..._sort && { _sort },
+      ...like && { like },
+      ...sort && { sort },
     };
     setQuerys(q);
     props
@@ -117,7 +117,7 @@ export const SmartMUIDataTable = (props) => {
         serverSide: true,
         elevation: 0,
         count: table.count,
-        page: table.page,
+        page: parseInt(table.page),
         selectableRowsHeader: false,
         rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit),
         rowsPerPageOptions: [10, 20, 40, 80, 100],
