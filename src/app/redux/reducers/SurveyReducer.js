@@ -50,8 +50,8 @@ const SurveyReducer = function (state = initialState, action) {
         filteredAnswers: state.answers.filter(item => {
           if(action.payload.query === 'all') return true;
           if(action.payload.query === 'academy' && !item.cohort && !item.mentor) return true;
-          if(action.payload.query === 'cohort' && item.cohort) return true;
-          if(action.payload.query !== 'academy' && action.payload.query !== 'cohort' && item.mentor){
+          if(action.payload.query === 'cohort' && item.cohort && item.mentor === null) return true;
+          if(action.payload.query !== 'academy' && action.payload.query !== 'cohort' && item.mentor !== null){
             if(action.payload.query === `${item.mentor.first_name} ${item.mentor.last_name}`) return true;
           }
         }),
