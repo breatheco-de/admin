@@ -8,10 +8,12 @@ import StudentInformation from './components/StudentInformation';
 import StudentActivity from './components/StudentActivity';
 
 const studentReport = () => {
+  const [query, setQuery] = useState({});
   const { studentID, cohortID } = useParams();
   const [cohortData, setCohortData] = useState({});
   const [studentData, setStudentData] = useState({});
   const [studentAssignments, setStudentAssignments] = useState([]);
+  const [studentActivity, setStudentActivity] = useState([]);
 
   useEffect(() => {
     bc.admissions()
@@ -25,6 +27,7 @@ const studentReport = () => {
       .getSingleCohortStudent(cohortID, studentID)
       .then(({ data }) => {
         setStudentData(data);
+        setQuery({ ...query, email: data.user.email });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -37,6 +40,18 @@ const studentReport = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(query).length !== 0 && query.constructor === Object) {
+      bc.activity()
+        .getCohortActivity(cohortID, query)
+        .then(({ data }) => {
+          setStudentActivity(data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [query]);
+
   return (
     <>
       <div className="pb-24 pt-7 px-8 bg-primary text-white flex">

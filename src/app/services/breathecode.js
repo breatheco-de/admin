@@ -419,6 +419,20 @@ class BreatheCodeClient {
     }
   }
 
+  activity() {
+    return {
+      getCohortActivity: (cohortID, query) => {
+        const qs =
+        query !== undefined
+          ? Object.keys(query)
+              .map((key) => `${key}=${query[key]}`)
+              .join("&")
+          : "";
+        return axios._get("Cohort Activity", `${this.host}/activity/academy/cohort/${cohortID}${query ? "?" + qs : ""}`);
+      }
+    }
+  }
+
   getItem(key) {
     let value = this.ls.getItem(key);
     try {

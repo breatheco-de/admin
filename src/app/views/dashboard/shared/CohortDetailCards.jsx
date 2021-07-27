@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid, Card, Icon, IconButton, Tooltip,
-} from '@material-ui/core';
+import { Grid, Card, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ palette }) => ({
   icon: {
     fontSize: '44px',
     opacity: 0.6,
-    color: palette.primary.main,
+    color: '#fafafa',
   },
 }));
 
