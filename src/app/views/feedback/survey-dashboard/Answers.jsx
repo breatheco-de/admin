@@ -71,9 +71,9 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
     setOpen(false);
   };
   const getAboutStr = (item) => {
-    if (!item.mentor && !item.cohort) return 'About Academy';
-    if (item.cohort) return 'About Cohort';
-    if (item.mentor) return `${item.mentor.first_name} ${item.mentor.last_name}`;
+    if(!item.cohort && !item.mentor) return 'About Academy';
+    if(item.cohort && !item.mentor) return 'About Cohort';
+    if(item.mentor) return `About ${item.mentor.first_name} ${item.mentor.last_name}`;
   }
   return (
     <Card elevation={3} className="pt-5 mb-6">
@@ -112,7 +112,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                     <Avatar src={a.imgUrl} />
                     <div >
                       <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
-                      <small className={clsx(classes.about, "m-0 ml-8")}>{getAboutStr(a)}</small>
+                      <span className={clsx(classes.about, "m-0 ml-8 text-muted")}>{getAboutStr(a)}</span>
                     </div>
                   </div>
                 </TableCell>
@@ -140,7 +140,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                     <Avatar src={a.imgUrl} />
                     <div >
                       <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
-                      <small className={clsx(classes.about, "m-0 ml-8")}>{getAboutStr(a)}</small>
+                      <span className={clsx(classes.about, "m-0 ml-8 text-muted")}>{getAboutStr(a)}</span>
                     </div>
                   </div>
                 </TableCell>
