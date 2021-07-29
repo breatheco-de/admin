@@ -117,9 +117,9 @@ export const SmartMUIDataTable = (props) => {
         serverSide: true,
         elevation: 0,
         count: table.count,
-        page: parseInt(table.page),
+        page: table.page,
         selectableRowsHeader: false,
-        rowsPerPage: querys.limit === undefined ? 10 : parseInt(querys.limit),
+        rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
         rowsPerPageOptions: [10, 20, 40, 80, 100],
         viewColumns: true,
         customToolbar: () => (

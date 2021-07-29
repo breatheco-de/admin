@@ -33,15 +33,12 @@ export const getCategoryList = () => (dispatch) => {
 
 export const uploadFiles = (files) => (dispatch) => {
   const form = new FormData();
-  console.log(files);
   for (const file of files) form.append('file', file, file.name.split(' ').join('-'));
-  console.log(form);
   bc.media().upload(form).then((res) => {
     dispatch({
       type: UPLOAD_MEDIA_FILE,
       payload: res,
     });
-    console.log(res);
   });
 };
 
