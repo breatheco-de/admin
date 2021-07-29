@@ -9,10 +9,19 @@ dayjs.extend(relativeTime);
 
 const CohortInformation = ({ data }) => {
   const {
-    name, kickoff_date, ending_date, stage,
+    name, kickoff_date, ending_date, stage, teachers,
   } = data;
   const startDate = dayjs(kickoff_date).format('MM-DD-YYYY');
   const endingDate = dayjs(ending_date).format('MM-DD-YYYY');
+  let teachersArray;
+  if (teachers) {
+    const cohortTeacherArray = teachers.map((teacher) => {
+      const { first_name, last_name, email } = teacher.user;
+      return `${first_name} ${last_name} - ${email}`;
+    });
+    teachersArray = cohortTeacherArray;
+  }
+
   return (
     <CohortDetailCards
       metrics={[
@@ -24,6 +33,7 @@ const CohortInformation = ({ data }) => {
           icon: 'tag_faces',
         },
         { label: 'Stage', value: stage, icon: 'group' },
+        { label: 'Teachers', value: teachersArray, icon: 'group' },
       ]}
     />
   );
