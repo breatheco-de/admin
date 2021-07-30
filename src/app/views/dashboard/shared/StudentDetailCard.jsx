@@ -13,8 +13,7 @@ const StudentDetailCard = ({ metrics }) => (
               <Icon className="text-muted">{item.icon}</Icon>
             </IconButton>
           </div>
-
-          <h3 className="mt-1 text-32">{item.value}</h3>
+          <h3 className="mt-1 text-20">{item.value}</h3>
           <p className="m-0 text-muted">{item.title}</p>
         </Card>
       </Grid>
