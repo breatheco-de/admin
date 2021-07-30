@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudentActivity = ({ data }) => {
+const StudentActivity = ({ data, studentActivity }) => {
   const classes = useStyles();
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
@@ -54,7 +54,7 @@ const StudentActivity = ({ data }) => {
           <StudentDetailCard metrics={metrics} />
         </div>
       </Grid>
-      <StudentTimeline />
+      <StudentTimeline studentActivity={studentActivity} />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <List className={classes.root}>
           {undeliveredAssignments.map((assignment, index) => (
@@ -73,6 +73,7 @@ const StudentActivity = ({ data }) => {
 
 StudentActivity.propTypes = {
   data: PropTypes.array.isRequired,
+  studentActivity: PropTypes.array.isRequired,
 };
 
 export default StudentActivity;

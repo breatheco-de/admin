@@ -51,7 +51,7 @@ const studentReport = () => {
       .getSingleCohortStudent(cohortID, studentID)
       .then(({ data }) => {
         setStudentData(data);
-        setQuery({ ...query, email: data.user.email });
+        setQuery({ ...query, user_id: data.user.id });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -91,7 +91,7 @@ const studentReport = () => {
         </Grid>
       </div>
       <div className="pb-24 pt-7 px-8 bg-default text-grey flex">
-        <StudentActivity data={studentAssignments} />
+        <StudentActivity data={studentAssignments} studentActivity={studentActivity} />
       </div>
     </>
   );

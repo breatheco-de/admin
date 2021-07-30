@@ -25,9 +25,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ActivityGrid = () => {
+const ActivityGrid = ({ activity }) => {
   const classes = useStyles();
-
+  const { slug, created_at, data } = activity;
+  const formatTitle = (slug) => {
+    const text = slug.replace(/_/g, ' ');
+    const result = text[0].toUpperCase() + text.substring(1);
+    return result;
+  };
   return (
     <div className="mb-8">
       <div className={classes.outsideIcon}>
@@ -38,7 +43,7 @@ const ActivityGrid = () => {
         </IconButton>
       </div>
       <Card>
-        <CardHeader title="Shrimp and Chorizo Paella" subheader={dayjs().format('MM-DD-YYYY')} />
+        <CardHeader title={formatTitle(slug)} subheader={dayjs(created_at).format('MM-DD-YYYY')} />
         <div className={classes.root}>
           <div className="w-100  text-center">
             <IconButton aria-label="add to favorites">
