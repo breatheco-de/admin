@@ -131,7 +131,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                 </TableCell>
               </TableRow>
             )) : <caption>
-              There is no answers collected yet, but you can filter by unanswered questions
+              There is no answers collected yet,   but you can filter by unanswered questions
             </caption>
             }
           </TableBody> : <TableBody>
