@@ -34,7 +34,7 @@ const NewCohort = () => {
     name: '',
     slug: '',
     kickoff_date: startDate,
-    endingDate: null,
+    ending_date: null,
     never_ends: false,
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
@@ -45,7 +45,7 @@ const NewCohort = () => {
     setNeverEnd(!neverEnd);
     setNewCohort({
       ...newCohort,
-      endingDate: null,
+      ending_date: null,
       never_ends: true,
     });
   };
@@ -192,11 +192,11 @@ const NewCohort = () => {
                       inputVariant="outlined"
                       type="text"
                       size="small"
-                      value={newCohort.endingDate}
+                      value={newCohort.ending_date}
                       format="MMMM dd, yyyy"
                       onChange={(date) => setNewCohort({
                         ...newCohort,
-                        endingDate: date,
+                        ending_date: date,
                         never_ends: false,
                       })}
                       disabled={!neverEnd}
