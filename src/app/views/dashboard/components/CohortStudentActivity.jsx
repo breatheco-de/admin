@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 
 import AssignmentGrid from './AssignmentGrid';
-import StudentDetailCard from '../shared/StudentDetailCard';
+import CohortDetailCards from '../shared/CohortDetailCards';
 import StudentTimeline from './StudentTimeline';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,30 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
   const classes = useStyles();
-  // const cohortCurrentDay = studentActivity[0]?.day;
-  // const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
-  // const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
-  // const unattendance = studentActivity.filter(
-  //   (activity) => activity.slug === 'classroom_unattendance',
-  // );
-
-  // const attendancePercentages = () => ({
-  //   a_percentage: (attendance.length * 100) / cohortCurrentDay,
-  //   u_percentage: (unattendance.length * 100) / cohortCurrentDay,
-  // });
-
-  // const { a_percentage, u_percentage } = attendancePercentages();
-
-  // const lastLogin = () => {
-  //   let dateStr = studentActivity
-  //     .filter((activity) => activity.slug === 'breathecode_login')
-  //     .slice(-1)[0]?.created_at;
-
-  //   dateStr = dayjs(dateStr).format('MM-DD-YYYY');
-  //   return dateStr;
-  // };
-
   const {
     name, kickoff_date, ending_date, stage, teachers,
   } = cohortData;
@@ -76,18 +53,23 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
       value: endingDate,
       title: 'Ending Date',
     },
-    // {
-    //   icon: 'colorize',
-    //   value: lastLogin(),
-    //   title: 'Last Login',
-    // },
+    {
+      icon: 'colorize',
+      value: stage,
+      title: 'Stage',
+    },
+    {
+      icon: 'colorize',
+      value: teachersArray,
+      title: 'Teachers',
+    },
   ];
 
   return (
     <>
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <div className="px-8">
-          <StudentDetailCard metrics={metrics} />
+          <CohortDetailCards metrics={metrics} />
         </div>
       </Grid>
       <StudentTimeline studentActivity={studentActivity} />
@@ -108,9 +90,9 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
 };
 
 CohortStudentActivity.propTypes = {
-  data: PropTypes.array.isRequired,
-  studentActivity: PropTypes.array.isRequired,
-  cohortData: PropTypes.array.isRequired,
+  data: PropTypes.object.isRequired,
+  studentActivity: PropTypes.object.isRequired,
+  cohortData: PropTypes.object.isRequired,
 };
 
 export default CohortStudentActivity;

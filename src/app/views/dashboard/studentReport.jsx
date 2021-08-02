@@ -87,7 +87,6 @@ const studentReport = () => {
         </Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
           <div className="py-8" />
-          {/* <CohortInformation data={cohortData} /> */}
           <StudentIndicators data={studentAssignments} studentActivity={studentActivity} />
         </Grid>
       </div>

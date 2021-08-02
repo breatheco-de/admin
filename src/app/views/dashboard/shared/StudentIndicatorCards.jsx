@@ -14,12 +14,6 @@ const useStyles = makeStyles(({ palette }) => ({
 const StudentIndicatorCards = ({ metrics }) => {
   const classes = useStyles();
 
-  // const listContent = (contentArray) => contentArray.map((item, index) => (
-  //   <p className="text-white" key={index}>
-  //     {item}
-  //   </p>
-  // ));
-
   return (
     <Grid container spacing={3} className="mb-3">
       {metrics.map((v) => (
@@ -31,11 +25,7 @@ const StudentIndicatorCards = ({ metrics }) => {
             <div className="flex items-center">
               <div className="ml-3">
                 <small className="text-light-white">{v.label}</small>
-                {/* {typeof v.value === 'object' ? (
-                  listContent(v.value)
-                ) : ( */}
                 <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>
-                {/* )} */}
               </div>
             </div>
             <Icon className={classes.icon}>{v.icon}</Icon>

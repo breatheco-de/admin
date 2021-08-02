@@ -10,7 +10,6 @@ dayjs.extend(relativeTime);
 const StudentIndicators = ({ data, studentActivity }) => {
   const cohortCurrentDay = studentActivity[0]?.day;
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
-  // const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
   const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
   const unattendance = studentActivity.filter(
     (activity) => activity.slug === 'classroom_unattendance',
@@ -31,19 +30,6 @@ const StudentIndicators = ({ data, studentActivity }) => {
     dateStr = dayjs(dateStr).format('MM-DD-YYYY');
     return dateStr;
   };
-  // const {
-  //   name, kickoff_date, ending_date, stage, teachers,
-  // } = data;
-  // const startDate = dayjs(kickoff_date).format('MM-DD-YYYY');
-  // const endingDate = dayjs(ending_date).format('MM-DD-YYYY');
-  // let teachersArray;
-  // if (teachers) {
-  //   const cohortTeacherArray = teachers.map((teacher) => {
-  //     const { first_name, last_name, email } = teacher.user;
-  //     return `${first_name} ${last_name} - ${email}`;
-  //   });
-  //   teachersArray = cohortTeacherArray;
-  // }
 
   return (
     <StudentIndicatorCards
