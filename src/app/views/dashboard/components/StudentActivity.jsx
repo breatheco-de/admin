@@ -22,14 +22,20 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentActivity = ({ data, studentActivity }) => {
   const classes = useStyles();
+  const cohortCurrentDay = studentActivity[0]?.day;
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
-
   const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
-
   const unattendance = studentActivity.filter(
     (activity) => activity.slug === 'classroom_unattendance',
   );
+
+  const attendancePercentages = () => ({
+    a_percentage: (attendance.length * 100) / cohortCurrentDay,
+    u_percentage: (unattendance.length * 100) / cohortCurrentDay,
+  });
+
+  const { a_percentage, u_percentage } = attendancePercentages();
 
   const lastLogin = () => {
     let dateStr = studentActivity
@@ -48,12 +54,12 @@ const StudentActivity = ({ data, studentActivity }) => {
     },
     {
       icon: 'colorize',
-      value: attendance.length,
+      value: `${Math.floor(a_percentage)}%`,
       title: 'Attendance',
     },
     {
       icon: 'colorize',
-      value: unattendance.length,
+      value: `${Math.floor(u_percentage)}%`,
       title: 'Unattendance',
     },
     {
