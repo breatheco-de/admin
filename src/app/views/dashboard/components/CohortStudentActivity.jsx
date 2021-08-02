@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, List } from '@material-ui/core';
+import { Grid, List, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
   const classes = useStyles();
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
+  const [listQuantity, setListQuantity] = useState(10);
   const {
     name, kickoff_date, ending_date, stage, teachers,
   } = cohortData;
@@ -75,7 +76,7 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
       <StudentTimeline studentActivity={studentActivity} />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <List className={classes.root}>
-          {undeliveredAssignments.map((assignment, index) => (
+          {undeliveredAssignments.slice(0, listQuantity).map((assignment, index) => (
             <AssignmentGrid
               key={assignment.id}
               data={assignment}
@@ -84,6 +85,18 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
             />
           ))}
         </List>
+        <div className="pt-4">
+          <Button
+            disabled={undeliveredAssignments.length < 10}
+            fullWidth
+            className="text-primary bg-light-primary"
+            onClick={() => {
+              setListQuantity(listQuantity + 10);
+            }}
+          >
+            {undeliveredAssignments.length > 10 ? 'Load More' : 'No more projects to load'}
+          </Button>
+        </div>
       </Grid>
     </>
   );
