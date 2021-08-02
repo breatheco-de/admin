@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 
 import bc from '../../services/breathecode';
-import CohortInformation from './components/CohortInformation';
+import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
-import StudentActivity from './components/StudentActivity';
+import CohortStudentActivity from './components/CohortStudentActivity';
 
 const studentReport = () => {
   const [query, setQuery] = useState({});
@@ -87,11 +87,16 @@ const studentReport = () => {
         </Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
           <div className="py-8" />
-          <CohortInformation data={cohortData} />
+          {/* <CohortInformation data={cohortData} /> */}
+          <StudentIndicators data={studentAssignments} studentActivity={studentActivity} />
         </Grid>
       </div>
       <div className="pb-24 pt-7 px-8 bg-default text-grey flex">
-        <StudentActivity data={studentAssignments} studentActivity={studentActivity} />
+        <CohortStudentActivity
+          data={studentAssignments}
+          studentActivity={studentActivity}
+          cohortData={cohortData}
+        />
       </div>
     </>
   );
