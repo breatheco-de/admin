@@ -446,7 +446,7 @@ const Cohort = () => {
         </Formik>
       </Dialog>
 
-      <Tooltip title="Copy invite link">
+      {/* <Tooltip title="Copy invite link">
         <IconButton
           onClick={() => {
             setOpenDialog(true);
@@ -454,8 +454,8 @@ const Cohort = () => {
         >
           <Icon>assignment</Icon>
         </IconButton>
-      </Tooltip>
-      <Dialog
+      </Tooltip> */}
+      {/* <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         aria-labelledby="form-dialog-title"
@@ -496,7 +496,7 @@ const Cohort = () => {
             </DialogActions>
           </Grid>
         </form>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };
