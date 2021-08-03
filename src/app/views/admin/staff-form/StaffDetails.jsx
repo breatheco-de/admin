@@ -64,7 +64,7 @@ const StaffDetails = ({ user, staffId }) => {
   };
   const updateRole = (currentRole) => {
     bc.auth()
-      .updateAcademyMember(staffId, { currentRole })
+      .updateAcademyMember(staffId, { role: currentRole })
       .then(({ data, status }) => {
         if (status >= 200 && status < 300) {
           setRole(roles.find((roleData) => roleData.slug === data.role).name);
