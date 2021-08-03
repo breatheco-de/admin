@@ -72,7 +72,6 @@ export const navigations = [
         iconText: 'OL',
       },
       {
-        beta: true,
         name: 'Surveys',
         path: '/feedback/surveys',
         iconText: 'OL',
