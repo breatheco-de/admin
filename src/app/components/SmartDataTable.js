@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
 import { MatxLoading } from 'matx';
@@ -9,7 +8,6 @@ import {
   Grow, Icon, IconButton, TextField, Button,
 } from '@material-ui/core';
 import { useQuery } from '../hooks/useQuery';
-
 import { DownloadCsv } from './DownloadCsv';
 import BulkDelete from './ToolBar/BulkDelete';
 

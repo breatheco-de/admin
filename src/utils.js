@@ -201,3 +201,16 @@ export function resolveError(error) {
   else if (error.response.status >= 400) return toast.error(error.response.data.detail, toastOption);
   else return toast.error('Something went wrong!', toastOption);
 }
+
+export const npsScoreColors = {
+  "1":"text-error",
+  "2":"text-error",
+  "3":"text-error",
+  "4":"text-error",
+  "5":"text-error",
+  "6":"text-error",
+  "7":"text-secondary",
+  "8":"text-green",
+  "9":"text-green",
+  "10":"text-green",
+}
