@@ -7,8 +7,8 @@ const StudentTimeline = ({ studentActivity }) => {
   return (
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
-        {studentActivity.slice(0, listQuantity).map((activity) => (
-          <ActivityGrid activity={activity} />
+        {studentActivity.slice(0, listQuantity).map((activity, index) => (
+          <ActivityGrid activity={activity} index={index} />
         ))}
         <div>
           <Button

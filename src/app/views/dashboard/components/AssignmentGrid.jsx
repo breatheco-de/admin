@@ -15,6 +15,7 @@ dayjs.extend(relativeTime);
 const AssignmentGrid = ({ data, classes, isLastItem }) => {
   const [assignmentsDetails, setAssignmentsDetails] = useState([]);
   const { title, task_type, associated_slug } = data;
+  console.log('data for projects', data);
   const { created_at, difficulty } = assignmentsDetails;
 
   useEffect(() => {

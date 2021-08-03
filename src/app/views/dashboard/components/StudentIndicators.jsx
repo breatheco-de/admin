@@ -25,7 +25,7 @@ const StudentIndicators = ({ data, studentActivity }) => {
   const lastLogin = () => {
     let dateStr = studentActivity
       .filter((activity) => activity.slug === 'breathecode_login')
-      .slice(-1)[0]?.created_at;
+      .slice(0)[0]?.created_at;
 
     dateStr = dayjs(dateStr).format('MM-DD-YYYY');
     return dateStr;
@@ -36,11 +36,6 @@ const StudentIndicators = ({ data, studentActivity }) => {
       metrics={[
         { label: 'Projects Delivered', value: deliveredAssignments.length, icon: 'group' },
         { label: 'Attendance', value: `${Math.floor(a_percentage)}%`, icon: 'star' },
-        {
-          label: 'Unnatendance',
-          value: `${Math.floor(u_percentage)}%`,
-          icon: 'tag_faces',
-        },
         { label: 'Last Login', value: lastLogin(), icon: 'group' },
       ]}
     />

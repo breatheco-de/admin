@@ -1,31 +1,25 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Card, CardHeader, CardContent, IconButton, Badge,
+  Card, Fab, Divider, Icon,
 } from '@material-ui/core';
-import MailIcon from '@material-ui/icons/Mail';
-import Typography from '@material-ui/core/Typography';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import dayjs from 'dayjs';
+import clsx from 'clsx';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    maxWidth: '100%',
-    display: 'flex',
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
-  },
-  outsideIcon: {
-    position: 'relative',
-    top: 15,
-    left: 15,
+const useStyles = makeStyles(({ palette }) => ({
+  cardLeftVerticalLine: {
+    '&:after': {
+      content: '" "',
+      position: 'absolute',
+      height: 35,
+      width: 5,
+      top: -30,
+      background: palette.primary.main,
+    },
   },
 }));
 
-const ActivityGrid = ({ activity }) => {
+const ActivityGrid = ({ activity, index }) => {
   const classes = useStyles();
   const { slug, created_at, data } = activity;
   const formatTitle = (slug) => {
@@ -33,34 +27,42 @@ const ActivityGrid = ({ activity }) => {
     const result = text[0].toUpperCase() + text.substring(1);
     return result;
   };
+  const icons = {
+    breathecode_login: 'login',
+    online_platform_registration: 'app_registration',
+    public_event_attendance: 'event',
+    classroom_attendance: 'app_registration',
+    classroom_unattendance: 'star_outline',
+    lesson_opened: 'star_outline',
+    office_attendance: 'star_outline',
+    nps_survey_answered: 'star_outline',
+    exercise_success: 'star_outline',
+    academy_registration: 'star_outline',
+  };
   return (
-    <div className="mb-8">
-      <div className={classes.outsideIcon}>
-        <IconButton className="p-3 bg-primary ">
-          <Badge badgeContent={4} color="primary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-      </div>
-      <Card>
-        <CardHeader title={formatTitle(slug)} subheader={dayjs(created_at).format('MM-DD-YYYY')} />
-        <div className={classes.root}>
-          <div className="w-100  text-center">
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
-            </IconButton>
-            <IconButton aria-label="share">
-              <ShareIcon />
-            </IconButton>
+    <div>
+      <Card className="overflow-unset flex py-4">
+        <div className="w-100 min-w-100 text-center">
+          <Fab
+            className={clsx('relative mt--14', index > 0 && classes.cardLeftVerticalLine)}
+            size="medium"
+            color="primary"
+          >
+            <Icon>{icons[slug]}</Icon>
+          </Fab>
+        </div>
+        <div className="flex-grow">
+          <div className="flex items-center justify-between pr-4 pb-3">
+            <h5 className="m-0 font-medium capitalize">{formatTitle(slug)}</h5>
+            <span className="text-muted">{dayjs(created_at).format('MM-DD-YYYY')}</span>
           </div>
-          <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-              This impressive paella is a perfect party dish and a fun meal to cook together with
-              your guests. Add 1 cup of frozen peas along with the mussels, if you like.
-            </Typography>
-          </CardContent>
+          <Divider />
+          <p className="m-0 pt-3">
+            {`Details: ${data?.details || 'No details available from this activity'}`}
+          </p>
         </div>
       </Card>
+      <div className="py-7" />
     </div>
   );
 };
