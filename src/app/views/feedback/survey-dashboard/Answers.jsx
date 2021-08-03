@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AnswerStatus from '../../../components/AnswerStatus';
+import { npsScoreColors } from '../../../../utils';
 import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -33,8 +34,8 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
   },
   score: {
-    color: 'green',
-    padding: '2px',
+    padding: '4px',
+    fontSize:"14px"
   },
   about: {
     padding: '4px',
@@ -42,6 +43,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     marginTop: '3px',
   }
 }));
+
 
 const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors = [] }) => {
   const classes = useStyles();
@@ -117,7 +119,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                   </div>
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  <small className={classes.score}>{a.score}</small>
+                  <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score}</small>
                 </TableCell>
                 <TableCell className="px-0" colSpan={1}>
                   <IconButton onClick={() => {
@@ -129,7 +131,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                 </TableCell>
               </TableRow>
             )) : <caption>
-              There is no answers collected yet, but you can filter by unanswered questions
+              There is no answers collected yet,   but you can filter by unanswered questions
             </caption>
             }
           </TableBody> : <TableBody>
@@ -145,7 +147,7 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
                   </div>
                 </TableCell>
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  <small className={classes.score}>{a.score !== null ? a.score : '?'}</small>
+                  <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score !== null ? a.score : '?'}</small>
                 </TableCell>
                 <TableCell className="px-0" colSpan={1}>
                   <IconButton onClick={() => {
