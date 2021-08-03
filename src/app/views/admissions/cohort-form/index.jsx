@@ -445,58 +445,6 @@ const Cohort = () => {
           )}
         </Formik>
       </Dialog>
-
-      {/* <Tooltip title="Copy invite link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip> */}
-      {/* <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="form-dialog-title"
-        fullWidth
-      >
-        <form className="p-4">
-          <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item md={12} sm={12} xs={10}>
-                <TextField
-                  label="URL"
-                  name="url"
-                  size="medium"
-                  disabled
-                  fullWidth
-                  variant="outlined"
-                  value={url}
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <Grid className="p-2">
-            <DialogActions>
-              <Button
-                className="bg-primary text-white"
-                onClick={() => {
-                  navigator.clipboard.writeText(url);
-                  toast.success('Invite url copied successfuly', toastOption);
-                }}
-                autoFocus
-              >
-                Copy
-              </Button>
-              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
-                Close
-              </Button>
-            </DialogActions>
-          </Grid>
-        </form>
-      </Dialog> */}
     </>
   );
 };
