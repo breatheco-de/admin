@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import AssignmentGrid from './AssignmentGrid';
 import CohortDetailCards from '../shared/CohortDetailCards';
 import StudentTimeline from './StudentTimeline';
+import CohortDetailCard from '../shared/CohortDetailCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,8 +33,8 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
   let teachersArray;
   if (teachers) {
     const cohortTeacherArray = teachers.map((teacher) => {
-      const { first_name, last_name, email } = teacher.user;
-      return `${first_name} ${last_name} - ${email}`;
+      const { first_name, last_name } = teacher.user;
+      return `${first_name} ${last_name} - ${teacher.role}`;
     });
     teachersArray = cohortTeacherArray;
   }
@@ -70,7 +71,14 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
     <>
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <div className="px-8">
-          <CohortDetailCards metrics={metrics} />
+          {/* <CohortDetailCards metrics={metrics} /> */}
+          <CohortDetailCard
+            teachersArray={teachersArray}
+            stage={stage}
+            endingDate={endingDate}
+            startDate={startDate}
+            name={name}
+          />
         </div>
       </Grid>
       <StudentTimeline studentActivity={studentActivity} />
