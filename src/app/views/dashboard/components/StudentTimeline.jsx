@@ -10,6 +10,7 @@ const StudentTimeline = ({ studentActivity }) => {
         {studentActivity.slice(0, listQuantity).map((activity, index) => (
           <ActivityGrid activity={activity} index={index} />
         ))}
+
         <div>
           <Button
             disabled={studentActivity.length < 10}

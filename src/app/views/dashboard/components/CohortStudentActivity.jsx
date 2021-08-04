@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
   const classes = useStyles();
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
-  const [listQuantity, setListQuantity] = useState(10);
+  const [limit, setLimit] = useState(10);
   const {
     name, kickoff_date, ending_date, stage, teachers,
   } = cohortData;
@@ -76,7 +76,7 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
       <StudentTimeline studentActivity={studentActivity} />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <List className={classes.root}>
-          {undeliveredAssignments.slice(0, listQuantity).map((assignment, index) => (
+          {undeliveredAssignments.slice(0, limit).map((assignment, index) => (
             <AssignmentGrid
               key={assignment.id}
               data={assignment}
@@ -91,7 +91,7 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
             fullWidth
             className="text-primary bg-light-primary"
             onClick={() => {
-              setListQuantity(listQuantity + 10);
+              setLimit(limit + 10);
             }}
           >
             {undeliveredAssignments.length > 10 ? 'Load More' : 'No more projects to load'}

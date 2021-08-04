@@ -19,6 +19,63 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
+const activityTypes = {
+  breathecode_login: {
+    icon: 'login',
+    render: (activity) => `User login at ${dayjs(activity.created_at).format('h-mm-A')}`,
+  },
+  online_platform_registration: {
+    icon: 'app_registration',
+    render: (activity) => `The Student registered on day ${activity.day}`,
+  },
+  public_event_attendance: {
+    icon: 'event_seat',
+    render: (activity) => `The Student attended to "${activity.data}" event on day ${activity.day}`,
+  },
+  classroom_attendance: {
+    icon: 'app_registration',
+    render: (activity) => `The Student attended on day ${activity.day}`,
+  },
+  classroom_unattendance: {
+    icon: 'star_outline',
+    render: (activity) => `The Student missed class on day ${activity.day}`,
+  },
+  lesson_opened: {
+    icon: 'star_outline',
+    render: (activity) => `The Student oppened a lesson on day ${activity.day}`,
+  },
+  office_attendance: {
+    icon: 'star_outline',
+    render: (activity) => `The Student attended officde on day ${activity.day}`,
+  },
+  nps_survey_answered: {
+    icon: 'star_outline',
+    render: (activity) => `The Student answered nps survey with score ${activity.data}`,
+  },
+  exercise_success: {
+    icon: 'star_outline',
+    render: (activity) => {
+      const exerciseDetails = JSON.parse(activity.data);
+      const { slug, editor } = exerciseDetails;
+      return `${slug} was completed successfully on ${editor}`;
+    },
+  },
+  academy_registration: {
+    icon: 'app_registration',
+    render: (activity) => `The Student registered to the academy on ${activity.day}`,
+  },
+};
+
+const printDetails = (activity) => {
+  if (activityTypes[activity.slug]) {
+    if (activityTypes[activity.slug].render) {
+      return activityTypes[activity.slug].render(activity) || 'No Activity Details';
+    }
+    return 'No Render Method for this activity';
+  }
+  return 'Unknown Activity Type';
+};
+
 const ActivityGrid = ({ activity, index }) => {
   const classes = useStyles();
   const { slug, created_at, data } = activity;
@@ -27,18 +84,13 @@ const ActivityGrid = ({ activity, index }) => {
     const result = text[0].toUpperCase() + text.substring(1);
     return result;
   };
-  const icons = {
-    breathecode_login: 'login',
-    online_platform_registration: 'app_registration',
-    public_event_attendance: 'event',
-    classroom_attendance: 'app_registration',
-    classroom_unattendance: 'star_outline',
-    lesson_opened: 'star_outline',
-    office_attendance: 'star_outline',
-    nps_survey_answered: 'star_outline',
-    exercise_success: 'star_outline',
-    academy_registration: 'star_outline',
-  };
+
+  // activityTypes[slug]
+  //   ? activityTypes[slug].render
+  //     ? activityTypes[slug].render(activity) || 'No Activity Details'
+  //     : 'No Render Method for this activity'
+  //   : 'Unknown Activity Type'
+
   return (
     <div>
       <Card className="overflow-unset flex py-4">
@@ -48,7 +100,7 @@ const ActivityGrid = ({ activity, index }) => {
             size="medium"
             color="primary"
           >
-            <Icon>{icons[slug]}</Icon>
+            <Icon>{activityTypes[slug].icon}</Icon>
           </Fab>
         </div>
         <div className="flex-grow">
@@ -57,9 +109,7 @@ const ActivityGrid = ({ activity, index }) => {
             <span className="text-muted">{dayjs(created_at).format('MM-DD-YYYY')}</span>
           </div>
           <Divider />
-          <p className="m-0 pt-3">
-            {`Details: ${data?.details || 'No details available from this activity'}`}
-          </p>
+          <p className="m-0 pt-3">{printDetails(activity)}</p>
         </div>
       </Card>
       <div className="py-7" />

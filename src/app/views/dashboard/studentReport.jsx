@@ -80,7 +80,7 @@ const studentReport = () => {
 
   return (
     <>
-      <div className="pb-24 pt-7 px-8 bg-primary text-white flex">
+      <div className=" pt-7 px-8 bg-primary text-white flex mb-8">
         <Grid item lg={3} md={3} sm={12} xs={12}>
           <div className="py-8" />
           <StudentInformation data={studentData} />

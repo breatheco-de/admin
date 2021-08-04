@@ -6,7 +6,7 @@ import {
 const CohortDetailCards = ({ metrics }) => {
   const makeTeacherCard = (item) => (
     <Grid key={item.title} item md={12} lg={12} xs={12}>
-      <Card elevation={3} className="p-5 flex-column justify-center ">
+      <Card elevation={3} className="p-5 flex-column justify-center">
         <div className="mb-6px">
           <IconButton className="p-3 bg-light-gray">
             <Icon className="text-muted">{item.icon}</Icon>

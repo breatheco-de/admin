@@ -16,8 +16,8 @@ const StudentIndicatorCards = ({ metrics }) => {
 
   return (
     <Grid container spacing={3} className="mb-3">
-      {metrics.map((v) => (
-        <Grid item xs={12} md={6}>
+      {metrics.map((v, ind) => (
+        <Grid key={ind} item xs={12} md={6} lg={4}>
           <Card
             className="flex flex-wrap justify-between items-center p-sm-24 bg-gray bg-default"
             elevation={6}
