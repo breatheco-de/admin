@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 
 import AssignmentGrid from './AssignmentGrid';
-import CohortDetailCards from '../shared/CohortDetailCards';
 import StudentTimeline from './StudentTimeline';
 import CohortDetailCard from '../shared/CohortDetailCard';
 
@@ -71,7 +70,6 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
     <>
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <div className="px-8">
-          {/* <CohortDetailCards metrics={metrics} /> */}
           <CohortDetailCard
             teachersArray={teachersArray}
             stage={stage}

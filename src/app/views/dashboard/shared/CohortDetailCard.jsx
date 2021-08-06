@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Grid, Card, IconButton, Icon, Divider,
-} from '@material-ui/core';
+import { Grid, Card, Divider } from '@material-ui/core';
 
 export const CohortDetailCard = ({
   teachersArray, stage, endingDate, startDate, name,
@@ -11,7 +9,7 @@ export const CohortDetailCard = ({
       <Card>
         <div className="p-5 flex flex-wrap justify-between items-center m--2">
           <div className="flex items-center m-2">
-            <div className="ml-4">
+            <div>
               <h5 className="m-0">{name}</h5>
               <p className="mb-0 mt-2 text-muted font-normal capitalize">{stage}</p>
             </div>

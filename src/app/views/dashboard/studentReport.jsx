@@ -85,7 +85,7 @@ const studentReport = () => {
           <div className="py-8" />
           <StudentInformation data={studentData} />
         </Grid>
-        <Grid item lg={8} md={8} sm={12} xs={12}>
+        <Grid item lg={9} md={9} sm={12} xs={12}>
           <div className="py-8" />
           <StudentIndicators data={studentAssignments} studentActivity={studentActivity} />
         </Grid>

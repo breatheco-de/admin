@@ -85,12 +85,6 @@ const ActivityGrid = ({ activity, index }) => {
     return result;
   };
 
-  // activityTypes[slug]
-  //   ? activityTypes[slug].render
-  //     ? activityTypes[slug].render(activity) || 'No Activity Details'
-  //     : 'No Render Method for this activity'
-  //   : 'Unknown Activity Type'
-
   return (
     <div>
       <Card className="overflow-unset flex py-4">
