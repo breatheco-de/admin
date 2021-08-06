@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Grid, Button } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 import ActivityGrid from './ActivityGrid';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 
-const StudentTimeline = ({ studentActivity }) => {
+const StudentTimeline = ({ studentActivity, setQuery, query }) => {
   const [limit, setLimit] = useState(10);
+  const { cohortID } = useParams();
   return (
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
@@ -13,7 +15,8 @@ const StudentTimeline = ({ studentActivity }) => {
           <AsyncAutocomplete
             size="small"
             width="100%"
-            asyncSearch={() => bc.activity().getCohortActivity(42, { user_id: 65, slug: 'breathecode_login' })}
+            onChange={(activity) => setQuery((prev) => ({ ...prev, slug: activity ? activity.slug : '' }))}
+            asyncSearch={() => bc.activity().getCohortActivity(cohortID, query)}
             getOptionLabel={(option) => option.slug}
           />
         </div>

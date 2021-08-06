@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
+const CohortStudentActivity = ({
+  data, studentActivity, cohortData, setQuery, query,
+}) => {
   const classes = useStyles();
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
   const [limit, setLimit] = useState(10);
@@ -79,7 +81,7 @@ const CohortStudentActivity = ({ data, studentActivity, cohortData }) => {
           />
         </div>
       </Grid>
-      <StudentTimeline studentActivity={studentActivity} />
+      <StudentTimeline studentActivity={studentActivity} setQuery={setQuery} query={query} />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <List className={classes.root}>
           {undeliveredAssignments.slice(0, limit).map((assignment, index) => (

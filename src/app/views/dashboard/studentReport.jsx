@@ -95,6 +95,8 @@ const studentReport = () => {
           data={studentAssignments}
           studentActivity={studentActivity}
           cohortData={cohortData}
+          setQuery={setQuery}
+          query={query}
         />
       </div>
     </>
