@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import {
-   Icon, IconButton,Button,
+   Icon, IconButton,Button, Card
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
@@ -144,6 +144,12 @@ const EventList = () => {
         </div>
       </div>
       <div className="overflow-auto">
+      <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
+        <h5 className="mt-0 mb-2 font-medium text-primary">
+          You can add this events to your calendar using this URL:
+        </h5>
+        <a href="https://breathecode.herokuapp.com/v1/events/ical/events?academy=1,2,3,4,5,6,7,8,9" target="_blank" className="alert-link">https://breathecode.herokuapp.com/v1/events/ical/events?academy=1,2,3,4,5,6,7,8,9</a>
+      </Card>
         <div className="min-w-750">
           <SmartMUIDataTable
             title="All Events"
