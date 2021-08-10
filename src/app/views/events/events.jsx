@@ -17,7 +17,7 @@ import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../matx';
-
+import { getSession } from "../../redux/actions/SessionActions";
 import bc from '../../services/breathecode';
 import { toast } from 'react-toastify';
 
@@ -40,9 +40,11 @@ const stageColors = {
 
 const EventList = () => {
 
+  const session = getSession();
+
   const [items, setItems] = useState([]);
   
-  const thisURL = "https://breathecode.herokuapp.com/v1/events/ical/events?academy=1,2,3,4,5,6,7,8,9"
+  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`
 
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
@@ -174,7 +176,7 @@ const EventList = () => {
                   You can add this events to your calendar using this URL:
                 </h5>
                 <p className="alert-link">
-                  https://breathecode.herokuapp.com/v1/events/ical/events?academy=1,2,3,4,5,6,7,8,9
+                  {thisURL}
                 </p>
               </div>
               <div className="flex-grow" />
