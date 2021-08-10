@@ -8,6 +8,7 @@ import bc from '../../../services/breathecode';
 const StudentTimeline = ({ studentActivity, setQuery, query }) => {
   const [limit, setLimit] = useState(10);
   const { cohortID } = useParams();
+
   return (
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
@@ -16,7 +17,7 @@ const StudentTimeline = ({ studentActivity, setQuery, query }) => {
             size="small"
             width="100%"
             onChange={(activity) => setQuery((prev) => ({ ...prev, slug: activity ? activity.slug : '' }))}
-            asyncSearch={() => bc.activity().getCohortActivity(cohortID, query)}
+            asyncSearch={() => bc.activity().getActivityTypes()}
             getOptionLabel={(option) => option.slug}
           />
         </div>

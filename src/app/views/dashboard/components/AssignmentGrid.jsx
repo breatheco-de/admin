@@ -19,6 +19,7 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
   const { created_at, difficulty } = assignmentsDetails;
 
   useEffect(() => {
+    console.log('associated slugs:', associated_slug);
     bc.registry()
       .getAsset(associated_slug)
       .then(({ data }) => setAssignmentsDetails(data))
