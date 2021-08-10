@@ -149,7 +149,7 @@ const NewCertificate = () => {
                     getOptionLabel={(option) => `${option.slug}`}
                     renderOption={(option) => (
                       <React.Fragment>
-                        <img src={option.preview_url ? option.preview_url : option.background_url} style={{maxHeight: 100}} />
+                        <img src={option.preview_url || option.background_url} style={{maxHeight: 100}} />
                         &nbsp; {option.slug}
                       </React.Fragment>
                     )}
