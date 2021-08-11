@@ -102,6 +102,7 @@ describe('Login Screen', () => {
         cy.log('Submit');
         cy.get('[data-cy=submit_button]').click();
 
+        // this method verifies that the user data has reached the api with the expected token
         // cy.log("**-------- Verifying Interception --------**")
         // cy.wait('@postForm');
         // // it verify if the response has been intercepted and changed
@@ -109,7 +110,6 @@ describe('Login Screen', () => {
         //   console.log("Response Intercepted:::",xhr)
         //   expect(xhr.response.statusCode).to.equal(200)
         //   expect(xhr.response.body.email).to.equal(email)
-        //   // expect(xhr.response.body.phone).to.equal('1234567890')
         // })
       });
     });
