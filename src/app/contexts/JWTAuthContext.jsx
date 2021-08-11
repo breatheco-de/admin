@@ -98,11 +98,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res1 = await axios._post('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, { email, password });
-      if(res1.status === 200) setSession(res1.data ? res1.data.token : res1.token);
+      const res1 = await axios._post('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, {
+        email,
+        password,
+      });
+      if (res1.status === 200) setSession(res1.data ? res1.data.token : res1.token);
       else throw res1.data;
     } catch (e) {
-      const message = e.details || e.detail || Array.isArray(e.non_field_errors) ? e.non_field_errors[0] : 'Unable to login';// res1.data.non_field_errors;
+      const message = e.details || e.detail || Array.isArray(e.non_field_errors)
+        ? e.non_field_errors[0]
+        : 'Unable to login'; // res1.data.non_field_errors;
       console.error(e);
       throw Error(message);
     }
@@ -110,7 +115,7 @@ export const AuthProvider = ({ children }) => {
     const res2 = await axios._get('User', `${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
     const storedSession = JSON.parse(localStorage.getItem('bc-session'));
     if (!res2.data || res2.data.roles.length === 0) throw Error('You are not a staff member from any academy');
-    else if (storedSession && typeof (storedSession) === 'object') {
+    else if (storedSession && typeof storedSession === 'object') {
       res2.data.role = storedSession.role;
       res2.data.academy = storedSession.academy;
     } else if (res2.data.roles.length === 1) {
@@ -166,19 +171,22 @@ export const AuthProvider = ({ children }) => {
         if (token) accessToken = token;
         else accessToken = window.localStorage.getItem('accessToken');
 
-        if (accessToken && await isValidToken(accessToken)) {
+        if (accessToken && (await isValidToken(accessToken))) {
           setSession(accessToken);
           const response = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
           const user = response.data;
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));
           if (!user || user.roles.length === 0) throw Error('You are not a staff member from any academy');
-          else if (storedSession && typeof (storedSession) === 'object') {
+          else if (storedSession && typeof storedSession === 'object') {
             user.role = storedSession.role;
             user.academy = storedSession.academy;
           } else if (user.roles.length === 1) {
             user.role = user.roles[0];
             user.academy = user.roles[0].academy;
-            localStorage.setItem('bc-session', JSON.stringify({ role: user.role, academy: user.academy }));
+            localStorage.setItem(
+              'bc-session',
+              JSON.stringify({ role: user.role, academy: user.academy }),
+            );
           }
           dispatch({
             type: 'INIT',
