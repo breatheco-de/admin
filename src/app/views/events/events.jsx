@@ -182,7 +182,8 @@ const EventList = () => {
               <div className="flex-grow" />
               <Tooltip title="Copy link">
                 <Button
-                  className="bg-primary text-white"
+                  variant="outlined" color="primary"
+                  className="text-primary"
                   onClick={() => {
                     navigator.clipboard.writeText(thisURL);
                     toast.success('Calendar link url copied successfuly', toastOption);
