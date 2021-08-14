@@ -1,7 +1,7 @@
 {
   "firstName": "Kahn",
   "lastName": "Mohawk",
-  "email": "etcMail1243r2d@gmail.com",
+  "email": "test@gmail.com",
   "password": "herokuapp",
   "comment": "testing form with cypress"
 }
