@@ -109,19 +109,19 @@ describe('Login Screen', () => {
         // this method verifies that the user data has reached the api with the expected token
         // verify if the response has been intercepted and changed
         cy.log("**-------- Intercepting api endpoint... --------**")
-        cy.wait('@postForm');
-        cy.get('@postForm').then(xhr => {
+        cy.wait('@mock_login');
+        cy.get('@mock_login').then(xhr => {
           console.log("Response Intercepted:::",xhr)
         })
 
-        cy.wait('@getTokenStatus');
-        cy.get('@getTokenStatus').then(xhr => {
+        cy.wait('@mock_token');
+        cy.get('@mock_token').then(xhr => {
           console.log("Response TokenStatus:::",xhr)
         })
 
-        cy.wait('@getUserData');
-        cy.get('@getUserData').then(xhr => {
-          console.log("Response UserData:::",xhr)
+        cy.wait('@mock_userData');
+        cy.get('@mock_userData').then(xhr => {
+          console.log("Response User Data:::",xhr)
         })
 
       });
