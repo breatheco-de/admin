@@ -88,7 +88,6 @@ const Analytics = () => {
         });
       });
 
-    // NOTE: Next step ... intercept and send fake data
     BC.marketing()
       .getLeads({
         start: params.start.format('YYYY-MM-DD'),
