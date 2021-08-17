@@ -1,5 +1,4 @@
 import bc from '../../services/breathecode';
-
 export const GET_PRODUCT_LIST = "GET_PRODUCT_LIST";
 export const GET_CATEGORY_LIST = "GET_CATEGORY_LIST";
 export const UPLOAD_MEDIA_FILE = "UPLOAD_MEDIA_FILE";
@@ -34,15 +33,12 @@ export const getCategoryList = () => (dispatch) => {
 
 export const uploadFiles = (files) => (dispatch) => {
   const form = new FormData();
-  console.log(files);
   for (const file of files) form.append('file', file, file.name.split(' ').join('-'));
-  console.log(form);
   bc.media().upload(form).then((res) => {
     dispatch({
       type: UPLOAD_MEDIA_FILE,
       payload: res,
     });
-    console.log(res);
   });
 };
 

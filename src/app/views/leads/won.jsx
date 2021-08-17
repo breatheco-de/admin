@@ -14,12 +14,14 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
+
 const stageColors = {
-  // not_added: 'bg-gray',
-  added: 'bg-secondary',
-  // coursereport: 'text-white bg-warning',
-  not_added: 'text-white bg-error',
-  // bing: 'text-white bg-green',
+  // INACTIVE: 'gray',
+  // PREWORK: 'main',
+  added: 'primary',
+  not_added: 'gray',
+  // ENDED: 'dark',
+  // DELETED: 'gray',
 };
 
 const Leads = () => {
@@ -122,13 +124,21 @@ const Leads = () => {
               {item.user == null && <Tooltip title="Invite to 4Geeks">
                 <IconButton onClick={async () => {
                     const resp = await bc.auth().getAcademyMember(item.email)
-                    console.log(resp.headers['content-type'])
                     if(resp.headers['content-type'] == "application/json"){
                       if(resp.status === 404){
-                        setOpenDialog({ msg: 'There is no member with this email, would you like to invite it to the academy?', open: true })
+                        setOpenDialog({ 
+                          open: true,  
+                          msg: 'There is no member with this email, would you like to invite it to the academy?', 
+                          onSuccess: () => {
+                            history.push(`/admissions/students/new?data=${btoa(JSON.stringify({ email: item.email, first_name: item.first_name, last_name: item.last_name, phone: item.phone }))}`)
+                          }
+                        })
                       }
                       else if(resp.status === 200){
-                        setOpenDialog({ msg: 'Please choose a cohort for this user', open: true })
+                        setOpenDialog({ 
+                          msg: 'Please choose a cohort for this user', 
+                          open: true,
+                        })
                       }
                     }
                 }}>
@@ -136,7 +146,7 @@ const Leads = () => {
                 </IconButton>
               </Tooltip>}
               <Tooltip title="More details">
-                <IconButton onClick={() => null}>
+                <IconButton onClick={() => item.user && history.push(`/admissions/students/${item.user.id}`)}>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
               </Tooltip>

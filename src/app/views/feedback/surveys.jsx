@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import MUIDataTable from 'mui-datatables';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  // Avatar,
-  Grow,
   Icon,
   IconButton,
-  TextField,
   Button,
   LinearProgress,
   Tooltip,
@@ -16,14 +12,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  TextField
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { addHours } from 'date-fns'
-import { Breadcrumb, MatxLoading } from '../../../matx';
-import axios from '../../../axios';
+import { Breadcrumb } from '../../../matx';
 import bc from 'app/services/breathecode';
-import { DownloadCsv } from '../../components/DownloadCsv';
+import {SmartMUIDataTable} from '../../components/SmartDataTable';
 import { toast } from 'react-toastify';
 
 toast.configure();
@@ -46,9 +42,7 @@ const stageColors = {
 };
 
 const EventList = () => {
-  const [isAlive, setIsAlive] = useState(true);
   const { settings } = useSelector(({ layout }) => layout);
-  const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState([]);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -60,15 +54,6 @@ const EventList = () => {
       .then(({ data }) => console.log(data))
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/feedback/academy/survey`).then(({ data }) => {
-      setIsLoading(false);
-      if (isAlive) setItems(data);
-    });
-    return () => setIsAlive(false);
-  }, [isAlive]);
 
   const columns = [
     {
@@ -109,87 +94,86 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           // console.log(dayjs(item.datetime))
-          
-          if(parseInt(item.duration) === 3600){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1)
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+          if (parseInt(item.duration) === 3600) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1);
+
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 10800){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 10800) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 86400){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 86400) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
-          }else if(parseInt(item.duration) === 172800){
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48)
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
+          }
+          if (parseInt(item.duration) === 172800) {
+            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48);
 
-            if(Finalizacion >= dayjs(item.datetime)){
-              return(
+            if (Finalizacion >= dayjs(item.datetime)) {
+              return (
                 <div className="flex items-center">
                   <div className="ml-3">
                     <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
                   </div>
                 </div>
-              )
-            }else {
-              return(
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              )
+              );
             }
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                </div>
+              </div>
+            );
           }
         },
       },
@@ -243,20 +227,22 @@ const EventList = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
-          const survey = items[dataIndex]
+          const survey = items[dataIndex];
           return survey.status === 'PENDING' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="Copy survey link">
-                <IconButton onClick={() => {
-                  console.log(survey.public_url);
-                  setOpenDialog(true)
-                  setUrl(survey.public_url);
-                }}>
+                <IconButton
+                  onClick={() => {
+                    console.log(survey.public_url);
+                    setOpenDialog(true);
+                    setUrl(survey.public_url);
+                  }}
+                >
                   <Icon>assignment</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to="/feedback/surveys/1">
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -270,7 +256,7 @@ const EventList = () => {
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to="/feedback/surveys/1">
+              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -307,76 +293,24 @@ const EventList = () => {
             )}
           </div>
         </div>
-        <div className="overflow-auto">
-          <div className="min-w-750">
-            {isLoading && <MatxLoading />}
-            <MUIDataTable
-              title="All Events"
-              data={items}
-              columns={columns}
-              options={{
-                customToolbar: () => {
-                  const singlePageTableCsv = '/v1/feedback/academy/answer';
-                  const allPagesTableCsv = '/v1/feedback/academy/answer';
-                  return (
-                    <DownloadCsv
-                      singlePageTableCsv={singlePageTableCsv}
-                      allPagesTableCsv={allPagesTableCsv}
-                    />
-                  );
-                },
-                download: false,
-                filterType: 'textField',
-                responsive: 'standard',
-                // selectableRows: "none", // set checkbox for each row
-                // search: false, // set search option
-                // filter: false, // set data filter option
-                // download: false, // set download option
-                // print: false, // set print option
-                // pagination: true, //set pagination option
-                // viewColumns: false, // set column option
-                elevation: 0,
-                rowsPerPageOptions: [10, 20, 40, 80, 100],
-                customSearchRender: (searchText, handleSearch, hideSearch, options) => (
-                  <Grow appear in timeout={300}>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      onChange={({ target: { value } }) => handleSearch(value)}
-                      InputProps={{
-                        style: {
-                          paddingRight: 0,
-                        },
-                        startAdornment: (
-                          <Icon className="mr-2" fontSize="small">
-                            search
-                          </Icon>
-                        ),
-                        endAdornment: (
-                          <IconButton onClick={hideSearch}>
-                            <Icon fontSize="small">clear</Icon>
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Grow>
-                ),
-              }}
-            />
-          </div>
+      </div>
+      <div className="overflow-auto">
+        <div className="min-w-750">
+          <SmartMUIDataTable
+            title="All Surveys"
+            columns={columns}
+            items={items}
+            view="survey?"
+            historyReplace="/feedback/surveys"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.feedback().getSurveys(querys);
+              setItems(data.results);
+              return data;
+            }}
+          />
         </div>
       </div>
-
-      <Tooltip title="Copy Survey link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip>
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -412,7 +346,9 @@ const EventList = () => {
               >
                 Copy
               </Button>
-              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>Close</Button>
+              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
+                Close
+              </Button>
             </DialogActions>
           </Grid>
         </form>

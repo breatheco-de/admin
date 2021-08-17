@@ -68,8 +68,8 @@ const ListMediaCard = ({
     <Card
       elevation={3}
       className={clsx('pr-4 relative h-full', classes.productCard)}
-      onClick={() => {
-        console.log(product);
+      onClick={(e) => {
+        e.stopPropagation();
         setSelected(!selected);
         onSelected(product);
       }}
@@ -138,7 +138,10 @@ const ListMediaCard = ({
             variant="contained"
             color="primary"
             className="mt-2"
-            onClick={onOpenDialog}
+            onClick={(e)=>{
+              e.stopPropagation();
+              onOpenDialog();
+            }}
           >
             Edit
           </Button>

@@ -161,6 +161,7 @@ const Students = () => {
             columns={columns}
             items={items}
             view="student?"
+            historyReplace="/admissions/students"
             singlePage=""
             options={{
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (

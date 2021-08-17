@@ -4,7 +4,7 @@ class BreatheCodeClient {
   constructor() {
     this.host = `${process.env.REACT_APP_API_HOST}/v1`;
   }
-  admissions = () => {
+  admissions() {
     return {
       updateCohortUserInfo: (cohort, user, payload) => {
         return axios._put(
@@ -109,6 +109,9 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? '?' + qs : ''}`
         );
       },
+      getReport: (query) => {
+        return axios._get('Report', `${this.host}/admissions/report`);
+      },
       getAllCourseSyllabus: (query, academyID) => {
         return axios._get(
           'Syllabus',
@@ -124,7 +127,7 @@ class BreatheCodeClient {
       getMyAcademy: () =>
         axios._get('My Academy', `${this.host}/admissions/academy/me`),
     };
-  };
+  }
   auth() {
     return {
       addStudent: (payload) => {
@@ -178,12 +181,15 @@ class BreatheCodeClient {
         );
       },
       getAcademyMembers: (query) => {
-        const qs = Object.keys(query)
-          .map((key) => `${key}=${query[key]}`)
-          .join('&');
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
         return axios._get(
           'Academy member',
-          `${this.host}/auth/academy/member?${qs}`
+          `${this.host}/auth/academy/member${query ? '?' + qs : ''}`
         );
       },
       getAcademyStudents: (query) => {
@@ -219,178 +225,229 @@ class BreatheCodeClient {
       },
     };
   }
-  marketing = () => ({
-    getLeads: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Lead report',
-        `${this.host}/marketing/report/lead${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyLeads: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Academy lead',
-        `${this.host}/marketing/academy/lead${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyTags: () =>
-      axios._get('Academy tags', `${this.host}/marketing/academy/tag`),
-    getAcademyAutomations: () =>
-      axios._get(
-        'Academy automations',
-        `${this.host}/marketing/academy/automation`
-      ),
-    addNewLead: (newLead) =>
-      axios._post('New lead', `${this.host}/marketing/lead`, newLead),
-  });
+  marketing() {
+    return {
+      getLeads: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&academy=${academy}
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Lead report',
+          `${this.host}/marketing/report/lead${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyLeads: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy lead',
+          `${this.host}/marketing/academy/lead${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyTags: () =>
+        axios._get('Academy tags', `${this.host}/marketing/academy/tag`),
+      getAcademyAutomations: () =>
+        axios._get(
+          'Academy automations',
+          `${this.host}/marketing/academy/automation`
+        ),
+      addNewLead: (newLead) =>
+        axios._post('New lead', `${this.host}/marketing/lead`, newLead),
+    };
+  }
 
-  feedback = () => ({
-    getAnswers: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios._get(
-        'Academy answers',
-        `${this.host}/feedback/academy/answer?${qs}`
-      );
-    },
-    addNewSurvey: (newSurvey) =>
-      axios._post(
-        'New Survey',
-        `${this.host}/feedback/academy/survey`,
-        newSurvey
-      ),
-    updateSurvey: (survey, id) =>
-      axios._put(
-        'Survey',
-        `${this.host}/feedback/academy/survey/${id}`,
-        survey
-      ),
-  });
+  feedback() {
+    return {
+      getSurveys: () => {
+        return axios._get(
+          'Academy Surveys',
+          `${this.host}/feedback/academy/survey`
+        );
+      },
+      getAnswers: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Academy answers',
+          `${this.host}/feedback/academy/answer?${qs}`
+        );
+      },
+      addNewSurvey: (newSurvey) =>
+        axios._post(
+          'New Survey',
+          `${this.host}/feedback/academy/survey`,
+          newSurvey
+        ),
+      updateSurvey: (survey, id) =>
+        axios._put(
+          'Survey',
+          `${this.host}/feedback/academy/survey/${id}`,
+          survey
+        ),
+      getSurveys: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey${query ? '?' + qs : ''}`
+        );
+      },
+      getSurvey: (id) => {
+        return axios._get(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey/${id}`
+        );
+      },
+    };
+  }
 
-  certificates = () => ({
-    getAllCertificates: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Certificates',
-        `${this.host}/certificate${query ? '?' + qs : ''}`
-      );
-    },
-    getCertificatesByCohort: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios.get(`${this.host}/certificate/cohort/?${qs}`);
-    },
-    addBulkCertificates: (payload) => {
-      return axios._post(
-        'Re-attemps certificates',
-        `${this.host}/certificate/`,
-        payload
-      );
-    },
-    generateSingleStudentCertificate: (cohortID, userID, payload) => {
-      return axios._post(
-        'Student Certificate',
-        `${this.host}/certificate/cohort/${cohortID}/student/${userID}`,
-        payload
-      );
-    },
-    generateAllCohortCertificates: (cohortID, payload) => {
-      return axios._post(
-        'All Cohort Certificates',
-        `${this.host}/certificate/cohort/${cohortID}`,
-        payload
-      );
-    },
-    downloadCSV: (query) => {
-      const qs = Object.keys(query)
-        .map((key) => `${key}=${query[key]}`)
-        .join('&');
-      return axios._post(
-        'All Pages Table CSV',
-        `${this.host}/certificate?${qs}`,
-        {},
-        {
-          headers: { Accept: 'text/csv' },
-          responseType: 'blob',
-        }
-      );
-    },
-  });
+  certificates() {
+    return {
+      getAllCertificates: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Certificates',
+          `${this.host}/certificate${query ? '?' + qs : ''}`
+        );
+      },
+      getCertificatesByCohort: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios.get(`${this.host}/certificate/cohort/?${qs}`);
+      },
+      addBulkCertificates: (payload) => {
+        return axios._post(
+          'Re-attemps certificates',
+          `${this.host}/certificate/`,
+          payload
+        );
+      },
+      generateSingleStudentCertificate: (cohortID, userID, payload) => {
+        return axios._post(
+          'Student Certificate',
+          `${this.host}/certificate/cohort/${cohortID}/student/${userID}`,
+          payload
+        );
+      },
+      generateAllCohortCertificates: (cohortID, payload) => {
+        return axios._post(
+          'All Cohort Certificates',
+          `${this.host}/certificate/cohort/${cohortID}`,
+          payload
+        );
+      },
+      downloadCSV: (query) => {
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'All Pages Table CSV',
+          `${this.host}/certificate?${qs}`,
+          {
+            headers: { Accept: 'text/csv' },
+            responseType: 'blob',
+          }
+        );
+      },
+    };
+  }
 
-  events = () => ({
-    getCheckins: (query) => {
-      // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Event',
-        `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`
-      );
-    },
-    addAcademyEvent: (payload) => {
-      return axios._post(
-        'Academy event',
-        `${this.host}/events/academy/event`,
-        payload
-      );
-    },
-    updateAcademyEvent: (event, payload) => {
-      return axios._put(
-        'Academy event',
-        `${this.host}/events/academy/event/${event}`,
-        payload
-      );
-    },
-    getAcademyEvents: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-      return axios._get(
-        'Academy event',
-        `${this.host}/events/academy/event${query ? '?' + qs : ''}`
-      );
-    },
-    getAcademyEvent: (event) => {
-      return axios._get(
-        'Academy event',
-        `${this.host}/events/academy/event/${event}`
-      );
-    },
-    getAcademyVenues: () => {
-      return axios._get('Venues', `${this.host}/events/academy/venues`);
-    },
-    getAcademyEventType: () => {
-      return axios._get('Event Type', `${this.host}/events/academy/eventype`);
-    },
-  });
+  events() {
+    return {
+      getCheckins: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}status=${status}&event=${event_id}
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Event',
+          `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`
+        );
+      },
+      addAcademyEvent: (payload) => {
+        return axios._post(
+          'Academy event',
+          `${this.host}/events/academy/event`,
+          payload
+        );
+      },
+      updateAcademyEvent: (event, payload) => {
+        return axios._put(
+          'Academy event',
+          `${this.host}/events/academy/event/${event}`,
+          payload
+        );
+      },
+      getAcademyEvents: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy event',
+          `${this.host}/events/academy/event${query ? '?' + qs : ''}`
+        );
+      },
+      getAcademyEvent: (event) => {
+        return axios._get(
+          'Academy event',
+          `${this.host}/events/academy/event/${event}`
+        );
+      },
+      getAcademyVenues: () => {
+        return axios._get('Venues', `${this.host}/events/academy/venues`);
+      },
+      getAcademyEventType: () => {
+        return axios._get('Event Type', `${this.host}/events/academy/eventype`);
+      },
+      downloadCSV: (query) => {
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Download CSV',
+          `${this.host}/events/academy/checkin${query ? '?' + qs : ''}`,
+          {
+            headers: { Accept: 'text/csv' },
+            responseType: 'blob',
+          }
+        );
+      },
+    };
+  }
+  layout() {
+    return {
+      getDefaultLayout: () => {
+        return axios._get('Layout', `${this.host}/certificate/academy/layout`);
+      },
+    };
+  }
 
   media() {
     return {

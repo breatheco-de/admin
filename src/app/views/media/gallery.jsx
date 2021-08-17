@@ -10,7 +10,7 @@ import {
   createCategory,
   bulkEditMedia,
   clearSelectedMedia,
-} from 'app/redux/actions/MediaActions';
+} from '../../redux/actions/MediaActions';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { openDialog, closeDialog } from '../../redux/actions/DialogActions';

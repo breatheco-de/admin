@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
+import { getToken, getSession } from "../../../redux/actions/SessionActions"
 import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
@@ -84,10 +85,12 @@ const Cohort = () => {
   const options = [
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
-    { label: 'Cohort Detailed Report', value: 'cohort_deport' },
+    { label: 'Assignments', value: 'assignments' },
+    { label: 'Attendancy', value: 'attendancy' },
     { label: 'Instant NPS Survey', value: 'new_survey' },
     { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
   ];
+
   const [newSurvey, setNewSurvey] = useState({
     cohort: slug,
     max_assistants: 2,
@@ -190,6 +193,10 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
+
+              const token = getToken();
+              const session = getSession();
+
               if (value === 'current_day') {
                 setCohortDayDialog(true);
               } else setCohortDayDialog(false);
@@ -201,6 +208,12 @@ const Cohort = () => {
               } else setSurveyDialog(false);
               if (value === 'privacy') {
                 makePrivate();
+              }
+
+              if (value === 'attendancy') {
+                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`)
+              } else if (value === 'assignments') {
+                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`)
               }
             }}
           >
@@ -229,7 +242,7 @@ const Cohort = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohort_id={cohort.id} /> : ''}
+            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
           </Grid>
         </Grid>
       </div>
@@ -444,58 +457,6 @@ const Cohort = () => {
             </form>
           )}
         </Formik>
-      </Dialog>
-
-      <Tooltip title="Copy invite link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip>
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="form-dialog-title"
-        fullWidth
-      >
-        <form className="p-4">
-          <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item md={12} sm={12} xs={10}>
-                <TextField
-                  label="URL"
-                  name="url"
-                  size="medium"
-                  disabled
-                  fullWidth
-                  variant="outlined"
-                  value={url}
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <Grid className="p-2">
-            <DialogActions>
-              <Button
-                className="bg-primary text-white"
-                onClick={() => {
-                  navigator.clipboard.writeText(url);
-                  toast.success('Invite url copied successfuly', toastOption);
-                }}
-                autoFocus
-              >
-                Copy
-              </Button>
-              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
-                Close
-              </Button>
-            </DialogActions>
-          </Grid>
-        </form>
       </Dialog>
     </>
   );
