@@ -1,5 +1,3 @@
-// <reference types="cypress" />
-
 describe('Login Screen', () => {
   beforeEach(() => {
     /*
@@ -77,10 +75,16 @@ describe('Login Screen', () => {
       */
       cy.get('[data-cy=login_form]');
       cy.fixture('/user_contact/right').then((right) => {
-        const { email, password } = right
+        const { email, password, token } = right
 
-        cy.log('**_____ Start intercept _____**')
+        cy.log('**_____ Preparing Interception... _____**')
         cy.intercept('POST', '**/auth/login').as('postForm')
+
+        cy.mock_login(email, password, token);
+        cy.mock_token(token);
+        cy.mock_userData(email, password);
+
+        cy.intercept('GET', '**/auth/user/me').as('getUserData')
 
         /*
           here we use the "fixture" function where we have data of
@@ -103,14 +107,23 @@ describe('Login Screen', () => {
         cy.get('[data-cy=submit_button]').click();
 
         // this method verifies that the user data has reached the api with the expected token
-        // cy.log("**-------- Verifying Interception --------**")
-        // cy.wait('@postForm');
-        // // it verify if the response has been intercepted and changed
-        // cy.get('@postForm').then(xhr => {
-        //   console.log("Response Intercepted:::",xhr)
-        //   expect(xhr.response.statusCode).to.equal(200)
-        //   expect(xhr.response.body.email).to.equal(email)
-        // })
+        // verify if the response has been intercepted and changed
+        cy.log("**-------- Intercepting api endpoint... --------**")
+        cy.wait('@mock_login');
+        cy.get('@mock_login').then(xhr => {
+          console.log("Response Intercepted:::",xhr)
+        })
+
+        cy.wait('@mock_token');
+        cy.get('@mock_token').then(xhr => {
+          console.log("Response TokenStatus:::",xhr)
+        })
+
+        cy.wait('@mock_userData');
+        cy.get('@mock_userData').then(xhr => {
+          console.log("Response User Data:::",xhr)
+        })
+
       });
     });
   });
