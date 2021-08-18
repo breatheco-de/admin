@@ -1,7 +1,10 @@
 # BreatheCode Admin Client v2.0
 
+## If you use Windows install it
 
+```bash
 npm install --g --production windows-build-tools
+```
 
 ## Installation
 
