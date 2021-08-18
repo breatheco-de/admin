@@ -83,7 +83,7 @@ const CohortDetails = ({
         initialValues={{
           slug,
           language,
-          endingDate: endDate,
+          ending_date: endDate,
           kickoff_date: startDate,
           neverEnds,
           specialtyMode,
@@ -238,7 +238,7 @@ const CohortDetails = ({
                         type="text"
                         size="small"
                         autoOk
-                        value={values.endingDate}
+                        value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
                           setFieldValue('endingDate', date.toISOString());

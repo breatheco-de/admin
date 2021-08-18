@@ -147,10 +147,10 @@ const Cohort = () => {
   };
 
   const updateCohort = (values) => {
-    const { endingDate, ...rest } = values;
+    const { ending_date, ...rest } = values;
     if (values.never_ends) {
       bc.admissions()
-        .updateCohort(cohort.id, { ...rest, private: cohort.private, endingDate: null })
+        .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
         .then((data) => data)
         .catch((error) => console.log(error));
     } else {
@@ -229,7 +229,7 @@ const Cohort = () => {
               <CohortDetails
                 slug={slug}
                 language={cohort.language || 'en'}
-                endDate={cohort.endingDate}
+                endDate={cohort.ending_date}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
                 specialtyMode={cohort.specialty_mode}
@@ -267,7 +267,7 @@ const Cohort = () => {
               name: cohort.name,
               language: cohort.language,
               kickoff_date: cohort.kickoff_date,
-              endingDate: cohort.endingDate,
+              ending_date: cohort.ending_date,
               current_day: stage === 'ENDED' ? maxSyllabusDays : currentDay,
             });
             setCohort({ ...cohort, stage, current_day: currentDay });
@@ -341,7 +341,7 @@ const Cohort = () => {
               name: cohort.name,
               language: cohort.language,
               kickoff_date: cohort.kickoff_date,
-              endingDate: cohort.endingDate,
+              ending_date: cohort.ending_date,
               current_day: currentDay,
             });
             setCohort({ ...cohort, current_day: currentDay });
