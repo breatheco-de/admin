@@ -232,8 +232,9 @@ const Cohort = () => {
                 endDate={cohort.endingDate}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
-                syllabus={cohort.syllabus}
-                never_ends={cohort.never_ends}
+                specialtyMode={cohort.specialty_mode}
+                syllabusVersion={cohort.syllabus_version}
+                neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
                 onSubmit={updateCohort}
               />

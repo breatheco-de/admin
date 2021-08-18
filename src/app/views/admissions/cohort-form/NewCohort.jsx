@@ -26,8 +26,9 @@ const useStyles = makeStyles(({ palette }) => ({
 const NewCohort = () => {
   const classes = useStyles();
   const startDate = new Date();
-  const [cert, setCert] = useState(null);
+  const [syllabus, setSyllabus] = useState(null);
   const [version, setVersion] = useState(null);
+  const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [newCohort, setNewCohort] = useState({
@@ -59,7 +60,7 @@ const NewCohort = () => {
 
   const postCohort = (values) => {
     bc.admissions()
-      .addCohort({ ...values, syllabus: `${cert.slug}.v${version.version}` })
+      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: schedule.id })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -100,6 +101,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Cohort Name"
+                    data-cy="name"
                     name="name"
                     size="small"
                     variant="outlined"
@@ -113,6 +115,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Cohort Slug"
+                    data-cy="slug"
                     name="slug"
                     size="small"
                     variant="outlined"
@@ -127,30 +130,49 @@ const NewCohort = () => {
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       debounced={false}
-                      onChange={(certificate) => setCert(certificate)}
+                      onChange={(x) => setSyllabus(x)}
                       width="30%"
                       className="mr-2 ml-2"
-                      asyncSearch={() => bc.admissions().getCertificates()}
+                      asyncSearch={() => bc.admissions().getAllSyllabus()}
                       size="small"
-                      label="Certificate"
+                      data-cy="syllabus"
+                      label="syllabusificate"
                       required
                       getOptionLabel={(option) => `${option.name}`}
-                      value={cert}
+                      value={syllabus}
                     />
-                    {cert !== null ? (
+                    {syllabus !== null ? (
                       <AsyncAutocomplete
                         debounced={false}
                         onChange={(v) => setVersion(v)}
                         width="20%"
-                        key={cert.slug}
-                        asyncSearch={() => {
-                          return bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
-                        }}
+                        key={syllabus.slug}
+                        asyncSearch={() => bc.admissions()
+                          .getAllCourseSyllabus(syllabus.slug)}
                         size="small"
+                        data-cy="version"
                         label="Version"
                         required
                         getOptionLabel={(option) => `${option.version}`}
                         value={version}
+                      />
+                    ) : (
+                      ''
+                    )}
+                    {syllabus !== null ? (
+                      <AsyncAutocomplete
+                        debounced={false}
+                        onChange={(v) => setSchedule(v)}
+                        width="20%"
+                        key={syllabus.slug}
+                        asyncSearch={() => bc.admissions()
+                          .getAllRelatedCertificates(syllabus.slug)}
+                        size="small"
+                        data-cy="schedule"
+                        label="Schedule"
+                        required
+                        getOptionLabel={(certificate) => `${certificate.name}`}
+                        value={schedule}
                       />
                     ) : (
                       ''
@@ -169,6 +191,7 @@ const NewCohort = () => {
                       inputVariant="outlined"
                       type="text"
                       size="small"
+                      data-cy="start-date"
                       autoOk
                       value={newCohort.kickoff_date}
                       format="MMMM dd, yyyy"
@@ -189,6 +212,7 @@ const NewCohort = () => {
                       className="m-2"
                       margin="none"
                       label="End date"
+                      data-cy="end-date"
                       inputVariant="outlined"
                       type="text"
                       size="small"
@@ -211,6 +235,7 @@ const NewCohort = () => {
                         checked={checked}
                         onChange={handleNeverEnd}
                         name="endingDate"
+                        data-cy="never-ends"
                         color="primary"
                       />
                     )}
