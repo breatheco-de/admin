@@ -11,7 +11,7 @@ USER gitpod
 #
 # More information: https://www.gitpod.io/docs/config-docker/
 
-# Start stable node version
+# Stable node version for project
 RUN bash -c ". .nvm/nvm.sh     && nvm install 12     && nvm use 12     && nvm alias default 12"
 
 RUN echo "nvm use default &>/dev/null" >> ~/.bashrc.d/51-nvm-fix
