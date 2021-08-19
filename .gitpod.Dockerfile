@@ -11,6 +11,11 @@ USER gitpod
 #
 # More information: https://www.gitpod.io/docs/config-docker/
 
+# Start stable node version
+RUN bash -c ". .nvm/nvm.sh     && nvm install 12     && nvm use 12     && nvm alias default 12"
+
+RUN echo "nvm use default &>/dev/null" >> ~/.bashrc.d/51-nvm-fix
+
 # Install cypress dependencies.
 RUN sudo apt-get update \
  && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
