@@ -30,19 +30,26 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
           <Avatar variant="square" className={classes.square} alt={associated_slug} src="#" />
         </ListItemAvatar>
         <ListItemText
-          primary={task_type}
+          primary={(
+            <Typography variant="h6" component="h2">
+              {title && title[0].toUpperCase() + title.slice(1)}
+            </Typography>
+          )}
           secondary={(
             <>
-              <Typography variant="h5" component="h2">
-                {title}
+              <Typography color="textSecondary">
+                <b>Dificulty: </b>
+                {difficulty && difficulty.toLowerCase()}
               </Typography>
-              <Typography color="textSecondary">{difficulty}</Typography>
-              <Typography component="p">{dayjs(created_at).fromNow()}</Typography>
+              <Typography component="p">
+                <b>Due Date: </b>
+                {dayjs(created_at).fromNow()}
+              </Typography>
             </>
           )}
         />
       </ListItem>
-      {!isLastItem && <Divider component="li" />}
+      {!isLastItem && <Divider component="div" />}
     </>
   );
 };

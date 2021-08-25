@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, List, Button } from '@material-ui/core';
+import {
+  Grid, List, Button, Card, Divider,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 
@@ -83,7 +85,15 @@ const CohortStudentActivity = ({
       </Grid>
       <StudentTimeline studentActivity={studentActivity} setQuery={setQuery} query={query} />
       <Grid item lg={3} md={3} sm={12} xs={12}>
-        <List className={classes.root}>
+        <Card className={classes.root}>
+          <div className="p-5 flex flex-wrap justify-between items-center m--2">
+            <div className="flex items-center m-2">
+              <div>
+                <h5 className="m-0">Undelivered Projects</h5>
+              </div>
+            </div>
+          </div>
+          <Divider />
           {undeliveredAssignments.slice(0, limit).map((assignment, index) => (
             <AssignmentGrid
               key={assignment.id}
@@ -92,7 +102,7 @@ const CohortStudentActivity = ({
               isLastItem={undeliveredAssignments.length - 1 === index}
             />
           ))}
-        </List>
+        </Card>
         <div className="pt-4">
           <Button
             disabled={undeliveredAssignments.length < 10}
