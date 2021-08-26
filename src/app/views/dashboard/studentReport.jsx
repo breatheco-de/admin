@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
+import { toast } from 'react-toastify';
 
 import bc from '../../services/breathecode';
 import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
 import CohortStudentActivity from './components/CohortStudentActivity';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const studentReport = () => {
   const [query, setQuery] = useState({});
@@ -23,6 +30,9 @@ const studentReport = () => {
     bc.admissions()
       .getCohort(cohortID)
       .then(({ data }) => {
+        if (!data) {
+          toast.error('Cohort not Found', toastOption);
+        }
         setCohortData(data);
         setCohortUsersQuery({ ...cohortUsersQuery, cohorts: data.slug });
       })
