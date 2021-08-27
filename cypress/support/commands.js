@@ -42,7 +42,7 @@ Cypress.Commands.add('handleLogin', () => {
     cy.get('@mock_userData').then(xhr => {
       console.log("Response User Data:::",xhr)
     })
-  })
+  }).as('handleLogin')
     
 });
 
@@ -199,3 +199,63 @@ Cypress.Commands.add('mock_Report', () => {
     website_url: null
   }).as('mock_Report')
 });
+
+// NOTE: _____________________________STUDENTS COMANDS_____________________________
+
+Cypress.Commands.add('test_students', () => {
+  // get correct structure
+  cy.intercept('GET', '**/auth/academy/student?*', {
+    
+      count: 5,
+      first: null,
+      next: null,
+      previous: null,
+      last: null,
+      results: [
+          {
+              id: 64,
+              first_name: "Jonathan",
+              last_name: "Ferragut",
+              user: null,
+              academy: {
+                  id: 4,
+                  name: "Downtown Miami",
+                  slug: "downtown-miami"
+              },
+              role: {
+                  slug: "student",
+                  name: "Student"
+              },
+              created_at: "2021-05-17T18:35:09.382565Z",
+              email: "jonathan@alkemyinc.com",
+              address: "",
+              phone: "305879655",
+              status: "ACTIVE"
+          },
+          {
+              id: 145,
+              first_name: "albertovargas",
+              last_name: "vargas",
+              user: null,
+              academy: {
+                  id: 4,
+                  name: "Downtown Miami",
+                  slug: "downtown-miami"
+              },
+              role: {
+                  slug: "student",
+                  name: "Student"
+              },
+              created_at: "2021-06-14T15:59:12.268369Z",
+              email: "albertovargas@hotmail.com",
+              address: "",
+              phone: "30565452133",
+              status: "INVITED"
+          }
+      ]
+  },
+    
+  
+  ).as('test_students')
+});  
+

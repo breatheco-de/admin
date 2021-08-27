@@ -134,6 +134,17 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "standard": {
+    "globals": [
+      "describe",
+      "it",
+      "cy",
+      "beforeEach",
+      "afterEach",
+      "after",
+      "Cypress"
+    ]
+  },
   "browserslist": [
     ">0.2%",
     "not dead",
