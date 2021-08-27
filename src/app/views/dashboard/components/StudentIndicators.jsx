@@ -7,8 +7,8 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const StudentIndicators = ({ data, studentActivity }) => {
-  const cohortCurrentDay = studentActivity[0]?.day;
+const StudentIndicators = ({ data, studentActivity, studentData }) => {
+  const cohortCurrentDay = studentActivity[0]?.day || 1;
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
   const unattendance = studentActivity.filter(
@@ -20,7 +20,7 @@ const StudentIndicators = ({ data, studentActivity }) => {
     u_percentage: (unattendance.length * 100) / cohortCurrentDay,
   });
 
-  const { a_percentage, u_percentage } = attendancePercentages();
+  const { a_percentage } = attendancePercentages();
 
   const lastLogin = () => {
     let dateStr = studentActivity
@@ -37,6 +37,11 @@ const StudentIndicators = ({ data, studentActivity }) => {
         { label: 'Projects Delivered', value: deliveredAssignments.length, icon: 'group' },
         { label: 'Attendance', value: `${Math.floor(a_percentage)}%`, icon: 'star' },
         { label: 'Last Login', value: lastLogin(), icon: 'group' },
+        {
+          label: 'Github Username',
+          value: studentData.user?.profile.github_username,
+          icon: 'group',
+        },
       ]}
     />
   );

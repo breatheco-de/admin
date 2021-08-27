@@ -15,7 +15,9 @@ const StudentInformation = ({ data }, classes) => {
         <div className="flex flex-wrap w-full px-12 mb-11">
           <div className="flex-grow">
             <p className="uppercase text-light-white">FINANTIAL</p>
-            <h4 className="font-medium text-white">{finantial_status || 'not available'}</h4>
+            <h4 className="font-medium text-white">
+              {(finantial_status && finantial_status.replace('_', ' ')) || 'not available'}
+            </h4>
           </div>
           <div>
             <p className="uppercase text-light-white">EDUCATIONAL</p>

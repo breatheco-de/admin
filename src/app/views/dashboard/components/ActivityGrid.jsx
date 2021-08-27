@@ -21,7 +21,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const activityTypes = {
   breathecode_login: {
-    icon: 'login',
+    icon: 'people',
     render: (activity) => `User login at ${dayjs(activity.created_at).format('h-mm-A')}`,
   },
   online_platform_registration: {
@@ -78,7 +78,7 @@ const printDetails = (activity) => {
 
 const ActivityGrid = ({ activity, index }) => {
   const classes = useStyles();
-  const { slug, created_at, data } = activity;
+  const { slug, created_at } = activity;
   const formatTitle = (slug) => {
     const text = slug.replace(/_/g, ' ');
     const result = text[0].toUpperCase() + text.substring(1);

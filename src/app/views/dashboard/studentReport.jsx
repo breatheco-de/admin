@@ -15,7 +15,7 @@ const toastOption = {
 };
 
 const studentReport = () => {
-  const [query, setQuery] = useState({});
+  const [query, setQuery] = useState({ limit: 10, offset: 0 });
   const [cohortUsersQuery, setCohortUsersQuery] = useState({
     roles: 'TEACHER',
   });
@@ -24,6 +24,7 @@ const studentReport = () => {
   const [studentData, setStudentData] = useState({});
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
+  const [activitiesCount, setActivitiesCount] = useState(0);
 
   // cohort data
   useEffect(() => {
@@ -82,7 +83,8 @@ const studentReport = () => {
       bc.activity()
         .getCohortActivity(cohortID, query)
         .then(({ data }) => {
-          setStudentActivity(data);
+          setActivitiesCount(data?.count);
+          setStudentActivity(data?.results || data);
         })
         .catch((err) => console.log(err));
     }
@@ -97,7 +99,11 @@ const studentReport = () => {
         </Grid>
         <Grid item lg={9} md={9} sm={12} xs={12}>
           <div className="py-8" />
-          <StudentIndicators data={studentAssignments} studentActivity={studentActivity} />
+          <StudentIndicators
+            data={studentAssignments}
+            studentActivity={studentActivity}
+            studentData={studentData}
+          />
         </Grid>
       </div>
       <div className="pb-24 pt-7 px-8 bg-default text-grey flex">
@@ -107,6 +113,7 @@ const studentReport = () => {
           cohortData={cohortData}
           setQuery={setQuery}
           query={query}
+          activitiesCount={activitiesCount}
         />
       </div>
     </>

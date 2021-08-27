@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Grid, List, Button, Card, Divider,
+  Grid, Button, Card, Divider,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
@@ -23,7 +23,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CohortStudentActivity = ({
-  data, studentActivity, cohortData, setQuery, query,
+  data,
+  studentActivity,
+  cohortData,
+  setQuery,
+  query,
+  activitiesCount,
 }) => {
   const classes = useStyles();
   const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
@@ -83,7 +88,12 @@ const CohortStudentActivity = ({
           />
         </div>
       </Grid>
-      <StudentTimeline studentActivity={studentActivity} setQuery={setQuery} query={query} />
+      <StudentTimeline
+        studentActivity={studentActivity}
+        setQuery={setQuery}
+        query={query}
+        activitiesCount={activitiesCount}
+      />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <Card className={classes.root}>
           <div className="p-5 flex flex-wrap justify-between items-center m--2">
@@ -94,6 +104,9 @@ const CohortStudentActivity = ({
             </div>
           </div>
           <Divider />
+          {undeliveredAssignments.length < 1 && (
+            <p className="m-4 text-muted font-normal ">No pending projects</p>
+          )}
           {undeliveredAssignments.slice(0, limit).map((assignment, index) => (
             <AssignmentGrid
               key={assignment.id}

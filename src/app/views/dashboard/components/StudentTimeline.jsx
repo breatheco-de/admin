@@ -5,7 +5,9 @@ import ActivityGrid from './ActivityGrid';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 
-const StudentTimeline = ({ studentActivity, setQuery, query }) => {
+const StudentTimeline = ({
+  studentActivity, setQuery, query, activitiesCount,
+}) => {
   const [limit, setLimit] = useState(10);
   const { cohortID } = useParams();
 
@@ -21,20 +23,26 @@ const StudentTimeline = ({ studentActivity, setQuery, query }) => {
             getOptionLabel={(option) => option.slug}
           />
         </div>
-        {studentActivity.slice(0, limit).map((activity, index) => (
-          <ActivityGrid activity={activity} index={index} />
+        {studentActivity.map((activity, index) => (
+          <ActivityGrid key={index} activity={activity} index={index} />
         ))}
 
         <div>
           <Button
-            disabled={studentActivity.length < 10}
+            disabled={activitiesCount <= studentActivity.length}
             fullWidth
             className="text-primary bg-light-primary"
             onClick={() => {
-              setLimit(limit + 10);
+              setQuery((prevQuery) => ({
+                ...prevQuery,
+                limit: prevQuery.limit + 10,
+                offset: prevQuery.offset + 10,
+              }));
             }}
           >
-            {studentActivity.length > 10 ? 'Load More' : 'No more activities to load'}
+            {activitiesCount <= studentActivity.length
+              ? 'No more activities to load'
+              : 'Load More Activites'}
           </Button>
         </div>
       </div>
