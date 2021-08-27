@@ -64,7 +64,7 @@ const StudentDetails = ({
 
   const updateRole = (currentRole) => {
     bc.auth()
-      .updateAcademyMember(stdId, { currentRole })
+      .updateAcademyMember(stdId, { role: currentRole })
       .then(({ data, status }) => {
         if (status >= 200 && status < 300) {
           setRole(roles.find((newRole) => newRole.slug === data.role).name);

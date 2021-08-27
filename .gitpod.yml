@@ -5,10 +5,18 @@ image:
 ports:
   - port: 3000
     onOpen: open-preview
+  - port: 6080
+    onOpen: open-browser
+  - port: 10000
+    onOpen: ignore
 
 # List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - init: >
+  - init: |
       cp .env.example .env &&
+      touch /tmp/.npm-lock
       npm install
-    command: npm run start;
+      rm /tmp/.npm-lock
+    command: npm run start
+  - init: sleep 1 && while [ -f /tmp/.npm-lock ]; do sleep 1; done
+    command: npm run cy:open

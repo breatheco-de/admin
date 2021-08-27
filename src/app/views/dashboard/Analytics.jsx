@@ -75,6 +75,7 @@ const Analytics = () => {
         let total = 0;
         let max = 0;
         let min = 0;
+        console.log('GET_LEADS BY COURSE', data);
         data.forEach((stamp) => {
           series.push(stamp.total_leads);
           xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'));
@@ -99,6 +100,7 @@ const Analytics = () => {
         by: 'utm_source',
       })
       .then(({ data }) => {
+        console.log('GET_LEADS BY UTM_SOURCE', data);
         const arrData = [];
         data.forEach((stamp) => {
           arrData.push({ name: stamp.utm_source, value: stamp.total_leads });
@@ -112,6 +114,7 @@ const Analytics = () => {
         end: params.end.format('YYYY-MM-DD'),
       })
       .then((res) => {
+        console.log('GET EVENTS', res);
         if (res !== undefined && res.data !== undefined) {
           setCheckins(res.data);
         } else setCheckins([]);
@@ -122,6 +125,7 @@ const Analytics = () => {
         status: 'ANSWERED',
       })
       .then(({ data }) => {
+        console.log('GET ANSWERS', data);
         setFeedback(data.filter((a) => a.score));
       })
       .catch((err) => {
@@ -133,9 +137,10 @@ const Analytics = () => {
       end: params.end.format('YYYY-MM-DD'),
     })
       .then(({ data }) => {
+        console.log('GET REPORT', data);
         setAdmissionsReport(data);
       }).catch((err) => {
-        console.log('Admissions Report Errer', err);
+        console.log('Admissions Report Error', err);
       });
   }, [renderNewDates]);
 

@@ -40,12 +40,12 @@ export const navigations = [
     auth: authRoles.contry_manager,
     children: [
       {
-        name: 'Cohorts',
+        name: 'All Cohorts',
         path: '/admissions/cohorts',
         iconText: 'CO',
       },
       {
-        name: 'Students',
+        name: 'All Students',
         path: '/admissions/students',
         iconText: 'STU',
       },
@@ -56,13 +56,12 @@ export const navigations = [
     icon: 'monetization_on',
     children: [
       {
-        beta: true,
         name: 'Won Leads',
         path: '/leads/won',
         iconText: 'OL',
       },
       {
-        name: 'Leads Log',
+        name: 'All Leads',
         path: '/leads/list',
         iconText: 'OL',
       },
@@ -73,17 +72,21 @@ export const navigations = [
     icon: 'record_voice_over',
     children: [
       {
-        name: 'Answers',
-        path: '/feedback/answers',
-        iconText: 'OL',
-      },
-      {
-        beta: true,
-        name: 'Surveys',
+        name: 'by Surveys',
         path: '/feedback/surveys',
         iconText: 'OL',
       },
+      {
+        name: 'All Answers',
+        path: '/feedback/answers',
+        iconText: 'OL',
+      },
     ],
+  },
+  {
+    path: '/certificates',
+    name: 'Certificates',
+    icon: 'card_membership',
   },
   {
     name: 'Events & Workshops',
@@ -109,14 +112,25 @@ export const navigations = [
     ],
   },
   {
-    path: '/certificates',
-    name: 'Certificates',
-    icon: 'card_membership',
-  },
-  {
     name: 'Media Gallery',
     icon: 'collections',
     path: '/media/gallery',
+  },
+  {
+    name: 'Admin',
+    icon: 'account_circle',
+    children: [
+      {
+        name: 'Staff',
+        path: '/admin/staff',
+        iconText: 'STA',
+      },
+      {
+        name: 'Invites',
+        path: '/admin/invites',
+        iconText: 'STA',
+      },
+    ],
   },
   {
     beta: true,
