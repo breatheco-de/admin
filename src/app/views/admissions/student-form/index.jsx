@@ -16,6 +16,7 @@ import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 toast.configure();
 const toastOption = {
@@ -36,6 +37,7 @@ dayjs.extend(LocalizedFormat);
 const Student = () => {
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
+  const [copied, setCopied] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
@@ -72,6 +74,7 @@ const Student = () => {
         >
           <DialogTitle id="alert-dialog-title">
             An email to reset password will be sent to
+            {/* Password Rest Link */}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -82,6 +85,15 @@ const Student = () => {
             <Button onClick={() => setOpenDialog(false)} color="primary">
               Close
             </Button>
+            {/* <Grid item md={2} sm={2} xs={2}>
+              <CopyToClipboard
+                text={values.url}
+                onCopy={() => setCopied(true)}
+              >
+                <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : 'Copy'}</Button>
+              </CopyToClipboard>
+            </Grid> */}
+
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
               Send
             </Button>
