@@ -16,7 +16,6 @@ import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 toast.configure();
 const toastOption = {
@@ -25,7 +24,7 @@ const toastOption = {
 };
 
 const options = [
-  { label: 'Send password reset', value: 'password_reset' },
+  { label: 'Password reset link', value: 'password_reset' },
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
 ];
@@ -73,29 +72,20 @@ const Student = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            An email to reset password will be sent to
-            {/* Password Rest Link */}
+            {/* An email to reset password will be sent to */}
+            Password Reset Link
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {member?.user.email}
+              {member?.res.data.reset_password_url}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)} color="primary">
               Close
             </Button>
-            {/* <Grid item md={2} sm={2} xs={2}>
-              <CopyToClipboard
-                text={values.url}
-                onCopy={() => setCopied(true)}
-              >
-                <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : 'Copy'}</Button>
-              </CopyToClipboard>
-            </Grid> */}
-
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
-              Send
+              Copy
             </Button>
           </DialogActions>
         </Dialog>
