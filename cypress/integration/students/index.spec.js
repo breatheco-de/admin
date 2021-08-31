@@ -10,7 +10,8 @@ describe('Students Screen', () => {
       we include it in our beforeEach function so that it runs before each test
     */
     cy.handleLogin()
-    cy.test_students()
+
+    cy.test_students() //what it does is send the student's data (mocked seeds)
     
   });
   context('Testing Students Screen', () => {
