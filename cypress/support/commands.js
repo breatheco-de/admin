@@ -206,7 +206,7 @@ Cypress.Commands.add('test_students', () => {
   // get correct structure
   cy.intercept('GET', '**/auth/academy/student?*', {
     
-      count: 5,
+      count: 2,
       first: null,
       next: null,
       previous: null,

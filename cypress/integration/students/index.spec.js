@@ -1,3 +1,6 @@
+const { get } = require("qwest");
+
+
 describe('Students Screen', () => {
   beforeEach(() => {
     /*
@@ -7,15 +10,13 @@ describe('Students Screen', () => {
       we include it in our beforeEach function so that it runs before each test
     */
     cy.handleLogin()
-    
+    cy.test_students()
     
   });
   context('Testing Students Screen', () => {
-    it('Has spected structure', () => {
-        /*
-        //       Hard coded structure to compare 
-        //     */
-        cy.test_students()
+    it('Validating backend response (mocked seeds)', () => {
+        /* Hard coded structure to compare  */
+        // cy.test_students()
 
         cy.log('**_____ Goin to Students Screen... _____**')
         cy.visit('/admissions/students')
@@ -24,13 +25,46 @@ describe('Students Screen', () => {
         cy.get('@test_students').then(xhr => {
         const students = xhr.response.body
         console.log("Response students:::",students) 
-        // cy.get(students.results.length).should('have.length', 2)
-       
         
         
-      }).its('response.body.results.length').should('be.eq', 2)
+        }).its('response.body.results.length').should('be.eq', 2)
     });
-  
+    it('Validating pagination (offest and limit)', () => {
+      // cy.test_students()
+
+      cy.log('**_____ Goin to Students Screen... _____**')
+      cy.visit('/admissions/students')
+
+      cy.log('**_____Changing the number of rows per page shown to 40... _____**')
+      cy.get('[data-testid=pagination-rows]').click({force: true})
+      cy.get('[data-value="40"]').click({force: true})
+
+      cy.log('**_____Verifying that the url changes with pagination... _____**')
+      cy.url().should('include', 'limit=40&offset=0')
+
+      // 
+
+    });
+
+    it('Validating search (like)', () => {
+      cy.test_students()
+
+      cy.log('**_____ Goin to Students Screen... _____**')
+      cy.visit('/admissions/students')
+
+      cy.log('**_____Making a search... _____**')
+      cy.get('[data-testid=Search-iconButton]').click({force: true})
+      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type('Jonathan')
+      cy.get('[data-testid=Search-iconButton]').click({force: true})
+
+      cy.log('**_____Verifying that the url changes with search... _____**')
+      cy.url().should('include', 'like="Jonathan"')
+
+      // 
+
+    });
+
+    
   });
 });
   
