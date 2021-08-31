@@ -25,7 +25,13 @@ const StudentIndicatorCards = ({ metrics }) => {
             <div className="flex items-center">
               <div className="ml-3">
                 <small className="text-light-white">{v.label}</small>
-                <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>
+                {v.label === 'Github Username' ? (
+                  <a href={v.value} target="_blank" rel="noreferrer">
+                    <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>
+                  </a>
+                ) : (
+                  <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>
+                )}
               </div>
             </div>
             <Icon className={classes.icon}>{v.icon}</Icon>
