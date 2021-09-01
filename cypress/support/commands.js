@@ -259,3 +259,33 @@ Cypress.Commands.add('test_students', () => {
   ).as('test_students')
 });  
 
+Cypress.Commands.add('mock_search', () => {
+  cy.intercept('GET', '**/auth/academy/student?limit=10&offset=0&like=Jonathan',{
+    count: 1,
+      first: null,
+      next: null,
+      previous: null,
+      last: null,
+      results: [
+          {
+              id: 64,
+              first_name: "Jonathan",
+              last_name: "Ferragut",
+              user: null,
+              academy: {
+                  id: 4,
+                  name: "Downtown Miami",
+                  slug: "downtown-miami"
+              },
+              role: {
+                  slug: "student",
+                  name: "Student"
+              },
+              created_at: "2021-05-17T18:35:09.382565Z",
+              email: "jonathan@alkemyinc.com",
+              address: "",
+              phone: "305879655",
+              status: "ACTIVE"
+          }]
+  }).as('mock_search')
+})

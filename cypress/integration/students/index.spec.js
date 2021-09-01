@@ -1,6 +1,3 @@
-const { get } = require("qwest");
-
-
 describe('Students Screen', () => {
   beforeEach(() => {
     /*
@@ -37,8 +34,8 @@ describe('Students Screen', () => {
       cy.visit('/admissions/students')
 
       cy.log('**_____Changing the number of rows per page shown to 40... _____**')
-      cy.get('[data-testid=pagination-rows]').click({force: true})
-      cy.get('[data-value="40"]').click({force: true})
+      cy.get('[data-testid=pagination-rows]').click()
+      cy.get('[data-value="40"]').click()
 
       cy.log('**_____Verifying that the url changes with pagination... _____**')
       cy.url().should('include', 'limit=40&offset=0')
@@ -48,20 +45,22 @@ describe('Students Screen', () => {
     });
 
     it('Validating search (like)', () => {
-      cy.test_students()
+      cy.mock_search()
 
       cy.log('**_____ Goin to Students Screen... _____**')
       cy.visit('/admissions/students')
 
       cy.log('**_____Making a search... _____**')
-      cy.get('[data-testid=Search-iconButton]').click({force: true})
-      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type('Jonathan')
-      cy.get('[data-testid=Search-iconButton]').click({force: true})
+      cy.get('[data-testid=Search-iconButton]').click()
+      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type('Jonathan{enter}')
+
+      cy.wait('@mock_search');
+      cy.get('@mock_search').then(xhr => {
+      console.log("Response search:::", xhr) 
+      })
 
       cy.log('**_____Verifying that the url changes with search... _____**')
-      cy.url().should('include', 'like="Jonathan"')
-
-      // 
+      cy.url().should('include', '&like=Jonathan')
 
     });
 
