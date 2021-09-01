@@ -72,12 +72,12 @@ const Student = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {/* An email to reset password will be sent to */}
-            Password Reset Link
+            An email to reset password will be sent to
+            {/* Password Reset Link */}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {member?.res.data.reset_password_url}
+              {member?.user.email}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -85,7 +85,7 @@ const Student = () => {
               Close
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
-              Copy
+              Send
             </Button>
           </DialogActions>
         </Dialog>
