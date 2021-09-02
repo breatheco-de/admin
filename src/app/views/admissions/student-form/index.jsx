@@ -24,7 +24,7 @@ const toastOption = {
 };
 
 const options = [
-  { label: 'Password reset link', value: 'password_reset' },
+  { label: 'Password reset', value: 'password_reset' },
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
 ];
@@ -73,7 +73,6 @@ const Student = () => {
         >
           <DialogTitle id="alert-dialog-title">
             An email to reset password will be sent to
-            {/* Password Reset Link */}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
@@ -85,6 +84,9 @@ const Student = () => {
               Close
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
+              {/* <Dialog>
+                Hello
+              </Dialog> */}
               Send
             </Button>
           </DialogActions>
