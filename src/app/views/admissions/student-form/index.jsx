@@ -16,6 +16,7 @@ import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { resolveResponse } from 'utils';
 
 toast.configure();
 const toastOption = {
@@ -71,13 +72,13 @@ const Student = () => {
       })
       .catch((error) => error);
     setOpenDialog(false);
-    setOpenDialogTwo(true)
+    // setOpenDialogTwo(false)
   };
   useEffect(() => {
     getMemberById();
   }, []);
 
-  console.log(openDialog + ' jason');
+  console.log(resolveResponse + ' jason');
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -116,7 +117,7 @@ const Student = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {member?.user.email}
+              *link here*
             </DialogContentText>
           </DialogContent>
           <DialogActions>
