@@ -38,6 +38,7 @@ const Student = () => {
   const [member, setMember] = useState(null);
   const [copied, setCopied] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogTwo, setOpenDialogTwo] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
   const getMemberById = () => {
@@ -52,15 +53,31 @@ const Student = () => {
       .then((res) => {
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
+          // toast.success('Password reset url copied', toastOption);
+        }
+      })
+      .catch((error) => error);
+    setOpenDialog(false);
+    setOpenDialogTwo(true)
+  };
+  const passwordResetTwo = () => {
+    bc.auth()
+      .passwordReset(member.id)
+      .then((res) => {
+        if (res.data && res.data.reset_password_url) {
+          navigator.clipboard.writeText(res.data.reset_password_url);
           toast.success('Password reset url copied', toastOption);
         }
       })
       .catch((error) => error);
     setOpenDialog(false);
+    setOpenDialogTwo(true)
   };
   useEffect(() => {
     getMemberById();
   }, []);
+
+  console.log(openDialog + ' jason');
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -84,10 +101,30 @@ const Student = () => {
               Close
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
-              {/* <Dialog>
-                Hello
-              </Dialog> */}
               Send
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openDialogTwo}
+          onClose={() => setOpenDialogTwo(true)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Password reset link
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {member?.user.email}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialogTwo(false)} color="primary">
+              Close
+            </Button>
+            <Button color="primary" autoFocus onClick={() => passwordResetTwo()}>
+              Copy Link
             </Button>
           </DialogActions>
         </Dialog>
