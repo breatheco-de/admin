@@ -38,6 +38,7 @@ const Student = () => {
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [inviteLink, setInviteLink] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogTwo, setOpenDialogTwo] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
@@ -55,30 +56,31 @@ const Student = () => {
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
           // toast.success('Password reset url copied', toastOption);
+          setInviteLink(res.data.reset_password_url);
         }
       })
       .catch((error) => error);
     setOpenDialog(false);
-    setOpenDialogTwo(true)
+    setOpenDialogTwo(true);
+    // setInviteLink(res.data.reset_password_url);
   };
   const passwordResetTwo = () => {
-    bc.auth()
-      .passwordReset(member.id)
-      .then((res) => {
-        if (res.data && res.data.reset_password_url) {
-          navigator.clipboard.writeText(res.data.reset_password_url);
-          toast.success('Password reset url copied', toastOption);
-        }
-      })
-      .catch((error) => error);
-    setOpenDialog(false);
-    // setOpenDialogTwo(false)
+    // bc.auth()
+    //   .passwordReset(member.id)
+    //   .then((res) => {
+    //     if (res.data.reset_password_url) {
+    //       navigator.clipboard.writeText(res.data.reset_password_url);
+           toast.success('Password reset url copied', toastOption);
+      //   }
+      // })
+      // .catch((error) => error);
+    setOpenDialogTwo(false)
   };
   useEffect(() => {
     getMemberById();
   }, []);
 
-  console.log(resolveResponse + ' jason');
+  // console.log(resolveResponse + ' jason');
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -117,7 +119,7 @@ const Student = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              *link here*
+              {inviteLink}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -125,7 +127,7 @@ const Student = () => {
               Close
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordResetTwo()}>
-              Copy Link
+              Copy
             </Button>
           </DialogActions>
         </Dialog>
