@@ -65,8 +65,8 @@ const Student = () => {
     // setInviteLink(res.data.reset_password_url);
   };
   const passwordResetTwo = () => {
-    // bc.auth()
-    //   .passwordReset(member.id)
+    bc.auth()
+      // .passwordReset(member.id)
     //   .then((res) => {
     //     if (res.data.reset_password_url) {
     //       navigator.clipboard.writeText(res.data.reset_password_url);
