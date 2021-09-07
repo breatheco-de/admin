@@ -16,6 +16,7 @@ import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
+import TextField from '@material-ui/core/TextField';
 import { resolveResponse } from 'utils';
 
 toast.configure();
@@ -53,10 +54,10 @@ const Student = () => {
     bc.auth()
       .passwordReset(member.id)
       .then((res) => {
+        setInviteLink(res.data.reset_password_url);
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
           // toast.success('Password reset url copied', toastOption);
-          setInviteLink(res.data.reset_password_url);
         }
       })
       .catch((error) => error);
@@ -119,7 +120,13 @@ const Student = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {inviteLink}
+              <TextField
+                value={inviteLink}
+                disabled
+                id="outlined-disabled"
+                label="URL"
+                variant="outlined"
+              />
             </DialogContentText>
           </DialogContent>
           <DialogActions>
