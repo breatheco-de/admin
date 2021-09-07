@@ -11,6 +11,25 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
+const parseGithubUrl = (str) => {
+  const regex = /(?:https:\/\/)?(?:www)?github\.com\/([a-zA-Z0-9_-]+)/gm;
+  let m;
+  let username = '';
+
+  while ((m = regex.exec(str)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (m.index === regex.lastIndex) {
+      regex.lastIndex++;
+    }
+
+    // The result can be accessed through the `m`-variable.
+    m.forEach((match, groupIndex) => {
+      username = match;
+    });
+  }
+  return username;
+};
+
 const StudentIndicatorCards = ({ metrics }) => {
   const classes = useStyles();
 
@@ -27,7 +46,9 @@ const StudentIndicatorCards = ({ metrics }) => {
                 <small className="text-light-white">{v.label}</small>
                 {v.label === 'Github Username' ? (
                   <a href={v.value} target="_blank" rel="noreferrer">
-                    <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>
+                    <h6 className="underline m-0 mt-1 text-white font-medium">
+                      {v.value && parseGithubUrl(v.value)}
+                    </h6>
                   </a>
                 ) : (
                   <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>

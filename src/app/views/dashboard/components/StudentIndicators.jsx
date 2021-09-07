@@ -39,7 +39,7 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
         { label: 'Last Login', value: lastLogin(), icon: 'group' },
         {
           label: 'Github Username',
-          value: studentData.user?.profile.github_username,
+          value: studentData.user?.profile?.github_username,
           icon: 'group',
         },
       ]}

@@ -8,7 +8,7 @@ const StudentInformation = ({ data }, classes) => {
   return (
     <>
       <div className={clsx('flex-column items-center', classes.sidenav)}>
-        <Avatar className="h-84 w-84 mb-5" src={user?.profile.avatar_url || ''} />
+        <Avatar className="h-84 w-84 mb-5" src={user?.profile?.avatar_url || ''} />
         <p className="text-white">{`${user?.first_name}  ${user?.last_name}`}</p>
         <p className="mt-0">{user?.email}</p>
         <div className="py-3" />
