@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Grid, Card, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { parseGithubUrl } from '../helpers/parseGithubUrl';
+
 const useStyles = makeStyles(({ palette }) => ({
   icon: {
     fontSize: '44px',
@@ -10,25 +12,6 @@ const useStyles = makeStyles(({ palette }) => ({
     color: '#fafafa',
   },
 }));
-
-const parseGithubUrl = (str) => {
-  const regex = /(?:https:\/\/)?(?:www)?github\.com\/([a-zA-Z0-9_-]+)/gm;
-  let m;
-  let username = '';
-
-  while ((m = regex.exec(str)) !== null) {
-    // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === regex.lastIndex) {
-      regex.lastIndex++;
-    }
-
-    // The result can be accessed through the `m`-variable.
-    m.forEach((match, groupIndex) => {
-      username = match;
-    });
-  }
-  return username;
-};
 
 const StudentIndicatorCards = ({ metrics }) => {
   const classes = useStyles();
@@ -47,7 +30,7 @@ const StudentIndicatorCards = ({ metrics }) => {
                 {v.label === 'Github Username' ? (
                   <a href={v.value} target="_blank" rel="noreferrer">
                     <h6 className="underline m-0 mt-1 text-white font-medium">
-                      {v.value && parseGithubUrl(v.value)}
+                      {(v.value && parseGithubUrl(v.value)) || 'N/A'}
                     </h6>
                   </a>
                 ) : (

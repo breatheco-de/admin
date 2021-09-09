@@ -14,6 +14,7 @@ const StudentTimeline = ({
   return (
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
+        <h5 className="pt-4 mb-4">Student Activites</h5>
         <div className="mb-12">
           <AsyncAutocomplete
             size="small"
