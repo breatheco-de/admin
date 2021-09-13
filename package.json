@@ -123,10 +123,13 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "serve": "npx serve -s build",
     "test": "node scripts/test.js",
     "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "node scripts/build.js && gh-pages -d build",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -143,6 +146,7 @@
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^5.2.0",
     "customize-cra": "^0.9.1",
+    "cypress": "^8.2.0",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.23.4",
