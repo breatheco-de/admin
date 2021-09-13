@@ -18,6 +18,13 @@ import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
 import TextField from '@material-ui/core/TextField';
 import { resolveResponse } from 'utils';
+import {makeStyles} from "@material-ui/core/styles"
+
+const useStyles = makeStyles({
+  modalStyle: {
+    width: "400px"
+  }
+});
 
 toast.configure();
 const toastOption = {
@@ -36,12 +43,13 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
+  const classes = useStyles();
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
   const [copied, setCopied] = useState(false);
   const [inviteLink, setInviteLink] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
-  const [openDialogTwo, setOpenDialogTwo] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
   const getMemberById = () => {
@@ -57,31 +65,20 @@ const Student = () => {
         setInviteLink(res.data.reset_password_url);
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
-          // toast.success('Password reset url copied', toastOption);
         }
       })
       .catch((error) => error);
     setOpenDialog(false);
-    setOpenDialogTwo(true);
-    // setInviteLink(res.data.reset_password_url);
+    setOpenModal(true);
   };
-  const passwordResetTwo = () => {
+  const copyPasswordResetLink = () => {
     bc.auth()
-      // .passwordReset(member.id)
-    //   .then((res) => {
-    //     if (res.data.reset_password_url) {
-    //       navigator.clipboard.writeText(res.data.reset_password_url);
            toast.success('Password reset url copied', toastOption);
-      //   }
-      // })
-      // .catch((error) => error);
-    setOpenDialogTwo(false)
   };
   useEffect(() => {
     getMemberById();
   }, []);
 
-  // console.log(resolveResponse + ' jason');
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -110,8 +107,8 @@ const Student = () => {
           </DialogActions>
         </Dialog>
         <Dialog
-          open={openDialogTwo}
-          onClose={() => setOpenDialogTwo(true)}
+          open={openModal}
+          onClose={() => setOpenModal(true)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -121,6 +118,7 @@ const Student = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <TextField
+                className={classes.modalStyle}
                 value={inviteLink}
                 disabled
                 id="outlined-disabled"
@@ -130,10 +128,10 @@ const Student = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenDialogTwo(false)} color="primary">
+            <Button onClick={() => setOpenModal(false)} color="primary">
               Close
             </Button>
-            <Button color="primary" autoFocus onClick={() => passwordResetTwo()}>
+            <Button color="primary" autoFocus onClick={() => copyPasswordResetLink()}>
               Copy
             </Button>
           </DialogActions>
