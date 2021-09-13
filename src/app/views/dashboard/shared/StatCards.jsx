@@ -18,7 +18,7 @@ const StatCards = ({ metrics }) => {
 
   return (
     <Grid container spacing={3} className="mb-3">
-      {metrics.map(metric => 
+      {metrics.map((metric) => (
         <Grid item xs={12} md={6}>
           <Card
             className="flex flex-wrap justify-between items-center p-sm-24 bg-paper"
@@ -38,7 +38,7 @@ const StatCards = ({ metrics }) => {
             </Tooltip> */}
           </Card>
         </Grid>
-        )}
+      ))}
     </Grid>
   );
 };
