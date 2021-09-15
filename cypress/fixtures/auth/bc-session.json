@@ -1,0 +1,7 @@
+{
+  "role": {
+    "academy": { "id": 1, "name": "4Geeks Miami", "slug": "miami-downtown" },
+    "role": "admin"
+  },
+  "academy": { "id": 1, "name": "4Geeks Miami", "slug": "miami-downtown" }
+}
