@@ -16,6 +16,15 @@ import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
+import TextField from '@material-ui/core/TextField';
+import { resolveResponse } from 'utils';
+import {makeStyles} from "@material-ui/core/styles"
+
+const useStyles = makeStyles({
+  modalStyle: {
+    width: "400px"
+  }
+});
 
 toast.configure();
 const toastOption = {
@@ -24,7 +33,7 @@ const toastOption = {
 };
 
 const options = [
-  { label: 'Send password reset', value: 'password_reset' },
+  { label: 'Password reset', value: 'password_reset' },
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
 ];
@@ -34,9 +43,13 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
+  const classes = useStyles();
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [inviteLink, setInviteLink] = useState("")
   const [openDialog, setOpenDialog] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
   const getMemberById = () => {
@@ -49,17 +62,23 @@ const Student = () => {
     bc.auth()
       .passwordReset(member.id)
       .then((res) => {
+        setInviteLink(res.data.reset_password_url);
         if (res.data && res.data.reset_password_url) {
           navigator.clipboard.writeText(res.data.reset_password_url);
-          toast.success('Password reset url copied', toastOption);
         }
       })
       .catch((error) => error);
     setOpenDialog(false);
+    setOpenModal(true);
+  };
+  const copyPasswordResetLink = () => {
+    bc.auth()
+           toast.success('Password reset url copied', toastOption);
   };
   useEffect(() => {
     getMemberById();
   }, []);
+
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -84,6 +103,36 @@ const Student = () => {
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
               Send
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openModal}
+          onClose={() => setOpenModal(true)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Password reset link
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <TextField
+                className={classes.modalStyle}
+                value={inviteLink}
+                disabled
+                id="outlined-disabled"
+                label="URL"
+                variant="outlined"
+              />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenModal(false)} color="primary">
+              Close
+            </Button>
+            <Button color="primary" autoFocus onClick={() => copyPasswordResetLink()}>
+              Copy
             </Button>
           </DialogActions>
         </Dialog>

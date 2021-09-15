@@ -3,6 +3,12 @@ import { authRoles } from '../../auth/authRoles';
 
 const dashboardRoutes = [
   {
+    path: '/dashboard/student/:studentID/cohort/:cohortID',
+    exact: true,
+    component: React.lazy(() => import('./studentReport')),
+    auth: authRoles.sa,
+  },
+  {
     path: '/dashboard/analytics',
     component: React.lazy(() => import('./Analytics')),
     auth: authRoles.sa,

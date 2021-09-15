@@ -122,10 +122,7 @@ class BreatheCodeClient {
         );
       },
       getReport: (query) => {
-        return axios._get(
-          "Report",
-          `${this.host}/admissions/report`
-        );
+        return axios._get('Report', `${this.host}/admissions/report`);
       },
       getAllCourseSyllabus: (query) => {
         return axios._get(
@@ -143,6 +140,12 @@ class BreatheCodeClient {
         return axios._get(
           'Certificates',
           `${this.host}/admissions/academy/certificate?syllabus_id=${query}`
+        );
+      },
+      getSingleCohortStudent: (cohortID, studentID) => {
+        return axios._get(
+          'Single Cohort Student',
+          `${this.host}/admissions/academy/cohort/${cohortID}/user/${studentID}`
         );
       },
       getMyAcademy: () =>
@@ -315,18 +318,24 @@ class BreatheCodeClient {
           `${this.host}/feedback/academy/survey/${id}`,
           survey
         ),
-        getSurveys: (query) => {
-      const qs =
-        query !== undefined
-          ? Object.keys(query)
-              .map((key) => `${key}=${query[key]}`)
-              .join('&')
-          : '';
-    return  axios._get('Academy survey',`${this.host}/feedback/academy/survey${query ? '?' + qs : ''}`)
-    },
-    getSurvey: (id) => {
-      return  axios._get('Academy survey',`${this.host}/feedback/academy/survey/${id}`)
-    }
+      getSurveys: (query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey${query ? '?' + qs : ''}`
+        );
+      },
+      getSurvey: (id) => {
+        return axios._get(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey/${id}`
+        );
+      },
     };
   }
 
@@ -460,8 +469,8 @@ class BreatheCodeClient {
     return {
       getDefaultLayout: () => {
         return axios._get('Layout', `${this.host}/certificate/academy/layout`);
-      }
-    }
+      },
+    };
   }
 
   media() {
@@ -497,7 +506,51 @@ class BreatheCodeClient {
       },
       updateMediaBulk: (payload) => {
         return axios._put('Media', `${this.host}/media/info`, payload);
-      }
+      },
+    };
+  }
+
+  assignments() {
+    return {
+      getStudentAssignments: (studentID) => {
+        return axios._get(
+          'Student Assignments',
+          `${this.host}/assignment/task/?stu_cohort=${studentID}`
+        );
+      },
+    };
+  }
+
+  registry() {
+    return {
+      getAsset: (associatedSlug) => {
+        return axios._get(
+          'Asset',
+          `${this.host}/registry/asset/${associatedSlug}`
+        );
+      },
+    };
+  }
+
+  activity() {
+    return {
+      getCohortActivity: (cohortID, query) => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Cohort Activity',
+          `${this.host}/activity/academy/cohort/${cohortID}${
+            query ? '?' + qs : ''
+          }`
+        );
+      },
+      getActivityTypes: () => {
+        return axios._get('Cohort Activity Type', `${this.host}/activity/type`);
+      },
     };
   }
 
