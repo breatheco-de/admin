@@ -82,6 +82,9 @@ const Cohort = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
 
+  const token = getToken();
+  const session = getSession();
+
   const options = [
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
@@ -193,9 +196,6 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-
-              const token = getToken();
-              const session = getSession();
 
               if (value === 'current_day') {
                 setCohortDayDialog(true);
