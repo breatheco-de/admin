@@ -94,7 +94,7 @@ class BreatheCodeClient {
       getCertificates: () => {
         return axios._get(
           'Certificates',
-          `${this.host}/admissions/certificate`
+          `${this.host}/admissions/syllabus`
         );
       },
       getAllSyllabus: () => {
@@ -133,13 +133,13 @@ class BreatheCodeClient {
       getAllRelatedCertificates: (query) => {
         return axios._get(
           'Certificates',
-          `${this.host}/admissions/academy/certificate?syllabus_slug=${query}`
+          `${this.host}/admissions/syllabus?syllabus_slug=${query}`
         );
       },
       getAllRelatedCertificatesById: (query) => {
         return axios._get(
           'Certificates',
-          `${this.host}/admissions/academy/certificate?syllabus_id=${query}`
+          `${this.host}/admissions/syllabus?syllabus_id=${query}`
         );
       },
       getSingleCohortStudent: (cohortID, studentID) => {
