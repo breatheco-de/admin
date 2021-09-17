@@ -126,6 +126,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
+                      data-cy="syllabus_certificates"
                       debounced={false}
                       onChange={(certificate) => setCert(certificate)}
                       width="30%"
@@ -139,6 +140,7 @@ const NewCohort = () => {
                     />
                     {cert !== null ? (
                       <AsyncAutocomplete
+                        data-cy="certificate_version"
                         debounced={false}
                         onChange={(v) => setVersion(v)}
                         width="20%"
