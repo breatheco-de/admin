@@ -142,6 +142,12 @@ class BreatheCodeClient {
           `${this.host}/admissions/syllabus?syllabus_id=${query}`
         );
       },
+      getAllRelatedSchedulesById: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/certificate?syllabus_id=${query}`
+        );
+      },
       getSingleCohortStudent: (cohortID, studentID) => {
         return axios._get(
           'Single Cohort Student',

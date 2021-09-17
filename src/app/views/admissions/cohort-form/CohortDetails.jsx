@@ -61,7 +61,7 @@ const CohortDetails = ({
 
   useEffect(() => {
     // setIsLoading(true);
-    const model = specialtyMode || syllabusVersion;
+    const model = syllabusVersion;
     if (model) {
       bc.admissions()
         .getSyllabus(model.syllabus)
@@ -85,10 +85,17 @@ const CohortDetails = ({
           language,
           ending_date: endDate,
           kickoff_date: startDate,
-          neverEnds,
+          never_ends: neverEnds,
           specialtyMode,
         }}
-        onSubmit={(values) => onSubmit({ ...values, syllabus: `${syllabus.slug}.v${version.version}` })}
+        onSubmit={({ specialtyMode, ...values }) => {
+          const specialtyModeId = cert ? cert.id : null;
+          return onSubmit({
+            ...values,
+            syllabus: `${syllabus.slug}.v${version.version}`,
+            specialty_mode: specialtyModeId,
+          });
+        }}
         enableReinitialize
       >
         {({
@@ -170,7 +177,7 @@ const CohortDetails = ({
                   width="100%"
                   initialValue={cert}
                   asyncSearch={() => bc.admissions()
-                    .getAllRelatedCertificatesById(cert?.syllabus)}
+                    .getAllRelatedSchedulesById(cert?.syllabus)}
                   size="small"
                   label="Schedule"
                   data-cy="schedule"
@@ -192,7 +199,9 @@ const CohortDetails = ({
                   fullWidth
                   variant="outlined"
                   value={values.language}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setFieldValue('language', e.target.value);
+                  }}
                   select
                 >
                   {['es', 'en'].map((item) => (
@@ -222,7 +231,7 @@ const CohortDetails = ({
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
-              {!values.neverEnds ? (
+              {!values.never_ends ? (
                 <>
                   <Grid item md={3} sm={4} xs={12}>
                     End date
@@ -241,7 +250,7 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                          setFieldValue('endingDate', date.toISOString());
+                          setFieldValue('ending_date', date.toISOString());
                         }}
                       />
                     </MuiPickersUtilsProvider>
@@ -249,10 +258,10 @@ const CohortDetails = ({
                   <Grid item md={12} sm={12} xs={12}>
                     <FormControlLabel
                       className="flex-grow"
-                      name="neverEnds"
+                      name="never_ends"
                       data-cy="never-ends"
                       onChange={handleChange}
-                      control={<Checkbox checked={values.neverEnds} />}
+                      control={<Checkbox checked={values.never_ends} />}
                       label="This cohort never ends"
                     />
                   </Grid>
@@ -261,10 +270,10 @@ const CohortDetails = ({
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel
                     className="flex-grow"
-                    name="neverEnds"
+                    name="never_ends"
                     data-cy="never-ends"
                     onChange={handleChange}
-                    control={<Checkbox checked={values.neverEnds} />}
+                    control={<Checkbox checked={values.never_ends} />}
                     label="This cohort never ends"
                   />
                 </Grid>
