@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Divider,
   Card,
@@ -24,7 +24,15 @@ const propTypes = {
   startDate: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  syllabus: PropTypes.string.isRequired,
+  specialtyMode: PropTypes.shape({
+    slug: PropTypes.string,
+    name: PropTypes.string,
+    syllabus: PropTypes.number,
+  }).isRequired,
+  syllabusVersion: PropTypes.shape({
+    version: PropTypes.number,
+    syllabus: PropTypes.number,
+  }).isRequired,
   neverEnds: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool.isRequired,
 };
@@ -41,13 +49,30 @@ const CohortDetails = ({
   startDate,
   language,
   onSubmit,
-  syllabus,
+  specialtyMode,
+  syllabusVersion,
   neverEnds,
   isPrivate,
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
-  const [cert, setCert] = useState(syllabus?.certificate);
-  const [version, setVersion] = useState(syllabus);
+  const [syllabus, setSyllabus] = useState(null);
+  const [cert, setCert] = useState(specialtyMode);
+  const [version, setVersion] = useState(syllabusVersion);
+
+  useEffect(() => {
+    // setIsLoading(true);
+    const model = syllabusVersion;
+    if (model) {
+      bc.admissions()
+        .getSyllabus(model.syllabus)
+        .then(({ data }) => {
+          // setIsLoading(false);
+          setSyllabus(data);
+        })
+        .catch((error) => console.error(error));
+    }
+  }, []);
+
   return (
     <Card className="p-4">
       <div className="mb-4 flex justify-between items-center">
@@ -60,9 +85,17 @@ const CohortDetails = ({
           language,
           ending_date: endDate,
           kickoff_date: startDate,
-          neverEnds,
+          never_ends: neverEnds,
+          specialtyMode,
         }}
-        onSubmit={(values) => onSubmit({ ...values, syllabus: `${cert.slug}.v${version.version}` })}
+        onSubmit={({ specialtyMode, ...values }) => {
+          const specialtyModeId = cert ? cert.id : null;
+          return onSubmit({
+            ...values,
+            syllabus: `${syllabus.slug}.v${version.version}`,
+            specialty_mode: specialtyModeId,
+          });
+        }}
         enableReinitialize
       >
         {({
@@ -85,6 +118,7 @@ const CohortDetails = ({
                   className="m-2"
                   label="Slug"
                   name="slug"
+                  data-cy="slug"
                   disabled
                   size="small"
                   variant="outlined"
@@ -98,33 +132,59 @@ const CohortDetails = ({
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
                   onChange={(certificate) => {
-                    setCert(certificate);
+                    setSyllabus(certificate);
                     setVersion(null);
                   }}
                   width="100%"
-                  initialValue={cert}
-                  asyncSearch={() => bc.admissions().getCertificates()}
+                  key={syllabus}
+                  asyncSearch={() => bc.admissions()
+                    .getAllSyllabus()}
                   size="small"
-                  label="Certificate"
+                  label="Syllabus"
+                  data-cy="syllabus"
                   required
                   debounced={false}
+                  initialValue={syllabus}
                   getOptionLabel={(option) => `${option.name}`}
-                  value={cert}
+                  value={syllabus}
                 />
               </Grid>
               <Grid item md={2} sm={4} xs={6}>
                 <AsyncAutocomplete
                   onChange={(v) => setVersion(v)}
                   width="100%"
-                  key={cert !== null ? cert.slug : ''}
-                  asyncSearch={() => bc.admissions().getAllCourseSyllabus(cert?.slug, academy.id)}
+                  key={syllabus !== null ? syllabus.slug : ''}
+                  asyncSearch={() => bc.admissions()
+                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
                   size="small"
                   label="Version"
+                  data-cy="version"
                   required
                   debounced={false}
                   initialValue={version}
                   getOptionLabel={(option) => `${option.version}`}
                   value={version}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Schedule
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <AsyncAutocomplete
+                  onChange={(certificate) => {
+                    setCert(certificate);
+                  }}
+                  width="100%"
+                  initialValue={cert}
+                  asyncSearch={() => bc.admissions()
+                    .getAllRelatedSchedulesById(cert?.syllabus)}
+                  size="small"
+                  label="Schedule"
+                  data-cy="schedule"
+                  required
+                  debounced={false}
+                  getOptionLabel={(option) => `${option.name}`}
+                  value={cert}
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
@@ -134,12 +194,14 @@ const CohortDetails = ({
                 <TextField
                   className="m-2"
                   label="Language"
-                  name="language"
+                  data-cy="language"
                   size="small"
                   fullWidth
                   variant="outlined"
                   value={values.language}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setFieldValue('language', e.target.value);
+                  }}
                   select
                 >
                   {['es', 'en'].map((item) => (
@@ -158,6 +220,7 @@ const CohortDetails = ({
                     className="m-2"
                     margin="none"
                     label="Date"
+                    data-cy="start-date"
                     inputVariant="outlined"
                     type="text"
                     size="small"
@@ -168,7 +231,7 @@ const CohortDetails = ({
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
-              {!values.neverEnds ? (
+              {!values.never_ends ? (
                 <>
                   <Grid item md={3} sm={4} xs={12}>
                     End date
@@ -179,6 +242,7 @@ const CohortDetails = ({
                         className="m-2"
                         margin="none"
                         label="Date"
+                        data-cy="end-date"
                         inputVariant="outlined"
                         type="text"
                         size="small"
@@ -186,7 +250,6 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                          console.log(date);
                           setFieldValue('ending_date', date.toISOString());
                         }}
                       />
@@ -195,9 +258,10 @@ const CohortDetails = ({
                   <Grid item md={12} sm={12} xs={12}>
                     <FormControlLabel
                       className="flex-grow"
-                      name="neverEnds"
+                      name="never_ends"
+                      data-cy="never-ends"
                       onChange={handleChange}
-                      control={<Checkbox checked={values.neverEnds} />}
+                      control={<Checkbox checked={values.never_ends} />}
                       label="This cohort never ends"
                     />
                   </Grid>
@@ -206,9 +270,10 @@ const CohortDetails = ({
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel
                     className="flex-grow"
-                    name="neverEnds"
+                    name="never_ends"
+                    data-cy="never-ends"
                     onChange={handleChange}
-                    control={<Checkbox checked={values.neverEnds} />}
+                    control={<Checkbox checked={values.never_ends} />}
                     label="This cohort never ends"
                   />
                 </Grid>
