@@ -740,7 +740,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
       results: [
             {
               id: 555,
-              slug: "Porlamar 7 full time",
+              slug: "Porlamar_7_full_time",
               name: "Porlamar-VII",
               never_ends: true,
               private: false,
@@ -1039,4 +1039,50 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
   }
    
    ).as('mock_list_cohortsB')
+});  
+
+
+
+Cypress.Commands.add('cohort_search_result', () => {
+  // the list of cohorts AFTER adding a new cohort
+  cy.intercept('GET', '**/admissions/academy/cohort?**', 
+    {
+      count: 40,
+      first: null,
+      next: "https://breathecode-test.herokuapp.com/v1/admissions/academy/cohort?limit=10&offset=10",
+      previous: null,
+      last: "https://breathecode-test.herokuapp.com/v1/admissions/academy/cohort?limit=10&offset=30",
+      results: [
+            {
+              id: 555,
+              slug: "Porlamar_7_full_time",
+              name: "Porlamar-VII",
+              never_ends: true,
+              private: false,
+              language: "en",
+              kickoff_date: "2021-09-14T23:04:00.529000Z",
+              ending_date: null,
+              current_day: 0,
+              stage: "STARTED",
+              specialty_mode: null,
+              syllabus_version: null,
+              academy: {
+                  id: 4,
+                  slug: "downtown-miami",
+                  name: "Downtown Miami",
+                  country: {
+                      code: "us",
+                      name: "USA"
+                  },
+                  city: {
+                      name: "Miami"
+                  },
+                  logo_url: "https://storage.googleapis.com/admissions-breathecode/location-downtown-miami"
+              }
+          }
+      
+      ]
+  }
+   
+   ).as('cohort_search_result')
 });  

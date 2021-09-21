@@ -124,7 +124,7 @@ const Cohorts = () => {
           <div className="flex items-center">
             <div className="flex-grow" />
             <Link to={`/admissions/cohorts/${items[dataIndex].slug}`}>
-              <IconButton>
+              <IconButton data-cy="edit_cohort">
                 <Icon>edit</Icon>
               </IconButton>
             </Link>

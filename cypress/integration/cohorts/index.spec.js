@@ -1,4 +1,5 @@
 
+
 describe('Cohorts Screen', () => {
   
   beforeEach(() => {
@@ -14,7 +15,7 @@ describe('Cohorts Screen', () => {
   });
   context('Testing cohorts Screen', () => {
      
-    it('Checking that the button creates a new cohort', () => {
+    it.skip('Checking that the button creates a new cohort', () => {
         
       cy.fixture('/cohorts_screen_values/values').then((values) => {
         cy.log('**_____ Sending the mocked cohorts_____**')
@@ -71,48 +72,47 @@ describe('Cohorts Screen', () => {
         cy.log('**_____ The new cohort has been created _____**')
         cy.log('**_____ TEST SUCCESSFULL _____**')
         
-        
-
-        
-        
       })
        
         })
-        
-    
 
-    // cy.log('**_____ Goin BACK to Cohorts Screen... _____**')
-        // cy.mock_list_cohortsB()
-        // cy.visit('/admissions/cohorts')
-    
-    
+  it.skip('Searching the cohort created and checking for all coincidences', () => {
+    cy.fixture('/cohorts_screen_values/values').then((values) => {
+      cy.log('**_____ Goin to Cohorts Screen... _____**')
+      cy.mock_list_cohortsB()
+      cy.visit('/admissions/cohorts')
+      cy.wait(5000)
+
+      cy.log('**_____ Searching the new cohort _____**')
+      cy.get('[data-testid=Search-iconButton]').click()
+      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type(values.search_cohort)
+      cy.cohort_search_result()
+
+      cy.log('**_____ Checking for all coincidences _____**')
+      cy.get('[data-testid=MuiDataTableBodyCell-0-0]').contains(values.id)
+      cy.get('[data-testid=MuiDataTableBodyCell-2-0]').contains(values.name)
+
+      cy.log('**_____ All coincidences checked _____**')
+      cy.log('**_____ TEST SUCCESSFULL _____**')
+
+    })
   
+  })
 
-  // it('Searching the cohort created', () => {
-  //   cy.log('**_____ Goin to Cohorts Screen... _____**')
-  //   cy.visit('/admissions/cohorts')
+  it('Corroborating the editing process of the newly created cohort', () => {
 
-  //   cy.log('**_____ Searching the new cohort _____**')
-  //   cy.get('[data-testid=Search-iconButton]').click()
-  //   cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type('Test-Cohort PT{enter}')
-  // })
+    cy.log('**_____ Goin to Cohorts Screen... _____**')
+    cy.visit('/admissions/cohorts')
 
-//   it('Corroborating the editing process of the newly created cohort', () => {
-    
+    cy.log('**_____ Sending mock cohorts _____**')
+    cy.mock_list_cohortsB()
 
-//     cy.log('**_____ Goin to Cohorts Screen... _____**')
-//     cy.visit('/admissions/cohorts')
-
-//     cy.log('**_____ Sending mock cohorts _____**')
-//     cy.mock_cohorts()
-//     cy.wait('@mock_cohorts');
-//       cy.get('@mock_cohorts').then(xhr => {
-//         console.log("Mocked Response",xhr)
-//       })
-
-//     cy.log('**_____ Editing process _____**')
-    
-//   })
+    cy.log('**_____ Editing process _____**')
+    cy.contains('Porlamar').find('[data-cy=edit_cohort]').click()
+     
+    // cy.get('[data-cy=edit_cohort]').click()
+    cy.wait(9000)
+  })
 
 })
 });

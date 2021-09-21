@@ -1,5 +1,7 @@
 {
+    "id": "555",
     "name": "Porlamar-VII",
     "slug": "Porlamar 7 full time",
-    "syllabus": "{downArrow}{enter}"
+    "syllabus": "{downArrow}{enter}",
+    "search_cohort": "Porlamar-VII{enter}"
 }
