@@ -145,7 +145,7 @@ class BreatheCodeClient {
       getAllRelatedSchedulesById: (query) => {
         return axios._get(
           'Certificates',
-          `${this.host}/admissions/certificate?syllabus_id=${query}`
+          `${this.host}/admissions/schedule?syllabus_id=${query}`
         );
       },
       getSingleCohortStudent: (cohortID, studentID) => {
