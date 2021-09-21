@@ -171,20 +171,24 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
                 <AsyncAutocomplete
-                  onChange={(certificate) => {
-                    setCert(certificate);
-                  }}
-                  width="100%"
-                  initialValue={cert}
-                  asyncSearch={() => bc.admissions()
-                    .getAllRelatedSchedulesById(cert?.syllabus)}
-                  size="small"
-                  label="Schedule"
-                  data-cy="schedule"
-                  required
                   debounced={false}
-                  getOptionLabel={(option) => `${option.name}`}
+                  onChange={(v) => setCert(v)}
+                  width="100%"
+                  key={syllabus ? syllabus.slug : ''}
+                  asyncSearch={() => {
+                    if (!syllabus) {
+                      return Promise.resolve([]);
+                    }
+                    return bc.admissions()
+                      .getAllRelatedSchedulesById(syllabus?.id);
+                  }}
+                  size="small"
+                  data-cy="schedule"
+                  label="Schedule"
+                  required
+                  getOptionLabel={(v) => `${v.name}`}
                   value={cert}
+                  disabled={!syllabus}
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>

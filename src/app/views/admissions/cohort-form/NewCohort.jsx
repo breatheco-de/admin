@@ -136,12 +136,12 @@ const NewCohort = () => {
                       asyncSearch={() => bc.admissions().getAllSyllabus()}
                       size="small"
                       data-cy="syllabus"
-                      label="syllabusificate"
+                      label="syllabus"
                       required
                       getOptionLabel={(option) => `${option.name}`}
                       value={syllabus}
                     />
-                    {syllabus !== null ? (
+                    {syllabus ? (
                       <AsyncAutocomplete
                         debounced={false}
                         onChange={(v) => setVersion(v)}
@@ -159,25 +159,33 @@ const NewCohort = () => {
                     ) : (
                       ''
                     )}
-                    {syllabus !== null ? (
-                      <AsyncAutocomplete
-                        debounced={false}
-                        onChange={(v) => setSchedule(v)}
-                        width="20%"
-                        key={syllabus.slug}
-                        asyncSearch={() => bc.admissions()
-                          .getAllRelatedCertificates(syllabus.slug)}
-                        size="small"
-                        data-cy="schedule"
-                        label="Schedule"
-                        required
-                        getOptionLabel={(certificate) => `${certificate.name}`}
-                        value={schedule}
-                      />
-                    ) : (
-                      ''
-                    )}
                   </div>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Schedule
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    className="m-2"
+                    debounced={false}
+                    onChange={(v) => setSchedule(v)}
+                    width="20%"
+                    key={syllabus ? syllabus.slug : ''}
+                    asyncSearch={() => {
+                      if (!syllabus) {
+                        return Promise.resolve([]);
+                      }
+                      return bc.admissions()
+                        .getAllRelatedSchedulesById(syllabus?.id);
+                    }}
+                    size="small"
+                    data-cy="schedule"
+                    label="Schedule"
+                    required
+                    getOptionLabel={(certificate) => `${certificate.name}`}
+                    value={schedule}
+                    disabled={!syllabus}
+                  />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
