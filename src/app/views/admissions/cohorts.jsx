@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { Breadcrumb} from 'matx';
+import { Breadcrumb } from 'matx';
 import {
-  Icon,
-  IconButton,
-  Button,
-  Chip,
+  Icon, IconButton, Button, Chip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -73,7 +70,6 @@ const Cohorts = () => {
         filterList: query.get('slug') !== null ? [query.get('slug')] : [],
         customBodyRenderLite: (i) => {
           const item = items[i];
-          console.log('this is an item', item);
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -107,12 +103,12 @@ const Cohorts = () => {
       },
     },
     {
-      name: 'certificate',
-      label: 'Certificate',
+      name: 'schedule',
+      label: 'Schedule',
       options: {
         filter: true,
-        filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
-        customBodyRenderLite: (i) => items[i].syllabus?.certificate?.name,
+        filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
+        customBodyRenderLite: (i) => items[i]?.specialty_mode?.name,
       },
     },
     {
@@ -168,9 +164,7 @@ const Cohorts = () => {
               return data;
             }}
             deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteCohortsBulk(querys);
+              const { status } = await bc.admissions().deleteCohortsBulk(querys);
               return status;
             }}
           />

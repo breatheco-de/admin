@@ -1,0 +1,17 @@
+{
+    "id": 2,
+    "email": "jdefreitaspinto@gmail.com",
+    "first_name": "",
+    "last_name": "",
+    "github": null,
+    "roles": [
+        {
+            "academy": {
+                "id": 1,
+                "name": "4Geeks Miami",
+                "slug": "miami-downtown"
+            },
+            "role": "admin"
+        }
+    ]
+}

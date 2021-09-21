@@ -26,15 +26,16 @@ const useStyles = makeStyles(({ palette }) => ({
 const NewCohort = () => {
   const classes = useStyles();
   const startDate = new Date();
-  const [cert, setCert] = useState(null);
+  const [syllabus, setSyllabus] = useState(null);
   const [version, setVersion] = useState(null);
+  const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
     kickoff_date: startDate,
-    endingDate: null,
+    ending_date: null,
     never_ends: false,
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
@@ -45,7 +46,7 @@ const NewCohort = () => {
     setNeverEnd(!neverEnd);
     setNewCohort({
       ...newCohort,
-      endingDate: null,
+      ending_date: null,
       never_ends: true,
     });
   };
@@ -59,7 +60,7 @@ const NewCohort = () => {
 
   const postCohort = (values) => {
     bc.admissions()
-      .addCohort({ ...values, syllabus: `${cert.slug}.v${version.version}` })
+      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: schedule.id })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -100,6 +101,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Cohort Name"
+                    data-cy="name"
                     name="name"
                     size="small"
                     variant="outlined"
@@ -113,6 +115,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Cohort Slug"
+                    data-cy="slug"
                     name="slug"
                     size="small"
                     variant="outlined"
@@ -128,27 +131,28 @@ const NewCohort = () => {
                     <AsyncAutocomplete
                       data-cy="syllabus_certificates"
                       debounced={false}
-                      onChange={(certificate) => setCert(certificate)}
+                      onChange={(x) => setSyllabus(x)}
                       width="30%"
                       className="mr-2 ml-2"
-                      asyncSearch={() => bc.admissions().getCertificates()}
+                      asyncSearch={() => bc.admissions().getAllSyllabus()}
                       size="small"
-                      label="Certificate"
+                      data-cy="syllabus"
+                      label="syllabus"
                       required
                       getOptionLabel={(option) => `${option.name}`}
-                      value={cert}
+                      value={syllabus}
                     />
-                    {cert !== null ? (
+                    {syllabus ? (
                       <AsyncAutocomplete
                         data-cy="certificate_version"
                         debounced={false}
                         onChange={(v) => setVersion(v)}
                         width="20%"
-                        key={cert.slug}
-                        asyncSearch={() => {
-                          return bc.admissions().getAllCourseSyllabus(cert.slug, academy.id);
-                        }}
+                        key={syllabus.slug}
+                        asyncSearch={() => bc.admissions()
+                          .getAllCourseSyllabus(syllabus.slug)}
                         size="small"
+                        data-cy="version"
                         label="Version"
                         required
                         getOptionLabel={(option) => `${option.version}`}
@@ -158,6 +162,32 @@ const NewCohort = () => {
                       ''
                     )}
                   </div>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Schedule
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    className="m-2"
+                    debounced={false}
+                    onChange={(v) => setSchedule(v)}
+                    width="20%"
+                    key={syllabus ? syllabus.slug : ''}
+                    asyncSearch={() => {
+                      if (!syllabus) {
+                        return Promise.resolve([]);
+                      }
+                      return bc.admissions()
+                        .getAllRelatedSchedulesById(syllabus?.id);
+                    }}
+                    size="small"
+                    data-cy="schedule"
+                    label="Schedule"
+                    required
+                    getOptionLabel={(certificate) => `${certificate.name}`}
+                    value={schedule}
+                    disabled={!syllabus}
+                  />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
@@ -171,6 +201,7 @@ const NewCohort = () => {
                       inputVariant="outlined"
                       type="text"
                       size="small"
+                      data-cy="start-date"
                       autoOk
                       value={newCohort.kickoff_date}
                       format="MMMM dd, yyyy"
@@ -191,14 +222,15 @@ const NewCohort = () => {
                       className="m-2"
                       margin="none"
                       label="End date"
+                      data-cy="end-date"
                       inputVariant="outlined"
                       type="text"
                       size="small"
-                      value={newCohort.endingDate}
+                      value={newCohort.ending_date}
                       format="MMMM dd, yyyy"
                       onChange={(date) => setNewCohort({
                         ...newCohort,
-                        endingDate: date,
+                        ending_date: date,
                         never_ends: false,
                       })}
                       disabled={!neverEnd}
@@ -213,6 +245,7 @@ const NewCohort = () => {
                         checked={checked}
                         onChange={handleNeverEnd}
                         name="endingDate"
+                        data-cy="never-ends"
                         color="primary"
                       />
                     )}
