@@ -125,7 +125,7 @@ const Cohort = () => {
         setCurrentDay(data.current_day);
         setCohort(data);
         setStage(data.stage);
-        setMaxSyllabusDays(data.syllabus.certificate.duration_in_days);
+        setMaxSyllabusDays(data.syllabus_version.duration_in_days);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -141,7 +141,7 @@ const Cohort = () => {
       .updateCohort(cohort.id, {
         ...cohort,
         private: !cohort.private,
-        syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`,
+        syllabus: `${cohort.syllabus_version.slug}.v${cohort.syllabus_version.version}`,
       })
       .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
@@ -232,8 +232,9 @@ const Cohort = () => {
                 endDate={cohort.ending_date}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
-                syllabus={cohort.syllabus}
-                never_ends={cohort.never_ends}
+                specialtyMode={cohort.specialty_mode}
+                syllabusVersion={cohort.syllabus_version}
+                neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
                 onSubmit={updateCohort}
               />

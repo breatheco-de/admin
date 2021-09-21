@@ -103,12 +103,12 @@ const Cohorts = () => {
       },
     },
     {
-      name: 'certificate',
-      label: 'Certificate',
+      name: 'schedule',
+      label: 'Schedule',
       options: {
         filter: true,
-        filterList: query.get('certificate') !== null ? [query.get('certificate')] : [],
-        customBodyRenderLite: (i) => items[i].syllabus?.certificate?.name,
+        filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
+        customBodyRenderLite: (i) => items[i]?.specialty_mode?.name,
       },
     },
     {

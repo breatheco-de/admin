@@ -94,7 +94,19 @@ class BreatheCodeClient {
       getCertificates: () => {
         return axios._get(
           'Certificates',
-          `${this.host}/admissions/certificate`
+          `${this.host}/admissions/syllabus`
+        );
+      },
+      getAllSyllabus: () => {
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus`
+        );
+      },
+      getSyllabus: (query) => { // id or slug
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus/${query}`
         );
       },
       getAllCohorts: (query) => {
@@ -112,10 +124,28 @@ class BreatheCodeClient {
       getReport: (query) => {
         return axios._get('Report', `${this.host}/admissions/report`);
       },
-      getAllCourseSyllabus: (query, academyID) => {
+      getAllCourseSyllabus: (query) => {
         return axios._get(
           'Syllabus',
-          `${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`
+          `${this.host}/admissions/syllabus/${query}/version`
+        );
+      },
+      getAllRelatedCertificates: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/syllabus?syllabus_slug=${query}`
+        );
+      },
+      getAllRelatedCertificatesById: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/syllabus?syllabus_id=${query}`
+        );
+      },
+      getAllRelatedSchedulesById: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/schedule?syllabus_id=${query}`
         );
       },
       getSingleCohortStudent: (cohortID, studentID) => {
