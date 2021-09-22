@@ -56,7 +56,7 @@ const CohortDetails = ({
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
-  const [cert, setCert] = useState(specialtyMode);
+  // const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
 
   useEffect(() => {
@@ -89,11 +89,11 @@ const CohortDetails = ({
           specialtyMode,
         }}
         onSubmit={({ specialtyMode, ...values }) => {
-          const specialtyModeId = cert ? cert.id : null;
+          // const specialtyModeId = cert ? cert.id : null;
           return onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
-            specialty_mode: specialtyModeId,
+            // specialty_mode: specialtyModeId,
           });
         }}
         enableReinitialize
@@ -166,7 +166,7 @@ const CohortDetails = ({
                   value={version}
                 />
               </Grid>
-              <Grid item md={3} sm={4} xs={12}>
+              {/* <Grid item md={3} sm={4} xs={12}>
                 Schedule
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
@@ -190,7 +190,7 @@ const CohortDetails = ({
                   value={cert}
                   disabled={!syllabus}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item md={3} sm={4} xs={12}>
                 Language
               </Grid>

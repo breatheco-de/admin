@@ -28,7 +28,7 @@ const NewCohort = () => {
   const startDate = new Date();
   const [syllabus, setSyllabus] = useState(null);
   const [version, setVersion] = useState(null);
-  const [schedule, setSchedule] = useState(null);
+  // const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [newCohort, setNewCohort] = useState({
@@ -60,7 +60,9 @@ const NewCohort = () => {
 
   const postCohort = (values) => {
     bc.admissions()
-      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: schedule.id })
+      // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
+      //   specialty_mode: schedule.id })
+      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -161,7 +163,7 @@ const NewCohort = () => {
                     )}
                   </div>
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
+                {/* <Grid item md={2} sm={4} xs={12}>
                   Schedule
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -186,7 +188,7 @@ const NewCohort = () => {
                     value={schedule}
                     disabled={!syllabus}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
                 </Grid>
