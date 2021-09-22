@@ -17,7 +17,7 @@ const toastOption = {
 const studentReport = () => {
   const [query, setQuery] = useState({ limit: 10, offset: 0 });
   const [cohortUsersQuery, setCohortUsersQuery] = useState({
-    roles: 'TEACHER',
+    roles: 'TEACHER,ASSISTANT',
   });
   const { studentID, cohortID } = useParams();
   const [cohortData, setCohortData] = useState({});
@@ -84,7 +84,7 @@ const studentReport = () => {
         .getCohortActivity(cohortID, query)
         .then(({ data }) => {
           setActivitiesCount(data?.count);
-          setStudentActivity(data?.results || data);
+          setStudentActivity(data?.results || []);
         })
         .catch((err) => console.log(err));
     }
