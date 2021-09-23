@@ -177,7 +177,7 @@ const Cohort = () => {
           <div>
             <h3 className="mt-0 mb-4 font-medium text-28">
               Cohort:
-              {slug}
+              {slug} (id: {cohort && cohort.id})
             </h3>
             <div className="flex">
               <div
@@ -225,7 +225,7 @@ const Cohort = () => {
         </div>
         <Grid container spacing={3}>
           <Grid item md={4} xs={12}>
-            {cohort !== null ? (
+            {cohort && (
               <CohortDetails
                 slug={slug}
                 language={cohort.language || 'en'}
@@ -238,12 +238,10 @@ const Cohort = () => {
                 isPrivate={cohort.private}
                 onSubmit={updateCohort}
               />
-            ) : (
-              ''
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
+            {cohort && <CohortStudents slug={slug} cohortId={cohort.id} />}
           </Grid>
         </Grid>
       </div>
