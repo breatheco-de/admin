@@ -1,0 +1,38 @@
+{
+    "id": 259,
+    "slug": "defence-against-the-dark-arts",
+    "name": "Defence Against the Dark Arts",
+    "never_ends": true,
+    "private": false,
+    "language": "en",
+    "kickoff_date": "2021-09-23T05:23:50.936000Z",
+    "ending_date": null,
+    "current_day": 0,
+    "stage": "INACTIVE",
+    "specialty_mode": null,
+    "syllabus_version": {
+        "version": 1,
+        "slug": "full-stack-ft",
+        "name": "Full-Stack Software Developer FT",
+        "syllabus": 36,
+        "duration_in_hours": 320,
+        "duration_in_days": 45,
+        "week_hours": 40,
+        "github_url": null,
+        "logo": "https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft",
+        "private": false
+    },
+    "academy": {
+        "id": 4,
+        "slug": "downtown-miami",
+        "name": "4Geeks Academy Miami",
+        "country": {
+            "code": "us",
+            "name": "USA"
+        },
+        "city": {
+            "name": "Miami"
+        },
+        "logo_url": "https://storage.googleapis.com/admissions-breathecode/location-downtown-miami"
+    }
+}

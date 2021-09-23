@@ -35,17 +35,73 @@ Cypress.Commands.add('auth', () => {
         window.localStorage.setItem('bc-session', JSON.stringify(session))
     })
 
-    // window.localStorage.setItem('bc-session', '{"role":{"academy":{"id":1,"name":"4Geeks Miami","slug":"miami-downtown"},"role":"admin"},"academy":{"id":1,"name":"4Geeks Miami","slug":"miami-downtown"}}')
-    cy.intercept('**/v1/auth/token/**', {
-        'body': {
-          "token": "c831c0690eb94cbd64fa830083c6e6122c3aafed",
-          "token_type": "login",
-          "expires_at": "2021-08-15T13:18:05.345917Z",
-          "user_id": 2
-        }
+    window.localStorage.setItem('bc-session', '{"role":"admin","academy":{"id":4,"name":"4Geeks Academy Miami","slug":"downtown-miami"}}')
+
+    cy.fixture('auth/login.json').then(({ token, user_id }) => {
+      cy.intercept('**/v1/auth/token/**', {
+          'body': {
+            "token": token,
+            "token_type": "login",
+            "expires_at": "2021-08-15T13:18:05.345917Z",
+            "user_id": user_id
+          }
+      })
+    })
+
+    cy.intercept('**/v1/auth/user/me', {
+      'fixture': 'auth/user/me.json'
     })
 })
 
+// NOTE: _____________________________INTERCEPTIONS_____________________________
+
+Cypress.Commands.add('mockGetAdmissionsAcademyCohortResponse', () => {
+  cy.intercept('**/v1/admissions/academy/cohort', {
+    fixture: 'admissions/academy/cohort.json',
+    method: 'GET'
+  }).as('getAdmissionsAcademyCohortRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsAcademyCohortSlugResponse', () => {
+  cy.intercept('**/v1/admissions/academy/cohort/**', {
+    fixture: 'admissions/academy/cohort/slug.json',
+    method: 'GET'
+  }).as('getAdmissionsAcademyCohortSlugRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsSyllabusResponse', () => {
+  cy.intercept('**/v1/admissions/syllabus', {
+    fixture: 'admissions/syllabus.json',
+    method: 'GET'
+  }).as('getAdmissionsSyllabusRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsSyllabusIdResponse', () => {
+  cy.intercept('**/v1/admissions/syllabus/**', {
+    fixture: 'admissions/syllabus/id.json',
+    method: 'GET'
+  }).as('getAdmissionsSyllabusIdRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsSyllabusVersionResponse', () => {
+  cy.intercept('**/v1/admissions/syllabus/**/version', {
+    fixture: 'admissions/syllabus/slug/version.json',
+    method: 'GET'
+  }).as('getAdmissionsSyllabusVersionRequest');
+});
+
+Cypress.Commands.add('mockPostAdmissionsAcademyCohortResponse', (callback) => {
+  cy.intercept('**/v1/admissions/academy/cohort', {
+    fixture: 'admissions/academy/cohort.post.json',
+    method: 'POST',
+    statusCode: 201
+  }).as('postAdmissionsAcademyCohortRequest');
+  // cy.intercept('**/v1/admissions/academy/cohort', (req, res, next) => {
+  //   console.log(req);
+  //   console.log(res);
+  //   console.log(next);
+  // });
+});
 
 // NOTE: _____________________________ACCESS COMANDS_____________________________
 
