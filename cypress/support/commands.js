@@ -25,17 +25,13 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('auth', () => {
-    cy.fixture('auth/login.json').then(({token}) => {
-        window.localStorage.setItem('accessToken', token)
-    })
-    window.localStorage.setItem('_hjid', 'ab98c9ef-6665-44ce-b622-59a4d9894c6a')
-
     cy.fixture('auth/bc-session.json').then((session) => {
         window.localStorage.setItem('bc-session', JSON.stringify(session))
     })
 
     cy.fixture('auth/login.json').then(({ token, user_id }) => {
-      cy.intercept('**/v1/auth/token/**', {
+        window.localStorage.setItem('accessToken', token)
+        cy.intercept('**/v1/auth/token/**', {
           'body': {
             "token": token,
             "token_type": "login",
