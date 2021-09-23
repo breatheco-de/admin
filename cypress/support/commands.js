@@ -96,11 +96,6 @@ Cypress.Commands.add('mockPostAdmissionsAcademyCohortResponse', (callback) => {
     method: 'POST',
     statusCode: 201
   }).as('postAdmissionsAcademyCohortRequest');
-  // cy.intercept('**/v1/admissions/academy/cohort', (req, res, next) => {
-  //   console.log(req);
-  //   console.log(res);
-  //   console.log(next);
-  // });
 });
 
 // NOTE: _____________________________ACCESS COMANDS_____________________________
