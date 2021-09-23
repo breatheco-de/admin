@@ -50,6 +50,7 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
 StudentIndicators.propTypes = {
   data: PropTypes.object.isRequired,
   studentActivity: PropTypes.object.isRequired,
+  studentData: PropTypes.object.isRequired,
 };
 
 export default StudentIndicators;

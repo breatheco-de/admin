@@ -92,18 +92,13 @@ class BreatheCodeClient {
         );
       },
       getCertificates: () => {
-        return axios._get(
-          'Certificates',
-          `${this.host}/admissions/syllabus`
-        );
+        return axios._get('Certificates', `${this.host}/admissions/syllabus`);
       },
       getAllSyllabus: () => {
-        return axios._get(
-          'Syllabus',
-          `${this.host}/admissions/syllabus`
-        );
+        return axios._get('Syllabus', `${this.host}/admissions/syllabus`);
       },
-      getSyllabus: (query) => { // id or slug
+      getSyllabus: (query) => {
+        // id or slug
         return axios._get(
           'Syllabus',
           `${this.host}/admissions/syllabus/${query}`
