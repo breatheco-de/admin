@@ -28,7 +28,6 @@ Cypress.Commands.add('auth', () => {
     cy.fixture('auth/login.json').then(({token}) => {
         window.localStorage.setItem('accessToken', token)
     })
-    // window.localStorage.setItem('accessToken', 'ede4b9f2b68783e80cc0373c8899a453bd02fac7')
     window.localStorage.setItem('_hjid', 'ab98c9ef-6665-44ce-b622-59a4d9894c6a')
 
     cy.fixture('auth/bc-session.json').then((session) => {
