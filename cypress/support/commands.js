@@ -35,8 +35,6 @@ Cypress.Commands.add('auth', () => {
         window.localStorage.setItem('bc-session', JSON.stringify(session))
     })
 
-    window.localStorage.setItem('bc-session', '{"role":"admin","academy":{"id":4,"name":"4Geeks Academy Miami","slug":"downtown-miami"}}')
-
     cy.fixture('auth/login.json').then(({ token, user_id }) => {
       cy.intercept('**/v1/auth/token/**', {
           'body': {
