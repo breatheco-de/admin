@@ -15,6 +15,7 @@ import {
   MenuItem,
   DialogActions,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { MatxLoading } from '../../../../matx';
@@ -230,6 +231,13 @@ const StudentCohorts = ({ stdId }) => {
                     >
                       <Icon fontSize="small">delete</Icon>
                     </IconButton>
+                    <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
+                      <Tooltip title="Student Report">
+                        <IconButton>
+                          <Icon fontSize="small">info</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
                   </div>
                 </Grid>
               </Grid>

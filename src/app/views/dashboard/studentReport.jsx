@@ -79,7 +79,7 @@ const studentReport = () => {
 
   // cohort activity
   useEffect(() => {
-    if (Object.keys(query).length !== 0 && query.constructor === Object) {
+    if ((Object.keys(query).length !== 0 && query.constructor === Object) && query.user_id) {
       bc.activity()
         .getCohortActivity(cohortID, query)
         .then(({ data }) => {
