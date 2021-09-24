@@ -151,6 +151,13 @@ class BreatheCodeClient {
       },
       getMyAcademy: () =>
         axios._get('My Academy', `${this.host}/admissions/academy/me`),
+
+      getTemporalToken: (member) => {
+        return axios._post(
+          'Token Temporal',
+          `${this.host}/auth/member/${member?.id}/token`
+        );
+      },
     };
   }
   auth() {
