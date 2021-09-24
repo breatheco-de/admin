@@ -135,7 +135,11 @@ const Staff = () => {
               return;
             }
             const selected = options.find((option) => option.value === value);
-            setDialogState({ openDialog: true, title: selected.title, action: selected.action });
+            setDialogState({
+              openDialog: true,
+              title: selected.title,
+              action: selected.action,
+            });
           }}
         >
           <Button>
