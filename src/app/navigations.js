@@ -19,22 +19,6 @@ export const navigations = [
     beta: true,
   },
   {
-    name: 'Admin',
-    icon: 'account_circle',
-    children: [
-      {
-        name: 'Staff',
-        path: '/admin/staff',
-        iconText: 'STA',
-      },
-      {
-        name: 'Invites',
-        path: '/admin/invites',
-        iconText: 'STA',
-      },
-    ],
-  },
-  {
     name: 'Admissions',
     icon: 'school',
     auth: authRoles.contry_manager,
