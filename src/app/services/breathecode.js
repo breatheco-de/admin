@@ -523,7 +523,7 @@ class BreatheCodeClient {
       getStudentAssignments: (studentID) => {
         return axios._get(
           'Student Assignments',
-          `${this.host}/assignment/task/?stu_cohort=${studentID}`
+          `${this.host}/assignment/task/?user=${studentID}`
         );
       },
     };
