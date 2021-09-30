@@ -1,5 +1,4 @@
 
-
 describe('Cohorts Screen', () => {
   
   beforeEach(() => {
@@ -80,6 +79,7 @@ describe('Cohorts Screen', () => {
     cy.fixture('/cohorts_screen_values/values').then((values) => {
       cy.log('**_____ Goin to Cohorts Screen... _____**')
       cy.mock_list_cohortsB()
+      cy.wait('@mock_list_cohortsB')
       cy.visit('/admissions/cohorts')
       cy.wait(5000)
 
@@ -106,12 +106,28 @@ describe('Cohorts Screen', () => {
 
     cy.log('**_____ Sending mock cohorts _____**')
     cy.mock_list_cohortsB()
+    cy.wait('@mock_list_cohortsB')
 
     cy.log('**_____ Editing process _____**')
-    cy.contains('Porlamar').find('[data-cy=edit_cohort]').click()
-     
-    // cy.get('[data-cy=edit_cohort]').click()
-    cy.wait(9000)
+    cy.get('[data-cy=edit_cohort-0]').click()
+
+    cy.log('**_____ Filling editing form _____**')
+    cy.cohort_edit_new()
+    cy.cohort_edit_syllabus()
+    cy.cohort_edit_full()
+    cy.cohort_edit_students()
+    cy.cohort_edit_version()
+    cy.cohort_edit_schedule()
+    
+    cy.wait('@cohort_edit_new')
+    cy.wait('@cohort_edit_full')
+    cy.wait('@cohort_edit_syllabus')
+    cy.wait('@cohort_edit_students')
+    cy.wait('@cohort_edit_version')
+    // cy.wait('@cohort_edit_schedule')
+    
+    
+    
   })
 
 })
