@@ -151,6 +151,13 @@ class BreatheCodeClient {
       },
       getMyAcademy: () =>
         axios._get('My Academy', `${this.host}/admissions/academy/me`),
+
+      getTemporalToken: (member) => {
+        return axios._post(
+          'Token Temporal',
+          `${this.host}/auth/member/${member?.id}/token`
+        );
+      },
     };
   }
   auth() {
@@ -516,7 +523,7 @@ class BreatheCodeClient {
       getStudentAssignments: (studentID) => {
         return axios._get(
           'Student Assignments',
-          `${this.host}/assignment/task/?stu_cohort=${studentID}`
+          `${this.host}/assignment/task/?user=${studentID}`
         );
       },
     };

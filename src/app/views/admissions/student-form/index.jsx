@@ -12,18 +12,19 @@ import {
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import TextField from '@material-ui/core/TextField';
+import { resolveResponse } from 'utils';
+import { makeStyles } from '@material-ui/core/styles';
 import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
-import TextField from '@material-ui/core/TextField';
-import { resolveResponse } from 'utils';
-import {makeStyles} from "@material-ui/core/styles"
+import { CopyDialog } from '../../admin/staff-form/staff-utils/Dialog';
 
 const useStyles = makeStyles({
   modalStyle: {
-    width: "400px"
-  }
+    width: '400px',
+  },
 });
 
 toast.configure();
@@ -36,6 +37,7 @@ const options = [
   { label: 'Password reset', value: 'password_reset' },
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
+  { label: 'Reset Github Link', value: 'github_reset' },
 ];
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
@@ -47,10 +49,17 @@ const Student = () => {
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [inviteLink, setInviteLink] = useState("")
+  const [inviteLink, setInviteLink] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
+
+  const [githubResetDialog, setGithubDialogReset] = useState(false);
+  const [copyDialog, setCopyDialog] = useState({
+    title: 'Reset Github url',
+    url: 'https://github.something.com',
+    openDialog: false,
+  });
 
   const getMemberById = () => {
     bc.auth()
@@ -71,9 +80,24 @@ const Student = () => {
     setOpenDialog(false);
     setOpenModal(true);
   };
+
+  const githubReset = () => {
+    bc.admissions()
+      .getTemporalToken(member)
+      .then(({ data }) => {
+        setCopyDialog({
+          ...copyDialog,
+          openDialog: true,
+          url: `${data.reset_github_url}?url=https://student.breatheco.de/login`,
+        });
+      })
+      .catch((error) => error);
+    setGithubDialogReset(false);
+  };
+
   const copyPasswordResetLink = () => {
-    bc.auth()
-           toast.success('Password reset url copied', toastOption);
+    bc.auth();
+    toast.success('Password reset url copied', toastOption);
   };
   useEffect(() => {
     getMemberById();
@@ -106,15 +130,37 @@ const Student = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        {/* Temporal Token - Github Reset */}
+        <Dialog
+          open={githubResetDialog}
+          onClose={() => setGithubDialogReset(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            A reset github url will be generated for
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {member?.user.email}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setGithubDialogReset(false)} color="primary">
+              Close
+            </Button>
+            <Button color="primary" autoFocus onClick={() => githubReset()}>
+              Generate
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Dialog
           open={openModal}
           onClose={() => setOpenModal(true)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">
-            Password reset link
-          </DialogTitle>
+          <DialogTitle id="alert-dialog-title">Password reset link</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <TextField
@@ -136,6 +182,12 @@ const Student = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <CopyDialog
+          title={copyDialog.title}
+          url={copyDialog.url}
+          open={copyDialog.openDialog}
+          setCopyDialog={setCopyDialog}
+        />
         <div>
           <h3 className="mt-0 mb-4 font-medium text-28">
             {`${member?.user.first_name} ${member?.user.last_name}`}
@@ -151,6 +203,7 @@ const Student = () => {
           onSelect={({ value }) => {
             setOpenDialog(value === 'password_reset');
             setOpenRoleDialog(value === 'change_role');
+            setGithubDialogReset(value === 'github_reset');
           }}
         >
           <Button>
