@@ -92,18 +92,13 @@ class BreatheCodeClient {
         );
       },
       getCertificates: () => {
-        return axios._get(
-          'Certificates',
-          `${this.host}/admissions/syllabus`
-        );
+        return axios._get('Certificates', `${this.host}/admissions/syllabus`);
       },
       getAllSyllabus: () => {
-        return axios._get(
-          'Syllabus',
-          `${this.host}/admissions/syllabus`
-        );
+        return axios._get('Syllabus', `${this.host}/admissions/syllabus`);
       },
-      getSyllabus: (query) => { // id or slug
+      getSyllabus: (query) => {
+        // id or slug
         return axios._get(
           'Syllabus',
           `${this.host}/admissions/syllabus/${query}`
@@ -156,6 +151,13 @@ class BreatheCodeClient {
       },
       getMyAcademy: () =>
         axios._get('My Academy', `${this.host}/admissions/academy/me`),
+
+      getTemporalToken: (member) => {
+        return axios._post(
+          'Token Temporal',
+          `${this.host}/auth/member/${member?.id}/token`
+        );
+      },
     };
   }
   auth() {
@@ -521,7 +523,7 @@ class BreatheCodeClient {
       getStudentAssignments: (studentID) => {
         return axios._get(
           'Student Assignments',
-          `${this.host}/assignment/task/?stu_cohort=${studentID}`
+          `${this.host}/assignment/task/?user=${studentID}`
         );
       },
     };

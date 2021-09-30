@@ -69,6 +69,9 @@ const activityTypes = {
 const printDetails = (activity) => {
   if (activityTypes[activity.slug]) {
     if (activityTypes[activity.slug].render) {
+      if (activity.day === null) {
+        activity.day = '"Not Especified"';
+      }
       return activityTypes[activity.slug].render(activity) || 'No Activity Details';
     }
     return 'No Render Method for this activity';
