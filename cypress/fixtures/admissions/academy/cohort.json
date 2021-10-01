@@ -1,0 +1,37 @@
+[
+  {
+      "id": 2,
+      "slug": "defence-against-the-dark-arts",
+      "name": "Defence Against the Dark Arts",
+      "never_ends": true,
+      "private": false,
+      "language": "en",
+      "kickoff_date": "2021-08-15T21:25:12.434000Z",
+      "ending_date": null,
+      "current_day": 0,
+      "stage": "INACTIVE",
+      "specialty_mode": {
+          "id": 1,
+          "slug": "full-stack-pt-mondays",
+          "name": "Full Stack PT Mon",
+          "syllabus": 3
+      },
+      "syllabus_version": {
+          "version": 1,
+          "syllabus": 3
+      },
+      "academy": {
+          "id": 1,
+          "slug": "miami-downtown",
+          "name": "4Geeks Miami",
+          "country": {
+              "code": "usa",
+              "name": "United States"
+          },
+          "city": {
+              "name": "Miami"
+          },
+          "logo_url": "https://google.com"
+      }
+  }
+]
