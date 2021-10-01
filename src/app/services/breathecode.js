@@ -109,6 +109,18 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? '?' + qs : ''}`
         );
       },
+      getAllAcademySyllabus: () => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus${query ? '?' + qs : ''}`
+        );
+      },
       getReport: (query) => {
         return axios._get(
           "Report",
