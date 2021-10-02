@@ -96,6 +96,23 @@ export const navigations = [
     ],
   },
   {
+    name: 'Careers',
+    icon: 'business_center',
+    auth: authRoles.contry_manager,
+    children: [
+      {
+        name: 'Partners',
+        path: '/career/partners',
+        iconText: 'CO',
+      },
+      {
+        name: 'Student Profiles',
+        path: '/career/students',
+        iconText: 'STU',
+      },
+    ],
+  },
+  {
     name: 'Media Gallery',
     icon: 'collections',
     path: '/media/gallery',
