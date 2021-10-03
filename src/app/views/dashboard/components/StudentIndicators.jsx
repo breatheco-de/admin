@@ -8,7 +8,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const StudentIndicators = ({ data, studentActivity, studentData }) => {
-  const cohortCurrentDay = studentActivity[0]?.day || 1;
+  const cohortCurrentDay = parseInt(studentActivity[0]?.day) || 1;
   const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
   const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
   const unattendance = studentActivity.filter(
@@ -39,7 +39,7 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
         { label: 'Last Login', value: lastLogin(), icon: 'group' },
         {
           label: 'Github Username',
-          value: studentData.user?.profile?.github_username,
+          value: studentData.user?.github?.username,
           icon: 'group',
         },
       ]}
