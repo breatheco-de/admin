@@ -31,8 +31,11 @@ const CohortStudentActivity = ({
   activitiesCount,
 }) => {
   const classes = useStyles();
-  const undeliveredAssignments = data.filter((assignment) => assignment.task_status === 'PENDING');
-  const [limit, setLimit] = useState(10);
+  const totalProjects = data.filter((task) => task.task_type === 'PROJECT');
+  const undeliveredProjects = totalProjects.filter(
+    (assignment) => assignment.task_status === 'PENDING',
+  );
+  const [limit, setLimit] = useState(15);
   const {
     name, kickoff_date, ending_date, stage, teachers,
   } = cohortData;
@@ -104,28 +107,28 @@ const CohortStudentActivity = ({
             </div>
           </div>
           <Divider />
-          {undeliveredAssignments.length < 1 && (
+          {undeliveredProjects.length < 1 && (
             <p className="m-4 text-muted font-normal ">No pending projects</p>
           )}
-          {undeliveredAssignments.slice(0, limit).map((assignment, index) => (
+          {undeliveredProjects.slice(0, limit).map((assignment, index) => (
             <AssignmentGrid
               key={assignment.id}
               data={assignment}
               classes={classes}
-              isLastItem={undeliveredAssignments.length - 1 === index}
+              isLastItem={undeliveredProjects.length - 1 === index}
             />
           ))}
         </Card>
         <div className="pt-4">
           <Button
-            disabled={undeliveredAssignments.length < 10}
+            disabled={undeliveredProjects.length < limit}
             fullWidth
             className="text-primary bg-light-primary"
             onClick={() => {
               setLimit(limit + 10);
             }}
           >
-            {undeliveredAssignments.length > 10 ? 'Load More' : 'No more projects to load'}
+            {undeliveredProjects.length > limit ? 'Load More' : 'No more projects to load'}
           </Button>
         </div>
       </Grid>

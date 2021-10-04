@@ -38,7 +38,6 @@ const StudentTimeline = ({
               setQuery((prevQuery) => ({
                 ...prevQuery,
                 limit: prevQuery.limit + 10,
-                offset: prevQuery.offset + 10,
               }));
             }}
           >

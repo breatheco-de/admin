@@ -22,6 +22,7 @@ const studentReport = () => {
   const { studentID, cohortID } = useParams();
   const [cohortData, setCohortData] = useState({});
   const [studentData, setStudentData] = useState({});
+  const [studentStatus, setStudentStatus] = useState({});
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
   const [activitiesCount, setActivitiesCount] = useState(0);
@@ -58,10 +59,20 @@ const studentReport = () => {
 
   // student info
   useEffect(() => {
+    bc.auth()
+      .getAcademyMember(studentID)
+      .then(({ data }) => {
+        setStudentData(data);
+        setQuery({ ...query, user_id: data.user.id });
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
     bc.admissions()
       .getSingleCohortStudent(cohortID, studentID)
       .then(({ data }) => {
-        setStudentData(data);
+        setStudentStatus(data);
         setQuery({ ...query, user_id: data.user.id });
       })
       .catch((err) => console.log(err));
@@ -95,7 +106,7 @@ const studentReport = () => {
       <div className=" pt-7 px-8 bg-primary text-white flex mb-8">
         <Grid item lg={3} md={3} sm={12} xs={12}>
           <div className="py-8" />
-          <StudentInformation data={studentData} />
+          <StudentInformation data={studentData} studentStatus={studentStatus} />
         </Grid>
         <Grid item lg={9} md={9} sm={12} xs={12}>
           <div className="py-8" />
