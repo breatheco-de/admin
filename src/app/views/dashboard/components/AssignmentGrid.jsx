@@ -14,21 +14,22 @@ dayjs.extend(relativeTime);
 
 const AssignmentGrid = ({ data, classes, isLastItem }) => {
   const [assignmentsDetails, setAssignmentsDetails] = useState([]);
-  const { title, task_type, associated_slug } = data;
+  const {
+    title, task_type, associated_slug, intro_video_url,
+  } = data;
   const { created_at, difficulty } = assignmentsDetails;
 
   useEffect(() => {
     bc.registry()
       .getAsset(associated_slug)
-      .then(({ data }) => setAssignmentsDetails(data))
+      .then(({ data }) => {
+        setAssignmentsDetails(data);
+      })
       .catch((err) => console.log(err));
   }, []);
   return (
     <>
       <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar variant="square" className={classes.square} alt={associated_slug} src="#" />
-        </ListItemAvatar>
         <ListItemText
           secondary={(
             <>
@@ -37,10 +38,10 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
               </Typography>
               <Typography color="textSecondary">
                 <b>Dificulty: </b>
-                {difficulty && difficulty.toLowerCase()}
+                {difficulty ? difficulty.toLowerCase() : 'N/A'}
               </Typography>
               <Typography component="p">
-                <b>Due Date: </b>
+                <b>Created Date: </b>
                 {dayjs(created_at).fromNow()}
               </Typography>
             </>

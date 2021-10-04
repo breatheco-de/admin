@@ -24,9 +24,10 @@ const StudentTimeline = ({
             getOptionLabel={(option) => option.slug}
           />
         </div>
-        {studentActivity.map((activity, index) => (
-          <ActivityGrid key={index} activity={activity} index={index} />
-        ))}
+        {studentActivity
+          && studentActivity.map((activity, index) => (
+            <ActivityGrid key={index} activity={activity} index={index} />
+          ))}
 
         <div>
           <Button
@@ -37,7 +38,6 @@ const StudentTimeline = ({
               setQuery((prevQuery) => ({
                 ...prevQuery,
                 limit: prevQuery.limit + 10,
-                offset: prevQuery.offset + 10,
               }));
             }}
           >
