@@ -15,9 +15,9 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
   const unattendance = studentActivity.filter(
     (activity) => activity.slug === 'classroom_unattendance',
   );
-
+  const totalDaysInCohort = attendance.length + unattendance.length;
   const attendancePercentages = () => ({
-    a_percentage: (attendance.length * 100) / cohortCurrentDay,
+    a_percentage: (attendance.length * 100) / totalDaysInCohort,
     u_percentage: (unattendance.length * 100) / cohortCurrentDay,
   });
 

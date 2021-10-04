@@ -41,7 +41,7 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
                 {difficulty ? difficulty.toLowerCase() : 'N/A'}
               </Typography>
               <Typography component="p">
-                <b>Due Date: </b>
+                <b>Created Date: </b>
                 {dayjs(created_at).fromNow()}
               </Typography>
             </>
