@@ -8,8 +8,9 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const StudentIndicators = ({ data, studentActivity, studentData }) => {
+  const totalProjects = data.filter((task) => task.task_type === 'PROJECT');
   const cohortCurrentDay = parseInt(studentActivity[0]?.day) || 1;
-  const deliveredAssignments = data.filter((assignment) => assignment.task_status === 'DONE');
+  const deliveredAssignments = totalProjects.filter((project) => project.task_status === 'DONE');
   const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
   const unattendance = studentActivity.filter(
     (activity) => activity.slug === 'classroom_unattendance',
@@ -34,7 +35,11 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
   return (
     <StudentIndicatorCards
       metrics={[
-        { label: 'Projects Delivered', value: deliveredAssignments.length, icon: 'group' },
+        {
+          label: 'Projects Delivered',
+          value: `${deliveredAssignments.length} of ${totalProjects.length}`,
+          icon: 'group',
+        },
         { label: 'Attendance', value: `${Math.floor(a_percentage)}%`, icon: 'star' },
         { label: 'Last Login', value: lastLogin(), icon: 'group' },
         {
