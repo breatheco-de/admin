@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Avatar } from '@material-ui/core';
 import clsx from 'clsx';
 
-const StudentInformation = ({ data }, classes) => {
-  const { user, finantial_status, educational_status } = data;
+const StudentInformation = ({ data, studentStatus }, classes) => {
+  const { user } = data;
+  const { finantial_status, educational_status } = studentStatus;
   return (
     <>
       <div className={clsx('flex-column items-center', classes.sidenav)}>
@@ -32,6 +33,7 @@ const StudentInformation = ({ data }, classes) => {
 
 StudentInformation.propTypes = {
   data: PropTypes.object.isRequired,
+  studentStatus: PropTypes.object.isRequired,
 };
 
 export default StudentInformation;

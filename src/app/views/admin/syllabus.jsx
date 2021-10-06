@@ -31,29 +31,23 @@ const name = (user) => {
   return 'No name';
 };
 
-const Staff = () => {
-  const [userList, setUserList] = useState([]);
-  const resendInvite = (user) => {
-    bc.auth()
-      .resendInvite(user)
-      .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
-  };
+const Syllabus = () => {
+  const [list, setList] = useState([]);
 
   const columns = [
     {
-      name: 'first_name', // field name in the row object
+      name: 'name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { user } = userList[dataIndex];
+          const { item } = list[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
+              <Avatar className="w-48 h-48" src={item?.logo} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{name(user)}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">{name(item?.name)}</h5>
+                <small className="text-muted">{item?.slug}</small>
               </div>
             </div>
           );
@@ -61,53 +55,49 @@ const Staff = () => {
       },
     },
     {
-      name: 'created_at',
-      label: 'Created At',
+      name: 'owner',
+      label: 'Owner',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">4Geeks Academy Miami</h5>
             </div>
           </div>
         ),
       },
     },
     {
-      name: 'role',
-      label: 'Role',
+      name: 'private',
+      label: 'Private',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
+          const item = list[dataIndex];
           return (
-            <small
-              className={`border-radius-4 px-2 pt-2px ${roleColors[item.role.slug] || 'bg-light'}`}
-            >
-              {item.role.name.toUpperCase()}
-            </small>
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Tooltip title="This syllabus is not shared with other academies">
+                  <Icon>lock</Icon>
+                  {/** <Icon>lock_open</Icon> */}
+              </Tooltip>
+            </div>
           );
         },
       },
     },
     {
-      name: 'status',
-      label: 'Status',
+      name: 'duration',
+      label: 'Duration',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
+          const item = list[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
-                  {item.status.toUpperCase()}
-                </small>
-                {item.status === 'INVITED' && (
-                  <small className="text-muted d-block">Needs to accept invite</small>
-                )}
+                340 hours, 16 weeks, 23 days
               </div>
             </div>
           );
@@ -115,36 +105,15 @@ const Staff = () => {
       },
     },
     {
-      name: 'action',
-      label: ' ',
+      name: 'actions',
+      label: 'Actions',
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex].user !== null
-            ? userList[dataIndex]
-            : {
-              ...userList[dataIndex],
-              user: {
-                first_name: '',
-                last_name: '',
-                imgUrl: '',
-                id: '',
-              },
-            };
-          return item.status === 'INVITED' ? (
+          return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <InviteDetails user={item.id} />
-              <Tooltip title="Resend Invite">
-                <IconButton onClick={() => resendInvite(item.id)}>
-                  <Icon>refresh</Icon>
-                </IconButton>
-              </Tooltip>
-            </div>
-          ) : (
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <Link to={`/admin/staff/${item.user.id}`}>
+              <Link to={`/admin/syllabus/${item.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -163,13 +132,13 @@ const Staff = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Syllabus' }]} />
           </div>
 
           <div className="">
-            <Link to="/admin/staff/new">
+            <Link to="/admin/syllabus/new">
               <Button variant="contained" color="primary">
-                Add new staff member
+                Add new syllabus
               </Button>
             </Link>
           </div>
@@ -178,16 +147,15 @@ const Staff = () => {
       <div className="overflow-auto">
         <div className="min-w-750">
         <SmartMUIDataTable
-            title="All Staff"
+            title="All Syllabus"
             columns={columns}
-            items={userList}
-            view="staff?"
+            items={list}
+            view="syllabus?"
             singlePage=""
-            historyReplace="/admin/staff"
+            historyReplace="/admin/syllabus"
             search={async (querys) => {
-              const { data } = await bc.auth().getAcademyMembers(querys);
-              console.log("academy members")
-              setUserList(data.results);
+              const { data } = await bc.admissions().getAllAcademySyllabus(querys);
+              setList(data.results);
               return data;
             }}
             deleting={async (querys) => {
@@ -203,4 +171,4 @@ const Staff = () => {
   );
 };
 
-export default Staff;
+export default Syllabus;
