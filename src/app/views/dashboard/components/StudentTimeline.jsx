@@ -11,11 +11,6 @@ const StudentTimeline = ({
   const [limit, setLimit] = useState(10);
   const { cohortID } = useParams();
 
-  const scrollToTop = () => {
-    const elem = document.querySelector('.ps__rail-y');
-    elem.style.top = 0;
-  };
-
   return (
     <Grid item lg={6} md={6} sm={12} xs={12}>
       <div className="pr-8">
@@ -46,7 +41,6 @@ const StudentTimeline = ({
                 limit: prevQuery.limit + 10,
                 offset: prevQuery.offset + 10,
               }));
-              scrollToTop();
             }}
           >
             {hasMoreActivity === null ? 'No more activities to load' : 'Load More Activites'}

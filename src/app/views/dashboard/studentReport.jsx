@@ -100,8 +100,11 @@ const studentReport = () => {
       bc.activity()
         .getCohortActivity(cohortID, query)
         .then(({ data }) => {
+          const newData = data?.results || [];
           setHasMoreActivity(data?.next);
-          setStudentActivity(data?.results || []);
+          setStudentActivity(
+            studentActivity.length !== 0 ? [...studentActivity, ...newData] : data?.results || [],
+          );
         })
         .catch((err) => console.log(err));
     }
