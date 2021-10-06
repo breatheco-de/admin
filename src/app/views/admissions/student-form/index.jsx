@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  MenuItem,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -38,6 +39,7 @@ const options = [
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
   { label: 'Reset Github Link', value: 'github_reset' },
+  { label: 'Add new note', value: 'add_note' },
 ];
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
@@ -53,8 +55,13 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
+  const [noteFormValues, setNoteFormValues] = useState({
+    noteType: '',
+    noteBody: '',
+  });
 
   const [githubResetDialog, setGithubDialogReset] = useState(false);
+  const [newNoteDialog, setNewNoteDialog] = useState(false);
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
@@ -103,6 +110,11 @@ const Student = () => {
     getMemberById();
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('note:', noteFormValues);
+  };
+
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -127,6 +139,64 @@ const Student = () => {
             </Button>
             <Button color="primary" autoFocus onClick={() => passwordReset()}>
               Send
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Add new note modal */}
+        <Dialog
+          open={newNoteDialog}
+          onClose={() => setNewNoteDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          fullWidth="md"
+        >
+          <DialogTitle className="ml-2" id="alert-dialog-title">
+            Student note
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              className="m-2"
+              label="Select note type"
+              size="small"
+              fullWidth
+              variant="outlined"
+              value={noteFormValues.noteType}
+              onChange={(e) => {
+                setNoteFormValues({ ...noteFormValues, noteType: e.target.value });
+              }}
+              select
+            >
+              {['educational note', 'career note'].map((item) => (
+                <MenuItem value={item} key={item}>
+                  {item.toUpperCase()}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              className="m-2"
+              label="Type the student note"
+              multiline
+              row={5}
+              fullWidth
+              variant="outlined"
+              onChange={(e) => {
+                setNoteFormValues({ ...noteFormValues, noteBody: e.target.value });
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setNewNoteDialog(false)} color="primary">
+              Close
+            </Button>
+            <Button
+              color="primary"
+              autoFocus
+              onClick={() => {
+                console.log('I will be adding a new note', noteFormValues);
+                setNewNoteDialog(false);
+              }}
+            >
+              Add the note to student
             </Button>
           </DialogActions>
         </Dialog>
@@ -204,6 +274,7 @@ const Student = () => {
             setOpenDialog(value === 'password_reset');
             setOpenRoleDialog(value === 'change_role');
             setGithubDialogReset(value === 'github_reset');
+            setNewNoteDialog(value === 'add_note');
           }}
         >
           <Button>

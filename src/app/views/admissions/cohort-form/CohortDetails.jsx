@@ -88,14 +88,13 @@ const CohortDetails = ({
           never_ends: neverEnds,
           specialtyMode,
         }}
-        onSubmit={({ specialtyMode, ...values }) => {
+        onSubmit={({ specialtyMode, ...values }) =>
           // const specialtyModeId = cert ? cert.id : null;
-          return onSubmit({
+          onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
             // specialty_mode: specialtyModeId,
-          });
-        }}
+          })}
         enableReinitialize
       >
         {({
@@ -137,8 +136,7 @@ const CohortDetails = ({
                   }}
                   width="100%"
                   key={syllabus}
-                  asyncSearch={() => bc.admissions()
-                    .getAllSyllabus()}
+                  asyncSearch={() => bc.admissions().getAllSyllabus()}
                   size="small"
                   label="Syllabus"
                   data-cy="syllabus"
@@ -154,8 +152,7 @@ const CohortDetails = ({
                   onChange={(v) => setVersion(v)}
                   width="100%"
                   key={syllabus !== null ? syllabus.slug : ''}
-                  asyncSearch={() => bc.admissions()
-                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
+                  asyncSearch={() => bc.admissions().getAllCourseSyllabus(syllabus?.slug, academy.id)}
                   size="small"
                   label="Version"
                   data-cy="version"
@@ -254,8 +251,8 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                          setFieldValue('ending_date', date.toISOString());
-                        }}
+                  setFieldValue('ending_date', date.toISOString());
+                }}
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
