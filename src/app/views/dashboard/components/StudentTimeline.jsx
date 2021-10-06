@@ -19,6 +19,7 @@ const StudentTimeline = ({
           <AsyncAutocomplete
             size="small"
             width="100%"
+            prefetch
             onChange={(activity) => setQuery((prev) => ({ ...prev, slug: activity ? activity.slug : '' }))}
             asyncSearch={() => bc.activity().getActivityTypes()}
             getOptionLabel={(option) => option.slug}
