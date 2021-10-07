@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, Button, Icon } from '@material-ui/core';
 import { toast } from 'react-toastify';
 
 import bc from '../../services/breathecode';
 import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
 import CohortStudentActivity from './components/CohortStudentActivity';
+import DowndownMenu from '../../components/DropdownMenu';
 
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
+
+const options = [
+  { label: 'Add new note', value: 'add_note' },
+  { label: 'Add old note', value: 'add_old' },
+];
 
 const studentReport = () => {
   const [query, setQuery] = useState({ limit: 10, offset: 0 });
@@ -26,6 +32,7 @@ const studentReport = () => {
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
   const [activitiesCount, setActivitiesCount] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
 
   // cohort data
   useEffect(() => {
@@ -109,7 +116,20 @@ const studentReport = () => {
           <StudentInformation data={studentData} studentStatus={studentStatus} />
         </Grid>
         <Grid item lg={9} md={9} sm={12} xs={12}>
-          <div className="py-8" />
+          <div className="flex flex-wrap justify-end pb-6 bg-primary ">
+            <DowndownMenu
+              options={options}
+              icon="more_horiz"
+              onSelect={({ value }) => {
+                setOpenDialog(value === 'add_note');
+              }}
+            >
+              <Button style={{ color: 'white' }}>
+                <Icon>playlist_add</Icon>
+                Additional Actions
+              </Button>
+            </DowndownMenu>
+          </div>
           <StudentIndicators
             data={studentAssignments}
             studentActivity={studentActivity}
