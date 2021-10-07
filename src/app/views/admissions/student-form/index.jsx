@@ -56,9 +56,13 @@ const Student = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
   const [noteFormValues, setNoteFormValues] = useState({
-    noteType: '',
-    noteBody: '',
+    cohort: '',
+    data: '',
+    user_id: stdId,
+    slug: '',
+    user_agent: 'postman',
   });
+  const [cohortOptions, setCohortOptions] = useState(null);
 
   const [githubResetDialog, setGithubDialogReset] = useState(false);
   const [newNoteDialog, setNewNoteDialog] = useState(false);
@@ -110,11 +114,6 @@ const Student = () => {
     getMemberById();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('note:', noteFormValues);
-  };
-
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
@@ -162,15 +161,35 @@ const Student = () => {
               variant="outlined"
               value={noteFormValues.noteType}
               onChange={(e) => {
-                setNoteFormValues({ ...noteFormValues, noteType: e.target.value });
+                setNoteFormValues({ ...noteFormValues, slug: e.target.value });
               }}
               select
             >
-              {['educational note', 'career note'].map((item) => (
+              {['educational_note', 'career_note'].map((item) => (
                 <MenuItem value={item} key={item}>
-                  {item.toUpperCase()}
+                  {item.toUpperCase().replace('_', ' ')}
                 </MenuItem>
               ))}
+            </TextField>
+            <TextField
+              className="m-2"
+              label="Select a cohort"
+              size="small"
+              fullWidth
+              variant="outlined"
+              value={noteFormValues.cohort.name}
+              onChange={(e) => {
+                const { cohort } = e.target.value;
+                setNoteFormValues({ ...noteFormValues, cohort: cohort.slug });
+              }}
+              select
+            >
+              {cohortOptions
+                && cohortOptions.map((item) => (
+                  <MenuItem value={item} key={item.cohort.id}>
+                    {item.cohort.name}
+                  </MenuItem>
+                ))}
             </TextField>
             <TextField
               className="m-2"
@@ -180,7 +199,11 @@ const Student = () => {
               fullWidth
               variant="outlined"
               onChange={(e) => {
-                setNoteFormValues({ ...noteFormValues, noteBody: e.target.value });
+                const bodyNote = JSON.stringify({ body: e.target.value });
+                setNoteFormValues({
+                  ...noteFormValues,
+                  data: bodyNote,
+                });
               }}
             />
           </DialogContent>
@@ -191,8 +214,8 @@ const Student = () => {
             <Button
               color="primary"
               autoFocus
-              onClick={() => {
-                console.log('I will be adding a new note', noteFormValues);
+              onClick={async () => {
+                await bc.activity().createStudentActivity(stdId, noteFormValues);
                 setNewNoteDialog(false);
               }}
             >
@@ -294,7 +317,7 @@ const Student = () => {
           />
         </Grid>
         <Grid item md={8} xs={12}>
-          <StudentCohorts stdId={stdId} />
+          <StudentCohorts stdId={stdId} setCohortOptions={setCohortOptions} />
         </Grid>
       </Grid>
     </div>
