@@ -208,11 +208,9 @@ const Student = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setNewNoteDialog(false)} color="primary">
-              Close
-            </Button>
             <Button
               color="primary"
+              variant="contained"
               autoFocus
               onClick={async () => {
                 await bc.activity().createStudentActivity(stdId, noteFormValues);
