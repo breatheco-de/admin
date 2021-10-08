@@ -165,7 +165,7 @@ describe('Cohorts Screen', () => {
       cy.wait('@cohort_edit_load_user')
       
       cy.log('**_____ saving the changes _____**')
-      cy.get('[data-cy=save_button]').click()
+      cy.get('[data-cy=submit]').click()
       cy.visit('/admissions/cohorts')
     
     })
