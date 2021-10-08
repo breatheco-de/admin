@@ -131,6 +131,7 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
+                  
                   onChange={(certificate) => {
                     setSyllabus(certificate);
                     setVersion(null);
@@ -282,7 +283,7 @@ const CohortDetails = ({
                   />
                 </Grid>
               )}
-              <Button color="primary" variant="contained" type="submit">
+              <Button color="primary" variant="contained" type="submit" data-cy="save_button">
                 Save Cohort Details
               </Button>
             </Grid>

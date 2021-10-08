@@ -83,7 +83,7 @@ const NewCohort = () => {
         />
       </div>
 
-      <Card elevation={3}>
+      <Card elevation={3} >
         <div className="flex p-4">
           <h4 className="m-0">Add a New Cohort</h4>
         </div>
@@ -131,7 +131,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      data-cy="syllabus_certificates"
+                      
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
@@ -146,7 +146,6 @@ const NewCohort = () => {
                     />
                     {syllabus ? (
                       <AsyncAutocomplete
-                        data-cy="certificate_version"
                         debounced={false}
                         onChange={(v) => setVersion(v)}
                         width="20%"

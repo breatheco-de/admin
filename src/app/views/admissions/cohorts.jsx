@@ -76,8 +76,9 @@ const Cohorts = () => {
                 <Link
                   to={`/admissions/cohorts/${item.slug}`}
                   style={{ textDecoration: 'underline' }}
+                  
                 >
-                  <h5 className="my-0 text-15">{item?.name}</h5>
+                  <h5 className="my-0 text-15">{item?.name} </h5>
                 </Link>
                 <small className="text-muted">{item?.slug}</small>
               </div>
@@ -142,7 +143,7 @@ const Cohorts = () => {
 
           <div className="">
             <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" data-cy="new_cohort_button">
                 Add new cohort
               </Button>
             </Link>
