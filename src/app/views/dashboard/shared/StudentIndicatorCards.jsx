@@ -26,7 +26,7 @@ const StudentIndicatorCards = ({ metrics }) => {
               <div className="ml-3">
                 <small className="text-light-white">{v.label}</small>
                 {v.label === 'Github Username' ? (
-                  <a href={v.value} target="_blank" rel="noreferrer">
+                  <a href={`https://github.com/${v.value}`} target="_blank" rel="noreferrer">
                     <h6 className="underline m-0 mt-1 text-white font-medium">{v.value}</h6>
                   </a>
                 ) : (
