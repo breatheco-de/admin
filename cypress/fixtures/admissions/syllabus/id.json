@@ -1,0 +1,14 @@
+{
+    "id": 36,
+    "slug": "full-stack-ft",
+    "name": "Full-Stack Software Developer FT",
+    "github_url": null,
+    "duration_in_hours": 320,
+    "duration_in_days": 45,
+    "week_hours": 40,
+    "logo": "https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft",
+    "private": false,
+    "academy_owner": 4,
+    "created_at": "2021-09-14T23:33:08.520272Z",
+    "updated_at": "2021-09-14T23:33:08.520285Z"
+}

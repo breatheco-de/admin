@@ -254,7 +254,7 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
-                <Button color="primary" variant="contained" type="submit">
+                <Button color="primary" variant="contained" type="submit" data-cy="submit">
                   Create
                 </Button>
               </div>

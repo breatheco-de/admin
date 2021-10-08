@@ -282,7 +282,7 @@ const CohortDetails = ({
                   />
                 </Grid>
               )}
-              <Button color="primary" variant="contained" type="submit">
+              <Button color="primary" variant="contained" type="submit" data-cy="submit">
                 Save Cohort Details
               </Button>
             </Grid>
