@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import TextField from '@material-ui/core/TextField';
 import { resolveResponse } from 'utils';
 import { makeStyles } from '@material-ui/core/styles';
+import { AddNoteModal } from 'app/components/AddNoteModal';
 import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
@@ -142,7 +143,15 @@ const Student = () => {
           </DialogActions>
         </Dialog>
         {/* Add new note modal */}
-        <Dialog
+        <AddNoteModal
+          newNoteDialog={newNoteDialog}
+          cohortOptions={cohortOptions}
+          noteFormValues={noteFormValues}
+          setNewNoteDialog={setNewNoteDialog}
+          setNoteFormValues={setNoteFormValues}
+          stdId={stdId}
+        />
+        {/* <Dialog
           open={newNoteDialog}
           onClose={() => setNewNoteDialog(false)}
           aria-labelledby="alert-dialog-title"
@@ -220,7 +229,7 @@ const Student = () => {
               Add the note to student
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
         {/* Temporal Token - Github Reset */}
         <Dialog
           open={githubResetDialog}

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Grid, Button, Icon } from '@material-ui/core';
 import { toast } from 'react-toastify';
 
+import { AddNoteModal } from 'app/components/AddNoteModal';
 import bc from '../../services/breathecode';
 import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
@@ -15,10 +16,7 @@ const toastOption = {
   autoClose: 8000,
 };
 
-const options = [
-  { label: 'Add new note', value: 'add_note' },
-  { label: 'Add old note', value: 'add_old' },
-];
+const options = [{ label: 'Add new note', value: 'add_note' }];
 
 const studentReport = () => {
   const [query, setQuery] = useState({ limit: 10, offset: 0 });
@@ -32,7 +30,16 @@ const studentReport = () => {
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
   const [activitiesCount, setActivitiesCount] = useState(0);
-  const [openDialog, setOpenDialog] = useState(false);
+
+  // notes modal
+  const [newNoteDialog, setNewNoteDialog] = useState(false);
+  const [noteFormValues, setNoteFormValues] = useState({
+    cohort: cohortData.slug,
+    data: '',
+    user_id: studentID,
+    slug: '',
+    user_agent: 'postman',
+  });
 
   // cohort data
   useEffect(() => {
@@ -44,6 +51,7 @@ const studentReport = () => {
         }
         setCohortData(data);
         setCohortUsersQuery({ ...cohortUsersQuery, cohorts: data.slug });
+        setNoteFormValues({ ...noteFormValues, cohort: data.slug });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -121,7 +129,7 @@ const studentReport = () => {
               options={options}
               icon="more_horiz"
               onSelect={({ value }) => {
-                setOpenDialog(value === 'add_note');
+                setNewNoteDialog(value === 'add_note');
               }}
             >
               <Button style={{ color: 'white' }}>
@@ -147,6 +155,13 @@ const studentReport = () => {
           activitiesCount={activitiesCount}
         />
       </div>
+      <AddNoteModal
+        newNoteDialog={newNoteDialog}
+        noteFormValues={noteFormValues}
+        setNewNoteDialog={setNewNoteDialog}
+        setNoteFormValues={setNoteFormValues}
+        stdId={studentID}
+      />
     </>
   );
 };
