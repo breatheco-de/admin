@@ -116,6 +116,16 @@ const studentReport = () => {
     }
   }, [query]);
 
+  const reRenderActivitiesAfterSubmit = () => {
+    bc.activity()
+      .getCohortActivity(cohortID, query)
+      .then(({ data }) => {
+        setActivitiesCount(data?.count);
+        setStudentActivity(data?.results || []);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <div className=" pt-7 px-8 bg-primary text-white flex mb-8">
@@ -161,6 +171,7 @@ const studentReport = () => {
         setNewNoteDialog={setNewNoteDialog}
         setNoteFormValues={setNoteFormValues}
         stdId={studentID}
+        reRenderActivitiesAfterSubmit={reRenderActivitiesAfterSubmit}
       />
     </>
   );

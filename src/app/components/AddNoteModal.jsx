@@ -18,6 +18,7 @@ export const AddNoteModal = ({
   setNewNoteDialog,
   setNoteFormValues,
   stdId,
+  reRenderActivitiesAfterSubmit,
 }) => (
   <>
     <Dialog
@@ -95,6 +96,7 @@ export const AddNoteModal = ({
           onClick={async () => {
             await bc.activity().createStudentActivity(stdId, noteFormValues);
             setNewNoteDialog(false);
+            reRenderActivitiesAfterSubmit && reRenderActivitiesAfterSubmit();
           }}
         >
           Add the note to student
