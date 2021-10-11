@@ -326,6 +326,16 @@ class BreatheCodeClient {
           `${this.host}/feedback/academy/answer?${qs}`
         );
       },
+      getReviews: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Academy answers',
+          `${this.host}/feedback/academy/review?${qs}`
+        );
+      },
       addNewSurvey: (newSurvey) =>
         axios._post(
           'New Survey',
