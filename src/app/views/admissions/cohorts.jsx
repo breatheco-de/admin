@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb} from 'matx';
+import { Breadcrumb } from 'matx';
 import {
   Icon,
   IconButton,
@@ -47,7 +47,7 @@ const Cohorts = () => {
           const item = items[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="ml-3">
+              <div className="">
                 {dayjs().isAfter(dayjs(item?.ending_date))
                 && !['ENDED', 'DELETED'].includes(item?.stage) ? (
                   <Chip
@@ -73,7 +73,6 @@ const Cohorts = () => {
         filterList: query.get('slug') !== null ? [query.get('slug')] : [],
         customBodyRenderLite: (i) => {
           const item = items[i];
-          console.log('this is an item', item);
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -153,28 +152,26 @@ const Cohorts = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          <SmartMUIDataTable
-            title="All Cohorts"
-            columns={columns}
-            items={items}
-            view="cohorts?"
-            historyReplace="/admissions/cohorts"
-            singlePage=""
-            search={async (querys) => {
-              const { data } = await bc.admissions().getAllCohorts(querys);
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteCohortsBulk(querys);
-              return status;
-            }}
-          />
-        </div>
+      <div className="">
+        <SmartMUIDataTable
+          title="All Cohorts"
+          columns={columns}
+          items={items}
+          view="cohorts?"
+          historyReplace="/admissions/cohorts"
+          singlePage=""
+          search={async (querys) => {
+            const { data } = await bc.admissions().getAllCohorts(querys);
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc
+              .admissions()
+              .deleteCohortsBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );
