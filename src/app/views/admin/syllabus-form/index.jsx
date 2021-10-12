@@ -116,7 +116,7 @@ const Student = () => {
           <h3 className="mt-0 mb-4 font-medium text-28">
             Full Stack Web Development
           </h3>
-          <div className="flex">
+          <div className="flex" data-cy="how-many-days-ago">
             Created at:
             {' '}
             {howManyDaysAgo()}

@@ -2,7 +2,7 @@
 
 const moment = require('moment');
 
-describe('New cohort view', () => {
+describe('/admin/syllabus/:slug', () => {
   beforeEach(() => {
     cy.auth();
 
@@ -16,8 +16,15 @@ describe('New cohort view', () => {
 
     cy.visit('/admin/syllabus/full-stack-ft');
   });
-  context('Syllabus form', () => {
-    it.skip('Slug field validations', () => {
+  context.skip('Syllabus form', () => {
+    it('How many days ago', () => {
+      cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
+        const howManyDaysAgo = moment().diff(created_at, 'days')
+        cy.get('[data-cy="how-many-days-ago"]').should('have.text', `Created at: ${howManyDaysAgo} days ago`)
+      });
+    });
+
+    it('Slug field validations', () => {
       cy.get('[data-cy=slug] input').should('have.value', 'full-stack-ft');
 
       cy.get('[data-cy=slug] input').focus().clear();
@@ -52,7 +59,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy=slug] p').should('have.text', 'Slug can\'t contains symbols');
     });
 
-    it.skip('Name field validations', () => {
+    it('Name field validations', () => {
       cy.get('[data-cy=name] input').should('have.value', 'Full-Stack Software Developer FT');
 
       cy.get('[data-cy=name] input').focus().clear();
@@ -77,7 +84,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy=name] p').should('have.text', 'Name can\'t contains symbols');
     });
 
-    it.skip('Total hours field validations', () => {
+    it('Total hours field validations', () => {
       cy.get('[data-cy="duration-in-hours"] input').should('have.value', '320');
 
       cy.get('[data-cy="duration-in-hours"] input').focus().clear();
@@ -111,7 +118,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy="duration-in-hours"] p').should('not.exist');
     });
 
-    it.skip('Weekly hours field validations', () => {
+    it('Weekly hours field validations', () => {
       cy.get('[data-cy="week-hours"] input').should('have.value', '40');
 
       cy.get('[data-cy="week-hours"] input').focus().clear();
@@ -145,7 +152,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy="week-hours"] p').should('not.exist');
     });
 
-    it.skip('Total days field validations', () => {
+    it('Total days field validations', () => {
       cy.get('[data-cy="duration-in-days"] input').should('have.value', '45');
 
       cy.get('[data-cy="duration-in-days"] input').focus().clear();
@@ -179,7 +186,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy="duration-in-days"] p').should('not.exist');
     });
 
-    it.skip('Github URL field validations', () => {
+    it('Github URL field validations', () => {
       cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
 
       cy.get('[data-cy="github-url"] input').focus().clear();
@@ -208,7 +215,7 @@ describe('New cohort view', () => {
       cy.get('[data-cy="github-url"] p').should('not.exist');
     });
 
-    it.skip('Logo field validations', () => {
+    it('Logo field validations', () => {
       cy.get('[data-cy=logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
 
       cy.get('[data-cy=logo] input').focus().clear();
@@ -272,24 +279,28 @@ describe('New cohort view', () => {
       cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/gitpod-desktop');
       cy.get('[data-cy=logo] input').should('have.value', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
 
-      // // send request
-      // cy.get('[data-cy=submit]').click()
+      // send request
+      cy.get('[data-cy=submit]').click()
 
-      // // check the payload
-      // cy.wait('@postAdmissionsAcademyCohortRequest').then(({ request }) => {
-      //   cy.wrap(request.body).its('name').should('eq', 'Defence Against the Dark Arts');
-      //   cy.wrap(request.body).its('slug').should('eq', 'defence-against-the-dark-arts');
-
-      //   const isKickoffDateAIsoDate = moment(request.body.kickoff_date, moment.ISO_8601, true).isValid();
-      //   cy.wrap(isKickoffDateAIsoDate).should('eq', true);
-
-      //   cy.wrap(request.body).its('ending_date').should('eq', null);
-      //   cy.wrap(request.body).its('never_ends').should('eq', true);
-      //   cy.wrap(request.body).its('syllabus').should('eq', 'full-stack-ft.v1');
-      //   cy.wrap(request.body).its('specialty_mode').should('eq', 4);
-      // })
+      // check the payload
+      cy.wait('@putAdmissionsSyllabusIdRequest').then(({ request }) => {
+        cy.wrap(request.body).its('id').should('eq', 36);
+        cy.wrap(request.body).its('name').should('eq', 'Regular Show');
+        cy.wrap(request.body).its('slug').should('eq', 'regular-show');
+        cy.wrap(request.body).its('duration_in_hours').should('eq', 890);
+        cy.wrap(request.body).its('week_hours').should('eq', 1);
+        cy.wrap(request.body).its('duration_in_days').should('eq', 890);
+        cy.wrap(request.body).its('github_url').should('eq', 'https://github.com/jefer94/gitpod-desktop');
+        cy.wrap(request.body).its('logo').should('eq', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
+      })
 
       // cy.location('pathname').should('eq', '/admissions/cohorts');
+    });
+  });
+  context('Schedules', () => {
+    // cy.location('pathit(')
+    it('Schedule title', () => {
+      //
     });
   });
 });
