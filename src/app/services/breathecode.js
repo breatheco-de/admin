@@ -80,10 +80,14 @@ class BreatheCodeClient {
         `${this.host}/admissions/academy/cohort`,
         payload,
       ),
-      getCertificates: () => axios._get(
-        'Certificates',
-        `${this.host}/admissions/certificate`,
-      ),
+      getCertificates: () => axios._get('Certificates', `${this.host}/admissions/syllabus`),
+      getAllSyllabus: () => axios._get('Syllabus', `${this.host}/admissions/syllabus`),
+      getSyllabus: (query) =>
+        // id or slug
+        axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus/${query}`,
+        ),
       getAllCohorts: (query) => {
         const qs = query !== undefined
           ? Object.keys(query)
@@ -95,15 +99,33 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? `?${qs}` : ''}`,
         );
       },
-      getReport: (query) => axios._get(
-        'Report',
-        `${this.host}/admissions/report`,
-      ),
-      getAllCourseSyllabus: (query, academyID) => axios._get(
+      getReport: (query) => axios._get('Report', `${this.host}/admissions/report`),
+      getAllCourseSyllabus: (query) => axios._get(
         'Syllabus',
-        `${this.host}/admissions/certificate/${query}/academy/${academyID}/syllabus`,
+        `${this.host}/admissions/syllabus/${query}/version`,
+      ),
+      getAllRelatedCertificates: (query) => axios._get(
+        'Certificates',
+        `${this.host}/admissions/syllabus?syllabus_slug=${query}`,
+      ),
+      getAllRelatedCertificatesById: (query) => axios._get(
+        'Certificates',
+        `${this.host}/admissions/syllabus?syllabus_id=${query}`,
+      ),
+      getAllRelatedSchedulesById: (query) => axios._get(
+        'Certificates',
+        `${this.host}/admissions/schedule?syllabus_id=${query}`,
+      ),
+      getSingleCohortStudent: (cohortID, studentID) => axios._get(
+        'Single Cohort Student',
+        `${this.host}/admissions/academy/cohort/${cohortID}/user/${studentID}`,
       ),
       getMyAcademy: () => axios._get('My Academy', `${this.host}/admissions/academy/me`),
+
+      getTemporalToken: (member) => axios._post(
+        'Token Temporal',
+        `${this.host}/auth/member/${member?.id}/token`,
+      ),
     };
   }
 
@@ -245,9 +267,15 @@ class BreatheCodeClient {
             .map((key) => `${key}=${query[key]}`)
             .join('&')
           : '';
-        return axios._get('Academy survey', `${this.host}/feedback/academy/survey${query ? `?${qs}` : ''}`);
+        return axios._get(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey${query ? `?${qs}` : ''}`,
+        );
       },
-      getSurvey: (id) => axios._get('Academy survey', `${this.host}/feedback/academy/survey/${id}`),
+      getSurvey: (id) => axios._get(
+        'Academy survey',
+        `${this.host}/feedback/academy/survey/${id}`,
+      ),
     };
   }
 
@@ -386,6 +414,43 @@ class BreatheCodeClient {
       deleteMedia: (media) => axios._delete('Media', `${this.host}/media/info/${media}`),
       createCategory: (payload) => axios._post('Category', `${this.host}/media/category`, payload),
       updateMediaBulk: (payload) => axios._put('Media', `${this.host}/media/info`, payload),
+    };
+  }
+
+  assignments() {
+    return {
+      getStudentAssignments: (studentID) => axios._get(
+        'Student Assignments',
+        `${this.host}/assignment/task/?user=${studentID}`,
+      ),
+    };
+  }
+
+  registry() {
+    return {
+      getAsset: (associatedSlug) => axios._get(
+        'Asset',
+        `${this.host}/registry/asset/${associatedSlug}`,
+      ),
+    };
+  }
+
+  activity() {
+    return {
+      getCohortActivity: (cohortID, query) => {
+        const qs = query !== undefined
+          ? Object.keys(query)
+            .map((key) => `${key}=${query[key]}`)
+            .join('&')
+          : '';
+        return axios._get(
+          'Cohort Activity',
+          `${this.host}/activity/academy/cohort/${cohortID}${
+            query ? `?${qs}` : ''
+          }`,
+        );
+      },
+      getActivityTypes: () => axios._get('Cohort Activity Type', `${this.host}/activity/type`),
     };
   }
 

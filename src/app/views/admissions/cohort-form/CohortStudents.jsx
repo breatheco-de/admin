@@ -16,6 +16,7 @@ import {
   MenuItem,
   DialogActions,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { format } from 'date-fns';
@@ -225,7 +226,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                       }}
                       select
                     >
-                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map((item) => (
+                      {['NONE', 'FULLY_PAID', 'UP_TO_DATE', 'LATE'].map((item) => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -264,6 +265,13 @@ const CohortStudents = ({ slug, cohortId }) => {
                       >
                         <Icon fontSize="small">delete</Icon>
                       </IconButton>
+                      <Link to={`/dashboard/student/${s.user.id}/cohort/${cohortId}`}>
+                        <Tooltip title="Student Report">
+                          <IconButton>
+                            <Icon fontSize="small">info</Icon>
+                          </IconButton>
+                        </Tooltip>
+                      </Link>
                     </div>
                   </Grid>
                 </Grid>

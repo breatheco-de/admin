@@ -123,7 +123,7 @@ const Students = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admissions/students/${item.user !== null ? item.user.id : ''}`}>
+              <Link to={`/admissions/students/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
