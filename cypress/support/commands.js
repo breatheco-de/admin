@@ -25,38 +25,58 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('auth', () => {
-    cy.fixture('auth/bc-session.json').then((session) => {
-        window.localStorage.setItem('bc-session', JSON.stringify(session))
-    })
+  cy.fixture('auth/bc-session.json').then((session) => {
+      window.localStorage.setItem('bc-session', JSON.stringify(session))
+  })
 
-    cy.fixture('auth/login.json').then(({ token, user_id }) => {
-        window.localStorage.setItem('accessToken', token)
-        cy.intercept('**/v1/auth/token/**', {
-          'body': {
-            "token": token,
-            "token_type": "login",
-            "expires_at": "2021-08-15T13:18:05.345917Z",
-            "user_id": user_id
-          }
-      })
-    })
+  cy.fixture('auth/login.json').then(({ token, user_id }) => {
+      window.localStorage.setItem('accessToken', token)
+      cy.intercept(/\/v1\/auth\/token\/([\w\W]+)$/, {
+        'body': {
+          "token": token,
+          "token_type": "login",
+          "expires_at": "2021-08-15T13:18:05.345917Z",
+          "user_id": user_id
+        }
+    }).as('getAuthTokenKeyRequest')
+  })
 
-    cy.intercept('**/v1/auth/user/me', {
-      'fixture': 'auth/user/me.json'
-    })
+  cy.mockGetAuthUserMeResponse();
 })
 
 // NOTE: _____________________________INTERCEPTIONS_____________________________
 
+Cypress.Commands.add('mockGetAuthUserMeResponse', () => {
+  cy.intercept(/\/v1\/auth\/user\/me$/, {
+    fixture: 'auth/user/me.json',
+    method: 'GET',
+  }).as('getAuthUserMeRequest');
+});
+
+Cypress.Commands.add('mockPutAdmissionsAcademyCohortIdResponse', () => {
+  cy.intercept(/\/v1\/admissions\/academy\/cohort\/(\d+)$/, {
+    fixture: 'admissions/academy/cohort.put.json',
+    method: 'PUT',
+    statusCode: 200
+  }).as('putAdmissionsAcademyCohortIdRequest');
+});
+
 Cypress.Commands.add('mockGetAdmissionsAcademyCohortResponse', () => {
-  cy.intercept('**/v1/admissions/academy/cohort', {
+  cy.intercept(/\/v1\/admissions\/academy\/cohort$/, {
     fixture: 'admissions/academy/cohort.json',
     method: 'GET'
   }).as('getAdmissionsAcademyCohortRequest');
 });
 
+Cypress.Commands.add('mockGetPaginatedAdmissionsAcademyCohortResponse', () => {
+  cy.intercept(/\/v1\/admissions\/academy\/cohort\?(limit|offset)=(\d+)&(limit|offset)=(\d+)$/, {
+    fixture: 'admissions/academy/cohort.paginated.json',
+    method: 'GET'
+  }).as('getPaginatedAdmissionsAcademyCohortRequest');
+});
+
 Cypress.Commands.add('mockGetAdmissionsAcademyCohortSlugResponse', () => {
-  cy.intercept('**/v1/admissions/academy/cohort/**', {
+  cy.intercept(/\/v1\/admissions\/academy\/cohort\/([a-zA-Z\-]+)/, {
     fixture: 'admissions/academy/cohort/slug.json',
     method: 'GET'
   }).as('getAdmissionsAcademyCohortSlugRequest');
@@ -70,10 +90,24 @@ Cypress.Commands.add('mockGetAdmissionsSyllabusResponse', () => {
 });
 
 Cypress.Commands.add('mockGetAdmissionsSyllabusIdResponse', () => {
-  cy.intercept('**/v1/admissions/syllabus/**', {
+  cy.intercept(/\/v1\/admissions\/syllabus\/\d+$/, {
     fixture: 'admissions/syllabus/id.json',
     method: 'GET'
   }).as('getAdmissionsSyllabusIdRequest');
+});
+
+Cypress.Commands.add('mockPutAdmissionsSyllabusIdResponse', () => {
+  cy.intercept(/\/v1\/admissions\/syllabus\/\d+$/, {
+    fixture: 'admissions/syllabus/id.put.json',
+    method: 'PUT'
+  }).as('putAdmissionsSyllabusIdRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsSyllabusSlugResponse', () => {
+  cy.intercept(/\/v1\/admissions\/syllabus\/[a-z-]+$/, {
+    fixture: 'admissions/syllabus/slug.json',
+    method: 'GET'
+  }).as('getAdmissionsSyllabusSlugRequest');
 });
 
 Cypress.Commands.add('mockGetAdmissionsSyllabusVersionResponse', () => {
@@ -83,12 +117,19 @@ Cypress.Commands.add('mockGetAdmissionsSyllabusVersionResponse', () => {
   }).as('getAdmissionsSyllabusVersionRequest');
 });
 
-Cypress.Commands.add('mockPostAdmissionsAcademyCohortResponse', (callback) => {
-  cy.intercept('**/v1/admissions/academy/cohort', {
+Cypress.Commands.add('mockPostAdmissionsAcademyCohortResponse', () => {
+  cy.intercept(/\/v1\/admissions\/academy\/cohort$/, {
     fixture: 'admissions/academy/cohort.post.json',
     method: 'POST',
     statusCode: 201
   }).as('postAdmissionsAcademyCohortRequest');
+});
+
+Cypress.Commands.add('mockGetAdmissionsScheduleResponse', () => {
+  cy.intercept('**/v1/admissions/schedule**', {
+    fixture: 'admissions/schedule.json',
+    method: 'GET'
+  }).as('getAdmissionsScheduleRequest');
 });
 
 // NOTE: _____________________________ACCESS COMANDS_____________________________

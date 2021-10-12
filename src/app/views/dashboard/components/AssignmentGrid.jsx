@@ -25,7 +25,7 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
       .then(({ data }) => {
         setAssignmentsDetails(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
   return (
     <>

@@ -24,26 +24,27 @@ import SyllabusModeDetails from './SyllabusModeDetails';
 import axios from '../../../../axios';
 
 const propTypes = {
-  stdId: PropTypes.number.isRequired,
+  schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-const SyllabusModes = ({ stdId }) => {
-
+const SyllabusModes = ({ schedules }) => {
+  console.log('blablabla');
   return (
     <>
-      <Grid container alignItems="right">
+      <Grid container alignItems="flex-end">
         <Grid item xs={8}>
           <h4 className="m-0 font-medium">Available schedules:</h4>
         </Grid>
         <Grid item xs={4} className="text-center">
-            <Button color="primary">
-              New schedule
-            </Button>
+          <Button color="primary">
+            New schedule
+          </Button>
         </Grid>
       </Grid>
       <Divider className="mb-6" />
-      <SyllabusModeDetails className="mb-2" />
-      <SyllabusModeDetails className="mb-2" />
+      {schedules.map((v) => <SyllabusModeDetails className="mb-2" key={`schedule-${v.id}`} schedule={v} />)}
+      {/* <SyllabusModeDetails className="mb-2" />
+      <SyllabusModeDetails className="mb-2" /> */}
     </>
   );
 };

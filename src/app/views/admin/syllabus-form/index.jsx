@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core';
+import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
@@ -16,6 +17,7 @@ import bc from '../../../services/breathecode';
 import SyllabusModes from './SyllabusModes';
 import SyllabusDetails from './SyllabusDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { MatxLoading } from '../../../../matx';
 
 toast.configure();
 const toastOption = {
@@ -35,11 +37,57 @@ dayjs.extend(LocalizedFormat);
 const Student = () => {
   const { syllabusSlug } = useParams();
   const [syllabus, setSyllabus] = useState(null);
+  const [schedules, setSchedules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const fetchSchedules = async () => {
+      try {
+        const response = await bc.admissions().getAllRelatedSchedulesBySlug(syllabusSlug);
+        setSchedules(response.data);
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+      return true;
+    };
+
+    const fetchSyllabus = async () => {
+      try {
+        const response = await bc.admissions().getSyllabus(syllabusSlug);
+        setSyllabus(response.data);
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+      return true;
+    };
+
+    const fetchSyllabusPromise = fetchSyllabus();
+    const fetchSchedulesPromise = fetchSchedules();
+    fetchSyllabusPromise.then(() => fetchSchedulesPromise.then(() => setIsLoading(false)));
+  }, []);
+
+  const updateSyllabus = async (values) => {
+    try {
+      await bc.admissions().updateSyllabus(syllabus.id, values);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const howManyDaysAgo = () => {
+    if (!syllabus) return 0;
+    return moment().diff(syllabus.created_at, 'days');
+  };
 
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
+        {isLoading && <MatxLoading />}
         {/* This Dialog opens the modal to delete the user in the cohort */}
         <Dialog
           open={openDialog}
@@ -70,7 +118,10 @@ const Student = () => {
           </h3>
           <div className="flex">
             Created at:
-            20 days ago
+            {' '}
+            {howManyDaysAgo()}
+            {' '}
+            days ago
           </div>
         </div>
         <DowndownMenu
@@ -87,14 +138,16 @@ const Student = () => {
         </DowndownMenu>
       </div>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <SyllabusDetails />
+      {syllabus ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <SyllabusDetails syllabus={syllabus} onSubmit={updateSyllabus} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <SyllabusModes schedules={schedules} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <SyllabusModes />
-        </Grid>
-      </Grid>
+      ) : ''}
     </div>
   );
 };

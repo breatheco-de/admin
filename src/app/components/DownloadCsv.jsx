@@ -30,7 +30,7 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         .then(( data ) => {
           downloadFile(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     handleClose();
   };
@@ -40,11 +40,11 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         .then(( data ) => {
           downloadFile(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     handleClose();
   };
-  
+
   return (
     <>
       <Tooltip title="csv">

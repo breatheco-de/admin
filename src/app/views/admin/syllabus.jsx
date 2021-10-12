@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
 
-
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -110,6 +109,7 @@ const Syllabus = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
+          const item = list[dataIndex];
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
@@ -146,7 +146,7 @@ const Syllabus = () => {
       </div>
       <div className="overflow-auto">
         <div className="min-w-750">
-        <SmartMUIDataTable
+          <SmartMUIDataTable
             title="All Syllabus"
             columns={columns}
             items={list}
