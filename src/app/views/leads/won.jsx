@@ -31,15 +31,6 @@ const Leads = () => {
 
   const columns = [
     {
-      name: 'id',
-      label: 'ID',
-      options: {
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].id}</span>
-        ),
-      },
-    },
-    {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
@@ -94,6 +85,16 @@ const Leads = () => {
               ? items[dataIndex].course
               : '---'}
           </span>
+        ),
+      },
+    },
+    {
+      name: 'expected-cohort',
+      label: 'Exp. Cohort',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">{items[dataIndex].ac_expected_cohort}</span>
         ),
       },
     },
