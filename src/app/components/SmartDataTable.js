@@ -39,6 +39,7 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
+  const [searchBoxValue, setSearchBoxValue] = useState("search");
   const query = useQuery();
   const history = useHistory();
   const [querys, setQuerys] = useState({
@@ -67,6 +68,8 @@ export const SmartMUIDataTable = (props) => {
       setIsAlive(false);
     };
   }, [isAlive]);
+
+  const clearSearchBox = () => {setSearchBoxValue("")};
 
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     setIsLoading(true);
@@ -101,6 +104,11 @@ export const SmartMUIDataTable = (props) => {
         setIsLoading(false);
       });
   };
+
+  const handleChange = () => {
+    setSearchBoxValue("")
+  }
+
 
   return (<>
     {isLoading && <MatxLoading />}
@@ -238,6 +246,8 @@ export const SmartMUIDataTable = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              value={searchBoxValue}
+              onChange={handleChange}
               onKeyPress={(e) => {
                 if (e.key == 'Enter') {
                   handlePageChange(
@@ -258,8 +268,8 @@ export const SmartMUIDataTable = (props) => {
                   </Icon>
                 ),
                 endAdornment: (
-                  <IconButton onClick={hideSearch}>
-                    <Icon fontSize="small">clear</Icon>
+                  <IconButton onClick={() => clearSearchBox()}>
+                    <Icon fontSize="small" >clear</Icon>
                   </IconButton>
                 ),
               }}
