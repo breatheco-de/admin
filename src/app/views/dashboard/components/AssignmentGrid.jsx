@@ -17,7 +17,7 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
   const {
     title, task_type, associated_slug, intro_video_url,
   } = data;
-  const { created_at, difficulty } = assignmentsDetails;
+  const { created_at, difficulty, url } = assignmentsDetails;
 
   useEffect(() => {
     bc.registry()
@@ -30,23 +30,25 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
   return (
     <>
       <ListItem alignItems="flex-start">
-        <ListItemText
-          secondary={(
-            <>
-              <Typography variant="h6" component="h2">
-                {title && title[0].toUpperCase() + title.slice(1)}
-              </Typography>
-              <Typography color="textSecondary">
-                <b>Dificulty: </b>
-                {difficulty ? difficulty.toLowerCase() : 'N/A'}
-              </Typography>
-              <Typography component="p">
-                <b>Due Date: </b>
-                {dayjs(created_at).fromNow()}
-              </Typography>
-            </>
-          )}
-        />
+        <a href={url} target="_blank" rel="noreferrer">
+          <ListItemText
+            secondary={(
+              <>
+                <Typography variant="h6" component="h2">
+                  {title && title[0].toUpperCase() + title.slice(1)}
+                </Typography>
+                <Typography color="textSecondary">
+                  <b>Dificulty: </b>
+                  {difficulty ? difficulty.toLowerCase() : 'N/A'}
+                </Typography>
+                <Typography component="p">
+                  <b>Created Date: </b>
+                  {dayjs(created_at).fromNow()}
+                </Typography>
+              </>
+            )}
+          />
+        </a>
       </ListItem>
       {!isLastItem && <Divider component="div" />}
     </>

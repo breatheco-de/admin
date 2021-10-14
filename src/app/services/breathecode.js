@@ -116,6 +116,18 @@ class BreatheCodeClient {
           `${this.host}/admissions/academy/cohort${query ? '?' + qs : ''}`
         );
       },
+      getAllAcademySyllabus: () => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus${query ? '?' + qs : ''}`
+        );
+      },
       getReport: (query) => {
         return axios._get('Report', `${this.host}/admissions/report`);
       },
@@ -312,6 +324,16 @@ class BreatheCodeClient {
         return axios._get(
           'Academy answers',
           `${this.host}/feedback/academy/answer?${qs}`
+        );
+      },
+      getReviews: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Academy answers',
+          `${this.host}/feedback/academy/review?${qs}`
         );
       },
       addNewSurvey: (newSurvey) =>

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { Grid, Card, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { parseGithubUrl } from '../helpers/parseGithubUrl';
-
 const useStyles = makeStyles(({ palette }) => ({
   icon: {
     fontSize: '44px',
@@ -28,10 +26,8 @@ const StudentIndicatorCards = ({ metrics }) => {
               <div className="ml-3">
                 <small className="text-light-white">{v.label}</small>
                 {v.label === 'Github Username' ? (
-                  <a href={v.value} target="_blank" rel="noreferrer">
-                    <h6 className="underline m-0 mt-1 text-white font-medium">
-                      {(v.value && parseGithubUrl(v.value)) || 'N/A'}
-                    </h6>
+                  <a href={`https://github.com/${v.value}`} target="_blank" rel="noreferrer">
+                    <h6 className="underline m-0 mt-1 text-white font-medium">{v.value}</h6>
                   </a>
                 ) : (
                   <h6 className="m-0 mt-1 text-white font-medium">{v.value}</h6>

@@ -273,7 +273,7 @@ export const SmartMUIDataTable = (props) => {
 
 SmartMUIDataTable.propTypes = {
   title: PropTypes.string,
-  items: PropTypes.object,
+  items: PropTypes.array,
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,

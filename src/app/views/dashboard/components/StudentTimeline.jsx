@@ -6,7 +6,7 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 
 const StudentTimeline = ({
-  studentActivity, setQuery, query, activitiesCount,
+  studentActivity, setQuery, query, hasMoreActivity,
 }) => {
   const [limit, setLimit] = useState(10);
   const { cohortID } = useParams();
@@ -19,6 +19,7 @@ const StudentTimeline = ({
           <AsyncAutocomplete
             size="small"
             width="100%"
+            prefetch
             onChange={(activity) => setQuery((prev) => ({ ...prev, slug: activity ? activity.slug : '' }))}
             asyncSearch={() => bc.activity().getActivityTypes()}
             getOptionLabel={(option) => option.slug}
@@ -31,7 +32,7 @@ const StudentTimeline = ({
 
         <div>
           <Button
-            disabled={activitiesCount <= studentActivity.length}
+            disabled={hasMoreActivity === null}
             fullWidth
             className="text-primary bg-light-primary"
             onClick={() => {
@@ -42,9 +43,7 @@ const StudentTimeline = ({
               }));
             }}
           >
-            {activitiesCount <= studentActivity.length
-              ? 'No more activities to load'
-              : 'Load More Activites'}
+            {hasMoreActivity === null ? 'No more activities to load' : 'Load More Activites'}
           </Button>
         </div>
       </div>
