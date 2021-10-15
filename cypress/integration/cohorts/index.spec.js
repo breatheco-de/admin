@@ -47,9 +47,9 @@ describe('Cohorts Screen', () => {
         cy.get('[data-cy=slug]').type(values.slug)
         
         cy.log('**_____ Picking STARTING DATE for the new cohort _____**')
-        cy.get('[data-cy=start-date]').click(200, 0)
-        cy.get(':nth-child(3) > :nth-child(4) > .MuiButtonBase-root > .MuiIconButton-label > .MuiTypography-root')
-        .click()
+        // cy.get('[data-cy=start-date]').click(200, 0)
+        // cy.get(':nth-child(3) > :nth-child(4) > .MuiButtonBase-root > .MuiIconButton-label > .MuiTypography-root')
+        // .click()
         
         cy.log('**_____ Picking ENDING DATE for the new cohort _____**')
         cy.get('.MuiFormControlLabel-root').click()
