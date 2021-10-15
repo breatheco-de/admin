@@ -32,14 +32,14 @@ const NewCohort = () => {
   // const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
-  const [TimeZone, setTimeZone] = useState(null);
+  const [timeZone, setTimeZone] = useState('America/Caracas');
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
-    time_zone: null,
+    // time_zone: [],
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
@@ -65,7 +65,7 @@ const NewCohort = () => {
     bc.admissions()
       // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
       //   specialty_mode: schedule.id })
-      .addCohort({ ...values, time_zone: `${TimeZone.slug}`, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
+      .addCohort({ ...values, time_zone: `${timeZone}`, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -277,21 +277,21 @@ const NewCohort = () => {
                 <Grid item md={2} sm={4} xs={12}>
                  Timezone 
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={12} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
-                      width="30%"
+                      width="60%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"
                       label="Timezone"
                       required
-                      getOptionLabel={(option) => `${option.name}`}
-                      value={TimeZone}
+                      getOptionLabel={(option) => `${option}`}
+                      value={timeZone}
                     />
                  
                   </div>

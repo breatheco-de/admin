@@ -98,7 +98,7 @@ class BreatheCodeClient {
         return axios._get('Syllabus', `${this.host}/admissions/syllabus`);
       },
       getAllTimeZone: () => {
-        return axios._get('TimeZone', `${this.host}/v1/admissions/catalog/timezones`);
+        return axios._get('TimeZone', `${this.host}/admissions/catalog/timezones`);
       },
       getSyllabus: (query) => {
         // id or slug
