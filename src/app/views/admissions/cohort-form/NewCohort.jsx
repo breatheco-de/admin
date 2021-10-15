@@ -9,13 +9,14 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+
 
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
@@ -31,12 +32,14 @@ const NewCohort = () => {
   // const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
+  const [timeZone, setTimeZone] = useState('America/Caracas');
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
+    // time_zone: [],
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
@@ -62,7 +65,7 @@ const NewCohort = () => {
     bc.admissions()
       // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
       //   specialty_mode: schedule.id })
-      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
+      .addCohort({ ...values, time_zone: `${timeZone}`, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -83,7 +86,7 @@ const NewCohort = () => {
         />
       </div>
 
-      <Card elevation={3}>
+      <Card elevation={3} >
         <div className="flex p-4">
           <h4 className="m-0">Add a New Cohort</h4>
         </div>
@@ -131,6 +134,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
+                      
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
@@ -215,7 +219,7 @@ const NewCohort = () => {
                 <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
                   End date
                 </Grid>
-                <Grid item md={3} sm={4} xs={12}>
+                <Grid item md={4} sm={4} xs={6}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
                       name="endingDate"
@@ -238,7 +242,7 @@ const NewCohort = () => {
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={3} sm={4} xs={12}>
+                <Grid item md={6} sm={4} xs={6} >
                   <FormControlLabel
                     control={(
                       <Checkbox
@@ -247,10 +251,50 @@ const NewCohort = () => {
                         name="endingDate"
                         data-cy="never-ends"
                         color="primary"
+                        className="text-left"
                       />
                     )}
                     label="This cohort never ends."
                   />
+                </Grid>
+                
+                <Grid item md={2} sm={4} xs={12}>
+                  Live meeting URL
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <Link to="https://bluejeans.com/976625693">
+                  <Button
+                    label="Live meeting URL"
+                    data-cy="meetingURL"
+                    name="meetingURL"
+                    size="large"
+                    variant="contained"
+                    // value="https://bluejeans.com/976625693"
+                    // onChange={createCohort}
+                  >Go to Meeting Now</Button>
+                  </Link>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                 Timezone 
+                </Grid>
+                <Grid item md={12} sm={8} xs={12}>
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      
+                      debounced={false}
+                      onChange={(x) => setTimeZone(x)}
+                      width="60%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getAllTimeZone()}
+                      size="small"
+                      data-cy="timezone"
+                      label="Timezone"
+                      required
+                      getOptionLabel={(option) => `${option}`}
+                      value={timeZone}
+                    />
+                 
+                  </div>
                 </Grid>
               </Grid>
               <div className="mt-6">
