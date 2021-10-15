@@ -39,7 +39,7 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
-  const [searchBoxValue, setSearchBoxValue] = useState("search");
+  const [searchBoxValue, setSearchBoxValue] = useState("");
   const query = useQuery();
   const history = useHistory();
   const [querys, setQuerys] = useState({
@@ -105,8 +105,8 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
-  const handleChange = () => {
-    setSearchBoxValue("")
+  const handleChange = (e) => {
+    setSearchBoxValue(e.target.value)
   }
 
 
