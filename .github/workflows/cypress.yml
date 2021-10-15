@@ -26,6 +26,7 @@ jobs:
         # Install NPM dependencies, cache them correctly
         uses: cypress-io/github-action@v2
         with:
+          run: npm install
           build: npm run build
           start: npm run serve
           browser: chrome
