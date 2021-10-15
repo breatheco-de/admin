@@ -1,5 +1,4 @@
 
-
 describe('Cohorts Screen', () => {
   
   beforeEach(() => {
@@ -21,19 +20,25 @@ describe('Cohorts Screen', () => {
         cy.log('**_____ Sending the mocked cohorts_____**')
         cy.mock_list_cohortsA()
         
+        cy.syllabus_certificates()
+        
+
         cy.log('**_____ Goin to Cohorts Screen... _____**')
         cy.visit('/admissions/cohorts')
+        
         cy.wait('@mock_list_cohortsA')
         cy.wait(1500)
+        
 
         cy.log('**_____ Creating a new cohort _____**')
         cy.get('[data-cy=new_cohort_button]').click()
 
         cy.log('**_____ Sending the syllabus certificates names_____**')
-        cy.syllabus_certificates()
+        
         
         cy.log('**_____ Sending the certificates versions_____**')
         cy.certificates_versions()
+        cy.wait('@syllabus_certificates')
 
         cy.log('**_____ Entering the new cohort NAME _____**')
         cy.get('[data-cy=name]').type(values.name)
@@ -50,8 +55,9 @@ describe('Cohorts Screen', () => {
         cy.get('.MuiFormControlLabel-root').click()
         
         cy.log('**_____ Selecting the syllabus certificate NAME _____**')
-        cy.wait('@syllabus_certificates')
+        
         cy.get('[data-cy=syllabus]').type(values.syllabus)
+      
 
         cy.log('**_____ Selecting the syllabus certificate VERSION _____**')
         cy.wait('@certificates_versions')
@@ -85,8 +91,8 @@ describe('Cohorts Screen', () => {
 
       cy.log('**_____ Searching the new cohort _____**')
       cy.get('[data-testid=Search-iconButton]').click()
-      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type(values.search_cohort)
       cy.cohort_search_result()
+      cy.get('.MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type(values.search_cohort)
       cy.wait('@cohort_search_result')
 
       cy.log('**_____ Checking for all coincidences _____**')
@@ -132,16 +138,17 @@ describe('Cohorts Screen', () => {
       cy.log('**_____ Checking if one can actually edit the cohort  _____**')
 
       cy.log('**_____ changing the chosen syllabus  _____**')
-      cy.get('[data-cy=syllabus]').click().type('{downArrow}' + values.syllabus)
       cy.cohort_edit_new_version()
-      
+      cy.get('[data-cy=syllabus]').click().type('{downArrow}' + values.syllabus)
+      cy.wait('@cohort_edit_new_version')
 
       cy.log('**_____ changing the chosen language  _____**')
       cy.get('[data-cy=language]').type("ES{enter}")
+      cy.wait('@cohort_edit_load_user')
       
       cy.log('**_____ choosing a version of the new syllabus  _____**')
-      cy.wait('@cohort_edit_new_version')
       cy.get('[data-cy=version]').click().type('{downArrow}' + values.syllabus)
+      
     
 
       cy.log('**_____ changing the start date  _____**')
@@ -162,7 +169,7 @@ describe('Cohorts Screen', () => {
       cy.get('[data-cy=never-ends]').click()
 
       cy.log('**_____ loading a user _____**')
-      cy.wait('@cohort_edit_load_user')
+      
       
       cy.log('**_____ saving the changes _____**')
       cy.get('[data-cy=submit]').click()
