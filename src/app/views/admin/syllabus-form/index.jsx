@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-import SyllabusModes from './SyllabusModes';
+import SchedulesList from './SchedulesList';
 import SyllabusDetails from './SyllabusDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { MatxLoading } from '../../../../matx';
@@ -41,31 +41,30 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchSchedules = async () => {
+    try {
+      const response = await bc.admissions().getAllRelatedSchedulesBySlug(syllabusSlug);
+      setSchedules(response.data);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
+  };
+
+  const fetchSyllabus = async () => {
+    try {
+      const response = await bc.admissions().getSyllabus(syllabusSlug);
+      setSyllabus(response.data);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
     setIsLoading(true);
-
-    const fetchSchedules = async () => {
-      try {
-        const response = await bc.admissions().getAllRelatedSchedulesBySlug(syllabusSlug);
-        setSchedules(response.data);
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-      return true;
-    };
-
-    const fetchSyllabus = async () => {
-      try {
-        const response = await bc.admissions().getSyllabus(syllabusSlug);
-        setSyllabus(response.data);
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-      return true;
-    };
-
     const fetchSyllabusPromise = fetchSyllabus();
     const fetchSchedulesPromise = fetchSchedules();
     fetchSyllabusPromise.then(() => fetchSchedulesPromise.then(() => setIsLoading(false)));
@@ -144,7 +143,7 @@ const Student = () => {
             <SyllabusDetails syllabus={syllabus} onSubmit={updateSyllabus} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <SyllabusModes schedules={schedules} />
+            <SchedulesList schedules={schedules} />
           </Grid>
         </Grid>
       ) : ''}

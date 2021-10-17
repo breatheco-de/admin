@@ -19,7 +19,7 @@ import {
 import bc from '../../../services/breathecode';
 import moment from 'moment';
 
-const Item = ({ timeslot }) => {
+const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
   const startingHour = moment(timeslot.starting_at).local().format('HH:mm');
   const endingHour = moment(timeslot.ending_at).local().format('HH:mm');
   const weekday = moment(timeslot.starting_at).local().format('dddd');
@@ -30,9 +30,9 @@ const Item = ({ timeslot }) => {
     return 'MONTH';
   };
 
-  const deleteTimeslot = (id) => {
-    //
-  }
+  // const deleteTimeslot = (scheduleId, timeslotId) => {
+  //   bc.admissions().deleteTimeslot(scheduleId, timeslotId);
+  // };
 
   return (
     <Grid container alignItems="center">
@@ -51,7 +51,7 @@ const Item = ({ timeslot }) => {
       </Grid>
       <Grid item xs={2} className="text-center">
         <div className="flex justify-end items-center">
-          <IconButton onClick={() => deleteTimeslot(timeslot?.id)}>
+          <IconButton onClick={() => deleteTimeslot(timeslot?.specialty_mode, timeslot?.id)}>
             <Icon fontSize="small">delete</Icon>
           </IconButton>
         </div>
@@ -60,36 +60,4 @@ const Item = ({ timeslot }) => {
   );
 };
 
-const SyllabusModeDetails = ({ schedule }) => {
-  const [timeslots, setTimeslots] = useState([]);
-
-  useEffect(() => {
-    const fetchTimeslots = async () => {
-      try {
-        const response = await bc.admissions().getAllTimeslotsBySchedule(schedule?.id);
-        setTimeslots(response.data);
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-      return true;
-    };
-    fetchTimeslots();
-  }, []);
-
-  return (
-    <Card className="p-4">
-      <h5 className="m-0 font-medium pb-4">{schedule?.name}:</h5>
-      {timeslots.map((v) => <Item key={`timeslot-${v.id}`} timeslot={v} />)}
-      <IconButton>
-        <Icon fontSize="small">add_circle</Icon>
-      </IconButton>
-    </Card>
-  );
-};
-
-SyllabusModeDetails.propTypes = {
-  // className: PropTypes.string,
-};
-
-export default SyllabusModeDetails;
+export default TimeslotDetails;

@@ -25,259 +25,117 @@ describe('/admin/syllabus/:slug', () => {
     });
 
     it('Slug field validations', () => {
-      cy.get('[data-cy=slug] input').should('have.value', 'full-stack-ft');
-
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy=slug] input').should('have.value', 'Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy=slug] p').should('have.text', 'Slug can\'t contains uppercase');
-
-      // http://www.robertecker.com/hp/research/leet-converter.php?lang=en
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('d3f3nc3-4641n57-7h3-d4rk-4r75');
-      cy.get('[data-cy=slug] input').should('have.value', 'd3f3nc3-4641n57-7h3-d4rk-4r75');
-      cy.get('[data-cy=slug] p').should('not.exist');
-
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('Defence Against The Dark Arts');
-      cy.get('[data-cy=slug] input').should('have.value', 'Defence Against The Dark Arts');
-      cy.get('[data-cy=slug] p').should('have.text', 'Slug can\'t contains spaces');
-
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('defence-against-the-dark-arts');
-      cy.get('[data-cy=slug] input').should('have.value', 'defence-against-the-dark-arts');
-      cy.get('[data-cy=slug] p').should('not.exist');
-
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('defence-against-the-dark-arts-');
-      cy.get('[data-cy=slug] input').should('have.value', 'defence-against-the-dark-arts-');
-      cy.get('[data-cy=slug] p').should('have.text', 'Slug can\'t end with (-)');
-
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy=slug] input').should('have.value', '*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy=slug] p').should('have.text', 'Slug can\'t contains symbols');
+      cy.testSlugField('default', 'slug', 'full-stack-ft');
     });
 
     it('Name field validations', () => {
-      cy.get('[data-cy=name] input').should('have.value', 'Full-Stack Software Developer FT');
-
-      cy.get('[data-cy=name] input').focus().clear();
-      cy.get('[data-cy=name] input').type('Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy=name] input').should('have.value', 'Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy=name] p').should('not.exist');
-
-      // http://www.robertecker.com/hp/research/leet-converter.php?lang=en
-      cy.get('[data-cy=name] input').focus().clear();
-      cy.get('[data-cy=name] input').type('d3f3nc3-4641n57-7h3-d4rk-4r75');
-      cy.get('[data-cy=name] input').should('have.value', 'd3f3nc3-4641n57-7h3-d4rk-4r75');
-      cy.get('[data-cy=name] p').should('not.exist');
-
-      cy.get('[data-cy=name] input').focus().clear();
-      cy.get('[data-cy=name] input').type('Defence Against The Dark Arts');
-      cy.get('[data-cy=name] input').should('have.value', 'Defence Against The Dark Arts');
-      cy.get('[data-cy=name] p').should('not.exist');
-
-      cy.get('[data-cy=name] input').focus().clear();
-      cy.get('[data-cy=name] input').type('*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy=name] input').should('have.value', '*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy=name] p').should('have.text', 'Name can\'t contains symbols');
+      cy.testNameField('default', 'name', 'Full-Stack Software Developer FT')
     });
 
     it('Total hours field validations', () => {
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '320');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '');
-      cy.get('[data-cy="duration-in-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '');
-      cy.get('[data-cy="duration-in-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('1');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '1');
-      cy.get('[data-cy="duration-in-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('-1');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '-1');
-      cy.get('[data-cy="duration-in-hours"] p').should('have.text', 'Total hours can\'t be equat less that 0');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('0');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '0');
-      cy.get('[data-cy="duration-in-hours"] p').should('have.text', 'Total hours can\'t be equat to 0');
-
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('200');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '200');
-      cy.get('[data-cy="duration-in-hours"] p').should('not.exist');
+      cy.testNonZeroPositiveNumberField('default', 'Total hours', 'duration-in-hours', '320')
     });
 
     it('Weekly hours field validations', () => {
-      cy.get('[data-cy="week-hours"] input').should('have.value', '40');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '');
-      cy.get('[data-cy="week-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '');
-      cy.get('[data-cy="week-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('1');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '1');
-      cy.get('[data-cy="week-hours"] p').should('not.exist');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('-1');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '-1');
-      cy.get('[data-cy="week-hours"] p').should('have.text', 'Weekly hours can\'t be equat less that 0');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('0');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '0');
-      cy.get('[data-cy="week-hours"] p').should('have.text', 'Weekly hours can\'t be equat to 0');
-
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('200');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '200');
-      cy.get('[data-cy="week-hours"] p').should('not.exist');
+       cy.testNonZeroPositiveNumberField('default', 'Weekly hours', 'week-hours', '40')
     });
 
     it('Total days field validations', () => {
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '45');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('Defence-Against-The-Dark-Arts');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '');
-      cy.get('[data-cy="duration-in-days"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('*>*>defence-against-the-dark-arts<*<*');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '');
-      cy.get('[data-cy="duration-in-days"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('1');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '1');
-      cy.get('[data-cy="duration-in-days"] p').should('not.exist');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('-1');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '-1');
-      cy.get('[data-cy="duration-in-days"] p').should('have.text', 'Total days can\'t be equat less that 0');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('0');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '0');
-      cy.get('[data-cy="duration-in-days"] p').should('have.text', 'Total days can\'t be equat to 0');
-
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('200');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '200');
-      cy.get('[data-cy="duration-in-days"] p').should('not.exist');
+      cy.testNonZeroPositiveNumberField('default', 'Total days', 'duration-in-days', '45')
     });
 
     it('Github URL field validations', () => {
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('https://www.google.com/');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://www.google.com/');
-      cy.get('[data-cy="github-url"] p').should('have.text', 'Invalid github url');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('https://www.google.com/').blur();
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://www.google.com/');
+      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('https://');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://');
-      cy.get('[data-cy="github-url"] p').should('have.text', 'Invalid github url');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('https://').blur();
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://');
+      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('https://github.com');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com');
-      cy.get('[data-cy="github-url"] p').should('have.text', 'Invalid github url');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('https://github.com').blur();
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com');
+      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('https://github.com/jefer94/apiv2');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
-      cy.get('[data-cy="github-url"] p').should('not.exist');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/apiv2');
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+      cy.get('[data-cy="default-github-url"] p').should('not.exist');
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('http://github.com/jefer94/apiv2');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'http://github.com/jefer94/apiv2');
-      cy.get('[data-cy="github-url"] p').should('not.exist');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('http://github.com/jefer94/apiv2').blur();
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'http://github.com/jefer94/apiv2');
+      cy.get('[data-cy="default-github-url"] p').should('not.exist');
     });
 
     it('Logo field validations', () => {
-      cy.get('[data-cy=logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
+      cy.get('[data-cy=default-logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
 
-      cy.get('[data-cy=logo] input').focus().clear();
-      cy.get('[data-cy=logo] input').type('https://');
-      cy.get('[data-cy=logo] input').should('have.value', 'https://');
-      cy.get('[data-cy=logo] p').should('have.text', 'Invalid logo url');
+      cy.get('[data-cy=default-logo] input').focus().clear();
+      cy.get('[data-cy=default-logo] input').type('https://').blur();
+      cy.get('[data-cy=default-logo] input').should('have.value', 'https://');
+      cy.get('[data-cy=default-logo] p').should('have.text', 'Invalid logo url');
 
-      cy.get('[data-cy=logo] input').focus().clear();
-      cy.get('[data-cy=logo] input').type('https://www.google.com');
-      cy.get('[data-cy=logo] input').should('have.value', 'https://www.google.com');
-      cy.get('[data-cy=logo] p').should('have.text', 'Invalid logo url');
+      cy.get('[data-cy=default-logo] input').focus().clear();
+      cy.get('[data-cy=default-logo] input').type('https://www.google.com').blur();
+      cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com');
+      cy.get('[data-cy=default-logo] p').should('not.exist');
 
-      cy.get('[data-cy=logo] input').focus().clear();
-      cy.get('[data-cy=logo] input').type('https://www.google.com/');
-      cy.get('[data-cy=logo] input').should('have.value', 'https://www.google.com/');
-      cy.get('[data-cy=logo] p').should('not.exist');
+      cy.get('[data-cy=default-logo] input').focus().clear();
+      cy.get('[data-cy=default-logo] input').type('https://www.google.com/').blur();
+      cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com/');
+      cy.get('[data-cy=default-logo] p').should('not.exist');
 
-      cy.get('[data-cy=logo] input').focus().clear();
-      cy.get('[data-cy=logo] input').type('http://github.com/jefer94/apiv2');
-      cy.get('[data-cy=logo] input').should('have.value', 'http://github.com/jefer94/apiv2');
-      cy.get('[data-cy=logo] p').should('not.exist');
+      cy.get('[data-cy=default-logo] input').focus().clear();
+      cy.get('[data-cy=default-logo] input').type('http://github.com/jefer94/apiv2').blur();
+      cy.get('[data-cy=default-logo] input').should('have.value', 'http://github.com/jefer94/apiv2');
+      cy.get('[data-cy=default-logo] p').should('not.exist');
     });
 
     it('Check request', () => {
-      cy.get('[data-cy=slug] input').should('have.value', 'full-stack-ft');
-      cy.get('[data-cy=name] input').should('have.value', 'Full-Stack Software Developer FT');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '320');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '40');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '45');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
-      cy.get('[data-cy=logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
+      cy.get('[data-cy="default-slug"] input').should('have.value', 'full-stack-ft');
+      cy.get('[data-cy="default-name"] input').should('have.value', 'Full-Stack Software Developer FT');
+      cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '320');
+      cy.get('[data-cy="default-week-hours"] input').should('have.value', '40');
+      cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '45');
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+      cy.get('[data-cy="default-logo"] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
 
       // change values
-      cy.get('[data-cy=slug] input').focus().clear();
-      cy.get('[data-cy=slug] input').type('regular-show');
+      cy.get('[data-cy="default-slug"] input').focus().clear();
+      cy.get('[data-cy="default-slug"] input').type('regular-show').blur();
 
-      cy.get('[data-cy=name] input').focus().clear();
-      cy.get('[data-cy=name] input').type('Regular Show');
+      cy.get('[data-cy="default-name"] input').focus().clear();
+      cy.get('[data-cy="default-name"] input').type('Regular Show').blur();
 
-      cy.get('[data-cy="duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="duration-in-hours"] input').type('890');
+      cy.get('[data-cy="default-duration-in-hours"] input').focus().clear();
+      cy.get('[data-cy="default-duration-in-hours"] input').type('890').blur();
 
-      cy.get('[data-cy="week-hours"] input').focus().clear();
-      cy.get('[data-cy="week-hours"] input').type('1');
+      cy.get('[data-cy="default-week-hours"] input').focus().clear();
+      cy.get('[data-cy="default-week-hours"] input').type('1').blur();
 
-      cy.get('[data-cy="duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="duration-in-days"] input').type('890');
+      cy.get('[data-cy="default-duration-in-days"] input').focus().clear();
+      cy.get('[data-cy="default-duration-in-days"] input').type('890').blur();
 
-      cy.get('[data-cy="github-url"] input').focus().clear();
-      cy.get('[data-cy="github-url"] input').type('https://github.com/jefer94/gitpod-desktop');
+      cy.get('[data-cy="default-github-url"] input').focus().clear();
+      cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/gitpod-desktop').blur();
 
-      cy.get('[data-cy=logo] input').focus().clear();
-      cy.get('[data-cy=logo] input').type('https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
+      cy.get('[data-cy="default-logo"] input').focus().clear();
+      cy.get('[data-cy="default-logo"] input').type('https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg').blur();
 
       // check after fill the form
-      cy.get('[data-cy=slug] input').should('have.value', 'regular-show');
-      cy.get('[data-cy=name] input').should('have.value', 'Regular Show');
-      cy.get('[data-cy="duration-in-hours"] input').should('have.value', '890');
-      cy.get('[data-cy="week-hours"] input').should('have.value', '1');
-      cy.get('[data-cy="duration-in-days"] input').should('have.value', '890');
-      cy.get('[data-cy="github-url"] input').should('have.value', 'https://github.com/jefer94/gitpod-desktop');
-      cy.get('[data-cy=logo] input').should('have.value', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
+      cy.get('[data-cy="default-slug"] input').should('have.value', 'regular-show');
+      cy.get('[data-cy="default-name"] input').should('have.value', 'Regular Show');
+      cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '890');
+      cy.get('[data-cy="default-week-hours"] input').should('have.value', '1');
+      cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '890');
+      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/gitpod-desktop');
+      cy.get('[data-cy="default-logo"] input').should('have.value', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
 
       // send request
       cy.get('[data-cy=submit]').click()
@@ -297,10 +155,43 @@ describe('/admin/syllabus/:slug', () => {
       // cy.location('pathname').should('eq', '/admissions/cohorts');
     });
   });
-  context('Schedules', () => {
+  context('Schedule Form', () => {
     // cy.location('pathit(')
-    it('Schedule title', () => {
-      //
+    it('Schedule label', () => {
+      cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
+    });
+
+    it('Slug field validations', () => {
+      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+      cy.get('[data-cy="new-schedule"]').click();
+
+      cy.testSlugField('new-schedule', 'slug');
+    });
+
+    it('Name field validations', () => {
+      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+      cy.get('[data-cy="new-schedule"]').click();
+
+      cy.testNameField('new-schedule', 'name');
+    });
+
+    it('Description field validations', () => {
+      const inputSelector = `[data-cy="new-schedule-description"] textarea[required]`
+      const errorSelector = `[data-cy="new-schedule-description"] p`
+      const text = 'Lorem ipsum dolor sit amet consectetur adipiscing elit viverra massa hendrerit, penatibus fringilla eu nec conubia cras orci maecenas bibendum, donec vivamus netus ultricies sodales eros augue blandit sem. Sagittis lectus magnis tempor id purus aptent mi commodo molestie lacinia iaculis sodales, velit fringilla fusce pretium rutrum dignissim suscipit cras facilisis vel nisi, euismod consequat nisl facilisi placerat rhoncus leo aenean cum vestibulum gravida. Massa porttitor diam volutpat proin tristique feugiat phasellus habitasse per mus, laoreet ligula orci fringilla vivamus quis ridiculus felis.';
+
+      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+      cy.get('[data-cy="new-schedule"]').click();
+
+      cy.get(inputSelector).should('have.value', '');
+
+      cy.get(inputSelector).focus().clear();
+      cy.get(inputSelector).type(text).blur();
+      cy.get(inputSelector).should('have.value', text);
+      cy.get(errorSelector).should('have.text', 'Slug can\'t contains uppercase');
+
+
+      // cy.testNameField('new-schedule', 'name');
     });
   });
 });

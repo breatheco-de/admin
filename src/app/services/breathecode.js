@@ -21,6 +21,11 @@ class BreatheCodeClient {
         `${this.host}/admissions/syllabus/${pk}`,
         payload,
       ),
+      addSyllabus: (payload) => axios.bcPost(
+        'Syllabus',
+        `${this.host}/admissions/syllabus`,
+        payload,
+      ),
       updateSyllabusVersion: (pk, version, payload) => axios.bcPut(
         'Syllabus version',
         `${this.host}/admissions/syllabus/${pk}/version/${version}`,
@@ -142,6 +147,10 @@ class BreatheCodeClient {
       getAllTimeslotsBySchedule: (pk) => axios.bcGet(
         'Schedule timeslots',
         `${this.host}/admissions/academy/schedule/${pk}/timeslot`,
+      ),
+      deleteTimeslot: (scheduleId, timeslotId) => axios.bcDelete(
+        'Schedule timeslots',
+        `${this.host}/admissions/academy/schedule/${scheduleId}/timeslot/${timeslotId}`,
       ),
       getSingleCohortStudent: (cohortID, studentID) => axios.bcGet(
         'Single Cohort Student',

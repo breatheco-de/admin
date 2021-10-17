@@ -41,7 +41,7 @@ axiosInstance.bcDelete = function (...args) {
 };
 
 function printAxiosResponse(object) {
-  // return;
+  return;
   if (process.env.NODE_ENV === 'production') return;
 
   console.log('');

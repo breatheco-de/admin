@@ -103,6 +103,14 @@ Cypress.Commands.add('mockPutAdmissionsSyllabusIdResponse', () => {
   }).as('putAdmissionsSyllabusIdRequest');
 });
 
+Cypress.Commands.add('mockPostAdmissionsSyllabusResponse', () => {
+  cy.intercept(/\/v1\/admissions\/syllabus$/, {
+    fixture: 'admissions/syllabus.post.json',
+    method: 'POST',
+    statusCode: 201
+  }).as('postAdmissionsSyllabusRequest');
+});
+
 Cypress.Commands.add('mockGetAdmissionsSyllabusSlugResponse', () => {
   cy.intercept(/\/v1\/admissions\/syllabus\/[a-z-]+$/, {
     fixture: 'admissions/syllabus/slug.json',

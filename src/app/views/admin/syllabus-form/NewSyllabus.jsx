@@ -1,54 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Formik } from 'formik';
 import {
-  Avatar,
-  Button,
+  Grid,
   Card,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle,
-  Dialog,
+  Button,
 } from '@material-ui/core';
-import { Formik } from 'formik';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import bc from '../../../services/breathecode';
+import Field from '../../../components/Field';
+import { Breadcrumb } from '../../../../matx';
 
-const propTypes = {
-  user: PropTypes.string.isRequired,
-  stdId: PropTypes.number.isRequired,
-  openRoleDialog: PropTypes.number.isRequired,
-  setOpenRoleDialog: PropTypes.number.isRequired,
-};
+const NewSyllabus = () => {
+  const history = useHistory();
 
-const StudentDetails = ({
-  user, stdId, openRoleDialog, setOpenRoleDialog,
-}) => {
-  const initialValues = {
-//    first_name: user?.first_name,
+  const addSyllabus = async (values, { setSubmitting }) => {
+    try {
+      const response = await bc.admissions().addSyllabus(values);
+      if (response.status === 201) {
+        setSubmitting(false);
+        history.push('/admin/syllabus');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  const [roleDialog, setRoleDialog] = useState(false);
-  // const [role, setRole] = useState('');
 
   const validateSlug = (values) => {
     if (!values.slug) return '';
     if (/ /.test(values.slug)) return 'Slug can\'t contains spaces';
+    if (/[A-Z]/.test(values.slug)) return 'Slug can\'t contains uppercase';
     if (/[^a-zA-Z0-9-]+/.test(values.slug)) return 'Slug can\'t contains symbols';
     if (/-$/.test(values.slug)) return 'Slug can\'t end with (-)';
-    if (!/^[a-z\-]+$/.test(values.slug)) return 'Invalid slug';
+    if (!/^[a-z0-9-]+$/.test(values.slug)) return 'Invalid slug';
     return '';
   };
 
   const validateName = (values) => {
     if (!values.name) return '';
-    if (/[^a-zA-Z0-9 ]+/.test(values.name)) return 'Name can\'t contains symbols';
-    if (!/^[a-zA-Z ]+$/.test(values.name)) return 'Invalid name';
+    if (/[^a-zA-Z0-9 -]+/.test(values.name)) return 'Name can\'t contains symbols';
+    if (!/^[a-zA-Z0-9 -]+$/.test(values.name)) return 'Invalid name';
+    return '';
+  };
+
+  const validateDurationInHours = (values) => {
+    if (values.duration_in_hours === '') return '';
+    if (values.duration_in_hours === 0) return 'Total hours can\'t be equat to 0';
+    if (values.duration_in_hours < 0) return 'Total hours can\'t be equat less that 0';
+    return '';
+  };
+
+  const validateWeekHours = (values) => {
+    if (values.week_hours === '') return '';
+    if (values.week_hours === 0) return 'Weekly hours can\'t be equat to 0';
+    if (values.week_hours < 0) return 'Weekly hours can\'t be equat less that 0';
+    return '';
+  };
+
+  const validateDurationInDays = (values) => {
+    if (values.duration_in_days === '') return '';
+    if (values.duration_in_days === 0) return 'Total days can\'t be equat to 0';
+    if (values.duration_in_days < 0) return 'Total days can\'t be equat less that 0';
     return '';
   };
 
@@ -58,62 +70,72 @@ const StudentDetails = ({
     return '';
   };
 
+  const validateLogo = (values) => {
+    const urlPattern = /^https?:\/\/(www.)?(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])\//gm;
+    if (!values.logo) return '';
+    if (!urlPattern.test(values.logo)) return 'Invalid logo url';
+
+    // here should implement a service that check if url exist using head method
+    // this should be implement in the backend
+
+    return '';
+  };
+
   const validate = (values) => {
     const errors = {};
 
-    errors.slug = validateSlug(values);
-    errors.name = validateName(values);
-    errors.github_url = validateGithubUrl(values);
+    const slugError = validateSlug(values);
+    if (slugError) errors.slug = slugError;
+
+    const nameError = validateName(values);
+    if (nameError) errors.name = nameError;
+
+    const durationInHoursError = validateDurationInHours(values);
+    if (durationInHoursError) errors.duration_in_hours = durationInHoursError;
+
+    const weekHoursError = validateWeekHours(values);
+    if (weekHoursError) errors.week_hours = weekHoursError;
+
+    const durationInDaysError = validateDurationInDays(values);
+    if (durationInDaysError) errors.duration_in_days = durationInDaysError;
+
+    const githubUrlError = validateGithubUrl(values);
+    if (githubUrlError) errors.github_url = githubUrlError;
+
+    const LogoError = validateLogo(values);
+    if (LogoError) errors.logo = LogoError;
 
     return errors;
   };
 
-  const capitalizeTheFirstLetter = (words) => words.replace(/(\w+)/g, (v, captureGroup) => {
-    const firstLetter = captureGroup.slice(0, 1).toUpperCase();
-    const restOfLetters = captureGroup.slice(1, captureGroup.length).toLowerCase();
-    return firstLetter + restOfLetters;
-  });
-
-  const Field = ({
-    values, errors, handleChange, handleBlur, name, label, placeholder, type, required
-  }) => {
-    const fieldName = name.toLowerCase().replace(' ', '_');
-    const labelText = label || capitalizeTheFirstLetter(name);
-    return (
-      <TableRow>
-        <TableCell className="pl-4">{labelText}</TableCell>
-        <TableCell>
-          <TextField
-            type={type}
-            name={fieldName}
-            data-cy={fieldName}
-            placeholder={placeholder}
-            size="small"
-            variant="outlined"
-            value={values[fieldName]}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors[fieldName]}
-            error={errors[fieldName]}
-            required
-          />
-        </TableCell>
-      </TableRow>
-    );
-  };
-
   return (
-    <Card className="pt-6" elevation={3}>
-      <Formik
-        initialValues={{ slug: '', name: '' }}
-        validate={validate}
-      >
-        {({
-          values, errors, handleChange, handleBlur, handleSubmit,
-        }) => (
-          <form className="p-4" onSubmit={handleSubmit}>
-            <Table className="mb-4">
-              <TableBody>
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <Breadcrumb
+          routeSegments={[
+            { name: 'Admin', path: '/admin' },
+            { name: 'Cohort', path: '/admin/syllabus' },
+            { name: 'New Syllabus' },
+          ]}
+        />
+      </div>
+
+      <Card elevation={3}>
+        <div className="flex p-4">
+          <h4 className="m-0">Add a New Syllabus</h4>
+        </div>
+        <Divider className="mb-2" />
+
+        <Formik
+          initialValues={{}}
+          validate={validate}
+          onSubmit={addSyllabus}
+        >
+          {({
+            handleSubmit, isSubmitting, values, errors, handleChange, handleBlur,
+          }) => (
+            <form className="p-4" onSubmit={handleSubmit}>
+              <Grid container spacing={3} alignItems="center">
                 <Field
                   type="text"
                   name="Slug"
@@ -176,47 +198,28 @@ const StudentDetails = ({
                   placeholder="https://github.com/user/repo"
                   handleChange={handleChange}
                   handleBlur={handleBlur}
-                  required
                 />
-              </TableBody>
-            </Table>
-            <div className="flex-column items-start px-4 mb-4">
-              <Button color="primary" variant="contained" type="submit">
-                Save Syllabus Details
-              </Button>
-            </div>
-          </form>
-        )}
-      </Formik>
-      <Dialog
-        onClose={() => {
-          setRoleDialog(false);
-          setOpenRoleDialog(false);
-        }}
-        open={roleDialog || openRoleDialog}
-        aria-labelledby="simple-dialog-title"
-      >
-        <DialogTitle id="simple-dialog-title">Change Syllabus Visibility</DialogTitle>
-        <List>
-          {['Private', 'Public']?.map((slug) => (
-            <ListItem
-              button
-              onClick={() => {
-                updateRole(slug);
-                setRoleDialog(false);
-                setOpenRoleDialog(false);
-              }}
-              key={slug}
-            >
-              <ListItemText primary={slug} />
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
-    </Card>
+                <Field
+                  type="text"
+                  name="logo"
+                  values={values}
+                  errors={errors}
+                  placeholder="https://storage.googleapis.com/bucket/filename"
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                />
+              </Grid>
+              <div className="flex-column items-start px-4 mb-4">
+                <Button color="primary" variant="contained" type="submit" data-cy="submit" disabled={isSubmitting}>
+                  Create
+                </Button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </Card>
+    </div>
   );
 };
 
-StudentDetails.propTypes = propTypes;
-
-export default StudentDetails;
+export default NewSyllabus;
