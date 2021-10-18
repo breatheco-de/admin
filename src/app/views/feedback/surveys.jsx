@@ -12,15 +12,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { addHours } from 'date-fns'
-import { Breadcrumb } from '../../../matx';
+import { addHours } from 'date-fns';
 import bc from 'app/services/breathecode';
-import {SmartMUIDataTable} from '../../components/SmartDataTable';
 import { toast } from 'react-toastify';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 
 toast.configure();
 const toastOption = {
@@ -293,9 +293,7 @@ const EventList = () => {
             )}
           </div>
         </div>
-      </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+        <div className="overflow-auto">
           <SmartMUIDataTable
             title="All Surveys"
             columns={columns}

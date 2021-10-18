@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Breadcrumb } from 'matx';
-import bc from '../../services/breathecode';
-import { Icon, IconButton, Tooltip, Chip,
+import {
+  Icon, IconButton, Tooltip, Chip,
   DialogTitle,
   Dialog,
   Button,
-  DialogActions, } from '@material-ui/core';
+  DialogActions,
+} from '@material-ui/core';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from "../../components/SmartDataTable"
 import { useHistory } from 'react-router-dom';
-import { openDialog } from 'app/redux/actions/DialogActions';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import bc from '../../services/breathecode';
+
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
-
 
 const stageColors = {
   // INACTIVE: 'gray',
@@ -26,7 +27,7 @@ const stageColors = {
 
 const Leads = () => {
   const [items, setItems] = useState([]);
-  const [openDialog, setOpenDialog] = useState({msg: "", open: false, onSuccess: null });
+  const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const history = useHistory();
 
   const columns = [
@@ -79,7 +80,7 @@ const Leads = () => {
         filterType: 'multiselect',
         customBodyRenderLite: (dataIndex) => (
           <span
-            className={`ellipsis`}
+            className="ellipsis"
           >
             {items[dataIndex].course
               ? items[dataIndex].course
@@ -105,11 +106,13 @@ const Leads = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          return <Chip
-            size="small"
-            label={item.user ? "Added" : "Not added"}
-            color={stageColors[item.user ? "added" : "not_added"]}
-          />
+          return (
+            <Chip
+              size="small"
+              label={item.user ? 'Added' : 'Not added'}
+              color={stageColors[item.user ? 'added' : 'not_added']}
+            />
+          );
         },
       },
     },
@@ -120,38 +123,44 @@ const Leads = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          return <div className="flex items-center">
+          return (
+            <div className="flex items-center">
               <div className="flex-grow" />
-              {item.user == null && <Tooltip title="Invite to 4Geeks">
+              {item.user == null && (
+              <Tooltip title="Invite to 4Geeks">
                 <IconButton onClick={async () => {
-                    const resp = await bc.auth().getAcademyMember(item.email)
-                    if(resp.headers['content-type'] == "application/json"){
-                      if(resp.status === 404){
-                        setOpenDialog({ 
-                          open: true,  
-                          msg: 'There is no member with this email, would you like to invite it to the academy?', 
-                          onSuccess: () => {
-                            history.push(`/admissions/students/new?data=${btoa(JSON.stringify({ email: item.email, first_name: item.first_name, last_name: item.last_name, phone: item.phone }))}`)
-                          }
-                        })
-                      }
-                      else if(resp.status === 200){
-                        setOpenDialog({ 
-                          msg: 'Please choose a cohort for this user', 
-                          open: true,
-                        })
-                      }
+                  const resp = await bc.auth().getAcademyMember(item.email);
+                  if (resp.headers['content-type'] == 'application/json') {
+                    if (resp.status === 404) {
+                      setOpenDialog({
+                        open: true,
+                        msg: 'There is no member with this email, would you like to invite it to the academy?',
+                        onSuccess: () => {
+                          history.push(`/admissions/students/new?data=${btoa(JSON.stringify({
+                            email: item.email, first_name: item.first_name, last_name: item.last_name, phone: item.phone,
+                          }))}`);
+                        },
+                      });
+                    } else if (resp.status === 200) {
+                      setOpenDialog({
+                        msg: 'Please choose a cohort for this user',
+                        open: true,
+                      });
                     }
-                }}>
+                  }
+                }}
+                >
                   <Icon>person_add</Icon>
                 </IconButton>
-              </Tooltip>}
+              </Tooltip>
+              )}
               <Tooltip title="More details">
                 <IconButton onClick={() => item.user && history.push(`/admissions/students/${item.user.id}`)}>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
               </Tooltip>
             </div>
+          );
         },
       },
     },
@@ -171,29 +180,27 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div>
         <SmartMUIDataTable
-            title="Won leads sorted by creation date"
-            columns={columns}
-            items={items}
-            search={async (querys) => {
-              const { data } = await bc.marketing().getAcademyLeads({ deal_status: "won", ...querys });
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStudentBulk(querys);
-              return status;
-            }}
-          />
-        </div>
+          title="Won leads sorted by creation date"
+          columns={columns}
+          items={items}
+          search={async (querys) => {
+            const { data } = await bc.marketing().getAcademyLeads({ deal_status: 'won', ...querys });
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc
+              .admissions()
+              .deleteStudentBulk(querys);
+            return status;
+          }}
+        />
       </div>
       <Dialog
         open={openDialog.open}
-        onClose={() => setOpenDialog({ msg: "", open: false })}
+        onClose={() => setOpenDialog({ msg: '', open: false })}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -201,7 +208,7 @@ const Leads = () => {
           {openDialog.msg}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={() => setOpenDialog({ msg: "", open: false })} color="primary">
+          <Button onClick={() => setOpenDialog({ msg: '', open: false })} color="primary">
             Disagree
           </Button>
           <Button color="primary" autoFocus onClick={() => openDialog.onSuccess && openDialog.onSuccess()}>
