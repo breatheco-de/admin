@@ -96,31 +96,56 @@ class BreatheCodeClient {
           : '';
         return axios._get(
           'Cohorts',
-          `${this.host}/admissions/academy/cohort${query ? `?${qs}` : ''}`,
+          `${this.host}/admissions/academy/cohort${query ? '?' + qs : ''}`
         );
       },
-      getReport: (query) => axios._get('Report', `${this.host}/admissions/report`),
-      getAllCourseSyllabus: (query) => axios._get(
-        'Syllabus',
-        `${this.host}/admissions/syllabus/${query}/version`,
-      ),
-      getAllRelatedCertificates: (query) => axios._get(
-        'Certificates',
-        `${this.host}/admissions/syllabus?syllabus_slug=${query}`,
-      ),
-      getAllRelatedCertificatesById: (query) => axios._get(
-        'Certificates',
-        `${this.host}/admissions/syllabus?syllabus_id=${query}`,
-      ),
-      getAllRelatedSchedulesById: (query) => axios._get(
-        'Certificates',
-        `${this.host}/admissions/schedule?syllabus_id=${query}`,
-      ),
-      getSingleCohortStudent: (cohortID, studentID) => axios._get(
-        'Single Cohort Student',
-        `${this.host}/admissions/academy/cohort/${cohortID}/user/${studentID}`,
-      ),
-      getMyAcademy: () => axios._get('My Academy', `${this.host}/admissions/academy/me`),
+      getAllAcademySyllabus: () => {
+        const qs =
+          query !== undefined
+            ? Object.keys(query)
+                .map((key) => `${key}=${query[key]}`)
+                .join('&')
+            : '';
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus${query ? '?' + qs : ''}`
+        );
+      },
+      getReport: (query) => {
+        return axios._get('Report', `${this.host}/admissions/report`);
+      },
+      getAllCourseSyllabus: (query) => {
+        return axios._get(
+          'Syllabus',
+          `${this.host}/admissions/syllabus/${query}/version`
+        );
+      },
+      getAllRelatedCertificates: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/syllabus?syllabus_slug=${query}`
+        );
+      },
+      getAllRelatedCertificatesById: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/syllabus?syllabus_id=${query}`
+        );
+      },
+      getAllRelatedSchedulesById: (query) => {
+        return axios._get(
+          'Certificates',
+          `${this.host}/admissions/schedule?syllabus_id=${query}`
+        );
+      },
+      getSingleCohortStudent: (cohortID, studentID) => {
+        return axios._get(
+          'Single Cohort Student',
+          `${this.host}/admissions/academy/cohort/${cohortID}/user/${studentID}`
+        );
+      },
+      getMyAcademy: () =>
+        axios._get('My Academy', `${this.host}/admissions/academy/me`),
 
       getTemporalToken: (member) => axios._post(
         'Token Temporal',
@@ -248,19 +273,31 @@ class BreatheCodeClient {
           .join('&');
         return axios._get(
           'Academy answers',
-          `${this.host}/feedback/academy/answer?${qs}`,
+          `${this.host}/feedback/academy/answer?${qs}`
         );
       },
-      addNewSurvey: (newSurvey) => axios._post(
-        'New Survey',
-        `${this.host}/feedback/academy/survey`,
-        newSurvey,
-      ),
-      updateSurvey: (survey, id) => axios._put(
-        'Survey',
-        `${this.host}/feedback/academy/survey/${id}`,
-        survey,
-      ),
+      getReviews: (query) => {
+        // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+        const qs = Object.keys(query)
+          .map((key) => `${key}=${query[key]}`)
+          .join('&');
+        return axios._get(
+          'Academy answers',
+          `${this.host}/feedback/academy/review?${qs}`
+        );
+      },
+      addNewSurvey: (newSurvey) =>
+        axios._post(
+          'New Survey',
+          `${this.host}/feedback/academy/survey`,
+          newSurvey
+        ),
+      updateSurvey: (survey, id) =>
+        axios._put(
+          'Survey',
+          `${this.host}/feedback/academy/survey/${id}`,
+          survey
+        ),
       getSurveys: (query) => {
         const qs = query !== undefined
           ? Object.keys(query)

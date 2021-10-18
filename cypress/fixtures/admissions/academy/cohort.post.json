@@ -1,0 +1,23 @@
+{
+  "id": 259,
+  "slug": "defence-against-the-dark-arts",
+  "name": "Defence Against the Dark Arts",
+  "kickoff_date": "2021-09-23T05:23:50.936000Z",
+  "current_day": 0,
+  "academy": {
+    "id": 4,
+    "slug": "downtown-miami",
+    "name": "4Geeks Academy Miami",
+    "street_address": "1801 SW 3rd Ave #100, Miami, FL 33129",
+    "country": "us",
+    "city": 3
+  },
+  "specialty_mode": null,
+  "syllabus_version": "full-stack-ft.v1",
+  "ending_date": null,
+  "stage": "INACTIVE",
+  "language": "en",
+  "created_at": "2021-09-23T05:24:31.154722Z",
+  "updated_at": "2021-09-23T05:24:31.154735Z",
+  "never_ends": true
+}

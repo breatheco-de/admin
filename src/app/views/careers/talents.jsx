@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { Breadcrumb } from 'matx';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
-  Avatar,
-  Icon,
-  IconButton,
-  Button,
-  Tooltip,
+  Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
-import InviteDetails from 'app/components/InviteDetails';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import InviteDetails from '../../components/InviteDetails';
+import bc from '../../services/breathecode';
+import AddBulkToCohort from './talent-form/talent-utils/AddBulkToCohort';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -21,17 +18,15 @@ const statusColors = {
   INVITED: 'text-white bg-error',
   ACTIVE: 'text-white bg-green',
 };
-const roleColors = {
-  admin: 'text-black bg-gray',
-};
 
 const name = (user) => {
   if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
 
-const Staff = () => {
-  const [userList, setUserList] = useState([]);
+const Students = () => {
+  const [items, setItems] = useState([]);
+
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)
@@ -46,13 +41,15 @@ const Staff = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { user } = userList[dataIndex];
+          const { user, ...rest } = items[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{name(user)}</h5>
-                <small className="text-muted">{user?.email}</small>
+                <h5 className="my-0 text-15">
+                  {user !== null ? name(user) : `${rest.first_name} ${rest.last_name}`}
+                </h5>
+                <small className="text-muted">{user?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -67,28 +64,11 @@ const Staff = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
             </div>
           </div>
         ),
-      },
-    },
-    {
-      name: 'role',
-      label: 'Role',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
-          return (
-            <small
-              className={`border-radius-4 px-2 pt-2px ${roleColors[item.role.slug] || 'bg-light'}`}
-            >
-              {item.role.name.toUpperCase()}
-            </small>
-          );
-        },
       },
     },
     {
@@ -97,7 +77,7 @@ const Staff = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
+          const item = items[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -119,10 +99,10 @@ const Staff = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex].user !== null
-            ? userList[dataIndex]
+          const item = items[dataIndex].user !== null
+            ? items[dataIndex]
             : {
-              ...userList[dataIndex],
+              ...items[dataIndex],
               user: {
                 first_name: '',
                 last_name: '',
@@ -143,7 +123,7 @@ const Staff = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admin/staff/${item.user.id}`}>
+              <Link to={`/admissions/students/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -162,36 +142,44 @@ const Staff = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Staff' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Students' }]} />
           </div>
 
           <div className="">
-            <Link to="/admin/staff/new">
+            <Link to="/admissions/students/new">
               <Button variant="contained" color="primary">
-                Add new staff member
+                Add new student
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div>
-        <SmartMUIDataTable
-            title="All Staff"
+      <div className="overflow-auto">
+        <div className="min-w-750">
+          <SmartMUIDataTable
+            title="All Students"
             columns={columns}
-            items={userList}
-            view="staff?"
+            items={items}
+            view="student?"
+            historyReplace="/admissions/students"
             singlePage=""
-            historyReplace="/admin/staff"
+            options={{
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+                <AddBulkToCohort
+                  selectedRows={selectedRows}
+                  displayData={displayData}
+                  setSelectedRows={setSelectedRows}
+                  items={items}
+                />
+              ),
+            }}
             search={async (querys) => {
-              const { data } = await bc.auth().getAcademyMembers(querys);
-              console.log("academy members")
-              setUserList(data.results);
+              const { data } = await bc.auth().getAcademyStudents(querys);
+              setItems(data.results);
               return data;
             }}
             deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStaffBulk(querys);
+              const { status } = await bc.admissions().deleteStudentBulk(querys);
               return status;
             }}
           />
@@ -201,4 +189,4 @@ const Staff = () => {
   );
 };
 
-export default Staff;
+export default Students;

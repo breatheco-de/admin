@@ -7,6 +7,11 @@ const routes = [
     component: React.lazy(() => import('./answers')),
   },
   {
+    path: '/feedback/reviews',
+    exact: true,
+    component: React.lazy(() => import('./reviews')),
+  },
+  {
     path: '/feedback/surveys',
     exact: true,
     component: React.lazy(() => import('./surveys')),
