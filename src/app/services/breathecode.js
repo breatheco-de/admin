@@ -63,31 +63,45 @@ class BreatheCodeClient {
         const qs = query.join(',');
         return axios._delete(
           'Certificates',
-          `${this.host}/certificate/?id=${qs}`,
+          `${this.host}/certificate/?id=${qs}`
         );
       },
-      getCohort: (cohort) => axios._get(
-        'Cohort',
-        `${this.host}/admissions/academy/cohort/${cohort}`,
-      ),
-      updateCohort: (cohort, payload) => axios._put(
-        'Cohort',
-        `${this.host}/admissions/academy/cohort/${cohort}`,
-        payload,
-      ),
-      addCohort: (payload) => axios._post(
-        'Cohort',
-        `${this.host}/admissions/academy/cohort`,
-        payload,
-      ),
-      getCertificates: () => axios._get('Certificates', `${this.host}/admissions/syllabus`),
-      getAllSyllabus: () => axios._get('Syllabus', `${this.host}/admissions/syllabus`),
-      getSyllabus: (query) =>
+      getCohort: (cohort) => {
+        return axios._get(
+          'Cohort',
+          `${this.host}/admissions/academy/cohort/${cohort}`
+        );
+      },
+      updateCohort: (cohort, payload) => {
+        return axios._put(
+          'Cohort',
+          `${this.host}/admissions/academy/cohort/${cohort}`,
+          payload
+        );
+      },
+      addCohort: (payload) => {
+        return axios._post(
+          'Cohort',
+          `${this.host}/admissions/academy/cohort`,
+          payload
+        );
+      },
+      getCertificates: () => {
+        return axios._get('Certificates', `${this.host}/admissions/syllabus`);
+      },
+      getAllSyllabus: () => {
+        return axios._get('Syllabus', `${this.host}/admissions/syllabus`);
+      },
+      getAllTimeZone: () => {
+        return axios._get('TimeZone', `${this.host}/admissions/catalog/timezones`);
+      },
+      getSyllabus: (query) => {
         // id or slug
-        axios._get(
+      return axios._get(
           'Syllabus',
           `${this.host}/admissions/syllabus/${query}`,
-        ),
+        )
+      },
       getAllCohorts: (query) => {
         const qs = query !== undefined
           ? Object.keys(query)

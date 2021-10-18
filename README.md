@@ -18,3 +18,7 @@ npm install --g --production windows-build-tools
 ## Runing the tests
 
 This section is under development.
+
+## for nvm problems 
+use:
+npm --build-from-source install node-pre-gyp
