@@ -10,8 +10,8 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from 'app/services/breathecode';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import AnswerStatus from '../../components/AnswerStatus';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -45,7 +45,6 @@ const Answers = () => {
       slug: '',
     },
   });
-
 
   const columns = [
     {
@@ -180,24 +179,22 @@ const Answers = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          <SmartMUIDataTable
-            title="All Answers"
-            columns={columns}
-            items={items}
-            view="answers?"
-            historyReplace="/feedback/answers"
-            singlePage=""
-            search={async (querys) => {
-              const { data } = await bc.feedback().getAnswers(querys);
-              setItems(data.results);
-              return data;
-            }}
-          />
-        </div>
+      <div>
+        <SmartMUIDataTable
+          title="All Answers"
+          columns={columns}
+          items={items}
+          view="answers?"
+          historyReplace="/feedback/answers"
+          singlePage=""
+          search={async (querys) => {
+            const { data } = await bc.feedback().getAnswers(querys);
+            setItems(data.results);
+            return data;
+          }}
+        />
       </div>
-    <AnswerStatus answer={answer} handleClose={handleClose} open={open}/>
+      <AnswerStatus answer={answer} handleClose={handleClose} open={open} />
     </div>
   );
 };

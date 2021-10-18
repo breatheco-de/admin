@@ -119,7 +119,7 @@ export const SmartMUIDataTable = (props) => {
       options={{
         download: false,
         filterType: 'textField',
-        responsive: 'standard',
+        responsive: 'vertical',
         serverSide: true,
         elevation: 0,
         count: table.count,
@@ -210,24 +210,22 @@ export const SmartMUIDataTable = (props) => {
           );
         },
 
-        onTableChange: (action, tableState) => {
-          switch (action) {
-            case 'changePage':
+          onColumnSortChange: (changedColumn, direction) => {
+            if (direction == 'asc') {
               handlePageChange(
-                tableState.page,
-                tableState.rowsPerPage,
+                querys.offset,
+                querys.limit,
                 querys.like,
-                querys.sort,
+                changedColumn,
               );
-              break;
-            case 'changeRowsPerPage':
+            }
+            if (direction == 'desc') {
               handlePageChange(
-                tableState.page,
-                tableState.rowsPerPage,
+                querys.offset,
+                querys.limit,
                 querys.like,
-                querys.sort,
+                `-${changedColumn}`,
               );
-              break;
           }
         },
         customFilterDialogFooter: () => (
