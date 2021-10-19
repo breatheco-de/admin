@@ -4,15 +4,26 @@ const moment = require('moment');
 
 describe('/admin/syllabus/:slug', () => {
   beforeEach(() => {
-    cy.auth();
+    // cy.auth();
 
-    cy.mockGetAdmissionsSyllabusSlugResponse();
-    // cy.mockGetAdmissionsSyllabusResponse();
-    // cy.mockGetAdmissionsSyllabusVersionResponse();
-    // cy.mockPostAdmissionsAcademyCohortResponse();
-    cy.mockGetAdmissionsScheduleResponse();
-    // cy.mockGetPaginatedAdmissionsAcademyCohortResponse();
-    cy.mockPutAdmissionsSyllabusIdResponse();
+    cy.mock().then(({ breathecode }) => {
+      // auth
+      breathecode.auth.getAuthLogin();
+      breathecode.admissions.putAcademyCohortId();
+
+      // mock requests
+      breathecode.admissions.getSyllabusSlug();
+      breathecode.admissions.getSchedule();
+      breathecode.admissions.putSyllabusId();
+    });
+
+    // cy.mockGetAdmissionsSyllabusSlugResponse();
+    // // cy.mockGetAdmissionsSyllabusResponse();
+    // // cy.mockGetAdmissionsSyllabusVersionResponse();
+    // // cy.mockPostAdmissionsAcademyCohortResponse();
+    // cy.mockGetAdmissionsScheduleResponse();
+    // // cy.mockGetPaginatedAdmissionsAcademyCohortResponse();
+    // cy.mockPutAdmissionsSyllabusIdResponse();
 
     cy.visit('/admin/syllabus/full-stack-ft');
   });
@@ -155,7 +166,7 @@ describe('/admin/syllabus/:slug', () => {
       // cy.location('pathname').should('eq', '/admissions/cohorts');
     });
   });
-  context('Schedule Form', () => {
+  context.skip('Schedule Form', () => {
     // cy.location('pathit(')
     it('Schedule label', () => {
       cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
@@ -178,7 +189,7 @@ describe('/admin/syllabus/:slug', () => {
     it('Description field validations', () => {
       const inputSelector = `[data-cy="new-schedule-description"] textarea[required]`
       const errorSelector = `[data-cy="new-schedule-description"] p`
-      const text = 'Lorem ipsum dolor sit amet consectetur adipiscing elit viverra massa hendrerit, penatibus fringilla eu nec conubia cras orci maecenas bibendum, donec vivamus netus ultricies sodales eros augue blandit sem. Sagittis lectus magnis tempor id purus aptent mi commodo molestie lacinia iaculis sodales, velit fringilla fusce pretium rutrum dignissim suscipit cras facilisis vel nisi, euismod consequat nisl facilisi placerat rhoncus leo aenean cum vestibulum gravida. Massa porttitor diam volutpat proin tristique feugiat phasellus habitasse per mus, laoreet ligula orci fringilla vivamus quis ridiculus felis.';
+      const text = 'Lorem ipsum dolor sit amet consectetur adipiscing elit viverra massa hendrerit, penatibus fringilla eu nec conubia cras orci maecenas bibendum.';
 
       cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
       cy.get('[data-cy="new-schedule"]').click();
@@ -193,5 +204,44 @@ describe('/admin/syllabus/:slug', () => {
 
       // cy.testNameField('new-schedule', 'name');
     });
+  });
+
+  context('Timeslot Form', () => {
+    // cy.location('pathit(')
+    it('Schedule label', () => {
+      cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
+    });
+
+    // it('Slug field validations', () => {
+    //   cy.get('[data-cy="new-timeslot-4"]').should('have.text', 'New schedule');
+    //   cy.get('[data-cy="new-timeslot-4"]').click();
+
+    //   cy.testSlugField('new-timeslot-4', 'slug');
+    // });
+
+    // it('Name field validations', () => {
+    //   cy.get('[data-cy="new-timeslot-4"]').should('have.text', 'New schedule');
+    //   cy.get('[data-cy="new-timeslot-4"]').click();
+
+    //   cy.testNameField('new-timeslot-4', 'name');
+    // });
+
+    // it('Description field validations', () => {
+    //   const inputSelector = `[data-cy="new-timeslot-4-description"] textarea[required]`
+    //   const errorSelector = `[data-cy="new-timeslot-4-description"] p`
+    //   const text = 'Lorem ipsum dolor sit amet consectetur adipiscing elit viverra massa hendrerit, penatibus fringilla eu nec conubia cras orci maecenas bibendum.';
+
+    //   // cy.get('[data-cy="new-timeslot-4"]').should('have.text', 'New schedule');
+    //   cy.get('[data-cy="new-timeslot-4"]').click();
+
+    //   cy.get(inputSelector).should('have.value', '');
+
+    //   cy.get(inputSelector).focus().clear();
+    //   cy.get(inputSelector).type(text).blur();
+    //   cy.get(inputSelector).should('have.value', text);
+    //   cy.get(errorSelector).should('have.text', 'Slug can\'t contains uppercase');
+
+    //   // cy.testNameField('new-schedule', 'name');
+    // });
   });
 });

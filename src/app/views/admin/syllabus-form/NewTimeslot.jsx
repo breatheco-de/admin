@@ -9,9 +9,11 @@ import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import bc from '../../../services/breathecode';
-import ScheduleDetails from './ScheduleDetails';
 import { capitalizeEachFirstLetter, schemas } from '../../../utils';
 import Field from '../../../components/Field';
+import Date from '../../../components/Date';
+import Time from '../../../components/Time';
+import ScheduleDetails from './ScheduleDetails';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -37,17 +39,36 @@ const schema = Yup.object().shape({
   slug: schemas.slug,
   starting_hour: Yup.string().required().matches(/\d{1,2}:\d{2}/, 'Invalid hour'),
   ending_hour: Yup.string().required().matches(/\d{1,2}:\d{2}/, 'Invalid hour'),
-  starting_date: Yup.date().required(),
-  ending_date: Yup.date().required(),
+  starting_date: Yup.string().required(),
+  ending_date: Yup.string().required(),
   recurrent: Yup.bool().required(),
   recurrent_type: Yup.mixed().oneOf(recurrentTypes).required(),
 });
 
 const NewTimeslot = ({ isOpen, setIsOpen }) => {
   const classes = useStyles();
+  const initialValues = {
+    slug: '',
+    starting_date: '',
+    starting_hour: '',
+    ending_date: '',
+    ending_hour: '',
+  };
 
   const saveSchedule = (values) => {
     //
+  };
+
+  const validate = (values) => {
+    const errors = {};
+
+    if (!values.slug) errors.slug = 'Slug is required';
+    if (!values.starting_date) errors.starting_date = 'Starting date is required';
+    if (!values.starting_hour) errors.starting_hour = 'Starting hour is required';
+    if (!values.ending_date) errors.ending_date = 'Ending date is required';
+    if (!values.ending_hour) errors.ending_hour = 'Ending hour is required';
+
+    return errors;
   };
 
   return (
@@ -58,9 +79,10 @@ const NewTimeslot = ({ isOpen, setIsOpen }) => {
     >
       <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
       <Formik
-        initialValues={{}}
+        initialValues={initialValues}
         // enableReinitialize
-        validationSchema={schema}
+        // validationSchema={schema}
+        validate={validate}
         onSubmit={(values) => {
           saveSchedule(values);
           setIsOpen(false);
@@ -75,74 +97,43 @@ const NewTimeslot = ({ isOpen, setIsOpen }) => {
                 form="new-schedule"
                 type="text"
                 name="Slug"
-                values={values}
-                errors={errors}
-                touched={touched}
                 placeholder="full-stack-pt"
-                handleChange={handleChange}
-                handleBlur={handleBlur}
                 required
                 dialog
               />
-              {/* <Field
-                type="text"
-                name="Slug"
-                values={values}
-                errors={errors}
-                touched={touched}
-                placeholder="full-stack-pt"
-                handleChange={handleChange}
-                handleBlur={handleBlur}
+              <Date
+                form="new-schedule"
+                name="starting_date"
+                label="Starting date"
+                // placeholder="full-stack-pt"
+                disablePast
                 required
                 dialog
               />
-              <Field
-                type="text"
-                name="Slug"
-                values={values}
-                errors={errors}
-                touched={touched}
-                placeholder="full-stack-pt"
-                handleChange={handleChange}
-                handleBlur={handleBlur}
+              <Date
+                form="new-schedule"
+                name="ending_date"
+                label="Ending date"
+                // placeholder="full-stack-pt"
+                disablePast
                 required
                 dialog
-              /> */}
-              <DialogContentText className={classes.dialogue}>Select a stage:</DialogContentText>
-              <TextField
-                select
-                className={classes.select}
-                label="Stage"
-                name="stage"
-                size="small"
-                variant="outlined"
-                // defaultValue={cohort.stage}
-                // onChange={(e) => {
-                //   setStage(e.target.value);
-                // }}
-              >
-                {recurrentTypes.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {capitalizeEachFirstLetter(option)}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <DialogContentText className={classes.dialogue}>
-                Select a current day:
-              </DialogContentText>
-              <TextField
-                error={errors.current_day && touched.current_day}
-                helperText={touched.current_day && errors.current_day}
-                type="number"
-                name="current_day"
-                size="small"
-                variant="outlined"
-                // handleChange={handleChange}
-                // handleBlur={handleBlur}
-                // value={stage === 'ENDED' ? maxSyllabusDays : currentDay}
-                // onChange={(e) => {
-                //   setCurrentDay(e.target.value);
-                // }}
+              />
+              <Time
+                form="new-schedule"
+                name="starting_hour"
+                label="Starting hour"
+                // placeholder="full-stack-pt"
+                required
+                dialog
+              />
+              <Time
+                form="new-schedule"
+                name="ending_hour"
+                label="Ending hour"
+                // placeholder="full-stack-pt"
+                required
+                dialog
               />
             </DialogContent>
             <DialogActions className={classes.button}>

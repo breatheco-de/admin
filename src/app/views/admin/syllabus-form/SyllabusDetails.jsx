@@ -64,6 +64,8 @@ const schema = Yup.object().shape({
 });
 
 const StudentDetails = ({ syllabus, onSubmit }) => {
+  // TODO: remove this console.log
+  console.log();
   return (
     <Card className="pt-6" elevation={3}>
       <Formik

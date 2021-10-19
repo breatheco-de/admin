@@ -19,9 +19,11 @@ import {
 import bc from '../../../services/breathecode';
 import moment from 'moment';
 import TimeslotDetails from './TimeslotDetails';
+import NewTimeslot from './NewTimeslot';
 
 const ScheduleDetails = ({ schedule }) => {
   const [timeslots, setTimeslots] = useState([]);
+  const [newTimeslotIsOpen, setNewTimeslotIsOpen] = useState(false);
 
   const fetchTimeslots = async () => {
     try {
@@ -44,15 +46,23 @@ const ScheduleDetails = ({ schedule }) => {
   };
 
   return (
-    <Card className="p-4">
-      <h5 className="m-0 font-medium pb-4">{schedule?.name}:</h5>
-      {timeslots.map((v) => (
-        <TimeslotDetails key={`timeslot-${v.id}`} timeslot={v} deleteTimeslot={deleteTimeslot} />
-      ))}
-      <IconButton>
-        <Icon fontSize="small">add_circle</Icon>
-      </IconButton>
-    </Card>
+    <>
+      <Card className="p-4">
+        <h5 className="m-0 font-medium pb-4">
+          {schedule?.name}
+          :
+        </h5>
+        {timeslots.map((v) => (
+          <TimeslotDetails key={`timeslot-${v.id}`} timeslot={v} deleteTimeslot={deleteTimeslot} />
+        ))}
+        <IconButton onClick={() => setNewTimeslotIsOpen(true)}>
+          <Icon fontSize="small" data-cy={`new-timeslot-${schedule?.id}`}>
+            add_circle
+          </Icon>
+        </IconButton>
+      </Card>
+      <NewTimeslot isOpen={newTimeslotIsOpen} setIsOpen={setNewTimeslotIsOpen} />
+    </>
   );
 };
 
