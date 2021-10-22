@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb} from 'matx';
+import { Breadcrumb } from 'matx';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Avatar,
@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
-
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -175,8 +174,7 @@ const Staff = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div>
         <SmartMUIDataTable
             title="All Staff"
             columns={columns}
@@ -199,7 +197,6 @@ const Staff = () => {
           />
         </div>
       </div>
-    </div>
   );
 };
 

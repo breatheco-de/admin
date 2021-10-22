@@ -14,9 +14,9 @@ import {
   Select,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import AnswerStatus from '../../../components/AnswerStatus';
 import { npsScoreColors } from '../../../../utils';
-import clsx from 'clsx';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   productTable: {
@@ -35,17 +35,18 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
   score: {
     padding: '4px',
-    fontSize:"14px"
+    fontSize: '14px',
   },
   about: {
     padding: '4px',
     marginLeft: '3px',
     marginTop: '3px',
-  }
+  },
 }));
 
-
-const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors = [] }) => {
+const Answers = ({
+  filteredAnswers = [], answered = [], sortBy, filter, mentors = [],
+}) => {
   const classes = useStyles();
   const [answer, setAnswer] = useState({
     color: '',
@@ -73,10 +74,10 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
     setOpen(false);
   };
   const getAboutStr = (item) => {
-    if(!item.cohort && !item.mentor) return 'About Academy';
-    if(item.cohort && !item.mentor) return 'About Cohort';
-    if(item.mentor) return `About ${item.mentor.first_name} ${item.mentor.last_name}`;
-  }
+    if (!item.cohort && !item.mentor) return 'About Academy';
+    if (item.cohort && !item.mentor) return 'About Cohort';
+    if (item.mentor) return `About ${item.mentor.first_name} ${item.mentor.last_name}`;
+  };
   return (
     <Card elevation={3} className="pt-5 mb-6">
       <div className="flex justify-between items-center px-6 mb-3">
@@ -86,9 +87,12 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
           <MenuItem value="all">Include unanswered</MenuItem>
           <MenuItem value="cohort">Only Cohort</MenuItem>
           <MenuItem value="academy">Only Academy</MenuItem>
-          {mentors.map(m => {
-            return <MenuItem value={m.name} key={m.name}>Only {m.name}</MenuItem>
-          })}
+          {mentors.map((m) => (
+            <MenuItem value={m.name} key={m.name}>
+              Only
+              {m.name}
+            </MenuItem>
+          ))}
         </Select>
       </div>
       <div className="overflow-auto">
@@ -106,60 +110,67 @@ const Answers = ({ filteredAnswers = [], answered = [], sortBy, filter, mentors 
               </TableCell>
             </TableRow>
           </TableHead>
-          {filter === 'answered' ? <TableBody>
-            {answered.length !== 0 ? answered.map((a, index) => (
-              <TableRow key={index} hover>
-                <TableCell className="px-0 capitalize" colSpan={4} align="left">
-                  <div className="flex items-center">
-                    <Avatar src={a.imgUrl} />
-                    <div >
-                      <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
-                      <span className={clsx(classes.about, "m-0 ml-8 text-muted")}>{getAboutStr(a)}</span>
+          {filter === 'answered' ? (
+            <TableBody>
+              {answered.length !== 0 ? answered.map((a, index) => (
+                <TableRow key={index} hover>
+                  <TableCell className="px-0 capitalize" colSpan={4} align="left">
+                    <div className="flex items-center">
+                      <Avatar src={a.imgUrl} />
+                      <div>
+                        <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
+                        <span className={clsx(classes.about, 'm-0 ml-8 text-muted')}>{getAboutStr(a)}</span>
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score}</small>
-                </TableCell>
-                <TableCell className="px-0" colSpan={1}>
-                  <IconButton onClick={() => {
-                    setAnswer(a);
-                    handleClickOpen();
-                  }}>
-                    <Icon color="primary">arrow_right_alt</Icon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            )) : <caption>
-              There is no answers collected yet,   but you can filter by unanswered questions
-            </caption>
-            }
-          </TableBody> : <TableBody>
-            {filteredAnswers.map((a, index) => (
-              <TableRow key={index} hover>
-                <TableCell className="px-0 capitalize" colSpan={4} align="left">
-                  <div className="flex items-center">
-                    <Avatar src={a.imgUrl} />
-                    <div >
-                      <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
-                      <span className={clsx(classes.about, "m-0 ml-8 text-muted")}>{getAboutStr(a)}</span>
+                  </TableCell>
+                  <TableCell className="px-0 capitalize" align="left" colSpan={2}>
+                    <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score}</small>
+                  </TableCell>
+                  <TableCell className="px-0" colSpan={1}>
+                    <IconButton onClick={() => {
+                      setAnswer(a);
+                      handleClickOpen();
+                    }}
+                    >
+                      <Icon color="primary">arrow_right_alt</Icon>
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              )) : (
+                <caption>
+                  There is no answers collected yet,   but you can filter by unanswered questions
+                </caption>
+              )}
+            </TableBody>
+          ) : (
+            <TableBody>
+              {filteredAnswers.map((a, index) => (
+                <TableRow key={index} hover>
+                  <TableCell className="px-0 capitalize" colSpan={4} align="left">
+                    <div className="flex items-center">
+                      <Avatar src={a.imgUrl} />
+                      <div>
+                        <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
+                        <span className={clsx(classes.about, 'm-0 ml-8 text-muted')}>{getAboutStr(a)}</span>
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score !== null ? a.score : '?'}</small>
-                </TableCell>
-                <TableCell className="px-0" colSpan={1}>
-                  <IconButton onClick={() => {
-                    setAnswer(a);
-                    handleClickOpen();
-                  }}>
-                    <Icon color="primary">arrow_right_alt</Icon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>}
+                  </TableCell>
+                  <TableCell className="px-0 capitalize" align="left" colSpan={2}>
+                    <small className={clsx(classes.score, `m-0 ml-5 ${npsScoreColors[a.score]}`)}>{a.score !== null ? a.score : '?'}</small>
+                  </TableCell>
+                  <TableCell className="px-0" colSpan={1}>
+                    <IconButton onClick={() => {
+                      setAnswer(a);
+                      handleClickOpen();
+                    }}
+                    >
+                      <Icon color="primary">arrow_right_alt</Icon>
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </div>
       <AnswerStatus answer={answer} handleClose={handleClose} open={open} />
@@ -172,7 +183,7 @@ Answers.propTypes = {
   answers: PropTypes.array,
   sortBy: PropTypes.func,
   filter: PropTypes.string,
-  mentors: PropTypes.array
+  mentors: PropTypes.array,
 };
 
 export default Answers;
