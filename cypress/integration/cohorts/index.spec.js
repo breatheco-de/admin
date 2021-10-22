@@ -125,14 +125,15 @@ describe('Cohorts Screen', () => {
       cy.cohort_edit_full()
       // cy.cohort_edit_students()
       cy.cohort_edit_version()
-      cy.cohort_edit_schedule()
+      // cy.cohort_edit_schedule()
       cy.cohort_edit_load_user()
       // cy.wait(3000)
       cy.wait('@cohort_edit_new')
-      cy.wait('@cohort_edit_full')
       cy.wait('@cohort_edit_syllabus')
+      cy.wait('@cohort_edit_full')
       // cy.wait('@cohort_edit_students')
       cy.wait('@cohort_edit_version')
+      cy.wait('@cohort_edit_load_user')
       // cy.wait('@cohort_edit_schedule')
       
       cy.log('**_____ Checking if one can actually edit the cohort  _____**')
@@ -144,7 +145,6 @@ describe('Cohorts Screen', () => {
 
       cy.log('**_____ changing the chosen language  _____**')
       cy.get('[data-cy=language]').type("ES{enter}")
-      cy.wait('@cohort_edit_load_user')
       
       cy.log('**_____ choosing a version of the new syllabus  _____**')
       cy.get('[data-cy=version]').click().type('{downArrow}' + values.syllabus)
