@@ -6,6 +6,7 @@ import {
   Divider,
   TextField,
   Button,
+  Input,
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
@@ -219,7 +220,7 @@ const NewCohort = () => {
                 <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
                   End date
                 </Grid>
-                <Grid item md={4} sm={4} xs={6}>
+                <Grid item md={3} sm={4} xs={6}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
                       name="endingDate"
@@ -242,7 +243,7 @@ const NewCohort = () => {
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={6} sm={4} xs={6} >
+                <Grid item md={7} sm={4} xs={6} >
                   <FormControlLabel
                     control={(
                       <Checkbox
@@ -259,25 +260,27 @@ const NewCohort = () => {
                 </Grid>
                 
                 <Grid item md={2} sm={4} xs={12}>
-                  Live meeting URL
+                Live meeting URL
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <Link to="https://bluejeans.com/976625693">
-                  <Button
+                  <Input
+                    type="url"
                     label="Live meeting URL"
                     data-cy="meetingURL"
                     name="meetingURL"
                     size="large"
                     variant="contained"
-                    // value="https://bluejeans.com/976625693"
+                    value="https://bluejeans.com/976625693"
                     // onChange={createCohort}
-                  >Go to Meeting Now</Button>
+                  >Go to Meeting Now</Input>
                   </Link>
                 </Grid>
+               
                 <Grid item md={2} sm={4} xs={12}>
                  Timezone 
                 </Grid>
-                <Grid item md={12} sm={8} xs={12}>
+                <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       
