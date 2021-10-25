@@ -301,10 +301,11 @@ const CohortDetails = ({
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    value={"https://bluejeans.com/976625693"}
-                    InputProps={{
-                      readOnly: true,
-                    }}
+                    defaultValue={"https://bluejeans.com/976625693"}
+                    // value={"https://bluejeans.com/976625693"}
+                    // InputProps={{
+                    //   readOnly: true,
+                    // }}
                   />
                 </Grid>
                
