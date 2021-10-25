@@ -3,6 +3,7 @@ import {
   Divider,
   Card,
   Grid,
+  IconButton,
   TextField,
   Button,
   MenuItem,
@@ -288,31 +289,34 @@ const CohortDetails = ({
                 </Grid>
                 
               )}
-              <Grid item md={2} sm={4} xs={12}>
-                  Live meeting URL
-              </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <Link to="https://bluejeans.com/976625693">
-                  <Button
-                    label="Live meeting URL"
-                    data-cy="meetingURL"
-                    name="meetingURL"
-                    size="large"
-                    variant="contained"
-                    // value="https://bluejeans.com/976625693"
-                    // onChange={createCohort}
-                  >Go to Meeting Now</Button>
-                  </Link>
+              
+              <Grid item md={3} sm={4} xs={12}>
+                Live meeting URL
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
+                    name="meetingURL"
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    value={"https://bluejeans.com/976625693"}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+               
+                <Grid item md={3} sm={4} xs={12}>
                  Timezone 
                 </Grid>
-                <Grid item md={12} sm={8} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       
                       debounced={false}
-                      onChange={(x) => setTimeZones(x)}
+                      onChange={(x) => setTimeZone(x)}
                       width="60%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
@@ -321,7 +325,7 @@ const CohortDetails = ({
                       label="Timezone"
                       required
                       getOptionLabel={(option) => `${option}`}
-                      value={timeZones}
+                      value={timeZone}
                     />
                  
                   </div>
