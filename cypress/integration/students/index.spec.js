@@ -42,15 +42,18 @@ describe('Students Screen', () => {
       cy.fixture('/students_screen_values/values').then((values) => {
         cy.log('**_____ Goin to Students Screen... _____**')
         cy.visit('/admissions/students')
+        cy.wait(5000)
 
         cy.log('**_____Changing the number of rows per page shown to 40... _____**')
         cy.get('[data-testid=pagination-rows]').click()
         cy.get('[data-value="40"]').click()
+        cy.visit('/admissions/students?limit=40&offset=0')
 
         cy.log('**_____Verifying that the url changes with pagination... _____**')
+        cy.wait(5000)
         cy.url().should('include', values.pagination_url)
       })
-      // 
+      
 
     });
 
@@ -91,8 +94,9 @@ describe('Students Screen', () => {
         cy.log('**_____Changing the number of rows per page shown to 40... _____**')
         cy.get('[data-testid=pagination-rows]').click()
         cy.get('[data-value="40"]').click()
+        cy.visit('/admissions/students?limit=40&offset=0&like=Jonathan')
 
-        cy.wait('@mock_search');
+        // cy.wait('@mock_search');
         cy.get('@mock_search').then(xhr => {
         console.log("Response search:::", xhr) 
         })
