@@ -14,9 +14,8 @@ import {
   Card,
 } from '@material-ui/core';
 
-
-const AnswerStatus = ({handleClose, open, answer = {}}) => {
-    return <Dialog
+const AnswerStatus = ({ handleClose, open, answer = {} }) => (
+  <Dialog
     onClose={handleClose}
     open={open}
     aria-labelledby="simple-dialog-title"
@@ -129,12 +128,12 @@ const AnswerStatus = ({handleClose, open, answer = {}}) => {
       </DialogActions>
     </div>
   </Dialog>
-}
+);
 
 AnswerStatus.propTypes = {
-    handleClose: PropTypes.func,
-    open: PropTypes.bool,
-    answer:PropTypes.object
+  handleClose: PropTypes.func,
+  open: PropTypes.bool,
+  answer: PropTypes.object,
 };
 
 export default AnswerStatus;

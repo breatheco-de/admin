@@ -39,7 +39,6 @@ class BreatheCodeClient {
       updateCohortUserInfo: (cohort, user, payload) => axios.bcPut(
         'Cohort',
         `${this.host}/admissions/cohort/${cohort}/user/${user}`,
-        payload,
       ),
       getAllUserCohorts: (query) => {
         const qs = Object.keys(query)
@@ -110,6 +109,7 @@ class BreatheCodeClient {
       ),
       getCertificates: () => axios.bcGet('Certificates', `${this.host}/admissions/syllabus`),
       getAllSyllabus: () => axios.bcGet('Syllabus', `${this.host}/admissions/syllabus`),
+      getAllTimeZone: () => axios.bcGet('TimeZone', `${this.host}/admissions/catalog/timezones`),
       addTimeslot: (pk, payload) => axios
         .bcPost('Syllabus', `${this.host}/admissions/academy/schedule/${pk}/timeslot`, payload),
       getSyllabus: (query) => axios.bcGet(
@@ -264,6 +264,10 @@ class BreatheCodeClient {
 
   feedback() {
     return {
+      getSurveys: () => axios.bcGet(
+        'Academy Surveys',
+        `${this.host}/feedback/academy/survey`,
+      ),
       getAnswers: (query) => {
         // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
         const qs = Object.keys(query)

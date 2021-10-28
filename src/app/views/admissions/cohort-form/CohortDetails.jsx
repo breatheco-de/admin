@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
+import { Link, useHistory } from 'react-router-dom';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { Formik } from 'formik';
@@ -53,11 +54,13 @@ const CohortDetails = ({
   syllabusVersion,
   neverEnds,
   isPrivate,
+  timeZone
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
+  const [timeZones, setTimeZones] = useState('America/Caracas');
 
   useEffect(() => {
     // setIsLoading(true);
@@ -87,6 +90,7 @@ const CohortDetails = ({
           kickoff_date: startDate,
           never_ends: neverEnds,
           specialtyMode,
+          timeZone: timeZone
         }}
         onSubmit={({ specialtyMode, ...values }) => {
           const specialtyModeId = cert ? cert.id : null;
@@ -131,6 +135,7 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
+                  
                   onChange={(certificate) => {
                     setSyllabus(certificate);
                     setVersion(null);
@@ -281,7 +286,46 @@ const CohortDetails = ({
                     label="This cohort never ends"
                   />
                 </Grid>
+                
               )}
+              <Grid item md={2} sm={4} xs={12}>
+                  Live meeting URL
+              </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <Link to="https://bluejeans.com/976625693">
+                  <Button
+                    label="Live meeting URL"
+                    data-cy="meetingURL"
+                    name="meetingURL"
+                    size="large"
+                    variant="contained"
+                    // value="https://bluejeans.com/976625693"
+                    // onChange={createCohort}
+                  >Go to Meeting Now</Button>
+                  </Link>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                 Timezone 
+                </Grid>
+                <Grid item md={12} sm={8} xs={12}>
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      
+                      debounced={false}
+                      onChange={(x) => setTimeZones(x)}
+                      width="60%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getAllTimeZone()}
+                      size="small"
+                      data-cy="timezone"
+                      label="Timezone"
+                      required
+                      getOptionLabel={(option) => `${option}`}
+                      value={timeZones}
+                    />
+                 
+                  </div>
+                </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
                 Save Cohort Details
               </Button>

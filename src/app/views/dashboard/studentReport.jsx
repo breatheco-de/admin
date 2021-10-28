@@ -20,12 +20,18 @@ const studentReport = () => {
     roles: 'TEACHER,ASSISTANT',
   });
   const { studentID, cohortID } = useParams();
+  const studentAttendanceQuery = {
+    limit: 60,
+    offset: 0,
+    user_id: studentID,
+  };
   const [cohortData, setCohortData] = useState({});
   const [studentData, setStudentData] = useState({});
   const [studentStatus, setStudentStatus] = useState({});
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
-  const [activitiesCount, setActivitiesCount] = useState(0);
+  const [studenAttendance, setStudenAttendance] = useState([]);
+  const [hasMoreActivity, setHasMoreActivity] = useState(0);
 
   // cohort data
   useEffect(() => {
@@ -94,12 +100,25 @@ const studentReport = () => {
       bc.activity()
         .getCohortActivity(cohortID, query)
         .then(({ data }) => {
-          setActivitiesCount(data?.count);
-          setStudentActivity(data?.results || []);
+          const newData = data?.results || [];
+          setHasMoreActivity(data?.next);
+          setStudentActivity(
+            studentActivity.length !== 0 ? [...studentActivity, ...newData] : data?.results || [],
+          );
         })
         .catch((err) => console.error(err));
     }
   }, [query]);
+
+  // Attendance data
+  useEffect(() => {
+    bc.activity()
+      .getCohortActivity(cohortID, studentAttendanceQuery)
+      .then(({ data }) => {
+        setStudenAttendance(data?.results || []);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <>
@@ -113,6 +132,7 @@ const studentReport = () => {
           <StudentIndicators
             data={studentAssignments}
             studentActivity={studentActivity}
+            studenAttendance={studenAttendance}
             studentData={studentData}
           />
         </Grid>
@@ -124,7 +144,7 @@ const studentReport = () => {
           cohortData={cohortData}
           setQuery={setQuery}
           query={query}
-          activitiesCount={activitiesCount}
+          hasMoreActivity={hasMoreActivity}
         />
       </div>
     </>

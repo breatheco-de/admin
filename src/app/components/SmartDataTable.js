@@ -39,6 +39,7 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
+  const [searchBoxValue, setSearchBoxValue] = useState("");
   const query = useQuery();
   const history = useHistory();
   const [querys, setQuerys] = useState({
@@ -67,6 +68,13 @@ export const SmartMUIDataTable = (props) => {
       setIsAlive(false);
     };
   }, [isAlive]);
+
+  const clearSearchBox = () => {
+    setSearchBoxValue("");
+    handlePageChange()
+
+  };
+
 
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     setIsLoading(true);
@@ -102,6 +110,11 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
+  const handleChange = (e) => {
+    setSearchBoxValue(e.target.value)
+  }
+
+
   return (<>
     {isLoading && <MatxLoading />}
     <MUIDataTable
@@ -111,7 +124,7 @@ export const SmartMUIDataTable = (props) => {
       options={{
         download: false,
         filterType: 'textField',
-        responsive: 'standard',
+        responsive: 'vertical',
         serverSide: true,
         elevation: 0,
         count: table.count,
@@ -202,24 +215,22 @@ export const SmartMUIDataTable = (props) => {
           );
         },
 
-        onTableChange: (action, tableState) => {
-          switch (action) {
-            case 'changePage':
+          onColumnSortChange: (changedColumn, direction) => {
+            if (direction == 'asc') {
               handlePageChange(
-                tableState.page,
-                tableState.rowsPerPage,
+                querys.offset,
+                querys.limit,
                 querys.like,
-                querys.sort,
+                changedColumn,
               );
-              break;
-            case 'changeRowsPerPage':
+            }
+            if (direction == 'desc') {
               handlePageChange(
-                tableState.page,
-                tableState.rowsPerPage,
+                querys.offset,
+                querys.limit,
                 querys.like,
-                querys.sort,
+                `-${changedColumn}`,
               );
-              break;
           }
         },
         customFilterDialogFooter: () => (
@@ -238,6 +249,8 @@ export const SmartMUIDataTable = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              value={searchBoxValue}
+              onChange={handleChange}
               onKeyPress={(e) => {
                 if (e.key == 'Enter') {
                   handlePageChange(
@@ -258,8 +271,8 @@ export const SmartMUIDataTable = (props) => {
                   </Icon>
                 ),
                 endAdornment: (
-                  <IconButton onClick={hideSearch}>
-                    <Icon fontSize="small">clear</Icon>
+                  <IconButton onClick={() => clearSearchBox()}>
+                    <Icon fontSize="small" >clear</Icon>
                   </IconButton>
                 ),
               }}

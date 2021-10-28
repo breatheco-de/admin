@@ -172,39 +172,37 @@ const Certificates = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          {isLoading && <MatxLoading />}
-          <SmartMUIDataTable
-            title="All Certificates"
-            columns={columns}
-            items={items}
-            options={{
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows, loadData) => (
-                <CustomToolbarSelectCertificates
-                  selectedRows={selectedRows}
-                  displayData={displayData}
-                  setSelectedRows={setSelectedRows}
-                  items={items}
-                  loadData={loadData}
-                />
-              ),
-            }}
-            search={async (querys) => {
-              const { data } = await bc.certificates().getAllCertificates(querys);
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc.admissions().deleteCertificatesBulk(querys);
-              return status;
-            }}
-            downloadCSV={async (querys) => {
-              const { data } = await bc.certificates().downloadCSV(querys);
-              return data;
-            }}
-          />
-        </div>
+      <div className="">
+        {isLoading && <MatxLoading />}
+        <SmartMUIDataTable
+          title="All Certificates"
+          columns={columns}
+          items={items}
+          options={{
+            customToolbarSelect: (selectedRows, displayData, setSelectedRows, loadData) => (
+              <CustomToolbarSelectCertificates
+                selectedRows={selectedRows}
+                displayData={displayData}
+                setSelectedRows={setSelectedRows}
+                items={items}
+                loadData={loadData}
+              />
+            ),
+          }}
+          search={async (querys) => {
+            const { data } = await bc.certificates().getAllCertificates(querys);
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc.admissions().deleteCertificatesBulk(querys);
+            return status;
+          }}
+          downloadCSV={async (querys) => {
+            const { data } = await bc.certificates().downloadCSV(querys);
+            return data;
+          }}
+        />
       </div>
     </div>
   );

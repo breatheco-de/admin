@@ -44,7 +44,7 @@ const Cohorts = () => {
           const item = items[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="ml-3">
+              <div className="">
                 {dayjs().isAfter(dayjs(item?.ending_date))
                 && !['ENDED', 'DELETED'].includes(item?.stage) ? (
                   <Chip
@@ -76,8 +76,9 @@ const Cohorts = () => {
                 <Link
                   to={`/admissions/cohorts/${item.slug}`}
                   style={{ textDecoration: 'underline' }}
+                  
                 >
-                  <h5 className="my-0 text-15">{item?.name}</h5>
+                  <h5 className="my-0 text-15">{item?.name} </h5>
                 </Link>
                 <small className="text-muted">{item?.slug}</small>
               </div>
@@ -120,7 +121,7 @@ const Cohorts = () => {
           <div className="flex items-center">
             <div className="flex-grow" />
             <Link to={`/admissions/cohorts/${items[dataIndex].slug}`}>
-              <IconButton>
+              <IconButton data-cy={`edit_cohort-${dataIndex}`}>
                 <Icon>edit</Icon>
               </IconButton>
             </Link>
@@ -142,33 +143,31 @@ const Cohorts = () => {
 
           <div className="">
             <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" data-cy="new_cohort_button">
                 Add new cohort
               </Button>
             </Link>
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          <SmartMUIDataTable
-            title="All Cohorts"
-            columns={columns}
-            items={items}
-            view="cohorts?"
-            historyReplace="/admissions/cohorts"
-            singlePage=""
-            search={async (querys) => {
-              const { data } = await bc.admissions().getAllCohorts(querys);
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc.admissions().deleteCohortsBulk(querys);
-              return status;
-            }}
-          />
-        </div>
+      <div>
+        <SmartMUIDataTable
+          title="All Cohorts"
+          columns={columns}
+          items={items}
+          view="cohorts?"
+          historyReplace="/admissions/cohorts"
+          singlePage=""
+          search={async (querys) => {
+            const { data } = await bc.admissions().getAllCohorts(querys);
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc.admissions().deleteCohortsBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );

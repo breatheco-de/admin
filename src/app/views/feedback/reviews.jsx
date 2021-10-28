@@ -6,19 +6,27 @@ import {
   Icon,
   IconButton,
   Button,
+  Chip,
   LinearProgress,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from 'app/services/breathecode';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import bc from 'app/services/breathecode';
 import AnswerStatus from '../../components/AnswerStatus';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const Answers = () => {
+const stageColors = {
+  REQUESTED: 'text-white bg-warning',
+  PENDING: 'text-white bg-error',
+  DONE: 'text-white bg-green',
+  IGNORE: 'light-gray',
+};
+
+const Reviews = () => {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -28,7 +36,7 @@ const Answers = () => {
     setOpen(false);
   };
 
-  const [answer, setanswer] = useState({
+  const [review, setReview] = useState({
     color: '',
     score: '',
     title: '',
@@ -46,6 +54,7 @@ const Answers = () => {
     },
   });
 
+
   const columns = [
     {
       name: 'first_name', // field name in the row object
@@ -53,17 +62,17 @@ const Answers = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { user } = items[dataIndex];
+          const { author } = items[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.imgUrl} />
+              <Avatar className="w-48 h-48" src={author?.github?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {user?.first_name}
+                  {author?.first_name}
                   {' '}
-                  {user?.last_name}
+                  {author?.last_name}
                 </h5>
-                <small className="text-muted">{user?.email}</small>
+                <small className="text-muted">{author?.email}</small>
               </div>
             </div>
           );
@@ -71,47 +80,48 @@ const Answers = () => {
       },
     },
     {
-      name: 'created_at',
-      label: 'Sent date',
+      name: 'status',
+      label: 'Status',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
-            {items[i].created_at ? (
-              <div className="ml-3">
+            <div className="ml-3">
+              <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
+            {items[i].created_at ? (<>
                 <h5 className="my-0 text-15">
                   {dayjs(items[i].created_at).format('MM-DD-YYYY')}
                 </h5>
                 <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
-              </div>
-            ) : (
-              <div className="ml-3">No information</div>
-            )}
+                </>) : (
+                  <p className="mt-0">No date information</p>
+                  )}
+            </div>
           </div>
         ),
       },
     },
     {
-      name: 'score',
-      label: 'Score',
+      name: 'total_rating',
+      label: 'Rating',
       options: {
         filter: true,
         filterType: 'multiselect',
         customBodyRenderLite: (i) => {
-          const color = items[i].score > 7
+          const color = items[i].total_rating > 4.5
             ? 'text-green'
-            : items[i].score < 7
+            : items[i].total_rating < 4
               ? 'text-error'
               : 'text-orange';
-          if (items[i].score) {
+          if (items[i].total_rating) {
             return (
               <div className="flex items-center">
                 <LinearProgress
                   color="secondary"
-                  value={parseInt(items[i].score, 10) * 10}
+                  value={parseInt(items[i].total_rating, 10) * 10}
                   variant="determinate"
                 />
-                <small className={color}>{items[i].score}</small>
+                <small className={color}>{items[i].total_rating}</small>
               </div>
             );
           }
@@ -120,13 +130,13 @@ const Answers = () => {
       },
     },
     {
-      name: 'comment',
-      label: 'Comments',
+      name: 'platform',
+      label: 'Platform',
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
-            {items[i].comment ? items[i].comment.substring(0, 100) : 'No comments'}
+            {items[i].platform?.name}
           </div>
         ),
       },
@@ -144,10 +154,18 @@ const Answers = () => {
                 <IconButton
                   onClick={() => {
                     handleClickOpen(true);
-                    setanswer(items[dataIndex]);
+                    setReview(items[dataIndex]);
                   }}
                 >
-                  <Icon>arrow_right_alt</Icon>
+                  <Icon>check</Icon>
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    handleClickOpen(true);
+                    setReview(items[dataIndex]);
+                  }}
+                >
+                  <Icon>cancel</Icon>
                 </IconButton>
               </span>
             </div>
@@ -164,39 +182,41 @@ const Answers = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Feedback', path: '/feedback/answers' },
-                { name: 'Answer List' },
+                { name: 'Feedback', path: '/feedback/reviews' },
+                { name: 'Review\'s List' },
               ]}
             />
           </div>
 
-          <div className="">
+          {/* <div className="">
             <Link to="/feedback/survey/new" color="primary" className="btn btn-primary">
               <Button variant="contained" color="primary">
                 Send new survey
               </Button>
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
-      <div>
-        <SmartMUIDataTable
-          title="All Answers"
-          columns={columns}
-          items={items}
-          view="answers?"
-          historyReplace="/feedback/answers"
-          singlePage=""
-          search={async (querys) => {
-            const { data } = await bc.feedback().getAnswers(querys);
-            setItems(data.results);
-            return data;
-          }}
-        />
+      <div className="overflow-auto">
+        <div className="min-w-750">
+          <SmartMUIDataTable
+            title="All Reviews"
+            columns={columns}
+            items={items}
+            view="reviews?"
+            historyReplace="/feedback/reviews"
+            singlePage=""
+            search={async (querys) => {
+              const { data } = await bc.feedback().getReviews(querys);
+              setItems(data.results);
+              return data;
+            }}
+          />
+        </div>
       </div>
-      <AnswerStatus answer={answer} handleClose={handleClose} open={open} />
+    {/* <AnswerStatus review={review} handleClose={handleClose} open={open}/> */}
     </div>
   );
 };
 
-export default Answers;
+export default Reviews;

@@ -7,11 +7,13 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const StudentIndicators = ({ data, studentActivity, studentData }) => {
+const StudentIndicators = ({ data, studenAttendance, studentData }) => {
   const totalProjects = data.filter((task) => task.task_type === 'PROJECT');
   const deliveredAssignments = totalProjects.filter((project) => project.task_status === 'DONE');
-  const attendance = studentActivity.filter((activity) => activity.slug === 'classroom_attendance');
-  const unattendance = studentActivity.filter(
+  const attendance = studenAttendance.filter(
+    (activity) => activity.slug === 'classroom_attendance',
+  );
+  const unattendance = studenAttendance.filter(
     (activity) => activity.slug === 'classroom_unattendance',
   );
   const totalDaysInCohort = attendance.length + unattendance.length;
@@ -30,7 +32,7 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
   const { a_percentage } = attendancePercentages();
 
   const lastLogin = () => {
-    let dateStr = studentActivity
+    let dateStr = studenAttendance
       .filter((activity) => activity.slug === 'breathecode_login')
       .slice(0)[0]?.created_at;
 
@@ -64,7 +66,7 @@ const StudentIndicators = ({ data, studentActivity, studentData }) => {
 
 StudentIndicators.propTypes = {
   data: PropTypes.object.isRequired,
-  studentActivity: PropTypes.object.isRequired,
+  studenAttendance: PropTypes.object.isRequired,
   studentData: PropTypes.object.isRequired,
 };
 

@@ -13,3 +13,7 @@
 .d-block{
     display: block !important;
 }
+
+.MuiTableCell-root{
+  word-break: unset !important;
+}

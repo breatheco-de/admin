@@ -25,10 +25,11 @@ const useStyles = makeStyles((theme) => ({
 const CohortStudentActivity = ({
   data,
   studentActivity,
+  studenAttendance,
   cohortData,
   setQuery,
   query,
-  activitiesCount,
+  hasMoreActivity,
 }) => {
   const classes = useStyles();
   const totalProjects = data.filter((task) => task.task_type === 'PROJECT');
@@ -95,7 +96,7 @@ const CohortStudentActivity = ({
         studentActivity={studentActivity}
         setQuery={setQuery}
         query={query}
-        activitiesCount={activitiesCount}
+        hasMoreActivity={hasMoreActivity}
       />
       <Grid item lg={3} md={3} sm={12} xs={12}>
         <Card className={classes.root}>
