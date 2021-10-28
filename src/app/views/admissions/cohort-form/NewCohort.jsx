@@ -263,18 +263,19 @@ const NewCohort = () => {
                 Live meeting URL
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <Link to="https://bluejeans.com/976625693">
-                  <Input
-                    type="url"
-                    label="Live meeting URL"
-                    data-cy="meetingURL"
+                <TextField
+                    className="m-2"
+                    label="URL"
                     name="meetingURL"
-                    size="large"
-                    variant="contained"
-                    value="https://bluejeans.com/976625693"
-                    // onChange={createCohort}
-                  >Go to Meeting Now</Input>
-                  </Link>
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    defaultValue={"https://bluejeans.com/976625693"}
+                    // value={"https://bluejeans.com/976625693"}
+                    // InputProps={{
+                    //   readOnly: true,
+                    // }}
+                  />
                 </Grid>
                
                 <Grid item md={2} sm={4} xs={12}>
