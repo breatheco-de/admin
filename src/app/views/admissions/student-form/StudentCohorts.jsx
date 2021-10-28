@@ -27,7 +27,7 @@ const propTypes = {
   stdId: PropTypes.number.isRequired,
 };
 
-const StudentCohorts = ({ stdId }) => {
+const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [setMsg] = useState({ alert: false, type: '', text: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
@@ -47,7 +47,10 @@ const StudentCohorts = ({ stdId }) => {
         setIsLoading(false);
         if (data.length < 1) {
           setStdCohorts([]);
-        } else setStdCohorts(data);
+        } else {
+          setStdCohorts(data);
+          setCohortOptions(data);
+        }
       })
       .catch((error) => error);
   };

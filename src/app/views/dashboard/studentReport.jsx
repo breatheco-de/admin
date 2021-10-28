@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, Button, Icon } from '@material-ui/core';
 import { toast } from 'react-toastify';
 
+import { AddNoteModal } from 'app/components/AddNoteModal';
 import bc from '../../services/breathecode';
 import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
 import CohortStudentActivity from './components/CohortStudentActivity';
+import DowndownMenu from '../../components/DropdownMenu';
 
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
+
+const options = [{ label: 'Add new note', value: 'add_note' }];
 
 const studentReport = () => {
   const [query, setQuery] = useState({ limit: 10, offset: 0 });
@@ -33,6 +37,16 @@ const studentReport = () => {
   const [studenAttendance, setStudenAttendance] = useState([]);
   const [hasMoreActivity, setHasMoreActivity] = useState(0);
 
+  // notes modal
+  const [newNoteDialog, setNewNoteDialog] = useState(false);
+  const [noteFormValues, setNoteFormValues] = useState({
+    cohort: cohortData.slug,
+    data: '',
+    user_id: studentID,
+    slug: '',
+    user_agent: 'postman',
+  });
+
   // cohort data
   useEffect(() => {
     bc.admissions()
@@ -43,6 +57,7 @@ const studentReport = () => {
         }
         setCohortData(data);
         setCohortUsersQuery({ ...cohortUsersQuery, cohorts: data.slug });
+        setNoteFormValues({ ...noteFormValues, cohort: data.slug });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -110,6 +125,18 @@ const studentReport = () => {
     }
   }, [query]);
 
+  const reRenderActivitiesAfterSubmit = () => {
+    bc.activity()
+      .getCohortActivity(cohortID, query)
+      .then(({ data }) => {
+        const newData = data?.results || [];
+        setHasMoreActivity(data?.next);
+        setStudentActivity(
+          studentActivity.length !== 0 ? [...studentActivity, ...newData] : data?.results || [],
+        );
+      })
+      .catch((err) => console.log(err));
+  };
   // Attendance data
   useEffect(() => {
     bc.activity()
@@ -128,7 +155,20 @@ const studentReport = () => {
           <StudentInformation data={studentData} studentStatus={studentStatus} />
         </Grid>
         <Grid item lg={9} md={9} sm={12} xs={12}>
-          <div className="py-8" />
+          <div className="flex flex-wrap justify-end pb-6 bg-primary ">
+            <DowndownMenu
+              options={options}
+              icon="more_horiz"
+              onSelect={({ value }) => {
+                setNewNoteDialog(value === 'add_note');
+              }}
+            >
+              <Button style={{ color: 'white' }}>
+                <Icon>playlist_add</Icon>
+                Additional Actions
+              </Button>
+            </DowndownMenu>
+          </div>
           <StudentIndicators
             data={studentAssignments}
             studentActivity={studentActivity}
@@ -147,6 +187,14 @@ const studentReport = () => {
           hasMoreActivity={hasMoreActivity}
         />
       </div>
+      <AddNoteModal
+        newNoteDialog={newNoteDialog}
+        noteFormValues={noteFormValues}
+        setNewNoteDialog={setNewNoteDialog}
+        setNoteFormValues={setNoteFormValues}
+        stdId={studentID}
+        reRenderActivitiesAfterSubmit={reRenderActivitiesAfterSubmit}
+      />
     </>
   );
 };
