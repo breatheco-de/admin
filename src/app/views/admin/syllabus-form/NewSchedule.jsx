@@ -10,8 +10,9 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import bc from '../../../services/breathecode';
 import ScheduleDetails from './ScheduleDetails';
-import { capitalizeEachFirstLetter, schemas } from '../../../utils';
+import { schemas } from '../../../utils';
 import Field from '../../../components/Field';
+import Select from '../../../components/Select';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -30,21 +31,31 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const scheduleTypes = ['PART-TIME', 'FULL-TIME'];
+const scheduleTypes = ['Part time', 'Full time'];
 const schema = Yup.object().shape({
-  // academy: yup.number().required().positive().integer(),
-  // specialty_mode: yup.number().required().positive().integer(),
   slug: schemas.slug(),
   name: schemas.name(),
-  description: Yup.string().required(),
-  schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
+  description: schemas.description(),
+  schedule_type: schemas.select('Schedule type', scheduleTypes),
 });
 
 const NewSchedule = ({ isOpen, setIsOpen }) => {
   const classes = useStyles();
+  const [syllabus, setSyllabus] = useState([]);
+
+  useEffect(() => {
+    bc.admissions().getAllSyllabus()
+      .then(({ data }) => setSyllabus(data))
+      .catch(console.error);
+  }, []);
 
   const saveSchedule = (values) => {
-    //
+    const request = {
+      ...values,
+      syllabus: syllabus.filter((v) => v.name === values.syllabus)[0]?.id,
+      schedule_type: values.schedule_type ? values.schedule_type.toUpperCase().replace(' ', '-') : null,
+    };
+    bc.admissions().addSchedule(request);
   };
 
   return (
@@ -56,7 +67,6 @@ const NewSchedule = ({ isOpen, setIsOpen }) => {
       <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
       <Formik
         initialValues={{}}
-        // enableReinitialize
         validationSchema={schema}
         onSubmit={(values) => {
           saveSchedule(values);
@@ -64,7 +74,7 @@ const NewSchedule = ({ isOpen, setIsOpen }) => {
         }}
       >
         {({
-          values, errors, touched, handleSubmit, handleChange, handleBlur,
+          handleSubmit,
         }) => (
           <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4" style={{ paddingTop: 0 }}>
             <DialogContent style={{ paddingTop: 0 }}>
@@ -93,24 +103,27 @@ const NewSchedule = ({ isOpen, setIsOpen }) => {
                 dialog
                 multiline
               />
-              <Field
-                select
+              <Select
                 form="new-schedule"
                 type="text"
-                name="Recurrent type"
-                label="Part-Type"
+                options={scheduleTypes}
+                name="schedule_type"
+                // placeholder="Part time"
+                label="Schedule type"
                 required
                 dialog
-              >
-                {scheduleTypes.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {capitalizeEachFirstLetter(option)}
-                  </MenuItem>
-                ))}
-              </Field>
+              />
+              <Select
+                form="new-schedule"
+                type="text"
+                options={syllabus.map(({ name }) => name)}
+                name="Syllabus"
+                required
+                dialog
+              />
             </DialogContent>
             <DialogActions className={classes.button}>
-              <Button color="primary" variant="contained" type="submit">
+              <Button color="primary" variant="contained" type="submit" data-cy="new-schedule-submit">
                 Send now
               </Button>
             </DialogActions>

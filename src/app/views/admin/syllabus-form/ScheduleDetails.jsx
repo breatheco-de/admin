@@ -48,20 +48,24 @@ const ScheduleDetails = ({ schedule }) => {
   return (
     <>
       <Card className="p-4">
-        <h5 className="m-0 font-medium pb-4">
+        <h5 className="m-0 font-medium pb-4" data-cy={`schedule-title-${schedule?.id}`}>
           {schedule?.name}
           :
         </h5>
         {timeslots.map((v) => (
           <TimeslotDetails key={`timeslot-${v.id}`} timeslot={v} deleteTimeslot={deleteTimeslot} />
         ))}
-        <IconButton onClick={() => setNewTimeslotIsOpen(true)}>
-          <Icon fontSize="small" data-cy={`new-timeslot-${schedule?.id}`}>
+        <IconButton onClick={() => setNewTimeslotIsOpen(true)} data-cy={`new-timeslot-${schedule?.id}`}>
+          <Icon fontSize="small">
             add_circle
           </Icon>
         </IconButton>
       </Card>
-      <NewTimeslot isOpen={newTimeslotIsOpen} setIsOpen={setNewTimeslotIsOpen} />
+      <NewTimeslot
+        isOpen={newTimeslotIsOpen}
+        setIsOpen={setNewTimeslotIsOpen}
+        schedule={schedule}
+      />
     </>
   );
 };

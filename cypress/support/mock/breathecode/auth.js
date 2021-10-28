@@ -1,5 +1,7 @@
+import { intercept } from '../tools'
+
 export default {
-    getAuthLogin() {
+    getTokenKey() {
         cy.fixture('auth/login.json').then(({ token, user_id }) => {
             window.localStorage.setItem('accessToken', token)
             cy.intercept(/\/v1\/auth\/token\/([\w\W]+)$/, {
@@ -15,5 +17,13 @@ export default {
         cy.fixture('auth/bc-session.json').then((session) => {
             window.localStorage.setItem('bc-session', JSON.stringify(session))
         })
+    },
+    getUserMe() {
+        intercept({
+            url: /\/v1\/auth\/user\/me$/,
+            fixture: 'auth/user/me.json',
+            method: 'GET',
+            as: 'getAuthUserMeRequest',
+        });
     },
 };

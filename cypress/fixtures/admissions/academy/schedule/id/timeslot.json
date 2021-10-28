@@ -1,0 +1,11 @@
+[{
+    "id": 11,
+    "academy": 4,
+    "specialty_mode": 5,
+    "starting_at": "2021-10-12T20:40:07Z",
+    "ending_at": "2021-10-12T21:40:10Z",
+    "recurrent": true,
+    "recurrency_type": "WEEKLY",
+    "created_at": "2021-10-12T20:40:36.709729Z",
+    "updated_at": "2021-10-12T20:40:36.709745Z"
+}]

@@ -4,10 +4,17 @@ import {
   TextField,
   DialogContentText,
 } from '@material-ui/core';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import { useField } from 'formik';
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import TimePicker from '@mui/lab/TimePicker';
+import Box from '@mui/material/Box';
+import PropTypes from 'prop-types';
+
+// import TextField from '@mui/lab/TextField';
+// import TextField from '@mui/material/TextField';
+// import { TextField } from '@mui/material';
 import { capitalizeEachFirstLetter } from '../utils';
 
 const useStyles = makeStyles(() => ({
@@ -21,64 +28,106 @@ const useStyles = makeStyles(() => ({
   select: {
     width: '15rem',
   },
+  date: {
+    display: 'flex',
+  },
 }));
 
+const defaultProps = {
+  form: 'default',
+  label: undefined,
+  dialog: false,
+  children: undefined,
+};
+
+const propTypes = {
+  form: PropTypes.string,
+  label: PropTypes.string,
+  dialog: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  name: PropTypes.string.isRequired,
+};
+
 const Field = ({
-  form='default', label, dialog, children, ...props
+  form, label, dialog, children, ...props
 }) => {
-  props.name = props.name || '';
-  props.name = props.name.toLowerCase().replace(/ /g, '_');
-  const [field, meta, helpers] = useField(props);
-  const { name } = props;
+  const extraProps = props;
+  extraProps.name = props.name || '';
+  extraProps.name = props.name.toLowerCase().replace(/ /g, '_');
+  const [field, meta, helpers] = useField(extraProps);
+  const { name } = extraProps;
   const classes = useStyles();
   const fieldName = name.toLowerCase().replace(/ /g, '_');
   const cypressFieldName = `${form}-${fieldName.replace(/_/g, '-')}`;
   const labelText = label || capitalizeEachFirstLetter(name);
 
   const onChange = (v) => {
-    helpers.setValue(v.toISOString());
-    helpers.setTouched(true);
+    try {
+      helpers.setValue(v.toISOString());
+    } catch {
+      helpers.setValue('');
+    }
   };
 
   const textProps = {
     fullWidth: true,
-    'data-cy': cypressFieldName,
     size: 'small',
     variant: 'outlined',
-    // value: values[fieldName],
-    // onChange: handleChange,
-    // onBlur: handleBlur,
+    type: 'time',
     helperText: meta.touched ? meta.error : '',
-    error: meta.touched && meta.error,
-    // type,
-    // placeholder,
-    // required,
-    // select,
-    // multiline,
-    // type: 'datetime',
-    // format: 'MMMM dd, yyyy',
-    type: 'text',
-    autoOk: true,
-    ...field,
-    ...props,
+    error: meta.touched && Boolean(meta.error),
+    onBlur: field.onBlur,
     name: fieldName,
+    placeholder: '',
+    ...extraProps,
+  };
+
+  const renderInput = (params) => {
+    const { inputProps } = params;
+    const cumtomInputProps = {
+      ...inputProps,
+      value: inputProps.value,
+    };
+
+    const customParams = { ...params, inputProps: cumtomInputProps };
+    return <TextField {...customParams} {...textProps} />;
+  };
+
+  const dateProps = {
+    fullWidth: true,
+    size: 'small',
+    variant: 'outlined',
+    'data-cy': cypressFieldName,
+    autoOk: true,
+    name: fieldName,
+    value: field.value,
     onChange,
-    // onClose: field.onBlur,
-    onClose: () => helpers.setTouched(true),
+    renderInput,
+  };
+
+  const boxProps = {
+    'data-cy': cypressFieldName,
+    sx: {
+      '& *': {
+        display: 'flex',
+      },
+    },
   };
 
   if (meta.value) textProps.value = meta.value;
-  if (props.select) textProps.label = label;
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       {dialog ? (
         <>
           <DialogContentText className={classes.dialogue} style={{ marginTop: 12 }}>
             {labelText}
           </DialogContentText>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardTimePicker {...textProps} />
-          </MuiPickersUtilsProvider>
+          <Box {...boxProps} >
+            <TimePicker {...dateProps} />
+          </Box>
         </>
       ) : (
         <>
@@ -86,14 +135,17 @@ const Field = ({
             {labelText}
           </Grid>
           <Grid item md={7} sm={7} xs={7} style={meta.touched && meta.error ? { marginBottom: '-23px' } : {}}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardTimePicker {...textProps} />
-            </MuiPickersUtilsProvider>
+            <Box {...boxProps} >
+              <TimePicker {...dateProps} />
+            </Box>
           </Grid>
         </>
       )}
-    </>
+    </LocalizationProvider>
   );
 };
+
+Field.defaultProps = defaultProps;
+Field.propTypes = propTypes;
 
 export default Field;

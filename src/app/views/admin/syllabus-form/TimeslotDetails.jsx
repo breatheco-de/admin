@@ -17,9 +17,11 @@ import {
   IconButton,
 } from '@material-ui/core';
 import bc from '../../../services/breathecode';
+import ConfirmAlert from '../../../components/ConfirmAlert';
 import moment from 'moment';
 
 const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
+  const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
   const startingHour = moment(timeslot.starting_at).local().format('HH:mm');
   const endingHour = moment(timeslot.ending_at).local().format('HH:mm');
   const weekday = moment(timeslot.starting_at).local().format('dddd');
@@ -30,33 +32,37 @@ const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
     return 'MONTH';
   };
 
-  // const deleteTimeslot = (scheduleId, timeslotId) => {
-  //   bc.admissions().deleteTimeslot(scheduleId, timeslotId);
-  // };
+  const onClickDelete = () => setDeleteDialogIsOpen(true);
+  const onAccept = () => deleteTimeslot(timeslot?.specialty_mode, timeslot?.id);
 
   return (
-    <Grid container alignItems="center">
-      <Grid item xs={10}>
-        <div className="flex">
-          <div className="flex-grow">
-            <p className="mt-0 mb-6px text-13">
-              Every
-              {' '}
-              <span className="font-medium">{getRecurrencyType(timeslot.recurrency_type)}</span>
-              {' '}
-              on {weekday} from {startingHour} to {endingHour}
-            </p>
+    <>
+      <Grid container alignItems="center">
+        <Grid item xs={10}>
+          <div className="flex">
+            <div className="flex-grow">
+              <p className="mt-0 mb-6px text-13" data-cy={`timeslot-detail-${timeslot?.id}`}>
+                {'Every '}
+                <span className="font-medium">{getRecurrencyType(timeslot.recurrency_type)}</span>
+                {` on ${weekday} from ${startingHour} to ${endingHour}`}
+              </p>
+            </div>
           </div>
-        </div>
+        </Grid>
+        <Grid item xs={2} className="text-center">
+          <div className="flex justify-end items-center">
+            <IconButton onClick={onClickDelete} data-cy={`delete-timeslot-${timeslot?.id}`}>
+              <Icon fontSize="small">delete</Icon>
+            </IconButton>
+          </div>
+        </Grid>
       </Grid>
-      <Grid item xs={2} className="text-center">
-        <div className="flex justify-end items-center">
-          <IconButton onClick={() => deleteTimeslot(timeslot?.specialty_mode, timeslot?.id)}>
-            <Icon fontSize="small">delete</Icon>
-          </IconButton>
-        </div>
-      </Grid>
-    </Grid>
+      <ConfirmAlert
+        isOpen={deleteDialogIsOpen}
+        setIsOpen={setDeleteDialogIsOpen}
+        onOpen={onAccept}
+      />
+    </>
   );
 };
 

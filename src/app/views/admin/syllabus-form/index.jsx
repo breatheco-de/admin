@@ -18,6 +18,7 @@ import SchedulesList from './SchedulesList';
 import SyllabusDetails from './SyllabusDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { MatxLoading } from '../../../../matx';
+import ConfirmAlert from '../../../components/ConfirmAlert';
 
 toast.configure();
 const toastOption = {
@@ -25,13 +26,8 @@ const toastOption = {
   autoClose: 8000,
 };
 
-const options = [
-  { label: 'Make public', value: 'make_public' },
-  { label: 'Edit Syllabus Content', value: 'edit_syllabus' },
-];
-
+// TODO: this require in this context is weird
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
-
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
@@ -39,7 +35,13 @@ const Student = () => {
   const [syllabus, setSyllabus] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const options = [
+    { label: `Make ${syllabus?.private ? 'public' : 'private'}`, value: 'make_public' },
+    { label: 'Edit Syllabus Content', value: 'edit_syllabus' },
+  ];
 
   const fetchSchedules = async () => {
     try {
@@ -72,7 +74,8 @@ const Student = () => {
 
   const updateSyllabus = async (values) => {
     try {
-      await bc.admissions().updateSyllabus(syllabus.id, values);
+      await bc.admissions().updateSyllabus(syllabus?.id, values);
+      fetchSyllabus();
     } catch (error) {
       console.error(error);
     }
@@ -82,6 +85,8 @@ const Student = () => {
     if (!syllabus) return 0;
     return moment().diff(syllabus.created_at, 'days');
   };
+
+  const onAccept = () => updateSyllabus({ private: !syllabus.private });
 
   return (
     <div className="m-sm-30">
@@ -116,21 +121,21 @@ const Student = () => {
             Full Stack Web Development
           </h3>
           <div className="flex" data-cy="how-many-days-ago">
-            Created at:
-            {' '}
-            {howManyDaysAgo()}
-            {' '}
-            days ago
+            {`Created at: ${howManyDaysAgo()} days ago`}
           </div>
         </div>
         <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
-            //setOpenDialog(value === 'password_reset');
+            if (value === 'edit_syllabus') {
+              window.open('https://build.breatheco.de/', '_blank');
+            } else if (value === 'make_public') {
+              setMakePublicDialog(true);
+            }
           }}
         >
-          <Button>
+          <Button data-cy="additional-actions">
             <Icon>playlist_add</Icon>
             Additional Actions
           </Button>
@@ -147,6 +152,12 @@ const Student = () => {
           </Grid>
         </Grid>
       ) : ''}
+      <ConfirmAlert
+        title={`Are you sure you want to make ${syllabus?.private ? 'public' : 'private'} this syllabus`}
+        isOpen={makePublicDialog}
+        setIsOpen={setMakePublicDialog}
+        onOpen={onAccept}
+      />
     </div>
   );
 };

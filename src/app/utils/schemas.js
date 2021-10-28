@@ -42,6 +42,33 @@ const nameSchema = (name = 'name') => Yup.string()
     (value) => /^[a-zA-Z0-9 -]+$/.test(value),
   );
 
+const descriptionSchema = (name = 'description') => Yup.string()
+  .required(`${capitalizeTheFirstLetter(name)} is a required field`);
+
+const dateSchema = (name = 'date') => Yup.date()
+  .required(`${capitalizeTheFirstLetter(name)} is empty or had invalid date`);
+
+const timeSchema = (name = 'date') => Yup.date()
+  .required(`${capitalizeTheFirstLetter(name)} is empty or had invalid hour`);
+
+const selectSchema = (name = 'select', options = []) => Yup.mixed()
+  .required(`${capitalizeTheFirstLetter(name)} is a required field`)
+  // .oneOf(options, 'Invalid option');
+  .test(
+    'invalid-option',
+    'Invalid option',
+    (value) => (new RegExp(`^(${options.join('|')})$`)).test(value),
+  );
+
+// const selectSchema = (name = 'select', options = []) => Yup.string()
+//   .required(`${capitalizeTheFirstLetter(name)} is a required field`)
+//   .test(
+//     'invalid-option',
+//     'Invalid option',
+//     (value) => (new RegExp(`^(${options.join('|')})$`)).test(value),
+//     // (value) => /^[a-zA-Z0-9 -]+$/.test(value),
+//   );
+
 const nonZeroPositiveNumberSchema = (name) => Yup.number()
   .required(`${capitalizeTheFirstLetter(name)} is a required field`)
   // .positive('Total hours can\'t be equat less that 0')
@@ -61,6 +88,10 @@ const nonZeroPositiveNumberSchema = (name) => Yup.number()
 export const schemas = {
   slug: slugSchema,
   name: nameSchema,
+  description: descriptionSchema,
+  date: dateSchema,
+  time: timeSchema,
+  select: selectSchema,
   nonZeroPositiveNumber: nonZeroPositiveNumberSchema,
 };
 

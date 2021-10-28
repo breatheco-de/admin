@@ -1,20 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Avatar,
   Button,
   Card,
   Grid,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle,
-  Dialog,
 } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -70,7 +58,6 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
     <Card className="pt-6" elevation={3}>
       <Formik
         initialValues={syllabus}
-        // validate={validate}
         validationSchema={schema}
         onSubmit={(values, { setSubmitting }) => {
           onSubmit(values);

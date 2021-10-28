@@ -8,12 +8,14 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 import bc from '../../../services/breathecode';
 import { capitalizeEachFirstLetter, schemas } from '../../../utils';
 import Field from '../../../components/Field';
 import Date from '../../../components/Date';
 import Time from '../../../components/Time';
-import ScheduleDetails from './ScheduleDetails';
+import Select from '../../../components/Select';
+import Checkbox from '../../../components/Checkbox';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -32,43 +34,40 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const recurrentTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
+const recurrencyTypes = ['Daily', 'Weekly', 'Monthly'];
 const schema = Yup.object().shape({
-  // academy: yup.number().required().positive().integer(),
-  // specialty_mode: yup.number().required().positive().integer(),
-  slug: schemas.slug,
-  starting_hour: Yup.string().required().matches(/\d{1,2}:\d{2}/, 'Invalid hour'),
-  ending_hour: Yup.string().required().matches(/\d{1,2}:\d{2}/, 'Invalid hour'),
-  starting_date: Yup.string().required(),
-  ending_date: Yup.string().required(),
+  slug: schemas.slug(),
+  starting_hour: schemas.time('starting hour'),
+  ending_hour: schemas.time('ending hour'),
+  starting_date: schemas.date('starting date'),
   recurrent: Yup.bool().required(),
-  recurrent_type: Yup.mixed().oneOf(recurrentTypes).required(),
+  recurrency_type: schemas.select('Recurrency type', recurrencyTypes),
 });
 
-const NewTimeslot = ({ isOpen, setIsOpen }) => {
+const NewTimeslot = ({ isOpen, setIsOpen, schedule }) => {
   const classes = useStyles();
   const initialValues = {
     slug: '',
     starting_date: '',
     starting_hour: '',
-    ending_date: '',
     ending_hour: '',
   };
 
-  const saveSchedule = (values) => {
-    //
-  };
+  const saveSchedule = ({
+    starting_date, starting_hour, ending_hour, recurrency_type, ...values
+  }) => {
+    const start = moment(starting_hour);
+    const end = moment(ending_hour);
+    const delta = moment.duration(end.diff(start));
+    const starting_at = moment(starting_date).toISOString();
+    const ending_at = moment(starting_date).add(delta).toISOString();
 
-  const validate = (values) => {
-    const errors = {};
-
-    if (!values.slug) errors.slug = 'Slug is required';
-    if (!values.starting_date) errors.starting_date = 'Starting date is required';
-    if (!values.starting_hour) errors.starting_hour = 'Starting hour is required';
-    if (!values.ending_date) errors.ending_date = 'Ending date is required';
-    if (!values.ending_hour) errors.ending_hour = 'Ending hour is required';
-
-    return errors;
+    bc.admissions().addTimeslot(schedule?.id, {
+      ...values,
+      starting_at,
+      ending_at,
+      recurrency_type: recurrency_type.toUpperCase(),
+    });
   };
 
   return (
@@ -81,20 +80,20 @@ const NewTimeslot = ({ isOpen, setIsOpen }) => {
       <Formik
         initialValues={initialValues}
         // enableReinitialize
-        // validationSchema={schema}
-        validate={validate}
+        validationSchema={schema}
+        // validate={validate}
         onSubmit={(values) => {
           saveSchedule(values);
           setIsOpen(false);
         }}
       >
         {({
-          values, errors, touched, handleSubmit, handleChange, handleBlur,
+          values, handleSubmit,
         }) => (
           <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4" style={{ paddingTop: 0 }}>
             <DialogContent style={{ paddingTop: 0 }}>
               <Field
-                form="new-schedule"
+                form="new-timeslot"
                 type="text"
                 name="Slug"
                 placeholder="full-stack-pt"
@@ -102,25 +101,16 @@ const NewTimeslot = ({ isOpen, setIsOpen }) => {
                 dialog
               />
               <Date
-                form="new-schedule"
+                form="new-timeslot"
                 name="starting_date"
                 label="Starting date"
                 // placeholder="full-stack-pt"
-                disablePast
-                required
-                dialog
-              />
-              <Date
-                form="new-schedule"
-                name="ending_date"
-                label="Ending date"
-                // placeholder="full-stack-pt"
-                disablePast
+                // disablePast
                 required
                 dialog
               />
               <Time
-                form="new-schedule"
+                form="new-timeslot"
                 name="starting_hour"
                 label="Starting hour"
                 // placeholder="full-stack-pt"
@@ -128,16 +118,33 @@ const NewTimeslot = ({ isOpen, setIsOpen }) => {
                 dialog
               />
               <Time
-                form="new-schedule"
+                form="new-timeslot"
                 name="ending_hour"
                 label="Ending hour"
                 // placeholder="full-stack-pt"
                 required
                 dialog
               />
+              <Select
+                disabled={!values.recurrent}
+                form="new-timeslot"
+                type="text"
+                options={recurrencyTypes}
+                name="recurrency_type"
+                // placeholder="Part time"
+                label="Recurrency type"
+                required
+                dialog
+              />
+              <Checkbox
+                form="new-timeslot"
+                name="Recurrent"
+                required
+                dialog
+              />
             </DialogContent>
             <DialogActions className={classes.button}>
-              <Button color="primary" variant="contained" type="submit">
+              <Button color="primary" variant="contained" type="submit" data-cy="new-timeslot-submit">
                 Send now
               </Button>
             </DialogActions>

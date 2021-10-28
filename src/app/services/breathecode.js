@@ -16,6 +16,11 @@ class BreatheCodeClient {
 
   admissions() {
     return {
+      addSchedule: (payload) => axios.bcPost(
+        'Schedule',
+        `${this.host}/admissions/academy/schedule`,
+        payload,
+      ),
       updateSyllabus: (pk, payload) => axios.bcPut(
         'Syllabus',
         `${this.host}/admissions/syllabus/${pk}`,
@@ -105,6 +110,8 @@ class BreatheCodeClient {
       ),
       getCertificates: () => axios.bcGet('Certificates', `${this.host}/admissions/syllabus`),
       getAllSyllabus: () => axios.bcGet('Syllabus', `${this.host}/admissions/syllabus`),
+      addTimeslot: (pk, payload) => axios
+        .bcPost('Syllabus', `${this.host}/admissions/academy/schedule/${pk}/timeslot`, payload),
       getSyllabus: (query) => axios.bcGet(
         'Syllabus',
         `${this.host}/admissions/syllabus/${query}`,

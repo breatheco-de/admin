@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Avatar,
-    Icon,
-    IconButton,
-    Button,
-    Dialog,
-    Grid,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Divider,
-    Card
+  Avatar,
+  Icon,
+  IconButton,
+  Button,
+  Dialog,
+  Grid,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Divider,
+  Card,
 } from '@material-ui/core';
 
 
