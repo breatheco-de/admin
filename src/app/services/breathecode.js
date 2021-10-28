@@ -452,6 +452,11 @@ class BreatheCodeClient {
             query ? `?${qs}` : ''}`,
         );
       },
+      createStudentActivity: (studentId, payload) => axios.bcPost(
+        'Student Activity',
+        `${this.host}/activity/academy/student/${studentId}`,
+        payload
+      ),
       getActivityTypes: () => axios.bcGet('Cohort Activity Type', `${this.host}/activity/type`),
     };
   }

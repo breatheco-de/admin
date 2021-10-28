@@ -132,7 +132,7 @@ const Layout1Topbar = () => {
                       Hi <strong>{user.first_name}</strong>
                     </span>
                   </Hidden>
-                  <Avatar className="cursor-pointer" src={user.github?.avatar} />
+                  <Avatar className="cursor-pointer" src={user.github?.avatar_url} />
                 </div>
               }
             >

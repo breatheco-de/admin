@@ -3,6 +3,7 @@ import {
   Divider,
   Card,
   Grid,
+  IconButton,
   TextField,
   Button,
   MenuItem,
@@ -135,15 +136,14 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
-                  
+
                   onChange={(certificate) => {
                     setSyllabus(certificate);
                     setVersion(null);
                   }}
                   width="100%"
                   key={syllabus}
-                  asyncSearch={() => bc.admissions()
-                    .getAllSyllabus()}
+                  asyncSearch={() => bc.admissions().getAllSyllabus()}
                   size="small"
                   label="Syllabus"
                   data-cy="syllabus"
@@ -159,8 +159,7 @@ const CohortDetails = ({
                   onChange={(v) => setVersion(v)}
                   width="100%"
                   key={syllabus !== null ? syllabus.slug : ''}
-                  asyncSearch={() => bc.admissions()
-                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
+                  asyncSearch={() => bc.admissions().getAllCourseSyllabus(syllabus?.slug, academy.id)}
                   size="small"
                   label="Version"
                   data-cy="version"
@@ -259,8 +258,8 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                          setFieldValue('ending_date', date.toISOString());
-                        }}
+                  setFieldValue('ending_date', date.toISOString());
+                }}
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
@@ -286,33 +285,37 @@ const CohortDetails = ({
                     label="This cohort never ends"
                   />
                 </Grid>
-                
+
               )}
-              <Grid item md={2} sm={4} xs={12}>
-                  Live meeting URL
-              </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <Link to="https://bluejeans.com/976625693">
-                  <Button
-                    label="Live meeting URL"
-                    data-cy="meetingURL"
+
+              <Grid item md={3} sm={4} xs={12}>
+                Live meeting URL
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
                     name="meetingURL"
-                    size="large"
-                    variant="contained"
-                    // value="https://bluejeans.com/976625693"
-                    // onChange={createCohort}
-                  >Go to Meeting Now</Button>
-                  </Link>
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    defaultValue={"https://bluejeans.com/976625693"}
+                    // value={"https://bluejeans.com/976625693"}
+                    // InputProps={{
+                    //   readOnly: true,
+                    // }}
+                  />
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
-                 Timezone 
+
+                <Grid item md={3} sm={4} xs={12}>
+                 Timezone
                 </Grid>
-                <Grid item md={12} sm={8} xs={12}>
+                <Grid item md={9} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
+
                       debounced={false}
-                      onChange={(x) => setTimeZones(x)}
+                      onChange={(x) => setTimeZone(x)}
                       width="60%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
@@ -321,9 +324,9 @@ const CohortDetails = ({
                       label="Timezone"
                       required
                       getOptionLabel={(option) => `${option}`}
-                      value={timeZones}
+                      value={timeZone}
                     />
-                 
+
                   </div>
                 </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
