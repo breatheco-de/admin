@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install packages
-        run: npm install
+        run: npm install -D
       - name: Running Tests
         # Install NPM dependencies, cache them correctly
         uses: cypress-io/github-action@v2
