@@ -501,6 +501,13 @@ class BreatheCodeClient {
           }`,
         );
       },
+      createStudentActivity: (studentId, payload) => {
+        return axios._post(
+          'Student Activity',
+          `${this.host}/activity/academy/student/${studentId}`,
+          payload
+        );
+      },
       getActivityTypes: () => axios._get('Cohort Activity Type', `${this.host}/activity/type`),
     };
   }
