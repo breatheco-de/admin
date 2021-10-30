@@ -85,6 +85,10 @@ const Field = ({
     ...extraProps,
   };
 
+  // fix a bug in production build
+  if ('required' in textProps && !textProps.required) delete textProps.required;
+  if ('readonly' in textProps && !textProps.readonly) delete textProps.readonly;
+
   const renderInput = (params) => {
     const { inputProps } = params;
     const cumtomInputProps = {

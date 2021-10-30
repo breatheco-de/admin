@@ -43,7 +43,7 @@ const propTypes = {
 };
 
 const Field = ({
-  form='default', label, dialog, children, ...props
+  form, label, dialog, children, ...props
   // values={}, errors={}, handleChange, handleBlur, name, label, placeholder,
   // type, required=false, dialog, touched={}, form='default', select=false, children,
   // multiline=false, ...props
@@ -69,6 +69,10 @@ const Field = ({
     ...extraProps,
     name: fieldName,
   };
+
+  // fix a bug in production build
+  if ('required' in textProps && !textProps.required) delete textProps.required;
+  if ('readonly' in textProps && !textProps.readonly) delete textProps.readonly;
 
   if (meta.value) textProps.value = meta.value;
   if (extraProps.select) textProps.label = label;
