@@ -1,6 +1,9 @@
 // <reference types="cypress" />
 const moment = require('moment');
 
+const timeslotStartingAt = '2021-10-12T20:40:07Z';
+const timeslotEndingAt = '2021-10-12T21:40:07Z';
+
 describe('/admin/syllabus/:slug', () => {
   beforeEach(() => {
     // cy.auth();
@@ -27,9 +30,23 @@ describe('/admin/syllabus/:slug', () => {
         slug: 'full-stack-pt-wet',
         name: 'Full Stack PT Wet',
       }]);
-      breathecode.admissions.getAcademyScheduleIdTimeslot(4, [{id: 11}]);
-      breathecode.admissions.getAcademyScheduleIdTimeslot(5, [{id: 12, recurrency_type: 'DAILY'}]);
-      breathecode.admissions.getAcademyScheduleIdTimeslot(6, [{id: 13, recurrency_type: 'MONTH'}]);
+      breathecode.admissions.getAcademyScheduleIdTimeslot(4, [{
+        id: 11,
+        starting_at: timeslotStartingAt,
+        ending_at: timeslotEndingAt,
+      }]);
+      breathecode.admissions.getAcademyScheduleIdTimeslot(5, [{
+        id: 12,
+        starting_at: timeslotStartingAt,
+        ending_at: timeslotEndingAt,
+        recurrency_type: 'DAILY',
+      }]);
+      breathecode.admissions.getAcademyScheduleIdTimeslot(6, [{
+        id: 13,
+        starting_at: timeslotStartingAt,
+        ending_at: timeslotEndingAt,
+        recurrency_type: 'MONTH',
+      }]);
       breathecode.admissions.putSyllabusId();
       breathecode.admissions.deleteAcademyScheduleIdTimeslotId();
       breathecode.admissions.postAcademySchedule();
@@ -297,13 +314,19 @@ describe('/admin/syllabus/:slug', () => {
 
   context('Timeslot Form', () => {
     it('List and delete', () => {
+      const startingHour = moment(timeslotStartingAt).local().format('HH:mm');
+      const endingHour = moment(timeslotEndingAt).local().format('HH:mm');
+
       cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
       cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
       cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-      cy.get('[data-cy="timeslot-detail-11"]').should('have.text', 'Every WEEK on Tuesday from 15:40 to 16:40');
-      cy.get('[data-cy="timeslot-detail-12"]').should('have.text', 'Every DAY on Tuesday from 15:40 to 16:40');
-      cy.get('[data-cy="timeslot-detail-13"]').should('have.text', 'Every MONTH on Tuesday from 15:40 to 16:40');
+      cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
+        `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
+      cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
+        `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
+      cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
+        `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
 
       cy.mock().then(({ breathecode }) => {
         breathecode.admissions.getAcademyScheduleIdTimeslot(5, [])
