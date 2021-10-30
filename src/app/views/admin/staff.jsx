@@ -195,7 +195,6 @@ const Staff = () => {
               return status;
             }}
           />
-        </div>
       </div>
     </div>
   );

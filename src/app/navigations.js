@@ -8,9 +8,22 @@ export const navigations = [
   },
   {
     name: 'Growth',
-    path: '/dashboard/analytics-2',
     icon: 'show_chart',
     beta: true,
+    children: [
+      {
+        name: 'Dashboard',
+        path: '/dashboard/analytics-2',
+        iconText: 'OL',
+        beta: true
+      },
+      {
+        name: 'Reviews',
+        path: '/feedback/reviews',
+        iconText: 'OL',
+        beta: true
+      },
+    ],
   },
   {
     name: 'Admissions',
@@ -58,13 +71,7 @@ export const navigations = [
         name: 'All Answers',
         path: '/feedback/answers',
         iconText: 'OL',
-      },
-      {
-        name: 'Reviews',
-        path: '/feedback/reviews',
-        iconText: 'OL',
-        beta: true
-      },
+      }
     ],
   },
   {
@@ -137,12 +144,6 @@ export const navigations = [
       {
         name: 'Syllabus',
         path: '/admin/syllabus',
-        iconText: 'STA',
-        beta: true,
-      },
-      {
-        name: 'Freelancers',
-        path: '/admin/freelancer',
         iconText: 'STA',
         beta: true,
       },
