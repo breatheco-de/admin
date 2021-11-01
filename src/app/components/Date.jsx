@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Grid,
   TextField,
@@ -56,6 +56,8 @@ const propTypes = {
 const Field = ({
   form, label, dialog, children, ...props
 }) => {
+  const elementRef = useRef();
+
   const extraProps = props;
   extraProps.name = props.name || '';
   extraProps.name = props.name.toLowerCase().replace(/ /g, '_');
@@ -83,6 +85,7 @@ const Field = ({
     error: meta.touched && Boolean(meta.error),
     onBlur: field.onBlur,
     name: fieldName,
+    ref: elementRef,
     ...extraProps,
   };
 
@@ -121,6 +124,14 @@ const Field = ({
       },
     },
   };
+
+  useEffect(() => {
+    setInterval(() => {
+      if (!textProps.required && elementRef.current.getAttribute('required') === '') {
+        elementRef.current.removeAttribute('required');
+      }
+    }, 0);
+  }, []);
 
   if (meta.value) textProps.value = meta.value;
   return (
