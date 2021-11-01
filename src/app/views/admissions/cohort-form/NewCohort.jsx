@@ -33,14 +33,14 @@ const NewCohort = () => {
   // const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
-  const [timeZone, setTimeZone] = useState('America/Caracas');
+  const [timeZone, setTimeZone] = useState("");
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
-    // time_zone: [],
+    time_zone: '',
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
@@ -152,7 +152,7 @@ const NewCohort = () => {
                       <AsyncAutocomplete
                         debounced={false}
                         onChange={(v) => setVersion(v)}
-                        width="20%"
+                        width="30%"
                         key={syllabus.slug}
                         asyncSearch={() => bc.admissions()
                           .getAllCourseSyllabus(syllabus.slug)}
@@ -266,15 +266,14 @@ const NewCohort = () => {
                 <TextField
                     className="m-2"
                     label="URL"
-                    name="meetingURL"
+                    width="100%"
+                    name="online_meeting_url"
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    defaultValue={"https://bluejeans.com/976625693"}
-                    // value={"https://bluejeans.com/976625693"}
-                    // InputProps={{
-                    //   readOnly: true,
-                    // }}
+                    placeholder={"https://bluejeans.com/<id>"}
+                    value={newCohort.online_meeting_url}
+                    onChange={createCohort}
                   />
                 </Grid>
                
@@ -287,13 +286,12 @@ const NewCohort = () => {
                       
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
-                      width="60%"
+                      width="100%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"
                       label="Timezone"
-                      required
                       getOptionLabel={(option) => `${option}`}
                       value={timeZone}
                     />

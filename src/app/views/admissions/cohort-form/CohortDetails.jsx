@@ -294,15 +294,12 @@ const CohortDetails = ({
                   <TextField
                     className="m-2"
                     label="URL"
-                    name="meetingURL"
+                    name="online_meeting_url"
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    defaultValue={"https://bluejeans.com/976625693"}
-                    // value={"https://bluejeans.com/976625693"}
-                    // InputProps={{
-                    //   readOnly: true,
-                    // }}
+                    placeholder={"https://bluejeans.com/sd"}
+                    onChange={handleChange}
                   />
                 </Grid>
                
@@ -312,20 +309,17 @@ const CohortDetails = ({
                 <Grid item md={9} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
                       debounced={false}
-                      onChange={(x) => setTimeZone(x)}
+                      onChange={(x) => setFieldValue('timezone', x)}
                       width="60%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"
                       label="Timezone"
-                      required
                       getOptionLabel={(option) => `${option}`}
                       value={timeZone}
                     />
-                 
                   </div>
                 </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
