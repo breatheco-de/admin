@@ -96,7 +96,7 @@ const EventList = () => {
           // console.log(dayjs(item.datetime))
 
           if (parseInt(item.duration) === 3600) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 1);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -116,7 +116,7 @@ const EventList = () => {
             );
           }
           if (parseInt(item.duration) === 10800) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 3);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -136,7 +136,7 @@ const EventList = () => {
             );
           }
           if (parseInt(item.duration) === 86400) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 24);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -156,7 +156,7 @@ const EventList = () => {
             );
           }
           if (parseInt(item.duration) === 172800) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 48);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -186,8 +186,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].sent_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].sent_at).fromNow()}</small>
             </div>
           </div>
         ),
