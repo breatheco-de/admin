@@ -1,5 +1,5 @@
 // <reference types="cypress" />
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const timeslotStartingAt = '2021-10-12T20:40:07Z';
 const timeslotEndingAt = '2021-10-12T21:40:07Z';
@@ -314,8 +314,8 @@ describe('/admin/syllabus/:slug', () => {
 
   context('Timeslot Form', () => {
     it('List and delete', () => {
-      const startingHour = moment.parseZone(timeslotStartingAt).local().format('HH:mm');
-      const endingHour = moment.parseZone(timeslotEndingAt).local().format('HH:mm');
+      const startingHour = moment(timeslotStartingAt).format('HH:mm');
+      const endingHour = moment(timeslotEndingAt).format('HH:mm');
 
       cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
       cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');

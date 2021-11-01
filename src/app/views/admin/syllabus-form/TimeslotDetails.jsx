@@ -18,13 +18,13 @@ import {
 } from '@material-ui/core';
 import bc from '../../../services/breathecode';
 import ConfirmAlert from '../../../components/ConfirmAlert';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
   const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
-  const startingHour = moment.parseZone(timeslot.starting_at).local().format('HH:mm');
-  const endingHour = moment.parseZone(timeslot.ending_at).local().format('HH:mm');
-  const weekday = moment.parseZone(timeslot.starting_at).local().format('dddd');
+  const startingHour = moment(timeslot.starting_at).format('HH:mm');
+  const endingHour = moment(timeslot.ending_at).format('HH:mm');
+  const weekday = moment(timeslot.starting_at).format('dddd');
 
   const getRecurrencyType = (recurrencyType) => {
     if (recurrencyType === 'DAILY') return 'DAY';
