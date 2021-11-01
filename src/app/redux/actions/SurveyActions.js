@@ -78,7 +78,7 @@ export const getSurveyAnswers = (query) => (distpach) => {
 export const getSurvey = (id) => (distpach) => {
     const now = dayjs().format();
     bc.feedback().getSurvey(id).then(res => {
-        const duration = dayjs(res.data.created_at).add(dayjs(res.data.duration).$D, 'day');
+        const duration = dayjs(res.data.sent_at || res.data.created_at).add(dayjs(res.data.duration).$D, 'day');
         if(res.data) distpach({
             type: GET_SURVEY,
             payload: {
