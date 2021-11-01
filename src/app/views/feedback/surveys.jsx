@@ -110,7 +110,7 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
@@ -130,7 +130,7 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
@@ -150,7 +150,7 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
@@ -170,7 +170,7 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
