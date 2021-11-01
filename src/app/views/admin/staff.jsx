@@ -197,7 +197,6 @@ const Staff = () => {
           />
         </div>
       </div>
-    </div>
   );
 };
 

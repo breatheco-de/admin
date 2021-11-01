@@ -3,12 +3,14 @@ import {
   Divider,
   Card,
   Grid,
+  IconButton,
   TextField,
   Button,
   MenuItem,
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
+import { Link, useHistory } from 'react-router-dom';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { Formik } from 'formik';
@@ -53,11 +55,13 @@ const CohortDetails = ({
   syllabusVersion,
   neverEnds,
   isPrivate,
+  timeZone
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
   // const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
+  const [timeZones, setTimeZones] = useState('America/Caracas');
 
   useEffect(() => {
     // setIsLoading(true);
@@ -87,15 +91,15 @@ const CohortDetails = ({
           kickoff_date: startDate,
           never_ends: neverEnds,
           specialtyMode,
+          timeZone: timeZone
         }}
-        onSubmit={({ specialtyMode, ...values }) => {
+        onSubmit={({ specialtyMode, ...values }) =>
           // const specialtyModeId = cert ? cert.id : null;
-          return onSubmit({
+          onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
             // specialty_mode: specialtyModeId,
-          });
-        }}
+          })}
         enableReinitialize
       >
         {({
@@ -131,14 +135,14 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
+                  
                   onChange={(certificate) => {
                     setSyllabus(certificate);
                     setVersion(null);
                   }}
                   width="100%"
                   key={syllabus}
-                  asyncSearch={() => bc.admissions()
-                    .getAllSyllabus()}
+                  asyncSearch={() => bc.admissions().getAllSyllabus()}
                   size="small"
                   label="Syllabus"
                   data-cy="syllabus"
@@ -154,8 +158,7 @@ const CohortDetails = ({
                   onChange={(v) => setVersion(v)}
                   width="100%"
                   key={syllabus !== null ? syllabus.slug : ''}
-                  asyncSearch={() => bc.admissions()
-                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
+                  asyncSearch={() => bc.admissions().getAllCourseSyllabus(syllabus?.slug, academy.id)}
                   size="small"
                   label="Version"
                   data-cy="version"
@@ -254,8 +257,8 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                          setFieldValue('ending_date', date.toISOString());
-                        }}
+                  setFieldValue('ending_date', date.toISOString());
+                }}
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
@@ -281,7 +284,50 @@ const CohortDetails = ({
                     label="This cohort never ends"
                   />
                 </Grid>
+                
               )}
+              
+              <Grid item md={3} sm={4} xs={12}>
+                Live meeting URL
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
+                    name="meetingURL"
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    defaultValue={"https://bluejeans.com/976625693"}
+                    // value={"https://bluejeans.com/976625693"}
+                    // InputProps={{
+                    //   readOnly: true,
+                    // }}
+                  />
+                </Grid>
+               
+                <Grid item md={3} sm={4} xs={12}>
+                 Timezone 
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      
+                      debounced={false}
+                      onChange={(x) => setTimeZone(x)}
+                      width="60%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getAllTimeZone()}
+                      size="small"
+                      data-cy="timezone"
+                      label="Timezone"
+                      required
+                      getOptionLabel={(option) => `${option}`}
+                      value={timeZone}
+                    />
+                 
+                  </div>
+                </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
                 Save Cohort Details
               </Button>

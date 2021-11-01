@@ -24,6 +24,14 @@ const activityTypes = {
     icon: 'people',
     render: (activity) => `User login at ${dayjs(activity.created_at).format('h-mm-A')}`,
   },
+  educational_note: {
+    icon: 'note',
+    render: (activity) => JSON.parse(activity.data).body,
+  },
+  career_note: {
+    icon: 'note',
+    render: (activity) => JSON.parse(activity.data).body,
+  },
   online_platform_registration: {
     icon: 'app_registration',
     render: (activity) => `The Student registered on day ${activity.day}`,

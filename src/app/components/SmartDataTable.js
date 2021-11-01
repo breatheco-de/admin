@@ -39,6 +39,7 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
+  const [searchBoxValue, setSearchBoxValue] = useState("");
   const query = useQuery();
   const history = useHistory();
   const [querys, setQuerys] = useState({
@@ -67,6 +68,13 @@ export const SmartMUIDataTable = (props) => {
       setIsAlive(false);
     };
   }, [isAlive]);
+
+  const clearSearchBox = () => {
+    setSearchBoxValue("");
+    handlePageChange()
+
+  };
+
 
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     setIsLoading(true);
@@ -102,31 +110,110 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
-  return (
-    <>
-      {isLoading && <MatxLoading />}
-      <MUIDataTable
-        title={props.title}
-        data={props.items}
-        columns={props.columns}
-        options={{
-          download: false,
-          filterType: 'textField',
-          responsive: 'vertical',
-          serverSide: true,
-          elevation: 0,
-          count: table.count,
-          page: table.page,
-          selectableRowsHeader: false,
-          rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
-          rowsPerPageOptions: [10, 20, 40, 80, 100],
-          viewColumns: true,
-          customToolbar: () => (
-            <DownloadCsv
-              getAllPagesCSV={() => props.downloadCSV(querys.like)}
-              getSinglePageCSV={() => props.downloadCSV(querys)}
-            />
-          ),
+  const handleChange = (e) => {
+    setSearchBoxValue(e.target.value)
+  }
+
+
+  return (<>
+    {isLoading && <MatxLoading />}
+    <MUIDataTable
+      title={props.title}
+      data={props.items}
+      columns={props.columns}
+      options={{
+        download: false,
+        filterType: 'textField',
+        responsive: 'vertical',
+        serverSide: true,
+        elevation: 0,
+        count: table.count,
+        page: table.page,
+        selectableRowsHeader: false,
+        rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
+        rowsPerPageOptions: [10, 20, 40, 80, 100],
+        viewColumns: true,
+        customToolbar: () => (
+          <DownloadCsv
+            getAllPagesCSV={() => props.downloadCSV(querys.like)}
+            getSinglePageCSV={() => props.downloadCSV(querys)}
+          />
+        ),
+
+        onColumnSortChange: (changedColumn, direction) => {
+          if (direction == 'asc') {
+            handlePageChange(
+              querys.offset,
+              querys.limit,
+              querys.like,
+              changedColumn,
+            );
+          }
+          if (direction == 'desc') {
+            handlePageChange(
+              querys.offset,
+              querys.limit,
+              querys.like,
+              `-${changedColumn}`,
+            );
+          }
+        },
+
+        onFilterChange: (
+          changedColumn,
+          filterList,
+          type,
+          changedColumnIndex
+        ) => {
+          let q;
+          if (type === 'reset') {
+            q = {
+              limit: querys.limit ? querys.limit : 10,
+              offset: querys.offset ? querys.offset : 0,
+            };
+          } else if (
+            filterList[changedColumnIndex][0] === undefined
+            || type === 'chip'
+          ) {
+            q = { ...querys };
+            delete q[changedColumn];
+          } else {
+            q = {
+              ...querys,
+              [changedColumn]: filterList[changedColumnIndex][0],
+            };
+          }
+          setQuerys(q);
+          history.replace(
+            `${props.historyReplace}?${Object.keys(q)
+              .map((key) => `${key}=${q[key]}`)
+              .join('&')}`,
+          );
+        },
+
+        customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+          let children = null;
+          if (props.options?.customToolbarSelect) {
+            children = props.options.customToolbarSelect(
+              selectedRows,
+              displayData,
+              setSelectedRows,
+              loadData,
+            );
+          }
+          return (
+            <StyledDefaultToobar
+              selectedRows={selectedRows}
+              displayData={displayData}
+              setSelectedRows={setSelectedRows}
+              items={props.items}
+              onBulkDelete={loadData}
+              deleting={props.deleting}
+            >
+              {children}
+            </StyledDefaultToobar>
+          );
+        },
 
           onColumnSortChange: (changedColumn, direction) => {
             if (direction == 'asc') {
@@ -144,132 +231,56 @@ export const SmartMUIDataTable = (props) => {
                 querys.like,
                 `-${changedColumn}`,
               );
-            }
-          },
-
-          onFilterChange: (
-            changedColumn,
-            filterList,
-            type,
-            changedColumnIndex,
-          ) => {
-            let q;
-            if (type === 'reset') {
-              q = {
-                limit: querys.limit ? querys.limit : 10,
-                offset: querys.offset ? querys.offset : 0,
-              };
-            } else if (
-              filterList[changedColumnIndex][0] === undefined
-            || type === 'chip'
-            ) {
-              q = { ...querys };
-              delete q[changedColumn];
-            } else {
-              q = {
-                ...querys,
-                [changedColumn]: filterList[changedColumnIndex][0],
-              };
-            }
-            setQuerys(q);
-            history.replace(
-              `${props.historyReplace}?${Object.keys(q)
-                .map((key) => `${key}=${q[key]}`)
-                .join('&')}`,
-            );
-          },
-
-          customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-            let children = null;
-            if (props.options?.customToolbarSelect) {
-              children = props.options.customToolbarSelect(
-                selectedRows,
-                displayData,
-                setSelectedRows,
-                loadData,
-              );
-            }
-            return (
-              <StyledDefaultToobar
-                selectedRows={selectedRows}
-                displayData={displayData}
-                setSelectedRows={setSelectedRows}
-                items={props.items}
-                onBulkDelete={loadData}
-                deleting={props.deleting}
-              >
-                {children}
-              </StyledDefaultToobar>
-            );
-          },
-
-          onTableChange: (action, tableState) => {
-            switch (action) {
-              case 'changePage':
-                handlePageChange(
-                  tableState.page,
-                  tableState.rowsPerPage,
-                  querys.like,
-                  querys.sort,
-                );
-                break;
-              case 'changeRowsPerPage':
-                handlePageChange(
-                  tableState.page,
-                  tableState.rowsPerPage,
-                  querys.like,
-                  querys.sort,
-                );
-                break;
-            }
-          },
-          customFilterDialogFooter: () => (
-            <div style={{ marginTop: '40px' }}>
-              <Button
-                variant="contained"
-                onClick={() => handleFilterSubmit()}
-              >
-                Apply Filters
-              </Button>
-            </div>
-          ),
-          customSearchRender: (hideSearch) => (
-            <Grow appear in timeout={300}>
-              <TextField
-                variant="outlined"
-                size="small"
-                fullWidth
-                onKeyPress={(e) => {
-                  if (e.key == 'Enter') {
-                    handlePageChange(
-                      querys.offset,
-                      querys.limit,
-                      e.target.value,
-                      querys.sort,
-                    );
-                  }
-                }}
-                InputProps={{
-                  style: {
-                    paddingRight: 0,
-                  },
-                  startAdornment: (
-                    <Icon className="mr-2" fontSize="small">
-                      search
-                    </Icon>
-                  ),
-                  endAdornment: (
-                    <IconButton onClick={hideSearch}>
-                      <Icon fontSize="small">clear</Icon>
-                    </IconButton>
-                  ),
-                }}
-              />
-            </Grow>
-          ),
-        }}
-      />
-    </>
+          }
+        },
+        customFilterDialogFooter: () => (
+          <div style={{ marginTop: '40px' }}>
+            <Button
+              variant="contained"
+              onClick={() => handleFilterSubmit()}
+            >
+              Apply Filters
+            </Button>
+          </div>
+        ),
+        customSearchRender: (hideSearch) => (
+          <Grow appear in timeout={300}>
+            <TextField
+              variant="outlined"
+              size="small"
+              fullWidth
+              value={searchBoxValue}
+              onChange={handleChange}
+              onKeyPress={(e) => {
+                if (e.key == 'Enter') {
+                  handlePageChange(
+                    querys.offset,
+                    querys.limit,
+                    e.target.value,
+                    querys.sort,
+                  );
+                }
+              }}
+              InputProps={{
+                style: {
+                  paddingRight: 0,
+                },
+                startAdornment: (
+                  <Icon className="mr-2" fontSize="small">
+                    search
+                  </Icon>
+                ),
+                endAdornment: (
+                  <IconButton onClick={() => clearSearchBox()}>
+                    <Icon fontSize="small" >clear</Icon>
+                  </IconButton>
+                ),
+              }}
+            />
+          </Grow>
+        ),
+      }}
+    /></>
   );
 };
 
