@@ -37,6 +37,7 @@ const defaultProps = {
   form: 'default',
   label: undefined,
   dialog: false,
+  required: false,
   children: undefined,
 };
 
@@ -44,6 +45,7 @@ const propTypes = {
   form: PropTypes.string,
   label: PropTypes.string,
   dialog: PropTypes.bool,
+  required: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -85,9 +87,9 @@ const Field = ({
     ...extraProps,
   };
 
-  // fix a bug in production build
-  if ('required' in textProps && !textProps.required) delete textProps.required;
-  if ('readonly' in textProps && !textProps.readonly) delete textProps.readonly;
+  // // fix a bug in production build
+  // if ('required' in textProps && !textProps.required) delete textProps.required;
+  // if ('readonly' in textProps && !textProps.readonly) delete textProps.readonly;
 
   const renderInput = (params) => {
     const { inputProps } = params;
