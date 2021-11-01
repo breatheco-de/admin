@@ -41,31 +41,19 @@ axiosInstance.bcDelete = function (...args) {
 };
 
 function printAxiosResponse(object) {
-  // return;
   if (process.env.NODE_ENV === 'production') return;
 
-  console.log('');
-  console.log('');
-  console.log('');
+  const log = [object.config.method.toUpperCase(), object.status, object.config.url];
 
-  console.log('Event:                    request');
-  console.log('Resource type:            xhr');
-  console.log(`Method:                   ${object.config.method.toUpperCase()}`);
-  console.log(`Url:                      ${object.config.url}`);
-  console.log('Xhr:                      ', object.request);
-  console.log('Request headers:          ', object.config.headers);
-
-  if (object.config.data) {
+  if (object.data) {
     try {
-      console.log('Request body:             ', JSON.parse(object.config.data));
+      log.push(JSON.parse(object.data));
     } catch (_) {
-      console.log('Request body:             ', object.config.data);
+      log.push(object.data);
     }
   }
 
-  console.log(`Response status code:     ${object.status}`);
-  console.log('Response headers:         ', object.headers);
-  if (object.data) console.log('Response body:            ', object.data);
+  console.log(...log);
 }
 
 axiosInstance.interceptors.response.use(

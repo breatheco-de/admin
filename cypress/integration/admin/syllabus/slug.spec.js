@@ -314,8 +314,8 @@ describe('/admin/syllabus/:slug', () => {
 
   context('Timeslot Form', () => {
     it('List and delete', () => {
-      const startingHour = moment(timeslotStartingAt).local().format('HH:mm');
-      const endingHour = moment(timeslotEndingAt).local().format('HH:mm');
+      const startingHour = moment.parseZone(timeslotStartingAt).local().format('HH:mm');
+      const endingHour = moment.parseZone(timeslotEndingAt).local().format('HH:mm');
 
       cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
       cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');

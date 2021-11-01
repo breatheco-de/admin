@@ -110,6 +110,9 @@ const Field = ({
     onChange,
     renderInput,
   };
+  console.log('==================================');
+  console.log(textProps);
+  console.log(dateProps);
 
   const boxProps = {
     'data-cy': cypressFieldName,

@@ -79,7 +79,6 @@ const ConfirmAlert = ({
           autoFocus
           data-cy={acceptButtonTestId}
           onClick={() => {
-            console.log(onOpen);
             onOpen();
             setIsOpen(false);
           }}
