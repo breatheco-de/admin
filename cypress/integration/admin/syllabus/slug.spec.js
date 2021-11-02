@@ -323,9 +323,6 @@ describe('/admin/syllabus/:slug', () => {
         cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
         cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-        cy.log('timezone');
-        cy.log(timezone);
-
         cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
           `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
         cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
@@ -344,9 +341,11 @@ describe('/admin/syllabus/:slug', () => {
           cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
           cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-          cy.get('[data-cy="timeslot-detail-11"]').should('have.text', 'Every WEEK on Tuesday from 15:40 to 16:40');
+          cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
+            `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
           cy.get('[data-cy="timeslot-detail-12"]').should('not.exist');
-          cy.get('[data-cy="timeslot-detail-13"]').should('have.text', 'Every MONTH on Tuesday from 15:40 to 16:40');
+          cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
+            `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
 
           cy.get('@deleteAdmissionsAcademyScheduleIdTimeslotIdRequest').then(({ request }) => {
             cy.wrap(request.body).should('eq', '')
