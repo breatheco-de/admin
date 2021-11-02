@@ -12,8 +12,6 @@ jobs:
   cypress-test:
     name: Test with Server
     runs-on: ubuntu-latest
-    env: # environment variable
-      TEST: 1234r4r3
     strategy:
       matrix:
         node-version: [16.x] # Long term support
