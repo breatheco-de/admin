@@ -52,14 +52,13 @@ describe('/admin/syllabus/:slug', () => {
       breathecode.admissions.postAcademySchedule();
       breathecode.admissions.postAcademyScheduleIdTimeslot();
 
-      cy.visit('/admin/syllabus/full-stack-ft');
+      cy.visit('/admin/syllabus/full-stack-ft', {
+        onBeforeLoad(win) {
+          cy.stub(win, 'open')
+        }
+      });
     });
 
-    cy.visit('/admin/syllabus/full-stack-ft', {
-      onBeforeLoad(win) {
-        cy.stub(win, 'open')
-      }
-    });
   });
   context('Additional Actions', () => {
     it('Make public/private', () => {
@@ -314,38 +313,42 @@ describe('/admin/syllabus/:slug', () => {
 
   context('Timeslot Form', () => {
     it('List and delete', () => {
-      const startingHour = moment(timeslotStartingAt).format('HH:mm');
-      const endingHour = moment(timeslotEndingAt).format('HH:mm');
+      cy.window().then((win) => {
+        const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
 
-      cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
-      cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
-      cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
-
-      cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
-        `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
-      cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
-        `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
-      cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
-        `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
-
-      cy.mock().then(({ breathecode }) => {
-        breathecode.admissions.getAcademyScheduleIdTimeslot(5, [])
-        cy.get('[data-cy="delete-timeslot-12"]').click()
-        cy.testConfirmAlert();
-
-        cy.get('[data-cy="confirm-alert-accept-button"]').click();
+        const startingHour = moment(timeslotStartingAt).tz(timezone).format('HH:mm');
+        const endingHour = moment(timeslotEndingAt).tz(timezone).format('HH:mm');
 
         cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
         cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
         cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-        cy.get('[data-cy="timeslot-detail-11"]').should('have.text', 'Every WEEK on Tuesday from 15:40 to 16:40');
-        cy.get('[data-cy="timeslot-detail-12"]').should('not.exist');
-        cy.get('[data-cy="timeslot-detail-13"]').should('have.text', 'Every MONTH on Tuesday from 15:40 to 16:40');
+        cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
+          `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
+        cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
+          `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
+        cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
+          `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
 
-        cy.get('@deleteAdmissionsAcademyScheduleIdTimeslotIdRequest').then(({ request }) => {
-          cy.wrap(request.body).should('eq', '')
-          cy.wrap(request.method).should('eq', 'DELETE')
+        cy.mock().then(({ breathecode }) => {
+          breathecode.admissions.getAcademyScheduleIdTimeslot(5, [])
+          cy.get('[data-cy="delete-timeslot-12"]').click()
+          cy.testConfirmAlert();
+
+          cy.get('[data-cy="confirm-alert-accept-button"]').click();
+
+          cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
+          cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
+          cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
+
+          cy.get('[data-cy="timeslot-detail-11"]').should('have.text', 'Every WEEK on Tuesday from 15:40 to 16:40');
+          cy.get('[data-cy="timeslot-detail-12"]').should('not.exist');
+          cy.get('[data-cy="timeslot-detail-13"]').should('have.text', 'Every MONTH on Tuesday from 15:40 to 16:40');
+
+          cy.get('@deleteAdmissionsAcademyScheduleIdTimeslotIdRequest').then(({ request }) => {
+            cy.wrap(request.body).should('eq', '')
+            cy.wrap(request.method).should('eq', 'DELETE')
+          });
         });
       })
     });

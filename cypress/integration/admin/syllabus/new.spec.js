@@ -2,7 +2,7 @@
 
 const moment = require('moment');
 
-describe('/admin/syllabus/:slug', () => {
+describe('/admin/syllabus/new', () => {
   beforeEach(() => {
     cy.auth();
     cy.mockPostAdmissionsSyllabusResponse();
