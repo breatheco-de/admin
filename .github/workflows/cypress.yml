@@ -21,13 +21,10 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: ~/.npm
+          path: '**/node_modules'
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
             # ${{ runner.os }}-build-${{ env.cache-name }}-
-            # ${{ runner.os }}-build-
-            # ${{ runner.os }}-
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2

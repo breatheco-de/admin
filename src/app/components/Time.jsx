@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Grid,
   TextField,
@@ -38,6 +38,7 @@ const defaultProps = {
   label: undefined,
   dialog: false,
   required: false,
+  readOnly: false,
   children: undefined,
 };
 
@@ -46,6 +47,7 @@ const propTypes = {
   label: PropTypes.string,
   dialog: PropTypes.bool,
   required: PropTypes.bool,
+  readOnly: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -54,8 +56,10 @@ const propTypes = {
 };
 
 const Field = ({
-  form, label, dialog, children, ...props
+  form, label, dialog, readOnly, children, ...props
 }) => {
+  const elementRef = useRef();
+
   const extraProps = props;
   extraProps.name = props.name || '';
   extraProps.name = props.name.toLowerCase().replace(/ /g, '_');
@@ -84,6 +88,8 @@ const Field = ({
     onBlur: field.onBlur,
     name: fieldName,
     placeholder: '',
+    ref: elementRef,
+    readOnly,
     ...extraProps,
   };
 
@@ -123,6 +129,17 @@ const Field = ({
       },
     },
   };
+
+  useEffect(() => {
+    setInterval(() => {
+      if (!textProps.required && elementRef.current.getAttribute('required') === '') {
+        elementRef.current.removeAttribute('required');
+      }
+      if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
+        elementRef.current.removeAttribute('readonly');
+      }
+    }, 0);
+  }, []);
 
   if (meta.value) textProps.value = meta.value;
   return (
