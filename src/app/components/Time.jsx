@@ -130,16 +130,16 @@ const Field = ({
     },
   };
 
-  useEffect(() => {
-    setInterval(() => {
-      if (!textProps.required && elementRef.current.getAttribute('required') === '') {
-        elementRef.current.removeAttribute('required');
-      }
-      if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
-        elementRef.current.removeAttribute('readonly');
-      }
-    }, 0);
-  }, []);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     if (!textProps.required && elementRef.current.getAttribute('required') === '') {
+  //       elementRef.current.removeAttribute('required');
+  //     }
+  //     if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
+  //       elementRef.current.removeAttribute('readonly');
+  //     }
+  //   }, 0);
+  // }, []);
 
   if (meta.value) textProps.value = meta.value;
   return (

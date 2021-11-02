@@ -131,22 +131,13 @@ const Field = ({
 
   useEffect(() => {
     console.log('text props');
-    console.log(textProps);
+    console.log(textProps.readOnly, textProps.readonly, textProps.read_only, Object.keys(textProps));
 
     console.log('date props');
-    console.log(dateProps);
+    console.log(dateProps.readOnly, dateProps.readonly, dateProps.read_only, Object.keys(dateProps));
 
     console.log('box props');
-    console.log(boxProps);
-
-    console.log('form');
-    console.log(form);
-
-    console.log('label');
-    console.log(label);
-
-    console.log('dialog');
-    console.log(dialog);
+    console.log(boxProps.readOnly, boxProps.readonly, boxProps.read_only, Object.keys(boxProps));
 
     console.log('readOnly');
     console.log(readOnly);
