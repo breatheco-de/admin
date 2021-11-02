@@ -114,6 +114,7 @@ const Field = ({
     size: 'small',
     variant: 'outlined',
     inputFormat: 'MMMM dd, yyyy',
+    disableMaskedInput: true,
     autoOk: true,
     name: fieldName,
     value: field.value,

@@ -106,6 +106,7 @@ const Field = ({
     fullWidth: true,
     size: 'small',
     variant: 'outlined',
+    disableMaskedInput: true,
     'data-cy': cypressFieldName,
     autoOk: true,
     name: fieldName,
