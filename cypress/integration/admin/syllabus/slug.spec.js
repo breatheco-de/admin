@@ -55,265 +55,269 @@ describe('/admin/syllabus/:slug', () => {
       cy.visit('/admin/syllabus/full-stack-ft', {
         onBeforeLoad(win) {
           cy.stub(win, 'open')
-
           // debug in cypress.io
-          win.console.log = cy.log
-          win.console.error = cy.log
+          cy.stub(win.console, 'log', console.log)
+          cy.stub(win.console, 'error', console.error)
         }
       });
+      // Cypress.on('window:before:load', (win) => {
+      //   // debug in cypress.io
+      //   win.console.log = (...args) => console.log(args)
+      //   win.console.error = (...args) => console.error(args)
+      // });
     });
 
   });
-  context('Additional Actions', () => {
-    it('Make public/private', () => {
-      cy.mock().then(({ breathecode }) => {
-        // mock requests
-        cy.wait(2000);
-        breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': false});
-        cy.get('[data-cy="additional-actions"]').click();
-        cy.contains('li', 'Make public').click();
-        cy.get('[data-cy="confirm-alert-accept-button"]').click();
-        cy.wait(2000);
+  // context('Additional Actions', () => {
+  //   it('Make public/private', () => {
+  //     cy.mock().then(({ breathecode }) => {
+  //       // mock requests
+  //       cy.wait(2000);
+  //       breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': false});
+  //       cy.get('[data-cy="additional-actions"]').click();
+  //       cy.contains('li', 'Make public').click();
+  //       cy.get('[data-cy="confirm-alert-accept-button"]').click();
+  //       cy.wait(2000);
 
-        breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': true});
-        cy.get('[data-cy="additional-actions"]').click();
-        cy.contains('li', 'Make private').click();
-        cy.get('[data-cy="confirm-alert-accept-button"]').click();
-        cy.wait(2000);
+  //       breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': true});
+  //       cy.get('[data-cy="additional-actions"]').click();
+  //       cy.contains('li', 'Make private').click();
+  //       cy.get('[data-cy="confirm-alert-accept-button"]').click();
+  //       cy.wait(2000);
 
-        cy.get('[data-cy="additional-actions"]').click();
-        cy.contains('li', 'Make public').should('exist');
-      });
-    })
-    it('Edit syllabus content', () => {
-      cy.get('[data-cy="additional-actions"]').click();
-      cy.contains('li', 'Edit Syllabus Content').click();
+  //       cy.get('[data-cy="additional-actions"]').click();
+  //       cy.contains('li', 'Make public').should('exist');
+  //     });
+  //   })
+  //   it('Edit syllabus content', () => {
+  //     cy.get('[data-cy="additional-actions"]').click();
+  //     cy.contains('li', 'Edit Syllabus Content').click();
 
-      cy.window().its('open').should('be.calledOnce');
-      cy.window().its('open').should('be.calledWith', 'https://build.breatheco.de/', '_blank');
-    })
-  });
-  context('Syllabus form', () => {
-    it('How many days ago', () => {
-      cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
-        const howManyDaysAgo = moment().diff(created_at, 'days')
-        cy.get('[data-cy="how-many-days-ago"]').should('have.text', `Created at: ${howManyDaysAgo} days ago`)
-      });
-    });
+  //     cy.window().its('open').should('be.calledOnce');
+  //     cy.window().its('open').should('be.calledWith', 'https://build.breatheco.de/', '_blank');
+  //   })
+  // });
+  // context('Syllabus form', () => {
+  //   it('How many days ago', () => {
+  //     cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
+  //       const howManyDaysAgo = moment().diff(created_at, 'days')
+  //       cy.get('[data-cy="how-many-days-ago"]').should('have.text', `Created at: ${howManyDaysAgo} days ago`)
+  //     });
+  //   });
 
-    it('Slug field validations', () => {
-      cy.testSlugField('default', 'slug', 'full-stack-ft');
-    });
+  //   it('Slug field validations', () => {
+  //     cy.testSlugField('default', 'slug', 'full-stack-ft');
+  //   });
 
-    it('Name field validations', () => {
-      cy.testNameField('default', 'name', 'Full-Stack Software Developer FT')
-    });
+  //   it('Name field validations', () => {
+  //     cy.testNameField('default', 'name', 'Full-Stack Software Developer FT')
+  //   });
 
-    it('Total hours field validations', () => {
-      cy.testNonZeroPositiveNumberField('default', 'Total hours', 'duration-in-hours', '320')
-    });
+  //   it('Total hours field validations', () => {
+  //     cy.testNonZeroPositiveNumberField('default', 'Total hours', 'duration-in-hours', '320')
+  //   });
 
-    it('Weekly hours field validations', () => {
-       cy.testNonZeroPositiveNumberField('default', 'Weekly hours', 'week-hours', '40')
-    });
+  //   it('Weekly hours field validations', () => {
+  //      cy.testNonZeroPositiveNumberField('default', 'Weekly hours', 'week-hours', '40')
+  //   });
 
-    it('Total days field validations', () => {
-      cy.testNonZeroPositiveNumberField('default', 'Total days', 'duration-in-days', '45')
-    });
+  //   it('Total days field validations', () => {
+  //     cy.testNonZeroPositiveNumberField('default', 'Total days', 'duration-in-days', '45')
+  //   });
 
-    it('Github URL field validations', () => {
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+  //   it('Github URL field validations', () => {
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('https://www.google.com/').blur();
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://www.google.com/');
-      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('https://www.google.com/').blur();
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://www.google.com/');
+  //     cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('https://').blur();
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://');
-      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('https://').blur();
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://');
+  //     cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('https://github.com').blur();
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com');
-      cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('https://github.com').blur();
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com');
+  //     cy.get('[data-cy="default-github-url"] p').should('have.text', 'Invalid github url');
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/apiv2');
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
-      cy.get('[data-cy="default-github-url"] p').should('not.exist');
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/apiv2');
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+  //     cy.get('[data-cy="default-github-url"] p').should('not.exist');
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('http://github.com/jefer94/apiv2').blur();
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'http://github.com/jefer94/apiv2');
-      cy.get('[data-cy="default-github-url"] p').should('not.exist');
-    });
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('http://github.com/jefer94/apiv2').blur();
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'http://github.com/jefer94/apiv2');
+  //     cy.get('[data-cy="default-github-url"] p').should('not.exist');
+  //   });
 
-    it('Logo field validations', () => {
-      cy.get('[data-cy=default-logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
+  //   it('Logo field validations', () => {
+  //     cy.get('[data-cy=default-logo] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
 
-      cy.get('[data-cy=default-logo] input').focus().clear();
-      cy.get('[data-cy=default-logo] input').type('https://').blur();
-      cy.get('[data-cy=default-logo] input').should('have.value', 'https://');
-      cy.get('[data-cy=default-logo] p').should('have.text', 'Invalid logo url');
+  //     cy.get('[data-cy=default-logo] input').focus().clear();
+  //     cy.get('[data-cy=default-logo] input').type('https://').blur();
+  //     cy.get('[data-cy=default-logo] input').should('have.value', 'https://');
+  //     cy.get('[data-cy=default-logo] p').should('have.text', 'Invalid logo url');
 
-      cy.get('[data-cy=default-logo] input').focus().clear();
-      cy.get('[data-cy=default-logo] input').type('https://www.google.com').blur();
-      cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com');
-      cy.get('[data-cy=default-logo] p').should('not.exist');
+  //     cy.get('[data-cy=default-logo] input').focus().clear();
+  //     cy.get('[data-cy=default-logo] input').type('https://www.google.com').blur();
+  //     cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com');
+  //     cy.get('[data-cy=default-logo] p').should('not.exist');
 
-      cy.get('[data-cy=default-logo] input').focus().clear();
-      cy.get('[data-cy=default-logo] input').type('https://www.google.com/').blur();
-      cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com/');
-      cy.get('[data-cy=default-logo] p').should('not.exist');
+  //     cy.get('[data-cy=default-logo] input').focus().clear();
+  //     cy.get('[data-cy=default-logo] input').type('https://www.google.com/').blur();
+  //     cy.get('[data-cy=default-logo] input').should('have.value', 'https://www.google.com/');
+  //     cy.get('[data-cy=default-logo] p').should('not.exist');
 
-      cy.get('[data-cy=default-logo] input').focus().clear();
-      cy.get('[data-cy=default-logo] input').type('http://github.com/jefer94/apiv2').blur();
-      cy.get('[data-cy=default-logo] input').should('have.value', 'http://github.com/jefer94/apiv2');
-      cy.get('[data-cy=default-logo] p').should('not.exist');
-    });
+  //     cy.get('[data-cy=default-logo] input').focus().clear();
+  //     cy.get('[data-cy=default-logo] input').type('http://github.com/jefer94/apiv2').blur();
+  //     cy.get('[data-cy=default-logo] input').should('have.value', 'http://github.com/jefer94/apiv2');
+  //     cy.get('[data-cy=default-logo] p').should('not.exist');
+  //   });
 
-    it('Check request', () => {
-      cy.get('[data-cy="default-slug"] input').should('have.value', 'full-stack-ft');
-      cy.get('[data-cy="default-name"] input').should('have.value', 'Full-Stack Software Developer FT');
-      cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '320');
-      cy.get('[data-cy="default-week-hours"] input').should('have.value', '40');
-      cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '45');
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
-      cy.get('[data-cy="default-logo"] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
+  //   it('Check request', () => {
+  //     cy.get('[data-cy="default-slug"] input').should('have.value', 'full-stack-ft');
+  //     cy.get('[data-cy="default-name"] input').should('have.value', 'Full-Stack Software Developer FT');
+  //     cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '320');
+  //     cy.get('[data-cy="default-week-hours"] input').should('have.value', '40');
+  //     cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '45');
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/apiv2');
+  //     cy.get('[data-cy="default-logo"] input').should('have.value', 'https://storage.googleapis.com/admissions-breathecode/certificate-logo-full-stack-ft');
 
-      // change values
-      cy.get('[data-cy="default-slug"] input').focus().clear();
-      cy.get('[data-cy="default-slug"] input').type('regular-show').blur();
+  //     // change values
+  //     cy.get('[data-cy="default-slug"] input').focus().clear();
+  //     cy.get('[data-cy="default-slug"] input').type('regular-show').blur();
 
-      cy.get('[data-cy="default-name"] input').focus().clear();
-      cy.get('[data-cy="default-name"] input').type('Regular Show').blur();
+  //     cy.get('[data-cy="default-name"] input').focus().clear();
+  //     cy.get('[data-cy="default-name"] input').type('Regular Show').blur();
 
-      cy.get('[data-cy="default-duration-in-hours"] input').focus().clear();
-      cy.get('[data-cy="default-duration-in-hours"] input').type('890').blur();
+  //     cy.get('[data-cy="default-duration-in-hours"] input').focus().clear();
+  //     cy.get('[data-cy="default-duration-in-hours"] input').type('890').blur();
 
-      cy.get('[data-cy="default-week-hours"] input').focus().clear();
-      cy.get('[data-cy="default-week-hours"] input').type('1').blur();
+  //     cy.get('[data-cy="default-week-hours"] input').focus().clear();
+  //     cy.get('[data-cy="default-week-hours"] input').type('1').blur();
 
-      cy.get('[data-cy="default-duration-in-days"] input').focus().clear();
-      cy.get('[data-cy="default-duration-in-days"] input').type('890').blur();
+  //     cy.get('[data-cy="default-duration-in-days"] input').focus().clear();
+  //     cy.get('[data-cy="default-duration-in-days"] input').type('890').blur();
 
-      cy.get('[data-cy="default-github-url"] input').focus().clear();
-      cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/gitpod-desktop').blur();
+  //     cy.get('[data-cy="default-github-url"] input').focus().clear();
+  //     cy.get('[data-cy="default-github-url"] input').type('https://github.com/jefer94/gitpod-desktop').blur();
 
-      cy.get('[data-cy="default-logo"] input').focus().clear();
-      cy.get('[data-cy="default-logo"] input').type('https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg').blur();
+  //     cy.get('[data-cy="default-logo"] input').focus().clear();
+  //     cy.get('[data-cy="default-logo"] input').type('https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg').blur();
 
-      // check after fill the form
-      cy.get('[data-cy="default-slug"] input').should('have.value', 'regular-show');
-      cy.get('[data-cy="default-name"] input').should('have.value', 'Regular Show');
-      cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '890');
-      cy.get('[data-cy="default-week-hours"] input').should('have.value', '1');
-      cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '890');
-      cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/gitpod-desktop');
-      cy.get('[data-cy="default-logo"] input').should('have.value', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
+  //     // check after fill the form
+  //     cy.get('[data-cy="default-slug"] input').should('have.value', 'regular-show');
+  //     cy.get('[data-cy="default-name"] input').should('have.value', 'Regular Show');
+  //     cy.get('[data-cy="default-duration-in-hours"] input').should('have.value', '890');
+  //     cy.get('[data-cy="default-week-hours"] input').should('have.value', '1');
+  //     cy.get('[data-cy="default-duration-in-days"] input').should('have.value', '890');
+  //     cy.get('[data-cy="default-github-url"] input').should('have.value', 'https://github.com/jefer94/gitpod-desktop');
+  //     cy.get('[data-cy="default-logo"] input').should('have.value', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
 
-      // send request
-      cy.get('[data-cy=submit]').click()
+  //     // send request
+  //     cy.get('[data-cy=submit]').click()
 
-      // check the payload
-      cy.wait('@putAdmissionsSyllabusIdRequest').then(({ request }) => {
-        cy.wrap(request.body).its('id').should('eq', 36);
-        cy.wrap(request.body).its('name').should('eq', 'Regular Show');
-        cy.wrap(request.body).its('slug').should('eq', 'regular-show');
-        cy.wrap(request.body).its('duration_in_hours').should('eq', 890);
-        cy.wrap(request.body).its('week_hours').should('eq', 1);
-        cy.wrap(request.body).its('duration_in_days').should('eq', 890);
-        cy.wrap(request.body).its('github_url').should('eq', 'https://github.com/jefer94/gitpod-desktop');
-        cy.wrap(request.body).its('logo').should('eq', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
-      })
+  //     // check the payload
+  //     cy.wait('@putAdmissionsSyllabusIdRequest').then(({ request }) => {
+  //       cy.wrap(request.body).its('id').should('eq', 36);
+  //       cy.wrap(request.body).its('name').should('eq', 'Regular Show');
+  //       cy.wrap(request.body).its('slug').should('eq', 'regular-show');
+  //       cy.wrap(request.body).its('duration_in_hours').should('eq', 890);
+  //       cy.wrap(request.body).its('week_hours').should('eq', 1);
+  //       cy.wrap(request.body).its('duration_in_days').should('eq', 890);
+  //       cy.wrap(request.body).its('github_url').should('eq', 'https://github.com/jefer94/gitpod-desktop');
+  //       cy.wrap(request.body).its('logo').should('eq', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
+  //     })
 
-      // cy.location('pathname').should('eq', '/admissions/cohorts');
-    });
-  });
-  context('Schedule Form', () => {
-    it('Schedule label', () => {
-      cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
-    });
+  //     // cy.location('pathname').should('eq', '/admissions/cohorts');
+  //   });
+  // });
+  // context('Schedule Form', () => {
+  //   it('Schedule label', () => {
+  //     cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
+  //   });
 
-    it('Slug field validations', () => {
-      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
-      cy.get('[data-cy="new-schedule"]').click();
+  //   it('Slug field validations', () => {
+  //     cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+  //     cy.get('[data-cy="new-schedule"]').click();
 
-      cy.testSlugField('new-schedule', 'slug');
-    });
+  //     cy.testSlugField('new-schedule', 'slug');
+  //   });
 
-    it('Name field validations', () => {
-      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
-      cy.get('[data-cy="new-schedule"]').click();
+  //   it('Name field validations', () => {
+  //     cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+  //     cy.get('[data-cy="new-schedule"]').click();
 
-      cy.testNameField('new-schedule', 'name');
-    });
+  //     cy.testNameField('new-schedule', 'name');
+  //   });
 
-    it('Description field validations', () => {
-      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
-      cy.get('[data-cy="new-schedule"]').click();
+  //   it('Description field validations', () => {
+  //     cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+  //     cy.get('[data-cy="new-schedule"]').click();
 
-      cy.testDescriptionField('new-schedule', 'description');
-    });
+  //     cy.testDescriptionField('new-schedule', 'description');
+  //   });
 
-    it('Schedule type field validations', () => {
-      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
-      cy.get('[data-cy="new-schedule"]').click();
+  //   it('Schedule type field validations', () => {
+  //     cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+  //     cy.get('[data-cy="new-schedule"]').click();
 
-      cy.testSelectField('new-schedule', 'schedule-type', ['Part time', 'Full time']);
-    });
+  //     cy.testSelectField('new-schedule', 'schedule-type', ['Part time', 'Full time']);
+  //   });
 
-    it('Check request', () => {
-      const text = 'You can pass with confidence, you will see me clean as a sun. It\'s me, I ' +
-        'clean myself with the MAS pot cleaner. \nThat removes more stains, that disinfects ' +
-        'more, that cleans more and does not harm.\nClean us with MAS well cleaner.';
+  //   it('Check request', () => {
+  //     const text = 'You can pass with confidence, you will see me clean as a sun. It\'s me, I ' +
+  //       'clean myself with the MAS pot cleaner. \nThat removes more stains, that disinfects ' +
+  //       'more, that cleans more and does not harm.\nClean us with MAS well cleaner.';
 
-      cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
-      cy.get('[data-cy="new-schedule"]').click();
+  //     cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
+  //     cy.get('[data-cy="new-schedule"]').click();
 
-      cy.get('[data-cy="new-schedule-slug"] input').should('have.value', '');
-      cy.get('[data-cy="new-schedule-name"] input').should('have.value', '');
-      cy.get('[data-cy="new-schedule-description"] textarea[required]').first().should('have.value', '');
-      cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', '');
+  //     cy.get('[data-cy="new-schedule-slug"] input').should('have.value', '');
+  //     cy.get('[data-cy="new-schedule-name"] input').should('have.value', '');
+  //     cy.get('[data-cy="new-schedule-description"] textarea[required]').first().should('have.value', '');
+  //     cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', '');
 
-      // change values
-      cy.get('[data-cy="new-schedule-slug"] input').focus().clear();
-      cy.get('[data-cy="new-schedule-slug"] input').type('regular-show').blur();
+  //     // change values
+  //     cy.get('[data-cy="new-schedule-slug"] input').focus().clear();
+  //     cy.get('[data-cy="new-schedule-slug"] input').type('regular-show').blur();
 
-      cy.get('[data-cy="new-schedule-name"] input').focus().clear();
-      cy.get('[data-cy="new-schedule-name"] input').type('Regular Show').blur();
+  //     cy.get('[data-cy="new-schedule-name"] input').focus().clear();
+  //     cy.get('[data-cy="new-schedule-name"] input').type('Regular Show').blur();
 
-      cy.get('[data-cy="new-schedule-description"] textarea[required]').focus().clear();
-      cy.get('[data-cy="new-schedule-description"] textarea[required]').type(text).blur();
+  //     cy.get('[data-cy="new-schedule-description"] textarea[required]').focus().clear();
+  //     cy.get('[data-cy="new-schedule-description"] textarea[required]').type(text).blur();
 
-      cy.get('[data-cy="new-schedule-schedule-type"] input').focus().clear();
-      cy.get('[data-cy="new-schedule-schedule-type"] input').type('part time{downarrow}{enter}').blur();
+  //     cy.get('[data-cy="new-schedule-schedule-type"] input').focus().clear();
+  //     cy.get('[data-cy="new-schedule-schedule-type"] input').type('part time{downarrow}{enter}').blur();
 
-      cy.get('[data-cy="new-schedule-syllabus"] input').focus().clear();
-      cy.get('[data-cy="new-schedule-syllabus"] input').type('web developer{downarrow}{enter}').blur();
+  //     cy.get('[data-cy="new-schedule-syllabus"] input').focus().clear();
+  //     cy.get('[data-cy="new-schedule-syllabus"] input').type('web developer{downarrow}{enter}').blur();
 
-      // check after fill the form
-      cy.get('[data-cy="new-schedule-slug"] input').should('have.value', 'regular-show');
-      cy.get('[data-cy="new-schedule-name"] input').should('have.value', 'Regular Show');
-      cy.get('[data-cy="new-schedule-description"]  textarea[required]').should('have.value', text);
-      cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', 'Part time');
-      cy.get('[data-cy="new-schedule-syllabus"] input').should('have.value', 'Web Developer');
+  //     // check after fill the form
+  //     cy.get('[data-cy="new-schedule-slug"] input').should('have.value', 'regular-show');
+  //     cy.get('[data-cy="new-schedule-name"] input').should('have.value', 'Regular Show');
+  //     cy.get('[data-cy="new-schedule-description"]  textarea[required]').should('have.value', text);
+  //     cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', 'Part time');
+  //     cy.get('[data-cy="new-schedule-syllabus"] input').should('have.value', 'Web Developer');
 
-      // send request
-      cy.get('[data-cy="new-schedule-submit"]').click()
+  //     // send request
+  //     cy.get('[data-cy="new-schedule-submit"]').click()
 
-      // check the payload
-      cy.wait('@postAdmissionsAcademyScheduleRequest').then(({ request }) => {
-        cy.wrap(request.body).its('slug').should('eq', 'regular-show');
-        cy.wrap(request.body).its('name').should('eq', 'Regular Show');
-        cy.wrap(request.body).its('description').should('eq', text);
-        cy.wrap(request.body).its('schedule_type').should('eq', 'PART-TIME');
-        cy.wrap(request.body).its('syllabus').should('eq', 30);
-      })
-    });
-  });
+  //     // check the payload
+  //     cy.wait('@postAdmissionsAcademyScheduleRequest').then(({ request }) => {
+  //       cy.wrap(request.body).its('slug').should('eq', 'regular-show');
+  //       cy.wrap(request.body).its('name').should('eq', 'Regular Show');
+  //       cy.wrap(request.body).its('description').should('eq', text);
+  //       cy.wrap(request.body).its('schedule_type').should('eq', 'PART-TIME');
+  //       cy.wrap(request.body).its('syllabus').should('eq', 30);
+  //     })
+  //   });
+  // });
 
   context('Timeslot Form', () => {
     it('List and delete', () => {

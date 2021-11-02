@@ -129,36 +129,36 @@ const Field = ({
     },
   };
 
-  console.log('text props');
-  console.log(textProps);
-
-  console.log('date props');
-  console.log(dateProps);
-
-  console.log('box props');
-  console.log(boxProps);
-
-  console.log('form');
-  console.log(form);
-
-  console.log('label');
-  console.log(label);
-
-  console.log('dialog');
-  console.log(dialog);
-
-  console.log('readOnly');
-  console.log(readOnly);
-
   useEffect(() => {
-    setInterval(() => {
-      if (!textProps.required && elementRef.current.getAttribute('required') === '') {
-        elementRef.current.removeAttribute('required');
-      }
-      if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
-        elementRef.current.removeAttribute('readonly');
-      }
-    }, 0);
+    console.log('text props');
+    console.log(textProps);
+
+    console.log('date props');
+    console.log(dateProps);
+
+    console.log('box props');
+    console.log(boxProps);
+
+    console.log('form');
+    console.log(form);
+
+    console.log('label');
+    console.log(label);
+
+    console.log('dialog');
+    console.log(dialog);
+
+    console.log('readOnly');
+    console.log(readOnly);
+
+    // setInterval(() => {
+    //   if (!textProps.required && elementRef.current.getAttribute('required') === '') {
+    //     elementRef.current.removeAttribute('required');
+    //   }
+    //   if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
+    //     elementRef.current.removeAttribute('readonly');
+    //   }
+    // }, 0);
   }, []);
 
   if (meta.value) textProps.value = meta.value;
