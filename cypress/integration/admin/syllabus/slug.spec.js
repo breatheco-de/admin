@@ -55,6 +55,10 @@ describe('/admin/syllabus/:slug', () => {
       cy.visit('/admin/syllabus/full-stack-ft', {
         onBeforeLoad(win) {
           cy.stub(win, 'open')
+
+          // debug in cypress.io
+          win.console.log = cy.log
+          win.console.error = cy.log
         }
       });
     });

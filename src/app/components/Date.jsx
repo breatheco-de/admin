@@ -129,6 +129,27 @@ const Field = ({
     },
   };
 
+  console.log('text props');
+  console.log(textProps);
+
+  console.log('date props');
+  console.log(dateProps);
+
+  console.log('box props');
+  console.log(boxProps);
+
+  console.log('form');
+  console.log(form);
+
+  console.log('label');
+  console.log(label);
+
+  console.log('dialog');
+  console.log(dialog);
+
+  console.log('readOnly');
+  console.log(readOnly);
+
   useEffect(() => {
     setInterval(() => {
       if (!textProps.required && elementRef.current.getAttribute('required') === '') {
