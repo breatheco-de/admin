@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Formik } from 'formik';
 import {
-  Grid, Divider, Button, Dialog, DialogTitle,
+  Grid, Divider, Button,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import bc from '../../../services/breathecode';
 import ScheduleDetails from './ScheduleDetails';
 import NewSchedule from './NewSchedule';
@@ -13,13 +12,27 @@ const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-const SchedulesList = ({ schedules }) => {
+const SchedulesList = ({ syllabus }) => {
+  const { syllabusSlug } = useParams();
+
+  const [schedules, setSchedules] = useState([]);
   const history = useHistory();
   const [newScheduleIsOpen, setNewScheduleIsOpen] = useState(false);
 
-  const scheduleNew = () => {
-    history.push('/admin/syllabus/schedules/new');
+  const fetchSchedules = async () => {
+    try {
+      const response = await bc.admissions().getAllRelatedSchedulesBySlug(syllabusSlug);
+      setSchedules(response.data);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
   };
+
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
 
   return (
     <>
@@ -37,7 +50,7 @@ const SchedulesList = ({ schedules }) => {
       {schedules.map((v) => <ScheduleDetails className="mb-2" key={`schedule-${v.id}`} schedule={v} />)}
       {/* <SyllabusModeDetails className="mb-2" />
       <SyllabusModeDetails className="mb-2" /> */}
-      <NewSchedule isOpen={newScheduleIsOpen} setIsOpen={setNewScheduleIsOpen} />
+      <NewSchedule isOpen={newScheduleIsOpen} setIsOpen={setNewScheduleIsOpen} syllabus={syllabus} />
     </>
   );
 };

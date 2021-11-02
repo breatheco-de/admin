@@ -76,7 +76,7 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule }) => {
       open={isOpen}
       aria-labelledby="simple-dialog-title"
     >
-      <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
+      <DialogTitle id="simple-dialog-title">New timeslot</DialogTitle>
       <Formik
         initialValues={initialValues}
         // enableReinitialize

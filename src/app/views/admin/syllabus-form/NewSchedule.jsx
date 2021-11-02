@@ -39,20 +39,13 @@ const schema = Yup.object().shape({
   schedule_type: schemas.select('Schedule type', scheduleTypes),
 });
 
-const NewSchedule = ({ isOpen, setIsOpen }) => {
+const NewSchedule = ({ isOpen, setIsOpen, syllabus }) => {
   const classes = useStyles();
-  const [syllabus, setSyllabus] = useState([]);
-
-  useEffect(() => {
-    bc.admissions().getAllSyllabus()
-      .then(({ data }) => setSyllabus(data))
-      .catch(console.error);
-  }, []);
 
   const saveSchedule = (values) => {
     const request = {
       ...values,
-      syllabus: syllabus.filter((v) => v.name === values.syllabus)[0]?.id,
+      syllabus: syllabus?.id,
       schedule_type: values.schedule_type ? values.schedule_type.toUpperCase().replace(' ', '-') : null,
     };
     bc.admissions().addSchedule(request);
@@ -64,7 +57,7 @@ const NewSchedule = ({ isOpen, setIsOpen }) => {
       open={isOpen}
       aria-labelledby="simple-dialog-title"
     >
-      <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
+      <DialogTitle id="simple-dialog-title">New schedule</DialogTitle>
       <Formik
         initialValues={{}}
         validationSchema={schema}
@@ -110,14 +103,6 @@ const NewSchedule = ({ isOpen, setIsOpen }) => {
                 name="schedule_type"
                 // placeholder="Part time"
                 label="Schedule type"
-                required
-                dialog
-              />
-              <Select
-                form="new-schedule"
-                type="text"
-                options={syllabus.map(({ name }) => name)}
-                name="Syllabus"
                 required
                 dialog
               />

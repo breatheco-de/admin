@@ -43,17 +43,6 @@ const Student = () => {
     { label: 'Edit Syllabus Content', value: 'edit_syllabus' },
   ];
 
-  const fetchSchedules = async () => {
-    try {
-      const response = await bc.admissions().getAllRelatedSchedulesBySlug(syllabusSlug);
-      setSchedules(response.data);
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-    return true;
-  };
-
   const fetchSyllabus = async () => {
     try {
       const response = await bc.admissions().getSyllabus(syllabusSlug);
@@ -68,8 +57,7 @@ const Student = () => {
   useEffect(() => {
     setIsLoading(true);
     const fetchSyllabusPromise = fetchSyllabus();
-    const fetchSchedulesPromise = fetchSchedules();
-    fetchSyllabusPromise.then(() => fetchSchedulesPromise.then(() => setIsLoading(false)));
+    fetchSyllabusPromise.then(() => setIsLoading(false));
   }, []);
 
   const updateSyllabus = async (values) => {
@@ -148,7 +136,7 @@ const Student = () => {
             <SyllabusDetails syllabus={syllabus} onSubmit={updateSyllabus} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <SchedulesList schedules={schedules} />
+            <SchedulesList syllabus={syllabus} />
           </Grid>
         </Grid>
       ) : ''}
