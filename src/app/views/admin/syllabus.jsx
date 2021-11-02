@@ -109,7 +109,7 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admin/syllabus/${item.id}`}>
+              <Link to={`/admin/syllabus/${item.slug}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>

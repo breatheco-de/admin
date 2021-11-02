@@ -129,32 +129,6 @@ const Field = ({
     },
   };
 
-  useEffect(() => {
-    console.log('text props');
-    console.log(textProps.readOnly || textProps.readonly || textProps.read_only);
-    for (let key of Object.keys(textProps)) console.log(key, textProps[key]);
-
-    // console.log('date props');
-    // console.log(dateProps.readOnly || dateProps.readonly || dateProps.read_only);
-    // for (let key of Object.keys(dateProps)) console.log(key);
-
-    // console.log('box props');
-    // console.log(boxProps.readOnly || boxProps.readonly || boxProps.read_only);
-    // for (let key of Object.keys(boxProps)) console.log(key);
-
-    // console.log('readOnly');
-    // console.log(readOnly);
-
-    // setInterval(() => {
-    //   if (!textProps.required && elementRef.current.getAttribute('required') === '') {
-    //     elementRef.current.removeAttribute('required');
-    //   }
-    //   if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
-    //     elementRef.current.removeAttribute('readonly');
-    //   }
-    // }, 0);
-  }, []);
-
   if (meta.value) textProps.value = meta.value;
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

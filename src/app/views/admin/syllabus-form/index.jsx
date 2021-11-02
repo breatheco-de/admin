@@ -118,7 +118,7 @@ const Student = () => {
         </Dialog>
         <div>
           <h3 className="mt-0 mb-4 font-medium text-28">
-            Full Stack Web Development
+            {syllabus?.name}
           </h3>
           <div className="flex" data-cy="how-many-days-ago">
             {`Created at: ${howManyDaysAgo()} days ago`}
