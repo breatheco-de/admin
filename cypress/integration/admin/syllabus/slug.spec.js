@@ -316,6 +316,9 @@ describe('/admin/syllabus/:slug', () => {
       cy.window().then((win) => {
         const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
 
+        cy.log('timezone');
+        cy.log(timezone);
+
         const startingHour = moment(timeslotStartingAt).tz(timezone).format('HH:mm');
         const endingHour = moment(timeslotEndingAt).tz(timezone).format('HH:mm');
 
