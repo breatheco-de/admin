@@ -31,8 +31,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      # is based in package-lock.json, it prevents run this test with other dependencies versions
       - name: Install packages
-        run: npm install -D
+        run: npm ci
 
       # # prevent lost the 500 free test quickly
       # - name: Running Tests without recording
