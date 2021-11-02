@@ -316,15 +316,15 @@ describe('/admin/syllabus/:slug', () => {
       cy.window().then((win) => {
         const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
 
-        cy.log('timezone');
-        cy.log(timezone);
-
         const startingHour = moment(timeslotStartingAt).tz(timezone).format('HH:mm');
         const endingHour = moment(timeslotEndingAt).tz(timezone).format('HH:mm');
 
         cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
         cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
         cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
+
+        cy.log('timezone');
+        cy.log(timezone);
 
         cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
           `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
