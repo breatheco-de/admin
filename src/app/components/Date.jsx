@@ -132,15 +132,15 @@ const Field = ({
   useEffect(() => {
     console.log('text props');
     console.log(textProps.readOnly || textProps.readonly || textProps.read_only);
-    console.log(Object.keys(textProps));
+    for (let key of Object.keys(textProps)) console.log(key);
 
     console.log('date props');
     console.log(dateProps.readOnly || dateProps.readonly || dateProps.read_only);
-    console.log(Object.keys(dateProps));
+    for (let key of Object.keys(dateProps)) console.log(key);
 
     console.log('box props');
     console.log(boxProps.readOnly || boxProps.readonly || boxProps.read_only);
-    console.log(Object.keys(boxProps));
+    for (let key of Object.keys(boxProps)) console.log(key);
 
     console.log('readOnly');
     console.log(readOnly);
