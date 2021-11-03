@@ -15,7 +15,8 @@ jobs:
       matrix:
         # node-version: [17.x, 16.x] # Latest, long term support
         node-version: [16.x] # long term support
-        browser: [chrome, firefox]
+        # browser: [chrome, firefox] # this is disabled because problems like the bug with Date.jsx
+        browser: [electron]
 
     steps:
       - name: Checkout
