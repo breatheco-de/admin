@@ -55,6 +55,11 @@ const propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+// const TextField2 = (props) => {
+//   console.log('TextField', props);
+//   return <></>
+// }
+
 const Field = ({
   form, label, dialog, readOnly, children, ...props
 }) => {
@@ -100,6 +105,7 @@ const Field = ({
     const { inputProps } = params;
     const cumtomInputProps = {
       ...inputProps,
+      readOnly,
       value: inputProps.value,
     };
 
