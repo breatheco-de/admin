@@ -1,10 +1,12 @@
 name: Cypress Test
+
 on:
   push: {}
   pull_request:
     branches:
       - master
       - development
+
 jobs:
   cypress-test:
     name: Test with Server
@@ -80,5 +82,5 @@ jobs:
 
       - name: Cypress tests
         run: |
-          wait-port 3000
+          yarn wait-port 3000
           yarn cy:run
