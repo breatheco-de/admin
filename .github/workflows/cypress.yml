@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x] # Long term support
+        node-version: [17.x, 16.x] # Latest, long term support
+        browser: [chrome, firefox]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -42,45 +44,13 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      # # prevent lost the 500 free test quickly
-      # - name: Running Tests without recording
-      #   if: ${{ github.event_name == 'push' || github.repository != 'breatheco-de/apiv2' }}
-      #   uses: cypress-io/github-action@v2
-      #   with:
-      #     build: npm run build
-      #     start: npm run serve
-      #     install: false
-      #     wait-on-timeout: 120
-      #     record: false
-      #     parallel: true
-      #     browser: chrome
-      #     wait-on: 'http://localhost:5000'
-      #     config: baseUrl=http://localhost:5000
-
-      # # prevent lost the 500 free test quickly
-      # - name: Running Tests with recording
-      #   # if: ${{ github.event_name == 'pull_request' || github.repository == 'breatheco-de/apiv2' }}
-      #   uses: cypress-io/github-action@v2
-      #   with:
-      #     build: npm run build
-      #     start: npm run serve
-      #     install: false
-      #     wait-on-timeout: 120
-      #     record: true
-      #     parallel: true
-      #     browser: chrome
-      #     wait-on: 'http://localhost:5000'
-      #     config: baseUrl=http://localhost:5000
-      #   env:
-      #     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Production server
         run: |
           yarn build
           yarn serve -l 3000 & # detach serve
 
+      # the original action maintained by cypress is generating bad executions of code (case Date.jsx)
       - name: Cypress tests
         run: |
           yarn wait-port 3000
-          yarn cy:run
+          yarn cy:run --browser matrix.browser
