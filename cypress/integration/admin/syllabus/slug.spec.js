@@ -385,62 +385,66 @@ describe('/admin/syllabus/:slug', () => {
     });
 
     it('Check request', () => {
-      // Don't forget 🦾
-      const startingAt = '1911-10-03T04:00:00.000Z';
-      const endingAt = '1911-10-03T06:00:00.000Z';
+      cy.window().then((win) => {
+        const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
 
-      const startingInstance = moment(startingAt);
-      const endingInstance = moment(endingAt);
+        // Don't forget 🦾
+        const startingAt = '1911-10-03T04:00:00.000Z';
+        const endingAt = '1911-10-03T06:00:00.000Z';
 
-      const startingDate = startingInstance.format('MMMM DD, yyyy');
-      const startingHour = startingInstance.format('hh:mm A');
-      const endingHour = endingInstance.format('hh:mm A');
+        const startingInstance = moment(startingAt).tz(timezone);
+        const endingInstance = moment(endingAt).tz(timezone);
 
-      cy.get('[data-cy="new-timeslot-4"]').click();
+        const startingDate = startingInstance.format('MMMM DD, yyyy');
+        const startingHour = startingInstance.format('hh:mm A');
+        const endingHour = endingInstance.format('hh:mm A');
 
-      cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', '');
-      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
-      cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
-      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', '');
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '');
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '');
+        cy.get('[data-cy="new-timeslot-4"]').click();
 
-      // change values
-      cy.get('[data-cy="new-timeslot-slug"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-slug"] input').type('regular-show').blur();
+        cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', '');
+        cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
+        cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
+        cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', '');
+        cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '');
+        cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '');
 
-      cy.get('[data-cy="new-timeslot-recurrent"] input').click();
-      cy.get('[data-cy="new-timeslot-recurrency-type"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-recurrency-type"] input').type('daily{downarrow}{enter}').blur();
+        // change values
+        cy.get('[data-cy="new-timeslot-slug"] input').focus().clear();
+        cy.get('[data-cy="new-timeslot-slug"] input').type('regular-show').blur();
 
-      cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
+        cy.get('[data-cy="new-timeslot-recurrent"] input').click();
+        cy.get('[data-cy="new-timeslot-recurrency-type"] input').focus().clear();
+        cy.get('[data-cy="new-timeslot-recurrency-type"] input').type('daily{downarrow}{enter}').blur();
 
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
+        cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
+        cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
 
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
+        cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
+        cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
 
-      // check after fill the form
-      cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', 'regular-show');
-      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'true');
-      cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', 'Daily');
-      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
+        cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
+        cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
 
-      // send request
-      cy.get('[data-cy="new-timeslot-submit"]').click()
+        // check after fill the form
+        cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', 'regular-show');
+        cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'true');
+        cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', 'Daily');
+        cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
+        cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
+        cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
 
-      // check the payload
-      // cy.wait('@someRoute').its('request.body').should('include', 'user')
-      cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
-        cy.wrap(request.body).its('slug').should('eq', 'regular-show');
-        cy.wrap(request.body).its('recurrent').should('eq', true);
-        cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
-        cy.wrap(request.body).its('starting_at').should('eq', startingAt);
-        cy.wrap(request.body).its('ending_at').should('eq', endingAt);
+        // send request
+        cy.get('[data-cy="new-timeslot-submit"]').click()
+
+        // check the payload
+        // cy.wait('@someRoute').its('request.body').should('include', 'user')
+        cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
+          cy.wrap(request.body).its('slug').should('eq', 'regular-show');
+          cy.wrap(request.body).its('recurrent').should('eq', true);
+          cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
+          cy.wrap(request.body).its('starting_at').should('eq', startingAt);
+          cy.wrap(request.body).its('ending_at').should('eq', endingAt);
+        });
       });
     });
   });
