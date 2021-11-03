@@ -385,6 +385,17 @@ describe('/admin/syllabus/:slug', () => {
     });
 
     it('Check request', () => {
+      // Don't forget 🦾
+      const startingAt = '1911-10-03T04:56:16.000Z';
+      const endingAt = '1911-10-03T06:56:16.000Z';
+
+      const startingInstance = moment(startingAt);
+      const endingInstance = moment(endingAt);
+
+      const startingDate = startingInstance.format('MMMM DD, yyyy');
+      const startingHour = startingInstance.format('hh:mm A');
+      const endingHour = endingInstance.format('hh:mm A');
+
       cy.get('[data-cy="new-timeslot-4"]').click();
 
       cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', '');
@@ -403,21 +414,21 @@ describe('/admin/syllabus/:slug', () => {
       cy.get('[data-cy="new-timeslot-recurrency-type"] input').type('daily{downarrow}{enter}').blur();
 
       cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-starting-date"] input').type('October 3, 1911').blur();
+      cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
 
       cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').type('10:00 AM').blur();
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
 
       cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').type('12:00 PM').blur();
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
 
       // check after fill the form
       cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', 'regular-show');
       cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'true');
       cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', 'Daily');
-      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', 'October 3, 1911');
-      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '10:00 AM');
-      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '12:00 PM');
+      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
 
       // send request
       cy.get('[data-cy="new-timeslot-submit"]').click()
@@ -428,8 +439,8 @@ describe('/admin/syllabus/:slug', () => {
         cy.wrap(request.body).its('slug').should('eq', 'regular-show');
         cy.wrap(request.body).its('recurrent').should('eq', true);
         cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
-        cy.wrap(request.body).its('starting_at').should('eq', '1911-10-03T04:56:16.000Z');
-        cy.wrap(request.body).its('ending_at').should('eq', '1911-10-03T06:56:16.000Z');
+        cy.wrap(request.body).its('starting_at').should('eq', startingAt);
+        cy.wrap(request.body).its('ending_at').should('eq', endingAt);
       });
     });
   });
