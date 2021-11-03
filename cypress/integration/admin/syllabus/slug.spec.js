@@ -386,8 +386,8 @@ describe('/admin/syllabus/:slug', () => {
 
     it('Check request', () => {
       // Don't forget 🦾
-      const startingAt = '1911-10-03T04:56:16.000Z';
-      const endingAt = '1911-10-03T06:56:16.000Z';
+      const startingAt = '1911-10-03T04:00:00.000Z';
+      const endingAt = '1911-10-03T06:00:00.000Z';
 
       const startingInstance = moment(startingAt);
       const endingInstance = moment(endingAt);
