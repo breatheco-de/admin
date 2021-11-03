@@ -1,5 +1,4 @@
 {
-  "projectId": "vr3pxx",
   "baseUrl": "http://localhost:3000",
   "watchForFileChanges":	true
 }

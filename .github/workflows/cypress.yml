@@ -16,6 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Cypress dependencies
+        run: |
+          apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 \
+          libxss1 libasound2 libxtst6 xauth xvfb
+
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -50,20 +55,30 @@ jobs:
       #     wait-on: 'http://localhost:5000'
       #     config: baseUrl=http://localhost:5000
 
-      # prevent lost the 500 free test quickly
-      - name: Running Tests with recording
-        # if: ${{ github.event_name == 'pull_request' || github.repository == 'breatheco-de/apiv2' }}
-        uses: cypress-io/github-action@v2
-        with:
-          build: npm run build
-          start: npm run serve
-          install: false
-          wait-on-timeout: 120
-          record: true
-          parallel: true
-          browser: chrome
-          wait-on: 'http://localhost:5000'
-          config: baseUrl=http://localhost:5000
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # # prevent lost the 500 free test quickly
+      # - name: Running Tests with recording
+      #   # if: ${{ github.event_name == 'pull_request' || github.repository == 'breatheco-de/apiv2' }}
+      #   uses: cypress-io/github-action@v2
+      #   with:
+      #     build: npm run build
+      #     start: npm run serve
+      #     install: false
+      #     wait-on-timeout: 120
+      #     record: true
+      #     parallel: true
+      #     browser: chrome
+      #     wait-on: 'http://localhost:5000'
+      #     config: baseUrl=http://localhost:5000
+      #   env:
+      #     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Production server
+        run: |
+          yarn build
+          yarn serve -l 3000 & # detach serve
+
+      - name: Cypress tests
+        run: |
+          wait-port 3000
+          yarn cy:run

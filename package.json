@@ -170,7 +170,8 @@
     "husky": "^7.0.0",
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.1",
-    "react-app-rewired": "^2.1.6"
+    "react-app-rewired": "^2.1.6",
+    "wait-port": "^0.2.9"
   },
   "jest": {
     "roots": [
