@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [17.x, 16.x] # Latest, long term support
+        # node-version: [17.x, 16.x] # Latest, long term support
+        node-version: [16.x] # long term support
         browser: [chrome, firefox]
 
     steps:
