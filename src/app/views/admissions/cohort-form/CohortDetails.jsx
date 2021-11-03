@@ -61,7 +61,7 @@ const CohortDetails = ({
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
-  const [timeZones, setTimeZones] = useState('America/Caracas');
+  const [timezone, setTimezone] = useState('America/Caracas');
 
   useEffect(() => {
     // setIsLoading(true);
@@ -91,7 +91,7 @@ const CohortDetails = ({
           kickoff_date: startDate,
           never_ends: neverEnds,
           specialtyMode,
-          timeZone: timeZone
+          timezone: timeZone,
         }}
         onSubmit={({ specialtyMode, ...values }) => {
           const specialtyModeId = cert ? cert.id : null;
@@ -290,45 +290,43 @@ const CohortDetails = ({
 
               <Grid item md={3} sm={4} xs={12}>
                 Live meeting URL
-                </Grid>
-                <Grid item md={9} sm={8} xs={12}>
-                  <TextField
-                    className="m-2"
-                    label="URL"
-                    name="meetingURL"
-                    data-cy="meetingURL"
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="URL"
+                  name="meetingURL"
+                  data-cy="meetingURL"
+                  size="small"
+                  variant="outlined"
+                  defaultValue={"https://bluejeans.com/976625693"}
+                  // value={"https://bluejeans.com/976625693"}
+                  // InputProps={{
+                  //   readOnly: true,
+                  // }}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Timezone
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <div className="flex flex-wrap m--2">
+                  <AsyncAutocomplete
+                    debounced={false}
+                    onChange={(x) => setTimezone(x)}
+                    width="60%"
+                    className="mr-2 ml-2"
+                    asyncSearch={() => bc.admissions().getAllTimeZone()}
                     size="small"
-                    variant="outlined"
-                    defaultValue={"https://bluejeans.com/976625693"}
-                    // value={"https://bluejeans.com/976625693"}
-                    // InputProps={{
-                    //   readOnly: true,
-                    // }}
+                    data-cy="timezone"
+                    label="Timezone"
+                    required
+                    getOptionLabel={(option) => `${option}`}
+                    value={timezone}
                   />
-                </Grid>
 
-                <Grid item md={3} sm={4} xs={12}>
-                 Timezone
-                </Grid>
-                <Grid item md={9} sm={8} xs={12}>
-                  <div className="flex flex-wrap m--2">
-                    <AsyncAutocomplete
-
-                      debounced={false}
-                      onChange={(x) => setTimeZone(x)}
-                      width="60%"
-                      className="mr-2 ml-2"
-                      asyncSearch={() => bc.admissions().getAllTimeZone()}
-                      size="small"
-                      data-cy="timezone"
-                      label="Timezone"
-                      required
-                      getOptionLabel={(option) => `${option}`}
-                      value={timeZone}
-                    />
-
-                  </div>
-                </Grid>
+                </div>
+              </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
                 Save Cohort Details
               </Button>
