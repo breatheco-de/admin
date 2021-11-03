@@ -82,7 +82,7 @@ const Field = ({
     fullWidth: true,
     size: 'small',
     variant: 'outlined',
-    type: 'time',
+    // type: 'time',
     helperText: meta.touched ? meta.error : '',
     error: meta.touched && Boolean(meta.error),
     onBlur: field.onBlur,
