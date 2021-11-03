@@ -58,9 +58,25 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule }) => {
   }) => {
     const start = moment(starting_hour);
     const end = moment(ending_hour);
+
+    // prevent overflow
+    if (start.get('hour') > end.get('hour')) {
+      end.set('date', end.get('date') + 1);
+    }
+
     const delta = moment.duration(end.diff(start));
-    const starting_at = moment(starting_date).toISOString();
-    const ending_at = moment(starting_date).add(delta).toISOString();
+
+    const starting_at = moment(starting_date).set({
+      hour: start.get('hour'),
+      minute: start.get('minute'),
+      second: 0,
+    }).toISOString();
+
+    const ending_at = moment(starting_date).set({
+      hour: start.get('hour'),
+      minute: start.get('minute'),
+      second: 0,
+    }).add(delta).toISOString();
 
     bc.admissions().addTimeslot(schedule?.id, {
       ...values,
