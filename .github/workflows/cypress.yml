@@ -54,4 +54,4 @@ jobs:
       - name: Cypress tests
         run: |
           yarn wait-port 3000
-          yarn cy:run --browser matrix.browser
+          yarn cy:run --browser ${{ matrix.browser }}
