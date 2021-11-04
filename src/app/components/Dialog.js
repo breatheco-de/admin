@@ -107,7 +107,7 @@ const CustomDialog = ({
 
                             // do the first request immediatly to make sure the resize gets done.
                             // if we don't do this, the first time someone calls the URL it will take a long time to load.
-                            fetch(url /*,{ method: 'HEAD'}*/)
+                            fetch(url, { redirect: "manual", method: 'HEAD'})
                               .then(resp => (resp.status > 399) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
                               .catch(error => toast.warn('The image URL seems to be broken, test it first!', toastOption))
                           }
