@@ -104,8 +104,11 @@ const CustomDialog = ({
                             const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map(key => `${key}=${query[key]}`).join("&")}`;
                             navigator.clipboard.writeText(url)
                             toast.success('Copied to the clipboard', toastOption);
+
+                            // do the first request immediatly to make sure the resize gets done.
+                            // if we don't do this, the first time someone calls the URL it will take a long time to load.
                             fetch(url)
-                              .then(resp => (resp.status > 299) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                              .then(resp => (resp.status > 399) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
                               .catch(error => toast.warn('The image URL seems to be broken, test it first!', toastOption))
                           }
                         }}
