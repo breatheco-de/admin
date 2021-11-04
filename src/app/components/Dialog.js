@@ -101,8 +101,12 @@ const CustomDialog = ({
                             setSize(e.target.value)
                             let query = {}
                             if(e.target.value != "original") query.width = e.target.value;
-                            navigator.clipboard.writeText(`${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map(key => `${key}=${query[key]}`).join("&")}`)
+                            const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map(key => `${key}=${query[key]}`).join("&")}`;
+                            navigator.clipboard.writeText(url)
                             toast.success('Copied to the clipboard', toastOption);
+                            fetch(url)
+                              .then(resp => (resp.status > 299) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                              .catch(error => toast.warn('The image URL seems to be broken, test it first!', toastOption))
                           }
                         }}
                       >
