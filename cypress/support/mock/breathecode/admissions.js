@@ -107,10 +107,10 @@ export default {
     },
     getAcademyScheduleIdTimeslot(id='(\\d+)', body) {
         const url = new RegExp(`/v1/admissions/academy/schedule/${id}/timeslot$`)
-        const idIsSetted = id !== '(\d+)'
+        const idIsSetted = id !== '(\\d+)'
 
-        if (idIsSetted, body instanceof Array) { body = body.map((v) => ({ 'specialty_mode': id, ...v})) }
-        else if (idIsSetted, !body) { body = [{'specialty_mode': id }]}
+        if (idIsSetted && body instanceof Array) { body = body.map((v) => ({ 'specialty_mode': id, ...v})) }
+        else if (idIsSetted && !body) { body = [{'specialty_mode': id }]}
 
         intercept({
             fixture: 'admissions/academy/schedule/id/timeslot.json',
@@ -139,10 +139,10 @@ export default {
     },
     postAcademyScheduleIdTimeslot(id='(\\d+)', body) {
         const url = new RegExp(`/v1/admissions/academy/schedule/${id}/timeslot$`)
-        const idIsSetted = id !== '(\d+)'
+        const idIsSetted = id !== '(\\d+)'
 
-        if (idIsSetted, body instanceof Array) { body = body.map((v) => ({ 'specialty_mode': id, ...v })) }
-        else if (idIsSetted, !body) { body = [{'specialty_mode': id }]}
+        if (idIsSetted && body instanceof Array) { body = body.map((v) => ({ 'specialty_mode': id, ...v })) }
+        else if (idIsSetted && !body) { body = [{'specialty_mode': id }]}
 
         intercept({
             fixture: 'admissions/academy/schedule/id/timeslot.post.json',

@@ -30,6 +30,10 @@ const SchedulesList = ({ syllabus }) => {
     return true;
   };
 
+  const appendSchedule = (schedule) => {
+    setSchedules([...schedules, schedule]);
+  };
+
   useEffect(() => {
     fetchSchedules();
   }, []);
@@ -50,7 +54,12 @@ const SchedulesList = ({ syllabus }) => {
       {schedules.map((v) => <ScheduleDetails className="mb-2" key={`schedule-${v.id}`} schedule={v} />)}
       {/* <SyllabusModeDetails className="mb-2" />
       <SyllabusModeDetails className="mb-2" /> */}
-      <NewSchedule isOpen={newScheduleIsOpen} setIsOpen={setNewScheduleIsOpen} syllabus={syllabus} />
+      <NewSchedule
+        appendSchedule={appendSchedule}
+        isOpen={newScheduleIsOpen}
+        setIsOpen={setNewScheduleIsOpen}
+        syllabus={syllabus}
+      />
     </>
   );
 };

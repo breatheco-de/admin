@@ -33,13 +33,12 @@ const useStyles = makeStyles(() => ({
 
 const scheduleTypes = ['Part time', 'Full time'];
 const schema = Yup.object().shape({
-  slug: schemas.slug(),
   name: schemas.name(),
   description: schemas.description(),
   schedule_type: schemas.select('Schedule type', scheduleTypes),
 });
 
-const NewSchedule = ({ isOpen, setIsOpen, syllabus }) => {
+const NewSchedule = ({ isOpen, setIsOpen, syllabus, appendSchedule }) => {
   const classes = useStyles();
 
   const saveSchedule = (values) => {
@@ -48,7 +47,9 @@ const NewSchedule = ({ isOpen, setIsOpen, syllabus }) => {
       syllabus: syllabus?.id,
       schedule_type: values.schedule_type ? values.schedule_type.toUpperCase().replace(' ', '-') : null,
     };
-    bc.admissions().addSchedule(request);
+    bc.admissions().addSchedule(request).then(({ data }) => {
+      appendSchedule(data);
+    }).catch(console.error);
   };
 
   return (
@@ -71,14 +72,6 @@ const NewSchedule = ({ isOpen, setIsOpen, syllabus }) => {
         }) => (
           <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4" style={{ paddingTop: 0 }}>
             <DialogContent style={{ paddingTop: 0 }}>
-              <Field
-                form="new-schedule"
-                type="text"
-                name="Slug"
-                placeholder="full-stack-pt"
-                required
-                dialog
-              />
               <Field
                 form="new-schedule"
                 type="text"

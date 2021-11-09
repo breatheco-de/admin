@@ -19,12 +19,14 @@ import {
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import ConfirmAlert from '../../../components/ConfirmAlert';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
+  const [session] = useState(getSession());
   const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
-  const startingHour = dayjs(timeslot.starting_at).format('HH:mm');
-  const endingHour = dayjs(timeslot.ending_at).format('HH:mm');
-  const weekday = dayjs(timeslot.starting_at).format('dddd');
+  const startingHour = dayjs(timeslot.starting_at).tz(session.academy.timezone).format('HH:mm');
+  const endingHour = dayjs(timeslot.ending_at).tz(session.academy.timezone).format('HH:mm');
+  const weekday = dayjs(timeslot.starting_at).tz(session.academy.timezone).format('dddd');
 
   const getRecurrencyType = (recurrencyType) => {
     if (recurrencyType === 'DAILY') return 'DAY';

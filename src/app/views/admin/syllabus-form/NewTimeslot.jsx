@@ -49,7 +49,7 @@ const schema = Yup.object().shape({
   recurrency_type: schemas.select('Recurrency type', recurrencyTypes),
 });
 
-const NewTimeslot = ({ isOpen, setIsOpen, schedule }) => {
+const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
   const [session] = useState(getSession());
   const classes = useStyles();
   const initialValues = {
@@ -92,7 +92,7 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule }) => {
       starting_at,
       ending_at,
       recurrency_type: recurrency_type.toUpperCase(),
-    });
+    }).then(({ data }) => appendTimeslot(data)).catch(console.error);
   };
 
   return (

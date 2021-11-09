@@ -26,6 +26,7 @@ const ScheduleDetails = ({ schedule }) => {
 
   const fetchTimeslots = async () => {
     try {
+      if (!schedule?.id) return;
       const response = await bc.admissions().getAllTimeslotsBySchedule(schedule?.id);
       setTimeslots(response.data);
     } catch (error) {
@@ -37,11 +38,15 @@ const ScheduleDetails = ({ schedule }) => {
 
   useEffect(() => {
     fetchTimeslots();
-  }, []);
+  }, [schedule?.id]);
 
   const deleteTimeslot = async (scheduleId, timeslotId) => {
     await bc.admissions().deleteTimeslot(scheduleId, timeslotId);
     await fetchTimeslots();
+  };
+
+  const appendTimeslot = (timeslot) => {
+    setTimeslots([...timeslots, timeslot]);
   };
 
   return (
@@ -52,7 +57,11 @@ const ScheduleDetails = ({ schedule }) => {
           :
         </h5>
         {timeslots.map((v) => (
-          <TimeslotDetails key={`timeslot-${v.id}`} timeslot={v} deleteTimeslot={deleteTimeslot} />
+          <TimeslotDetails
+            key={`timeslot-${v.id}`}
+            timeslot={v}
+            deleteTimeslot={deleteTimeslot}
+          />
         ))}
         <IconButton onClick={() => setNewTimeslotIsOpen(true)} data-cy={`new-timeslot-${schedule?.id}`}>
           <Icon fontSize="small">
@@ -64,6 +73,7 @@ const ScheduleDetails = ({ schedule }) => {
         isOpen={newTimeslotIsOpen}
         setIsOpen={setNewTimeslotIsOpen}
         schedule={schedule}
+        appendTimeslot={appendTimeslot}
       />
     </>
   );
