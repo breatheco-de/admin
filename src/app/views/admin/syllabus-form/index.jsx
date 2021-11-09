@@ -9,9 +9,8 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core';
-import moment from 'moment';
-import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 import SchedulesList from './SchedulesList';
@@ -71,7 +70,7 @@ const Student = () => {
 
   const howManyDaysAgo = () => {
     if (!syllabus) return 0;
-    return moment().diff(syllabus.created_at, 'days');
+    return dayjs().diff(syllabus.created_at, 'days');
   };
 
   const onAccept = () => updateSyllabus({ private: !syllabus.private });

@@ -1,7 +1,5 @@
 // <reference types="cypress" />
 
-const moment = require('moment');
-
 describe('/admin/syllabus/new', () => {
   beforeEach(() => {
     cy.auth();

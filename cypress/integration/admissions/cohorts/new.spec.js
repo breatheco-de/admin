@@ -1,6 +1,6 @@
 // <reference types="cypress" />
 
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 describe('New cohort view', () => {
   beforeEach(() => {
@@ -47,7 +47,7 @@ describe('New cohort view', () => {
         cy.wrap(request.body).its('name').should('eq', 'Defence Against the Dark Arts');
         cy.wrap(request.body).its('slug').should('eq', 'defence-against-the-dark-arts');
 
-        const isKickoffDateAIsoDate = moment(request.body.kickoff_date, moment.ISO_8601, true).isValid();
+        const isKickoffDateAIsoDate = dayjs(request.body.kickoff_date, dayjs.ISO_8601, true).isValid();
         cy.wrap(isKickoffDateAIsoDate).should('eq', true);
 
         cy.wrap(request.body).its('ending_date').should('eq', null);

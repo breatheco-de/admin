@@ -1,5 +1,11 @@
 // <reference types="cypress" />
-const moment = require('moment-timezone');
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.tz.guess()
 
 const timeslotStartingAt = '2021-10-12T20:40:07Z';
 const timeslotEndingAt = '2021-10-12T21:40:07Z';
@@ -63,23 +69,27 @@ describe('/admin/syllabus/:slug', () => {
     });
 
   });
-  context.skip('Additional Actions', () => {
+  context('Additional Actions', () => {
     it('Make public/private', () => {
       cy.mock().then(({ breathecode }) => {
         // mock requests
         cy.wait(2000);
+
+        cy.get('[cy-data="syllabus-private-alert"]').should('have.text', 'This syllabus is private');
         breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': false});
         cy.get('[data-cy="additional-actions"]').click();
         cy.contains('li', 'Make public').click();
         cy.get('[data-cy="confirm-alert-accept-button"]').click();
         cy.wait(2000);
 
+        cy.get('[cy-data="syllabus-private-alert"]').should('not.exist');
         breathecode.admissions.getSyllabusSlug('full-stack-ft', {'private': true});
         cy.get('[data-cy="additional-actions"]').click();
         cy.contains('li', 'Make private').click();
         cy.get('[data-cy="confirm-alert-accept-button"]').click();
         cy.wait(2000);
 
+        cy.get('[cy-data="syllabus-private-alert"]').should('have.text', 'This syllabus is private');
         cy.get('[data-cy="additional-actions"]').click();
         cy.contains('li', 'Make public').should('exist');
       });
@@ -92,10 +102,10 @@ describe('/admin/syllabus/:slug', () => {
       cy.window().its('open').should('be.calledWith', 'https://build.breatheco.de/', '_blank');
     })
   });
-  context.skip('Syllabus form', () => {
+  context('Syllabus form', () => {
     it('How many days ago', () => {
       cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
-        const howManyDaysAgo = moment().diff(created_at, 'days')
+        const howManyDaysAgo = dayjs().diff(created_at, 'days')
         cy.get('[data-cy="how-many-days-ago"]').should('have.text', `Created at: ${howManyDaysAgo} days ago`)
       });
     });
@@ -231,7 +241,7 @@ describe('/admin/syllabus/:slug', () => {
       // cy.location('pathname').should('eq', '/admissions/cohorts');
     });
   });
-  context.skip('Schedule Form', () => {
+  context('Schedule Form', () => {
     it('Schedule label', () => {
       cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
     });
@@ -311,150 +321,121 @@ describe('/admin/syllabus/:slug', () => {
   });
 
   context('Timeslot Form', () => {
-    // it('List and delete', () => {
-    //   cy.window().then((win) => {
-    //     const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
-
-    //     const startingHour = moment(timeslotStartingAt).tz(timezone).format('HH:mm');
-    //     const endingHour = moment(timeslotEndingAt).tz(timezone).format('HH:mm');
-
-    //     cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
-    //     cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
-    //     cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
-
-    //     cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
-    //       `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
-    //     cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
-    //       `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
-    //     cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
-    //       `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
-
-    //     cy.mock().then(({ breathecode }) => {
-    //       breathecode.admissions.getAcademyScheduleIdTimeslot(5, [])
-    //       cy.get('[data-cy="delete-timeslot-12"]').click()
-    //       cy.testConfirmAlert();
-
-    //       cy.get('[data-cy="confirm-alert-accept-button"]').click();
-
-    //       cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
-    //       cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
-    //       cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
-
-    //       cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
-    //         `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
-    //       cy.get('[data-cy="timeslot-detail-12"]').should('not.exist');
-    //       cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
-    //         `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
-
-    //       cy.get('@deleteAdmissionsAcademyScheduleIdTimeslotIdRequest').then(({ request }) => {
-    //         cy.wrap(request.body).should('eq', '')
-    //         cy.wrap(request.method).should('eq', 'DELETE')
-    //       });
-    //     });
-    //   })
-    // });
-
-    // it('Slug field validations', () => {
-    //   cy.get('[data-cy="new-timeslot-4"]').click();
-    //   cy.testSlugField('new-timeslot', 'slug');
-    // });
-
-    // it('Recurrency type field validations', () => {
-    //   cy.get('[data-cy="new-timeslot-4"]').click();
-
-    //   // click the recurrent checkbox
-    //   cy.get('[data-cy="new-timeslot-recurrent"] input').click();
-
-    //   // test the select field
-    //   cy.testSelectField('new-timeslot', 'recurrency-type', ['Daily', 'Weekly', 'Monthly']);
-    // });
-
-    // it('Starting date field validations', () => {
-    //   cy.get('[data-cy="new-timeslot-4"]').click();
-    //   cy.testDateField('new-timeslot', 'starting-date');
-    // });
-
-    // it('Starting hour field validations', () => {
-    //   cy.get('[data-cy="new-timeslot-4"]').click();
-    //   cy.testTimeField('new-timeslot', 'starting-hour');
-    // });
-
-    // it('Ending hour field validations', () => {
-    //   cy.get('[data-cy="new-timeslot-4"]').click();
-    //   cy.testTimeField('new-timeslot', 'ending-hour');
-    // });
-
-    it('Check request', () => {
+    it('List and delete', () => {
       cy.window().then((win) => {
         const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
 
-        // Don't forget 🦾
-        let startingAt = '1911-10-03T04:00:00.000Z';
-        let endingAt = '1911-10-03T06:00:00.000Z';
+        const startingHour = dayjs(timeslotStartingAt).tz(timezone).format('HH:mm');
+        const endingHour = dayjs(timeslotEndingAt).tz(timezone).format('HH:mm');
 
-        const startingInstance = moment(startingAt).tz(timezone);
-        const endingInstance = moment(endingAt).tz(timezone);
+        cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
+        cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
+        cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-        if (startingInstance.get('second')) {
-          startingInstance.set('second', 0) // prevent problems in colombia
-          startingAt = startingInstance.toISOString();
-        }
+        cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
+          `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
+        cy.get('[data-cy="timeslot-detail-12"]').should('have.text',
+          `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
+        cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
+          `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
 
-        if (endingInstance.get('second')) {
-          endingInstance.set('second', 0) // prevent problems in colombia
-          endingAt = endingInstance.toISOString();
-        }
+        cy.mock().then(({ breathecode }) => {
+          breathecode.admissions.getAcademyScheduleIdTimeslot(5, [])
+          cy.get('[data-cy="delete-timeslot-12"]').click()
+          cy.testConfirmAlert();
 
-        const startingDate = startingInstance.format('MMMM DD, yyyy');
-        const startingHour = startingInstance.format('hh:mm A');
-        const endingHour = endingInstance.format('hh:mm A');
+          cy.get('[data-cy="confirm-alert-accept-button"]').click();
 
-        cy.get('[data-cy="new-timeslot-4"]').click();
+          cy.get('[data-cy="schedule-title-4"]').should('have.text', 'Full Stack PT Mon:');
+          cy.get('[data-cy="schedule-title-5"]').should('have.text', 'Full Stack PT Sun:');
+          cy.get('[data-cy="schedule-title-6"]').should('have.text', 'Full Stack PT Wet:');
 
-        cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', '');
-        cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
-        cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
-        cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', '');
-        cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '');
-        cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '');
+          cy.get('[data-cy="timeslot-detail-11"]').should('have.text',
+            `Every WEEK on Tuesday from ${startingHour} to ${endingHour}`);
+          cy.get('[data-cy="timeslot-detail-12"]').should('not.exist');
+          cy.get('[data-cy="timeslot-detail-13"]').should('have.text',
+            `Every MONTH on Tuesday from ${startingHour} to ${endingHour}`);
 
-        // change values
-        cy.get('[data-cy="new-timeslot-slug"] input').focus().clear();
-        cy.get('[data-cy="new-timeslot-slug"] input').type('regular-show').blur();
-
-        cy.get('[data-cy="new-timeslot-recurrent"] input').click();
-        cy.get('[data-cy="new-timeslot-recurrency-type"] input').focus().clear();
-        cy.get('[data-cy="new-timeslot-recurrency-type"] input').type('daily{downarrow}{enter}').blur();
-
-        cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
-        cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
-
-        cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
-        cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
-
-        cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
-        cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
-
-        // check after fill the form
-        cy.get('[data-cy="new-timeslot-slug"] input').should('have.value', 'regular-show');
-        cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'true');
-        cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', 'Daily');
-        cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
-        cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
-        cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
-
-        // send request
-        cy.get('[data-cy="new-timeslot-submit"]').click()
-
-        // check the payload
-        // cy.wait('@someRoute').its('request.body').should('include', 'user')
-        cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
-          cy.wrap(request.body).its('slug').should('eq', 'regular-show');
-          cy.wrap(request.body).its('recurrent').should('eq', true);
-          cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
-          cy.wrap(request.body).its('starting_at').should('eq', startingAt);
-          cy.wrap(request.body).its('ending_at').should('eq', endingAt);
+          cy.get('@deleteAdmissionsAcademyScheduleIdTimeslotIdRequest').then(({ request }) => {
+            cy.wrap(request.body).should('eq', '')
+            cy.wrap(request.method).should('eq', 'DELETE')
+          });
         });
+      })
+    });
+
+    it('Recurrency type field validations', () => {
+      cy.get('[data-cy="new-timeslot-4"]').click();
+
+      // click the recurrent checkbox
+      cy.get('[data-cy="new-timeslot-recurrent"] input').click();
+
+      // test the select field
+      cy.testSelectField('new-timeslot', 'recurrency-type', ['Daily', 'Weekly', 'Monthly']);
+    });
+
+    it('Starting date field validations', () => {
+      cy.get('[data-cy="new-timeslot-4"]').click();
+      cy.testDateField('new-timeslot', 'starting-date');
+    });
+
+    it('Starting hour field validations', () => {
+      cy.get('[data-cy="new-timeslot-4"]').click();
+      cy.testTimeField('new-timeslot', 'starting-hour');
+    });
+
+    it('Ending hour field validations', () => {
+      cy.get('[data-cy="new-timeslot-4"]').click();
+      cy.testTimeField('new-timeslot', 'ending-hour');
+    });
+
+    it('Check request', () => {
+      // Don't forget 🦾
+      let startingAt = '1911-10-03T04:00:00.000Z';
+      let endingAt = '1911-10-03T06:00:00.000Z';
+
+      const startingDate = 'October 02, 1911'
+      const startingHour = '11:00 PM';
+      const endingHour = '1:00 AM';
+
+      cy.get('[data-cy="new-timeslot-4"]').click();
+
+      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
+      cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '');
+
+      // change values
+      cy.get('[data-cy="new-timeslot-recurrent"] input').click();
+      cy.get('[data-cy="new-timeslot-recurrency-type"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-recurrency-type"] input').type('daily{downarrow}{enter}').blur();
+
+      cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
+
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
+
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
+
+      // check after fill the form
+      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'true');
+      cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', 'Daily');
+      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
+
+      // send request
+      cy.get('[data-cy="new-timeslot-submit"]').click()
+
+      // check the payload
+      cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
+        cy.wrap(request.body).its('recurrent').should('eq', true);
+        cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
+        cy.wrap(request.body).its('starting_at').should('eq', startingAt);
+        cy.wrap(request.body).its('ending_at').should('eq', endingAt);
       });
     });
   });

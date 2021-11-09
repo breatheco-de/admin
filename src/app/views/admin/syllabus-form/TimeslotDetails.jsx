@@ -16,15 +16,15 @@ import {
   DialogActions,
   IconButton,
 } from '@material-ui/core';
+import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import ConfirmAlert from '../../../components/ConfirmAlert';
-import moment from 'moment-timezone';
 
 const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
   const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
-  const startingHour = moment(timeslot.starting_at).format('HH:mm');
-  const endingHour = moment(timeslot.ending_at).format('HH:mm');
-  const weekday = moment(timeslot.starting_at).format('dddd');
+  const startingHour = dayjs(timeslot.starting_at).format('HH:mm');
+  const endingHour = dayjs(timeslot.ending_at).format('HH:mm');
+  const weekday = dayjs(timeslot.starting_at).format('dddd');
 
   const getRecurrencyType = (recurrencyType) => {
     if (recurrencyType === 'DAILY') return 'DAY';

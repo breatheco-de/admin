@@ -5,6 +5,7 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Formik, Form } from 'formik';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import * as Yup from 'yup';
 // import axios from 'axios';
 // import * as yup from 'yup';
@@ -56,6 +57,15 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
   console.log();
   return (
     <Card className="pt-6" elevation={3}>
+      {syllabus.private && (
+      <Grid item md={12} sm={12} xs={12}>
+        <Alert severity="warning">
+          <AlertTitle className="m-auto" cy-data="syllabus-private-alert">
+            This syllabus is private
+          </AlertTitle>
+        </Alert>
+      </Grid>
+      )}
       <Formik
         initialValues={syllabus}
         validationSchema={schema}

@@ -1,6 +1,7 @@
 export function getSession() {
   const session = JSON.parse(localStorage.getItem('bc-session'));
-  console.log('Session info', session);
+
+  if (process.env.NODE_ENV !== 'production') console.log('Session info', session);
   if (!session || !session.academy) {
     window.location.href = '/login';
     return {

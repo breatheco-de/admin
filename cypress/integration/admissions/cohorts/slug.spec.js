@@ -1,5 +1,5 @@
 // <reference types="cypress" />
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 describe('Login Screen', () => {
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Login Screen', () => {
       cy.get('[data-cy=language] input').should('have.value', 'en')
 
       cy.fixture('admissions/academy/cohort/slug.json').then((response) => {
-        cy.get('[data-cy=start-date] input').should('have.value', moment(response.kickoff_date).format('yyyy-MM-DD'))
+        cy.get('[data-cy=start-date] input').should('have.value', dayjs(response.kickoff_date).format('YYYY-MM-DD'))
       })
 
       // fill the form
@@ -52,7 +52,7 @@ describe('Login Screen', () => {
         // cy.wrap(request.body).its('name').should('eq', 'Defence Against the Dark Arts');
         cy.wrap(request.body).its('slug').should('eq', 'defence-against-the-dark-arts');
 
-        const isKickoffDateAIsoDate = moment(request.body.kickoff_date, moment.ISO_8601, true).isValid();
+        const isKickoffDateAIsoDate = dayjs(request.body.kickoff_date, dayjs.ISO_8601, true).isValid();
         cy.wrap(isKickoffDateAIsoDate).should('eq', true);
 
         cy.wrap(request.body).its('ending_date').should('eq', null);

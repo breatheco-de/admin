@@ -4,18 +4,24 @@ import {
   TextField,
   DialogContentText,
 } from '@material-ui/core';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DateAdapter from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { makeStyles } from '@material-ui/core/styles';
 import { useField } from 'formik';
 import DatePicker from '@mui/lab/DatePicker';
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
 // import TextField from '@mui/lab/TextField';
 // import TextField from '@mui/material/TextField';
 // import { TextField } from '@mui/material';
 import { capitalizeEachFirstLetter } from '../utils';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
 
 const useStyles = makeStyles(() => ({
   dialogue: {
@@ -39,6 +45,7 @@ const defaultProps = {
   dialog: false,
   required: false,
   readOnly: false,
+  timezone: undefined,
   children: undefined,
 };
 
@@ -48,6 +55,7 @@ const propTypes = {
   dialog: PropTypes.bool,
   required: PropTypes.bool,
   readOnly: PropTypes.bool,
+  timezone: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -55,13 +63,8 @@ const propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-// const TextField2 = (props) => {
-//   console.log('TextField', props);
-//   return <></>
-// }
-
 const Field = ({
-  form, label, dialog, readOnly, children, ...props
+  form, label, dialog, readOnly, timezone, children, ...props
 }) => {
   const elementRef = useRef();
 
@@ -75,9 +78,17 @@ const Field = ({
   const cypressFieldName = `${form}-${fieldName.replace(/_/g, '-')}`;
   const labelText = label || capitalizeEachFirstLetter(name);
 
-  const onChange = (v) => {
+  if (timezone) dayjs.tz.setDefault(timezone);
+
+  const onChange = (date, value) => {
     try {
-      helpers.setValue(v.toISOString());
+      if (/ ,/.test(value)) throw new Error();
+
+      if (timezone) {
+        helpers.setValue(dayjs(value).tz(timezone, true).toISOString());
+      } else {
+        helpers.setValue(date.toISOString());
+      }
     } catch {
       helpers.setValue('');
     }
@@ -96,10 +107,6 @@ const Field = ({
     readOnly,
     ...extraProps,
   };
-
-  // // fix a bug in production build
-  // if ('required' in textProps && !textProps.required) delete textProps.required;
-  // if ('readonly' in textProps && !textProps.readonly) delete textProps.readonly;
 
   const renderInput = (params) => {
     const { inputProps } = params;
@@ -137,7 +144,7 @@ const Field = ({
 
   if (meta.value) textProps.value = meta.value;
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={DateAdapter}>
       {dialog ? (
         <>
           <DialogContentText className={classes.dialogue} style={{ marginTop: 12 }}>

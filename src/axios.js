@@ -41,6 +41,8 @@ axiosInstance.bcDelete = function (...args) {
 };
 
 function printAxiosResponse(object) {
+  // return;
+  // if (process.env.NODE_ENV === 'cypress') return;
   if (process.env.NODE_ENV === 'production') return;
 
   const log = [object.config.method.toUpperCase(), object.status, object.config.url];

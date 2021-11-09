@@ -17,7 +17,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import bc from '../../../services/breathecode';
-import moment from 'moment';
 import TimeslotDetails from './TimeslotDetails';
 import NewTimeslot from './NewTimeslot';
 

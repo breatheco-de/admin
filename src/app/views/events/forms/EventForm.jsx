@@ -4,9 +4,9 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
 } from '@material-ui/core';
+import dayjs from 'dayjs';
 import { useParams, useHistory } from 'react-router-dom';
 import bc from '../../../services/breathecode';
-import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { MediaInput } from '../../../components/MediaInput';
@@ -48,7 +48,6 @@ const EventForm = () => {
     }
   }, []);
   const postEvent = (values) => {
-    console.log(values);
     const venueAndType = {
       venue: venue !== null ? venue.id : null,
       event_type: eventType !== null ? eventType.id : null,

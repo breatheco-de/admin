@@ -3,14 +3,12 @@ import {
   Divider,
   Card,
   Grid,
-  IconButton,
   TextField,
   Button,
   MenuItem,
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { Formik } from 'formik';
@@ -37,6 +35,7 @@ const propTypes = {
   }).isRequired,
   neverEnds: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool.isRequired,
+  timeZone: PropTypes.string.isRequired,
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -55,7 +54,7 @@ const CohortDetails = ({
   syllabusVersion,
   neverEnds,
   isPrivate,
-  timeZone
+  timeZone,
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
@@ -136,7 +135,6 @@ const CohortDetails = ({
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
-
                   onChange={(certificate) => {
                     setSyllabus(certificate);
                     setVersion(null);
@@ -159,7 +157,8 @@ const CohortDetails = ({
                   onChange={(v) => setVersion(v)}
                   width="100%"
                   key={syllabus !== null ? syllabus.slug : ''}
-                  asyncSearch={() => bc.admissions().getAllCourseSyllabus(syllabus?.slug, academy.id)}
+                  asyncSearch={() => bc.admissions()
+                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
                   size="small"
                   label="Version"
                   data-cy="version"
@@ -258,8 +257,8 @@ const CohortDetails = ({
                         value={values.ending_date}
                         format="yyyy-MM-dd"
                         onChange={(date) => {
-                  setFieldValue('ending_date', date.toISOString());
-                }}
+                          setFieldValue('ending_date', date.toISOString());
+                        }}
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
@@ -299,7 +298,7 @@ const CohortDetails = ({
                   data-cy="meetingURL"
                   size="small"
                   variant="outlined"
-                  defaultValue={"https://bluejeans.com/976625693"}
+                  defaultValue="https://bluejeans.com/976625693"
                   // value={"https://bluejeans.com/976625693"}
                   // InputProps={{
                   //   readOnly: true,
