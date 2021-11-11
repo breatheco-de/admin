@@ -9,6 +9,7 @@ dayjs.tz.guess()
 
 const timeslotStartingAt = '2021-10-12T20:40:07Z';
 const timeslotEndingAt = '2021-10-12T21:40:07Z';
+const timezone = 'Pacific/Pago_Pago'
 
 describe('/admin/syllabus/:slug', () => {
   beforeEach(() => {
@@ -17,7 +18,17 @@ describe('/admin/syllabus/:slug', () => {
     cy.mock().then(({ breathecode }) => {
       // auth
       breathecode.auth.getTokenKey();
-      breathecode.auth.getUserMe();
+      breathecode.auth.getUserMe({
+        roles: [{
+          academy: {
+            id: 4,
+            name: '4Geeks Academy Miami',
+            slug: 'downtown-miami',
+            timezone: 'Pacific/Pago_Pago',
+          },
+          role: 'admin',
+        }]
+      });
       breathecode.admissions.putAcademyCohortId();
 
       // mock requests
@@ -276,15 +287,11 @@ describe('/admin/syllabus/:slug', () => {
       cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
       cy.get('[data-cy="new-schedule"]').click();
 
-      cy.get('[data-cy="new-schedule-slug"] input').should('have.value', '');
       cy.get('[data-cy="new-schedule-name"] input').should('have.value', '');
       cy.get('[data-cy="new-schedule-description"] textarea[required]').first().should('have.value', '');
       cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', '');
 
       // change values
-      cy.get('[data-cy="new-schedule-slug"] input').focus().clear();
-      cy.get('[data-cy="new-schedule-slug"] input').type('regular-show').blur();
-
       cy.get('[data-cy="new-schedule-name"] input').focus().clear();
       cy.get('[data-cy="new-schedule-name"] input').type('Regular Show').blur();
 
@@ -295,7 +302,6 @@ describe('/admin/syllabus/:slug', () => {
       cy.get('[data-cy="new-schedule-schedule-type"] input').type('part time{downarrow}{enter}').blur();
 
       // check after fill the form
-      cy.get('[data-cy="new-schedule-slug"] input').should('have.value', 'regular-show');
       cy.get('[data-cy="new-schedule-name"] input').should('have.value', 'Regular Show');
       cy.get('[data-cy="new-schedule-description"]  textarea[required]').should('have.value', text);
       cy.get('[data-cy="new-schedule-schedule-type"] input').should('have.value', 'Part time');
@@ -305,7 +311,6 @@ describe('/admin/syllabus/:slug', () => {
 
       // check the payload
       cy.wait('@postAdmissionsAcademyScheduleRequest').then(({ request }) => {
-        cy.wrap(request.body).its('slug').should('eq', 'regular-show');
         cy.wrap(request.body).its('name').should('eq', 'Regular Show');
         cy.wrap(request.body).its('description').should('eq', text);
         cy.wrap(request.body).its('schedule_type').should('eq', 'PART-TIME');
@@ -323,8 +328,6 @@ describe('/admin/syllabus/:slug', () => {
   context('Timeslot Form', () => {
     it('List and delete', () => {
       cy.window().then((win) => {
-        const timezone = win.eval('Intl.DateTimeFormat().resolvedOptions().timeZone');
-
         const startingHour = dayjs(timeslotStartingAt).tz(timezone).format('HH:mm');
         const endingHour = dayjs(timeslotEndingAt).tz(timezone).format('HH:mm');
 
@@ -395,8 +398,8 @@ describe('/admin/syllabus/:slug', () => {
       let endingAt = '1911-10-03T06:00:00.000Z';
 
       const startingDate = 'October 02, 1911'
-      const startingHour = '11:00 PM';
-      const endingHour = '1:00 AM';
+      const startingHour = '17:00 PM';
+      const endingHour = '19:00 PM';
 
       cy.get('[data-cy="new-timeslot-4"]').click();
 
@@ -437,11 +440,11 @@ describe('/admin/syllabus/:slug', () => {
         cy.wrap(request.body).its('starting_at').should('eq', startingAt);
         cy.wrap(request.body).its('ending_at').should('eq', endingAt);
 
-        const timezone = 'America/New_York';
         const startingHour = dayjs(request.body.starting_at).tz(timezone).format('HH:mm');
         const endingHour = dayjs(request.body.ending_at).tz(timezone).format('HH:mm');
+
         cy.get('[data-cy="timeslot-detail-17"]').should('have.text',
-          `Every DAY on Tuesday from ${startingHour} to ${endingHour}`);
+          `Every DAY on Monday from ${startingHour} to ${endingHour}`);
       });
     });
   });

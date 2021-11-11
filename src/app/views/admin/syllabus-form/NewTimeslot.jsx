@@ -58,16 +58,18 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
     ending_hour: '',
   };
 
+  if (session?.academy?.timezone) dayjs.tz.setDefault(session.academy.timezone);
+
   const saveSchedule = ({
     starting_date, starting_hour, ending_hour, recurrency_type, ...values
   }) => {
-    const date = dayjs(starting_date).tz(session.academy.timezone, true);
-    const start = dayjs(starting_hour).tz(session.academy.timezone, true)
+    const date = dayjs(starting_date).tz(session.academy.timezone);
+    const start = dayjs(starting_hour).tz(session.academy.timezone)
       .year(date.year())
       .month(date.month())
       .date(date.date());
 
-    let end = dayjs(ending_hour).tz(session.academy.timezone, true)
+    let end = dayjs(ending_hour).tz(session.academy.timezone)
       .year(date.year())
       .month(date.month())
       .date(date.date());

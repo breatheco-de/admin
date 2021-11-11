@@ -14,16 +14,17 @@ export default {
             }).as('getAuthTokenKeyRequest')
         })
 
-        cy.fixture('auth/bc-session.json').then((session) => {
-            window.localStorage.setItem('bc-session', JSON.stringify(session))
-        })
+        // cy.fixture('auth/bc-session.json').then((session) => {
+        //     window.localStorage.setItem('bc-session', JSON.stringify(session))
+        // })
     },
-    getUserMe() {
+    getUserMe(body) {
         intercept({
             url: /\/v1\/auth\/user\/me$/,
             fixture: 'auth/user/me.json',
             method: 'GET',
             as: 'getAuthUserMeRequest',
+            body,
         });
     },
 };

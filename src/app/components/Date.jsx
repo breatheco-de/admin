@@ -85,7 +85,10 @@ const Field = ({
       if (/ ,/.test(value)) throw new Error();
 
       if (timezone) {
-        helpers.setValue(dayjs(value).tz(timezone, true).toISOString());
+        const dateFormat = 'YYYY-MM-DD';
+        const time = date.format(dateFormat);
+
+        helpers.setValue(dayjs.tz(time, dateFormat, timezone).toISOString());
       } else {
         helpers.setValue(date.toISOString());
       }
@@ -124,7 +127,7 @@ const Field = ({
     fullWidth: true,
     size: 'small',
     variant: 'outlined',
-    inputFormat: 'MMMM DD, YYYY',
+    inputFormat: 'MMMM D, YYYY',
     disableMaskedInput: true,
     autoOk: true,
     name: fieldName,

@@ -85,7 +85,12 @@ const Field = ({
   const onChange = (date) => {
     try {
       if (timezone) {
-        helpers.setValue(date.tz(timezone, true).toISOString());
+        const dateFormat = 'YYYY-MM-DD';
+        const timeFormat = 'HH:mm';
+        const datetimeFormat = `${dateFormat} ${timeFormat}`;
+        const time = `${dayjs().format(dateFormat)} ${date.format(timeFormat)}`;
+
+        helpers.setValue(dayjs.tz(time, datetimeFormat, timezone).toISOString());
       } else {
         helpers.setValue(date.toISOString());
       }
