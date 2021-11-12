@@ -172,7 +172,7 @@ Cypress.Commands.add('handleLogin', () => {
       console.log("Response User Data:::",xhr)
     })
   }).as('handleLogin')
-    
+
   })
 
 
@@ -336,7 +336,7 @@ Cypress.Commands.add('mock_Report', () => {
 Cypress.Commands.add('test_students', () => {
   // get correct structure
   cy.intercept('GET', '**/auth/academy/student?*', {
-    
+
       count: 2,
       first: null,
       next: null,
@@ -385,10 +385,10 @@ Cypress.Commands.add('test_students', () => {
           }
       ]
   },
-    
-  
+
+
   ).as('test_students')
-});  
+});
 
 Cypress.Commands.add('mock_search', () => {
   cy.intercept('GET', '**/auth/academy/student?limit=10&offset=0&like=Jonathan',{
@@ -424,9 +424,9 @@ Cypress.Commands.add('mock_search', () => {
 // NOTE: _____________________________COHORTS COMANDS_____________________________
 
 Cypress.Commands.add('syllabus_certificates', () => {
-  // send syllabus names 
-  cy.intercept('GET', '**/admissions/syllabus', 
-    
+  // send syllabus names
+  cy.intercept('GET', '**/admissions/syllabus',
+
       [
         {
             id: 1,
@@ -516,17 +516,17 @@ Cypress.Commands.add('syllabus_certificates', () => {
             description: "48 days",
             logo: null
         }
-      
+
       ]
-  
-   
-    
+
+
+
 
   ).as('syllabus_certificates')
-});  
+});
 
 Cypress.Commands.add('certificates_versions', () => {
-  // send certificates versions options names 
+  // send certificates versions options names
   cy.intercept('GET', '**/admissions/syllabus/full-stack/version', [{
     version: 1,
     certificate: {
@@ -537,13 +537,13 @@ Cypress.Commands.add('certificates_versions', () => {
       // description: "Guidelines for teachers and mentors at 4Geeks Academy",
       // logo: null,
     }
-   
+
   }] ).as('certificates_versions')
-});  
+});
 
 Cypress.Commands.add('mock_new_cohort', () => {
-  
-  cy.intercept('POST', '**/admissions/academy/cohort', 
+
+  cy.intercept('POST', '**/admissions/academy/cohort',
     [{
       id: 221,
       slug: "isra-ptwnxs",
@@ -566,13 +566,13 @@ Cypress.Commands.add('mock_new_cohort', () => {
       updated_at: "2021-09-14T19:13:29.119653-04:00",
       never_ends: true
   }]
-   
+
    ).as('mock_new_cohort')
-});  
+});
 
 Cypress.Commands.add('mock_list_cohortsA', () => {
   // the list of cohorts BEFORE adding a new cohort
-  cy.intercept('GET', '**/admissions/academy/cohort?**', 
+  cy.intercept('GET', '**/admissions/academy/cohort?**',
     {
       count: 40,
       first: null,
@@ -580,7 +580,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
       previous: null,
       last: "https://breathecode-test.herokuapp.com/v1/admissions/academy/cohort?limit=10&offset=30",
       results: [
-            
+
           {
               id: 221,
               slug: "Caracas-V full time",
@@ -853,13 +853,13 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
           }
       ]
   }
-   
+
    ).as('mock_list_cohortsA')
-});  
+});
 
 Cypress.Commands.add('mock_list_cohortsB', () => {
   // the list of cohorts AFTER adding a new cohort
-  cy.intercept('GET', '**/admissions/academy/cohort?**', 
+  cy.intercept('GET', '**/admissions/academy/cohort?**',
     {
       count: 40,
       first: null,
@@ -1166,15 +1166,15 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
           }
       ]
   }
-   
+
    ).as('mock_list_cohortsB')
-});  
+});
 
 
 
 Cypress.Commands.add('cohort_search_result', () => {
   // the list of cohorts AFTER adding a new cohort
-  cy.intercept('GET', '**/admissions/academy/cohort?**', 
+  cy.intercept('GET', '**/admissions/academy/cohort?**',
     {
       count: 40,
       first: null,
@@ -1209,12 +1209,12 @@ Cypress.Commands.add('cohort_search_result', () => {
                   logo_url: "https://storage.googleapis.com/admissions-breathecode/location-downtown-miami"
               }
           }
-      
+
       ]
   }
-   
+
    ).as('cohort_search_result')
-});  
+});
 
 
 // NOTE: _____________________________EDIT COHORTS COMANDS_____________________________
@@ -1222,7 +1222,7 @@ Cypress.Commands.add('cohort_search_result', () => {
 
 Cypress.Commands.add('cohort_edit_new', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/academy/cohort/Porlamar_7_full_time', 
+    cy.intercept('GET', '**/admissions/academy/cohort/Porlamar_7_full_time',
 
     {
         "id": 158,
@@ -1264,12 +1264,12 @@ Cypress.Commands.add('cohort_edit_new', () => {
     }
 
     ).as('cohort_edit_new')
-}); 
+});
 
 Cypress.Commands.add('cohort_edit_syllabus', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/syllabus', 
-      
+    cy.intercept('GET', '**/admissions/syllabus',
+
     [
         {
             "id": 30,
@@ -1510,14 +1510,15 @@ Cypress.Commands.add('cohort_edit_syllabus', () => {
             "updated_at": "2021-09-14T23:33:08.564005Z"
         }
     ]
-     
+
      ).as('cohort_edit_syllabus')
-  }); 
+  });
 
   Cypress.Commands.add('cohort_edit_version', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/syllabus/full-stack/version', 
-      
+    // TODO: this url does not use the DRY principle
+    cy.intercept('GET', '**/admissions/syllabus/full-stack/version',
+
     [
         {
             "json": "{\"label\":\"Full-Stack Development\",\"profile\":\"full-stack\",\"description\":\"Become a full-stack web developer using the 2 most popular technologies in the world: Javascript, React and Python\",\"days\":[{\"label\":\"Day 1\",\"description\":\"During the prework you learned basic HTML and CSS, but here your will learn the evolved CSS that enables amazing layouts with boxes and also a rich set of CSS Selectors\",\"instructions\":\"Students know already basic CSS and HTML, just go over the concepts really fast but stop and explain carefully the Display and Position rules. Then, start coding the project.\",\"project\":{\"title\":\"Simple Instagram\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/instagram-feed#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/instagram-without-bootstrap\\/\"},\"homework\":\"Students must finish the Instagram & the Postcard.\",\"key-concepts\":[\"Everything is text!\",\"Always Be Closing\",\"Client vs Server\",\"HTTP Request vs Response\",\"Browser Interpretation\",\"HTML vs CSS\",\"CSS Selectors (basic ones)\",\"Do not use ID as CSS selectors (use specificity)\",\"::Before & ::After Selectors\",\"DRY Technique\",\"Box Model\"],\"lessons\":[{\"title\":\"Doing Layouts\",\"slug\":\"css-layouts\"},{\"title\":\"Advanced CSS Selectors\",\"slug\":\"mastering-css-selectors\"}],\"replits\":[{\"title\":\"Doing Layouts\",\"slug\":\"layouts\"}],\"quizzes\":[{\"title\":\"Basics of HTML\",\"slug\":\"html\"},{\"title\":\"Internet Architecture\",\"slug\":\"internet-architecture\"},{\"title\":\"Basics of CSS\",\"slug\":\"css\"}],\"assignments\":[\"instagram-feed\",\"postcard\",\"instagram-post\"],\"technologies\":[\"CSS3\",\"HTML5\"]},{\"label\":\"Day 2\",\"description\":\"Bootstrap arrived to profesionalize websites, removing 99% of the layout pain. Everything is a component from now on.\",\"instructions\":\"Explain bootstrap and how it solves 99% of the pain. Everything is a component from now own.\",\"project\":{\"title\":\"Bootstrap Instagram\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/instagram-feed-bootstrap#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/instagram-with-bootstrap\\/\"},\"lessons\":[{\"title\":\"Working with Bootstrap\",\"slug\":\"bootstrap-tutorial-of-bootstrap-4\"}],\"replits\":[{\"title\":\"Working with Bootstrap\",\"slug\":\"bootstrap\"}],\"assignments\":[\"instagram-feed-bootstrap\"],\"key-concepts\":[\"Bootstrap\",\"Components\",\"Workflow: Identify the components, Copy&Paste them and finally customize them\",\"Helper\\/Utility Classes that come with Bootstrap\"],\"technologies\":[\"Bootstrap\"]},{\"label\":\"Day 3\",\"description\":\"A text editor and the console - that's all you need to be a great coder. Time to master the second one.\",\"teacher_instructions\":\"Teach the command line to your students, use the CMD challenge to make it very fun! Start with a small explanation about the importance of the CMD and then explain each command after its respective challenge is completed.\",\"project\":{\"title\":\"The CMD Challenge\",\"instructions\":\"https:\\/\\/github.com\\/breatheco-de\\/exercise-terminal-challenge\\/\"},\"replits\":[{\"title\":\"Command Line Interactive Challenge\",\"slug\":\"the-command-line\"}],\"lessons\":[{\"title\":\"The Command Line\",\"slug\":\"the-command-line-the-terminal\"}],\"homework\":\"At the end of the class, present the students with the GIT project & please ask each student to start coding its corresponding part of the website.\",\"key-concepts\":[\"Most used CMD commands\",\"File Directory Hierarchy\",\"Relative .\\/ vs Absolute Paths \",\"Moving Up ..\",\"Autocomplete with TAB\",\"GIT in a general way\"],\"technologies\":[\"Command Line\"]},{\"label\":\"Day 4\",\"description\":\"The CMD Line has millions of tools, it's time to learn the first ones: GIT & Github - together they make collaboration amazing!\",\"instructions\":\"Time to explain and practice with GIT in detail, create a repository for your Landing Page GIT project and make them clone it and upload their piece of the project. Review the key concepts.\",\"project\":{\"title\":\"GIT Colaborative Landing Page\",\"instructions\":\"https:\\/\\/github.com\\/breatheco-de\\/exercise-collaborative-html-website\\/\"},\"homework\":\"If some of the students have not finished their piece of the landing page, they have to finish it by next class, also ask them to try starting to deliver all the previous projects thru the BreatheCode Platform. Lastly ask them to finish all replits and projects.\",\"key-concepts\":[\"Do not explain Git SSH credentials in detail, students must use HTTP\",\"Why using Github?\",\"It will be impossible to avoid using github\",\"The Commit Object\",\"The HEAD\",\"The Stage\",\"Branch\",\"Commit vs PUSH\",\"Resolving Conflicts\"],\"replits\":[{\"title\":\"Git interactive tutorial\",\"slug\":\"git\"}],\"lessons\":[{\"title\":\"GIT (Version Control System)\",\"slug\":\"how-to-use-git-version-control-system\"}],\"technologies\":[\"Git\",\"Github\",\"Markdown\"]},{\"label\":\"Day 5\",\"teacher_instructions\":\"Students have a lot of homework, today is perfect catch-up day and also learning on how to contribute on Github by fixing misspells.\",\"description\":\"There is a lot to do, use this class to catch up on all your homework and ask any questions you may have because next day we are starting javascript!\",\"project\":{\"title\":\"HTML5 Form\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/html5-form#readme\",\"solution\":\"https:\\/\\/repl.it\\/@4GeeksAcademy\\/Bootstrap-Form\"},\"homework\":\"Finish Replits and Projects\",\"lessons\":[{\"title\":\"Using Inputs and Forms\",\"slug\":\"html-input-html-textarea\"}],\"replits\":[{\"title\":\"Working with Bootstrap\",\"slug\":\"forms\"}],\"assignments\":[\"html5-form\",\"fix-the-misspell\"]},{\"label\":\"Day 6\",\"description\":\"HTML & CSS are great, but the world needed interactive pages (not just beautiful text documents). JavaScript comes to help us generate HTML & CSS based commands after the initial text document has already loaded.  JavaScript will also re-write the website live, based on the user's activity.\",\"instructions\":\"Explain the basic coding concepts (variables, data-types, functions, loops, arrays, etc.), then start the excuse generator is a great way to explain how JavaScript and HTML\\/CSS can play together. Use the VanillaJS boilerplate, that way students will start getting used to it\",\"project\":{\"title\":\"The Excuse Generator\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/excuse-generator#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/excuse-generator\\/\"},\"homework\":\"Students need to finish the Excuse Generator, make the replits about JavaScript and complete the layout for the Random Card Generator\",\"key-concepts\":[\"All datatypes in javascript\",\"What is a variable\",\"Arrays\",\"The code is a procedure from top to bottom (for now)\",\"You can skip lines with conditionals\",\"Do not explain looping yet\",\"Do not explain functions yet\",\"Null vs Undefined\",\"Generating random numbers\"],\"lessons\":[{\"title\":\"Learning to code with JS\",\"slug\":\"what-is-javascript-learn-to-code-in-javascript\"}],\"replits\":[{\"title\":\"Introduction to JS\",\"slug\":\"js-beginner\",\"vtutorial_slug\":\"begin-js\"}],\"assignments\":[\"excuse-generator\"],\"technologies\":[\"JavaScript\"]},{\"label\":\"Day 7\",\"teacher_instructions\":\"Today we will be introducing webpack and npm for the first time, just the basics. Ask students to gather and create a flow chart on the whiteboard with the decision process behind building the html for the profile card project. Finish conditional profile card and all previous replits. \",\"description\":\"What we call \\\"thinking\\\" is basically the process of making decisions based on some information (variables) that we have available. You can replicate the same behavior in a computer by using conditionals and logical operations.\",\"homework\":\"Finish the profile card and replits to date\",\"project\":{\"title\":\"Conditional Profile Card\",\"instructions\":\"https:\\/\\/github.com\\/breatheco-de\\/conditional-profile-card\"},\"replits\":[{\"title\":\"Working with functions\",\"slug\":\"functions\"},{\"title\":\"Mastering JS\",\"slug\":\"js-devmaker\"}],\"lessons\":[{\"title\":\"Using Conditional in Algorithms\",\"slug\":\"conditionals-in-programing-coding\"},{\"title\":\"Bundling with Webpack\",\"slug\":\"what-is-webpack\"}],\"assignments\":[\"conditional-profile-card\"],\"key-concepts\":[\"Every JavaScript code starts OnLoad\",\"String Concatenation\",\"Variable Initialization\",\"If... Else\",\"Some times else is not needed\",\"Ternaries and one case were they make sense\",\"What is compiling?\",\"Why the Javascript community decided to bundle (compatibility, ES6, performance, etc.)\",\"Please do not attempt to explain the Webpack Config.\",\"Bundling JS, CSS & Images\",\"Include your bundle on index.html\",\"We can use NPM to download popular functions (libraries)\"],\"technologies\":[\"Webpack\",\"Javascript Conditionals\"]},{\"label\":\"Day 8\",\"instructions\":\"Review everything we have seen so far very quick, reinforce that we are building HTML using JS now, ask the students and ask them to strategize on the white board, before starting to code reinforce the ONLOAD function as the beginning of your application, start using the breathecode-cli and vanilla-js \",\"description\":\"Arrays are the only way to have a list of things in programming, and they are challenging because developers need to master the art of getting or setting values from arrays using loops\",\"project\":{\"title\":\"Domain Name Generator\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/domain-generator#readme\"},\"homework\":\"Finish the domain name generator and work hard on the JS replits for Begin JS, Arrays, Functions and Mastering JS\",\"replits\":[{\"title\":\"Looping and Arrays\",\"slug\":\"arrays\"}],\"lessons\":[{\"title\":\"Looping and Arrays\",\"slug\":\"what-is-an-array-define-array\"}],\"assignments\":[\"domain-generator\"],\"key-concepts\":[\"Functions (anonymous vs normal)\",\"The forEach\",\"Every JavaScript code starts OnLoad\",\"String Concatenation\",\"Main website events: PreLoad & OnLoad\",\"The-Runtime (after OnLoad)\",\"Introduce the DOM\",\"Use querySelector() to select DOM Elements just like you do with CSS\",\"Add\\/Remove CSS Classes to DOM elements\",\"Please do not attempt to explain the Webpack Config.\",\"Bundling JS, CSS & Images.\",\"Include your bundle on index.html (only one scriptag from no on)\"],\"technologies\":[\"Javascript Arrays and Loops\"]},{\"label\":\"Day 9\",\"teacher_instructions\":\"Finish pending replits, make sure students upload projects into their github accounts and finish the Student External Profile\",\"description\":\"Your entire journey at the academy can de summarized into one landing page: The Student External Profile. It is time to start building it.\",\"homework\":\"Students must finish their student external profile and start the replits about Begin JS, Arrays and Functions\",\"project\":{\"title\":\"Student External Profile\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/learn-in-public#readme\",\"solution\":\"http:\\/\\/sep.4geeksacademy.co\\/alesanchezr\"},\"replits\":[{\"title\":\"Working with Functions\",\"slug\":\"functions\"}],\"lessons\":[{\"title\":\"Working with Functions\",\"slug\":\"working-with-functions\"}],\"key-concepts\":[\"How to Pull Request\",\"How to use GIT\",\"What is the Student External Profile\",\"Store Using YML\"],\"technologies\":[\"Javascript Functions\",\"Git\"],\"assignments\":[\"learn-in-public\"]},{\"label\":\"Day 10\",\"teacher_instructions\":\"Do the Random Card using the VanillaJS template but focusing a lot on the workflow (how to plan your strategy and begin coding), reinforce the Window.onLoad event and how to change CSS styles from JS (apply rules and classes)\",\"description\":\"Ok but how do we use JavaScript to build websites? You have to interact with The DOM to create dynamic HTML\\/CSS and wait for events to occur\",\"project\":{\"title\":\"Random Card Generator\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/random-card\\/\"},\"homework\":\"Finish the Random Card and pending replits, start DOM & EVENTS replits\",\"replits\":[{\"title\":\"The DOM\",\"slug\":\"the-dom\"},{\"title\":\"Events\",\"slug\":\"events\"}],\"lessons\":[{\"title\":\"Introduction to Front-End Web Development\",\"slug\":\"what-is-front-end-development\"},{\"title\":\"The DOM\",\"slug\":\"what-is-dom-define-dom\"},{\"title\":\"Events\",\"slug\":\"event-driven-programming\"}],\"assignments\":[\"random-card\"],\"key-concepts\":[\"Main website events: PreLoad & OnLoad\",\"The-Runtime (after OnLoad)\",\"Introduce the DOM\",\"Use querySelector() to select DOM Elements just like you do with CSS\",\"Add\\/Remove CSS Classes to DOM elements\",\"Please do not attempt to explain the Webpack Config.\",\"Bundling JS, CSS & Images.\",\"Include your bundle on index.html\"],\"technologies\":[\"DOM\",\"Events\"]},{\"label\":\"Day 11\",\"description\":\"You have a lot of things to cach up on, finish and deliver the replit exercises and projects. Make sure to review the last replit of events (todo list).\",\"teacher_instructions\":\"Help students finish the replit exercises and projects. Make sure to review the last replit of events (todo list). IMPORTANT: This next coding weekend will be the last before getting into react, encourage students to attend.\",\"project\":\"Work on the replits and projects\",\"homework\":\"Finished Replits and Projects\"},{\"label\":\"Day 12\",\"instructions\":\"It's the first time students will be using objects, explain the concept (without classes). Make students create their first react components and explain the use of JSX. Only talk about functinal components, class components will be explained later. Landing page project should be a code along at start, then groups at end.\",\"description\":\"But working with the DOM can get tricky and it's resource consuming, for that and many other reasons libraries like React.js got popular in the last couple of years. The let you create HTML and CSS using JS in a very intuitive way.\",\"project\":{\"title\":\"Landing Page with React\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/landing-page-with-react#readme\"},\"homework\":\"Students must finish the landing page with react for the next class\",\"lessons\":[{\"title\":\"Object Oriented Programming\",\"slug\":\"what-is-object-oriented-programming-concepts\"},{\"title\":\"Building interfaces with React\",\"slug\":\"learn-react-js-tutorial\"},{\"title\":\"Creating React.js Components\",\"slug\":\"making-react-components\"},{\"title\":\"React Hooks Explained\",\"slug\":\"react-hooks-explained\"},{\"title\":\"Importing and Exporting from other JS files\",\"slug\":\"javascript-import\"}],\"replits\":[{\"title\":\"Object Oriented Programming\",\"slug\":\"object-oriented-programing\"},{\"title\":\"Using React.js as a Rendering Engine\",\"slug\":\"react-js\"}],\"assignments\":[\"simple-counter-react\",\"landing-page-with-react\"],\"key-concepts\":[\"Export -> Import modules\",\"You can create your own tags\",\"Create a Component like a Function\",\"JSX Syntax\",\"Component Properties\"],\"technologies\":[\"React\",\"O.O. Programing\"]},{\"label\":\"Day 13\",\"description\":\"Its the first time you've heard or learn about react, we have given you a lot of exercises to practice. Please practice like crazy with all of them. Ask questions.\",\"instructions\":\"Students have now a lot of homework: The React Replits, Traffic Light, Counter and the Landing page. Work with students to help them complete the developments.\",\"project\":{\"title\":\"Simple Counter with React\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/simple-counter-react#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/simple-counter-react\"},\"homework\":\"Finished Replits and Projects\",\"lessons\":[{\"title\":\"Creating React.js Components\",\"slug\":\"making-react-components\"},{\"title\":\"React Hooks Explained\",\"slug\":\"react-hooks-explained\"},{\"title\":\"Importing and Exporting from other JS files\",\"slug\":\"javascript-import\"}],\"replits\":[{\"title\":\"Using React.js as a Rendering Engine\",\"slug\":\"react-js\"}],\"assignments\":[\"simple-counter-react\"]},{\"label\":\"Day 14\",\"instructions\":\"Review landing page. React as rendering engine: Students need to understand that now they can finally create their own HTML tags (React Components) and how to use the State and the Props. Have the class discuss the strategy for todo-list\",\"description\":\"Finally we can create our own HTML tags and re-use them on several projects and views. The key to understand a component is understanding Props and The State. Please continue working on the Todo-List Application.\",\"project\":{\"title\":\"Todo list with React\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/todo-list\\/\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/todo-list#readme\"},\"assignments\":[\"todo-list\",\"traffic-light-react\"],\"key-concepts\":[\"Controlled Inputs\",\"Condigional Rendering\",\"The component state\",\"The state is inmutable\",\"State vs Props\",\"Using const, map, filter and concat to prevent state mutation\"],\"homework\":\"Students must finish the TodoList being able to add & delete tasks.\",\"technologies\":[\"Class Components\"]},{\"label\":\"Day 15\",\"description\":\"Most of the applications build on the internet require some king of database syncronization, normal made thru several API requests.\",\"teacher_instructions\":\"Introduce the concept of fetching help students finish the todo list and incorporate the synconization with the API\",\"project\":{\"title\":\"Todo list with React and Fetch\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/todo-list-react-with-fetch#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/todolist-with-fetch\"},\"homework\":\"Students must finish the all replits and projects\",\"lessons\":[{\"title\":\"Asynchronous Scripting with Javascript\",\"slug\":\"asynchronous-algorithms-async-await\"},{\"title\":\"Javascript Fetch API\",\"slug\":\"the-fetch-javascript-api\"},{\"title\":\"Understanding REST API's\",\"slug\":\"understanding-rest-apis\"}],\"assignments\":[\"todo-list-react-with-fetch\"],\"key-concepts\":[\"Using Fetch to retrieve information from the server\",\"Asyncrunus Programing\",\"Component Did Mount its ideal to fetch info\",\"Initializations on the component contructor before fetching\",\"Displaying a 'loading' before the data arrives\",\"Reseting the state when fetch finalizes\",\"POSTing, PUTing and DELETEing data to the server\",\"Sync the state with the server\"],\"technologies\":[\"Fetch API\"]},{\"label\":\"Day 16\",\"description\":\"You know exactly how to build small js apps, but what if your application will have several pages\\/views? E.g.: Having a 'Settings' page on the Spotify clone. We need to connect different URLs to our React Components. Welcome to the world of Routing.\",\"teacher_instructions\":\"This project is all about URLs and Routing. Each student must build two views\\/pages: One List and one Single. For example: List of Space Ships and a view for a single Space Ship. The have to make sure the URL's are propery setup on the reouter and also that the information is fetch on the didmount of the respectiv view. Also, you will be using the Context API for MVC (Store, View, Actions)\",\"project\":{\"title\":\"Starwars blog with reading list\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/starwars-blog-reading-list\\/\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/starwars-blog-reading-list#readme\"},\"homework\":\"Students must finish the all replits and projects\",\"lessons\":[{\"title\":\"Using React Router\",\"slug\":\"routing-our-views-with-react-router\"},{\"title\":\"Learning about Context.API\",\"slug\":\"context-api\"}],\"assignments\":[\"starwars-blog-reading-list\"],\"key-concepts\":[\"Connecting Components to URLS (Routing)\",\"Defining Parameters on the URL Path\",\"Retrieving URL parameters with match.params\",\"Using withProps for components not connected directly to the <Route>\",\"Redirecting with history.push\",\"Fetching on didmount\"],\"technologies\":[\"FLUX & Context\"]},{\"label\":\"Day 17\",\"description\":\"Lets warp the last things about the Starwars Blog because we are about to dive into and exciting journey inside the world of backend! :)\",\"teacher_instructions\":\"Help students finish the starwars blog and also any other previous exercises and project and publish them to github\",\"project\":{\"title\":\"Starwars blog with reading list\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/starwars-blog-reading-list\\/\",\"instructions\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/starwars-blog-reading-list\\/\"},\"homework\":\"Students must finish the all replits and projects\",\"lessons\":[],\"assignments\":[],\"key-concepts\":[],\"technologies\":[\"FLUX & Context\"]},{\"label\":\"Day 18\",\"teacher_instructions\":\"Now you can deep further into HTTP: Explain the other methods POST, PUT, DELETE. Present the new project that uses FLUX, Context and Fetch again, but now it lets the user to Create, Update and Delete information using an API\",\"description\":\"When your real application is almost ready, it's time to integrate with a real database. That will enable it to work with real information: Create, Update, Delete and get real data. We do HTTP Requests for that.\",\"project\":{\"title\":\"Contact List (Using Context-API)\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/contact-list-context#readme\",\"solution\":\"https:\\/\\/bitbucket.org\\/codingacademy\\/contact-list\"},\"replits\":[],\"assignments\":[\"contact-list-context\"],\"key-concepts\":[\"How to use POSTMan, set environment variables and use collections\",\"JSON is a JavaScript object but as TEXT\",\"The goal is to send\\/receive everything as JSON Serialize>Send>Unserialize\",\"What is serialization and how to do it (Parsing)\",\"Why use several request types (GET, POST, PUT, DELETE)?\",\"Explain the 3 main content-types: Form, URL-Encoded, Raw (With JSON)\"],\"homework\":\"Using POSTman, and then using React, students must consume the API to Save, Delete and Update Contacts.\",\"technologies\":[\"HTTP\",\"AJAX\",\"JSON\",\"HTTP Fetch\",\"API\",\"Serialization\"]},{\"label\":\"Day 19\",\"instructions\":\"Finish the Contact Managment API integration, focus on Debugging procedures and start the introduction to Python\",\"description\":\"Make sure to finish the contact management project\",\"project\":{\"title\":\"Finish the Contact List\"},\"homework\":\"Students must finish the Contact Management API Integration\"},{\"label\":\"Day 20\",\"instructions\":\"One last day to finish the Contact Managment Application with your students, review all the Context, React, Components and HTTP Ajax concepts and best practices\",\"description\":\"Make sure to finish the contact management project\",\"project\":{\"title\":\"Contact Management API Integration\"},\"homework\":\"Students must finish the Contact Management Application\"},{\"label\":\"Day 21\",\"teacher_instructions\":\"Time to start the Final project! Let's give the students a break and dive into User Stories and the SCRUM methodology. Students must pick their projects & partner, and start building the user stories using Github Project. Create a project with them.\",\"description\":\"Time to start the Final project! Lets review how software is built today, you'll learn and follow the same methods used by the top tech companies in the world.\",\"project\":{\"title\":\"Final Project User Stories and Wireframes\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/full-stack-project-stories-and-wireframes#readme\"},\"lessons\":[{\"title\":\"Agile Web Development\",\"slug\":\"agile-development\"},{\"title\":\"Creating User Stories\",\"slug\":\"user-stories-examples\"}],\"assignments\":[\"full-stack-project-stories-and-wireframes\"],\"key-concepts\":[\"What is a Kanban board and how does it work\",\"How to use Github's kanban automated board\",\"Adding one issue per user story\",\"Writting stories int he users point of view\",\"Acceptance Criteria\",\"You application roles & capabilities\",\"Standup Meeting\"],\"homework\":\"Students must finish the user stories by next class, remember that the student projects must meet certain conditions to be accepted.\",\"technologies\":[\"SCRUM\",\"User Stories\",\"Kanban\",\"Agile Methodologies\"]},{\"label\":\"Day 22\",\"instructions\":\"Continue working on the final project but now start building the React Views, use the FLUX boilerplate with the students and start organizing eveyrthing from Layout.jsx\",\"description\":\"Today you will be coding your final project HTML Views and making them React Views\",\"project\":{\"title\":\"Coding the Project Views\"},\"lessons\":[],\"assignments\":[\"full-stack-project-prototype\"],\"key-concepts\":[\"Reinforce the Minimum Viable Product concept\",\"Students should not get excited about npm packages, use only a handfull\",\"Usign React-Strap is a great idea to save some time\"],\"homework\":\"Sit with every project team and discuss how to split the code into Views vs Components, students must finish their project home layout by next class\",\"technologies\":[\"Wireframing\",\"React JS\"]},{\"label\":\"Day 23\",\"description\":\"Keep working on your final project final HTML\\/CSS and React Views. Link them together as a prototype and be ready to start the backend side of the web.\",\"teacher_instructions\":\"Work with students to complete the HTML\\/CSS, React Views and Components. Make sure they are on their way to complete a 'Prototipe' that is close to the front-end side of their projects\",\"project\":{\"title\":\"Build your project Views\"},\"homework\":\"Students must deliver the first views of their projects\"},{\"label\":\"Day 24\",\"teacher_instructions\":\"Help students to finish their prototype, make sure it follows best practices and unstuck them on any problems they may encounter\",\"description\":\"Please work hard with your team on completing your front-end views, this will be the last font-end only day and we will start building your Project API next monday\",\"project\":{\"title\":\"Build your project Views\"},\"homework\":\"Students (in groups) must create a 4 page website (Home, Blog, Product, Checkout-Cart) using React Router\",\"technologies\":[\"React Router\"]},{\"label\":\"Day 25\",\"description\":\"The backend side of the web is all about creating API's for data storing and processing; and integrating with 3rd party API's. The first step of that process is storing the information.\",\"teacher_instructions\":\"Go back to HTTP and explain that the backend purpose is to respond to the requests with the right information the front-end wants. Work on doing the model\\/structure of previously made most important projects\",\"project\":{\"title\":\"Data Structure\\/Model Previous Projects\",\"instructions\":\"https:\\/\\/github.com\\/breatheco-de\\/exercise-data-model-previous-projects\"},\"homework\":\"Students must finish the all replits and projects\",\"lessons\":[{\"title\":\"Welcome to the world of Python\",\"slug\":\"python-syntax\"}],\"replits\":[{\"title\":\"Learn Python\",\"slug\":\"python-beginner\"},{\"title\":\"Learn Python Functions\",\"slug\":\"python-functions\"},{\"title\":\"Python Loops and Lists\",\"slug\":\"python-lists\"}],\"assignments\":[],\"key-concepts\":[\"Different Types of Data Structures (with examples)\",\"Review different approaches for the TODO List\",\"Review different approaches for the Contact List\",\"Object vs Array\",\"Example of a very complicated object\",\"Calculated properties like age\"],\"technologies\":[\"Data Structures & Model\"]},{\"label\":\"Day 26\",\"description\":\"Database engines are not related particular languages (like Python, PHP or Node) and they run on a different server than the website or application. For that reason and many others databases have their own language: SQL\",\"teacher_instructions\":\"The have done one database using SQL Alchemy, it is time to explain how SQL database work and how to write some SQL to interact with them, look at the full teacher instrutcions for more details\",\"project\":{\"title\":\"Work on SQL Replits\"},\"homework\":\"Students must finish the all replits and projects\",\"replits\":[{\"title\":\"Learn SQL\",\"slug\":\"sql\"}],\"lessons\":[{\"title\":\"Understanding SQL (Relational Databases)\",\"slug\":\"what-is-sql-database\"}],\"assignments\":[],\"key-concepts\":[\"SQL Table vs SQL Alchemy Model\",\"Table Relations: 1-1, 1-N, N-N\",\"Metadata vs Data\",\"INSER, UPDATET, DELETE, UPDATE\",\"ALTER, DROP\",\"Transactions: COMMT\"],\"technologies\":[\"SQL\"]},{\"label\":\"Day 27\",\"description\":\"The backend its all about data, structures and databases. Let's review how to createt a database model and connect it to our Python backend\",\"teacher_instructions\":\"Take the mayority of the class to draw the UML diagram of Instagram, then, explain User Stories with an example really fast, explain why they exists and the different between reuierments and stories and whay that matters. Build a couple of stories and then let the students start building the instagram stories right way.\",\"project\":{\"title\":\"Building Instagram Data Model & Stories\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/instagram-data-modeling#readme\"},\"homework\":\"Students must finish the all replits and projects\",\"lessons\":[{\"title\":\"SQL Alchemy\",\"slug\":\"everything-you-need-to-start-using-sqlalchemy\"}],\"assignments\":[\"instagram-data-modeling\"],\"key-concepts\":[\"Why do we have to draw the database first?\",\"It is hard to change the database in the middle of development\",\"UML has become the standard for diagrams\",\"SQLAlchemy is the most popular library for python database\",\"Instead of SQL We will use ORM's for 90% of our database needs\",\"ORM's translate Python Objects and Functions into SQL Language\",\"Databases have more data-types than programing languages\",\"Relationships can be 1-1 1-N or N-N\"],\"technologies\":[\"Data-Modeling\"]},{\"label\":\"Day 28\",\"teacher_instructions\":\"First, run a simple Python script in the shell, explain the benefits and capabilities that it brings in the back-end. Then, follow the interactive Flask tutorial and explain the sample API that comes with it (remember the todo list?), then ask the students to build the API for the TodoList they already coded on the front-end\",\"description\":\"Welcome to the back-end! The back-end side has almost no limitations, you have access to the entire computer, printers or anything you need. Your life as a back-end developer will start by doing API's because it is the most needed skill in the market. We really hope you like it as much as we do!\",\"project\":{\"title\":\"Build a Todolist API and Integrate with Todo App\",\"solution\":\"https:\\/\\/github.com\\/breatheco-de\\/python-flask-api-tutorial\"},\"lessons\":[{\"title\":\"Building REST API's\",\"slug\":\"understanding-rest-apis\"},{\"title\":\"Building REST API's with Flask\",\"slug\":\"building-apis-with-python-flask\"}],\"assignments\":[\"python-flask-api-tutorial\"],\"key-concepts\":[\"Python has access to the Entire Machine\",\"Python has packages just like NPM but it is called (Pipenv)\",\"The Pipfile is like the package.json\",\"Flask its the most popular Python Framework\",\"Workflow for Creating an endpoint in Flask (The same MVC pattern but now on the backend)\",\"Flask easily with SQLAlchemy (models.py)\",\"What is Serialization (jsonify)\"],\"homework\":\"Students must finish the todolist api\",\"technologies\":[\"Flask\",\"API's\",\"Serialization\"]},{\"label\":\"Day 29\",\"teacher_instructions\":\"Help students finish pending the todo-list api\",\"description\":\"Continue working on the todolist\",\"project\":{\"title\":\"Continue working on the todolist\"},\"homework\":\"Finish python replits and pending projects\",\"technologies\":[\"Web Framework\",\"API\"]},{\"label\":\"Day 30\",\"teacher_instructions\":\"This lessons is about data-structures + API. We are trying to make students use a class\\/data-structure to build the API around it. Lets build another API but now using a more complicated data-structures on the Backend.\",\"description\":\"Lets keep working on the backend and get more familiar with Python's dictionaries, lists and the lamdba function\",\"project\":{\"title\":\"Family Tree API\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/family-static-api#readme\"},\"assignments\":[\"family-static-api\"],\"key-concepts\":[\"Python has dictonaries instead of object literals\",\"Python has lamda instead of arrow functions\",\"Python has lists and tuples instead of arrays\",\"Explain how to map an array with lambda\"],\"homework\":\"Finish python replits and pending projects\",\"technologies\":[\"Web Framework\",\"API\"]},{\"label\":\"Day 31\",\"teacher_instructions\":\"Help students finish pending backend projects\",\"description\":\"Continue working on the family tree\",\"project\":{\"title\":\"Family Tree API\",\"instructions\":\"https:\\/\\/projects.breatheco.de\\/d\\/family-static-api#readme\"},\"homework\":\"Finish python replits and pending projects\",\"technologies\":[\"Web Framework\",\"API\"]},{\"label\":\"Day 32\",\"teacher_instructions\":\"Time to start working on your final project backend\",\"description\":\"You have built 2 different API's using python already, it is time to start working on your own. Start by building your UML diagram and setting up the repository\",\"project\":{\"title\":\"Students must start building their backend API\"},\"homework\":\"Finish python replits and pending projects\",\"technologies\":[\"Final Project\"]},{\"label\":\"Day 47\",\"instructions\":\"Create a 'rehersal day' and let the students present the project to their classmates\",\"description\":\"A great way of rehearsing is by presenting the final project to your classmates\",\"project\":{\"title\":\"Final presentation rehersal\"}},{\"label\":\"Pitch Day\",\"instructions\":\"Answer any question your students may have\",\"description\":\"You have worked a lot during these weeks, it's time to present the final project and enjoy with your family and friends!\"}]}",
@@ -4491,11 +4492,11 @@ Cypress.Commands.add('cohort_edit_syllabus', () => {
     ]
 
      ).as('cohort_edit_version')
-  }); 
+  });
 
   Cypress.Commands.add('cohort_edit_new_version', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/syllabus/web-development/version', 
+    cy.intercept('GET', '**/admissions/syllabus/web-development/version',
 
     [
         {
@@ -7847,13 +7848,13 @@ Cypress.Commands.add('cohort_edit_syllabus', () => {
             "private": false
         }
     ]
-  
+
     ).as('cohort_edit_new_version')
-  }); 
+  });
 
   Cypress.Commands.add('cohort_edit_load_user', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/academy/cohort/user?cohorts=**', 
+    cy.intercept('GET', '**/admissions/academy/cohort/user?cohorts=**',
 
     {
         "count": 1,
@@ -7900,11 +7901,11 @@ Cypress.Commands.add('cohort_edit_syllabus', () => {
 
 
     ).as('cohort_edit_load_user')
-  }); 
+  });
 
 Cypress.Commands.add('cohort_edit_full', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/syllabus/41', 
+    cy.intercept('GET', '**/admissions/syllabus/41',
 
     {
         "id": 41,
@@ -7922,11 +7923,11 @@ Cypress.Commands.add('cohort_edit_full', () => {
     }
 
     ).as('cohort_edit_full')
-}); 
+});
 
 Cypress.Commands.add('cohort_edit_students', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/academy/cohort/user?cohorts**', 
+    cy.intercept('GET', '**/admissions/academy/cohort/user?cohorts**',
 
     {
         "count": 0,
@@ -7938,11 +7939,11 @@ Cypress.Commands.add('cohort_edit_students', () => {
     }
 
     ).as('cohort_edit_students')
-}); 
+});
 
 Cypress.Commands.add('cohort_edit_schedule', () => {
     // the data of the new cohort so can be edit
-    cy.intercept('GET', '**/admissions/schedule?syllabus', 
+    cy.intercept('GET', '**/admissions/schedule?syllabus',
 
     [
         {
@@ -7954,4 +7955,6 @@ Cypress.Commands.add('cohort_edit_schedule', () => {
     ]
 
     ).as('cohort_edit_schedule')
-}); 
+});
+
+// TODO: this file has many lines

@@ -44,6 +44,9 @@ describe('New cohort view', () => {
 
       // check the payload
       cy.wait('@postAdmissionsAcademyCohortRequest').then(({ request }) => {
+        // Check toastify
+        cy.get('.Toastify__toast-body').should('have.text', 'Cohort created successfully');
+
         cy.wrap(request.body).its('name').should('eq', 'Defence Against the Dark Arts');
         cy.wrap(request.body).its('slug').should('eq', 'defence-against-the-dark-arts');
 
