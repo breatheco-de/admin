@@ -123,9 +123,6 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 form="new-timeslot"
                 name="starting_date"
                 label="Starting date"
-                timezone={session.academy.timezone}
-                // placeholder="full-stack-pt"
-                // disablePast
                 required
                 dialog
               />
@@ -133,8 +130,6 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 form="new-timeslot"
                 name="starting_hour"
                 label="Starting hour"
-                timezone={session.academy.timezone}
-                // placeholder="full-stack-pt"
                 required
                 dialog
               />
@@ -142,8 +137,6 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 form="new-timeslot"
                 name="ending_hour"
                 label="Ending hour"
-                timezone={session.academy.timezone}
-                // placeholder="full-stack-pt"
                 required
                 dialog
               />
@@ -153,7 +146,6 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 type="text"
                 options={recurrencyTypes}
                 name="recurrency_type"
-                // placeholder="Part time"
                 label="Recurrency type"
                 required
                 dialog

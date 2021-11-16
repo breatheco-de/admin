@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Grid,
   TextField,
@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
+import { getSession } from '../redux/actions/SessionActions';
 
 // import TextField from '@mui/lab/TextField';
 // import TextField from '@mui/material/TextField';
@@ -68,7 +69,9 @@ const propTypes = {
 const Field = ({
   form, label, dialog, readOnly, timezone, children, ...props
 }) => {
+  const [session] = useState(getSession());
   const elementRef = useRef();
+  const currentTimezone = timezone || session?.academy?.timezone;
 
   const extraProps = props;
   extraProps.name = props.name || '';
@@ -80,17 +83,17 @@ const Field = ({
   const cypressFieldName = `${form}-${fieldName.replace(/_/g, '-')}`;
   const labelText = label || capitalizeEachFirstLetter(name);
 
-  if (timezone) dayjs.tz.setDefault(timezone);
+  if (currentTimezone) dayjs.tz.setDefault(currentTimezone);
 
   const onChange = (date) => {
     try {
-      if (timezone) {
+      if (currentTimezone) {
         const dateFormat = 'YYYY-MM-DD';
         const timeFormat = 'HH:mm';
         const datetimeFormat = `${dateFormat} ${timeFormat}`;
         const time = `${dayjs().format(dateFormat)} ${date.format(timeFormat)}`;
 
-        helpers.setValue(dayjs.tz(time, datetimeFormat, timezone).toISOString());
+        helpers.setValue(dayjs.tz(time, datetimeFormat, currentTimezone).toISOString());
       } else {
         helpers.setValue(date.toISOString());
       }
