@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res1 = await axios._post('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, {
+      const res1 = await axios.bcPost('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, {
         email,
         password,
       });
@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }) => {
       throw Error(message);
     }
 
-    const res2 = await axios._get('User', `${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
+    const res2 = await axios.bcGet('User', `${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
     const storedSession = JSON.parse(localStorage.getItem('bc-session'));
     if (!res2.data || res2.data.roles.length === 0) throw Error('You are not a staff member from any academy');
     else if (storedSession && typeof storedSession === 'object') {

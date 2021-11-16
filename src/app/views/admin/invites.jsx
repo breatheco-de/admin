@@ -22,7 +22,7 @@ const Students = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [

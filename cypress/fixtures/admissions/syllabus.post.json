@@ -1,0 +1,12 @@
+{
+    "id": 47,
+    "slug": "regular-show",
+    "name": "Regular Show",
+    "academy_owner": 4,
+    "duration_in_days": 890,
+    "duration_in_hours": 890,
+    "week_hours": 1,
+    "github_url": "https://github.com/jefer94/gitpod-desktop",
+    "logo": "https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg",
+    "private": false
+}

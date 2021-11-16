@@ -59,7 +59,7 @@ const studentReport = () => {
         setCohortUsersQuery({ ...cohortUsersQuery, cohorts: data.slug });
         setNoteFormValues({ ...noteFormValues, cohort: data.slug });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   // cohort teacher
@@ -74,7 +74,7 @@ const studentReport = () => {
         .then(({ data }) => {
           setCohortData({ ...cohortData, teachers: data });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }, [cohortUsersQuery]);
 
@@ -86,7 +86,7 @@ const studentReport = () => {
         setStudentData(data);
         setQuery({ ...query, user_id: data.user.id });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const studentReport = () => {
         setStudentStatus(data);
         setQuery({ ...query, user_id: data.user.id });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   // student assignments
@@ -106,7 +106,7 @@ const studentReport = () => {
       .then(({ data }) => {
         setStudentAssignments(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   // cohort activity
@@ -121,7 +121,7 @@ const studentReport = () => {
             studentActivity.length !== 0 ? [...studentActivity, ...newData] : data?.results || [],
           );
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }, [query]);
 

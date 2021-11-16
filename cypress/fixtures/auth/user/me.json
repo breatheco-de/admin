@@ -13,7 +13,8 @@
       "academy": {
         "id": 9,
         "name": "4Geeks Academy Uruguay",
-        "slug": "sanjose-uruguay"
+        "slug": "sanjose-uruguay",
+        "timezone": "America/Montevideo"
       },
       "role": "admin"
     },
@@ -21,7 +22,8 @@
       "academy": {
         "id": 5,
         "name": "4Geeks Academy Santiago",
-        "slug": "santiago-chile"
+        "slug": "santiago-chile",
+        "timezone": "America/Santiago"
       },
       "role": "admin"
     },
@@ -29,7 +31,8 @@
       "academy": {
         "id": 4,
         "name": "4Geeks Academy Miami",
-        "slug": "downtown-miami"
+        "slug": "downtown-miami",
+        "timezone": "America/New_York"
       },
       "role": "admin"
     },
@@ -37,7 +40,8 @@
       "academy": {
         "id": 6,
         "name": "4Geeks Academy Madrid",
-        "slug": "madrid-spain"
+        "slug": "madrid-spain",
+        "timezone": "Europe/Madrid"
       },
       "role": "admin"
     }

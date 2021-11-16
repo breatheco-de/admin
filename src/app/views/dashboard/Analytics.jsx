@@ -140,7 +140,7 @@ const Analytics = () => {
         console.log('GET REPORT', data);
         setAdmissionsReport(data);
       }).catch((err) => {
-        console.log('Admissions Report Error', err);
+        console.error('Admissions Report Error', err);
       });
   }, [renderNewDates]);
 
