@@ -1,0 +1,9 @@
+{
+    "id": 17,
+    "academy": 4,
+    "specialty_mode": 4,
+    "starting_at": "1911-10-03T04:00:00.000Z",
+    "ending_at": "1911-10-03T06:00:00.000Z",
+    "recurrent": true,
+    "recurrency_type": "DAILY"
+}

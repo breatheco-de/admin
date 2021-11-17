@@ -27,7 +27,7 @@ export const ProfileForm = ({ initialValues }) => {
           history.push('/admissions/students');
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   return (

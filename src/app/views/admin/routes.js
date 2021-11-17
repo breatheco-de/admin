@@ -22,6 +22,10 @@ const routes = [
     component: React.lazy(() => import('./syllabus')),
   },
   {
+    path: '/admin/syllabus/new',
+    component: React.lazy(() => import('./syllabus-form/NewSyllabus')),
+  },
+  {
     path: '/admin/syllabus/:syllabusSlug',
     component: React.lazy(() => import('./syllabus-form')),
   },

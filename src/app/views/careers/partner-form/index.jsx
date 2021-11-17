@@ -127,7 +127,7 @@ const Cohort = () => {
         setStage(data.stage);
         setMaxSyllabusDays(data.syllabus_version.duration_in_days);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
@@ -146,7 +146,7 @@ const Cohort = () => {
       .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const updateCohort = (values) => {
@@ -155,12 +155,12 @@ const Cohort = () => {
       bc.admissions()
         .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     } else {
       bc.admissions()
         .updateCohort(cohort.id, { ...values, private: cohort.private })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   };
 

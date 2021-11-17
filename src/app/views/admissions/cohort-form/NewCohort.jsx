@@ -30,7 +30,7 @@ const NewCohort = () => {
   const startDate = new Date();
   const [syllabus, setSyllabus] = useState(null);
   const [version, setVersion] = useState(null);
-  // const [schedule, setSchedule] = useState(null);
+  const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [timeZone, setTimeZone] = useState("");
@@ -64,15 +64,18 @@ const NewCohort = () => {
 
   const postCohort = (values) => {
     bc.admissions()
-      // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
-      //   specialty_mode: schedule.id })
-      .addCohort({ ...values, time_zone: `${timeZone}`, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
+      .addCohort({
+        ...values,
+        time_zone: `${timeZone}`,
+        syllabus: `${syllabus.slug}.v${version.version}`,
+        specialty_mode: schedule?.id,
+      })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -135,7 +138,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
+
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
@@ -168,7 +171,7 @@ const NewCohort = () => {
                     )}
                   </div>
                 </Grid>
-                {/* <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={2} sm={4} xs={12}>
                   Schedule
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -193,7 +196,7 @@ const NewCohort = () => {
                     value={schedule}
                     disabled={!syllabus}
                   />
-                </Grid> */}
+                </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
                 </Grid>
@@ -258,7 +261,7 @@ const NewCohort = () => {
                     label="This cohort never ends."
                   />
                 </Grid>
-                
+
                 <Grid item md={2} sm={4} xs={12}>
                 Live meeting URL
                 </Grid>
@@ -276,14 +279,14 @@ const NewCohort = () => {
                     onChange={createCohort}
                   />
                 </Grid>
-               
+
                 <Grid item md={2} sm={4} xs={12}>
-                 Timezone 
+                 Timezone
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
+
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
                       width="100%"
@@ -295,7 +298,7 @@ const NewCohort = () => {
                       getOptionLabel={(option) => `${option}`}
                       value={timeZone}
                     />
-                 
+
                   </div>
                 </Grid>
               </Grid>

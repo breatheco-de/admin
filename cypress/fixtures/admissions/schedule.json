@@ -1,0 +1,16 @@
+[
+  {
+    "id": 4,
+    "slug": "full-stack-pt-mon",
+    "name": "Full Stack PT Mon",
+    "description": "Full Stack PT Monday",
+    "syllabus": 36
+  },
+  {
+    "id": 5,
+    "slug": "full-stack-pt-sun",
+    "name": "Full Stack PT Sun",
+    "description": "Full Stack PT Sunday",
+    "syllabus": 36
+  }
+]

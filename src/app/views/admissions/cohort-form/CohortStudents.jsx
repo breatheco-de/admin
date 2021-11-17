@@ -94,7 +94,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         if (data.status >= 200) getCohortStudents();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 
