@@ -173,14 +173,16 @@ const EventForm = () => {
                   Landing URL
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
-                  <MediaInput
+                  <TextField
                     placeholder="Landing URL"
                     size="small"
+                    type="url"
+                    variant="outlined"
                     value={values.url}
-                    handleChange={setFieldValue}
+                    handleChange={handleChange}
                     name="url"
                     fullWidth
-                    inputProps={{ style: { padding: '10px' } }}
+                    required
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>

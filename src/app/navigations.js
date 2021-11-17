@@ -13,12 +13,6 @@ export const navigations = [
     beta: true,
   },
   {
-    name: 'Student Report',
-    path: '/dashboard/student/1/cohort/1',
-    icon: 'show_chart',
-    beta: true,
-  },
-  {
     name: 'Admissions',
     icon: 'school',
     auth: authRoles.contry_manager,
@@ -105,16 +99,19 @@ export const navigations = [
     name: 'Careers',
     icon: 'business_center',
     auth: authRoles.contry_manager,
+    beta: true,
     children: [
       {
         name: 'Partners',
         path: '/career/partners',
         iconText: 'CO',
+        beta: true,
       },
       {
         name: 'Student Profiles',
         path: '/career/students',
         iconText: 'STU',
+        beta: true,
       },
     ],
   },

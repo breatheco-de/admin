@@ -3,21 +3,29 @@ import {
   DialogTitle,
   Dialog,
   Button,
+  Select,
+  MenuItem,
   DialogActions,
   DialogContent,
   Grid,
   TextField,
 } from '@material-ui/core';
 import { Formik } from 'formik';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { toast } from 'react-toastify';
 import { AsyncAutocomplete } from './Autocomplete';
 import bc from '../services/breathecode';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const CustomDialog = ({
   open, onClose, formInitialValues, onDelete, title, onSubmit, ...rest
 }) => {
   const [category, setCategory] = useState([]);
-  const [copied, setCopied] = useState(false);
+  const [size, setSize] = useState(0);
   const [confirm, setConfirm] = useState(false);
   useEffect(() => {
     setCategory(formInitialValues.categories);
@@ -63,25 +71,58 @@ const CustomDialog = ({
                 <Grid item md={2} sm={4} xs={12}>
                   URL
                 </Grid>
-                <Grid item md={8} sm={6} xs={10}>
+                <Grid item md={7} sm={4} xs={6}>
                   <TextField
                     label="URL"
                     name="url"
                     size="medium"
                     disabled
                     fullWidth
-                    variant="outlined"
-                    value={values.url}
+                    defaultValue={null}
+                    value={!values.mime.includes("image") ? values.url : `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}`}
                     onChange={handleChange}
                   />
                 </Grid>
-                <Grid item md={2} sm={2} xs={2}>
-                  <CopyToClipboard
-                    text={values.url}
-                    onCopy={() => setCopied(true)}
-                  >
-                    <Button className="m-3">{copied ? <span style={{ color: 'red' }}>Copied</span> : 'Copy'}</Button>
-                  </CopyToClipboard>
+                <Grid item md={3} sm={4} xs={6}>
+                    {!values.mime.includes("image") ?
+                      <Button className="m-3" variant="fillted" fullWidth onClick={() => {
+                        navigator.clipboard.writeText(values.url);
+                        toast.success('Copied to the clipboard', toastOption);
+                      }}>Copy URL</Button>
+                      :
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        variant="filled"
+                        fullWidth
+                        value={size}
+                        onChange={(e) => {
+                          if(e.target.value && e.target.value !== 0){
+                            setSize(e.target.value)
+                            let query = {}
+                            if(e.target.value != "original") query.width = e.target.value;
+                            const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map(key => `${key}=${query[key]}`).join("&")}`;
+                            navigator.clipboard.writeText(url)
+                            toast.success('Copied to the clipboard', toastOption);
+
+                            // do the first request immediatly to make sure the resize gets done.
+                            // if we don't do this, the first time someone calls the URL it will take a long time to load.
+                            fetch(url, { redirect: "manual", method: 'HEAD'})
+                              .then(resp => (resp.status > 399) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                              .catch(error => toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                          }
+                        }}
+                      >
+                        {[
+                          { label: "Copy URL", value: 0 }, 
+                          { label: "200px (thumb)", value: 200 }, 
+                          { label: "400px", value: 400 }, 
+                          { label: "600px", value: 600 }, 
+                          { label: "800px", value: 800 }, 
+                          { label: "Original size", value: "original" }
+                          ].map(opt => <MenuItem key={opt.label} value={opt.value}>{opt.label}</MenuItem>)}
+                      </Select>
+                    }
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Mime Type
