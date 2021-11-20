@@ -43,7 +43,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         users: stdId,
       })
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (data.length < 1) {
           setStdCohorts([]);
@@ -60,17 +59,16 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   }, []);
 
   const changeStudentStatus = (value, name, studentId, i) => {
-    console.log(value, name, i);
     const sStatus = {
       role: stdCohorts[i].role.toUpperCase(),
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status,
+      [name]: value,
     };
-    console.log(sStatus);
+
     bc.admissions()
-      .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, { ...sStatus, [name]: value })
+      .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, sStatus)
       .then((data) => {
-        console.log(data);
         if (data.status >= 200) getStudentCohorts();
       })
       .catch((error) => error);
