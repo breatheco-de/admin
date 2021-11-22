@@ -8,15 +8,13 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  MenuItem,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import TextField from '@material-ui/core/TextField';
-import { resolveResponse } from 'utils';
 import { makeStyles } from '@material-ui/core/styles';
-import { AddNoteModal } from 'app/components/AddNoteModal';
+import { AddNoteModal } from '../../../components/AddNoteModal';
 import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
@@ -51,7 +49,6 @@ const Student = () => {
   const classes = useStyles();
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
-  const [copied, setCopied] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [openModal, setOpenModal] = useState(false);
