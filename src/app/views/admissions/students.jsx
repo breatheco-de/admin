@@ -174,6 +174,7 @@ const Students = () => {
           }}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyStudents(querys);
+            console.log('students');
             setItems(data.results);
             return data;
           }}
