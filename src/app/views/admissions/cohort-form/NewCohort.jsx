@@ -30,17 +30,17 @@ const NewCohort = () => {
   const startDate = new Date();
   const [syllabus, setSyllabus] = useState(null);
   const [version, setVersion] = useState(null);
-  // const [schedule, setSchedule] = useState(null);
+  const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
-  const [timeZone, setTimeZone] = useState('America/Caracas');
+  const [timeZone, setTimeZone] = useState("");
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
-    // time_zone: [],
+    time_zone: '',
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
@@ -64,15 +64,18 @@ const NewCohort = () => {
 
   const postCohort = (values) => {
     bc.admissions()
-      // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
-      //   specialty_mode: schedule.id })
-      .addCohort({ ...values, time_zone: `${timeZone}`, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
+      .addCohort({
+        ...values,
+        time_zone: `${timeZone}`,
+        syllabus: `${syllabus.slug}.v${version.version}`,
+        specialty_mode: schedule?.id,
+      })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -135,7 +138,7 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
+
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
@@ -152,7 +155,7 @@ const NewCohort = () => {
                       <AsyncAutocomplete
                         debounced={false}
                         onChange={(v) => setVersion(v)}
-                        width="20%"
+                        width="30%"
                         key={syllabus.slug}
                         asyncSearch={() => bc.admissions()
                           .getAllCourseSyllabus(syllabus.slug)}
@@ -168,7 +171,7 @@ const NewCohort = () => {
                     )}
                   </div>
                 </Grid>
-                {/* <Grid item md={2} sm={4} xs={12}>
+                <Grid item md={2} sm={4} xs={12}>
                   Schedule
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -193,7 +196,7 @@ const NewCohort = () => {
                     value={schedule}
                     disabled={!syllabus}
                   />
-                </Grid> */}
+                </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
                 </Grid>
@@ -258,7 +261,7 @@ const NewCohort = () => {
                     label="This cohort never ends."
                   />
                 </Grid>
-                
+
                 <Grid item md={2} sm={4} xs={12}>
                 Live meeting URL
                 </Grid>
@@ -266,38 +269,36 @@ const NewCohort = () => {
                 <TextField
                     className="m-2"
                     label="URL"
-                    name="meetingURL"
+                    width="100%"
+                    name="online_meeting_url"
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    defaultValue={"https://bluejeans.com/976625693"}
-                    // value={"https://bluejeans.com/976625693"}
-                    // InputProps={{
-                    //   readOnly: true,
-                    // }}
+                    placeholder={"https://bluejeans.com/<id>"}
+                    value={newCohort.online_meeting_url}
+                    onChange={createCohort}
                   />
                 </Grid>
-               
+
                 <Grid item md={2} sm={4} xs={12}>
-                 Timezone 
+                 Timezone
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      
+
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
-                      width="60%"
+                      width="100%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"
                       label="Timezone"
-                      required
                       getOptionLabel={(option) => `${option}`}
                       value={timeZone}
                     />
-                 
+
                   </div>
                 </Grid>
               </Grid>

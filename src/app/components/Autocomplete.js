@@ -30,7 +30,6 @@ export function AsyncAutocomplete(props) {
     if (cache[searchTerm] !== undefined && debounced) {
       setOptions(cache[searchTerm]);
       setLoading(false);
-      console.log(cache);
     } else {
       asyncSearch(searchTerm)
         .then(({ data }) => {
@@ -41,9 +40,8 @@ export function AsyncAutocomplete(props) {
             ...cache,
             [searchTerm]: data,
           });
-          console.log(options);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   };
 

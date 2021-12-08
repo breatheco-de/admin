@@ -108,24 +108,31 @@ const Reviews = () => {
         filter: true,
         filterType: 'multiselect',
         customBodyRenderLite: (i) => {
-          const color = items[i].total_rating > 4.5
+          const rating = items[i].total_rating;
+          const previous_rating = items[i].nps_previous_rating;
+          const color = rating > 4.5
             ? 'text-green'
-            : items[i].total_rating < 4
+            : rating < 4
               ? 'text-error'
               : 'text-orange';
-          if (items[i].total_rating) {
-            return (
-              <div className="flex items-center">
-                <LinearProgress
-                  color="secondary"
-                  value={parseInt(items[i].total_rating, 10) * 10}
-                  variant="determinate"
-                />
-                <small className={color}>{items[i].total_rating}</small>
-              </div>
-            );
-          }
-          return 'Not answered';
+
+          return (
+            <div>
+              {(rating) ? 
+                <div>
+                  <LinearProgress
+                    color="secondary"
+                    value={parseInt(rating, 10) * 10}
+                    variant="determinate"
+                  />
+                  <small className={color}>{rating}</small>
+                </div>
+                :
+                <p  className="my-0">No rating yet</p>
+              }
+              <div><small>NPS Avg: {previous_rating}</small></div>
+            </div>)
+
         },
       },
     },

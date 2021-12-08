@@ -31,7 +31,7 @@ const Students = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [
@@ -174,6 +174,7 @@ const Students = () => {
           }}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyStudents(querys);
+            console.log('students');
             setItems(data.results);
             return data;
           }}

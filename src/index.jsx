@@ -1,17 +1,16 @@
 // import "babel-polyfill";
 // import cssVars from "css-vars-ponyfill";
 
-import React from "react";
-import ReactDOM from "react-dom";
-// import "./_index.scss";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from './serviceWorker';
 import 'react-toastify/dist/ReactToastify.css';
-import App from "./app/App";
+import App from './app/App';
 
 // cssVars();
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // for IE-11 support un-comment cssVars() and it's import in this file
 // and in MatxTheme file
