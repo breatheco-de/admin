@@ -20,8 +20,7 @@ export const navigations = [
       {
         name: 'Reviews',
         path: '/feedback/reviews',
-        iconText: 'OL',
-        beta: true
+        iconText: 'OL'
       },
     ],
   },
