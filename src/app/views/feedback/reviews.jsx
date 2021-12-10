@@ -153,7 +153,10 @@ const Reviews = () => {
       label: ' ',
       options: {
         filter: false,
-        customBodyRenderLite: (dataIndex) => (
+        customBodyRenderLite: (dataIndex) => {
+          const _review = items[dataIndex];
+          if(['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
+          return (
           <>
             <div className="flex items-center">
               <div className="flex-grow" />
@@ -161,7 +164,9 @@ const Reviews = () => {
                 <IconButton
                   onClick={() => {
                     handleClickOpen(true);
-                    setReview(items[dataIndex]);
+                    setReview(_review);
+                    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "DONE" }))
+                    bc.feedback().updateReview(_review.id, { status: "DONE" });
                   }}
                 >
                   <Icon>check</Icon>
@@ -169,7 +174,9 @@ const Reviews = () => {
                 <IconButton
                   onClick={() => {
                     handleClickOpen(true);
-                    setReview(items[dataIndex]);
+                    setReview(_review);
+                    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "IGNORE" }))
+                    bc.feedback().updateReview(_review.id, { status: "IGNORE" });
                   }}
                 >
                   <Icon>cancel</Icon>
@@ -177,7 +184,8 @@ const Reviews = () => {
               </span>
             </div>
           </>
-        ),
+        );
+                },
       },
     },
   ];
@@ -215,7 +223,7 @@ const Reviews = () => {
             singlePage=""
             search={async (querys) => {
               const { data } = await bc.feedback().getReviews(querys);
-              setItems(data.results);
+              setItems(data.results || data);
               return data;
             }}
           />

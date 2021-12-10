@@ -300,6 +300,11 @@ class BreatheCodeClient {
         'Review',
         `${this.host}/feedback/academy/review`,
       ),
+      updateReview: (id, data) => axios.bcPut(
+        'Review',
+        `${this.host}/feedback/academy/review/${id}`,
+        data,
+      ),
     };
   }
 
