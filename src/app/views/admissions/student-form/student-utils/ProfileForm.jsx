@@ -24,18 +24,27 @@ export const ProfileForm = ({ initialValues }) => {
       .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
-          history.push('/admissions/students');
+          if (values.phone.length > 15 || values.phone.length < 10 ) {
+            console.error("the number entered has formatting errors")
+          }
+          else history.push('/admissions/students');
         }
       })
       .catch((error) => console.error(error));
+      console.log("esto es data", data)
   };
+  
+  
+  // console.log("esto es request data", data)
 
   return (
     <Formik
+    
       initialValues={initialValues}
       onSubmit={(values) => postAcademyStudentProfile(values)}
       enableReinitialize
     >
+      
       {({ values, handleChange, handleSubmit }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
