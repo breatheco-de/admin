@@ -181,7 +181,7 @@ const Leads = () => {
           </div>
           <div className="">
             <Link
-              to="/leads/list/new"
+              to="/growth/sales/new"
               color="primary"
               className="btn btn-primary"
             >

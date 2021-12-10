@@ -2,18 +2,23 @@ import React from 'react';
 
 const pagesRoutes = [
   {
-    path: '/leads/list',
+    path: '/growth/leads',
     exact: true,
     component: React.lazy(() => import('./leads')),
   },
   {
-    path: '/leads/won',
+    path: '/growth/reviews',
+    exact: true,
+    component: React.lazy(() => import('../leads/reviews')),
+  },
+  {
+    path: '/growth/sales',
     exact: true,
     beta: true,
     component: React.lazy(() => import('./won.jsx')),
   },
   {
-    path: '/leads/list/new',
+    path: '/growth/sales/new',
     exact: true,
     component: React.lazy(() => import('./leads-form/NewLead')),
   },
