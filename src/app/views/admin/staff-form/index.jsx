@@ -46,13 +46,16 @@ const Staff = () => {
       .catch((error) => error);
   };
   const passwordReset = () => {
-    axios
-      .post(`${process.env.REACT_APP_API_HOST}/v1/user/password/reset`, {
-        email: member?.user.email,
+    bc.auth()
+      .passwordReset(member.id)
+      .then((res) => {
+        setInviteLink(res.data.reset_password_url);
+        if (res.data && res.data.reset_password_url) {
+          navigator.clipboard.writeText(res.data.reset_password_url);
+        }
       })
-      .then(({ data }) => data)
       .catch((error) => error);
-    setDialogState({ ...dialogState, openDialog: false });
+      setDialogState({ ...dialogState, openDialog: false });
   };
   const githubReset = () => {
     bc.admissions()

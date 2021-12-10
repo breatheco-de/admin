@@ -60,7 +60,7 @@ const StaffDetails = ({ user, staffId }) => {
     bc.auth()
       .updateAcademyMember(staffId, { ...values, role: user.role.slug })
       .then((data) => data)
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
   const updateRole = (currentRole) => {
     bc.auth()

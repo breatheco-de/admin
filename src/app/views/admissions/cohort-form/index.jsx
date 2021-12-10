@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import {
   Grid,
   Icon,
-  IconButton,
   Select,
   DialogTitle,
   Dialog,
@@ -13,14 +12,13 @@ import {
   DialogContent,
   DialogContentText,
   MenuItem,
-  Tooltip,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-import { getToken, getSession } from "../../../redux/actions/SessionActions"
+import { getToken, getSession } from '../../../redux/actions/SessionActions';
 import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
@@ -109,7 +107,6 @@ const Cohort = () => {
   };
 
   const updateSurvey = (event) => {
-    console.log('update survey', event.target.name, event.target.value);
     setNewSurvey({
       ...newSurvey,
       [event.target.name]: event.target.value,
@@ -127,7 +124,7 @@ const Cohort = () => {
         setStage(data.stage);
         setMaxSyllabusDays(data.syllabus_version.duration_in_days);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
@@ -146,7 +143,7 @@ const Cohort = () => {
       .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const updateCohort = (values) => {
@@ -155,12 +152,12 @@ const Cohort = () => {
       bc.admissions()
         .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     } else {
       bc.admissions()
         .updateCohort(cohort.id, { ...values, private: cohort.private })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   };
 
@@ -169,15 +166,14 @@ const Cohort = () => {
       .max(maxSyllabusDays, `You can not set a day greater than ${maxSyllabusDays}`)
       .required('Please enter a day'),
   });
-
+  
   return (
     <>
       <div className="m-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <h3 className="mt-0 mb-4 font-medium text-28">
-              Cohort:
-              {slug} (id: {cohort && cohort.id})
+              {`Cohort: ${slug} (id: ${cohort && cohort.id})`}
             </h3>
             <div className="flex">
               <div
@@ -196,7 +192,6 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-
               if (value === 'current_day') {
                 setCohortDayDialog(true);
               } else setCohortDayDialog(false);
@@ -236,6 +231,8 @@ const Cohort = () => {
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
+                timeZone={cohort.timezone}
+                onlineMeetingUrl={cohort.online_meeting_url}
                 onSubmit={updateCohort}
               />
             )}

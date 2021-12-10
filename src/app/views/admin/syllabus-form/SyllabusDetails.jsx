@@ -1,146 +1,138 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Avatar,
   Button,
   Card,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle,
-  Dialog,
+  Grid,
 } from '@material-ui/core';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import * as Yup from 'yup';
+// import axios from 'axios';
+// import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import bc from '../../../services/breathecode';
+import Field from '../../../components/Field';
+import { schemas } from '../../../utils';
 
-const propTypes = {
-  user: PropTypes.string.isRequired,
-  stdId: PropTypes.number.isRequired,
-  openRoleDialog: PropTypes.number.isRequired,
-  setOpenRoleDialog: PropTypes.number.isRequired,
+const syllabusPropTypes = {
+  id: PropTypes.number,
+  slug: PropTypes.string,
+  name: PropTypes.string,
+  github_url: PropTypes.string,
+  duration_in_hours: PropTypes.number,
+  duration_in_days: PropTypes.number,
+  week_hours: PropTypes.number,
+  logo: PropTypes.string,
+  private: PropTypes.bool,
+  academy_owner: PropTypes.number,
+  created_at: PropTypes.string,
+  updated_at: PropTypes.string,
 };
 
-const StudentDetails = ({
-  user, stdId, openRoleDialog, setOpenRoleDialog,
-}) => {
-  const initialValues = {
-//    first_name: user?.first_name,
-  };
+const propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  syllabus: PropTypes.shape(syllabusPropTypes).isRequired,
+};
 
-  const [roleDialog, setRoleDialog] = useState(false);
-  // const [role, setRole] = useState('');
+const schema = Yup.object().shape({
+  // academy: yup.number().required().positive().integer(),
+  // specialty_mode: yup.number().required().positive().integer(),
+  slug: schemas.slug(),
+  name: schemas.name(),
+  duration_in_hours: schemas.nonZeroPositiveNumber('Total hours'),
+  week_hours: schemas.nonZeroPositiveNumber('Weekly hours'),
+  duration_in_days: schemas.nonZeroPositiveNumber('Total days'),
+  github_url: Yup.string().url('Invalid github url').nullable(true)
+    .test(
+      'invalid-github-url',
+      'URL must start with https://github.com',
+      (value) => /^(https?:\/\/github\.com\/)?/i.test(value),
+    ),
+  logo: Yup.string().url('Invalid logo url').nullable(true),
+  // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
+});
 
+const StudentDetails = ({ syllabus, onSubmit }) => {
+  // TODO: remove this console.log
+  console.log();
   return (
     <Card className="pt-6" elevation={3}>
-      <Formik>
-        {({ values, handleChange, handleSubmit }) => (
-          <form className="p-4" onSubmit={handleSubmit}>
-            <Table className="mb-4">
-              <TableBody>
-                <TableRow>
-                  <TableCell className="pl-4">Slug</TableCell>
-                  <TableCell>
-                    <div>full-stack</div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Name</TableCell>
-                  <TableCell>
-                    <div>IMF Prework</div>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Total hours</TableCell>
-                  <TableCell>
-                    <TextField
-                      size="small"
-                      variant="outlined"
-                      defaultValue=""
-                      required
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Weekly hours</TableCell>
-                  <TableCell>
-                    <TextField
-                      size="small"
-                      variant="outlined"
-                      defaultValue=""
-                      required
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Total Days</TableCell>
-                  <TableCell>
-                    <TextField
-                      size="small"
-                      variant="outlined"
-                      defaultValue=""
-                      required
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Owner</TableCell>
-                  <TableCell>
-                    4Geeks Academy Miami
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="pl-4">Github URL</TableCell>
-                  <TableCell>
-                    <TextField
-                      placeholder={"https://github.com/repo"}
-                      size="small"
-                      variant="outlined"
-                      defaultValue=""
-                      required
-                    />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            <div className="flex-column items-start px-4 mb-4">
-              <Button color="primary" variant="contained" type="submit">
-                Save Syllabus Details
-              </Button>
-            </div>
-          </form>
+      {syllabus.private && (
+      <Grid item md={12} sm={12} xs={12}>
+        <Alert severity="warning">
+          <AlertTitle className="m-auto" cy-data="syllabus-private-alert">
+            This syllabus is private
+          </AlertTitle>
+        </Alert>
+      </Grid>
+      )}
+      <Formik
+        initialValues={syllabus}
+        validationSchema={schema}
+        onSubmit={(values, { setSubmitting }) => {
+          onSubmit(values);
+          setSubmitting(false);
+        }}
+      >
+        {({
+          isSubmitting,
+        }) => (
+          <Form className="p-4">
+            <Grid container spacing={3} alignItems="center">
+              <Field
+                type="text"
+                name="Slug"
+                placeholder="full-stack-pt"
+                disabled
+                required
+              />
+              <Field
+                type="text"
+                name="Name"
+                placeholder="Full Stack PT"
+                required
+              />
+              <Field
+                type="number"
+                label="Total hours"
+                name="duration_in_hours"
+                placeholder="12345"
+                required
+              />
+              <Field
+                type="number"
+                label="Weekly hours"
+                name="week_hours"
+                placeholder="12345"
+                required
+              />
+              <Field
+                type="number"
+                label="Total Days"
+                name="duration_in_days"
+                placeholder="12345"
+                required
+              />
+              <Field
+                type="text"
+                label="Github URL"
+                name="github_url"
+                placeholder="https://github.com/user/repo"
+              />
+              <Field
+                type="text"
+                name="logo"
+                placeholder="https://storage.googleapis.com/bucket/filename"
+              />
+              <div className="flex-column items-start px-4 mb-4">
+                <Button color="primary" variant="contained" type="submit" data-cy="submit" disabled={isSubmitting}>
+                  Save Syllabus Details
+                </Button>
+              </div>
+            </Grid>
+          </Form>
         )}
       </Formik>
-      <Dialog
-        onClose={() => {
-          setRoleDialog(false);
-          setOpenRoleDialog(false);
-        }}
-        open={roleDialog || openRoleDialog}
-        aria-labelledby="simple-dialog-title"
-      >
-        <DialogTitle id="simple-dialog-title">Change Syllabus Visibility</DialogTitle>
-        <List>
-          {['Private', 'Public']?.map((slug) => (
-            <ListItem
-              button
-              onClick={() => {
-                updateRole(slug);
-                setRoleDialog(false);
-                setOpenRoleDialog(false);
-              }}
-              key={slug}
-            >
-              <ListItemText primary={slug} />
-            </ListItem>
-          ))}
-        </List>
-      </Dialog>
     </Card>
   );
 };

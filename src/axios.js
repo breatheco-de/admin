@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { resolveResponse, resolveError } from './utils';
@@ -7,41 +8,64 @@ const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
+
 const axiosInstance = axios.create();
 axiosInstance.scopes = {};
-axiosInstance._put = function () {
-  const [scopeName, url, ...rest] = arguments;
-  this.scopes[url] = scopeName;
-  return this.put(url, ...rest);
-};
 
-axiosInstance._post = function () {
-  const [scopeName, url, ...rest] = arguments;
-  this.scopes[url] = scopeName;
-  return this.post(url, ...rest);
-};
-
-axiosInstance._get = function () {
-  const [scopeName, url, ...rest] = arguments;
+axiosInstance.bcGet = function (...args) {
+  const [scopeName, url, ...rest] = args;
   this.scopes[url] = scopeName;
   const resp = this.get(url, ...rest);
-  console.log('axios', resp);
   return resp;
 };
 
-axiosInstance._delete = function () {
-  const [scopeName, url, ...rest] = arguments;
+axiosInstance.bcPost = function (...args) {
+  const [scopeName, url, ...rest] = args;
   this.scopes[url] = scopeName;
-  return this.delete(url, ...rest);
+  const resp = this.post(url, ...rest);
+  return resp;
 };
+
+axiosInstance.bcPut = function (...args) {
+  const [scopeName, url, ...rest] = args;
+  this.scopes[url] = scopeName;
+  const resp = this.put(url, ...rest);
+  return resp;
+};
+
+axiosInstance.bcDelete = function (...args) {
+  const [scopeName, url, ...rest] = args;
+  this.scopes[url] = scopeName;
+  const resp = this.delete(url, ...rest);
+  return resp;
+};
+
+function printAxiosResponse(object) {
+  // return;
+  // if (process.env.NODE_ENV === 'cypress') return;
+  if (process.env.NODE_ENV === 'production') return;
+
+  const log = [object.config.method.toUpperCase(), object.status, object.config.url];
+
+  if (object.data) {
+    try {
+      log.push(JSON.parse(object.data));
+    } catch (_) {
+      log.push(object.data);
+    }
+  }
+
+  console.log(...log);
+}
+
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log(response);
+    printAxiosResponse(response);
     resolveResponse(response);
     return response;
   },
   (error) => {
-    console.log(error.response);
+    printAxiosResponse(error.response);
     resolveError(error);
     Promise.reject(
       (error.response && error.response.data) || 'Something went wrong!',
@@ -50,10 +74,13 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-axiosInstance.interceptors.request.use((response) => response, (error) => {
-  toast.error('Something went wrong!', toastOption);
-  return Promise.reject(error);
-});
+axiosInstance.interceptors.request.use(
+  (response) => response,
+  (error) => {
+    toast.error('Something went wrong!', toastOption);
+    return Promise.reject(error);
+  },
+);
 
 // export default {
 //   get: axiosInstance._get,

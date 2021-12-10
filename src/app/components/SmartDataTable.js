@@ -39,6 +39,7 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
+  const [searchBoxValue, setSearchBoxValue] = useState('');
   const query = useQuery();
   const history = useHistory();
   const [querys, setQuerys] = useState({
@@ -69,6 +70,7 @@ export const SmartMUIDataTable = (props) => {
   }, [isAlive]);
 
   const handlePageChange = (page, rowsPerPage, like, sort) => {
+    console.log('####### I excuted');
     setIsLoading(true);
     const q = {
       limit: rowsPerPage,
@@ -102,6 +104,13 @@ export const SmartMUIDataTable = (props) => {
       });
   };
 
+  const handleChange = (e) => {
+    setSearchBoxValue(e.target.value);
+  };
+  const clearSearchBox = () => {
+    setSearchBoxValue('');
+    handlePageChange();
+  };
   return (
     <>
       {isLoading && <MatxLoading />}
@@ -121,6 +130,28 @@ export const SmartMUIDataTable = (props) => {
           rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
           rowsPerPageOptions: [10, 20, 40, 80, 100],
           viewColumns: true,
+          onTableChange: (action, tableState) => {
+            switch (action) {
+              case 'changePage':
+                handlePageChange(
+                  tableState.page,
+                  tableState.rowsPerPage,
+                  querys.like,
+                  querys.sort,
+                );
+                break;
+              case 'changeRowsPerPage':
+                handlePageChange(
+                  tableState.page,
+                  tableState.rowsPerPage,
+                  querys.like,
+                  querys.sort,
+                );
+                break;
+              default:
+                break;
+            }
+          },
           customToolbar: () => (
             <DownloadCsv
               getAllPagesCSV={() => props.downloadCSV(querys.like)}
@@ -129,7 +160,7 @@ export const SmartMUIDataTable = (props) => {
           ),
 
           onColumnSortChange: (changedColumn, direction) => {
-            if (direction == 'asc') {
+            if (direction === 'asc') {
               handlePageChange(
                 querys.offset,
                 querys.limit,
@@ -137,7 +168,7 @@ export const SmartMUIDataTable = (props) => {
                 changedColumn,
               );
             }
-            if (direction == 'desc') {
+            if (direction === 'desc') {
               handlePageChange(
                 querys.offset,
                 querys.limit,
@@ -161,7 +192,7 @@ export const SmartMUIDataTable = (props) => {
               };
             } else if (
               filterList[changedColumnIndex][0] === undefined
-            || type === 'chip'
+              || type === 'chip'
             ) {
               q = { ...querys };
               delete q[changedColumn];
@@ -202,27 +233,6 @@ export const SmartMUIDataTable = (props) => {
               </StyledDefaultToobar>
             );
           },
-
-          onTableChange: (action, tableState) => {
-            switch (action) {
-              case 'changePage':
-                handlePageChange(
-                  tableState.page,
-                  tableState.rowsPerPage,
-                  querys.like,
-                  querys.sort,
-                );
-                break;
-              case 'changeRowsPerPage':
-                handlePageChange(
-                  tableState.page,
-                  tableState.rowsPerPage,
-                  querys.like,
-                  querys.sort,
-                );
-                break;
-            }
-          },
           customFilterDialogFooter: () => (
             <div style={{ marginTop: '40px' }}>
               <Button
@@ -233,14 +243,16 @@ export const SmartMUIDataTable = (props) => {
               </Button>
             </div>
           ),
-          customSearchRender: (hideSearch) => (
+          customSearchRender: () => (
             <Grow appear in timeout={300}>
               <TextField
                 variant="outlined"
                 size="small"
                 fullWidth
+                value={searchBoxValue}
+                onChange={handleChange}
                 onKeyPress={(e) => {
-                  if (e.key == 'Enter') {
+                  if (e.key === 'Enter') {
                     handlePageChange(
                       querys.offset,
                       querys.limit,
@@ -259,7 +271,7 @@ export const SmartMUIDataTable = (props) => {
                     </Icon>
                   ),
                   endAdornment: (
-                    <IconButton onClick={hideSearch}>
+                    <IconButton onClick={() => clearSearchBox()}>
                       <Icon fontSize="small">clear</Icon>
                     </IconButton>
                   ),

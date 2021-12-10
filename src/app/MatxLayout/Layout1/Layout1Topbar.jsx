@@ -74,7 +74,7 @@ const Layout1Topbar = () => {
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
   const fixed = settings?.layout1Settings?.topbar?.fixed;
-  
+
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(
       setLayoutSettings(
@@ -92,8 +92,8 @@ const Layout1Topbar = () => {
   const updateSettings = (_settings) => {
     dispatch(
       setLayoutSettings(
-        merge({}, settings, _settings)
-      )
+        merge({}, settings, _settings),
+      ),
     );
   };
 
@@ -109,7 +109,6 @@ const Layout1Topbar = () => {
 
     updateSidebarMode({ mode });
   };
-  console.log("user", user)
   return (
     <div className={classes.topbar}>
       <div className={clsx({ "topbar-hold": true, fixed: fixed })}>
@@ -133,7 +132,7 @@ const Layout1Topbar = () => {
                       Hi <strong>{user.first_name}</strong>
                     </span>
                   </Hidden>
-                  <Avatar className="cursor-pointer" src={user.github?.avatar} />
+                  <Avatar className="cursor-pointer" src={user.github?.avatar_url} />
                 </div>
               }
             >
@@ -167,10 +166,10 @@ const Layout1Topbar = () => {
                  <Link
                 className={classes.menuItem}
                 to="/page-layouts/user-profile"
-              > 
+              >
                 <Icon> person </Icon>
                 <span className="pl-4"> Profile </span>
-                </Link> 
+                </Link>
               </MenuItem>
               <MenuItem className={classes.menuItem}>
                 <Icon> settings </Icon>

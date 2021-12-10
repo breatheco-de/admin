@@ -77,7 +77,7 @@ const Cohorts = () => {
                   to={`/admissions/cohorts/${item.slug}`}
                   style={{ textDecoration: 'underline' }}
                 >
-                  <h5 className="my-0 text-15">{item?.name}</h5>
+                  <h5 className="my-0 text-15">{item?.name} </h5>
                 </Link>
                 <small className="text-muted">{item?.slug}</small>
               </div>
@@ -119,8 +119,8 @@ const Cohorts = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
-            <Link to={`/admissions/cohorts/${items[dataIndex].slug}`}>
-              <IconButton>
+            <Link to={`/admissions/cohorts/${items[dataIndex].slug}`} data-cy={`cohort-${items[dataIndex].id}`}>
+              <IconButton data-cy={`edit_cohort-${dataIndex}`}>
                 <Icon>edit</Icon>
               </IconButton>
             </Link>
@@ -142,7 +142,7 @@ const Cohorts = () => {
 
           <div className="">
             <Link to="/admissions/cohorts/new" color="primary" className="btn btn-primary">
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" data-cy="new_cohort_button">
                 Add new cohort
               </Button>
             </Link>

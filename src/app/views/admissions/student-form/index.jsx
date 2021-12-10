@@ -13,8 +13,8 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import TextField from '@material-ui/core/TextField';
-import { resolveResponse } from 'utils';
 import { makeStyles } from '@material-ui/core/styles';
+import { AddNoteModal } from '../../../components/AddNoteModal';
 import bc from '../../../services/breathecode';
 import StudentCohorts from './StudentCohorts';
 import StudentDetails from './StudentDetails';
@@ -38,6 +38,7 @@ const options = [
   { label: 'Open student profile', value: 'student_profile' },
   { label: 'Change Role', value: 'change_role' },
   { label: 'Reset Github Link', value: 'github_reset' },
+  { label: 'Add new note', value: 'add_note' },
 ];
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
@@ -48,12 +49,23 @@ const Student = () => {
   const classes = useStyles();
   const { stdId } = useParams();
   const [member, setMember] = useState(null);
-  const [copied, setCopied] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
 
+  // student notes
+  const [newNoteDialog, setNewNoteDialog] = useState(false);
+  const [noteFormValues, setNoteFormValues] = useState({
+    cohort: '',
+    data: '',
+    user_id: stdId,
+    slug: '',
+    user_agent: 'postman',
+  });
+  const [cohortOptions, setCohortOptions] = useState(null);
+
+  // github reset
   const [githubResetDialog, setGithubDialogReset] = useState(false);
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
@@ -130,6 +142,15 @@ const Student = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        {/* Add new note modal */}
+        <AddNoteModal
+          newNoteDialog={newNoteDialog}
+          cohortOptions={cohortOptions}
+          noteFormValues={noteFormValues}
+          setNewNoteDialog={setNewNoteDialog}
+          setNoteFormValues={setNoteFormValues}
+          stdId={stdId}
+        />
         {/* Temporal Token - Github Reset */}
         <Dialog
           open={githubResetDialog}
@@ -204,6 +225,7 @@ const Student = () => {
             setOpenDialog(value === 'password_reset');
             setOpenRoleDialog(value === 'change_role');
             setGithubDialogReset(value === 'github_reset');
+            setNewNoteDialog(value === 'add_note');
           }}
         >
           <Button>
@@ -223,7 +245,7 @@ const Student = () => {
           />
         </Grid>
         <Grid item md={8} xs={12}>
-          <StudentCohorts stdId={stdId} />
+          <StudentCohorts stdId={stdId} setCohortOptions={setCohortOptions} />
         </Grid>
       </Grid>
     </div>

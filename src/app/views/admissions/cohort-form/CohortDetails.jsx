@@ -35,6 +35,8 @@ const propTypes = {
   }).isRequired,
   neverEnds: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool.isRequired,
+  timeZone: PropTypes.string.isRequired,
+  onlineMeetingUrl: PropTypes.string.isRequired,
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -53,10 +55,12 @@ const CohortDetails = ({
   syllabusVersion,
   neverEnds,
   isPrivate,
+  timeZone,
+  onlineMeetingUrl,
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
-  // const [cert, setCert] = useState(specialtyMode);
+  const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
 
   useEffect(() => {
@@ -72,7 +76,7 @@ const CohortDetails = ({
         .catch((error) => console.error(error));
     }
   }, []);
-
+  console.log("values", timeZone, onlineMeetingUrl)
   return (
     <Card className="p-4">
       <div className="mb-4 flex justify-between items-center">
@@ -87,13 +91,15 @@ const CohortDetails = ({
           kickoff_date: startDate,
           never_ends: neverEnds,
           specialtyMode,
+          timezone: timeZone,
+          online_meeting_url: onlineMeetingUrl,
         }}
         onSubmit={({ specialtyMode, ...values }) => {
-          // const specialtyModeId = cert ? cert.id : null;
+          const specialtyModeId = cert ? cert.id : null;
           return onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
-            // specialty_mode: specialtyModeId,
+            specialty_mode: specialtyModeId,
           });
         }}
         enableReinitialize
@@ -137,8 +143,7 @@ const CohortDetails = ({
                   }}
                   width="100%"
                   key={syllabus}
-                  asyncSearch={() => bc.admissions()
-                    .getAllSyllabus()}
+                  asyncSearch={() => bc.admissions().getAllSyllabus()}
                   size="small"
                   label="Syllabus"
                   data-cy="syllabus"
@@ -166,7 +171,7 @@ const CohortDetails = ({
                   value={version}
                 />
               </Grid>
-              {/* <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={3} sm={4} xs={12}>
                 Schedule
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
@@ -190,7 +195,7 @@ const CohortDetails = ({
                   value={cert}
                   disabled={!syllabus}
                 />
-              </Grid> */}
+              </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Language
               </Grid>
@@ -281,7 +286,45 @@ const CohortDetails = ({
                     label="This cohort never ends"
                   />
                 </Grid>
+
               )}
+
+              <Grid item md={3} sm={4} xs={12}>
+                Live meeting URL
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
+                    name="online_meeting_url"
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    placeholder={"https://..."}
+                    value={values.online_meeting_url}
+                    onChange={handleChange}
+                  />
+                </Grid>
+               
+                <Grid item md={3} sm={4} xs={12}>
+                 Timezone 
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      debounced={false}
+                      onChange={(x) => setFieldValue('timezone', x)}
+                      width="300px"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => bc.admissions().getAllTimeZone()}
+                      size="small"
+                      data-cy="timezone"
+                      label="Timezone"
+                      getOptionLabel={(option) => `${option}`}
+                      value={values.timezone}
+                    />
+                  </div>
+                </Grid>
               <Button color="primary" variant="contained" type="submit" data-cy="submit">
                 Save Cohort Details
               </Button>

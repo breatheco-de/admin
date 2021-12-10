@@ -6,6 +6,8 @@
 npm install --g --production windows-build-tools
 ```
 
+## Use Nodejs v12
+
 ## Installation
 
 1. Fork this repository into your account.
@@ -18,3 +20,8 @@ npm install --g --production windows-build-tools
 ## Runing the tests
 
 This section is under development.
+
+
+## for nvm problems 
+use:
+npm --build-from-source install node-pre-gyp

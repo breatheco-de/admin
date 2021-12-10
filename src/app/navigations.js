@@ -145,7 +145,6 @@ export const navigations = [
         name: 'Syllabus',
         path: '/admin/syllabus',
         iconText: 'STA',
-        beta: true,
       },
     ],
   },
