@@ -36,6 +36,7 @@ const propTypes = {
   neverEnds: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool.isRequired,
   timeZone: PropTypes.string.isRequired,
+  onlineMeetingUrl: PropTypes.string.isRequired,
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -55,12 +56,12 @@ const CohortDetails = ({
   neverEnds,
   isPrivate,
   timeZone,
+  onlineMeetingUrl,
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
-  const [timezone, setTimezone] = useState('America/Caracas');
 
   useEffect(() => {
     // setIsLoading(true);
@@ -75,7 +76,7 @@ const CohortDetails = ({
         .catch((error) => console.error(error));
     }
   }, []);
-
+  console.log("values", timeZone, onlineMeetingUrl)
   return (
     <Card className="p-4">
       <div className="mb-4 flex justify-between items-center">
@@ -91,6 +92,7 @@ const CohortDetails = ({
           never_ends: neverEnds,
           specialtyMode,
           timezone: timeZone,
+          online_meeting_url: onlineMeetingUrl,
         }}
         onSubmit={({ specialtyMode, ...values }) => {
           const specialtyModeId = cert ? cert.id : null;
@@ -298,7 +300,8 @@ const CohortDetails = ({
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    placeholder={"https://bluejeans.com/sd"}
+                    placeholder={"https://..."}
+                    value={values.online_meeting_url}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -311,14 +314,14 @@ const CohortDetails = ({
                     <AsyncAutocomplete
                       debounced={false}
                       onChange={(x) => setFieldValue('timezone', x)}
-                      width="60%"
+                      width="300px"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"
                       label="Timezone"
                       getOptionLabel={(option) => `${option}`}
-                      value={timeZone}
+                      value={values.timezone}
                     />
                   </div>
                 </Grid>

@@ -18,6 +18,7 @@ import SyllabusDetails from './SyllabusDetails';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { MatxLoading } from '../../../../matx';
 import ConfirmAlert from '../../../components/ConfirmAlert';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 toast.configure();
 const toastOption = {
@@ -31,6 +32,7 @@ dayjs.extend(LocalizedFormat);
 
 const Student = () => {
   const { syllabusSlug } = useParams();
+  const session = getSession();
   const [syllabus, setSyllabus] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -116,7 +118,7 @@ const Student = () => {
           icon="more_horiz"
           onSelect={({ value }) => {
             if (value === 'edit_syllabus') {
-              window.open('https://build.breatheco.de/', '_blank');
+              window.open(`https://build.breatheco.de/?token=${session.token}`, '_blank');
             } else if (value === 'make_public') {
               setMakePublicDialog(true);
             }
