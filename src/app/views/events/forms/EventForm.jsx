@@ -29,6 +29,7 @@ const EventForm = () => {
     ending_at: '',
     host: null,
     online_event: false,
+    sync_with_eventbrite: false,
   });
   const [venue, setVenue] = useState(null);
   const [eventType, setEventType] = useState(null);
@@ -76,6 +77,7 @@ const EventForm = () => {
             event_type: null,
             venue: null,
             online_event: false,
+            sync_with_eventbrite: false,
           });
           if (data.academy !== undefined) history.push('/events/list');
         })
@@ -103,6 +105,7 @@ const EventForm = () => {
             event_type: null,
             venue: null,
             online_event: false,
+            sync_with_eventbrite: false,
           });
           if (data.academy !== undefined) history.push('/events/list');
         })
@@ -179,7 +182,7 @@ const EventForm = () => {
                     type="url"
                     variant="outlined"
                     value={values.url}
-                    handleChange={handleChange}
+                    onChange={handleChange}
                     name="url"
                     fullWidth
                     required
@@ -250,11 +253,14 @@ const EventForm = () => {
                       value={values.lang}
                       onChange={handleChange}
                     >
-                      {['EN', 'ES'].map((item, ind) => (
-                        <MenuItem value={item.toLowerCase()} key={ind}>
-                          {item}
-                        </MenuItem>
-                      ))}
+                      {['EN', 'ES'].map((lang) => {
+                        const langInLowerCase = lang.toLowerCase();
+                        return (
+                          <MenuItem value={langInLowerCase} key={`event-lang-${langInLowerCase}`}>
+                            {lang}
+                          </MenuItem>
+                        );
+                      })}
                     </TextField>
                   </div>
                 </Grid>
@@ -277,7 +283,7 @@ const EventForm = () => {
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
-                    onChange={(venue) => setVenue(venue)}
+                    onChange={(v) => setVenue(v)}
                     asyncSearch={() => bc.events().getAcademyVenues()}
                     size="small"
                     label="Venue"
@@ -292,7 +298,7 @@ const EventForm = () => {
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
-                    onChange={(eventType) => setEventType(eventType)}
+                    onChange={(v) => setEventType(v)}
                     asyncSearch={() => bc.events().getAcademyEventType()}
                     size="small"
                     debounced={false}
@@ -342,6 +348,17 @@ const EventForm = () => {
                     checked={values.online_event}
                     onChange={handleChange}
                     name="online_event"
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Sync with Eventbrite
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <Checkbox
+                    checked={values.sync_with_eventbrite}
+                    onChange={handleChange}
+                    name="sync_with_eventbrite"
                     color="primary"
                   />
                 </Grid>
