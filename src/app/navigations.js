@@ -9,7 +9,6 @@ export const navigations = [
   {
     name: 'Growth',
     icon: 'show_chart',
-    beta: true,
     children: [
       {
         name: 'Dashboard',
@@ -21,6 +20,16 @@ export const navigations = [
         name: 'Reviews',
         path: '/feedback/reviews',
         iconText: 'OL'
+      },
+      {
+        name: 'Won Leads',
+        path: '/leads/won',
+        iconText: 'OL',
+      },
+      {
+        name: 'All Leads',
+        path: '/leads/list',
+        iconText: 'OL',
       },
     ],
   },
@@ -38,22 +47,6 @@ export const navigations = [
         name: 'All Students',
         path: '/admissions/students',
         iconText: 'STU',
-      },
-    ],
-  },
-  {
-    name: 'Leads',
-    icon: 'monetization_on',
-    children: [
-      {
-        name: 'Won Leads',
-        path: '/leads/won',
-        iconText: 'OL',
-      },
-      {
-        name: 'All Leads',
-        path: '/leads/list',
-        iconText: 'OL',
       },
     ],
   },
