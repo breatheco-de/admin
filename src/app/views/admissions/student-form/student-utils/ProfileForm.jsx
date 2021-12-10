@@ -24,19 +24,18 @@ export const ProfileForm = ({ initialValues }) => {
       .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
-          if (values.phone.length > 15 || values.phone.length < 10 ) {
-            console.error("the number entered has formatting errors")
+          if (values.phone.match(/[^\d]/g)){
+            console.error("the number entered has formatting errors (insert only numbers)")
+          }
+          else if (values.phone.length > 15 || values.phone.length < 10 ) {
+            console.error("the number entered has formatting errors (insert more than 10 and less than 15)")
           }
           else history.push('/admissions/students');
         }
       })
       .catch((error) => console.error(error));
-      console.log("esto es data", data)
   };
   
-  
-  // console.log("esto es request data", data)
-
   return (
     <Formik
     
