@@ -18,17 +18,17 @@ export const navigations = [
       },
       {
         name: 'Reviews',
-        path: '/feedback/reviews',
+        path: '/growth/reviews',
         iconText: 'OL'
       },
       {
-        name: 'Won Leads',
-        path: '/leads/won',
+        name: 'Sales (Won Leads)',
+        path: '/growth/sales',
         iconText: 'OL',
       },
       {
         name: 'All Leads',
-        path: '/leads/list',
+        path: '/growth/leads',
         iconText: 'OL',
       },
     ],
