@@ -8,9 +8,30 @@ export const navigations = [
   },
   {
     name: 'Growth',
-    path: '/dashboard/analytics-2',
     icon: 'show_chart',
-    beta: true,
+    children: [
+      {
+        name: 'Dashboard',
+        path: '/dashboard/analytics-2',
+        iconText: 'OL',
+        beta: true
+      },
+      {
+        name: 'Reviews',
+        path: '/growth/reviews',
+        iconText: 'OL'
+      },
+      {
+        name: 'Sales (Won Leads)',
+        path: '/growth/sales',
+        iconText: 'OL',
+      },
+      {
+        name: 'All Leads',
+        path: '/growth/leads',
+        iconText: 'OL',
+      },
+    ],
   },
   {
     name: 'Admissions',
@@ -30,22 +51,6 @@ export const navigations = [
     ],
   },
   {
-    name: 'Leads',
-    icon: 'monetization_on',
-    children: [
-      {
-        name: 'Won Leads',
-        path: '/leads/won',
-        iconText: 'OL',
-      },
-      {
-        name: 'All Leads',
-        path: '/leads/list',
-        iconText: 'OL',
-      },
-    ],
-  },
-  {
     name: 'Feedback',
     icon: 'record_voice_over',
     children: [
@@ -58,13 +63,7 @@ export const navigations = [
         name: 'All Answers',
         path: '/feedback/answers',
         iconText: 'OL',
-      },
-      {
-        name: 'Reviews',
-        path: '/feedback/reviews',
-        iconText: 'OL',
-        beta: true
-      },
+      }
     ],
   },
   {
@@ -138,13 +137,6 @@ export const navigations = [
         name: 'Syllabus',
         path: '/admin/syllabus',
         iconText: 'STA',
-        beta: true,
-      },
-      {
-        name: 'Freelancers',
-        path: '/admin/freelancer',
-        iconText: 'STA',
-        beta: true,
       },
     ],
   },

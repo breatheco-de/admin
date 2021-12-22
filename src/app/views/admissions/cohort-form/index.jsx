@@ -166,7 +166,7 @@ const Cohort = () => {
       .max(maxSyllabusDays, `You can not set a day greater than ${maxSyllabusDays}`)
       .required('Please enter a day'),
   });
-
+  
   return (
     <>
       <div className="m-sm-30">
@@ -231,6 +231,8 @@ const Cohort = () => {
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
+                timeZone={cohort.timezone}
+                onlineMeetingUrl={cohort.online_meeting_url}
                 onSubmit={updateCohort}
               />
             )}
