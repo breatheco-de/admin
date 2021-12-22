@@ -292,6 +292,17 @@ class BreatheCodeClient {
           `${this.host}/feedback/academy/survey${query ? `?${qs}` : ''}`,
         );
       },
+      // deleteSurveysBulk: (query) => axios.bcDelete (
+      //     'Academy survey',
+      //     `${this.host}/feedback/academy/survey${query}`,
+      // ),
+      deleteSurveysBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey/${qs}`,
+        );
+      },
       getSurvey: (id) => axios.bcGet(
         'Academy survey',
         `${this.host}/feedback/academy/survey/${id}`,

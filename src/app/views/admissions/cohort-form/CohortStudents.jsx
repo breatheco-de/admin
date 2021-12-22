@@ -26,6 +26,7 @@ import { MatxLoading } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { useQuery } from '../../../hooks/useQuery';
+import { Assessment } from '@material-ui/icons';
 
 const propTypes = {
   cohortId: PropTypes.string.isRequired,
@@ -121,8 +122,20 @@ const CohortStudents = ({ slug, cohortId }) => {
       .catch((error) => error);
     setOpenDialog(false);
   };
+  // const teachersList = studenList.filter(person => person.role == "TEACHER")
+  // const reviewerList = studenList.filter(person => person.role == "REVIEWER")
+  // const assistantList = studenList.filter(person => person.role == "ASSISTANT")
+  // const alumnsList = studenList.filter(person => person.role == "STUDENT")
+  const personsList = studenList.filter(p => p.role == "TEACHER").concat(
+    studenList.filter(p => p.role == "REVIEWER"), 
+    studenList.filter(p => p.role == "ASSISTANT"), 
+    studenList.filter(p => p.role == "STUDENT"))
+  // .concat(assistantList, alumnsList)
+  
   return (
+    
     <Card className="p-4">
+      {console.log("Reorganized studentList ", personsList )}
       {/* This Dialog opens the modal to delete the user in the cohort */}
       <Dialog
         open={openDialog}
@@ -176,8 +189,8 @@ const CohortStudents = ({ slug, cohortId }) => {
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
         <div className="min-w-600">
-          {studenList.length > 0
-            && studenList.map((s, i) => (
+          {personsList.length > 0
+            && personsList.map((s, i) => (
               <div key={s.user.id} className="py-4">
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
