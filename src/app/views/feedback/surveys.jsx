@@ -93,8 +93,8 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          // console.log(dayjs(item.datetime))
-
+          // console.log("este es daysjs", dayjs(item.datetime))
+        
           if (parseInt(item.duration) === 3600) {
             const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 1);
 
