@@ -5,8 +5,7 @@ Cypress.Commands.add('testSlugField', (form='default', name='slug', value) => {
   const errorSelector = `[data-cy="${form}-${name}"] p`
 
   if (value) cy.get(inputSelector).should('have.value', value);
-  
-  if(cy.get(inputSelector).should('not.be.enabled') === true) {
+  if(inputSelector !== '[data-cy="default-slug"]' && cy.get(inputSelector).should('be.enabled') === true) {
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('Defence-Against-The-Dark-Arts').blur();
     cy.get(inputSelector).should('have.value', 'Defence-Against-The-Dark-Arts');
