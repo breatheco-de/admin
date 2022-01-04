@@ -5,37 +5,40 @@ Cypress.Commands.add('testSlugField', (form='default', name='slug', value) => {
   const errorSelector = `[data-cy="${form}-${name}"] p`
 
   if (value) cy.get(inputSelector).should('have.value', value);
-
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('Defence-Against-The-Dark-Arts').blur();
-  cy.get(inputSelector).should('have.value', 'Defence-Against-The-Dark-Arts');
-  cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains uppercase`);
-
-  // http://www.robertecker.com/hp/research/leet-converter.php?lang=en
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('d3f3nc3-4641n57-7h3-d4rk-4r75').blur();
-  cy.get(inputSelector).should('have.value', 'd3f3nc3-4641n57-7h3-d4rk-4r75');
-  cy.get(errorSelector).should('not.exist');
-
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('Defence Against The Dark Arts').blur();
-  cy.get(inputSelector).should('have.value', 'Defence Against The Dark Arts');
-  cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains spaces`);
-
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('defence-against-the-dark-arts').blur();
-  cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts');
-  cy.get(errorSelector).should('not.exist');
-
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('defence-against-the-dark-arts-').blur();
-  cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts-');
-  cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t end with (-)`);
-
-  cy.get(inputSelector).focus().clear();
-  cy.get(inputSelector).type('*>*>defence-against-the-dark-arts<*<*').blur();
-  cy.get(inputSelector).should('have.value', '*>*>defence-against-the-dark-arts<*<*');
-  cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains symbols`);
+  if(cy.get(inputSelector).should('be.enabled') === true) {
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('Defence-Against-The-Dark-Arts').blur();
+    cy.get(inputSelector).should('have.value', 'Defence-Against-The-Dark-Arts');
+    cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains uppercase`);
+  
+    // http://www.robertecker.com/hp/research/leet-converter.php?lang=en
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('d3f3nc3-4641n57-7h3-d4rk-4r75').blur();
+    cy.get(inputSelector).should('have.value', 'd3f3nc3-4641n57-7h3-d4rk-4r75');
+    cy.get(errorSelector).should('not.exist');
+  
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('Defence Against The Dark Arts').blur();
+    cy.get(inputSelector).should('have.value', 'Defence Against The Dark Arts');
+    cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains spaces`);
+  
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('defence-against-the-dark-arts').blur();
+    cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts');
+    cy.get(errorSelector).should('not.exist');
+  
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('defence-against-the-dark-arts-').blur();
+    cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts-');
+    cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t end with (-)`);
+  
+    cy.get(inputSelector).focus().clear();
+    cy.get(inputSelector).type('*>*>defence-against-the-dark-arts<*<*').blur();
+    cy.get(inputSelector).should('have.value', '*>*>defence-against-the-dark-arts<*<*');
+    cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains symbols`);
+  } else {
+    cy.log("Field is disabled");
+  }
 });
 
 Cypress.Commands.add('testNameField', (form='default', name='name', value) => {
