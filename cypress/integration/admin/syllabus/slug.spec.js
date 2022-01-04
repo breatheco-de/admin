@@ -123,7 +123,7 @@ describe('/admin/syllabus/:slug', () => {
     });
 
     it('Slug field validations', () => {
-      cy.testSlugField('default', 'slug', 'full-stack-ft');
+      cy.get('[data-cy="default-slug"]').should('not.be.enabled')
     });
 
     it('Name field validations', () => {

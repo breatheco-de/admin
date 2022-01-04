@@ -5,7 +5,7 @@ Cypress.Commands.add('testSlugField', (form='default', name='slug', value) => {
   const errorSelector = `[data-cy="${form}-${name}"] p`
 
   if (value) cy.get(inputSelector).should('have.value', value);
-  if(inputSelector !== '[data-cy="default-slug"]' && cy.get(inputSelector).should('be.enabled') === true) {
+  if(cy.get(inputSelector).should('be.enabled') === true) {
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('Defence-Against-The-Dark-Arts').blur();
     cy.get(inputSelector).should('have.value', 'Defence-Against-The-Dark-Arts');
@@ -39,12 +39,6 @@ Cypress.Commands.add('testSlugField', (form='default', name='slug', value) => {
   } else {
     cy.log("Field is disabled");
   }
-
-  // cy.get(inputSelector).should('be.enabled').clear().type(`${value}`).clear().type(`${value}`);
-  // cy.get(errorSelector).should('not.exest');
-
-  // cy.get(irrorSelector).should('have.value', capitalizeTheFirstLetter(value));
-
 });
 
 Cypress.Commands.add('testNameField', (form='default', name='name', value) => {
