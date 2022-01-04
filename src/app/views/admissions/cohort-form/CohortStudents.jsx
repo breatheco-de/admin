@@ -25,6 +25,9 @@ import { MatxLoading } from 'matx';
 import bc from 'app/services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { useQuery } from '../../../hooks/useQuery';
+import { Assessment } from '@material-ui/icons';
+import { countBy } from 'lodash';
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -41,8 +44,9 @@ const CohortStudents = ({ slug, cohort_id }) => {
   const [currentStd, setCurrentStd] = useState({});
   const [openRoleDialog, setRoleDialog] = useState(false);
   const [user, setUser] = useState(null);
+  const [listLength, setListlength] = useState(0);
   // Redux actions and store
-
+  
   const query = useQuery();
 
   const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
@@ -89,6 +93,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
           const { results, next } = data.data;
           setHasMore(next !== null)
           setIsLoading(false);
+          setListlength(data.data.count)
           results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }
       })
@@ -118,6 +123,12 @@ const CohortStudents = ({ slug, cohort_id }) => {
       .catch((error) => error);
     setOpenDialog(false);
   };
+
+  const personsList = studenList.filter(p => p.role == "TEACHER").concat(
+    studenList.filter(p => p.role == "ASSISTANT"), 
+    studenList.filter(p => p.role == "REVIEWER"), 
+    studenList.filter(p => p.role == "STUDENT"))
+
   return (
     <Card className="p-4">
       {/* This Dialog opens the modal to delete the user in the cohort */}
@@ -144,7 +155,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
       </Dialog>
       {/* This Dialog opens the modal to delete the user in the cohort */}
       <div className="mb-4 flex justify-between items-center">
-        <h4 className="m-0 font-medium">Cohort Members</h4>
+        <h4 className="m-0 font-medium">Cohort Members {listLength}</h4>
         <div className="text-muted text-13 font-medium">
           {format(new Date(), 'MMM dd, yyyy')}
           {' '}
@@ -175,8 +186,8 @@ const CohortStudents = ({ slug, cohort_id }) => {
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
         <div className="min-w-600">
-          {studenList.length > 0
-            && studenList.map((s, i) => (
+        {personsList.length > 0
+            && personsList.map((s, i) => (
               <div key={i} className="py-4">
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
