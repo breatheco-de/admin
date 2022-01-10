@@ -255,6 +255,13 @@ class BreatheCodeClient {
         );
       },
       getAcademyTags: () => axios.bcGet('Academy tags', `${this.host}/marketing/academy/tag`),
+      getAcademyShort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy short',
+          `${this.host}/marketing/academy/short${query ? `?${qs}` : ''}`,
+        );
+      },
       getAcademyAutomations: () => axios.bcGet(
         'Academy automations',
         `${this.host}/marketing/academy/automation`,

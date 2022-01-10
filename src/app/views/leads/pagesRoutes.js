@@ -22,6 +22,11 @@ const pagesRoutes = [
     exact: true,
     component: React.lazy(() => import('./leads-form/NewLead')),
   },
+  {
+    path: '/growth/urls',
+    exact: true,
+    component: React.lazy(() => import('../growth/urls.jsx')),
+  },
 ];
 
 export default pagesRoutes;
