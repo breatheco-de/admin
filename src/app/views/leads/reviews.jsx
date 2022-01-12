@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import AnswerStatus from '../../components/AnswerStatus';
+import SingleDelete from '../../components/ToolBar/SingleDelete';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -29,12 +30,21 @@ const stageColors = {
 const Reviews = () => {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
+  const [toIgnore, setToIgnore] = useState(null);
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
+
+  const ignoreReview = (_review) => {
+    handleClickOpen(true);
+    setReview(_review);
+    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "IGNORE" }))
+    return bc.feedback().updateReview(_review.id, { status: "IGNORE" });
+    
+  }
 
   const [review, setReview] = useState({
     color: '',
@@ -173,10 +183,9 @@ const Reviews = () => {
                 </IconButton>
                 <IconButton
                   onClick={() => {
-                    handleClickOpen(true);
-                    setReview(_review);
-                    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "IGNORE" }))
-                    bc.feedback().updateReview(_review.id, { status: "IGNORE" });
+
+                    setToIgnore(_review);
+
                   }}
                 >
                   <Icon>cancel</Icon>
@@ -197,8 +206,8 @@ const Reviews = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Feedback', path: '/feedback/reviews' },
-                { name: 'Review\'s List' },
+                { name: "Feedback", path: "/feedback/reviews" },
+                { name: "Review's List" },
               ]}
             />
           </div>
@@ -227,9 +236,19 @@ const Reviews = () => {
               return data;
             }}
           />
+          {toIgnore && (
+            <SingleDelete
+              deleting={() => {
+                ignoreReview(toIgnore);
+              }}
+              onClose={setToIgnore}
+              message={`Are you sure you want to ignore this review`}
+            />
+          )}
+
         </div>
       </div>
-    {/* <AnswerStatus review={review} handleClose={handleClose} open={open}/> */}
+      {/* <AnswerStatus review={review} handleClose={handleClose} open={open}/> */}
     </div>
   );
 };
