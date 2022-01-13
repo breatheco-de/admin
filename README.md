@@ -30,5 +30,5 @@ npm --build-from-source install node-pre-gyp
 
 To format document with eslintrc rules run:
 ```bash
-$: npm run lint:fix
+npm run lint:fix
 ```
