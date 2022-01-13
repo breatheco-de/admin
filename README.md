@@ -26,9 +26,11 @@ This section is under development.
 use:
 npm --build-from-source install node-pre-gyp
 
-## Development comand:
+## Prettify:
 
 To format document with eslintrc rules run:
 ```bash
 npm run lint:fix
 ```
+
+Note: you can use the Exlint Prettier plugin and it will do it automatically for you.
