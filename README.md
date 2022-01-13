@@ -25,3 +25,10 @@ This section is under development.
 ## for nvm problems 
 use:
 npm --build-from-source install node-pre-gyp
+
+## Development comand:
+
+To format document with eslintrc rules run:
+```bash
+$: npm run lint:fix
+```
