@@ -352,10 +352,11 @@ const EventForm = () => {
                     label="Tags"
                     debounced={false}
                     multiple={true}
-                    required={false}
+                    required={true}
                     getOptionLabel={(option) => `${option.slug}`}
                     value={tags}
                   />
+                  <small className="text-muted">The specified tags will be applied to this event attendees on active campaign</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Online Event
