@@ -352,7 +352,7 @@ const EventForm = () => {
                     label="Tags"
                     debounced={false}
                     multiple={true}
-                    required={true}
+                    required={tags.length <= 1}
                     getOptionLabel={(option) => `${option.slug}`}
                     value={tags}
                   />
