@@ -8,13 +8,22 @@ import {
   Button,
   Chip,
   LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  TextField,
 } from '@material-ui/core';
+import * as Yup from "yup";
+import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import AnswerStatus from '../../components/AnswerStatus';
 import SingleDelete from '../../components/ToolBar/SingleDelete';
+import { makeStyles } from '@material-ui/core/styles';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -27,10 +36,31 @@ const stageColors = {
   IGNORE: 'light-gray',
 };
 
+const useStyles = makeStyles(() => ({
+  dialogue: {
+    color: 'rgba(52, 49, 76, 1)',
+  },
+  button: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  select: {
+    width: '15rem',
+  },
+}));
+
 const Reviews = () => {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [toIgnore, setToIgnore] = useState(null);
+  const [review, setReview] = useState(null);
+  // const [reviewDetails, setReviewDetails] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [url, setUrl] = useState('');
+  const [status, setStatus] = useState('');
+  const classes = useStyles();
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -40,29 +70,41 @@ const Reviews = () => {
 
   const ignoreReview = (_review) => {
     handleClickOpen(true);
-    setReview(_review);
+    // setReview(_review);
     setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "IGNORE" }))
     return bc.feedback().updateReview(_review.id, { status: "IGNORE" });
     
   }
 
-  const [review, setReview] = useState({
-    color: '',
-    score: '',
-    title: '',
-    comment: '',
-    highest: '',
-    lowest: '',
-    user: {
-      imgUrl: '',
-      first_name: '',
-      last_name: '',
-    },
-    academy: {
-      name: '',
-      slug: '',
-    },
+  const URL = /^((https?|ftp):\/\/)?(www.)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
+
+  const ProfileSchema = Yup.object().shape({
+    rating: 
+      Yup.number()
+      .required().positive('Must a positive number')
+      .integer().min(1, 'Must not be lower than one')
+      .max(5, 'Must not be bigger than five'),
+    url: Yup.string().matches(URL,'Enter a valid url').required("Please write a URL"),
+    status: Yup.string().required("Please write a Status")
   });
+
+  // const [review, setReview] = useState({
+  //   color: '',
+  //   score: '',
+  //   title: '',
+  //   comment: '',
+  //   highest: '',
+  //   lowest: '',
+  //   user: {
+  //     imgUrl: '',
+  //     first_name: '',
+  //     last_name: '',
+  //   },
+  //   academy: {
+  //     name: '',
+  //     slug: '',
+  //   },
+  // });
 
 
   const columns = [
@@ -173,19 +215,20 @@ const Reviews = () => {
               <span>
                 <IconButton
                   onClick={() => {
-                    handleClickOpen(true);
+                    // handleClickOpen(true);
+                    // setReview(_review);
+                    // setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "DONE" }))
+                    // bc.feedback().updateReview(_review.id, { status: "DONE" });
+
                     setReview(_review);
-                    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "DONE" }))
-                    bc.feedback().updateReview(_review.id, { status: "DONE" });
+                    setOpenDialog(true);
                   }}
                 >
                   <Icon>check</Icon>
                 </IconButton>
                 <IconButton
                   onClick={() => {
-
                     setToIgnore(_review);
-
                   }}
                 >
                   <Icon>cancel</Icon>
@@ -245,7 +288,108 @@ const Reviews = () => {
               message={`Are you sure you want to ignore this review`}
             />
           )}
+          {review && (
+            <Dialog
+            onClose={() => {
+              setOpenDialog(false);
+              setReview(null);
+            }}
+            open={openDialog}
+            aria-labelledby="simple-dialog-title"
+          >
+            <DialogTitle id="simple-dialog-title">
+              Select a Cohort Stage
+            </DialogTitle>
+            <Formik
+              initialValues={{
+                rating,
+                url,
+                status,
+              }}
+              enableReinitialize
+              validationSchema={ProfileSchema}
+              onSubmit={async() => {
+                
+                const data = {
+                  status: "DONE",
+                  total_rating: rating,
+                  public_url: url,
+                  status_text: status
+                }
+                
+                const result = await bc.feedback().updateReview(review.id, data);
+                if(result.status >= 200 && result.status < 300){
+                  setItems(items.map(r => (r.id != review.id) ? r : { ...r, status: "DONE" }))
+                }
+                setReview(null);
+                setOpenDialog(false);
+              }}
+            >
+              {({ errors, touched, handleSubmit }) => (
+                <form
+                  onSubmit={handleSubmit}
+                  className="d-flex justify-content-center mt-0 p-4"
+                >
+                  <DialogContent>
+                    <DialogContentText className={classes.dialogue}>
+                      Select a rating:
+                    </DialogContentText>
+                    <TextField
+                      error={errors.rating && touched.rating}
+                      helperText={touched.rating && errors.rating}
+                      label="Rating"
+                      name="rating"
+                      type="number"
+                      size="small"
+                      variant="outlined"
+                      defaultValue={rating}
+                      onChange={(e) => {
+                        setRating(e.target.value);
+                      }}
+                    />
 
+                    
+                    <DialogContentText className={classes.dialogue}>
+                      Write a URL:
+                    </DialogContentText>
+                    <TextField
+                      error={errors.url && touched.url}
+                      helperText={touched.url && errors.url}
+                      name="url"
+                      size="small"
+                      variant="outlined"
+                      value={url}
+                      onChange={(e) => {
+                        setUrl(e.target.value);
+                      }}
+                    />
+
+                    <DialogContentText className={classes.dialogue}>
+                      Write the Status:
+                    </DialogContentText>
+                    <TextField
+                      error={errors.status && touched.status}
+                      helperText={touched.status && errors.status}
+                      name="status"
+                      size="small"
+                      variant="outlined"
+                      value={status}
+                      onChange={(e) => {
+                        setStatus(e.target.value);
+                      }}
+                    />
+                  </DialogContent>
+                  <DialogActions className={classes.button}>
+                    <Button color="primary" variant="contained" type="submit">
+                      Send now
+                    </Button>
+                  </DialogActions>
+                </form>
+              )}
+            </Formik>
+          </Dialog>
+          )}
+          
         </div>
       </div>
       {/* <AnswerStatus review={review} handleClose={handleClose} open={open}/> */}
