@@ -14,12 +14,12 @@ export const navigations = [
         name: 'Dashboard',
         path: '/dashboard/analytics-2',
         iconText: 'OL',
-        beta: true
+        beta: true,
       },
       {
         name: 'Reviews',
         path: '/growth/reviews',
-        iconText: 'OL'
+        iconText: 'OL',
       },
       {
         name: 'Sales (Won Leads)',
@@ -63,7 +63,7 @@ export const navigations = [
         name: 'All Answers',
         path: '/feedback/answers',
         iconText: 'OL',
-      }
+      },
     ],
   },
   {
@@ -136,6 +136,28 @@ export const navigations = [
       {
         name: 'Syllabus',
         path: '/admin/syllabus',
+        iconText: 'STA',
+      },
+    ],
+  },
+  {
+    name: 'Mentorship',
+    icon: 'school',
+    beta: true,
+    children: [
+      {
+        name: 'Mentors',
+        path: '/mentors/staff',
+        iconText: 'STA',
+      },
+      {
+        name: 'Services',
+        path: '/mentors/services',
+        iconText: 'STA',
+      },
+      {
+        name: 'Sessions',
+        path: '/mentors/sessions',
         iconText: 'STA',
       },
     ],

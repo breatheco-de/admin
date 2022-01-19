@@ -1,0 +1,194 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  DialogTitle,
+  Dialog,
+} from '@material-ui/core';
+import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import bc from '../../../services/breathecode';
+import DowndownMenu from '../../../components/DropdownMenu';
+
+
+const propTypes = {
+  user: PropTypes.string.isRequired,
+  staffId: PropTypes.string.isRequired,
+};
+
+const MentorDetails = ({ user, staffId }) => {
+  const mentor = Array.isArray(user) ? user[0] : user;
+  console.log(mentor);
+  const initialValues = {
+    first_name: mentor?.user.first_name === null ? '' : mentor?.user.first_name,
+    last_name: mentor?.user.last_name === null ? '' : mentor?.user.last_name,
+    booking_url: mentor?.booking_url === null ? '' : mentor?.booking_url,
+    services: mentor?.service.name === null ? '' : mentor?.service.name,
+    meeting_url: mentor?.user.meeting_url === null ? 'URL NOT SET' : mentor?.user.meeting_url,
+    status: mentor?.status === null ? '' : mentor?.status,
+  };
+  const customerInfo = [
+    {
+      title: 'First Name',
+      name: 'first_name',
+      value: initialValues.first_name,
+    },
+    {
+      title: 'Last Name',
+      name: 'last_name',
+      value: initialValues.last_name,
+    },
+    {
+      title: 'Meeting Url',
+      name: 'meeting_url',
+      value: initialValues.meeting_url,
+    },
+    {
+      title: 'Services',
+      name: 'services',
+      value: initialValues.services,
+    },
+    {
+      title: 'Status',
+      name: 'status',
+      value: initialValues.status,
+    },
+    {
+      title: 'Booking Url',
+      name: 'booking_url',
+      value: initialValues.booking_url,
+    },
+  ];
+
+  const [roleDialog, setRoleDialog] = useState(false);
+  const [roles, setRoles] = useState(null);
+  const [role, setRole] = useState('');
+  const updateMemberProfile = (values) => {
+    bc.auth()
+      .updateAcademyMember(staffId, { ...values, role: user.role.slug })
+      .then((data) => data)
+      .catch((error) => console.error(error));
+  };
+  const updateRole = (currentRole) => {
+    bc.auth()
+      .updateAcademyMember(staffId, { role: currentRole })
+      .then(({ data, status }) => {
+        if (status >= 200 && status < 300) {
+          setRole(roles.find((roleData) => roleData.slug === data.role).name);
+        } else {
+          throw Error('Could not update Role');
+        }
+      })
+      .catch((error) => error);
+  };
+  useEffect(() => {
+    bc.auth()
+      .getRoles()
+      .then(({ data }) => setRoles(data))
+      .catch((error) => error);
+  }, []);
+  return (
+    <Card className="pt-6" elevation={3}>
+      <div className="flex-column items-center mb-6">
+        <Avatar className="w-84 h-84" src={mentor?.user.profile.avatar_url} />
+        <h5 className="mt-4 mb-2">{ }</h5>
+        <button
+          type="button"
+          className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
+          onClick={() => setRoleDialog(true)}
+          style={{ cursor: 'pointer' }}
+        >
+          {role.length ? role.toUpperCase() : mentor?.user.first_name.toUpperCase()}
+        </button>
+      </div>
+      <Divider />
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => updateMemberProfile(values)}
+        enableReinitialize
+      >
+        {({ values, handleChange, handleSubmit }) => (
+          <form className="p-4" onSubmit={handleSubmit}>
+            <Table className="mb-4">
+              <TableBody>
+                <TableRow>
+                  <TableCell className="pl-4">Github</TableCell>
+                  <TableCell>
+                    <div>{mentor?.user.profile.github_username}</div>
+                    {mentor?.user.profile.github_username === undefined
+                      || !mentor?.user.profile.github_username ? (
+                      <small className="px-1 py-2px bg-light-error text-red border-radius-4">
+                        GITHUB UNVERIFIED
+                      </small>
+                    ) : (
+                      <small className="px-1 py-2px bg-light-green text-green border-radius-4">
+                        GITHUB VERIFIED
+                      </small>
+                    )}
+                  </TableCell>
+                </TableRow>
+                {customerInfo.map((item) => (
+                  <TableRow key={item}>
+                    <TableCell className="pl-4">{item.title}</TableCell>
+                    <TableCell>
+                      <TextField
+                        placeholder={item.title}
+                        name={item.name}
+                        size="small"
+                        variant="outlined"
+                        defaultValue=""
+                        required
+                        value={values[item.name]}
+                        onChange={handleChange}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="flex-column items-start px-4 mb-4">
+              <Button color="primary" variant="contained" type="submit">
+                Update Mentor Details
+              </Button>
+            </div>
+          </form>
+        )}
+      </Formik>
+      <Dialog
+        onClose={() => setRoleDialog(false)}
+        open={roleDialog}
+        aria-labelledby="simple-dialog-title"
+      >
+        <DialogTitle id="simple-dialog-title">Change Member Role</DialogTitle>
+        <List>
+          {roles && roles.map((presentRole) => (
+            <ListItem
+              button
+              onClick={() => {
+                updateRole(presentRole.slug);
+                setRoleDialog(false);
+              }}
+              key={presentRole?.name}
+            >
+              <ListItemText primary={presentRole.name.toUpperCase()} />
+            </ListItem>
+          ))}
+        </List>
+      </Dialog>
+    </Card>
+  );
+};
+
+MentorDetails.propTypes = propTypes;
+
+export default MentorDetails;

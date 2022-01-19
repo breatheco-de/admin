@@ -12,6 +12,13 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
+import { toast } from 'react-toastify';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -30,7 +37,7 @@ const name = (user) => {
   return 'No name';
 };
 
-const Staff = () => {
+const Mentors = () => {
   const [userList, setUserList] = useState([]);
   const resendInvite = (user) => {
     bc.auth()
@@ -47,6 +54,7 @@ const Staff = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const { user } = userList[dataIndex];
+          console.log(user);
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
@@ -60,35 +68,18 @@ const Staff = () => {
       },
     },
     {
-      name: 'created_at',
-      label: 'Created At',
+      name: 'service',
+      label: 'Service(s)',
       options: {
         filter: true,
-        customBodyRenderLite: (i) => (
+        customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(userList[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(userList[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{userList[dataIndex].service.slug}</h5>
+              <small className="text-muted">{userList[dataIndex].service.name}</small>
             </div>
           </div>
         ),
-      },
-    },
-    {
-      name: 'role',
-      label: 'Role',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
-          return (
-            <small
-              className={`border-radius-4 px-2 pt-2px ${roleColors[item.role.slug] || 'bg-light'}`}
-            >
-              {item.role.name.toUpperCase()}
-            </small>
-          );
-        },
       },
     },
     {
@@ -114,6 +105,48 @@ const Staff = () => {
       },
     },
     {
+      name: 'booking_url',
+      label: 'Booking Link',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => (
+          <Tooltip title="Copy booking link">
+            <IconButton
+              onClick={() => {
+                navigator.clipboard.writeText(userList[dataIndex].booking_url);
+                toast.success('Copied to the clipboard', toastOption);
+              }}
+            >
+              <Icon>assignment</Icon>
+            </IconButton>
+          </Tooltip>
+        ),
+      },
+    },
+    {
+      name: 'meeting_url',
+      label: 'Meeting Link',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => (
+          userList[dataIndex].meeting_url
+            ? (
+              <Tooltip title="Copy booking link">
+                <IconButton
+                  onClick={() => {
+                    navigator.clipboard.writeText(userList[dataIndex].booking_url);
+                    toast.success('Copied to the clipboard', toastOption);
+                  }}
+                >
+                  <Icon>assignment</Icon>
+                </IconButton>
+              </Tooltip>
+            )
+            : 'No meeting URL yet.'
+        ),
+      },
+    },
+    {
       name: 'action',
       label: ' ',
       options: {
@@ -126,24 +159,15 @@ const Staff = () => {
               user: {
                 first_name: '',
                 last_name: '',
-                imgUrl: '',
-                id: '',
+                services: '',
+                booking_url: '',
+                meeting_url: '',
               },
             };
-          return item.status === 'INVITED' ? (
+          return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <InviteDetails user={item.id} />
-              <Tooltip title="Resend Invite">
-                <IconButton onClick={() => resendInvite(item.id)}>
-                  <Icon>refresh</Icon>
-                </IconButton>
-              </Tooltip>
-            </div>
-          ) : (
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <Link to={`/admin/staff/${item.user.id}`}>
+              <Link to={`/mentors/staff/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -176,15 +200,15 @@ const Staff = () => {
       </div>
       <div>
         <SmartMUIDataTable
-          title="All Staff"
+          title="All Mentors"
           columns={columns}
           items={userList}
           view="staff?"
           singlePage=""
           historyReplace="/admin/staff"
           search={async (querys) => {
-            const { data } = await bc.auth().getAcademyMembers(querys);
-            console.log("academy members")
+            const { data } = await bc.mentorship().getAcademyMentor(querys);
+            console.log('Mentors members');
             setUserList(data.results);
             return data;
           }}
@@ -200,4 +224,4 @@ const Staff = () => {
   );
 };
 
-export default Staff;
+export default Mentors;

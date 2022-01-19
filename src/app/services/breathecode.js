@@ -263,6 +263,18 @@ class BreatheCodeClient {
     };
   }
 
+  mentorship() {
+    return {
+      getAcademyMentor: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy mentor',
+          `${this.host}/mentorship/academy/mentor${query ? `?${qs}` : ''}`,
+        );
+      },
+    };
+  }
+
   feedback() {
     return {
       getAnswers: (query) => {
@@ -454,8 +466,7 @@ class BreatheCodeClient {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
           'Cohort Activity',
-          `${this.host}/activity/academy/cohort/${cohortID}${
-            query ? `?${qs}` : ''}`,
+          `${this.host}/activity/academy/cohort/${cohortID}${query ? `?${qs}` : ''}`,
         );
       },
       createStudentActivity: (studentId, payload) => axios.bcPost(

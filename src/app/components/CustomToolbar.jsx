@@ -1,6 +1,8 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import BulkDelete from "../components/ToolBar/BulkDelete";
+import BulkDelete from './ToolBar/BulkDelete';
 
 const defaultToolbarSelectStyles = {
   iconButton: {},

@@ -27,6 +27,10 @@ const name = (user) => {
 const Students = () => {
   const [items, setItems] = useState([]);
 
+  const [queryFilters, setQueryFilters] = useState({});
+
+  console.log(items);
+
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)
@@ -173,9 +177,34 @@ const Students = () => {
             ),
           }}
           search={async (querys) => {
-            const { data } = await bc.auth().getAcademyStudents(querys);
-            console.log('students');
-            setItems(data.results);
+            setQueryFilters(querys);
+            const { data } = await bc.auth().getAcademyStudents();
+            // console.log('This is the original query', querys);
+            // console.log('This is the query state', querys);
+            // console.log('This is the results from the query: ', data.results);
+            const filteredResults = data.results.filter((student) => {
+              const queryArr = Object.entries(querys).filter((val) => !val.includes(null));
+              for (let i = 0; i < queryArr.length; i += 1) {
+                const key = 0; // used to access keys
+                const prop = 1; // used to access key properties
+                if (queryArr[i][key] in student) {
+                  const queryKey = queryArr[i][key];
+                  const queryValue = queryArr[i][prop];
+                  if (student[queryKey].toLowerCase()
+                    .startsWith(queryValue.slice(0, Math.max(queryValue.length - 1, 1)))) {
+                    return student;
+                  } if (queryValue.includes('@') && student.email === queryValue) {
+                    return student;
+                  } if (queryValue.length === 10 && student.phone === queryValue) {
+                    return student;
+                  }
+                } else {
+                  return student;
+                }
+              }
+            });
+            console.log(filteredResults);
+            setItems(filteredResults);
             return data;
           }}
           deleting={async (querys) => {
