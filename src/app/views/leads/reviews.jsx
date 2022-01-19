@@ -47,6 +47,13 @@ const useStyles = makeStyles(() => ({
   select: {
     width: '15rem',
   },
+  title: {
+    textAlign:'center',
+  },
+  dialogContent: {
+    width:'80%',
+    margin:'auto',
+  },
 }));
 
 const Reviews = () => {
@@ -56,9 +63,9 @@ const Reviews = () => {
   const [toIgnore, setToIgnore] = useState(null);
   const [review, setReview] = useState(null);
   // const [reviewDetails, setReviewDetails] = useState(null);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(1);
   const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('');
+  const [comment, setComment] = useState('');
   const classes = useStyles();
 
   const handleClickOpen = () => {
@@ -85,7 +92,7 @@ const Reviews = () => {
       .integer().min(1, 'Must not be lower than one')
       .max(5, 'Must not be bigger than five'),
     url: Yup.string().matches(URL,'Enter a valid url').required("Please write a URL"),
-    status: Yup.string().required("Please write a Status")
+    comment: Yup.string().required("Please write a Comment")
   });
 
   // const [review, setReview] = useState({
@@ -167,14 +174,13 @@ const Reviews = () => {
             : rating < 4
               ? 'text-error'
               : 'text-orange';
-
           return (
             <div>
               {(rating) ? 
                 <div>
                   <LinearProgress
                     color="secondary"
-                    value={parseInt(rating, 10) * 10}
+                    value={parseInt(rating, 10) * 20}
                     variant="determinate"
                   />
                   <small className={color}>{rating}</small>
@@ -294,17 +300,19 @@ const Reviews = () => {
               setOpenDialog(false);
               setReview(null);
             }}
+            fullWidth={true}
+            maxWidth="sm"
             open={openDialog}
             aria-labelledby="simple-dialog-title"
           >
-            <DialogTitle id="simple-dialog-title">
-              Select a Cohort Stage
+            <DialogTitle id="simple-dialog-title" className={classes.title}>
+              Write the details of the review
             </DialogTitle>
             <Formik
               initialValues={{
                 rating,
                 url,
-                status,
+                comment,
               }}
               enableReinitialize
               validationSchema={ProfileSchema}
@@ -314,7 +322,7 @@ const Reviews = () => {
                   status: "DONE",
                   total_rating: rating,
                   public_url: url,
-                  status_text: status
+                  status_text: comment
                 }
                 
                 const result = await bc.feedback().updateReview(review.id, data);
@@ -330,7 +338,7 @@ const Reviews = () => {
                   onSubmit={handleSubmit}
                   className="d-flex justify-content-center mt-0 p-4"
                 >
-                  <DialogContent>
+                  <DialogContent className={classes.dialogContent}>
                     <DialogContentText className={classes.dialogue}>
                       Select a rating:
                     </DialogContentText>
@@ -340,7 +348,9 @@ const Reviews = () => {
                       label="Rating"
                       name="rating"
                       type="number"
+                      InputProps={{ inputProps: { min: 1, max: 5 } }}
                       size="small"
+                      fullWidth 
                       variant="outlined"
                       defaultValue={rating}
                       onChange={(e) => {
@@ -350,7 +360,7 @@ const Reviews = () => {
 
                     
                     <DialogContentText className={classes.dialogue}>
-                      Write a URL:
+                      Review URL:
                     </DialogContentText>
                     <TextField
                       error={errors.url && touched.url}
@@ -359,23 +369,27 @@ const Reviews = () => {
                       size="small"
                       variant="outlined"
                       value={url}
+                      fullWidth 
                       onChange={(e) => {
                         setUrl(e.target.value);
                       }}
                     />
 
                     <DialogContentText className={classes.dialogue}>
-                      Write the Status:
+                      Comments:
                     </DialogContentText>
                     <TextField
-                      error={errors.status && touched.status}
-                      helperText={touched.status && errors.status}
-                      name="status"
+                      error={errors.comment && touched.comment}
+                      helperText={touched.comment && errors.comment}
+                      name="comment"
                       size="small"
                       variant="outlined"
-                      value={status}
+                      value={comment}
+                      multiline
+                      rows={4}
+                      fullWidth 
                       onChange={(e) => {
-                        setStatus(e.target.value);
+                        setComment(e.target.value);
                       }}
                     />
                   </DialogContent>
