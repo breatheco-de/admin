@@ -20,6 +20,7 @@ export function AsyncAutocomplete(props) {
     asyncSearch,
     children,
     prefetch = false,
+    multiple = false,
     debounced = true,
     label,
     required,
@@ -70,6 +71,7 @@ export function AsyncAutocomplete(props) {
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         value={value}
+        multiple={multiple}
         onChange={(e, newValue) => {
           setOpen(false);
           onChange(newValue);
@@ -118,5 +120,6 @@ AsyncAutocomplete.propTypes = {
   asyncSearch: PropTypes.func,
   value: PropTypes.any,
   required: PropTypes.bool,
+  multiple: PropTypes.bool,
   prefetch: PropTypes.bool,
 };
