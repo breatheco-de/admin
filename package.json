@@ -80,7 +80,6 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-big-calendar": "^0.38.0",
     "react-copy-to-clipboard": "^5.0.3",
-    "react-dev-utils": "^10.2.1",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.3.2",
     "react-infinite-scroller": "^1.2.4",
@@ -173,6 +172,7 @@
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.1",
     "react-app-rewired": "^2.1.6",
+    "react-dev-utils": "^10.2.1",
     "wait-port": "^0.2.9"
   },
   "jest": {
