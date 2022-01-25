@@ -255,6 +255,7 @@ class BreatheCodeClient {
         );
       },
       getAcademyTags: () => axios.bcGet('Academy tags', `${this.host}/marketing/academy/tag`),
+
       getAcademyShort: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
@@ -262,6 +263,19 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/short${query ? `?${qs}` : ''}`,
         );
       },
+      updateShort: (short) => axios.bcPut(
+        'Edit Short Link',
+        `${this.host}/marketing/academy/short/${short.slug}`,
+        short,
+      ),
+      deleteShortsBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Short Links',
+          `${this.host}/marketing/academy/short?id=${qs}`,
+        );
+      },
+      addNewShort: (newShort) => axios.bcPost('New Short Link', `${this.host}/marketing/academy/short`, newShort),
       getAcademyAutomations: () => axios.bcGet(
         'Academy automations',
         `${this.host}/marketing/academy/automation`,

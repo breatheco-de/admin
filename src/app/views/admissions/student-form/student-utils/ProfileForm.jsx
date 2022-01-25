@@ -21,7 +21,7 @@ export const ProfileForm = ({ initialValues }) => {
     const requestValues = cohort !== null
       ? { ...values, cohort: cohort.id, invite: true }
       : { ...values, invite: true };
-    // console.log("ESTE ES EL MAIL ####", values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/))
+    
     if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) === null) {
       console.error("The email entered has formatting errors (insert a valid email address)")
       toast.error("The email entered has formatting errors (insert a valid email address)")
