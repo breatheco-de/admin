@@ -22,21 +22,9 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
   });
 
   useEffect(() => {
-    // bc.events()
-    //   .getAcademyEventOrganization()
-    //   .then(({ data }) => {
-    //     console.log(data);
-    //     // setOrganization({...data});
-    //     return new Error('The academy has not organization configured');
-    //   })
-    //   .catch((error) => error);
     const getOrganization = async () => {
       try{
         const { data } = await bc.events().getAcademyEventOrganization();
-        // console.log(data);
-
-        // delete data.eventbrite_key
-        // delete data.eventbrite_id
 
         if(!data){
           setIsCreating(true);
@@ -65,7 +53,6 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
   }, []);
 
   const postOrganization = async (values) => {
-    // console.log('Everything fine!', values);
     if(isCreating){
       // Call POST
       const payload = {
