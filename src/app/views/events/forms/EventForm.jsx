@@ -32,6 +32,7 @@ const EventForm = () => {
     sync_with_eventbrite: false,
   });
   const [venue, setVenue] = useState(null);
+  const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
   const { id } = useParams();
   const history = useHistory();
@@ -343,6 +344,23 @@ const EventForm = () => {
                     value={values.excerpt}
                     onChange={handleChange}
                   />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Tags
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    onChange={(v) => setTags(v)}
+                    asyncSearch={() => bc.marketing().getAcademyTags()}
+                    size="small"
+                    label="Tags"
+                    debounced={false}
+                    multiple={true}
+                    required={tags.length <= 1}
+                    getOptionLabel={(option) => `${option.slug}`}
+                    value={tags}
+                  />
+                  <small className="text-muted">The specified tags will be applied to this event attendees on active campaign</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Online Event
