@@ -386,6 +386,20 @@ class BreatheCodeClient {
         'Academy event',
         `${this.host}/events/academy/event/${event}`,
       ),
+      getAcademyEventOrganization: () => axios.bcGet(
+        'Academy event',
+        `${this.host}/events/academy/organization`,
+      ),
+      postAcademyEventOrganization: (payload) => axios.bcPost(
+        'Academy event',
+        `${this.host}/events/academy/organization`,
+        payload,
+      ),
+      putAcademyEventOrganization: (payload) => axios.bcPut(
+        'Academy event',
+        `${this.host}/events/academy/organization`,
+        payload,
+      ),
       getAcademyVenues: () => axios.bcGet('Venues', `${this.host}/events/academy/venues`),
       getAcademyEventType: () => axios.bcGet('Event Type', `${this.host}/events/academy/eventype`),
       downloadCSV: (query) => {

@@ -139,7 +139,7 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
-            <Link to={`/events/EditEvent/${items[dataIndex].id}`}>
+            <Link to={`/events/event/${items[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
