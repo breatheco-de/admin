@@ -130,6 +130,7 @@
     "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "node scripts/build.js && gh-pages -d build",
     "lint": "eslint ./src",
+    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
   },

@@ -27,7 +27,7 @@ const EventForm = () => {
     capacity: 0,
     starting_at: '',
     ending_at: '',
-    host: null,
+    host: '',
     online_event: false,
     sync_with_eventbrite: false,
   });
@@ -41,11 +41,15 @@ const EventForm = () => {
     if (id) {
       bc.events()
         .getAcademyEvent(id)
-        .then(({ data }) => setEvent({
-          ...data,
-          starting_at: dayjs(data.starting_at).format('YYYY-MM-DDTHH:mm:ss'),
-          ending_at: dayjs(data.ending_at).format('YYYY-MM-DDTHH:mm:ss'),
-        }))
+        .then(({ data }) => {
+          setEvent({
+            ...data,
+            starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
+            ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
+          });
+          setEventType({...data.event_type, academy: data.academy});
+          setVenue({ ...data.venue });
+        })
         .catch((error) => error);
     }
   }, []);
