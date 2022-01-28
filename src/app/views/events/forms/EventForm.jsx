@@ -47,22 +47,48 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-          setEventType({...data.event_type, academy: data.academy});
-          setVenue({ ...data.venue });
+          console.log(data);
+          if(data.event_type){
+            setEventType({...data.event_type, academy: data.academy});
+          } else {
+            setEventType({id:'none', name:'select an event'});
+          }
+          if(data.venue){
+            setVenue({ ...data.venue });
+          }else {
+            setVenue({id:'none', title:'select a venue'});
+          }
+          
         })
         .catch((error) => error);
     }
   }, []);
   const postEvent = (values) => {
     const venueAndType = {
-      venue: venue !== null ? venue.id : null,
-      event_type: eventType !== null ? eventType.id : null,
+      venue: venue !== null && venue.id !== 'none' ? venue.id : null,
+      event_type: eventType !== null && eventType.id !== 'none' ?  eventType.id : null,
     };
+    let stringTags = '';
+    tags.map((tag)=>{
+      stringTags = `${stringTags},${tag.slug}`;
+    });
+
+    stringTags = stringTags.slice(1);
+
     if (id) {
       const { academy, ...rest } = values;
+      
+      if(venue.id === 'none'){
+        setVenue(null);
+      }
+
+      if(event.id === 'none'){
+        setEventType(null);
+      }
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
+          tags: stringTags,
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
