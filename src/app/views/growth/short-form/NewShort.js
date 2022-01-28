@@ -30,7 +30,7 @@ const NewShort = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [isPrivate, setPrivate] = useState(true);
+  const [isPrivate, setPrivate] = useState(false);
   const [checked, setChecked] = useState(false);
 
   const [listCourse, setListCourse] = useState();
@@ -44,7 +44,7 @@ const NewShort = () => {
       slug: '',
       destination: '',
       hits: 0,
-      private: false,
+      isPrivate: false,
       author: 1,
       utm_campaign: '',
       utm_medium: '',
@@ -64,13 +64,12 @@ const NewShort = () => {
       ...newShort,
       isPrivate: true,
     });
+    createShort
   };
 
-  // AUX´s FUNCTION TO HELP IN VALIDATIONS AND CREATE THE OBJECT "newShort" \\
-
   const createShort = (event) => {
-    console.log("este es el event name", [event.target.name])
-    console.log("este es el event value", event.target.value)
+    console.log("This is event name", [event.target.name])
+    console.log("This is event value", event.target.value)
     setNewShort({ ...newShort, [event.target.name]: event.target.value });
   };
 
@@ -96,7 +95,7 @@ const NewShort = () => {
         <Formik
           initialValues={newShort}
           // validationSchema={ProfileSchema}
-          onSubmit={(newShort) => { bc.marketing().addNewShort(newShort); history.push('/growth/urls'); console.log("This is the new short###", newShort)}}
+          onSubmit={(newShort) => { bc.marketing().addNewShort(newShort); console.log("This is the new short###", newShort); history.push('/growth/urls'); window.location.reload();}}
           enableReinitialize
         >
           {({
@@ -117,8 +116,7 @@ const NewShort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
-                    // error={errors.first_name && touched.first_name}
-                    // helperText={touched.first_name && errors.first_name}
+                    
                     label="Slug"
                     name="slug"
                     size="small"
@@ -150,6 +148,7 @@ const NewShort = () => {
                         <Checkbox
                           checked={checked}
                           onChange={handlePrivate}
+                          defaultValue={newShort.isPrivate}
                           name="Private"
                           data-cy="private"
                           color="primary"

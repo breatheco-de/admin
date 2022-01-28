@@ -30,10 +30,10 @@ const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const history = useHistory();
-
+  
   const columns = [
     {
-      name: 'first_name', // field name in the row object
+      name: 'id', // field name in the row object
       label: 'Id', // column title that will be shown in table
       options: {
         filter: true,
@@ -111,7 +111,7 @@ const Leads = () => {
                 <IconButton onClick={async () => {
                   const resp = await bc.marketing().getAcademyShort(item);
                   
-                  console.log("ESTA ES LA RESP####", resp.data[0].destination)
+                  console.log("This is RESP####", resp.data[0].destination)
                   
                   if (resp.headers['content-type'] == 'application/json') {
                     if (resp.status === 404) {
@@ -139,7 +139,7 @@ const Leads = () => {
                   <IconButton onClick={async () => {
                     
                     if (item.id) {
-                      console.log("ESTE ES item####", item.slug)
+                      console.log("This is item####", item.slug)
                       history.push(`/growth/urls/${item.slug}`)
                     }
                     }}>
@@ -153,7 +153,7 @@ const Leads = () => {
       },
     },
   ];
-
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -187,7 +187,7 @@ const Leads = () => {
           search={async (querys) => {
             const { data } = await bc.marketing().getAcademyShort(querys);
             setItems(data.results);
-            console.log("ESTA ES LA DATA #### ", data)
+            console.log("This is  DATA #### ", data)
             return data;
           }}
           deleting={async (querys) => {

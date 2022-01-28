@@ -35,7 +35,7 @@ const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
-// const history = useHistory();
+
 const useStyles = makeStyles(() => ({
   dialogue: {
     color: 'rgba(52, 49, 76, 1)',
@@ -76,7 +76,7 @@ const Short = ({
   utm_source,
 }) => {
           const { academy } = JSON.parse(localStorage.getItem('bc-session'));
-         
+          const history = useHistory();
         return (
           <div className="m-sm-30">
             <div className="mb-sm-30">
@@ -99,6 +99,7 @@ const Short = ({
                 initialValues={{
                   slug,
                   destination,
+                  isPrivate,
                   // hits,
                   author,
                   utm_campaign,
@@ -113,7 +114,9 @@ const Short = ({
                     .updateShort(values)
                     .then((data) => {
                       if (data.status === 201) {
-                        // history.push('/growth/urls')
+                        history.push('/growth/urls')
+                        console.log("This is the new short###", data)
+                        
                       }
                     }) 
                     

@@ -275,7 +275,8 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/short?id=${qs}`,
         );
       },
-      addNewShort: (newShort) => axios.bcPost('New Short Link', `${this.host}/marketing/academy/short`, newShort),
+      addNewShort: (newShort) => axios.bcPost(
+        'New Short Link', `${this.host}/marketing/academy/short`, newShort),
       getAcademyAutomations: () => axios.bcGet(
         'Academy automations',
         `${this.host}/marketing/academy/automation`,

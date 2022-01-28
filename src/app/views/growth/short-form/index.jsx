@@ -108,7 +108,10 @@ const IndexShort = () => {
         .updateShort(values)
         .then((data) => data)
         .catch((error) => console.error(error));
+      
     } 
+    history.push('/growth/urls'); 
+    console.log("This is the new short###", newShort)
   };
 
   
@@ -170,6 +173,7 @@ const IndexShort = () => {
               utm_content: short.utm_content,
               utm_source: short.utm_source,
             });
+          
           }}
         >
          

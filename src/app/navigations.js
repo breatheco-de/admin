@@ -36,11 +36,7 @@ export const navigations = [
         path: '/growth/urls',
         iconText: 'OL',
       },
-      // {
-      //   name: 'New Short Link',
-      //   path: '/growth/NewShort',
-      //   iconText: 'OL',
-      // },
+      
     ],
   },
   {
