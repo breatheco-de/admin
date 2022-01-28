@@ -39,6 +39,7 @@ const NewCohort = () => {
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
+    language: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
@@ -46,6 +47,16 @@ const NewCohort = () => {
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
+  const languages = [
+    {
+      value: 'ES',
+      label: 'Spanish',
+    },
+    {
+      value: 'EN',
+      label: 'English',
+    },
+  ];
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
@@ -65,9 +76,9 @@ const NewCohort = () => {
   };
 
   const languageCohort = (event) => {
-    setLanguageCohort({
+    setNewCohort({
       ...newCohort,
-      [event.target.name]: event.target.value,
+      language: event.target.value,
     });
   };
 
@@ -222,14 +233,13 @@ const NewCohort = () => {
                     style ={{width: '20%'}}
                     variant="outlined"
                     value={newCohort.language}
-                    onChange={(e) => {
-                      setLanguage(e.target.value);
-                    }}
+                    onChange={languageCohort}
+                  
                     select
                   >
-                    {['es', 'en'].map((item) => (
-                      <MenuItem value={item} key={item} width="40%">
-                        {item.toUpperCase()}
+                    {languages.map((option) => (
+                      <MenuItem value={option.value} key={option.value} width="40%">
+                        {option.value}
                       </MenuItem>
                     ))}
                   </TextField>
