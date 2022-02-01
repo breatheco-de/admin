@@ -10,15 +10,20 @@ import bc from '../../../services/breathecode';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { MediaInput } from '../../../components/MediaInput';
+import useAuth from '../../../hooks/useAuth';
 
 // Timezone plugin
 const utc = require('dayjs/plugin/utc');
+
+// Slugify Library
+const slugify = require('slugify')
 
 dayjs.extend(utc);
 
 const EventForm = () => {
   const [event, setEvent] = useState({
     title: '',
+    slug:'',
     description: '',
     excerpt: '',
     lang: '',
@@ -29,12 +34,14 @@ const EventForm = () => {
     ending_at: '',
     host: '',
     online_event: false,
-    sync_with_eventbrite: false,
+    eventbrite_sync_status:'',
+    sync_with_eventbrite: true,
   });
   const [venue, setVenue] = useState(null);
   const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
   const { id } = useParams();
+  const { user } = useAuth();
   const history = useHistory();
 
   useEffect(() => {
@@ -47,7 +54,6 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-          console.log(data);
           if(data.event_type){
             setEventType({...data.event_type, academy: data.academy});
           } else {
@@ -190,6 +196,22 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
+                  Slug
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <TextField
+                    label="Slug"
+                    name="slug"
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={slugify(values.title)}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
                   Banner URL
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
@@ -216,8 +238,9 @@ const EventForm = () => {
                     onChange={handleChange}
                     name="url"
                     fullWidth
-                    required
+                    disabled={event.eventbrite_sync_status === 'SYNCHED' ? true : false}
                   />
+                  <small className="text-muted">If the event gets published on eventbrite, this field will be filled with the eventbrite public URL</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Capacity
@@ -250,6 +273,7 @@ const EventForm = () => {
                     value={values.starting_at}
                     onChange={handleChange}
                   />
+                  <small className="text-muted">{`The event timezone will be the same as the academy timezone ${user?.academy.timezone}`}</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Ending At
@@ -377,7 +401,7 @@ const EventForm = () => {
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
                     onChange={(v) => setTags(v)}
-                    asyncSearch={() => bc.marketing().getAcademyTags()}
+                    asyncSearch={() => bc.marketing().getAcademyTags('type=DISCOVERY')}
                     size="small"
                     label="Tags"
                     debounced={false}
