@@ -255,6 +255,13 @@ class BreatheCodeClient {
         );
       },
       getAcademyTags: () => axios.bcGet('Academy tags', `${this.host}/marketing/academy/tag`),
+      getAcademyShort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy short',
+          `${this.host}/marketing/academy/short${query ? `?${qs}` : ''}`,
+        );
+      },
       getAcademyAutomations: () => axios.bcGet(
         'Academy automations',
         `${this.host}/marketing/academy/automation`,
@@ -290,6 +297,17 @@ class BreatheCodeClient {
         return axios.bcGet(
           'Academy survey',
           `${this.host}/feedback/academy/survey${query ? `?${qs}` : ''}`,
+        );
+      },
+      // deleteSurveysBulk: (query) => axios.bcDelete (
+      //     'Academy survey',
+      //     `${this.host}/feedback/academy/survey${query}`,
+      // ),
+      deleteSurveysBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey/${qs}`,
         );
       },
       getSurvey: (id) => axios.bcGet(
