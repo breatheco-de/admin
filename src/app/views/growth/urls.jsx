@@ -30,21 +30,21 @@ const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const history = useHistory();
-
+  
   const columns = [
     {
-      name: 'first_name', // field name in the row object
+      name: 'id', // field name in the row object
       label: 'Id', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const lead = items[dataIndex];
+          const short = items[dataIndex];
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {`${lead.first_name} ${lead.last_name}`}
+                {`${short.id}`}
               </h5>
-              <small className="text-muted">{lead?.email || lead.email}</small>
+              <small className="text-muted">{short?.slug || short.slug}</small>
             </div>
           );
         },
@@ -71,8 +71,8 @@ const Leads = () => {
           <span
             className="ellipsis"
           >
-            {items[dataIndex].course
-              ? items[dataIndex].course
+            {items[dataIndex].slug
+              ? items[dataIndex].slug
               : '---'}
           </span>
         ),
@@ -109,23 +109,23 @@ const Leads = () => {
               {item.user == null && (
               <Tooltip title="Open URL">
                 <IconButton onClick={async () => {
-                  const resp = await bc.auth().getAcademyMember(item.email);
+                  const resp = await bc.marketing().getAcademyShort(item);
+                  
+                  console.log("This is RESP####", resp.data[0].destination)
+                  
                   if (resp.headers['content-type'] == 'application/json') {
                     if (resp.status === 404) {
                       setOpenDialog({
                         open: true,
-                        msg: 'There is no member with this email, would you like to invite it to the academy?',
+                        msg: 'An error has occurred, the URL does not work correctly. Contact the marketing department to verify that the address is still in use.',
                         onSuccess: () => {
-                          history.push(`/admissions/students/new?data=${btoa(JSON.stringify({
-                            email: item.email, first_name: item.first_name, last_name: item.last_name, phone: item.phone,
-                          }))}`);
+                          window.open(resp.data[0].destination, '_blank');
                         },
                       });
                     } else if (resp.status === 200) {
-                      setOpenDialog({
-                        msg: 'Please choose a cohort for this user',
-                        open: true,
-                      });
+                      
+                      window.open(resp.data[0].destination, '_blank');
+                      
                     }
                   }
                 }}
@@ -135,9 +135,17 @@ const Leads = () => {
               </Tooltip>
               )}
               <Tooltip title="Edit URL">
-                <IconButton onClick={() => item.user && history.push(`/admissions/students/${item.user.id}`)}>
-                  <Icon>edit</Icon>
-                </IconButton>
+                {/* <Link to={`/growth/newshort/${item.slug}`}> */}
+                  <IconButton onClick={async () => {
+                    
+                    if (item.id) {
+                      console.log("This is item####", item.slug)
+                      history.push(`/growth/urls/${item.slug}`)
+                    }
+                    }}>
+                    <Icon>edit</Icon>
+                  </IconButton>
+                {/* </Link> */}
               </Tooltip>
             </div>
           );
@@ -145,7 +153,7 @@ const Leads = () => {
       },
     },
   ];
-
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -153,14 +161,14 @@ const Leads = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Pages', path: '/leads/won' },
-                { name: 'Order List' },
+                { name: 'Growth', path: '/Growth' },
+                { name: 'URL Shortner', path: '/growth/urls' },
               ]}
             />
           </div>
           <div className="">
             <Link
-              to="/growth/sales/new"
+              to="/growth/newshort"
               color="primary"
               className="btn btn-primary"
             >
@@ -179,13 +187,13 @@ const Leads = () => {
           search={async (querys) => {
             const { data } = await bc.marketing().getAcademyShort(querys);
             setItems(data.results);
-            console.log("ESTA ES LA DATA #### ", data)
+            console.log("This is  DATA #### ", data)
             return data;
           }}
           deleting={async (querys) => {
             const { status } = await bc
-              .admissions()
-              .deleteStudentBulk(querys);
+              .marketing()
+              .deleteShortsBulk(querys);
             return status;
           }}
         />
@@ -201,11 +209,9 @@ const Leads = () => {
         </DialogTitle>
         <DialogActions>
           <Button onClick={() => setOpenDialog({ msg: '', open: false })} color="primary">
-            Disagree
+            Ok
           </Button>
-          <Button color="primary" autoFocus onClick={() => openDialog.onSuccess && openDialog.onSuccess()}>
-            Agree
-          </Button>
+          
         </DialogActions>
       </Dialog>
     </div>
