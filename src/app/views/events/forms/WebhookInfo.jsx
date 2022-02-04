@@ -14,6 +14,7 @@ import bc from '../../../services/breathecode';
 
 export const WebhookInfo = () => {
   
+  // do not delete, will be used later
   // useEffect(()=>{
   //   const getWebhooks = async () => {
   //     try{
@@ -24,7 +25,7 @@ export const WebhookInfo = () => {
   //     }
   //   }
   //   getWebhooks();
-  // });
+  // }, []);
 
   return (
     <Card container className="p-4">

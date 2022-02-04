@@ -22,8 +22,6 @@ dayjs.extend(utc);
 
 const EventForm = () => {
   const [event, setEvent] = useState({
-    title: '',
-    slug:'',
     description: '',
     excerpt: '',
     lang: '',
@@ -40,9 +38,15 @@ const EventForm = () => {
   const [venue, setVenue] = useState(null);
   const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
+  const [slug, setSlug] = useState('');
+  const [title, setTitle] = useState('');
   const { id } = useParams();
   const { user } = useAuth();
   const history = useHistory();
+  
+  useEffect(() => {
+    setSlug(slugify(title));
+  }, [title]);
 
   useEffect(() => {
     if (id) {
@@ -54,16 +58,12 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-          if(data.event_type){
-            setEventType({...data.event_type, academy: data.academy});
-          } else {
-            setEventType({id:'none', name:'select an event'});
-          }
-          if(data.venue){
-            setVenue({ ...data.venue });
-          }else {
-            setVenue({id:'none', title:'select a venue'});
-          }
+
+          setTitle(data.title);
+          
+          if(data.slug) setSlug(data.slug);
+          if(data.event_type) setEventType({...data.event_type, academy: data.academy});
+          if(data.venue) setVenue({ ...data.venue });
           
         })
         .catch((error) => error);
@@ -71,30 +71,22 @@ const EventForm = () => {
   }, []);
   const postEvent = (values) => {
     const venueAndType = {
-      venue: venue !== null && venue.id !== 'none' ? venue.id : null,
-      event_type: eventType !== null && eventType.id !== 'none' ?  eventType.id : null,
+      venue: venue ? venue.id : null,
+      event_type: eventType ? eventType.id : null,
     };
-    let stringTags = '';
-    tags.map((tag)=>{
-      stringTags = `${stringTags},${tag.slug}`;
-    });
 
-    stringTags = stringTags.slice(1);
+    // console.log(values.slug, 'values.slug');
+    // console.log(event.slug, 'event.slug');
 
     if (id) {
       const { academy, ...rest } = values;
       
-      if(venue.id === 'none'){
-        setVenue(null);
-      }
-
-      if(event.id === 'none'){
-        setEventType(null);
-      }
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
-          tags: stringTags,
+          title,
+          slug,
+          tags: tags.map(t => t.slug).join(","),
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
@@ -120,12 +112,19 @@ const EventForm = () => {
         })
         .catch((error) => error);
     } else {
+      const { eventbrite_sync_status, ...restValues } = values
+      const payload = {
+        ...restValues,
+        title,
+        slug,
+        tags: tags.map(t => t.slug).join(","),
+        starting_at: dayjs(values.starting_at).utc().format(),
+        ending_at: dayjs(values.ending_at).utc().format(),
+        ...venueAndType,
+      }
       bc.events()
         .addAcademyEvent({
-          ...values,
-          starting_at: dayjs(values.starting_at).utc().format(),
-          ending_at: dayjs(values.ending_at).utc().format(),
-          ...venueAndType,
+          ...payload
         })
         .then(({ data }) => {
           setEvent({
@@ -191,8 +190,9 @@ const EventForm = () => {
                     size="small"
                     fullWidth
                     variant="outlined"
-                    value={values.title}
-                    onChange={handleChange}
+
+                    value={title}
+                    onChange={(e)=>{setTitle(e.target.value)}}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -205,10 +205,9 @@ const EventForm = () => {
                     size="small"
                     fullWidth
                     variant="outlined"
-                    value={slugify(values.title)}
-                    InputProps={{
-                      readOnly: true,
-                    }}
+
+                    value={slug}
+                    onChange={(e)=>{setSlug(e.target.value)}}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -234,7 +233,7 @@ const EventForm = () => {
                     size="small"
                     type="url"
                     variant="outlined"
-                    value={values.url}
+                    value={event.eventbrite_sync_status === 'SYNCHED' ? '' : values.url}
                     onChange={handleChange}
                     name="url"
                     fullWidth
@@ -346,6 +345,9 @@ const EventForm = () => {
                     required={false}
                     getOptionLabel={(option) => `${option.title}`}
                     value={venue}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Venue" placeholder="Venue" />
+                    )}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -361,6 +363,9 @@ const EventForm = () => {
                     required
                     getOptionLabel={(option) => `${option.name}`}
                     value={eventType}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Event Type" placeholder="Event Type" />
+                    )}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
