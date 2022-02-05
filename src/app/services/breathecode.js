@@ -271,6 +271,27 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/tag${query ? `?${qs}` : ''}`,
         );
       },
+      getAcademyShort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy short',
+          `${this.host}/marketing/academy/short${query ? `?${qs}` : ''}`,
+        );
+      },
+      updateShort: (short) => axios.bcPut(
+        'Edit Short Link',
+        `${this.host}/marketing/academy/short/${short.slug}`,
+        short,
+      ),
+      deleteShortsBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Short Links',
+          `${this.host}/marketing/academy/short?id=${qs}`,
+        );
+      },
+      addNewShort: (newShort) => axios.bcPost(
+        'New Short Link', `${this.host}/marketing/academy/short`, newShort),
       getAcademyAutomations: () => axios.bcGet(
         'Academy automations',
         `${this.host}/marketing/academy/automation`,
@@ -312,6 +333,17 @@ class BreatheCodeClient {
           `${this.host}/feedback/academy/survey${
             query ? `?${qs}` : ''
           }`,
+        );
+      },
+      // deleteSurveysBulk: (query) => axios.bcDelete (
+      //     'Academy survey',
+      //     `${this.host}/feedback/academy/survey${query}`,
+      // ),
+      deleteSurveysBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Academy survey',
+          `${this.host}/feedback/academy/survey/${qs}`,
         );
       },
       getSurvey: (id) => axios.bcGet(
@@ -421,6 +453,7 @@ class BreatheCodeClient {
         `${this.host}/events/academy/organization`,
         payload,
       ),
+      getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
       getAcademyVenues: () => axios.bcGet('Venues', `${this.host}/events/academy/venues`),
       getAcademyEventType: () => axios.bcGet(
         'Event Type',

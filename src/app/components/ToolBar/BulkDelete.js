@@ -54,7 +54,9 @@ const BulkDelete = (props) => {
       });
   };
   return (
+ 
     <>
+       
       <Tooltip title="Delete ALL">
         <IconButton className={classes.iconButton}>
           <DeleteIcon

@@ -31,6 +31,12 @@ export const navigations = [
         path: '/growth/leads',
         iconText: 'OL',
       },
+      {
+        name: 'URL Shortner',
+        path: '/growth/urls',
+        iconText: 'OL',
+      },
+      
     ],
   },
   {

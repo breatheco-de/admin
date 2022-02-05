@@ -83,7 +83,20 @@ const Survey = ({ match }) => {
               </Button>
             </DowndownMenu>
           </div>
-          {answered && answered.length > 0 ? (
+        </div>
+        <DowndownMenu options={options} icon="more_horiz">
+          <Button>
+            <Icon>playlist_add</Icon>
+            Additional Actions
+          </Button>
+        </DowndownMenu>
+      </div>
+        {answered && answered.length > 0 ? <Grid container spacing={2}>
+          <Grid item md={4} xs={12}>
+            <Alert severity="warning" className="mb-3">
+              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? `This survey expired ${Math.round(survey.expires/24)*-1} days ago`: `This survey expires in ${survey.expires} hours`}</AlertTitle>
+            </Alert>
+            <GaugeProgressCard score={overallScore} />
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
                 <Alert severity="warning" className="mb-3">
@@ -108,7 +121,16 @@ const Survey = ({ match }) => {
                 <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors} />
               </Grid>
             </Grid>
-          ) : (
+          </Grid>
+          <Grid item md={8} xs={12}>
+            <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
+          </Grid>
+        </Grid>:<Grid container spacing={2}>
+          <Grid item md={4} xs={12}>
+            <Alert severity="warning" className="mb-3">
+              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? `This survey expired ${Math.round(survey.expires/24)*-1} days ago`: `This survey expires in ${survey.expires} hours`}</AlertTitle>
+            </Alert>
+            <GaugeProgressCard score={0} />
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
                 <Alert severity="warning" className="mb-3">

@@ -6,7 +6,7 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 
-export const AddEventbriteOrganization = ({ initialValues }) => {
+export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [organization, setOrganization] = useState({
     eventbrite_key: '',
@@ -22,14 +22,7 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
   });
 
   useEffect(() => {
-    // bc.events()
-    //   .getAcademyEventOrganization()
-    //   .then(({ data }) => {
-    //     console.log(data);
-    //     // setOrganization({...data});
-    //     return new Error('The academy has not organization configured');
-    //   })
-    //   .catch((error) => error);
+
     const getOrganization = async () => {
       try {
         const { data } = await bc.events().getAcademyEventOrganization();
@@ -79,7 +72,7 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
 
   return (
     <Formik
-      initialValues={organization}
+      initialValues={initialValues}
       validationSchema={ProfileSchema}
       onSubmit={(values) => postOrganization(values)}
       enableReinitialize
@@ -128,7 +121,6 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
               </Button>
             </Grid>
             <Grid item md={12}>
-              {/* Status: Persisted (Success with 3 events...) */}
               <p>
                 {' '}
                 Status:

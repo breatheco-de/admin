@@ -1,47 +1,89 @@
-import React from 'react';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { Grid, Card, Divider } from '@material-ui/core';
-import { Breadcrumb } from '../../../matx';
-import { AddEventbriteOrganization } from './forms/AddEventbriteOrganization';
-import { WebhookInfo } from './forms/WebhookInfo';
-import { Organizers } from './forms/Organizers';
-import { Venues } from './forms/Venues';
+import React, { useEffect, useState } from "react";
+import { Grid, } from "@material-ui/core";
+import { Breadcrumb } from "../../../matx";
+import bc from '../../services/breathecode';
+import { WebhookInfo } from "./forms/WebhookInfo";
+import { Organizers } from "./forms/Organizers";
+import EventbriteCard from "./forms/EventbriteCard";
+import { Venues } from "./forms/Venues";
 
-const EventSettings = () => (
-  <div className="m-sm-30">
-    <div className="mb-sm-30">
-      <Breadcrumb
-        routeSegments={[
-          { name: 'Admin', path: '/admin' },
-          { name: 'Students', path: '/admissions/students' },
-          { name: 'New Student' },
-        ]}
+const EventSettings = () => {
+  const [isCreating, setIsCreating] = useState(false);
+  const [loadingOrganization, setIsLoadingOrganization] = useState(false);
+  const [status, setStatus] = useState({color:'success', message:''});
+  const [organization, setOrganization] = useState({
+    eventbrite_key:'',
+    eventbrite_id:'',
+    status:'',
+    sync_desc: '',
+    sync_status: '',
+  });
+
+  useEffect(() => {
+    const getOrganization = async () => {
+      try{
+        setIsLoadingOrganization(true);
+        const { data } = await bc.events().getAcademyEventOrganization();
+
+        if(!data){
+          setStatus({color:'error', message:'The academy has not organization configured'});
+          setIsLoadingOrganization(false);
+          setIsCreating(true);
+          return
+        } else if (data.eventbrite_key === '' && data.eventbrite_id === ''){
+          setStatus({color:'error', message:'The academy has not organization configured'});
+        } else {
+          let colors = {
+            "ERROR":  'error',
+            "PENDING": 'warning',
+            "WARNING": 'warning',
+            "PERSISTED":'success',
+            "SYNCHED": 'success'
+          }
+          setStatus({ color: colors[data.sync_status], message:data.sync_status })
+        }  
+
+        setOrganization({...data});
+        setIsLoadingOrganization(false);
+
+      } catch(error){
+        setIsLoadingOrganization(false);
+        return error
+      }
+    }
+    getOrganization();
+      
+  }, []);
+  
+  return (
+    <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Admin", path: "/admin" },
+            { name: "Students", path: "/admissions/students" },
+            { name: "New Student" },
+          ]}
+        />
+      </div>
+      <EventbriteCard 
+        isCreating={isCreating}
+        loadingOrganization={loadingOrganization}
+        status={status}
+        organization={organization}
       />
-    </div>
-    <Card elevation={3}>
-      <div className="flex p-4">
-        <h4 className="m-0">Eventbrite integrations</h4>
-      </div>
-      <Divider className="mb-2 flex" />
-      <div className="m-3">
-        <Alert severity="success">
-          <AlertTitle>To finish your integration</AlertTitle>
-          Please past here you Eventbrite Key to begin the integration
-        </Alert>
-      </div>
-      <AddEventbriteOrganization />
-    </Card>
 
-    <Grid container spacing={3} className="mt-4">
-      <Grid item md={7} xs={12}>
-        <WebhookInfo />
+      <Grid container spacing={3} className="mt-4">
+        <Grid item md={7} xs={12}>
+          <WebhookInfo />
+        </Grid>
+        <Grid item md={5} xs={12}>
+          <Organizers className="mt-4" />
+          <Venues className="mt-4" />
+        </Grid>
       </Grid>
-      <Grid item md={5} xs={12}>
-        <Organizers className="mt-4" />
-        <Venues className="mt-4" />
-      </Grid>
-    </Grid>
-  </div>
-);
+    </div>
+  );
+};
 
 export default EventSettings;
