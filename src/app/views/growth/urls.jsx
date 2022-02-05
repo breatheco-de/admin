@@ -1,40 +1,43 @@
 import React, { useState } from 'react';
 import { Breadcrumb } from 'matx';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
-  Icon, IconButton, Tooltip, Chip,
+  Icon, IconButton, Tooltip,
   DialogTitle,
   Dialog,
   Button,
   DialogActions,
+  Switch,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from '../../services/breathecode';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const stageColors = {
-  // INACTIVE: 'gray',
-  // PREWORK: 'main',
-  added: 'primary',
-  not_added: 'gray',
-  // ENDED: 'dark',
-  // DELETED: 'gray',
+const statusColors = {
+  NOT_FOUND: 'text-white bg-error',
+  ACTIVE: 'text-white bg-green',
 };
 
 const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const history = useHistory();
-  
+
   const columns = [
     {
-      name: 'id', // field name in the row object
-      label: 'Id', // column title that will be shown in table
+      name: 'slug', // field name in the row object
+      label: 'Slug', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
@@ -42,58 +45,92 @@ const Leads = () => {
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {`${short.id}`}
+                {short?.slug}
               </h5>
-              <small className="text-muted">{short?.slug || short.slug}</small>
+              <small className="text-muted underline pointer" onClick={() => { 
+                  navigator.clipboard.writeText(`https://s.4geeks.co/s/${short?.slug}`);
+                  toast.success('URL copied successfuly', toastOption);
+              }}>https://s.4geeks.co/a/{short?.slug || short.slug}</small>
             </div>
           );
         },
       },
     },
     {
-      name: 'slug',
-      label: 'Slug',
+      name: 'destination_status',
+      label: 'Destination Status',
       options: {
-        display: false,
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].course}</span>
-        ),
+        filter: true,
+        filterType: 'multiselect',
+        customBodyRender: (value, tableMeta) => {
+          const item = items[tableMeta.rowIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                {item.destination_status_text !== null ? (
+                  <Tooltip title={item.destination_status_text}>
+                    <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
+                      {String(value).toUpperCase()}
+                    </small>
+                  </Tooltip>
+                ) : (
+                  <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
+                    {String(value).toUpperCase()}
+                  </small>
+                )}
+              </div>
+            </div>
+          );
+        },
       },
     },
-   
     {
-      name: 'slug',
-      label: 'Slug',
+      name: 'hits',
+      label: 'Hits',
       options: {
         filter: true,
         filterType: 'multiselect',
         customBodyRenderLite: (dataIndex) => (
-          <span
-            className="ellipsis"
-          >
-            {items[dataIndex].slug
-              ? items[dataIndex].slug
-              : '---'}
+          <span>
+            {items[dataIndex].hits}
           </span>
         ),
       },
     },
-    
     {
-      name: 'status',
-      label: 'Status',
+      name: 'active',
+      label: 'Active',
       options: {
-        filter: false,
+        filter: true,
+        filterType: 'multiselect',
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
-            <Chip
-              size="small"
-              label={item.user ? 'Added' : 'Not added'}
-              color={stageColors[item.user ? 'added' : 'not_added']}
-            />
-          );
-        },
+
+            <div className="flex items-center">
+              <div className="ml-0">
+                <Switch
+                  onChange={async () => {
+                    const resp = await bc.marketing().updateShort({
+                      ...item,
+                      active: !item.active,
+                    });
+                    if (resp.status === 200) {
+                      setItems(items.map((it) => {
+                        if (it.id !== item.id) return it;
+                        return { ...it, active: !it.active };
+                      }));
+                    }
+                  }}
+                  checked={item.active}
+                  color="secondary"
+                  size="small"
+                />
+                <small>{item.active ? "Active" : "Blocked (404)"}</small>
+              </div>
+            </div>
+          )
+        }
       },
     },
     {
@@ -105,47 +142,21 @@ const Leads = () => {
           const item = items[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="flex-grow" />
-              {item.user == null && (
-              <Tooltip title="Open URL">
-                <IconButton onClick={async () => {
-                  const resp = await bc.marketing().getAcademyShort(item);
-                  
-                  console.log("This is RESP####", resp.data[0].destination)
-                  
-                  if (resp.headers['content-type'] == 'application/json') {
-                    if (resp.status === 404) {
-                      setOpenDialog({
-                        open: true,
-                        msg: 'An error has occurred, the URL does not work correctly. Contact the marketing department to verify that the address is still in use.',
-                        onSuccess: () => {
-                          window.open(resp.data[0].destination, '_blank');
-                        },
-                      });
-                    } else if (resp.status === 200) {
-                      
-                      window.open(resp.data[0].destination, '_blank');
-                      
-                    }
-                  }
+              <Tooltip title="Copy Destination URL">
+                <IconButton onClick={() => {
+                  navigator.clipboard.writeText(item.destination);
+                  toast.success('URL copied successfuly', toastOption);
                 }}
                 >
                   <Icon>link</Icon>
                 </IconButton>
               </Tooltip>
-              )}
               <Tooltip title="Edit URL">
-                {/* <Link to={`/growth/newshort/${item.slug}`}> */}
-                  <IconButton onClick={async () => {
-                    
-                    if (item.id) {
-                      console.log("This is item####", item.slug)
-                      history.push(`/growth/urls/${item.slug}`)
-                    }
-                    }}>
+                  <IconButton onClick={() => {
+                    if (item.id) history.push(`/growth/urls/${item.slug}`)
+                  }}>
                     <Icon>edit</Icon>
                   </IconButton>
-                {/* </Link> */}
               </Tooltip>
             </div>
           );
@@ -187,7 +198,6 @@ const Leads = () => {
           search={async (querys) => {
             const { data } = await bc.marketing().getAcademyShort(querys);
             setItems(data.results);
-            console.log("This is  DATA #### ", data)
             return data;
           }}
           deleting={async (querys) => {
