@@ -29,7 +29,7 @@ const EventForm = () => {
     ending_at: '',
     host: '',
     online_event: false,
-    sync_with_eventbrite: false,
+    sync_with_eventbrite: true,
   });
   const [venue, setVenue] = useState(null);
   const [tags, setTags] = useState([]);
@@ -135,8 +135,7 @@ const EventForm = () => {
         {!id && (
           <Alert severity="warning">
             <AlertTitle>Before you add a new event</AlertTitle>
-            Usually events get added automatically from EventBrite, please only manually add events
-            that are NOT going to be published thru Eventbrite.
+            In you "Sync with Eventbrite" the event will be published to eventbrite as a DRAFT and you will have to finish its publication on eventbrite.com
           </Alert>
         )}
         <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize>
@@ -351,7 +350,7 @@ const EventForm = () => {
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
                     onChange={(v) => setTags(v)}
-                    asyncSearch={() => bc.marketing().getAcademyTags()}
+                    asyncSearch={() => bc.marketing().getAcademyTags({ type: 'DISCOVERY' })}
                     size="small"
                     label="Tags"
                     debounced={false}

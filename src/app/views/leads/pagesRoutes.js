@@ -9,7 +9,7 @@ const pagesRoutes = [
   {
     path: '/growth/reviews',
     exact: true,
-    component: React.lazy(() => import('../leads/reviews')),
+    component: React.lazy(() => import('./reviews')),
   },
   {
     path: '/growth/sales',

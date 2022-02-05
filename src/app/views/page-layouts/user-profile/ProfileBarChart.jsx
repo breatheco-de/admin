@@ -1,5 +1,5 @@
-import React from "react";
-import Chart from "react-apexcharts";
+import React from 'react';
+import Chart from 'react-apexcharts';
 
 const ProfileBarChart = ({ height, color }) => {
   const option = {
@@ -11,8 +11,8 @@ const ProfileBarChart = ({ height, color }) => {
     plotOptions: {
       bar: {
         horizontal: false,
-        endingShape: "rounded",
-        columnWidth: "8px",
+        endingShape: 'rounded',
+        columnWidth: '8px',
       },
     },
     dataLabels: {
@@ -22,14 +22,14 @@ const ProfileBarChart = ({ height, color }) => {
       show: false,
     },
     grid: {
-      borderColor: "transparent",
+      borderColor: 'transparent',
       row: {
         opacity: 0,
       },
     },
-    colors: ["rgba(var(--primary), 1)"],
+    colors: ['rgba(var(--primary), 1)'],
     xaxis: {
-      categories: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
+      categories: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
       axisBorder: {
         show: false,
       },
@@ -38,9 +38,9 @@ const ProfileBarChart = ({ height, color }) => {
       },
       labels: {
         style: {
-          colors: "rgba(var(--body), 0.87)",
-          fontSize: "14px",
-          fontFamily: "Roboto, Arial, sans-serif",
+          colors: 'rgba(var(--body), 0.87)',
+          fontSize: '14px',
+          fontFamily: 'Roboto, Arial, sans-serif',
           fontWeight: 400,
         },
       },
@@ -52,7 +52,7 @@ const ProfileBarChart = ({ height, color }) => {
 
   const series = [
     {
-      name: "Data Use",
+      name: 'Data Use',
       data: [40, 60, 80, 100, 80, 60, 40],
     },
   ];

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Grid,
   IconButton,
@@ -13,9 +13,9 @@ import {
   TableBody,
   CircularProgress,
   Box,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import dayjs from 'dayjs';
-import bc from "../../../services/breathecode";
+import bc from '../../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -32,14 +32,12 @@ export const Venues = ({ className }) => {
         setVenues(data);
         setIsLoading(false);
       })
-      .catch((error) => {
-        return error;
-      });
+      .catch((error) => error);
   }, []);
 
   const styles = {
-    textAlign: "center",
-    width: "100%",
+    textAlign: 'center',
+    width: '100%',
   };
 
   return (
@@ -82,7 +80,7 @@ export const Venues = ({ className }) => {
               ))}
             </TableBody>
           ) : (
-            <Box sx={{ display: "flex", width:'100%' }}>
+            <Box sx={{ display: 'flex', width: '100%' }}>
               <CircularProgress />
             </Box>
           )}
@@ -100,5 +98,5 @@ Venues.propTypes = {
 };
 
 Venues.defaultProps = {
-  className: "",
+  className: '',
 };

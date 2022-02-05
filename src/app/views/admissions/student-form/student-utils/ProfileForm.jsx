@@ -119,8 +119,9 @@ export const ProfileForm = ({ initialValues }) => {
                 size="small"
                 label="Cohort"
                 getOptionLabel={(option) => `${option.name}, (${option.slug})`}
-                asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+                asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED`)}
               />
+              <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
             </Grid>
           </Grid>
           <div className="mt-6">

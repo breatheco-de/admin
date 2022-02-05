@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { Grid, TextField, Button } from "@material-ui/core";
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { Grid, TextField, Button } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 
 export const AddEventbriteOrganization = ({ initialValues }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [organization, setOrganization] = useState({
-    eventbrite_key:'',
-    eventbrite_id:'',
-    status:'',
+    eventbrite_key: '',
+    eventbrite_id: '',
+    status: '',
     sync_desc: '',
     sync_status: '',
   });
 
   const ProfileSchema = Yup.object().shape({
-    eventbrite_key: Yup.string().required("Api Key required"),
-    eventbrite_id: Yup.string().required("Organizer Id required"),
+    eventbrite_key: Yup.string().required('Api Key required'),
+    eventbrite_id: Yup.string().required('Organizer Id required'),
   });
 
   useEffect(() => {
@@ -31,22 +31,22 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
     //   })
     //   .catch((error) => error);
     const getOrganization = async () => {
-      try{
+      try {
         const { data } = await bc.events().getAcademyEventOrganization();
         // console.log(data);
 
         // delete data.eventbrite_key
         // delete data.eventbrite_id
 
-        if(!data){
+        if (!data) {
           setIsCreating(true);
         } else {
-          setOrganization({...data});
+          setOrganization({ ...data });
         }
 
-        if(!data.eventbrite_key && !data.eventbrite_id){ 
+        if (!data.eventbrite_key && !data.eventbrite_id) {
           toast.error('The academy has not organization configured', {
-            position: "bottom-right",
+            position: 'bottom-right',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -55,29 +55,27 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
             progress: undefined,
           });
         }
-
-      } catch(error){
-        return error
+      } catch (error) {
+        return error;
       }
-    }
+    };
     getOrganization();
-      
   }, []);
 
   const postOrganization = async (values) => {
     // console.log('Everything fine!', values);
-    if(isCreating){
+    if (isCreating) {
       // Call POST
       const payload = {
         eventbrite_id: values.eventbrite_id,
         eventbrite_key: values.eventbrite_key,
-      }
+      };
       await bc.events().postAcademyEventOrganization(payload);
     } else {
       // Call PUT
-      await bc.events().putAcademyEventOrganization({...values});
+      await bc.events().putAcademyEventOrganization({ ...values });
     }
-  }
+  };
 
   return (
     <Formik
@@ -86,7 +84,9 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
       onSubmit={(values) => postOrganization(values)}
       enableReinitialize
     >
-      {({ values, handleChange, handleSubmit, errors, touched }) => (
+      {({
+        values, handleChange, handleSubmit, errors, touched,
+      }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={4}>
@@ -129,15 +129,17 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
             </Grid>
             <Grid item md={12}>
               {/* Status: Persisted (Success with 3 events...) */}
-              <p> Status:  
-                <small 
+              <p>
+                {' '}
+                Status:
+                <small
                   className={
-                    `border-radius-4 px-2 pt-2px text-white ${organization.sync_status === 'SYNCHED' ? 'bg-green' : organization.sync_status !== 'ERROR' ? 'bg-secondary' :  'bg-error'}`
+                    `border-radius-4 px-2 pt-2px text-white ${organization.sync_status === 'SYNCHED' ? 'bg-green' : organization.sync_status !== 'ERROR' ? 'bg-secondary' : 'bg-error'}`
                   }
                 >
                   {organization.sync_status}
                 </small>
-                  {organization.sync_desc}
+                {organization.sync_desc}
               </p>
             </Grid>
           </Grid>

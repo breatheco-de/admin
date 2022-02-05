@@ -1,14 +1,16 @@
-import React from "react";
-import { Avatar, Button, Card, Grid, Icon } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import useAuth from "app/hooks/useAuth";
+import React from 'react';
+import {
+  Avatar, Button, Card, Grid, Icon,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import useAuth from 'app/hooks/useAuth';
 
 const usestyles = makeStyles(({ palette, ...theme }) => ({
   sidenav: {
     marginTop: -345,
     paddingTop: 74,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       marginTop: -410,
     },
   },
@@ -18,7 +20,7 @@ const UserProfileSidenav = () => {
   const classes = usestyles();
   const { user } = useAuth();
   return (
-    <div className={clsx("flex-column items-center", classes.sidenav)}>
+    <div className={clsx('flex-column items-center', classes.sidenav)}>
       <Avatar className="h-84 w-84 mb-5" src="/assets/images/face-7.jpg" />
       <p className="text-white">{user.first_name}</p>
       <div className="py-3" />
@@ -65,7 +67,7 @@ const UserProfileSidenav = () => {
             </h5>
           </Button>
         </div>
-        <div className="py-2"></div>
+        <div className="py-2" />
       </div>
     </div>
   );
@@ -73,24 +75,24 @@ const UserProfileSidenav = () => {
 
 const shortcutList = [
   {
-    title: "stars",
-    icon: "star_outline",
+    title: 'stars',
+    icon: 'star_outline',
   },
   {
-    title: "events",
-    icon: "email",
+    title: 'events',
+    icon: 'email',
   },
   {
-    title: "Photo",
-    icon: "collections",
+    title: 'Photo',
+    icon: 'collections',
   },
   {
-    title: "settings",
-    icon: "brightness_7",
+    title: 'settings',
+    icon: 'brightness_7',
   },
   {
-    title: "contacts",
-    icon: "group",
+    title: 'contacts',
+    icon: 'group',
   },
 ];
 

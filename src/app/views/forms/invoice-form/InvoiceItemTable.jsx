@@ -12,7 +12,7 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { FieldArray } from 'formik';
 import { Autocomplete } from '@material-ui/lab';
 import { getProductList, calculateAmount } from './InvoiceFormService';
@@ -158,7 +158,7 @@ InvoiceItemTable.propTypes = {
 };
 
 InvoiceItemTable.defaultProps = {
-  values: {}
+  values: {},
 };
 
 export default InvoiceItemTable;

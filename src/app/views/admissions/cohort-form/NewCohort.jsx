@@ -18,7 +18,6 @@ import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
-
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
     color: palette.text.secondary,
@@ -33,7 +32,7 @@ const NewCohort = () => {
   const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
-  const [timeZone, setTimeZone] = useState("");
+  const [timeZone, setTimeZone] = useState('');
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
@@ -90,7 +89,7 @@ const NewCohort = () => {
         />
       </div>
 
-      <Card elevation={3} >
+      <Card elevation={3}>
         <div className="flex p-4">
           <h4 className="m-0">Add a New Cohort</h4>
         </div>
@@ -246,7 +245,7 @@ const NewCohort = () => {
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={7} sm={4} xs={6} >
+                <Grid item md={7} sm={4} xs={6}>
                   <FormControlLabel
                     control={(
                       <Checkbox
@@ -263,10 +262,10 @@ const NewCohort = () => {
                 </Grid>
 
                 <Grid item md={2} sm={4} xs={12}>
-                Live meeting URL
+                  Live meeting URL
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                <TextField
+                  <TextField
                     className="m-2"
                     label="URL"
                     width="100%"
@@ -274,14 +273,14 @@ const NewCohort = () => {
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    placeholder={"https://bluejeans.com/<id>"}
+                    placeholder="https://bluejeans.com/<id>"
                     value={newCohort.online_meeting_url}
                     onChange={createCohort}
                   />
                 </Grid>
 
                 <Grid item md={2} sm={4} xs={12}>
-                 Timezone
+                  Timezone
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">

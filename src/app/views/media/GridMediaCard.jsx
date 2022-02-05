@@ -46,9 +46,9 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     objectFit: 'cover',
     height: '200px',
   },
-  button:{
-    border:"none"
-  }
+  button: {
+    border: 'none',
+  },
 }));
 
 const GridMediaCard = ({
@@ -89,8 +89,8 @@ const GridMediaCard = ({
         {!selected ? (
           <button
             type="button"
-            className={clsx("product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer", classes.button)}
-            onClick={(e)=>{
+            className={clsx('product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer', classes.button)}
+            onClick={(e) => {
               e.stopPropagation();
               onOpenDialog();
             }}

@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MatxSidenavContainer, MatxSidenav, MatxSidenavContent } from 'matx';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { debounce } from 'lodash';
 import {
   getProductList,
   getCategoryList,
@@ -11,8 +13,6 @@ import {
   bulkEditMedia,
   clearSelectedMedia,
 } from '../../redux/actions/MediaActions';
-import { useHistory } from 'react-router-dom';
-import { debounce } from 'lodash';
 import { openDialog, closeDialog } from '../../redux/actions/DialogActions';
 import Dialog from '../../components/Dialog';
 import SideNav from './SideNav';

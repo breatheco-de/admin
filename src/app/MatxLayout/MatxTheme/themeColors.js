@@ -31,7 +31,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -54,7 +54,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       text: textLight,
@@ -76,7 +76,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -107,7 +107,7 @@ export const themeColors = {
         default: '#1a2038',
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
     },
@@ -124,7 +124,7 @@ export const themeColors = {
       text: textLight,
     },
     warning: {
-      main: "#EFA32E",
+      main: '#EFA32E',
       contrastText: textLight.primary,
     },
   },
@@ -140,7 +140,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -159,7 +159,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -181,7 +181,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -203,7 +203,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -222,7 +222,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,
@@ -244,7 +244,7 @@ export const themeColors = {
         contrastText: textLight.primary,
       },
       warning: {
-        main: "#EFA32E",
+        main: '#EFA32E',
         contrastText: textLight.primary,
       },
       error: errorColor,

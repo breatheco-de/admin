@@ -1,30 +1,29 @@
-import React, { useContext } from "react";
-import { useSelector } from "react-redux";
-import { ThemeProvider } from "@material-ui/core/styles";
-import Scrollbar from "react-perfect-scrollbar";
-import { renderRoutes } from "react-router-config";
-import Layout1Topbar from "./Layout1Topbar";
-import Layout1Sidenav from "./Layout1Sidenav";
-import Footer from "../SharedCompoents/Footer";
-import AppContext from "app/appContext";
-import { MatxSuspense } from "matx";
-import { useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
-import SidenavTheme from "../MatxTheme/SidenavTheme/SidenavTheme";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
+import { ThemeProvider, useTheme, makeStyles } from '@material-ui/core/styles';
+import Scrollbar from 'react-perfect-scrollbar';
+import { renderRoutes } from 'react-router-config';
+import AppContext from 'app/appContext';
+import { MatxSuspense } from 'matx';
+import clsx from 'clsx';
+import Layout1Topbar from './Layout1Topbar';
+import Layout1Sidenav from './Layout1Sidenav';
+import Footer from '../SharedCompoents/Footer';
+
+import SidenavTheme from '../MatxTheme/SidenavTheme/SidenavTheme';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   contentWrap: ({ width }) => ({
-    verticalAlign: "top",
+    verticalAlign: 'top',
     marginLeft: width,
-    transition: "all 0.3s ease",
+    transition: 'all 0.3s ease',
   }),
   topbar: {
     top: 0,
     zIndex: 96,
     background:
-      "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 44%, rgba(247, 247, 247, 0.4) 50%, rgba(255, 255, 255, 0))",
-    transition: "all 0.3s ease",
+      'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 44%, rgba(247, 247, 247, 0.4) 50%, rgba(255, 255, 255, 0))',
+    transition: 'all 0.3s ease',
   },
 }));
 
@@ -38,12 +37,12 @@ const Layout1 = () => {
 
   const getSidenavWidth = () => {
     switch (sidenavMode) {
-      case "full":
-        return "var(--sidenav-width)";
-      case "compact":
-        return "var(--sidenav-compact-width)";
+      case 'full':
+        return 'var(--sidenav-width)';
+      case 'compact':
+        return 'var(--sidenav-compact-width)';
       default:
-        return "0px";
+        return '0px';
     }
   };
 
@@ -55,8 +54,8 @@ const Layout1 = () => {
   const layoutClasses = `theme-${theme.palette.type} flex`;
 
   return (
-    <div className={clsx("bg-default", layoutClasses)}>
-      {showSidenav && sidenavMode !== "close" && (
+    <div className={clsx('bg-default', layoutClasses)}>
+      {showSidenav && sidenavMode !== 'close' && (
         <SidenavTheme>
           <Layout1Sidenav />
         </SidenavTheme>
@@ -64,13 +63,13 @@ const Layout1 = () => {
 
       <div
         className={clsx(
-          "flex-grow flex-column relative overflow-hidden h-full-screen",
-          classes.contentWrap
+          'flex-grow flex-column relative overflow-hidden h-full-screen',
+          classes.contentWrap,
         )}
       >
         {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
           <ThemeProvider theme={topbarTheme}>
-            <Layout1Topbar fixed={true} className="elevation-z8" />
+            <Layout1Topbar fixed className="elevation-z8" />
           </ThemeProvider>
         )}
 
@@ -82,7 +81,7 @@ const Layout1 = () => {
               </ThemeProvider>
             )}
             <div className="relative flex-grow">
-              <MatxSuspense loadbar={true}>{renderRoutes(routes)}</MatxSuspense>
+              <MatxSuspense loadbar>{renderRoutes(routes)}</MatxSuspense>
             </div>
             {settings.footer.show && !settings.footer.fixed && <Footer />}
           </Scrollbar>
@@ -96,7 +95,7 @@ const Layout1 = () => {
               </ThemeProvider>
             )}
             <div className="relative flex-grow">
-              <MatxSuspense loadbar={true}>{renderRoutes(routes)}</MatxSuspense>
+              <MatxSuspense loadbar>{renderRoutes(routes)}</MatxSuspense>
             </div>
             {settings.footer.show && !settings.footer.fixed && <Footer />}
           </div>

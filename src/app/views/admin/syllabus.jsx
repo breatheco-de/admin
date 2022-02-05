@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb} from 'matx';
+import { Breadcrumb } from 'matx';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Avatar,
@@ -73,8 +73,8 @@ const Syllabus = () => {
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="This syllabus is not shared with other academies">
-                  <Icon>lock</Icon>
-                  {/** <Icon>lock_open</Icon> */}
+                <Icon>lock</Icon>
+                {/** <Icon>lock_open</Icon> */}
               </Tooltip>
             </div>
           );
@@ -91,8 +91,8 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                {`${duration_in_hours} hours, ${Math.trunc(duration_in_hours / week_hours) || 0} ` +
-                  `weeks, ${duration_in_days} days`}
+                {`${duration_in_hours} hours, ${Math.trunc(duration_in_hours / week_hours) || 0} `
+                  + `weeks, ${duration_in_days} days`}
               </div>
             </div>
           );

@@ -28,6 +28,7 @@ const toastOption = {
 
 // TODO: this require in this context is weird
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
+
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {

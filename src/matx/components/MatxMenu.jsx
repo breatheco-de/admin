@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
-import Menu from "@material-ui/core/Menu";
+import React, { Fragment } from 'react';
+import Menu from '@material-ui/core/Menu';
 
 const MatxMenu = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const children = React.Children.toArray(props.children);
-  let { shouldCloseOnItemClick = true, horizontalPosition = "left" } = props;
+  const { shouldCloseOnItemClick = true, horizontalPosition = 'left' } = props;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -15,7 +15,7 @@ const MatxMenu = (props) => {
   };
 
   return (
-    <Fragment>
+    <>
       <div className="inline-block" onClick={handleClick}>
         {props.menuButton}
       </div>
@@ -26,11 +26,11 @@ const MatxMenu = (props) => {
         open={!!anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "bottom",
+          vertical: 'bottom',
           horizontal: horizontalPosition,
         }}
         transformOrigin={{
-          vertical: "top",
+          vertical: 'top',
           horizontal: horizontalPosition,
         }}
       >
@@ -43,7 +43,7 @@ const MatxMenu = (props) => {
           </div>
         ))}
       </Menu>
-    </Fragment>
+    </>
   );
 };
 
