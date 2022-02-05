@@ -254,8 +254,7 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/lead${query ? `?${qs}` : ''}`,
         );
       },
-      getAcademyTags: () => axios.bcGet('Academy tags', `${this.host}/marketing/academy/tag`),
-
+      getAcademyTags: (query) => axios.bcGet('Academy tags', `${this.host}/marketing/academy/tag${query ? `?${query}` : ''}`),
       getAcademyShort: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
@@ -433,6 +432,7 @@ class BreatheCodeClient {
         `${this.host}/events/academy/organization`,
         payload,
       ),
+      getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
       getAcademyVenues: () => axios.bcGet('Venues', `${this.host}/events/academy/venues`),
       getAcademyEventType: () => axios.bcGet('Event Type', `${this.host}/events/academy/eventype`),
       downloadCSV: (query) => {

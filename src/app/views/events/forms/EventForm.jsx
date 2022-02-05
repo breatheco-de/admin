@@ -10,15 +10,18 @@ import bc from '../../../services/breathecode';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { MediaInput } from '../../../components/MediaInput';
+import useAuth from '../../../hooks/useAuth';
 
 // Timezone plugin
 const utc = require('dayjs/plugin/utc');
+
+// Slugify Library
+const slugify = require('slugify')
 
 dayjs.extend(utc);
 
 const EventForm = () => {
   const [event, setEvent] = useState({
-    title: '',
     description: '',
     excerpt: '',
     lang: '',
@@ -29,13 +32,21 @@ const EventForm = () => {
     ending_at: '',
     host: '',
     online_event: false,
-    sync_with_eventbrite: false,
+    eventbrite_sync_status:'',
+    sync_with_eventbrite: true,
   });
   const [venue, setVenue] = useState(null);
   const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
+  const [slug, setSlug] = useState('');
+  const [title, setTitle] = useState('');
   const { id } = useParams();
+  const { user } = useAuth();
   const history = useHistory();
+  
+  useEffect(() => {
+    setSlug(slugify(title));
+  }, [title]);
 
   useEffect(() => {
     if (id) {
@@ -47,22 +58,35 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-          setEventType({...data.event_type, academy: data.academy});
-          setVenue({ ...data.venue });
+
+          setTitle(data.title);
+          
+          if(data.slug) setSlug(data.slug);
+          if(data.event_type) setEventType({...data.event_type, academy: data.academy});
+          if(data.venue) setVenue({ ...data.venue });
+          
         })
         .catch((error) => error);
     }
   }, []);
   const postEvent = (values) => {
     const venueAndType = {
-      venue: venue !== null ? venue.id : null,
-      event_type: eventType !== null ? eventType.id : null,
+      venue: venue ? venue.id : null,
+      event_type: eventType ? eventType.id : null,
     };
+
+    // console.log(values.slug, 'values.slug');
+    // console.log(event.slug, 'event.slug');
+
     if (id) {
       const { academy, ...rest } = values;
+      
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
+          title,
+          slug,
+          tags: tags.map(t => t.slug).join(","),
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
@@ -88,12 +112,19 @@ const EventForm = () => {
         })
         .catch((error) => error);
     } else {
+      const { eventbrite_sync_status, ...restValues } = values
+      const payload = {
+        ...restValues,
+        title,
+        slug,
+        tags: tags.map(t => t.slug).join(","),
+        starting_at: dayjs(values.starting_at).utc().format(),
+        ending_at: dayjs(values.ending_at).utc().format(),
+        ...venueAndType,
+      }
       bc.events()
         .addAcademyEvent({
-          ...values,
-          starting_at: dayjs(values.starting_at).utc().format(),
-          ending_at: dayjs(values.ending_at).utc().format(),
-          ...venueAndType,
+          ...payload
         })
         .then(({ data }) => {
           setEvent({
@@ -159,8 +190,24 @@ const EventForm = () => {
                     size="small"
                     fullWidth
                     variant="outlined"
-                    value={values.title}
-                    onChange={handleChange}
+
+                    value={title}
+                    onChange={(e)=>{setTitle(e.target.value)}}
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Slug
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <TextField
+                    label="Slug"
+                    name="slug"
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+
+                    value={slug}
+                    onChange={(e)=>{setSlug(e.target.value)}}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -186,12 +233,13 @@ const EventForm = () => {
                     size="small"
                     type="url"
                     variant="outlined"
-                    value={values.url}
+                    value={event.eventbrite_sync_status === 'SYNCHED' ? '' : values.url}
                     onChange={handleChange}
                     name="url"
                     fullWidth
-                    required
+                    disabled={event.eventbrite_sync_status === 'SYNCHED' ? true : false}
                   />
+                  <small className="text-muted">If the event gets published on eventbrite, this field will be filled with the eventbrite public URL</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Capacity
@@ -224,6 +272,7 @@ const EventForm = () => {
                     value={values.starting_at}
                     onChange={handleChange}
                   />
+                  <small className="text-muted">{`The event timezone will be the same as the academy timezone ${user?.academy.timezone}`}</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Ending At
@@ -296,6 +345,9 @@ const EventForm = () => {
                     required={false}
                     getOptionLabel={(option) => `${option.title}`}
                     value={venue}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Venue" placeholder="Venue" />
+                    )}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -311,6 +363,9 @@ const EventForm = () => {
                     required
                     getOptionLabel={(option) => `${option.name}`}
                     value={eventType}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Event Type" placeholder="Event Type" />
+                    )}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -351,7 +406,7 @@ const EventForm = () => {
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
                     onChange={(v) => setTags(v)}
-                    asyncSearch={() => bc.marketing().getAcademyTags()}
+                    asyncSearch={() => bc.marketing().getAcademyTags('type=DISCOVERY')}
                     size="small"
                     label="Tags"
                     debounced={false}
