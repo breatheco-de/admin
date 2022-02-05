@@ -157,7 +157,7 @@ const Field = ({
           <DialogContentText className={classes.dialogue} style={{ marginTop: 12 }}>
             {labelText}
           </DialogContentText>
-          <Box {...boxProps} >
+          <Box {...boxProps}>
             <DatePicker {...dateProps} />
           </Box>
         </>
@@ -167,7 +167,7 @@ const Field = ({
             {labelText}
           </Grid>
           <Grid item md={7} sm={7} xs={7} style={meta.touched && meta.error ? { marginBottom: '-23px' } : {}}>
-            <Box {...boxProps} >
+            <Box {...boxProps}>
               <DatePicker {...dateProps} />
             </Box>
           </Grid>

@@ -38,7 +38,9 @@ const schema = Yup.object().shape({
   schedule_type: schemas.select('Schedule type', scheduleTypes),
 });
 
-const NewSchedule = ({ isOpen, setIsOpen, syllabus, appendSchedule }) => {
+const NewSchedule = ({
+  isOpen, setIsOpen, syllabus, appendSchedule,
+}) => {
   const classes = useStyles();
 
   const saveSchedule = (values) => {

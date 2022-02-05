@@ -176,25 +176,25 @@ const Staff = () => {
       </div>
       <div>
         <SmartMUIDataTable
-            title="All Staff"
-            columns={columns}
-            items={userList}
-            view="staff?"
-            singlePage=""
-            historyReplace="/admin/staff"
-            search={async (querys) => {
-              const { data } = await bc.auth().getAcademyMembers(querys);
-              console.log("academy members")
-              setUserList(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStaffBulk(querys);
-              return status;
-            }}
-          />
+          title="All Staff"
+          columns={columns}
+          items={userList}
+          view="staff?"
+          singlePage=""
+          historyReplace="/admin/staff"
+          search={async (querys) => {
+            const { data } = await bc.auth().getAcademyMembers(querys);
+            console.log('academy members');
+            setUserList(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc
+              .admissions()
+              .deleteStaffBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );

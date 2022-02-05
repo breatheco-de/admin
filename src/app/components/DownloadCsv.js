@@ -25,7 +25,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const handleDownloadAll = () => {
     (() => {
       getAllPagesCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
         .catch((error) => console.error(error));
@@ -36,7 +36,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const handleDownloadSingle = () => {
     (() => {
       getSinglePageCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
         .catch((error) => console.error(error));

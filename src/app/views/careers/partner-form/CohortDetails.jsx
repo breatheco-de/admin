@@ -88,14 +88,13 @@ const CohortDetails = ({
           never_ends: neverEnds,
           specialtyMode,
         }}
-        onSubmit={({ specialtyMode, ...values }) => {
+        onSubmit={({ specialtyMode, ...values }) =>
           // const specialtyModeId = cert ? cert.id : null;
-          return onSubmit({
+          onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
             // specialty_mode: specialtyModeId,
-          });
-        }}
+          })}
         enableReinitialize
       >
         {({

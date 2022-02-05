@@ -16,7 +16,7 @@ const RootReducer = combineReducers({
   ecommerce: EcommerceReducer,
   cohorts: CohortReducer,
   dialog: DialogReducer,
-  survey: SurveyReducer
+  survey: SurveyReducer,
 });
 
 export default RootReducer;

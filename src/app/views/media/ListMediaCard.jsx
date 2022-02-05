@@ -138,7 +138,7 @@ const ListMediaCard = ({
             variant="contained"
             color="primary"
             className="mt-2"
-            onClick={(e)=>{
+            onClick={(e) => {
               e.stopPropagation();
               onOpenDialog();
             }}

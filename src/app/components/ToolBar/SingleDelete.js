@@ -29,16 +29,15 @@ const SingleDelete = (props) => {
   const deleteEntity = async (e) => {
     e.preventDefault();
 
-    try{
+    try {
       result = await deleting();
       console.log(result);
       setOpenDialog(false);
       if (result.status >= 200 && result.status < 300) {
-        
         onClose(null);
         return true;
       }
-    } catch(r){
+    } catch (r) {
       setOpenDialog(false);
       return r;
     }
@@ -47,7 +46,7 @@ const SingleDelete = (props) => {
     //   .then((status) => {
     //     setOpenDialog(false);
     //     if (status >= 200 && status < 300) {
-          
+
     //       onClose(null);
     //       return true;
     //     }
