@@ -6,7 +6,7 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 
-export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
+export const AddEventbriteOrganization = ({ initialValues }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [organization, setOrganization] = useState({
     eventbrite_key: '',
