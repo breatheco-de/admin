@@ -211,7 +211,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                           <small
                             aria-hidden="true"
                             onClick={() => {
-                              handlePaginationNextPage();
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i });
                             }}
                             className="border-radius-4 px-2 pt-2px bg-secondary"
                             style={{ cursor: 'pointer' }}
