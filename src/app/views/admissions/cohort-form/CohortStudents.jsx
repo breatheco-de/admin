@@ -36,7 +36,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const CohortStudents = ({ slug, cohort_id }) => {
+const CohortStudents = ({ slug, cohortId }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -67,7 +67,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
       educational_status: studenList[i].educational_status,
     };
     bc.admissions()
-      .updateCohortUserInfo(cohort_id, studentId, {
+      .updateCohortUserInfo(cohortId, studentId, {
         ...s_status,
         [name]: value,
       })
@@ -102,7 +102,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
   const addUserToCohort = (user_id) => {
     bc.admissions()
-      .addUserCohort(cohort_id, {
+      .addUserCohort(cohortId, {
         user: user_id,
         role: 'STUDENT',
         finantial_status: null,
@@ -116,7 +116,7 @@ const CohortStudents = ({ slug, cohort_id }) => {
 
   const deleteUserFromCohort = () => {
     bc.admissions()
-      .deleteUserCohort(cohort_id, currentStd.id)
+      .deleteUserCohort(cohortId, currentStd.id)
       .then((data) => {
         if (data.status === 204) getCohortStudents();
       })
