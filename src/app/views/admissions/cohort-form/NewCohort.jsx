@@ -7,6 +7,7 @@ import {
   TextField,
   Button,
   Input,
+  MenuItem,
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
@@ -17,7 +18,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
-
 
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
@@ -34,9 +34,11 @@ const NewCohort = () => {
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [timeZone, setTimeZone] = useState("");
+  const [language, setLanguage] = useState("EN");
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
+    language: '',
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
@@ -44,6 +46,16 @@ const NewCohort = () => {
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const history = useHistory();
+  const languages = [
+    {
+      value: 'ES',
+      label: 'Spanish',
+    },
+    {
+      value: 'EN',
+      label: 'English',
+    },
+  ];
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
@@ -59,6 +71,13 @@ const NewCohort = () => {
     setNewCohort({
       ...newCohort,
       [event.target.name]: event.target.value,
+    });
+  };
+
+  const languageCohort = (event) => {
+    setNewCohort({
+      ...newCohort,
+      language: event.target.value,
     });
   };
 
@@ -90,7 +109,7 @@ const NewCohort = () => {
         />
       </div>
 
-      <Card elevation={3} >
+      <Card elevation={3}>
         <div className="flex p-4">
           <h4 className="m-0">Add a New Cohort</h4>
         </div>
@@ -109,6 +128,7 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
+                    className="m-2"
                     label="Cohort Name"
                     data-cy="name"
                     name="name"
@@ -123,6 +143,7 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
+                    className="m-2"
                     label="Cohort Slug"
                     data-cy="slug"
                     name="slug"
@@ -142,7 +163,7 @@ const NewCohort = () => {
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
-                      className="mr-2 ml-2"
+                      className="m-4"
                       asyncSearch={() => bc.admissions().getAllSyllabus()}
                       size="small"
                       data-cy="syllabus"
@@ -153,6 +174,7 @@ const NewCohort = () => {
                     />
                     {syllabus ? (
                       <AsyncAutocomplete
+                        className="m-4"
                         debounced={false}
                         onChange={(v) => setVersion(v)}
                         width="30%"
@@ -197,6 +219,31 @@ const NewCohort = () => {
                     disabled={!syllabus}
                   />
                 </Grid>
+
+                <Grid item md={2} sm={4} xs={12}>
+                  Language
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Language"
+                    data-cy="language"
+                    size="small"
+                    style ={{width: '20%'}}
+                    variant="outlined"
+                    value={newCohort.language}
+                    onChange={languageCohort}
+                  
+                    select
+                  >
+                    {languages.map((option) => (
+                      <MenuItem value={option.value} key={option.value} width="40%">
+                        {option.value}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
                 </Grid>
@@ -246,7 +293,7 @@ const NewCohort = () => {
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={7} sm={4} xs={6} >
+                <Grid item md={7} sm={4} xs={6}>
                   <FormControlLabel
                     control={(
                       <Checkbox
@@ -263,10 +310,10 @@ const NewCohort = () => {
                 </Grid>
 
                 <Grid item md={2} sm={4} xs={12}>
-                Live meeting URL
+                  Live meeting URL
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                <TextField
+                  <TextField
                     className="m-2"
                     label="URL"
                     width="100%"
@@ -274,14 +321,14 @@ const NewCohort = () => {
                     data-cy="meetingURL"
                     size="small"
                     variant="outlined"
-                    placeholder={"https://bluejeans.com/<id>"}
+                    placeholder="https://bluejeans.com/<id>"
                     value={newCohort.online_meeting_url}
                     onChange={createCohort}
                   />
                 </Grid>
 
                 <Grid item md={2} sm={4} xs={12}>
-                 Timezone
+                  Timezone
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
@@ -289,8 +336,8 @@ const NewCohort = () => {
 
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
-                      width="100%"
-                      className="mr-2 ml-2"
+                      width="40%"
+                      className="m-4"
                       asyncSearch={() => bc.admissions().getAllTimeZone()}
                       size="small"
                       data-cy="timezone"

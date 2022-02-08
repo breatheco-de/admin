@@ -79,17 +79,26 @@ const CustomDialog = ({
                     disabled
                     fullWidth
                     defaultValue={null}
-                    value={!values.mime.includes("image") ? values.url : `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}`}
+                    value={!values.mime.includes('image') ? values.url : `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}`}
                     onChange={handleChange}
                   />
                 </Grid>
                 <Grid item md={3} sm={4} xs={6}>
-                    {!values.mime.includes("image") ?
-                      <Button className="m-3" variant="fillted" fullWidth onClick={() => {
-                        navigator.clipboard.writeText(values.url);
-                        toast.success('Copied to the clipboard', toastOption);
-                      }}>Copy URL</Button>
-                      :
+                  {!values.mime.includes('image')
+                    ? (
+                      <Button
+                        className="m-3"
+                        variant="fillted"
+                        fullWidth
+                        onClick={() => {
+                          navigator.clipboard.writeText(values.url);
+                          toast.success('Copied to the clipboard', toastOption);
+                        }}
+                      >
+                        Copy URL
+                      </Button>
+                    )
+                    : (
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -97,32 +106,32 @@ const CustomDialog = ({
                         fullWidth
                         value={size}
                         onChange={(e) => {
-                          if(e.target.value && e.target.value !== 0){
-                            setSize(e.target.value)
-                            let query = {}
-                            if(e.target.value != "original") query.width = e.target.value;
-                            const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map(key => `${key}=${query[key]}`).join("&")}`;
-                            navigator.clipboard.writeText(url)
+                          if (e.target.value && e.target.value !== 0) {
+                            setSize(e.target.value);
+                            const query = {};
+                            if (e.target.value != 'original') query.width = e.target.value;
+                            const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map((key) => `${key}=${query[key]}`).join('&')}`;
+                            navigator.clipboard.writeText(url);
                             toast.success('Copied to the clipboard', toastOption);
 
                             // do the first request immediatly to make sure the resize gets done.
                             // if we don't do this, the first time someone calls the URL it will take a long time to load.
-                            fetch(url, { redirect: "manual", method: 'HEAD'})
-                              .then(resp => (resp.status > 399) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
-                              .catch(error => toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                            fetch(url, { redirect: 'manual', method: 'HEAD' })
+                              .then((resp) => (resp.status > 399) && toast.warn('The image URL seems to be broken, test it first!', toastOption))
+                              .catch((error) => toast.warn('The image URL seems to be broken, test it first!', toastOption));
                           }
                         }}
                       >
                         {[
-                          { label: "Copy URL", value: 0 }, 
-                          { label: "200px (thumb)", value: 200 }, 
-                          { label: "400px", value: 400 }, 
-                          { label: "600px", value: 600 }, 
-                          { label: "800px", value: 800 }, 
-                          { label: "Original size", value: "original" }
-                          ].map(opt => <MenuItem key={opt.label} value={opt.value}>{opt.label}</MenuItem>)}
+                          { label: 'Copy URL', value: 0 },
+                          { label: '200px (thumb)', value: 200 },
+                          { label: '400px', value: 400 },
+                          { label: '600px', value: 600 },
+                          { label: '800px', value: 800 },
+                          { label: 'Original size', value: 'original' },
+                        ].map((opt) => <MenuItem key={opt.label} value={opt.value}>{opt.label}</MenuItem>)}
                       </Select>
-                    }
+                    )}
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Mime Type

@@ -15,15 +15,15 @@ import {
   DialogContentText,
   TextField,
 } from '@material-ui/core';
-import * as Yup from "yup";
+import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import bc from 'app/services/breathecode';
+import { makeStyles } from '@material-ui/core/styles';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import AnswerStatus from '../../components/AnswerStatus';
 import SingleDelete from '../../components/ToolBar/SingleDelete';
-import { makeStyles } from '@material-ui/core/styles';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -48,11 +48,11 @@ const useStyles = makeStyles(() => ({
     width: '15rem',
   },
   title: {
-    textAlign:'center',
+    textAlign: 'center',
   },
   dialogContent: {
-    width:'80%',
-    margin:'auto',
+    width: '80%',
+    margin: 'auto',
   },
 }));
 
@@ -78,21 +78,21 @@ const Reviews = () => {
   const ignoreReview = (_review) => {
     handleClickOpen(true);
     // setReview(_review);
-    setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "IGNORE" }))
-    return bc.feedback().updateReview(_review.id, { status: "IGNORE" });
-    
-  }
+    setItems(items.map((r) => ((r.id != _review.id) ? r : { ...r, status: 'IGNORE' })));
+    return bc.feedback().updateReview(_review.id, { status: 'IGNORE' });
+  };
 
-  const URL = /^((https?|ftp):\/\/)?(www.)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
+  const URL = /^((https?|ftp):\/\/)?(www.)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
 
   const ProfileSchema = Yup.object().shape({
-    rating: 
+    rating:
       Yup.number()
-      .required().positive('Must a positive number')
-      .integer().min(1, 'Must not be lower than one')
-      .max(5, 'Must not be bigger than five'),
-    url: Yup.string().matches(URL,'Enter a valid url').required("Please write a URL"),
-    comment: Yup.string().required("Please write a Comment")
+        .required().positive('Must a positive number')
+        .integer()
+        .min(1, 'Must not be lower than one')
+        .max(5, 'Must not be bigger than five'),
+    url: Yup.string().matches(URL, 'Enter a valid url').required('Please write a URL'),
+    comment: Yup.string().required('Please write a Comment'),
   });
 
   // const [review, setReview] = useState({
@@ -112,7 +112,6 @@ const Reviews = () => {
   //     slug: '',
   //   },
   // });
-
 
   const columns = [
     {
@@ -147,14 +146,16 @@ const Reviews = () => {
           <div className="flex items-center">
             <div className="ml-3">
               <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
-            {items[i].created_at ? (<>
-                <h5 className="my-0 text-15">
-                  {dayjs(items[i].created_at).format('MM-DD-YYYY')}
-                </h5>
-                <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
-                </>) : (
-                  <p className="mt-0">No date information</p>
-                  )}
+              {items[i].created_at ? (
+                <>
+                  <h5 className="my-0 text-15">
+                    {dayjs(items[i].created_at).format('MM-DD-YYYY')}
+                  </h5>
+                  <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+                </>
+              ) : (
+                <p className="mt-0">No date information</p>
+              )}
             </div>
           </div>
         ),
@@ -176,21 +177,26 @@ const Reviews = () => {
               : 'text-orange';
           return (
             <div>
-              {(rating) ? 
-                <div>
-                  <LinearProgress
-                    color="secondary"
-                    value={parseInt(rating, 10) * 20}
-                    variant="determinate"
-                  />
-                  <small className={color}>{rating}</small>
-                </div>
-                :
-                <p  className="my-0">No rating yet</p>
-              }
-              <div><small>NPS Avg: {previous_rating}</small></div>
-            </div>)
-
+              {(rating)
+                ? (
+                  <div>
+                    <LinearProgress
+                      color="secondary"
+                      value={parseInt(rating, 10) * 20}
+                      variant="determinate"
+                    />
+                    <small className={color}>{rating}</small>
+                  </div>
+                )
+                : <p className="my-0">No rating yet</p>}
+              <div>
+                <small>
+                  NPS Avg:
+                  {previous_rating}
+                </small>
+              </div>
+            </div>
+          );
         },
       },
     },
@@ -213,37 +219,37 @@ const Reviews = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const _review = items[dataIndex];
-          if(['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
+          if (['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
           return (
-          <>
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <span>
-                <IconButton
-                  onClick={() => {
+            <>
+              <div className="flex items-center">
+                <div className="flex-grow" />
+                <span>
+                  <IconButton
+                    onClick={() => {
                     // handleClickOpen(true);
                     // setReview(_review);
                     // setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "DONE" }))
                     // bc.feedback().updateReview(_review.id, { status: "DONE" });
 
-                    setReview(_review);
-                    setOpenDialog(true);
-                  }}
-                >
-                  <Icon>check</Icon>
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setToIgnore(_review);
-                  }}
-                >
-                  <Icon>cancel</Icon>
-                </IconButton>
-              </span>
-            </div>
-          </>
-        );
-                },
+                      setReview(_review);
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <Icon>check</Icon>
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setToIgnore(_review);
+                    }}
+                  >
+                    <Icon>cancel</Icon>
+                  </IconButton>
+                </span>
+              </div>
+            </>
+          );
+        },
       },
     },
   ];
@@ -255,7 +261,7 @@ const Reviews = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: "Feedback", path: "/feedback/reviews" },
+                { name: 'Feedback', path: '/feedback/reviews' },
                 { name: "Review's List" },
               ]}
             />
@@ -291,119 +297,117 @@ const Reviews = () => {
                 ignoreReview(toIgnore);
               }}
               onClose={setToIgnore}
-              message={`Are you sure you want to ignore this review`}
+              message="Are you sure you want to ignore this review"
             />
           )}
           {review && (
             <Dialog
-            onClose={() => {
-              setOpenDialog(false);
-              setReview(null);
-            }}
-            fullWidth={true}
-            maxWidth="sm"
-            open={openDialog}
-            aria-labelledby="simple-dialog-title"
-          >
-            <DialogTitle id="simple-dialog-title" className={classes.title}>
-              Write the details of the review
-            </DialogTitle>
-            <Formik
-              initialValues={{
-                rating,
-                url,
-                comment,
-              }}
-              enableReinitialize
-              validationSchema={ProfileSchema}
-              onSubmit={async() => {
-                
-                const data = {
-                  status: "DONE",
-                  total_rating: rating,
-                  public_url: url,
-                  status_text: comment
-                }
-                
-                const result = await bc.feedback().updateReview(review.id, data);
-                if(result.status >= 200 && result.status < 300){
-                  setItems(items.map(r => (r.id != review.id) ? r : { ...r, status: "DONE" }))
-                }
-                setReview(null);
+              onClose={() => {
                 setOpenDialog(false);
+                setReview(null);
               }}
+              fullWidth
+              maxWidth="sm"
+              open={openDialog}
+              aria-labelledby="simple-dialog-title"
             >
-              {({ errors, touched, handleSubmit }) => (
-                <form
-                  onSubmit={handleSubmit}
-                  className="d-flex justify-content-center mt-0 p-4"
-                >
-                  <DialogContent className={classes.dialogContent}>
-                    <DialogContentText className={classes.dialogue}>
-                      Select a rating:
-                    </DialogContentText>
-                    <TextField
-                      error={errors.rating && touched.rating}
-                      helperText={touched.rating && errors.rating}
-                      label="Rating"
-                      name="rating"
-                      type="number"
-                      InputProps={{ inputProps: { min: 1, max: 5 } }}
-                      size="small"
-                      fullWidth 
-                      variant="outlined"
-                      defaultValue={rating}
-                      onChange={(e) => {
-                        setRating(e.target.value);
-                      }}
-                    />
+              <DialogTitle id="simple-dialog-title" className={classes.title}>
+                Write the details of the review
+              </DialogTitle>
+              <Formik
+                initialValues={{
+                  rating,
+                  url,
+                  comment,
+                }}
+                enableReinitialize
+                validationSchema={ProfileSchema}
+                onSubmit={async () => {
+                  const data = {
+                    status: 'DONE',
+                    total_rating: rating,
+                    public_url: url,
+                    status_text: comment,
+                  };
 
-                    
-                    <DialogContentText className={classes.dialogue}>
-                      Review URL:
-                    </DialogContentText>
-                    <TextField
-                      error={errors.url && touched.url}
-                      helperText={touched.url && errors.url}
-                      name="url"
-                      size="small"
-                      variant="outlined"
-                      value={url}
-                      fullWidth 
-                      onChange={(e) => {
-                        setUrl(e.target.value);
-                      }}
-                    />
+                  const result = await bc.feedback().updateReview(review.id, data);
+                  if (result.status >= 200 && result.status < 300) {
+                    setItems(items.map((r) => ((r.id != review.id) ? r : { ...r, status: 'DONE' })));
+                  }
+                  setReview(null);
+                  setOpenDialog(false);
+                }}
+              >
+                {({ errors, touched, handleSubmit }) => (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="d-flex justify-content-center mt-0 p-4"
+                  >
+                    <DialogContent className={classes.dialogContent}>
+                      <DialogContentText className={classes.dialogue}>
+                        Select a rating:
+                      </DialogContentText>
+                      <TextField
+                        error={errors.rating && touched.rating}
+                        helperText={touched.rating && errors.rating}
+                        label="Rating"
+                        name="rating"
+                        type="number"
+                        InputProps={{ inputProps: { min: 1, max: 5 } }}
+                        size="small"
+                        fullWidth
+                        variant="outlined"
+                        defaultValue={rating}
+                        onChange={(e) => {
+                          setRating(e.target.value);
+                        }}
+                      />
 
-                    <DialogContentText className={classes.dialogue}>
-                      Comments:
-                    </DialogContentText>
-                    <TextField
-                      error={errors.comment && touched.comment}
-                      helperText={touched.comment && errors.comment}
-                      name="comment"
-                      size="small"
-                      variant="outlined"
-                      value={comment}
-                      multiline
-                      rows={4}
-                      fullWidth 
-                      onChange={(e) => {
-                        setComment(e.target.value);
-                      }}
-                    />
-                  </DialogContent>
-                  <DialogActions className={classes.button}>
-                    <Button color="primary" variant="contained" type="submit">
-                      Send now
-                    </Button>
-                  </DialogActions>
-                </form>
-              )}
-            </Formik>
-          </Dialog>
+                      <DialogContentText className={classes.dialogue}>
+                        Review URL:
+                      </DialogContentText>
+                      <TextField
+                        error={errors.url && touched.url}
+                        helperText={touched.url && errors.url}
+                        name="url"
+                        size="small"
+                        variant="outlined"
+                        value={url}
+                        fullWidth
+                        onChange={(e) => {
+                          setUrl(e.target.value);
+                        }}
+                      />
+
+                      <DialogContentText className={classes.dialogue}>
+                        Comments:
+                      </DialogContentText>
+                      <TextField
+                        error={errors.comment && touched.comment}
+                        helperText={touched.comment && errors.comment}
+                        name="comment"
+                        size="small"
+                        variant="outlined"
+                        value={comment}
+                        multiline
+                        rows={4}
+                        fullWidth
+                        onChange={(e) => {
+                          setComment(e.target.value);
+                        }}
+                      />
+                    </DialogContent>
+                    <DialogActions className={classes.button}>
+                      <Button color="primary" variant="contained" type="submit">
+                        Send now
+                      </Button>
+                    </DialogActions>
+                  </form>
+                )}
+              </Formik>
+            </Dialog>
           )}
-          
+
         </div>
       </div>
       {/* <AnswerStatus review={review} handleClose={handleClose} open={open}/> */}

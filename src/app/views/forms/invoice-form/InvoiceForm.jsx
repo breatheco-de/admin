@@ -61,7 +61,7 @@ const InvoiceForm = () => {
                     value={values.customerName || ''}
                     onChange={handleChange}
                   >
-                    {customerList.map(item => (
+                    {customerList.map((item) => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>
@@ -128,7 +128,7 @@ const InvoiceForm = () => {
                       onChange={handleChange}
                       select
                     >
-                      {paymentTermList.map(item => (
+                      {paymentTermList.map((item) => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -170,7 +170,7 @@ const InvoiceForm = () => {
                     onChange={handleChange}
                     select
                   >
-                    {customerList.map(item => (
+                    {customerList.map((item) => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>

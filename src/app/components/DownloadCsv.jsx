@@ -6,7 +6,7 @@ import {
 const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  console.log("allPages",getAllPagesCSV)
+  console.log('allPages', getAllPagesCSV);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,21 +27,21 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const handleDownloadAll = () => {
     () => {
       getAllPagesCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
         .catch((error) => console.error(error));
-    }
+    };
     handleClose();
   };
   const handleDownloadSingle = () => {
     () => {
       getSinglePageCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
         .catch((error) => console.error(error));
-    }
+    };
     handleClose();
   };
 

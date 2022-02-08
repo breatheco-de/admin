@@ -52,7 +52,7 @@ const GaugeProgressCard = ({ score }) => {
             fontWeight: '600',
             offsetY: 38,
             show: true,
-            formatter: (val, opt) => `${val/10}/10`,
+            formatter: (val, opt) => `${val / 10}/10`,
           },
         },
         track: {
@@ -80,11 +80,9 @@ const GaugeProgressCard = ({ score }) => {
 
   useEffect(() => {
     let newColor;
-    if (score < 7) newColor = theme.palette.text.error
-    else {
-      if (score < 8) newColor = theme.palette.warning
-      else newColor = theme.palette.text.primary
-    }
+    if (score < 7) newColor = theme.palette.text.error;
+    else if (score < 8) newColor = theme.palette.warning;
+    else newColor = theme.palette.text.primary;
     setColor(newColor);
   }, [score]);
 
@@ -102,7 +100,7 @@ const GaugeProgressCard = ({ score }) => {
 };
 
 GaugeProgressCard.propTypes = {
-  score: PropTypes.number
-}
+  score: PropTypes.number,
+};
 
 export default GaugeProgressCard;

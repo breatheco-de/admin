@@ -8,7 +8,9 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-const DropdownMenu = ({ onClose, onSelect, options, children }) => {
+const DropdownMenu = ({
+  onClose, onSelect, options, children,
+}) => {
   const [value, setValue] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);

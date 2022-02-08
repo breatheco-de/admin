@@ -203,14 +203,14 @@ export function resolveError(error) {
 }
 
 export const npsScoreColors = {
-  "1":"text-error",
-  "2":"text-error",
-  "3":"text-error",
-  "4":"text-error",
-  "5":"text-error",
-  "6":"text-error",
-  "7":"text-secondary",
-  "8":"text-green",
-  "9":"text-green",
-  "10":"text-green",
-}
+  1: 'text-error',
+  2: 'text-error',
+  3: 'text-error',
+  4: 'text-error',
+  5: 'text-error',
+  6: 'text-error',
+  7: 'text-secondary',
+  8: 'text-green',
+  9: 'text-green',
+  10: 'text-green',
+};

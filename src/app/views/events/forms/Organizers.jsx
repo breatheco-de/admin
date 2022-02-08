@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import {
   Grid,
   IconButton,
@@ -69,9 +69,9 @@ export const Organizers = ({ className }) => (
 );
 
 Organizers.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 Organizers.defaultProps = {
-  className: ''
+  className: '',
 };
