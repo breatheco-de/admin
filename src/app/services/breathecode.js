@@ -296,6 +296,10 @@ class BreatheCodeClient {
         'Academy automations',
         `${this.host}/marketing/academy/automation`,
       ),
+      getAcademyUtm: () => axios.bcGet(
+        'Academy Utm',
+        `${this.host}/marketing/academy/utm`,
+      ),
       addNewLead: (newLead) => axios.bcPost(
         'New lead',
         `${this.host}/marketing/lead`,
