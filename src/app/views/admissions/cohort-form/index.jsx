@@ -49,10 +49,6 @@ const stageMap = [
     label: 'Started',
   },
   {
-    value: 'ACTIVE',
-    label: 'Active (do not use)',
-  },
-  {
     value: 'INACTIVE',
     label: 'Inactive',
   },
