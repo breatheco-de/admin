@@ -47,8 +47,8 @@ const useStyles = makeStyles(() => ({
 
 const stageMap = [
   {
-    value: 'ACTIVE',
-    label: 'Active',
+    value: 'STARTED',
+    label: 'Started',
   },
   {
     value: 'INACTIVE',
