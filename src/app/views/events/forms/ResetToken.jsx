@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
 import bc from '../../../services/breathecode';
 
-export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
+export const ResetToken = ({ initialValues, isCreating }) => {
   const ProfileSchema = Yup.object().shape({
     eventbrite_key: Yup.string().required('Api Key required'),
     eventbrite_id: Yup.string().required('Organizer Id required'),
@@ -42,7 +42,7 @@ export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
                 fullWidth
                 error={errors.eventbrite_key && touched.eventbrite_key}
                 helperText={touched.eventbrite_key && errors.eventbrite_key}
-                label="Eventbrite API Key"
+                label="Academy id"
                 name="eventbrite_key"
                 size="small"
                 type="text"
@@ -56,7 +56,7 @@ export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
                 fullWidth
                 error={errors.eventbrite_id && touched.eventbrite_id}
                 helperText={touched.eventbrite_id && errors.eventbrite_id}
-                label="Eventbrite Organizer ID"
+                label="Academy Token"
                 name="eventbrite_id"
                 size="small"
                 type="text"
@@ -72,7 +72,7 @@ export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
                 variant="contained"
                 type="submit"
               >
-                Submit
+                Create or reset token
               </Button>
             </Grid>
             <Grid item md={12}>
@@ -88,10 +88,10 @@ export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
   );
 };
 
-AddEventbriteOrganization.propTypes = {
+ResetToken.propTypes = {
   initialValues: PropTypes.object,
 };
 
-AddEventbriteOrganization.defaultProps = {
+ResetToken.defaultProps = {
   initialValues: {},
 };

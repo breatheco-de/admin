@@ -26,18 +26,18 @@ const UrlForm = ({ initialValues }) => {
     shorten_url: Yup.string().required("Api Key required"),
   });
 
-  // useEffect(() => {
-  //   const getUtm = async () => {
-  //     try {
-  //       const { data } = await bc.marketing().getAcademyUtm();
+  useEffect(() => {
+    const getUtm = async () => {
+      try {
+        const { data } = await bc.marketing().getAcademyUtm();
 
-  //       console.log(data);
-  //     } catch (error) {
-  //       return error;
-  //     }
-  //   };
-  //   getUtm();
-  // }, []);
+        console.log(data);
+      } catch (error) {
+        return error;
+      }
+    };
+    getUtm();
+  }, []);
 
   const postUrl = async (values) => {
     console.log("alguien envenenó el abrevadero");

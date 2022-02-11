@@ -1,60 +1,68 @@
 import React, { useEffect, useState } from "react";
-import { Grid, } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Breadcrumb } from "../../../matx";
-import bc from '../../services/breathecode';
+import bc from "../../services/breathecode";
 import { WebhookInfo } from "./forms/WebhookInfo";
 import { Organizers } from "./forms/Organizers";
 import EventbriteCard from "./forms/EventbriteCard";
+import DeveloperToken from "./forms/DeveloperToken";
 import { Venues } from "./forms/Venues";
 
 const EventSettings = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [loadingOrganization, setIsLoadingOrganization] = useState(false);
-  const [status, setStatus] = useState({color:'success', message:''});
+  const [status, setStatus] = useState({ color: "success", message: "" });
   const [organization, setOrganization] = useState({
-    eventbrite_key:'',
-    eventbrite_id:'',
-    status:'',
-    sync_desc: '',
-    sync_status: '',
+    eventbrite_key: "",
+    eventbrite_id: "",
+    status: "",
+    sync_desc: "",
+    sync_status: "",
   });
 
   useEffect(() => {
     const getOrganization = async () => {
-      try{
+      try {
         setIsLoadingOrganization(true);
         const { data } = await bc.events().getAcademyEventOrganization();
 
-        if(!data){
-          setStatus({color:'error', message:'The academy has not organization configured'});
+        if (!data) {
+          setStatus({
+            color: "error",
+            message: "The academy has not organization configured",
+          });
           setIsLoadingOrganization(false);
           setIsCreating(true);
-          return
-        } else if (data.eventbrite_key === '' && data.eventbrite_id === ''){
-          setStatus({color:'error', message:'The academy has not organization configured'});
+          return;
+        } else if (data.eventbrite_key === "" && data.eventbrite_id === "") {
+          setStatus({
+            color: "error",
+            message: "The academy has not organization configured",
+          });
         } else {
           let colors = {
-            "ERROR":  'error',
-            "PENDING": 'warning',
-            "WARNING": 'warning',
-            "PERSISTED":'success',
-            "SYNCHED": 'success'
-          }
-          setStatus({ color: colors[data.sync_status], message:data.sync_status })
-        }  
+            ERROR: "error",
+            PENDING: "warning",
+            WARNING: "warning",
+            PERSISTED: "success",
+            SYNCHED: "success",
+          };
+          setStatus({
+            color: colors[data.sync_status],
+            message: data.sync_status,
+          });
+        }
 
-        setOrganization({...data});
+        setOrganization({ ...data });
         setIsLoadingOrganization(false);
-
-      } catch(error){
+      } catch (error) {
         setIsLoadingOrganization(false);
-        return error
+        return error;
       }
-    }
+    };
     getOrganization();
-      
   }, []);
-  
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -66,13 +74,15 @@ const EventSettings = () => {
           ]}
         />
       </div>
-      <EventbriteCard 
+      <EventbriteCard
         isCreating={isCreating}
         loadingOrganization={loadingOrganization}
         status={status}
         organization={organization}
       />
-
+      <div style={{marginTop:'15px'}} >
+        <DeveloperToken />
+      </div>
       <Grid container spacing={3} className="mt-4">
         <Grid item md={7} xs={12}>
           <WebhookInfo />

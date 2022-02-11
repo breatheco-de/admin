@@ -61,7 +61,7 @@ const EventForm = () => {
 
           setTitle(data.title);
 
-          setTags( data.tags.split(",") );
+          if(data.tags!=="") setTags( data.tags.split(",") );
           if(data.slug) setSlug(data.slug);
           if(data.event_type) setEventType({...data.event_type, academy: data.academy});
           if(data.venue) setVenue({ ...data.venue });
