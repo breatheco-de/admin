@@ -17,3 +17,6 @@
 .MuiTableCell-root{
   word-break: unset !important;
 }
+
+.underline{ text-decoration: underline; }
+.pointer{ cursor: pointer;}
