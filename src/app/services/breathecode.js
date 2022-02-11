@@ -296,6 +296,10 @@ class BreatheCodeClient {
         'Academy automations',
         `${this.host}/marketing/academy/automation`,
       ),
+      getAcademyUtm: () => axios.bcGet(
+        'Academy Utm',
+        `${this.host}/marketing/academy/utm`,
+      ),
       addNewLead: (newLead) => axios.bcPost(
         'New lead',
         `${this.host}/marketing/lead`,
@@ -453,7 +457,13 @@ class BreatheCodeClient {
         `${this.host}/events/academy/organization`,
         payload,
       ),
-      getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
+      // getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
+      getEventbriteWebhook: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Eventbrite_Webhook', 
+          `${this.host}/events/academy/organization/eventbrite/webhook${query ? `?${qs}` : ''}`)
+      },
       getAcademyVenues: () => axios.bcGet('Venues', `${this.host}/events/academy/venues`),
       getAcademyEventType: () => axios.bcGet(
         'Event Type',
