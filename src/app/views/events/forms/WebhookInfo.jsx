@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Grid,
   TextField,
   Divider,
   Card,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Tooltip,
 } from "@material-ui/core";
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
@@ -27,21 +22,15 @@ const statusColors = {
 export const WebhookInfo = () => {
   const [items, setItems] = useState([]);
   
-  // do not delete, will be used later
-  // useEffect(()=>{
-  //   const getWebhooks = async () => {
-  //     try{
-  //       const { data } = await bc.events().getEventbriteWebhook();
-  //       console.log(data, 'eventbrite webhooks');
-  //     } catch (error){
-  //       console.log(error);
-  //       return error
-  //     }
-  //   }
-  //   getWebhooks();
-  // }, []);
 
   const columns = [
+    {
+      name: 'id', // field name in the row object
+      label: 'ID', // column title that will be shown in table
+      options: {
+        filter: true,
+      },
+    },
     {
       name: 'action', // field name in the row object
       label: 'Action', // column title that will be shown in table
@@ -131,46 +120,6 @@ export const WebhookInfo = () => {
             return data;
           }}
         />
-        {/* <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="pl-sm-24">#</TableCell>
-              <TableCell className="px-0">Action</TableCell>
-              <TableCell className="px-0">Status</TableCell>
-              <TableCell className="px-0">Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell className="pl-sm-24 capitalize" align="left">
-                1
-              </TableCell>
-              <TableCell className="pl-0 capitalize" align="left">
-                order.placed
-              </TableCell>
-              <TableCell className="pl-0 capitalize" align="left">
-                <small className="border-radius-4 px-2 pt-2px text-white bg-warning">
-                  Error
-                </small>
-              </TableCell>
-              <TableCell className="pl-0">5 days ago</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="pl-sm-24 capitalize" align="left">
-                1
-              </TableCell>
-              <TableCell className="pl-0 capitalize" align="left">
-                order.placed
-              </TableCell>
-              <TableCell className="pl-0 capitalize" align="left">
-                <small className="border-radius-4 px-2 pt-2px text-white bg-error">
-                  Error
-                </small>
-              </TableCell>
-              <TableCell className="pl-0">5 days ago</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table> */}
       </Grid>
     </Card>
   );
