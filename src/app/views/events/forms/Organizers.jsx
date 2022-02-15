@@ -1,77 +1,152 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Grid,
   IconButton,
   Icon,
   Divider,
   Card,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from '@material-ui/core';
+} from "@material-ui/core";
+import { SmartMUIDataTable } from "../../../components/SmartDataTable";
+import SingleDelete from '../../../components/ToolBar/SingleDelete';
+import bc from "../../../services/breathecode";
+import dayjs from "dayjs";
+const relativeTime = require("dayjs/plugin/relativeTime");
 
-export const Organizers = ({ className }) => (
-  <Card container className={`p-4 ${className}`}>
-    <div className="flex p-4">
-      <h4 className="m-0">Your organizations</h4>
-      <IconButton>
-        <Icon>sync</Icon>
-      </IconButton>
-    </div>
-    <Divider className="mb-2 flex" />
-    <Grid item md={12}>
-      The following organizers where found in your eventbrite organization
-    </Grid>
-    <Grid item md={12} className="mt-2">
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell className="pl-sm-24">#</TableCell>
-            <TableCell className="px-0">Action</TableCell>
-            <TableCell className="px-0">Status</TableCell>
-            <TableCell className="px-0">Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell className="pl-sm-24 capitalize" align="left">
-              1
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              order.placed
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              <small className={'border-radius-4 px-2 pt-2px ' + 'text-white bg-warning'}>
-                Error
-              </small>
-            </TableCell>
-            <TableCell className="pl-0">5 days ago</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="pl-sm-24 capitalize" align="left">
-              1
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              order.placed
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              <small className="border-radius-4 px-2 pt-2px text-white bg-error">Error</small>
-            </TableCell>
-            <TableCell className="pl-0">5 days ago</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Grid>
-  </Card>
-);
+dayjs.extend(relativeTime);
+
+export const Organizers = ({ className }) => {
+  const [items, setItems] = useState([]);
+  const [toDelete, setToDelete] = useState(null);
+
+  const disconectOrg = (organizer) => {
+
+    const pos = items.map((e) => { return e.id; }).indexOf(organizer.id);
+
+    let itemsCopy = [...items]
+
+    itemsCopy.splice(pos,1);
+    setItems([...itemsCopy]);
+
+    return bc.events()
+              .deleteAcademyEventOrganizationOrganizer(organizer.id);
+  }
+
+  const columns = [
+    {
+      name: 'id', // field name in the row object
+      label: '#', // column title that will be shown in table
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: 'organizer', // field name in the row object
+      label: 'Organizer', // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (i) => items[i].organization.name,
+      },
+    },
+    {
+      name: 'name', // field name in the row object
+      label: 'Academy', // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (i) => items[i].name,
+      },
+    },
+    {
+      name: 'created_at',
+      label: 'Created',
+      options: {
+        filter: true,
+        customBodyRenderLite: (i) => {
+          const item = items[i];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <h5 className="my-0 text-15">
+                  {item.updated_at ? dayjs(item.created_at).fromNow(true) : '-'}
+                </h5>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        customBodyRenderLite: (i) => {
+          const organization = items[i];
+          // if (['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
+          return (
+            <>
+              <div className="flex items-center">
+                <div className="flex-grow" />
+                <span>
+                  <IconButton
+                    onClick={() => {
+                      setToDelete(organization);
+                      // setOpenDialog(true);
+                    }}
+                  >
+                    <Icon>delete</Icon>
+                  </IconButton>
+                </span>
+              </div>
+            </>
+          );
+        },
+      },
+    },
+  ]
+  return (
+    <Card container className={`p-4 ${className}`}>
+      <Divider className="mb-2 flex" />
+      <Grid item md={12}>
+        The following organizers/academies are using your organization API
+        credentials to publish and async events, you can click on the trash can
+        icon on the ones you want to disconect
+      </Grid>
+      <Grid item md={12} className="mt-2">
+        <SmartMUIDataTable
+          title="Organization Organizers"
+          columns={columns}
+          items={items}
+          tableOptions={{
+            selectableRows: false,
+          }}
+          search={async (querys) => {
+            const { data } = await bc
+              .events()
+              .getAcademyEventOrganizationOrganizer(querys);
+
+            setItems(data);
+            return data;
+          }}
+        />
+        {toDelete && (
+          <SingleDelete
+            deleting={() => {
+              disconectOrg(toDelete);
+            }}
+            onClose={setToDelete}
+            message="Are you sure you want to disconnect this organizer"
+          />
+        )}
+      </Grid>
+    </Card>
+  );
+};
 
 Organizers.propTypes = {
   className: PropTypes.string,
 };
 
 Organizers.defaultProps = {
-  className: '',
+  className: "",
 };
