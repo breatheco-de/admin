@@ -79,7 +79,7 @@ export const WebhookInfo = () => {
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {item.created_at ? dayjs(item.created_at).format('MM-DD-YYYY') : '-'}
+                  {item.updated_at ? dayjs(item.updated_at).fromNow(true) : '-'}
                 </h5>
               </div>
             </div>
@@ -114,6 +114,9 @@ export const WebhookInfo = () => {
           title="All Webhooks"
           columns={columns}
           items={items}
+          tableOptions={{
+            selectableRows: false
+          }}
           search={async (querys) => {
             const { data } = await bc.events().getEventbriteWebhook(querys);
             setItems(data.results);

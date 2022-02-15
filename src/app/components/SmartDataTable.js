@@ -119,6 +119,7 @@ export const SmartMUIDataTable = (props) => {
         data={props.items}
         columns={props.columns}
         options={{
+          ...props.tableOptions,
           download: false,
           filterType: 'textField',
           responsive: 'vertical',

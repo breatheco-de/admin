@@ -14,22 +14,23 @@ import bc from "../../../services/breathecode";
 
 const UpdateUrl = ({ item, handleClose }) => {
   const [url, setUrl] = useState({
-    destination: item.slug,
+    slug: item.slug,
   });
 
   const prefixInput = "https://4geeks.co/s/"
 
   const ProfileSchema = Yup.object().shape({
-    destination: Yup.string().required("Destination required"),
+    slug: Yup.string().required("Slug required"),
   });
 
   const postUrl = async (values) => {
-    console.log(values);
-    // console.log(item, 'item');
+
     await bc.marketing().updateShort({
       ...item,
-      destination:`${prefixInput}${values.destination}`,
+      ...values,
     });
+
+    handleClose();
 
   };
 
@@ -47,13 +48,13 @@ const UpdateUrl = ({ item, handleClose }) => {
               <small className="text-muted">Answer details</small>
               <TextField
                 fullWidth
-                error={errors.destination && touched.destination}
-                helperText={touched.destination && errors.destination}
-                name="destination"
+                error={errors.slug && touched.slug}
+                helperText={touched.slug && errors.slug}
+                name="slug"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.destination}
+                value={values.slug}
                 onChange={handleChange}
                 InputProps={{
                   startAdornment: (
@@ -65,7 +66,7 @@ const UpdateUrl = ({ item, handleClose }) => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="copy"
-                        onClick={() => {navigator.clipboard.writeText(`${prefixInput}${values.destination}`)}}
+                        onClick={() => {navigator.clipboard.writeText(`${prefixInput}${values.slug}`)}}
                       >
                         <FileCopyIcon />
                       </IconButton>
