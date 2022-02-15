@@ -5,24 +5,28 @@ import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
 import bc from '../../../services/breathecode';
 
-export const ResetToken = ({ initialValues, isCreating }) => {
+export const ResetToken = ({ initialValues }) => {
   const ProfileSchema = Yup.object().shape({
-    eventbrite_key: Yup.string().required('Api Key required'),
-    eventbrite_id: Yup.string().required('Organizer Id required'),
+    academy_id: Yup.string().required('Academy ID required'),
+    academy_token: Yup.string().required('Academy Token required'),
   });
 
+  const docLink = 'https://documenter.getpostman.com/view/2432393/T1LPC6ef#be79b6fe-7626-4c33-b5f9-4565479852eb';
+
+  const statusColors = {
+    ERROR: ' bg-error',
+    PERSISTED: ' bg-green',
+    PENDING: ' bg-secondary',
+  };
+
   const postOrganization = async (values) => {
-    if (isCreating) {
-      // Call POST
-      const payload = {
-        eventbrite_id: values.eventbrite_id,
-        eventbrite_key: values.eventbrite_key,
-      };
-      await bc.events().postAcademyEventOrganization(payload);
-    } else {
-      // Call PUT
-      await bc.events().putAcademyEventOrganization({ ...values });
-    }
+    // Call POST
+    console.log(values);
+    // const payload = {
+    //   academy_id: values.academy_id,
+    //   academy_token: values.academy_token,
+    // };
+    // await bc.events().postAcademyEventOrganization(payload);
   };
 
   return (
@@ -40,29 +44,35 @@ export const ResetToken = ({ initialValues, isCreating }) => {
             <Grid item md={4}>
               <TextField
                 fullWidth
-                error={errors.eventbrite_key && touched.eventbrite_key}
-                helperText={touched.eventbrite_key && errors.eventbrite_key}
+                error={errors.academy_id && touched.academy_id}
+                helperText={touched.academy_id && errors.academy_id}
                 label="Academy id"
-                name="eventbrite_key"
+                name="academy_id"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.eventbrite_key}
+                value={values.academy_id}
                 onChange={handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Grid>
             <Grid item md={4}>
               <TextField
                 fullWidth
-                error={errors.eventbrite_id && touched.eventbrite_id}
-                helperText={touched.eventbrite_id && errors.eventbrite_id}
+                error={errors.academy_token && touched.academy_token}
+                helperText={touched.academy_token && errors.academy_token}
                 label="Academy Token"
-                name="eventbrite_id"
+                name="academy_token"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.eventbrite_id}
+                value={values.academy_token}
                 onChange={handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Grid>
             <Grid item md={4}>
@@ -77,9 +87,20 @@ export const ResetToken = ({ initialValues, isCreating }) => {
             </Grid>
             <Grid item md={12}>
               <p>
+                {/* <small className={`border-radius-4 px-2 pt-2px text-white ${statusColors[value]}`}>
+                  OK
+                </small> */}
+                Status:
                 {' '}
-                Status: {initialValues.sync_desc}
+                <small className={`border-radius-4 px-2 pt-2px text-white bg-green`}>
+                  OK
+                </small>
+                {/* {' '}
+                Status: {initialValues.sync_desc} */}
               </p>
+              <a href={docLink} target="_blank" style={{color:'rgb(17, 82, 147)'}}>
+                Click here to read the API documentation
+              </a>
             </Grid>
           </Grid>
         </form>
