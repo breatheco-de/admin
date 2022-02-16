@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
@@ -6,8 +6,14 @@ import {
   Icon,
   Divider,
   Card,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  CircularProgress,
+  Box,
 } from "@material-ui/core";
-import { SmartMUIDataTable } from "../../../components/SmartDataTable";
 import SingleDelete from '../../../components/ToolBar/SingleDelete';
 import bc from "../../../services/breathecode";
 import dayjs from "dayjs";
@@ -16,129 +22,126 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
 
 export const Organizers = ({ className }) => {
-  const [items, setItems] = useState([]);
   const [toDelete, setToDelete] = useState(null);
+
+  const [organizers, setOrganizers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    bc.events()
+      .getAcademyEventOrganizationOrganizer()
+      .then(({ data }) => {
+        setOrganizers(data.sort((a,b)=>{
+          if ( a.created_at > b.created_at ){
+            return -1;
+          }
+          if ( a.created_at < b.created_at ){
+            return 1;
+          }
+          return 0;
+        }));
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+        return error
+      });
+  }, []);
+
+  const styles = {
+    textAlign: 'center',
+    width: '100%',
+  };
 
   const disconectOrg = (organizer) => {
 
-    const pos = items.map((e) => { return e.id; }).indexOf(organizer.id);
+    const pos = organizers.map((e) => { return e.id; }).indexOf(organizer.id);
 
-    let itemsCopy = [...items]
+    let itemsCopy = [...organizers];
 
     itemsCopy.splice(pos,1);
-    setItems([...itemsCopy]);
+    setOrganizers([...itemsCopy]);
 
     return bc.events()
               .deleteAcademyEventOrganizationOrganizer(organizer.id);
   }
 
-  const columns = [
-    {
-      name: 'id', // field name in the row object
-      label: '#', // column title that will be shown in table
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'organizer', // field name in the row object
-      label: 'Organizer', // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].organization.name,
-      },
-    },
-    {
-      name: 'name', // field name in the row object
-      label: 'Academy', // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].name,
-      },
-    },
-    {
-      name: 'created_at',
-      label: 'Created',
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => {
-          const item = items[i];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-15">
-                  {item.updated_at ? dayjs(item.created_at).fromNow(true) : '-'}
-                </h5>
-              </div>
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: 'action',
-      label: ' ',
-      options: {
-        filter: false,
-        customBodyRenderLite: (i) => {
-          const organization = items[i];
-          // if (['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
-          return (
-            <>
-              <div className="flex items-center">
-                <div className="flex-grow" />
-                <span>
-                  <IconButton
-                    onClick={() => {
-                      setToDelete(organization);
-                      // setOpenDialog(true);
-                    }}
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
-                </span>
-              </div>
-            </>
-          );
-        },
-      },
-    },
-  ]
   return (
     <Card container className={`p-4 ${className}`}>
+      <div className="flex p-4">
+        <h4 className="m-0">Organization Organizers</h4>
+      </div>
       <Divider className="mb-2 flex" />
       <Grid item md={12}>
-        The following organizers/academies are using your organization API
-        credentials to publish and async events, you can click on the trash can
-        icon on the ones you want to disconect
+      The following organizers/academies are using your organization API
+      credentials to publish and async events, you can click on the trash can
+      icon on the ones you want to disconect
       </Grid>
       <Grid item md={12} className="mt-2">
-        <SmartMUIDataTable
-          title="Organization Organizers"
-          columns={columns}
-          items={items}
-          tableOptions={{
-            selectableRows: false,
-          }}
-          search={async (querys) => {
-            const { data } = await bc
-              .events()
-              .getAcademyEventOrganizationOrganizer(querys);
-
-            setItems(data);
-            return data;
-          }}
-        />
-        {toDelete && (
-          <SingleDelete
-            deleting={() => {
-              disconectOrg(toDelete);
-            }}
-            onClose={setToDelete}
-            message="Are you sure you want to disconnect this organizer"
-          />
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className="pl-sm-24">ID</TableCell>
+              <TableCell className="px-0">Organizer</TableCell>
+              <TableCell className="px-0">Academy</TableCell>
+              <TableCell className="px-0">Created</TableCell>
+              <TableCell className="px-0"></TableCell>
+            </TableRow>
+          </TableHead>
+          {!isLoading ? (
+            <TableBody>
+              {organizers.map((organizer) => (
+                <TableRow>
+                  <TableCell className="pl-sm-24 capitalize" align="left">
+                    {organizer.id}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {organizer.organization.name}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {organizer.name}
+                  </TableCell>
+                  <TableCell className="pl-0">{`${dayjs(
+                    organizer.created_at
+                  ).fromNow(true)} ago`}</TableCell>
+                  <TableCell className="pl-0">
+                    <div className="flex items-center">
+                      <div className="flex-grow" />
+                      <span>
+                        <IconButton
+                          onClick={() => {
+                            setToDelete(organizer);
+                            // setOpenDialog(true);
+                          }}
+                        >
+                          <Icon>delete</Icon>
+                        </IconButton>
+                      </span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <Box sx={{ display: "flex", width: "100%" }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </Table>
+        {organizers.length === 0 && !isLoading && (
+          <p style={styles}> No Venues yet </p>
         )}
       </Grid>
+      {toDelete && (
+        <SingleDelete
+          deleting={() => {
+            disconectOrg(toDelete);
+          }}
+          onClose={setToDelete}
+          message="Are you sure you want to disconnect this organizer"
+        />
+      )}
     </Card>
   );
 };

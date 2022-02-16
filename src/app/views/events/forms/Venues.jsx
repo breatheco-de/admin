@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Divider,
   Card,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  CircularProgress,
+  Box,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from "../../../components/SmartDataTable";
 import bc from '../../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -14,76 +20,81 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 export const Venues = ({ className }) => {
+  const [venues, setVenues] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    bc.events()
+      .getAcademyVenues()
+      .then(({ data }) => {
+        setVenues(data.sort((a,b)=>{
+          if ( a.updated_at > b.updated_at ){
+            return -1;
+          }
+          if ( a.updated_at < b.updated_at ){
+            return 1;
+          }
+          return 0;
+        }));
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        return error
+      });
+  }, []);
 
-  const [items, setItems] = useState([]);
-
-  const columns = [
-    {
-      name: 'id', // field name in the row object
-      label: '#', // column title that will be shown in table
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'name', // field name in the row object
-      label: 'Name', // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].title,
-      },
-    },
-    {
-      name: 'city', // field name in the row object
-      label: 'City', // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => items[i].city,
-      },
-    },
-    {
-      name: 'updated_at',
-      label: 'Updated',
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => {
-          const item = items[i];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-15">
-                  {item.updated_at ? dayjs(item.updated_at).fromNow(true) : '-'}
-                </h5>
-              </div>
-            </div>
-          );
-        },
-      },
-    },
-  ]
+  const styles = {
+    textAlign: 'center',
+    width: '100%',
+  };
 
   return (
     <Card container className={`p-4 ${className}`}>
+      <div className="flex p-4">
+        <h4 className="m-0">Your venues</h4>
+      </div>
       <Divider className="mb-2 flex" />
       <Grid item md={12}>
         The following venues were found in your eventbrite organization
       </Grid>
-      <SmartMUIDataTable
-          title="Your Venues"
-          columns={columns}
-          items={items}
-          tableOptions={{
-            selectableRows: false,
-          }}
-          search={async (querys) => {
-            const { data } = await bc
-              .events()
-              .getAcademyVenues(querys);
-            
-            setItems(data);
-            return data;
-          }}
-        />
+      <Grid item md={12} className="mt-2">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className="pl-sm-24">ID</TableCell>
+              <TableCell className="px-0">Name</TableCell>
+              <TableCell className="px-0">City</TableCell>
+              <TableCell className="px-0">Updated At</TableCell>
+            </TableRow>
+          </TableHead>
+          {!isLoading ? (
+            <TableBody>
+              {venues.map((venue) => (
+                <TableRow>
+                  <TableCell className="pl-sm-24 capitalize" align="left">
+                    {venue.id}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {venue.title}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {venue.city}
+                  </TableCell>
+                  <TableCell className="pl-0">{`${dayjs(venue.updated_at).fromNow(true)} ago`}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <Box sx={{ display: 'flex', width: '100%' }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </Table>
+        {venues.length === 0 && !isLoading && (
+          <p style={styles}> No Venues yet </p>
+        )}
+      </Grid>
     </Card>
   );
 };
