@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,17 +13,17 @@ import {
 } from "@material-ui/core";
 import bc from "../../../services/breathecode";
 
-const UrlForm = ({ initialValues }) => {
+const UrlForm = ({ utmFiels }) => {
   const [url, setUrl] = useState({
-    shorten_url: "",
-    campaign: "",
-    source: "",
-    medium: "",
-    sync_status: "",
+    destination: "",
   });
 
+  const [utmCampaign, setUtmCampaign] = useState(null);
+  const [utmSource, setUtmSource] = useState(null);
+  const [utmMedium, setUtmMedium] = useState(null);
+
   const ProfileSchema = Yup.object().shape({
-    shorten_url: Yup.string().required("Api Key required"),
+    destination: Yup.string().required('Please write a URL'),
   });
 
   useEffect(() => {
@@ -40,18 +40,16 @@ const UrlForm = ({ initialValues }) => {
   }, []);
 
   const postUrl = async (values) => {
-    console.log("alguien envenenó el abrevadero");
-    // if (isCreating) {
-    //   // Call POST
-    //   const payload = {
-    //     eventbrite_id: values.eventbrite_id,
-    //     eventbrite_key: values.eventbrite_key,
-    //   };
-    //   await bc.events().postAcademyEventOrganization(payload);
-    // } else {
-    //   // Call PUT
-    //   await bc.events().putAcademyEventOrganization({ ...values });
-    // }
+
+    const payload = {
+      ...values,
+      slug: new URL(values.destination).pathname,
+      utm_campaign: utmCampaign,
+      utm_source: utmSource,
+      utm_medium: utmMedium,
+    };
+
+    await bc.marketing().addNewShort(payload);
   };
 
   return (
@@ -65,17 +63,17 @@ const UrlForm = ({ initialValues }) => {
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={12}>
-              <small className="text-muted">Answer details</small>
+              {/* <small className="text-muted">Answer details</small> */}
               <TextField
                 fullWidth
-                error={errors.shorten_url && touched.shorten_url}
-                helperText={touched.shorten_url && errors.shorten_url}
+                error={errors.destination && touched.destination}
+                helperText={touched.destination && errors.destination}
                 label="What URL do you want to shorten?"
-                name="shorten_url"
+                name="destination"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.shorten_url}
+                value={values.destination}
                 onChange={handleChange}
               />
             </Grid>
@@ -85,14 +83,14 @@ const UrlForm = ({ initialValues }) => {
                 <Select
                   labelId="campaign-label"
                   id="campaign"
-                  value={values.campaign}
+                  value={utmCampaign}
                   fullWidth
                   label="Campaign"
-                  onChange={handleChange}
+                  onChange={(e)=>setUtmCampaign(e.target.value)}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {utmFiels.CAMPAIGN.map((field)=> 
+                    <MenuItem value={field.slug}>{field.slug}</MenuItem>
+                  )}
                 </Select>
               </FormControl>
             </Grid>
@@ -102,14 +100,16 @@ const UrlForm = ({ initialValues }) => {
                 <Select
                   labelId="source-label"
                   id="source"
-                  value={values.source}
+                  value={utmSource}
                   fullWidth
                   label="Source"
-                  onChange={handleChange}
+                  // onChange={handleChange}
+                  onChange={(e)=>setUtmSource(e.target.value)}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {utmFiels.SOURCE.map((field) => (
+                    <MenuItem value={field.slug}>{field.slug}</MenuItem>
+                  ))}
+                  {/* <MenuItem value={30}>Thirty</MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
@@ -119,23 +119,21 @@ const UrlForm = ({ initialValues }) => {
                 <Select
                   labelId="medium-label"
                   id="medium"
-                  value={values.medium}
+                  value={utmMedium}
                   fullWidth
                   label="Medium"
-                  onChange={handleChange}
+                  // onChange={handleChange}
+                  onChange={(e)=>setUtmMedium(e.target.value)}
+                  
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {utmFiels.MEDIUM.map((field) => (
+                    <MenuItem value={field.slug}>{field.slug}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
-          <Grid
-            container
-            spacing={3} 
-            justify="flex-end"
-          >
+          <Grid container spacing={3} justify="flex-end">
             <Grid item md={4}>
               <Button
                 fullWidth

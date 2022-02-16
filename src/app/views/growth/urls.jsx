@@ -1,47 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from 'matx';
-import { Link } from 'react-router-dom';
 import {
   Icon, 
   IconButton, 
-  Tooltip, 
-  Chip,
+  Tooltip,
   Dialog,
   DialogTitle,
-  DialogContent,
   DialogActions,
   Button,
-  Grid
+  Grid,
+  Switch,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import UrlForm from './short-form/UrlForm';
 import UpdateUrl from './short-form/UpdateUrl';
 import bc from '../../services/breathecode';
 
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
+
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const stageColors = {
-  // INACTIVE: 'gray',
-  // PREWORK: 'main',
-  added: 'primary',
-  not_added: 'gray',
-  // ENDED: 'dark',
-  // DELETED: 'gray',
+const statusColors = {
+  NOT_FOUND: 'text-white bg-error',
+  ACTIVE: 'text-white bg-green',
 };
-
-// const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-//   '& .MuiDialogContent-root': {
-//     padding: theme.spacing(2),
-//   },
-//   '& .MuiDialogActions-root': {
-//     padding: theme.spacing(1),
-//   },
-// }));
 
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
@@ -79,13 +70,36 @@ BootstrapDialogTitle.propTypes = {
 const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
-  const [createUrl, setCreateUrl] = useState(true);
-  const history = useHistory();
-  
+  const [createUrl, setCreateUrl] = useState(false);
+  const [updateUrl, setUpdateUrl] = useState({open:false, item:{}});
+  const [utmFiels, setUtmFields] = useState({
+    SOURCE:[], 
+    CAMPAIGN:[],
+    MEDIUM:[],
+    CONTENT:[]
+  });
+
+  useEffect(() => {
+    const getUtm = async () => {
+      try {
+        const { data } = await bc.marketing().getAcademyUtm();
+
+        data.map((item)=>{
+          utmFiels[item.utm_type].push(item);
+        });
+
+      } catch (error) {
+
+        return error;
+      }
+    };
+    getUtm();
+  }, []);
+
   const columns = [
     {
-      name: 'id', // field name in the row object
-      label: 'Id', // column title that will be shown in table
+      name: 'slug', // field name in the row object
+      label: 'Slug', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
@@ -93,58 +107,92 @@ const Leads = () => {
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {`${short.id}`}
+                {short?.slug}
               </h5>
-              <small className="text-muted">{short?.slug || short.slug}</small>
+              <small className="text-muted underline pointer" onClick={() => { 
+                  navigator.clipboard.writeText(`https://s.4geeks.co/s/${short?.slug}`);
+                  toast.success('URL copied successfuly', toastOption);
+              }}>https://s.4geeks.co/a/{short?.slug || short.slug}</small>
             </div>
           );
         },
       },
     },
     {
-      name: 'slug',
-      label: 'Slug',
+      name: 'destination_status',
+      label: 'Destination Status',
       options: {
-        display: false,
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].course}</span>
-        ),
+        filter: true,
+        filterType: 'multiselect',
+        customBodyRender: (value, tableMeta) => {
+          const item = items[tableMeta.rowIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                {item.destination_status_text !== null ? (
+                  <Tooltip title={item.destination_status_text}>
+                    <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
+                      {String(value).toUpperCase()}
+                    </small>
+                  </Tooltip>
+                ) : (
+                  <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
+                    {String(value).toUpperCase()}
+                  </small>
+                )}
+              </div>
+            </div>
+          );
+        },
       },
     },
-   
     {
-      name: 'slug',
-      label: 'Slug',
+      name: 'hits',
+      label: 'Hits',
       options: {
         filter: true,
         filterType: 'multiselect',
         customBodyRenderLite: (dataIndex) => (
-          <span
-            className="ellipsis"
-          >
-            {items[dataIndex].slug
-              ? items[dataIndex].slug
-              : '---'}
+          <span>
+            {items[dataIndex].hits}
           </span>
         ),
       },
     },
-    
     {
-      name: 'status',
-      label: 'Status',
+      name: 'active',
+      label: 'Active',
       options: {
-        filter: false,
+        filter: true,
+        filterType: 'multiselect',
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
-            <Chip
-              size="small"
-              label={item.user ? 'Added' : 'Not added'}
-              color={stageColors[item.user ? 'added' : 'not_added']}
-            />
-          );
-        },
+
+            <div className="flex items-center">
+              <div className="ml-0">
+                <Switch
+                  onChange={async () => {
+                    const resp = await bc.marketing().updateShort({
+                      ...item,
+                      active: !item.active,
+                    });
+                    if (resp.status === 200) {
+                      setItems(items.map((it) => {
+                        if (it.id !== item.id) return it;
+                        return { ...it, active: !it.active };
+                      }));
+                    }
+                  }}
+                  checked={item.active}
+                  color="secondary"
+                  size="small"
+                />
+                <small>{item.active ? "Active" : "Blocked (404)"}</small>
+              </div>
+            </div>
+          )
+        }
       },
     },
     {
@@ -156,47 +204,22 @@ const Leads = () => {
           const item = items[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="flex-grow" />
-              {item.user == null && (
-              <Tooltip title="Open URL">
-                <IconButton onClick={async () => {
-                  const resp = await bc.marketing().getAcademyShort(item);
-                  
-                  console.log("This is RESP####", resp.data[0].destination)
-                  
-                  if (resp.headers['content-type'] == 'application/json') {
-                    if (resp.status === 404) {
-                      setOpenDialog({
-                        open: true,
-                        msg: 'An error has occurred, the URL does not work correctly. Contact the marketing department to verify that the address is still in use.',
-                        onSuccess: () => {
-                          window.open(resp.data[0].destination, '_blank');
-                        },
-                      });
-                    } else if (resp.status === 200) {
-                      
-                      window.open(resp.data[0].destination, '_blank');
-                      
-                    }
-                  }
+              <Tooltip title="Copy Destination URL">
+                <IconButton onClick={() => {
+                  navigator.clipboard.writeText(item.destination);
+                  toast.success('URL copied successfuly', toastOption);
                 }}
                 >
                   <Icon>link</Icon>
                 </IconButton>
               </Tooltip>
-              )}
               <Tooltip title="Edit URL">
-                {/* <Link to={`/growth/newshort/${item.slug}`}> */}
-                  <IconButton onClick={async () => {
-                    
-                    if (item.id) {
-                      console.log("This is item####", item.slug)
-                      history.push(`/growth/urls/${item.slug}`)
-                    }
-                    }}>
+                  <IconButton onClick={() => {
+                    // if (item.id) history.push(`/growth/urls/${item.slug}`)
+                    if (item.id) setUpdateUrl({open:true, item})
+                  }}>
                     <Icon>edit</Icon>
                   </IconButton>
-                {/* </Link> */}
               </Tooltip>
             </div>
           );
@@ -207,6 +230,7 @@ const Leads = () => {
 
   const handleClose = () => {
     setCreateUrl(false);
+    setUpdateUrl({open:false, item:{}})
   }
   
   return (
@@ -222,26 +246,15 @@ const Leads = () => {
             />
           </div>
           <div className="">
-            <Link
-              to="/growth/newshort"
+            <Button
+              variant="contained"
               color="primary"
-              className="btn btn-primary"
+              onClick={() => setCreateUrl(true)}
             >
-              <Button variant="contained" color="primary">
-                Add new url
-              </Button>
-            </Link>
+              Add new url
+            </Button>
           </div>
         </div>
-      </div>
-      <div className="add-new-url" style={{ marginBottom: "15px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setCreateUrl(true)}
-        >
-          Create new url
-        </Button>
       </div>
       <div>
         <SmartMUIDataTable
@@ -251,7 +264,6 @@ const Leads = () => {
           search={async (querys) => {
             const { data } = await bc.marketing().getAcademyShort(querys);
             setItems(data.results);
-            console.log("This is  DATA #### ", data);
             return data;
           }}
           deleting={async (querys) => {
@@ -260,39 +272,27 @@ const Leads = () => {
           }}
         />
       </div>
-      {/* ADD URL DIALOG */}
-      {/* <Dialog
-        open={createUrl}
-        onClose={() => setCreateUrl(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <IconButton
-          size="small"
-          onClick={() => {
-            setCreateUrl(false);
-          }}
-        >
-          <Icon>close</Icon>
-        </IconButton>
-        <DialogActions>
-          <UrlForm />
-        </DialogActions>
-      </Dialog> */}
+
+      {/* ADD AND UPDATE URL DIALOG */}
       <Dialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        open={createUrl}
+        open={createUrl || updateUrl.open}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} />
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        />
         <Grid md={12}>
-          <UrlForm />
-        </Grid>
-        <Grid md={12}>
-          <UpdateUrl />
+          {createUrl ? (
+            <UrlForm utmFiels={utmFiels} />
+          ) : (
+            <UpdateUrl item={updateUrl.item} handleClose={handleClose} />
+          )}
         </Grid>
       </Dialog>
-      {/* ADD URL DIALOG */}
+      {/* ADD AND UPDATE URL DIALOG */}
+
       <Dialog
         open={openDialog.open}
         onClose={() => setOpenDialog({ msg: "", open: false })}

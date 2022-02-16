@@ -76,7 +76,6 @@ const CohortDetails = ({
         .catch((error) => console.error(error));
     }
   }, []);
-  console.log('values', timeZone, onlineMeetingUrl);
   return (
     <Card className="p-4">
       <div className="mb-4 flex justify-between items-center">

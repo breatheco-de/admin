@@ -17,6 +17,7 @@ const stageColors = {
   INACTIVE: 'gray',
   PREWORK: 'main',
   STARTED: 'primary',
+  ACTIVE: 'primary',
   FINAL_PROJECT: 'error',
   ENDED: 'dark',
   DELETED: 'gray',
