@@ -1,22 +1,27 @@
-import React from "react";
-import { Card, Divider, CircularProgress, Box } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Card, Divider } from "@material-ui/core";
 import { ResetToken } from "./ResetToken";
+import bc from "../../../services/breathecode";
 
-const DeveloperTokenCard = ({
-  organization,
-  isCreating,
-  loadingOrganization,
-}) => {
+const DeveloperTokenCard = () => {
 
-  const docLink = 'https://documenter.getpostman.com/view/2432393/T1LPC6ef#be79b6fe-7626-4c33-b5f9-4565479852eb'
-  
-  const Loader = () => (
-    <Box sx={{ display: "flex", width: "100%" }}>
-      <CircularProgress />
-    </Box>
-  );
+  const [token, setToken] = useState(null);
 
-  if (loadingOrganization) return <Loader />;
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const { data } = await bc.auth().getAcademyToken();
+
+        setToken(data)     
+
+      } catch (error) {
+        return error;
+      }
+    };
+    getToken();
+  }, []);
+
+  const docLink = 'https://documenter.getpostman.com/view/2432393/T1LPC6ef#be79b6fe-7626-4c33-b5f9-4565479852eb';
 
   return (
     <Card elevation={3}>
@@ -34,7 +39,7 @@ const DeveloperTokenCard = ({
           </a>
         </p>
       </div>
-      <ResetToken initialValues={organization} isCreating={isCreating} />
+      {token && <ResetToken token={token} />}
     </Card>
   );
 };

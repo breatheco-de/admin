@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
 import bc from '../../../services/breathecode';
+import useAuth from '../../../hooks/useAuth';
 
-export const ResetToken = ({ initialValues }) => {
+export const ResetToken = ({ token }) => {
+  const { user } = useAuth();
+  const [status, setStatus] = useState(null)
+  const [initialValue, setInitialValues] = useState({
+    academy_id: user.academy?.id,
+    academy_token: token.token,
+  });
+  
+
   const ProfileSchema = Yup.object().shape({
     academy_id: Yup.string().required('Academy ID required'),
     academy_token: Yup.string().required('Academy Token required'),
@@ -15,30 +24,31 @@ export const ResetToken = ({ initialValues }) => {
 
   const statusColors = {
     ERROR: ' bg-error',
-    PERSISTED: ' bg-green',
+    OK: ' bg-green',
     PENDING: ' bg-secondary',
   };
 
-  const postOrganization = async (values) => {
-    // Call POST
-    console.log(values);
-    // const payload = {
-    //   academy_id: values.academy_id,
-    //   academy_token: values.academy_token,
-    // };
-    // await bc.events().postAcademyEventOrganization(payload);
+  const resetToken = async (values) => {
+    try{
+
+      const { data, statusText } = await bc.auth().postTemporalToken();
+      setStatus({ statusText });
+      values.academy_token = data.token
+    }catch(e){
+      console.log(e);
+      setStatus({ statusText });
+      return e
+    }
   };
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={initialValue}
       validationSchema={ProfileSchema}
-      onSubmit={(values) => postOrganization(values)}
+      onSubmit={(values) => resetToken(values)}
       enableReinitialize
     >
-      {({
-        values, handleChange, handleSubmit, errors, touched,
-      }) => (
+      {({ values, handleChange, handleSubmit, errors, touched }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={4}>
@@ -86,19 +96,21 @@ export const ResetToken = ({ initialValues }) => {
               </Button>
             </Grid>
             <Grid item md={12}>
-              <p>
-                {/* <small className={`border-radius-4 px-2 pt-2px text-white ${statusColors[value]}`}>
-                  OK
-                </small> */}
-                Status:
-                {' '}
-                <small className={`border-radius-4 px-2 pt-2px text-white bg-green`}>
-                  OK
-                </small>
-                {/* {' '}
-                Status: {initialValues.sync_desc} */}
-              </p>
-              <a href={docLink} target="_blank" style={{color:'rgb(17, 82, 147)'}}>
+              {status && (
+                <p>
+                  Status:{" "}
+                  <small
+                    className={`border-radius-4 px-2 pt-2px text-white ${statusColors[status.statusText]}`}
+                  >
+                    {status.statusText}
+                  </small>
+                </p>
+              )}
+              <a
+                href={docLink}
+                target="_blank"
+                style={{ color: "rgb(17, 82, 147)" }}
+              >
                 Click here to read the API documentation
               </a>
             </Grid>
