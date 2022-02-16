@@ -215,7 +215,6 @@ const Leads = () => {
               </Tooltip>
               <Tooltip title="Edit URL">
                   <IconButton onClick={() => {
-                    // if (item.id) history.push(`/growth/urls/${item.slug}`)
                     if (item.id) setUpdateUrl({open:true, item})
                   }}>
                     <Icon>edit</Icon>
