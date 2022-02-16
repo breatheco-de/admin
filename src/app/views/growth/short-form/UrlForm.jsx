@@ -103,13 +103,11 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmSource}
                   fullWidth
                   label="Source"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmSource(e.target.value)}
                 >
                   {utmFiels.SOURCE.map((field) => (
                     <MenuItem value={field.slug}>{field.slug}</MenuItem>
                   ))}
-                  {/* <MenuItem value={30}>Thirty</MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
@@ -122,7 +120,6 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmMedium}
                   fullWidth
                   label="Medium"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmMedium(e.target.value)}
                   
                 >
