@@ -465,7 +465,16 @@ class BreatheCodeClient {
         `${this.host}/events/academy/organization`,
         payload,
       ),
-      // getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
+      getAcademyEventOrganizationOrganizer: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+        'Academy event',
+        `${this.host}/events/academy/organization/organizer${query ? `?${qs}` : ''}`,
+      )},
+      deleteAcademyEventOrganizationOrganizer: (org) => axios.bcDelete(
+        'Delete organizer',
+        `${this.host}/events/academy/organization/organizer/${org}`,
+      ),
       getEventbriteWebhook: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
