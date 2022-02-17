@@ -45,7 +45,7 @@ const EventForm = () => {
   const history = useHistory();
   
   useEffect(() => {
-    setSlug(slugify(title));
+    setSlug(slugify(title).toLowerCase());
   }, [title]);
 
   useEffect(() => {
@@ -60,7 +60,8 @@ const EventForm = () => {
           });
 
           setTitle(data.title);
-          
+
+          if(data.tags !== "") setTags( data.tags.split(",") );
           if(data.slug) setSlug(data.slug);
           if(data.event_type) setEventType({...data.event_type, academy: data.academy});
           if(data.venue) setVenue({ ...data.venue });
@@ -75,39 +76,22 @@ const EventForm = () => {
       event_type: eventType ? eventType.id : null,
     };
 
-    // console.log(values.slug, 'values.slug');
-    // console.log(event.slug, 'event.slug');
-
     if (id) {
-      const { academy, ...rest } = values;
+
+      const { academy, status, ...rest } = values;
       
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
           title,
           slug,
-          tags: tags.map(t => t.slug).join(","),
+          tags: tags.join(","),
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
         })
         .then(({ data }) => {
-          setEvent({
-            title: '',
-            description: '',
-            excerpt: '',
-            lang: '',
-            url: '',
-            banner: '',
-            capacity: 0,
-            starting_at: '',
-            ending_at: '',
-            host: null,
-            event_type: null,
-            venue: null,
-            online_event: false,
-            sync_with_eventbrite: false,
-          });
+
           if (data.academy !== undefined) history.push('/events/list');
         })
         .catch((error) => error);
@@ -117,7 +101,7 @@ const EventForm = () => {
         ...restValues,
         title,
         slug,
-        tags: tags.map(t => t.slug).join(","),
+        tags: tags.join(","),
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
         ...venueAndType,
@@ -127,27 +111,53 @@ const EventForm = () => {
           ...payload
         })
         .then(({ data }) => {
-          setEvent({
-            title: '',
-            description: '',
-            excerpt: '',
-            lang: '',
-            url: '',
-            banner: '',
-            capacity: 0,
-            starting_at: '',
-            ending_at: '',
-            host: null,
-            event_type: null,
-            venue: null,
-            online_event: false,
-            sync_with_eventbrite: false,
-          });
-          if (data.academy !== undefined) history.push('/events/list');
+          
+          if (data.academy !== undefined) {
+            setEvent({
+              title: '',
+              description: '',
+              excerpt: '',
+              lang: '',
+              url: '',
+              banner: '',
+              capacity: 0,
+              starting_at: '',
+              ending_at: '',
+              host: null,
+              event_type: null,
+              venue: null,
+              online_event: false,
+              sync_with_eventbrite: false,
+            });
+            history.push('/events/list')
+          }
         })
         .catch((error) => error);
     }
   };
+
+  const removeDuplicates = (arr)=> {
+    return arr.filter((item, 
+        index) => arr.indexOf(item) === index);
+  }
+
+
+
+  const getTags = async () => {
+    try{
+      const { data } = await bc.marketing().getAcademyTags({ type: 'DISCOVERY' })
+
+      let slugs = removeDuplicates(data.map((item) => {
+        return item['slug'];
+      }));
+
+      return { data: slugs}
+    } catch (err){
+      return err
+    }
+  }
+
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -405,13 +415,15 @@ const EventForm = () => {
                 <Grid item md={3} sm={8} xs={12}>
                   <AsyncAutocomplete
                     onChange={(v) => setTags(v)}
-                    asyncSearch={() => bc.marketing().getAcademyTags({ type: 'DISCOVERY' })}
+                    // asyncSearch={() => bc.marketing().getAcademyTags({ type: 'DISCOVERY' })}
+                    asyncSearch={getTags}
                     size="small"
                     label="Tags"
                     debounced={false}
+                    isOptionEqualToValue={(option, value) => option === value}                
                     multiple={true}
                     required={tags.length <= 1}
-                    getOptionLabel={(option) => `${option.slug}`}
+                    getOptionLabel={(option) => option}
                     value={tags}
                   />
                   <small className="text-muted">The specified tags will be applied to this event attendees on active campaign</small>

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
-  IconButton,
-  Icon,
   Divider,
   Card,
   Table,
@@ -29,10 +27,21 @@ export const Venues = ({ className }) => {
     bc.events()
       .getAcademyVenues()
       .then(({ data }) => {
-        setVenues(data);
+        setVenues(data.sort((a,b)=>{
+          if ( a.updated_at > b.updated_at ){
+            return -1;
+          }
+          if ( a.updated_at < b.updated_at ){
+            return 1;
+          }
+          return 0;
+        }));
         setIsLoading(false);
       })
-      .catch((error) => error);
+      .catch((error) => {
+        setIsLoading(false);
+        return error
+      });
   }, []);
 
   const styles = {
@@ -44,9 +53,6 @@ export const Venues = ({ className }) => {
     <Card container className={`p-4 ${className}`}>
       <div className="flex p-4">
         <h4 className="m-0">Your venues</h4>
-        <IconButton>
-          <Icon>sync</Icon>
-        </IconButton>
       </div>
       <Divider className="mb-2 flex" />
       <Grid item md={12}>
@@ -56,7 +62,7 @@ export const Venues = ({ className }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell className="pl-sm-24">#</TableCell>
+              <TableCell className="pl-sm-24">ID</TableCell>
               <TableCell className="px-0">Name</TableCell>
               <TableCell className="px-0">City</TableCell>
               <TableCell className="px-0">Updated At</TableCell>
@@ -64,10 +70,10 @@ export const Venues = ({ className }) => {
           </TableHead>
           {!isLoading ? (
             <TableBody>
-              {venues.map((venue, i) => (
+              {venues.map((venue) => (
                 <TableRow>
                   <TableCell className="pl-sm-24 capitalize" align="left">
-                    {i + 1}
+                    {venue.id}
                   </TableCell>
                   <TableCell className="pl-0 capitalize" align="left">
                     {venue.title}
@@ -75,7 +81,7 @@ export const Venues = ({ className }) => {
                   <TableCell className="pl-0 capitalize" align="left">
                     {venue.city}
                   </TableCell>
-                  <TableCell className="pl-0">{dayjs(venue.updated_at).fromNow(true)}</TableCell>
+                  <TableCell className="pl-0">{`${dayjs(venue.updated_at).fromNow(true)} ago`}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

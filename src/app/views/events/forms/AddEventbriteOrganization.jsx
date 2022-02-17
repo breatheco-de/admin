@@ -1,62 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
-import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 
-export const AddEventbriteOrganization = ({ initialValues }) => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [organization, setOrganization] = useState({
-    eventbrite_key: '',
-    eventbrite_id: '',
-    status: '',
-    sync_desc: '',
-    sync_status: '',
-  });
-
+export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
   const ProfileSchema = Yup.object().shape({
     eventbrite_key: Yup.string().required('Api Key required'),
     eventbrite_id: Yup.string().required('Organizer Id required'),
   });
 
-  useEffect(() => {
-
-    const getOrganization = async () => {
-      try {
-        const { data } = await bc.events().getAcademyEventOrganization();
-        // console.log(data);
-
-        // delete data.eventbrite_key
-        // delete data.eventbrite_id
-
-        if (!data) {
-          setIsCreating(true);
-        } else {
-          setOrganization({ ...data });
-        }
-
-        if (!data.eventbrite_key && !data.eventbrite_id) {
-          toast.error('The academy has not organization configured', {
-            position: 'bottom-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-      } catch (error) {
-        return error;
-      }
-    };
-    getOrganization();
-  }, []);
-
   const postOrganization = async (values) => {
-    // console.log('Everything fine!', values);
     if (isCreating) {
       // Call POST
       const payload = {
@@ -123,15 +78,7 @@ export const AddEventbriteOrganization = ({ initialValues }) => {
             <Grid item md={12}>
               <p>
                 {' '}
-                Status:
-                <small
-                  className={
-                    `border-radius-4 px-2 pt-2px text-white ${organization.sync_status === 'SYNCHED' ? 'bg-green' : organization.sync_status !== 'ERROR' ? 'bg-secondary' : 'bg-error'}`
-                  }
-                >
-                  {organization.sync_status}
-                </small>
-                {organization.sync_desc}
+                Status: {initialValues.sync_desc}
               </p>
             </Grid>
           </Grid>

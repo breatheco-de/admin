@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from 'matx';
-import { Link, useHistory } from 'react-router-dom';
 import {
-  Icon, IconButton, Tooltip,
-  DialogTitle,
+  Icon, 
+  IconButton, 
+  Tooltip,
   Dialog,
-  Button,
+  DialogTitle,
   DialogActions,
+  Button,
+  Grid,
   Switch,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import UrlForm from './short-form/UrlForm';
+import UpdateUrl from './short-form/UpdateUrl';
 import bc from '../../services/breathecode';
 
 toast.configure();
@@ -29,10 +34,67 @@ const statusColors = {
   ACTIVE: 'text-white bg-green',
 };
 
+const BootstrapDialogTitle = (props) => {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle 
+      sx={{ m: 0}} 
+      style={{padding:0, display:'flex', justifyContent:'flex-end'}} 
+      {...other}
+    >
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Icon>close</Icon>
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+};
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
-  const history = useHistory();
+  const [createUrl, setCreateUrl] = useState(false);
+  const [updateUrl, setUpdateUrl] = useState({open:false, item:{}});
+  const [utmFiels, setUtmFields] = useState({
+    SOURCE:[], 
+    CAMPAIGN:[],
+    MEDIUM:[],
+    CONTENT:[]
+  });
+
+  useEffect(() => {
+    const getUtm = async () => {
+      try {
+        const { data } = await bc.marketing().getAcademyUtm();
+
+        data.map((item)=>{
+          utmFiels[item.utm_type].push(item);
+        });
+
+      } catch (error) {
+
+        return error;
+      }
+    };
+    getUtm();
+  }, []);
 
   const columns = [
     {
@@ -153,7 +215,7 @@ const Leads = () => {
               </Tooltip>
               <Tooltip title="Edit URL">
                   <IconButton onClick={() => {
-                    if (item.id) history.push(`/growth/urls/${item.slug}`)
+                    if (item.id) setUpdateUrl({open:true, item})
                   }}>
                     <Icon>edit</Icon>
                   </IconButton>
@@ -164,6 +226,11 @@ const Leads = () => {
       },
     },
   ];
+
+  const handleClose = () => {
+    setCreateUrl(false);
+    setUpdateUrl({open:false, item:{}})
+  }
   
   return (
     <div className="m-sm-30">
@@ -172,21 +239,19 @@ const Leads = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Growth', path: '/Growth' },
-                { name: 'URL Shortner', path: '/growth/urls' },
+                { name: "Growth", path: "/Growth" },
+                { name: "URL Shortner", path: "/growth/urls" },
               ]}
             />
           </div>
           <div className="">
-            <Link
-              to="/growth/newshort"
+            <Button
+              variant="contained"
               color="primary"
-              className="btn btn-primary"
+              onClick={() => setCreateUrl(true)}
             >
-              <Button variant="contained" color="primary">
-                Add new url
-              </Button>
-            </Link>
+              Add new url
+            </Button>
           </div>
         </div>
       </div>
@@ -201,27 +266,46 @@ const Leads = () => {
             return data;
           }}
           deleting={async (querys) => {
-            const { status } = await bc
-              .marketing()
-              .deleteShortsBulk(querys);
+            const { status } = await bc.marketing().deleteShortsBulk(querys);
             return status;
           }}
         />
       </div>
+
+      {/* ADD AND UPDATE URL DIALOG */}
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={createUrl || updateUrl.open}
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        />
+        <Grid md={12}>
+          {createUrl ? (
+            <UrlForm utmFiels={utmFiels} />
+          ) : (
+            <UpdateUrl item={updateUrl.item} handleClose={handleClose} />
+          )}
+        </Grid>
+      </Dialog>
+      {/* ADD AND UPDATE URL DIALOG */}
+
       <Dialog
         open={openDialog.open}
-        onClose={() => setOpenDialog({ msg: '', open: false })}
+        onClose={() => setOpenDialog({ msg: "", open: false })}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {openDialog.msg}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{openDialog.msg}</DialogTitle>
         <DialogActions>
-          <Button onClick={() => setOpenDialog({ msg: '', open: false })} color="primary">
+          <Button
+            onClick={() => setOpenDialog({ msg: "", open: false })}
+            color="primary"
+          >
             Ok
           </Button>
-          
         </DialogActions>
       </Dialog>
     </div>
