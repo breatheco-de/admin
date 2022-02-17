@@ -12,7 +12,7 @@ import {
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import bc from "../../../services/breathecode";
 
-const UpdateUrl = ({ item, handleClose }) => {
+const UpdateUrl = ({ item, handleClose, updateTable }) => {
   const [url, setUrl] = useState({
     slug: item.slug,
   });
@@ -25,10 +25,12 @@ const UpdateUrl = ({ item, handleClose }) => {
 
   const postUrl = async (values) => {
 
-    await bc.marketing().updateShort(item.slug, {
+    const { data } = await bc.marketing().updateShort(item.slug, {
       ...item,
       ...values,
     });
+
+    updateTable(data);
 
     handleClose();
 

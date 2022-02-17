@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import bc from "../../../services/breathecode";
 
-const UrlForm = ({ utmFiels }) => {
+const UrlForm = ({ utmFiels, handleClose, addUrl }) => {
   const [url, setUrl] = useState({
     destination: "",
   });
@@ -30,13 +30,16 @@ const UrlForm = ({ utmFiels }) => {
 
     const payload = {
       ...values,
-      slug: '',
       utm_campaign: utmCampaign,
       utm_source: utmSource,
       utm_medium: utmMedium,
     };
 
-    await bc.marketing().addNewShort(payload);
+    const { data } = await bc.marketing().addNewShort(payload);
+
+    addUrl(data);
+
+    handleClose();
   };
 
   return (
@@ -90,13 +93,11 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmSource}
                   fullWidth
                   label="Source"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmSource(e.target.value)}
                 >
                   {utmFiels.SOURCE.map((field) => (
                     <MenuItem value={field.slug}>{field.slug}</MenuItem>
                   ))}
-                  {/* <MenuItem value={30}>Thirty</MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
@@ -109,7 +110,6 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmMedium}
                   fullWidth
                   label="Medium"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmMedium(e.target.value)}
                   
                 >

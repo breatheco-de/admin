@@ -91,22 +91,7 @@ const EventForm = () => {
           ...venueAndType,
         })
         .then(({ data }) => {
-          // setEvent({
-          //   title: '',
-          //   description: '',
-          //   excerpt: '',
-          //   lang: '',
-          //   url: '',
-          //   banner: '',
-          //   capacity: 0,
-          //   starting_at: '',
-          //   ending_at: '',
-          //   host: null,
-          //   event_type: null,
-          //   venue: null,
-          //   online_event: false,
-          //   sync_with_eventbrite: false,
-          // });
+
           if (data.academy !== undefined) history.push('/events/list');
         })
         .catch((error) => error);
@@ -126,23 +111,26 @@ const EventForm = () => {
           ...payload
         })
         .then(({ data }) => {
-          setEvent({
-            title: '',
-            description: '',
-            excerpt: '',
-            lang: '',
-            url: '',
-            banner: '',
-            capacity: 0,
-            starting_at: '',
-            ending_at: '',
-            host: null,
-            event_type: null,
-            venue: null,
-            online_event: false,
-            sync_with_eventbrite: false,
-          });
-          if (data.academy !== undefined) history.push('/events/list');
+          
+          if (data.academy !== undefined) {
+            setEvent({
+              title: '',
+              description: '',
+              excerpt: '',
+              lang: '',
+              url: '',
+              banner: '',
+              capacity: 0,
+              starting_at: '',
+              ending_at: '',
+              host: null,
+              event_type: null,
+              venue: null,
+              online_event: false,
+              sync_with_eventbrite: false,
+            });
+            history.push('/events/list')
+          }
         })
         .catch((error) => error);
     }

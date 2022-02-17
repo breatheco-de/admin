@@ -79,6 +79,16 @@ const Leads = () => {
     CONTENT:[]
   });
 
+  const addUrl = (url) => {
+    setItems([url, ...items]);
+  }
+
+  const updateTable = (url) => {
+    const pos = items.map((e) => { return e.id; }).indexOf(url.id);
+
+    items[pos].slug = url.slug;
+  }
+
   useEffect(() => {
     const getUtm = async () => {
       try {
@@ -215,7 +225,6 @@ const Leads = () => {
               </Tooltip>
               <Tooltip title="Edit URL">
                   <IconButton onClick={() => {
-                    // if (item.id) history.push(`/growth/urls/${item.slug}`)
                     if (item.id) setUpdateUrl({open:true, item})
                   }}>
                     <Icon>edit</Icon>
@@ -285,9 +294,9 @@ const Leads = () => {
         />
         <Grid md={12}>
           {createUrl ? (
-            <UrlForm utmFiels={utmFiels} />
+            <UrlForm utmFiels={utmFiels} handleClose={handleClose} addUrl={addUrl} />
           ) : (
-            <UpdateUrl item={updateUrl.item} handleClose={handleClose} />
+            <UpdateUrl item={updateUrl.item} handleClose={handleClose} updateTable={updateTable} />
           )}
         </Grid>
       </Dialog>
