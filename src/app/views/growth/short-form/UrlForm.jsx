@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -25,6 +25,19 @@ const UrlForm = ({ utmFiels }) => {
   const ProfileSchema = Yup.object().shape({
     destination: Yup.string().required('Please write a URL'),
   });
+
+  useEffect(() => {
+    const getUtm = async () => {
+      try {
+        const { data } = await bc.marketing().getAcademyUtm();
+
+        console.log(data);
+      } catch (error) {
+        return error;
+      }
+    };
+    getUtm();
+  }, []);
 
   const postUrl = async (values) => {
 
@@ -90,13 +103,11 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmSource}
                   fullWidth
                   label="Source"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmSource(e.target.value)}
                 >
                   {utmFiels.SOURCE.map((field) => (
                     <MenuItem value={field.slug}>{field.slug}</MenuItem>
                   ))}
-                  {/* <MenuItem value={30}>Thirty</MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
@@ -109,7 +120,6 @@ const UrlForm = ({ utmFiels }) => {
                   value={utmMedium}
                   fullWidth
                   label="Medium"
-                  // onChange={handleChange}
                   onChange={(e)=>setUtmMedium(e.target.value)}
                   
                 >

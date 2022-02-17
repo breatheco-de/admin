@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
-import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 
 export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {

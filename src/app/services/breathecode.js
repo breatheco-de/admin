@@ -194,6 +194,14 @@ class BreatheCodeClient {
         'Academy member',
         `${this.host}/auth/academy/member/${user}`,
       ),
+      getAcademyToken: () => axios.bcGet(
+        'Academy Token',
+        `${this.host}/auth/academy/token/`,
+      ),
+      postTemporalToken: () => axios.bcPost(
+        'Academy Token',
+        `${this.host}/auth/token/me`,
+      ),
       addAcademyMember: (payload) => axios.bcPost(
         'Academy member',
         `${this.host}/auth/academy/member`,
