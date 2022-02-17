@@ -278,9 +278,9 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/short${query ? `?${qs}` : ''}`,
         );
       },
-      updateShort: (short) => axios.bcPut(
+      updateShort: (slug, short) => axios.bcPut(
         'Edit Short Link',
-        `${this.host}/marketing/academy/short/${short.slug}`,
+        `${this.host}/marketing/academy/short/${slug}`,
         short,
       ),
       deleteShortsBulk: (query) => {

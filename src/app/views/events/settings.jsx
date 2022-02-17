@@ -12,6 +12,7 @@ const EventSettings = () => {
   const [loadingOrganization, setIsLoadingOrganization] = useState(false);
   const [status, setStatus] = useState({color:'success', message:''});
   const [organization, setOrganization] = useState({
+    id:'',
     eventbrite_key:'',
     eventbrite_id:'',
     status:'',
@@ -25,7 +26,7 @@ const EventSettings = () => {
         setIsLoadingOrganization(true);
         const { data } = await bc.events().getAcademyEventOrganization();
 
-        if(!data){
+        if(data.detail === "Organization not found for this academy" || !data){
           setStatus({color:'error', message:'The academy has not organization configured'});
           setIsLoadingOrganization(false);
           setIsCreating(true);
@@ -75,7 +76,7 @@ const EventSettings = () => {
 
       <Grid container spacing={3} className="mt-4">
         <Grid item md={7} xs={12}>
-          <WebhookInfo />
+          <WebhookInfo organization={organization}/>
         </Grid>
         <Grid item md={5} xs={12}>
           <Organizers className="mt-4" />

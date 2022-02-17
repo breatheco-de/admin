@@ -30,7 +30,7 @@ const UrlForm = ({ utmFiels }) => {
 
     const payload = {
       ...values,
-      slug: new URL(values.destination).pathname,
+      slug: '',
       utm_campaign: utmCampaign,
       utm_source: utmSource,
       utm_medium: utmMedium,

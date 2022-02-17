@@ -25,7 +25,7 @@ const UpdateUrl = ({ item, handleClose }) => {
 
   const postUrl = async (values) => {
 
-    await bc.marketing().updateShort({
+    await bc.marketing().updateShort(item.slug, {
       ...item,
       ...values,
     });

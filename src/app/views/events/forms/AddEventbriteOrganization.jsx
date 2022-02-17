@@ -76,12 +76,12 @@ export const AddEventbriteOrganization = ({ initialValues, isCreating }) => {
                 Submit
               </Button>
             </Grid>
-            <Grid item md={12}>
+            {initialValues.sync_desc && (<Grid item md={12}>
               <p>
                 {' '}
                 Status: {initialValues.sync_desc}
               </p>
-            </Grid>
+            </Grid>)}
           </Grid>
         </form>
       )}

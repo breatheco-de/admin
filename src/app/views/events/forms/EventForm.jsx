@@ -254,11 +254,11 @@ const EventForm = () => {
                     size="small"
                     type="url"
                     variant="outlined"
-                    value={event.eventbrite_sync_status === 'SYNCHED' ? '' : values.url}
+                    value={values.sync_with_eventbrite ? '' : values.url}
                     onChange={handleChange}
                     name="url"
                     fullWidth
-                    disabled={event.eventbrite_sync_status === 'SYNCHED' ? true : false}
+                    disabled={values.sync_with_eventbrite ? true : false}
                   />
                   <small className="text-muted">If the event gets published on eventbrite, this field will be filled with the eventbrite public URL</small>
                 </Grid>
