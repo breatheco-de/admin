@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
   DialogTitle,
   Dialog,
   Button,
-  Tooltip,
   DialogActions,
-  IconButton,
 } from '@material-ui/core';
-import bc from '../../services/breathecode';
 
 const defaultToolbarSelectStyles = {
   iconButton: {},
@@ -22,7 +18,6 @@ const defaultToolbarSelectStyles = {
 };
 
 const SingleDelete = (props) => {
-  console.log(props);
   const { deleting, message, onClose } = props;
   const [openDialog, setOpenDialog] = useState(true);
 
@@ -30,33 +25,18 @@ const SingleDelete = (props) => {
     e.preventDefault();
 
     try {
-      result = await deleting();
-      console.log(result);
+      await deleting();
+
       setOpenDialog(false);
-      if (result.status >= 200 && result.status < 300) {
-        onClose(null);
-        return true;
-      }
+      onClose(null);
+
     } catch (r) {
       setOpenDialog(false);
+      onClose(null);
       return r;
     }
-
-    // deleting()
-    //   .then((status) => {
-    //     setOpenDialog(false);
-    //     if (status >= 200 && status < 300) {
-
-    //       onClose(null);
-    //       return true;
-    //     }
-    //     throw Error('Items could not be deleted');
-    //   })
-    //   .catch((r) => {
-    //     setOpenDialog(false);
-    //     return r;
-    //   });
   };
+  
   return (
     <>
       {/* Dialog */}

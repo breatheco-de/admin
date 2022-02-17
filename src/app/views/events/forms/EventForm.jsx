@@ -45,7 +45,7 @@ const EventForm = () => {
   const history = useHistory();
   
   useEffect(() => {
-    setSlug(slugify(title));
+    setSlug(slugify(title).toLowerCase());
   }, [title]);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const EventForm = () => {
 
           setTitle(data.title);
 
-          setTags( data.tags.split(",") );
+          if(data.tags !== "") setTags( data.tags.split(",") );
           if(data.slug) setSlug(data.slug);
           if(data.event_type) setEventType({...data.event_type, academy: data.academy});
           if(data.venue) setVenue({ ...data.venue });
@@ -77,7 +77,8 @@ const EventForm = () => {
     };
 
     if (id) {
-      const { academy, ...rest } = values;
+
+      const { academy, status, ...rest } = values;
       
       bc.events()
         .updateAcademyEvent(id, {
@@ -90,22 +91,7 @@ const EventForm = () => {
           ...venueAndType,
         })
         .then(({ data }) => {
-          setEvent({
-            title: '',
-            description: '',
-            excerpt: '',
-            lang: '',
-            url: '',
-            banner: '',
-            capacity: 0,
-            starting_at: '',
-            ending_at: '',
-            host: null,
-            event_type: null,
-            venue: null,
-            online_event: false,
-            sync_with_eventbrite: false,
-          });
+
           if (data.academy !== undefined) history.push('/events/list');
         })
         .catch((error) => error);
@@ -125,36 +111,45 @@ const EventForm = () => {
           ...payload
         })
         .then(({ data }) => {
-          setEvent({
-            title: '',
-            description: '',
-            excerpt: '',
-            lang: '',
-            url: '',
-            banner: '',
-            capacity: 0,
-            starting_at: '',
-            ending_at: '',
-            host: null,
-            event_type: null,
-            venue: null,
-            online_event: false,
-            sync_with_eventbrite: false,
-          });
-          if (data.academy !== undefined) history.push('/events/list');
+          
+          if (data.academy !== undefined) {
+            setEvent({
+              title: '',
+              description: '',
+              excerpt: '',
+              lang: '',
+              url: '',
+              banner: '',
+              capacity: 0,
+              starting_at: '',
+              ending_at: '',
+              host: null,
+              event_type: null,
+              venue: null,
+              online_event: false,
+              sync_with_eventbrite: false,
+            });
+            history.push('/events/list')
+          }
         })
         .catch((error) => error);
     }
   };
+
+  const removeDuplicates = (arr)=> {
+    return arr.filter((item, 
+        index) => arr.indexOf(item) === index);
+  }
+
 
 
   const getTags = async () => {
     try{
       const { data } = await bc.marketing().getAcademyTags({ type: 'DISCOVERY' })
 
-      let slugs = data.map((item) => {
+      let slugs = removeDuplicates(data.map((item) => {
         return item['slug'];
-      });
+      }));
 
       return { data: slugs}
     } catch (err){

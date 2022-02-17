@@ -194,6 +194,14 @@ class BreatheCodeClient {
         'Academy member',
         `${this.host}/auth/academy/member/${user}`,
       ),
+      getAcademyToken: () => axios.bcGet(
+        'Academy Token',
+        `${this.host}/auth/academy/token/`,
+      ),
+      postTemporalToken: () => axios.bcPost(
+        'Academy Token',
+        `${this.host}/auth/token/me`,
+      ),
       addAcademyMember: (payload) => axios.bcPost(
         'Academy member',
         `${this.host}/auth/academy/member`,
@@ -457,7 +465,16 @@ class BreatheCodeClient {
         `${this.host}/events/academy/organization`,
         payload,
       ),
-      // getEventbriteWebhook: () => axios.bcGet('Eventbrite_Webhook', `${this.host}/events/academy/organization/eventbrite/webhook`),
+      getAcademyEventOrganizationOrganizer: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+        'Academy event',
+        `${this.host}/events/academy/organization/organizer${query ? `?${qs}` : ''}`,
+      )},
+      deleteAcademyEventOrganizationOrganizer: (org) => axios.bcDelete(
+        'Delete organizer',
+        `${this.host}/events/academy/organization/organizer/${org}`,
+      ),
       getEventbriteWebhook: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(

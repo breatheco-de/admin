@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -6,45 +6,32 @@ import {
   Grid,
   TextField,
   Button,
-  Icon,
   IconButton,
   InputAdornment,
 } from "@material-ui/core";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import bc from "../../../services/breathecode";
 
-const UpdateUrl = ({ initialValues }) => {
+const UpdateUrl = ({ item, handleClose }) => {
   const [url, setUrl] = useState({
-    shorten_url: "",
-    campaign: "",
-    source: "",
-    medium: "",
-    sync_status: "",
+    slug: item.slug,
   });
 
   const prefixInput = "https://4geeks.co/s/"
 
   const ProfileSchema = Yup.object().shape({
-    shorten_url: Yup.string().required("Api Key required"),
+    slug: Yup.string().required("Slug required"),
   });
 
-  // useEffect(() => {
-  //   const getUtm = async () => {
-  //     try {
-  //       const { data } = await bc.marketing().getAcademyUtm();
-
-  //       console.log(data);
-  //     } catch (error) {
-  //       return error;
-  //     }
-  //   };
-  //   getUtm();
-  // }, []);
-
   const postUrl = async (values) => {
-    console.log("alguien envenenó el abrevadero");
 
-    // await bc.events().postAcademyEventOrganization(payload);
+    await bc.marketing().updateShort({
+      ...item,
+      ...values,
+    });
+
+    handleClose();
+
   };
 
   return (
@@ -61,13 +48,13 @@ const UpdateUrl = ({ initialValues }) => {
               <small className="text-muted">Answer details</small>
               <TextField
                 fullWidth
-                error={errors.shorten_url && touched.shorten_url}
-                helperText={touched.shorten_url && errors.shorten_url}
-                name="shorten_url"
+                error={errors.slug && touched.slug}
+                helperText={touched.slug && errors.slug}
+                name="slug"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.shorten_url}
+                value={values.slug}
                 onChange={handleChange}
                 InputProps={{
                   startAdornment: (
@@ -79,7 +66,7 @@ const UpdateUrl = ({ initialValues }) => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="copy"
-                        onClick={() => {navigator.clipboard.writeText('this.state.textToCopy')}}
+                        onClick={() => {navigator.clipboard.writeText(`${prefixInput}${values.slug}`)}}
                       >
                         <FileCopyIcon />
                       </IconButton>
@@ -94,9 +81,8 @@ const UpdateUrl = ({ initialValues }) => {
             <Grid item md={4}>
               <Button
                 fullWidth
-                // color="primary"
                 variant="contained"
-                type="submit"
+                onClick={handleClose}
               >
                 CLOSE
               </Button>

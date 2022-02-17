@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from 'matx';
-import { Link, useHistory } from 'react-router-dom';
 import {
   Icon, 
   IconButton, 
-  Tooltip, 
-  Chip,
+  Tooltip,
   Dialog,
   DialogTitle,
-  DialogContent,
   DialogActions,
   Button,
   Grid,
@@ -36,15 +33,6 @@ const statusColors = {
   NOT_FOUND: 'text-white bg-error',
   ACTIVE: 'text-white bg-green',
 };
-
-// const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-//   '& .MuiDialogContent-root': {
-//     padding: theme.spacing(2),
-//   },
-//   '& .MuiDialogActions-root': {
-//     padding: theme.spacing(1),
-//   },
-// }));
 
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
@@ -82,8 +70,31 @@ BootstrapDialogTitle.propTypes = {
 const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
-  const [createUrl, setCreateUrl] = useState(true);
-  const history = useHistory();
+  const [createUrl, setCreateUrl] = useState(false);
+  const [updateUrl, setUpdateUrl] = useState({open:false, item:{}});
+  const [utmFiels, setUtmFields] = useState({
+    SOURCE:[], 
+    CAMPAIGN:[],
+    MEDIUM:[],
+    CONTENT:[]
+  });
+
+  useEffect(() => {
+    const getUtm = async () => {
+      try {
+        const { data } = await bc.marketing().getAcademyUtm();
+
+        data.map((item)=>{
+          utmFiels[item.utm_type].push(item);
+        });
+
+      } catch (error) {
+
+        return error;
+      }
+    };
+    getUtm();
+  }, []);
 
   const columns = [
     {
@@ -204,7 +215,7 @@ const Leads = () => {
               </Tooltip>
               <Tooltip title="Edit URL">
                   <IconButton onClick={() => {
-                    if (item.id) history.push(`/growth/urls/${item.slug}`)
+                    if (item.id) setUpdateUrl({open:true, item})
                   }}>
                     <Icon>edit</Icon>
                   </IconButton>
@@ -218,6 +229,7 @@ const Leads = () => {
 
   const handleClose = () => {
     setCreateUrl(false);
+    setUpdateUrl({open:false, item:{}})
   }
   
   return (
@@ -233,26 +245,15 @@ const Leads = () => {
             />
           </div>
           <div className="">
-            <Link
-              to="/growth/newshort"
+            <Button
+              variant="contained"
               color="primary"
-              className="btn btn-primary"
+              onClick={() => setCreateUrl(true)}
             >
-              <Button variant="contained" color="primary">
-                Add new url
-              </Button>
-            </Link>
+              Add new url
+            </Button>
           </div>
         </div>
-      </div>
-      <div className="add-new-url" style={{ marginBottom: "15px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setCreateUrl(true)}
-        >
-          Create new url
-        </Button>
       </div>
       <div>
         <SmartMUIDataTable
@@ -270,39 +271,27 @@ const Leads = () => {
           }}
         />
       </div>
-      {/* ADD URL DIALOG */}
-      {/* <Dialog
-        open={createUrl}
-        onClose={() => setCreateUrl(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <IconButton
-          size="small"
-          onClick={() => {
-            setCreateUrl(false);
-          }}
-        >
-          <Icon>close</Icon>
-        </IconButton>
-        <DialogActions>
-          <UrlForm />
-        </DialogActions>
-      </Dialog> */}
+
+      {/* ADD AND UPDATE URL DIALOG */}
       <Dialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        open={createUrl}
+        open={createUrl || updateUrl.open}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} />
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        />
         <Grid md={12}>
-          <UrlForm />
-        </Grid>
-        <Grid md={12}>
-          <UpdateUrl />
+          {createUrl ? (
+            <UrlForm utmFiels={utmFiels} />
+          ) : (
+            <UpdateUrl item={updateUrl.item} handleClose={handleClose} />
+          )}
         </Grid>
       </Dialog>
-      {/* ADD URL DIALOG */}
+      {/* ADD AND UPDATE URL DIALOG */}
+
       <Dialog
         open={openDialog.open}
         onClose={() => setOpenDialog({ msg: "", open: false })}
