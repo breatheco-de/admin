@@ -19,7 +19,7 @@ const statusColors = {
   PENDING: 'text-white bg-secondary',
 };
 
-export const WebhookInfo = () => {
+export const WebhookInfo = ({ organization }) => {
   const [items, setItems] = useState([]);
   
 
@@ -79,7 +79,7 @@ export const WebhookInfo = () => {
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {item.updated_at ? dayjs(item.updated_at).fromNow(true) : '-'}
+                  {item.updated_at ? `${dayjs(item.updated_at).fromNow(true)} ago` : '-'}
                 </h5>
               </div>
             </div>
@@ -107,6 +107,10 @@ export const WebhookInfo = () => {
           size="small"
           type="text"
           variant="outlined"
+          value={organization.id !== '' ? 
+            `${process.env.REACT_APP_API_HOST}/eventbrite/webhook/${organization.id}` 
+            : 'No organization'
+          }
         />
       </Grid>
       <Grid item md={12} className="mt-2">

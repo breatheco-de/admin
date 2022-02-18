@@ -208,6 +208,10 @@ const EventList = () => {
                 setItems(data.results);
                 return data;
               }}
+              deleting={async (querys) => {
+                const { status } = await bc.events().deleteEventsBulk(querys);
+                return status;
+              }}
             />
           </div>
         </div>

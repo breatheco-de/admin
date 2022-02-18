@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import bc from "../../../services/breathecode";
 
-const UrlForm = ({ utmFiels }) => {
+const UrlForm = ({ utmFiels, handleClose, addUrl }) => {
   const [url, setUrl] = useState({
     destination: "",
   });
@@ -26,30 +26,26 @@ const UrlForm = ({ utmFiels }) => {
     destination: Yup.string().required('Please write a URL'),
   });
 
-  useEffect(() => {
-    const getUtm = async () => {
-      try {
-        const { data } = await bc.marketing().getAcademyUtm();
-
-        console.log(data);
-      } catch (error) {
-        return error;
-      }
-    };
-    getUtm();
-  }, []);
-
   const postUrl = async (values) => {
+    try {
+      const payload = {
+        ...values,
+        utm_campaign: utmCampaign,
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+      };
 
-    const payload = {
-      ...values,
-      slug: new URL(values.destination).pathname,
-      utm_campaign: utmCampaign,
-      utm_source: utmSource,
-      utm_medium: utmMedium,
-    };
+      const { data, status } = await bc.marketing().addNewShort(payload);
 
-    await bc.marketing().addNewShort(payload);
+      if(status >= 200 && status < 300){
+        addUrl(data);
+        handleClose();
+
+      }
+      
+    } catch (err) {
+      return err;
+    }
   };
 
   return (
