@@ -451,6 +451,13 @@ class BreatheCodeClient {
         'Academy event',
         `${this.host}/events/academy/event/${event}`,
       ),
+      deleteEventsBulk: (query) => {
+        const qs = query.join(',');
+        return axios.bcDelete(
+          'Event',
+          `${this.host}/events/academy/event?id=${qs}`,
+        );
+      },
       getAcademyEventOrganization: () => axios.bcGet(
         'Academy event',
         `${this.host}/events/academy/organization`,

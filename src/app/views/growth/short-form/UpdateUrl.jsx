@@ -25,14 +25,17 @@ const UpdateUrl = ({ item, handleClose, updateTable }) => {
 
   const postUrl = async (values) => {
 
-    const { data } = await bc.marketing().updateShort(item.slug, {
+    const { data, status } = await bc.marketing().updateShort(item.slug, {
       ...item,
       ...values,
     });
 
-    updateTable(data);
+    if(status >= 200 && status < 300){
+      updateTable(data);
 
-    handleClose();
+      handleClose();
+
+    }
 
   };
 

@@ -27,19 +27,25 @@ const UrlForm = ({ utmFiels, handleClose, addUrl }) => {
   });
 
   const postUrl = async (values) => {
+    try {
+      const payload = {
+        ...values,
+        utm_campaign: utmCampaign,
+        utm_source: utmSource,
+        utm_medium: utmMedium,
+      };
 
-    const payload = {
-      ...values,
-      utm_campaign: utmCampaign,
-      utm_source: utmSource,
-      utm_medium: utmMedium,
-    };
+      const { data, status } = await bc.marketing().addNewShort(payload);
 
-    const { data } = await bc.marketing().addNewShort(payload);
+      if(status >= 200 && status < 300){
+        addUrl(data);
+        handleClose();
 
-    addUrl(data);
-
-    handleClose();
+      }
+      
+    } catch (err) {
+      return err;
+    }
   };
 
   return (
