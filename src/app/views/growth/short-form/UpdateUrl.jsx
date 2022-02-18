@@ -10,14 +10,21 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { toast } from 'react-toastify';
 import bc from "../../../services/breathecode";
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const UpdateUrl = ({ item, handleClose, updateTable }) => {
   const [url, setUrl] = useState({
     slug: item.slug,
   });
 
-  const prefixInput = "https://4geeks.co/s/"
+  const prefixInput = "https://4geeks.co/s/";
 
   const ProfileSchema = Yup.object().shape({
     slug: Yup.string().required("Slug required"),
@@ -71,7 +78,10 @@ const UpdateUrl = ({ item, handleClose, updateTable }) => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="copy"
-                        onClick={() => {navigator.clipboard.writeText(`${prefixInput}${values.slug}`)}}
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${prefixInput}${values.slug}`);
+                          toast.success('URL copied successfuly', toastOption);
+                        }}
                       >
                         <FileCopyIcon />
                       </IconButton>
