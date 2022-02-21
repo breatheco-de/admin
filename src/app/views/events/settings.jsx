@@ -12,6 +12,7 @@ const EventSettings = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [loadingOrganization, setIsLoadingOrganization] = useState(false);
   const [status, setStatus] = useState({ color: "success", message: "" });
+  const [organizers, setOrganizers] = useState([]);
   const [organization, setOrganization] = useState({
     id:'',
     eventbrite_key:'',
@@ -21,44 +22,133 @@ const EventSettings = () => {
     sync_status: '',
   });
 
-  useEffect(() => {
-    const getOrganization = async () => {
-      try {
-        setIsLoadingOrganization(true);
-        const { data } = await bc.events().getAcademyEventOrganization();
+  const getOrganization = async () => {
+    try {
+      setIsLoadingOrganization(true);
+      const { data } = await bc.events().getAcademyEventOrganization();
 
-        if(data.detail === "Organization not found for this academy" || !data){
-          setStatus({color:'error', message:'The academy has not organization configured'});
-          setIsLoadingOrganization(false);
-          setIsCreating(true);
-          return;
-        } else if (data.eventbrite_key === "" && data.eventbrite_id === "") {
-          setStatus({
-            color: "error",
-            message: "The academy has not organization configured",
-          });
-        } else {
-          let colors = {
-            ERROR: "error",
-            PENDING: "warning",
-            WARNING: "warning",
-            PERSISTED: "success",
-            SYNCHED: "success",
-          };
-          setStatus({
-            color: colors[data.sync_status],
-            message: data.sync_status,
-          });
-        }
-
-        setOrganization({ ...data });
+      if(data.detail === "Organization not found for this academy" || !data){
+        setStatus({color:'error', message:'The academy has not organization configured'});
         setIsLoadingOrganization(false);
-      } catch (error) {
-        setIsLoadingOrganization(false);
-        return error;
+        setIsCreating(true);
+        return;
+      } else if (data.eventbrite_key === "" && data.eventbrite_id === "") {
+        setStatus({
+          color: "error",
+          message: "The academy has not organization configured",
+        });
+      } else {
+        let colors = {
+          ERROR: "error",
+          PENDING: "warning",
+          WARNING: "warning",
+          PERSISTED: "success",
+          SYNCHED: "success",
+        };
+        setStatus({
+          color: colors[data.sync_status],
+          message: data.sync_status,
+        });
       }
-    };
-    getOrganization();
+
+      setOrganization({ ...data });
+      setIsLoadingOrganization(false);
+    } catch (error) {
+      setIsLoadingOrganization(false);
+      return error;
+    }
+  };
+
+  const verifyOrganization = (data) => {
+    try {
+
+      if(data.detail === "Organization not found for this academy" || !data){
+        setStatus({color:'error', message:'The academy has not organization configured'});
+        setIsLoadingOrganization(false);
+        setIsCreating(true);
+        return;
+      } else if (data.eventbrite_key === "" && data.eventbrite_id === "") {
+        setStatus({
+          color: "error",
+          message: "The academy has not organization configured",
+        });
+      } else {
+        let colors = {
+          ERROR: "error",
+          PENDING: "warning",
+          WARNING: "warning",
+          PERSISTED: "success",
+          SYNCHED: "success",
+        };
+        setStatus({
+          color: colors[data.sync_status],
+          message: data.sync_status,
+        });
+      }
+
+      setOrganization({ ...data });
+      setIsLoadingOrganization(false);
+    } catch (error) {
+      setIsLoadingOrganization(false);
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    // const getOrganization = async () => {
+    //   try {
+    //     setIsLoadingOrganization(true);
+    //     const { data } = await bc.events().getAcademyEventOrganization();
+
+    //     if(data.detail === "Organization not found for this academy" || !data){
+    //       setStatus({color:'error', message:'The academy has not organization configured'});
+    //       setIsLoadingOrganization(false);
+    //       setIsCreating(true);
+    //       return;
+    //     } else if (data.eventbrite_key === "" && data.eventbrite_id === "") {
+    //       setStatus({
+    //         color: "error",
+    //         message: "The academy has not organization configured",
+    //       });
+    //     } else {
+    //       let colors = {
+    //         ERROR: "error",
+    //         PENDING: "warning",
+    //         WARNING: "warning",
+    //         PERSISTED: "success",
+    //         SYNCHED: "success",
+    //       };
+    //       setStatus({
+    //         color: colors[data.sync_status],
+    //         message: data.sync_status,
+    //       });
+    //     }
+
+    //     setOrganization({ ...data });
+    //     setIsLoadingOrganization(false);
+    //   } catch (error) {
+    //     setIsLoadingOrganization(false);
+    //     return error;
+    //   }
+    // };
+    // getOrganization();
+    // getOrganizers();
+
+    Promise.all([
+      bc.events().getAcademyEventOrganization(),
+      bc.events().getAcademyEventOrganizer(), 
+    ]).then((values)=>{
+      // console.log(values, 'values');
+
+      const { data: dataOrganization } = values[0];
+      verifyOrganization(dataOrganization);
+      // console.log(dataOrganization, 'dataOrganization');
+
+      const { data: dataOrganizer } = values[1];
+      // setOrganizers(dataOrganizer);
+      console.log(dataOrganizer, 'dataOrganizer');
+
+    });
   }, []);
 
   return (
