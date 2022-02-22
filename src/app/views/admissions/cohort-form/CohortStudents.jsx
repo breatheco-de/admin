@@ -60,15 +60,16 @@ const CohortStudents = ({ slug, cohortId }) => {
     getCohortStudents();
   }, [queryLimit]);
 
-  const changeStudentStatus = (value, name, studentId, i) => {
-    const s_status = {
-      role: studenList[i].role,
-      finantial_status: studenList[i].finantial_status,
-      educational_status: studenList[i].educational_status,
+  const changeStudentStatus = (value, name, studentId) => {
+    const student = studenList.find((s) => s.user.id === studentId);
+    const sStatus = {
+      role: student.role,
+      finantial_status: student.finantial_status,
+      educational_status: student.educational_status,
     };
     bc.admissions()
       .updateCohortUserInfo(cohortId, studentId, {
-        ...s_status,
+        ...sStatus,
         [name]: value,
       })
       .then((data) => {
@@ -232,7 +233,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                       variant="outlined"
                       value={s.finantial_status || ''}
                       onChange={({ target: { name, value } }) => {
-                        changeStudentStatus(value, name, s.user.id, i);
+                        changeStudentStatus(value, name, s.user.id);
                       }}
                       select
                     >
