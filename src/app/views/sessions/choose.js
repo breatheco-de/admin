@@ -31,12 +31,14 @@ const Choose = () => {
 
   const handleChange = async (event) => {
     const { role, academy } = event.target.value;
+    
+    const rolePayload = await bc.auth().getSingleRole();
 
     if (role && role !== '') {
-      choose({ role, academy });
+      choose({ role, academy, capabilities: rolePayload.data.capabilities });
       axios.defaults.headers.common.Academy = academy.id;
       const { data } = await bc.admissions().getMyAcademy();
-      localStorage.setItem('bc-session', JSON.stringify({ role, academy }));
+      localStorage.setItem('bc-session', JSON.stringify({ role, academy, capabilities: rolePayload.data.capabilities }));
       if (history.location.state && history.location.state.redirectUrl) history.push(history.location.state.redirectUrl);
       else history.push('/');
     }
