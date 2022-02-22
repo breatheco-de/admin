@@ -92,7 +92,7 @@ export const Organizers = ({ className }) => {
           {!isLoading ? (
             <TableBody>
               {organizers.map((organizer) => (
-                <TableRow>
+                <TableRow key={organizer.id}>
                   <TableCell className="pl-sm-24 capitalize" align="left">
                     {organizer.id}
                   </TableCell>
@@ -130,7 +130,7 @@ export const Organizers = ({ className }) => {
           )}
         </Table>
         {organizers.length === 0 && !isLoading && (
-          <p style={styles}> No Venues yet </p>
+          <p style={styles}> No Organizers yet </p>
         )}
       </Grid>
       {toDelete && (

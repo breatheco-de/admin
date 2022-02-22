@@ -463,6 +463,10 @@ class BreatheCodeClient {
         'Academy event',
         `${this.host}/events/academy/organization`,
       ),
+      getAcademyEventOrganizer: () => axios.bcGet(
+        'Academy event',
+        `${this.host}/events/academy/organizer`,
+      ),
       postAcademyEventOrganization: (payload) => axios.bcPost(
         'Academy event',
         `${this.host}/events/academy/organization`,
