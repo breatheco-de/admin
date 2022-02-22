@@ -13,11 +13,12 @@ const EventSettings = () => {
   const [loadingOrganization, setIsLoadingOrganization] = useState(false);
   const [status, setStatus] = useState({ color: "success", message: "" });
   const [organization, setOrganization] = useState({
-    eventbrite_key: "",
-    eventbrite_id: "",
-    status: "",
-    sync_desc: "",
-    sync_status: "",
+    id:'',
+    eventbrite_key:'',
+    eventbrite_id:'',
+    status:'',
+    sync_desc: '',
+    sync_status: '',
   });
 
   useEffect(() => {
@@ -26,11 +27,8 @@ const EventSettings = () => {
         setIsLoadingOrganization(true);
         const { data } = await bc.events().getAcademyEventOrganization();
 
-        if (!data) {
-          setStatus({
-            color: "error",
-            message: "The academy has not organization configured",
-          });
+        if(data.detail === "Organization not found for this academy" || !data){
+          setStatus({color:'error', message:'The academy has not organization configured'});
           setIsLoadingOrganization(false);
           setIsCreating(true);
           return;
@@ -85,7 +83,7 @@ const EventSettings = () => {
       </div>
       <Grid container spacing={3} className="mt-4">
         <Grid item md={7} xs={12}>
-          <WebhookInfo />
+          <WebhookInfo organization={organization}/>
         </Grid>
         <Grid item md={5} xs={12}>
           <Organizers className="mt-4" />
