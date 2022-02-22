@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import dayjs from 'dayjs';
 import capitalizeTheFirstLetter from './capitalizeTheFirstLetter';
 
 const slugSchema = (name = 'slug') => Yup.string()
@@ -48,8 +49,15 @@ const descriptionSchema = (name = 'description') => Yup.string()
 const dateSchema = (name = 'date') => Yup.date()
   .required(`${capitalizeTheFirstLetter(name)} is empty or had invalid date`);
 
-const timeSchema = (name = 'date') => Yup.date()
-  .required(`${capitalizeTheFirstLetter(name)} is empty or had invalid hour`);
+const timeSchema = (name = 'date') => Yup.mixed().test(
+  'require-error',
+  `${capitalizeTheFirstLetter(name)} is empty or had invalid hour`,
+  (value) => value && value.isValid(),
+).test(
+  'is-not-a-date',
+  'Is not a date',
+  (value) => value instanceof dayjs,
+);
 
 const selectSchema = (name = 'select', options = [], required = true) => {
   const requireError = `${capitalizeTheFirstLetter(name)} is a required field`;
@@ -61,15 +69,6 @@ const selectSchema = (name = 'select', options = [], required = true) => {
     (value) => (!required && !value) || (new RegExp(`^(${options.join('|')})$`)).test(value),
   );
 };
-
-// const selectSchema = (name = 'select', options = []) => Yup.string()
-//   .required(`${capitalizeTheFirstLetter(name)} is a required field`)
-//   .test(
-//     'invalid-option',
-//     'Invalid option',
-//     (value) => (new RegExp(`^(${options.join('|')})$`)).test(value),
-//     // (value) => /^[a-zA-Z0-9 -]+$/.test(value),
-//   );
 
 const nonZeroPositiveNumberSchema = (name) => Yup.number()
   .required(`${capitalizeTheFirstLetter(name)} is a required field`)

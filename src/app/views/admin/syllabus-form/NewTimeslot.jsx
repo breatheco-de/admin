@@ -19,6 +19,7 @@ import Time from '../../../components/Time';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import { getSession } from '../../../redux/actions/SessionActions';
+import { toISOStringFromTimezone } from '../../../../utils';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -67,6 +68,9 @@ const NewTimeslot = ({
   const saveSchedule = ({
     starting_date, starting_hour, ending_hour, recurrency_type, ...values
   }) => {
+    starting_hour = toISOStringFromTimezone(starting_hour, session.academy.timezone);
+    ending_hour = toISOStringFromTimezone(ending_hour, session.academy.timezone);
+
     const date = dayjs(starting_date).tz(session.academy.timezone);
     const start = dayjs(starting_hour).tz(session.academy.timezone)
       .year(date.year())
