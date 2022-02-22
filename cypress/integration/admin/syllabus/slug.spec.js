@@ -82,7 +82,7 @@ describe('/admin/syllabus/:slug', () => {
 
   });
 
-  context.skip('Additional Actions', () => {
+  context('Additional Actions', () => {
     it('Make public/private', () => {
       cy.mock().then(({ breathecode }) => {
         // mock requests
@@ -116,7 +116,7 @@ describe('/admin/syllabus/:slug', () => {
     })
   });
 
-  context.skip('Syllabus form', () => {
+  context('Syllabus form', () => {
     it('How many days ago', () => {
       cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
         const howManyDaysAgo = dayjs().diff(created_at, 'days')
@@ -256,7 +256,7 @@ describe('/admin/syllabus/:slug', () => {
     });
   });
 
-  context.skip('Schedule Form', () => {
+  context('Schedule Form', () => {
     it('Schedule label', () => {
       cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
     });
