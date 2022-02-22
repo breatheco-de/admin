@@ -45,8 +45,8 @@ const schema = Yup.object().shape({
   starting_hour: schemas.time('starting hour'),
   ending_hour: schemas.time('ending hour'),
   starting_date: schemas.date('starting date'),
-  recurrent: Yup.bool().required(),
-  recurrency_type: schemas.select('Recurrency type', recurrencyTypes),
+  recurrent: Yup.bool(),
+  recurrency_type: schemas.select('Recurrency type', recurrencyTypes, false),
 });
 
 const NewTimeslot = ({
@@ -58,6 +58,8 @@ const NewTimeslot = ({
     starting_date: '',
     starting_hour: '',
     ending_hour: '',
+    recurrent: false,
+    recurrency_type: '',
   };
 
   if (session?.academy?.timezone) dayjs.tz.setDefault(session.academy.timezone);
@@ -96,7 +98,7 @@ const NewTimeslot = ({
       starting_at,
       ending_at,
       recurrency_type: recurrency_type.toUpperCase(),
-    }).then(({ data }) => appendTimeslot(data)).catch(console.error);
+    }).then(({ data }) => appendTimeslot({ ...data, starting_at, ending_at })).catch(console.error);
   };
 
   return (
@@ -108,9 +110,7 @@ const NewTimeslot = ({
       <DialogTitle id="simple-dialog-title">New timeslot</DialogTitle>
       <Formik
         initialValues={initialValues}
-        // enableReinitialize
         validationSchema={schema}
-        // validate={validate}
         onSubmit={(values) => {
           saveSchedule(values);
           setIsOpen(false);
@@ -155,7 +155,6 @@ const NewTimeslot = ({
               <Checkbox
                 form="new-timeslot"
                 name="Recurrent"
-                required
                 dialog
               />
             </DialogContent>

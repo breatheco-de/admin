@@ -81,6 +81,7 @@ describe('/admin/syllabus/:slug', () => {
     });
 
   });
+
   context('Additional Actions', () => {
     it('Make public/private', () => {
       cy.mock().then(({ breathecode }) => {
@@ -114,6 +115,7 @@ describe('/admin/syllabus/:slug', () => {
       // cy.window().its('open').should('be.calledWith', 'https://build.breatheco.de/', '_blank');
     })
   });
+
   context('Syllabus form', () => {
     it('How many days ago', () => {
       cy.fixture('admissions/syllabus/slug.json').then(({ created_at }) => {
@@ -253,6 +255,7 @@ describe('/admin/syllabus/:slug', () => {
       // cy.location('pathname').should('eq', '/admissions/cohorts');
     });
   });
+
   context('Schedule Form', () => {
     it('Schedule label', () => {
       cy.get('[data-cy="schedules-label"]').should('have.text', 'Available schedules:');
@@ -276,7 +279,7 @@ describe('/admin/syllabus/:slug', () => {
       cy.get('[data-cy="new-schedule"]').should('have.text', 'New schedule');
       cy.get('[data-cy="new-schedule"]').click();
 
-      cy.testSelectField('new-schedule', 'schedule-type', ['Part time', 'Full time']);
+      cy.testSelectField('new-schedule', 'schedule-type', ['Part time', 'Full time'], undefined, true);
     });
 
     it('Check request', () => {
@@ -437,6 +440,57 @@ describe('/admin/syllabus/:slug', () => {
       cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
         cy.wrap(request.body).its('recurrent').should('eq', true);
         cy.wrap(request.body).its('recurrency_type').should('eq', 'DAILY');
+        cy.wrap(request.body).its('starting_at').should('eq', startingAt);
+        cy.wrap(request.body).its('ending_at').should('eq', endingAt);
+
+        const startingHour = dayjs(request.body.starting_at).tz(timezone).format('HH:mm');
+        const endingHour = dayjs(request.body.ending_at).tz(timezone).format('HH:mm');
+
+        cy.get('[data-cy="timeslot-detail-17"]').should('have.text',
+          `Every DAY on Monday from ${startingHour} to ${endingHour}`);
+      });
+    });
+
+    it('Check request not recurrent', () => {
+      // Don't forget 🦾
+      let startingAt = '1911-10-03T04:00:00.000Z';
+      let endingAt = '1911-10-03T06:00:00.000Z';
+
+      const startingDate = 'October 02, 1911'
+      const startingHour = '17:00 PM';
+      const endingHour = '19:00 PM';
+
+      cy.get('[data-cy="new-timeslot-4"]').click();
+
+      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
+      cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', '');
+
+      cy.get('[data-cy="new-timeslot-starting-date"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-starting-date"] input').type(startingDate).blur();
+
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').type(startingHour).blur();
+
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').focus().clear();
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').type(endingHour).blur();
+
+      // check after fill the form
+      cy.get('[data-cy="new-timeslot-recurrent"] input').should('have.value', 'false');
+      // cy.get('[data-cy="new-timeslot-recurrency-type"] input').should('have.value', '');
+      cy.get('[data-cy="new-timeslot-starting-date"] input').should('have.value', startingDate);
+      cy.get('[data-cy="new-timeslot-starting-hour"] input').should('have.value', startingHour);
+      cy.get('[data-cy="new-timeslot-ending-hour"] input').should('have.value', endingHour);
+
+      // send request
+      cy.get('[data-cy="new-timeslot-submit"]').click()
+
+      // check the payload
+      cy.wait('@postAdmissionsAcademyScheduleIdTimeslotRequest').then(({ request }) => {
+        cy.wrap(request.body).its('recurrent').should('eq', false);
+        cy.wrap(request.body).its('recurrency_type').should('eq', '');
         cy.wrap(request.body).its('starting_at').should('eq', startingAt);
         cy.wrap(request.body).its('ending_at').should('eq', endingAt);
 

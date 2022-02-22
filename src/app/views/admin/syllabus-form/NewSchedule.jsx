@@ -35,7 +35,7 @@ const scheduleTypes = ['Part time', 'Full time'];
 const schema = Yup.object().shape({
   name: schemas.name(),
   description: schemas.description(),
-  schedule_type: schemas.select('Schedule type', scheduleTypes),
+  schedule_type: schemas.select('Schedule type', scheduleTypes, true),
 });
 
 const NewSchedule = ({
@@ -62,7 +62,7 @@ const NewSchedule = ({
     >
       <DialogTitle id="simple-dialog-title">New schedule</DialogTitle>
       <Formik
-        initialValues={{}}
+        initialValues={{ schedule_type: '' }}
         validationSchema={schema}
         onSubmit={(values) => {
           saveSchedule(values);

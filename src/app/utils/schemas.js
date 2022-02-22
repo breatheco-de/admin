@@ -51,14 +51,16 @@ const dateSchema = (name = 'date') => Yup.date()
 const timeSchema = (name = 'date') => Yup.date()
   .required(`${capitalizeTheFirstLetter(name)} is empty or had invalid hour`);
 
-const selectSchema = (name = 'select', options = []) => Yup.mixed()
-  .required(`${capitalizeTheFirstLetter(name)} is a required field`)
-  // .oneOf(options, 'Invalid option');
-  .test(
+const selectSchema = (name = 'select', options = [], required = true) => {
+  const requireError = `${capitalizeTheFirstLetter(name)} is a required field`;
+  const schema = required ? Yup.mixed().required(requireError) : Yup.mixed();
+
+  return schema.test(
     'invalid-option',
     'Invalid option',
-    (value) => (new RegExp(`^(${options.join('|')})$`)).test(value),
+    (value) => (!required && !value) || (new RegExp(`^(${options.join('|')})$`)).test(value),
   );
+};
 
 // const selectSchema = (name = 'select', options = []) => Yup.string()
 //   .required(`${capitalizeTheFirstLetter(name)} is a required field`)

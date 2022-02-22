@@ -10,28 +10,28 @@ Cypress.Commands.add('testSlugField', (form='default', name='slug', value) => {
     cy.get(inputSelector).type('Defence-Against-The-Dark-Arts').blur();
     cy.get(inputSelector).should('have.value', 'Defence-Against-The-Dark-Arts');
     cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains uppercase`);
-  
+
     // http://www.robertecker.com/hp/research/leet-converter.php?lang=en
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('d3f3nc3-4641n57-7h3-d4rk-4r75').blur();
     cy.get(inputSelector).should('have.value', 'd3f3nc3-4641n57-7h3-d4rk-4r75');
     cy.get(errorSelector).should('not.exist');
-  
+
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('Defence Against The Dark Arts').blur();
     cy.get(inputSelector).should('have.value', 'Defence Against The Dark Arts');
     cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t contains spaces`);
-  
+
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('defence-against-the-dark-arts').blur();
     cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts');
     cy.get(errorSelector).should('not.exist');
-  
+
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('defence-against-the-dark-arts-').blur();
     cy.get(inputSelector).should('have.value', 'defence-against-the-dark-arts-');
     cy.get(errorSelector).should('have.text', `${capitalizeTheFirstLetter(name)} can\'t end with (-)`);
-  
+
     cy.get(inputSelector).focus().clear();
     cy.get(inputSelector).type('*>*>defence-against-the-dark-arts<*<*').blur();
     cy.get(inputSelector).should('have.value', '*>*>defence-against-the-dark-arts<*<*');
@@ -171,7 +171,7 @@ Cypress.Commands.add('testCheckboxField', (form='default', name, value=false) =>
   cy.get(inputSelector).first().should('have.value', status ? 'true' : 'false');
 });
 
-Cypress.Commands.add('testSelectField', (form='default', name, options=[], value) => {
+Cypress.Commands.add('testSelectField', (form='default', name, options=[], value, required=false) => {
   const inputSelector = `[data-cy="${form}-${name}"] input`
   const errorSelector = `[data-cy="${form}-${name}"] p`
   const requiredError = `${capitalizeTheFirstLetter(name.replace('-', ' '))} is a required field`;
@@ -183,13 +183,24 @@ Cypress.Commands.add('testSelectField', (form='default', name, options=[], value
   cy.get(inputSelector).first().focus().clear().blur();
   // cy.get(inputSelector).first().type('').blur();
   cy.get(inputSelector).first().should('have.value', '');
-  // cy.get(errorSelector).should('not.exist');
-  cy.get(errorSelector).should('have.text', requiredError);
+
+  if (required) {
+    cy.get(errorSelector).should('have.text', requiredError);
+  }
+  else {
+    cy.get(errorSelector).should('not.exist');
+  }
 
   cy.get(inputSelector).first().focus().clear().blur();
   cy.get(inputSelector).first().type('odyssey{downarrow}').blur();
   cy.get(inputSelector).first().should('have.value', '');
-  cy.get(errorSelector).should('have.text', requiredError);
+
+  if (required) {
+    cy.get(errorSelector).should('have.text', requiredError);
+  }
+  else {
+    cy.get(errorSelector).should('not.exist');
+  }
 
   for (let option of options) {
     cy.get(inputSelector).first().focus().clear();
