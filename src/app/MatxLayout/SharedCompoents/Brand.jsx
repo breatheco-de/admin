@@ -22,7 +22,7 @@ const Brand = ({ children }) => {
   return (
     <div className={clsx('flex items-center justify-between', classes.brand)}>
       <div className="flex items-center">
-        <img src="/assets/images/logo.png" alt="company-logo" />
+        <img src="/assets/images/logo.png" style={{maxHeight:"32px"}} alt="company-logo" />
       </div>
       <div
         className={clsx({
