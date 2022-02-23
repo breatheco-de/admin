@@ -36,30 +36,33 @@ const setSession = (accessToken) => {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'INIT': {
-      const { isAuthenticated, user } = action.payload;
+      const { isAuthenticated, user, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated,
         isInitialised: true,
+        capabilities,
         user,
       };
     }
     case 'LOGIN': {
-      const { user } = action.payload;
+      const { user, capabilities = [] } = action.payload;
 
       return {
         ...state,
+        capabilities,
         isAuthenticated: true,
         user,
       };
     }
     case 'CHOOSE': {
-      const { role, academy } = action.payload;
+      const { role, academy, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated: true,
+        capabilities,
         user: { ...state.user, role, academy },
       };
     }
@@ -67,15 +70,17 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: false,
+        capabilities: [],
         user: null,
       };
     }
     case 'REGISTER': {
-      const { user } = action.payload;
+      const { user, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated: true,
+        capabilities,
         user,
       };
     }
@@ -156,10 +161,10 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  const choose = ({ role, academy }) => {
-    setUserData({ ...state.user, role, academy });
+  const choose = ({ role, academy, capabilities }) => {
+    setUserData({ ...state.user, role, academy, capabilities });
     axios.defaults.headers.common.Academy = academy.id;
-    dispatch({ type: 'CHOOSE', payload: { role, academy } });
+    dispatch({ type: 'CHOOSE', payload: { role, academy, capabilities } });
   };
 
   useEffect(() => {
@@ -175,6 +180,7 @@ export const AuthProvider = ({ children }) => {
           setSession(accessToken);
           const response = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
           const user = response.data;
+          let capabilities = [];
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));
           if (!user || user.roles.length === 0) throw Error('You are not a staff member from any academy');
           else if (storedSession && typeof storedSession === 'object') {
@@ -183,15 +189,19 @@ export const AuthProvider = ({ children }) => {
           } else if (user.roles.length === 1) {
             user.role = user.roles[0];
             user.academy = user.roles[0].academy;
+
+            capabilities = await bc.auth().getSingleRole(user.role)?.data?.capabilities;
+
             localStorage.setItem(
               'bc-session',
-              JSON.stringify({ role: user.role, academy: user.academy }),
+              JSON.stringify({ role: user.role, academy: user.academy, capabilities }),
             );
           }
           dispatch({
             type: 'INIT',
             payload: {
               isAuthenticated: true,
+              capabilities,
               user,
             },
           });
@@ -200,6 +210,7 @@ export const AuthProvider = ({ children }) => {
             type: 'INIT',
             payload: {
               isAuthenticated: false,
+              capabilities: [],
               user: null,
             },
           });
@@ -210,6 +221,7 @@ export const AuthProvider = ({ children }) => {
           type: 'INIT',
           payload: {
             isAuthenticated: false,
+            capabilities: [],
             user: null,
           },
         });

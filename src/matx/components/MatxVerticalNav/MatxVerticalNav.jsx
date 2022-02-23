@@ -5,6 +5,7 @@ import TouchRipple from '@material-ui/core/ButtonBase';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import useAuth from '../../../app/hooks/useAuth';
 import MatxVerticalNavExpansionPanel from './MatxVerticalNavExpansionPanel';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -39,12 +40,20 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 }));
 
 const MatxVerticalNav = () => {
+  const { isAuthenticated, user, capabilities } = useAuth();
   const navigations = useSelector((state) => state.navigations);
   const { settings } = useSelector((state) => state.layout);
   const { mode } = settings.layout1Settings.leftSidebar;
   const classes = useStyles();
 
-  const renderLevels = (data) => data.filter((item) => settings.beta || (!settings.beta && item.beta != true)).map((item, index) => {
+  const renderLevels = (data) => data.filter((item) => {
+    let visible = true;
+    
+    if(!settings.beta && item.beta === true) return false;
+    if(Array.isArray(item.capabilities) && !item.capabilities.some(c => capabilities.includes(c))) return false;
+
+    return true;
+  }).map((item, index) => {
     if (item.type === 'label') {
       return (
         <p
