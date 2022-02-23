@@ -4,6 +4,7 @@ import {
   IconButton,
   MenuItem,
   Avatar,
+  Tooltip,
   useMediaQuery,
   Hidden,
   Switch,
@@ -14,9 +15,16 @@ import { MatxMenu } from 'matx';
 import { Link } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { merge } from 'lodash';
+import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import useAuth from 'app/hooks/useAuth';
 import history from 'history.js';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   topbar: {
@@ -120,9 +128,18 @@ const Layout1Topbar = () => {
 
           </div>
           <div className="flex items-center">
-            {/* <MatxSearchBox />
+            {/* <MatxSearchBox /> */}
 
-            <NotificationBar /> */}
+            {/* <NotificationBar />  */}
+
+            <Tooltip title="Copy current URL for sharing">
+              <IconButton onClick={() => {
+                navigator.clipboard.writeText(window.location.href + (window.location.href.indexOf('?') >= 0 ? '':'?')+`&location=${user.academy.slug}`);
+                toast.success('Website url copied successfuly', toastOption);
+              }} className="hide-on-pc">
+                <Icon>share</Icon>
+              </IconButton>
+            </Tooltip>
 
             <MatxMenu
               menuButton={(

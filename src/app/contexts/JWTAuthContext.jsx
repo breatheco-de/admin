@@ -6,8 +6,15 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import axios from 'axios.js';
 import { MatxLoading } from 'matx';
+import { toast } from 'react-toastify';
 import bc from '../services/breathecode.js';
 import { setUserData } from '../redux/actions/UserActions.js';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const initialState = {
   isAuthenticated: false,
@@ -192,7 +199,14 @@ export const AuthProvider = ({ children }) => {
           let capabilities = [];
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));
           if (!user || user.roles.length === 0) throw Error('You are not a staff member from any academy');
-          else if (storedSession && typeof storedSession === 'object') {
+          else if (urlParams.has('location')) {
+            const academyRole = user.roles.find((r) => r.academy.slug === urlParams.get('location'));
+            if (!academyRole) throw Error(`You don't have access to academy ${urlParams.get('location')}`);
+            else {
+              user.role = academyRole;
+              user.academy = academyRole.academy;
+            }
+          } else if (storedSession && typeof storedSession === 'object') {
             
             user.role = storedSession.role;
             user.academy = storedSession.academy;
@@ -231,7 +245,7 @@ export const AuthProvider = ({ children }) => {
           });
         }
       } catch (err) {
-        console.error(err);
+        toast.error(err.msg || err.message || err, toastOption);
         dispatch({
           type: 'INIT',
           payload: {
