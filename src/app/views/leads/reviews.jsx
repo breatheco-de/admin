@@ -146,16 +146,7 @@ const Reviews = () => {
           <div className="flex items-center">
             <div className="ml-3">
               <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
-              {items[i].created_at ? (
-                <>
-                  <h5 className="my-0 text-15">
-                    {dayjs(items[i].created_at).format('MM-DD-YYYY')}
-                  </h5>
-                  <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
-                </>
-              ) : (
-                <p className="mt-0">No date information</p>
-              )}
+                <p className="my-0"><small className="text-muted">{dayjs(items[i].updated_at).fromNow()}</small></p>
             </div>
           </div>
         ),

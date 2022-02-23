@@ -208,6 +208,7 @@ class BreatheCodeClient {
         payload,
       ),
       getRoles: () => axios.bcGet('Role', `${this.host}/auth/role`),
+      getSingleRole: (slug) => axios.bcGet('Role', `${this.host}/auth/role/${slug}`),
       updateAcademyStudent: (user, payload) => axios.bcPut(
         'Academy student',
         `${this.host}/auth/academy/student/${user}`,
@@ -461,6 +462,10 @@ class BreatheCodeClient {
       getAcademyEventOrganization: () => axios.bcGet(
         'Academy event',
         `${this.host}/events/academy/organization`,
+      ),
+      getAcademyEventOrganizer: () => axios.bcGet(
+        'Academy event',
+        `${this.host}/events/academy/organizer`,
       ),
       postAcademyEventOrganization: (payload) => axios.bcPost(
         'Academy event',

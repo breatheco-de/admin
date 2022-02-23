@@ -84,6 +84,7 @@ export const navigations = [
                 name: "Settings",
                 path: "/events/settings",
                 iconText: "OL",
+                capabilities: ["read_organization"],
             },
             {
                 name: "Event List",

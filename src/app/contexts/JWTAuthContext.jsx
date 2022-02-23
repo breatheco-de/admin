@@ -6,6 +6,7 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import axios from 'axios.js';
 import { MatxLoading } from 'matx';
+import bc from '../services/breathecode.js';
 import { setUserData } from '../redux/actions/UserActions.js';
 
 const initialState = {
@@ -36,30 +37,33 @@ const setSession = (accessToken) => {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'INIT': {
-      const { isAuthenticated, user } = action.payload;
+      const { isAuthenticated, user, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated,
         isInitialised: true,
+        capabilities,
         user,
       };
     }
     case 'LOGIN': {
-      const { user } = action.payload;
+      const { user, capabilities = [] } = action.payload;
 
       return {
         ...state,
+        capabilities,
         isAuthenticated: true,
         user,
       };
     }
     case 'CHOOSE': {
-      const { role, academy } = action.payload;
+      const { role, academy, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated: true,
+        capabilities,
         user: { ...state.user, role, academy },
       };
     }
@@ -67,15 +71,17 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: false,
+        capabilities: [],
         user: null,
       };
     }
     case 'REGISTER': {
-      const { user } = action.payload;
+      const { user, capabilities = [] } = action.payload;
 
       return {
         ...state,
         isAuthenticated: true,
+        capabilities,
         user,
       };
     }
@@ -111,16 +117,23 @@ export const AuthProvider = ({ children }) => {
       console.error(e);
       throw Error(message);
     }
-
+    let capabilities = [];
     const res2 = await axios.bcGet('User', `${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
     const storedSession = JSON.parse(localStorage.getItem('bc-session'));
     if (!res2.data || res2.data.roles.length === 0) throw Error('You are not a staff member from any academy');
     else if (storedSession && typeof storedSession === 'object') {
       res2.data.role = storedSession.role;
       res2.data.academy = storedSession.academy;
+
+      const resp = await bc.auth().getSingleRole(res2.data.role);
+      capabilities = resp.data.capabilities;
+
     } else if (res2.data.roles.length === 1) {
       res2.data.role = res2.data.roles[0];
       res2.data.academy = res2.data.roles[0].academy;
+      
+      const resp = await bc.auth().getSingleRole(res2.data.role);
+      capabilities = resp.data.capabilities;
     }
 
     setUserData(res2.data);
@@ -128,6 +141,7 @@ export const AuthProvider = ({ children }) => {
       type: 'LOGIN',
       payload: {
         user: res2.data,
+        capabilities,
       },
     });
   };
@@ -156,10 +170,10 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  const choose = ({ role, academy }) => {
-    setUserData({ ...state.user, role, academy });
+  const choose = ({ role, academy, capabilities }) => {
+    setUserData({ ...state.user, role, academy, capabilities });
     axios.defaults.headers.common.Academy = academy.id;
-    dispatch({ type: 'CHOOSE', payload: { role, academy } });
+    dispatch({ type: 'CHOOSE', payload: { role, academy, capabilities } });
   };
 
   useEffect(() => {
@@ -169,29 +183,40 @@ export const AuthProvider = ({ children }) => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
         if (token) accessToken = token;
-        else accessToken = window.localStorage.getItem('accessToken');
+        else accessToken = localStorage.getItem('accessToken');
 
         if (accessToken && (await isValidToken(accessToken))) {
           setSession(accessToken);
           const response = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
           const user = response.data;
+          let capabilities = [];
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));
           if (!user || user.roles.length === 0) throw Error('You are not a staff member from any academy');
           else if (storedSession && typeof storedSession === 'object') {
+            
             user.role = storedSession.role;
             user.academy = storedSession.academy;
+
+            const resp = await bc.auth().getSingleRole(user.role);
+            capabilities = resp.data.capabilities;
+
           } else if (user.roles.length === 1) {
             user.role = user.roles[0];
             user.academy = user.roles[0].academy;
+
+            const resp = await bc.auth().getSingleRole(user.role);
+            capabilities = resp.data.capabilities;
+
             localStorage.setItem(
               'bc-session',
-              JSON.stringify({ role: user.role, academy: user.academy }),
+              JSON.stringify({ role: user.role, academy: user.academy, capabilities }),
             );
           }
           dispatch({
             type: 'INIT',
             payload: {
               isAuthenticated: true,
+              capabilities,
               user,
             },
           });
@@ -200,6 +225,7 @@ export const AuthProvider = ({ children }) => {
             type: 'INIT',
             payload: {
               isAuthenticated: false,
+              capabilities: [],
               user: null,
             },
           });
@@ -210,6 +236,7 @@ export const AuthProvider = ({ children }) => {
           type: 'INIT',
           payload: {
             isAuthenticated: false,
+            capabilities: [],
             user: null,
           },
         });
