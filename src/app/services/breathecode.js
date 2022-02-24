@@ -352,11 +352,11 @@ class BreatheCodeClient {
       //     'Academy survey',
       //     `${this.host}/feedback/academy/survey${query}`,
       // ),
-      deleteSurveysBulk: (query) => {
-        const qs = query.join(',');
+      deleteSurveysBulk: (ids) => {
+        const qs = ids.join(',');
         return axios.bcDelete(
           'Academy survey',
-          `${this.host}/feedback/academy/survey/${qs}`,
+          `${this.host}/feedback/academy/survey?id=${qs}`,
         );
       },
       getSurvey: (id) => axios.bcGet(

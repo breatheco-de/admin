@@ -102,7 +102,7 @@ const AuthContext = createContext({
   ...initialState,
   method: 'Bearer',
   login: () => Promise.resolve(),
-  logout: () => {},
+  logout: () => { },
   register: () => Promise.resolve(),
 });
 
@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }) => {
     } else if (res2.data.roles.length === 1) {
       res2.data.role = res2.data.roles[0];
       res2.data.academy = res2.data.roles[0].academy;
-      
+
       const resp = await bc.auth().getSingleRole(res2.data.role);
       capabilities = resp.data.capabilities;
     }
@@ -207,7 +207,7 @@ export const AuthProvider = ({ children }) => {
               user.academy = academyRole.academy;
             }
           } else if (storedSession && typeof storedSession === 'object') {
-            
+
             user.role = storedSession.role;
             user.academy = storedSession.academy;
 
@@ -246,6 +246,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         toast.error(err.msg || err.message || err, toastOption);
+        console.error(err);
         dispatch({
           type: 'INIT',
           payload: {

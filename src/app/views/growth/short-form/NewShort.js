@@ -92,7 +92,6 @@ const NewShort = () => {
                     // validationSchema={ProfileSchema}
                     onSubmit={(newShort) => {
                         bc.marketing().addNewShort(newShort);
-                        console.log("This is the new short###", newShort);
                         history.push("/growth/urls");
                         window.location.reload();
                     }}

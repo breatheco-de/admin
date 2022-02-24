@@ -134,7 +134,7 @@ const Layout1Topbar = () => {
 
             <Tooltip title="Copy current URL for sharing">
               <IconButton onClick={() => {
-                navigator.clipboard.writeText(window.location.href + (window.location.href.indexOf('?') >= 0 ? '':'?')+`&location=${user.academy.slug}`);
+                navigator.clipboard.writeText(window.location.href + (window.location.href.indexOf('?') >= 0 ? '' : '?') + `&location=${user.academy.slug}`);
                 toast.success('Website url copied successfuly', toastOption);
               }} className="hide-on-pc">
                 <Icon>share</Icon>
@@ -155,7 +155,7 @@ const Layout1Topbar = () => {
                 </div>
               )}
             >
-              <MenuItem onClick={() => history.push('/session/choose')}>
+              <MenuItem onClick={() => history.push('/session/choose', { redirectUrl: window.location.pathname })}>
                 <div>
                   <p className="m-0">
                     Hi
