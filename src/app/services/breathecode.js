@@ -208,6 +208,7 @@ class BreatheCodeClient {
         payload,
       ),
       getRoles: () => axios.bcGet('Role', `${this.host}/auth/role`),
+      getSingleRole: (slug) => axios.bcGet('Role', `${this.host}/auth/role/${slug}`),
       updateAcademyStudent: (user, payload) => axios.bcPut(
         'Academy student',
         `${this.host}/auth/academy/student/${user}`,
@@ -351,11 +352,11 @@ class BreatheCodeClient {
       //     'Academy survey',
       //     `${this.host}/feedback/academy/survey${query}`,
       // ),
-      deleteSurveysBulk: (query) => {
-        const qs = query.join(',');
+      deleteSurveysBulk: (ids) => {
+        const qs = ids.join(',');
         return axios.bcDelete(
           'Academy survey',
-          `${this.host}/feedback/academy/survey/${qs}`,
+          `${this.host}/feedback/academy/survey?id=${qs}`,
         );
       },
       getSurvey: (id) => axios.bcGet(

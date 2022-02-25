@@ -44,6 +44,7 @@ function printAxiosResponse(object) {
   // return;
   // if (process.env.NODE_ENV === 'cypress') return;
   if (process.env.NODE_ENV === 'production') return;
+  if(typeof(object) !== 'object') throw new Error("No communication with the server")
 
   const log = [object.config.method.toUpperCase(), object.status, object.config.url];
 

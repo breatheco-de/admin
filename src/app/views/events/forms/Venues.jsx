@@ -62,7 +62,6 @@ export const Venues = ({ className }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell className="pl-sm-24">ID</TableCell>
               <TableCell className="px-0">Name</TableCell>
               <TableCell className="px-0">City</TableCell>
               <TableCell className="px-0">Updated At</TableCell>
@@ -72,11 +71,8 @@ export const Venues = ({ className }) => {
             <TableBody>
               {venues.map((venue) => (
                 <TableRow>
-                  <TableCell className="pl-sm-24 capitalize" align="left">
-                    {venue.id}
-                  </TableCell>
                   <TableCell className="pl-0 capitalize" align="left">
-                    {venue.title}
+                    {venue.title} ({venue.id})
                   </TableCell>
                   <TableCell className="pl-0 capitalize" align="left">
                     {venue.city}
