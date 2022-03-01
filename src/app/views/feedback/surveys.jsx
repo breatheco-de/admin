@@ -35,8 +35,10 @@ dayjs.extend(relativeTime);
 const stageColors = {
   INACTIVE: 'bg-gray',
   PREWORK: 'bg-secondary',
+  PENDING : 'bg-secondary',
   STARTED: 'text-white bg-warning',
   FINAL_PROJECT: 'text-white bg-error',
+  FATAL: 'bg-error',
   ENDED: 'text-white bg-green',
   DELETED: 'light-gray',
 };
@@ -54,6 +56,12 @@ const EventList = () => {
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
+
+  const isExpired = (item) => {
+    // return finalizacion < dayjs(item.datetime + item.duration)
+
+    return new Date() < dayjs(item.datetime + item.duration)
+  }
 
   const columns = [
     {
@@ -93,87 +101,257 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-        
-          if (parseInt(item.duration) === 3600) {
+          
+          // if (parseInt(item.duration) === 3600) {
             const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 1);
 
-            if (Finalizacion >= dayjs(item.datetime)) {
+            if(item.status === 'SEND' && isExpired(item)){
               return (
                 <div className="flex items-center">
                   <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  <Tooltip title={'EXPIRED'}>
+                    <small className={`border-radius-4 px-2 pt-2px${stageColors[item?.status]}`}>
+                      {'EXPIRED'}
+                    </small>
+                  </Tooltip>
+                  </div>
+                </div>
+              );
+            } else if (item.status === 'SEND') {
+              return (
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <Tooltip title={"SEND"}>
+                      <small
+                        className={`border-radius-4 px-2 pt-2px${
+                          stageColors[item?.status]
+                        }`}
+                      >
+                        {"SENT"}
+                      </small>
+                    </Tooltip>
                   </div>
                 </div>
               );
             }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
-          if (parseInt(item.duration) === 10800) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 3);
 
-            if (Finalizacion >= dayjs(item.datetime)) {
+            // if (Finalizacion >= dayjs(item.datetime)) {
               return (
                 <div className="flex items-center">
                   <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
+                  <Tooltip title={item?.status}>
+                    <small
+                      className={`border-radius-4 px-2 pt-2px text-white ${
+                        stageColors[item?.status]
+                      }`}
+                    >
+                      {item?.status}
+                    </small>
+                  </Tooltip>
+                    
                   </div>
                 </div>
               );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
-          if (parseInt(item.duration) === 86400) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 24);
+            // }
+            // return (
+            //   <div className="flex items-center">
+            //     <div className="ml-3">
+            //       <small
+            //         className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status]}`}
+            //       >
+            //         {"EXPIRED"}
+            //       </small>
+            //     </div>
+            //   </div>
+            // );
+          // }
 
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
-          if (parseInt(item.duration) === 172800) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 48);
+          // if (parseInt(item.duration) === 10800) {
+          //   const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 3);
 
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
+          //   if(item.status === 'SEND' && isExpired(Finalizacion, item)){
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //         <Tooltip title={'EXPIRED'}>
+          //           <small className={`border-radius-4 px-2 pt-2px${stageColors[item?.status]}`}>
+          //             {'EXPIRED'}
+          //           </small>
+          //         </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   } else if (item.status === 'SEND') {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           <Tooltip title={"SEND"}>
+          //             <small
+          //               className={`border-radius-4 px-2 pt-2px${
+          //                 stageColors[item?.status]
+          //               }`}
+          //             >
+          //               {"SENT"}
+          //             </small>
+          //           </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+            
+          //   if (Finalizacion >= dayjs(item.datetime)) {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           {/* <Chip size="small" label={item?.status} color={stageColors[item?.status]} /> */}
+          //           <small
+          //             className={`border-radius-4 px-2 pt-2px text-white ${
+          //               stageColors[item?.status]
+          //             }`}
+          //           >
+          //             {item?.status}
+          //           </small>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+          //   return (
+          //     <div className="flex items-center">
+          //       <div className="ml-3">
+          //         {/* <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} /> */}
+          //         <small
+          //           className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status]}`}
+          //         >
+          //           {"EXPIRED"}
+          //         </small>
+          //       </div>
+          //     </div>
+          //   );
+          // }
+          // if (parseInt(item.duration) === 86400) {
+          //   const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 24);
+
+          //   if(item.status === 'SEND' && isExpired(Finalizacion, item)){
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //         <Tooltip title={'EXPIRED'}>
+          //           <small className={`border-radius-4 px-2 pt-2px${stageColors[item?.status]}`}>
+          //             {'EXPIRED'}
+          //           </small>
+          //         </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   } else if (item.status === 'SEND') {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           <Tooltip title={"SEND"}>
+          //             <small
+          //               className={`border-radius-4 px-2 pt-2px${
+          //                 stageColors[item?.status]
+          //               }`}
+          //             >
+          //               {"SENT"}
+          //             </small>
+          //           </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+            
+          //   if (Finalizacion >= dayjs(item.datetime)) {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           {/* <Chip size="small" label={item?.status} color={stageColors[item?.status]} /> */}
+          //           <small
+          //             className={`border-radius-4 px-2 pt-2px text-white ${
+          //               stageColors[item?.status]
+          //             }`}
+          //           >
+          //             {item?.status}
+          //           </small>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+          //   return (
+          //     <div className="flex items-center">
+          //       <div className="ml-3">
+          //         {/* <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} /> */}
+          //         <small
+          //           className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status]}`}
+          //         >
+          //           {"EXPIRED"}
+          //         </small>
+          //       </div>
+          //     </div>
+          //   );
+          // }
+          // if (parseInt(item.duration) === 172800) {
+          //   const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 48);
+
+          //   if(item.status === 'SEND' && isExpired(Finalizacion, item)){
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //         <Tooltip title={'EXPIRED'}>
+          //           <small className={`border-radius-4 px-2 pt-2px${stageColors[item?.status]}`}>
+          //             {'EXPIRED'}
+          //           </small>
+          //         </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   } else if (item.status === 'SEND') {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           <Tooltip title={"SEND"}>
+          //             <small
+          //               className={`border-radius-4 px-2 pt-2px${
+          //                 stageColors[item?.status]
+          //               }`}
+          //             >
+          //               {"SENT"}
+          //             </small>
+          //           </Tooltip>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+            
+          //   if (Finalizacion >= dayjs(item.datetime)) {
+          //     return (
+          //       <div className="flex items-center">
+          //         <div className="ml-3">
+          //           {/* <Chip size="small" label={item?.status} color={stageColors[item?.status]} /> */}
+          //           <small
+          //             className={`border-radius-4 px-2 pt-2px text-white ${
+          //               stageColors[item?.status]
+          //             }`}
+          //           >
+          //             {item?.status}
+          //           </small>
+          //         </div>
+          //       </div>
+          //     );
+          //   }
+          //   return (
+          //     <div className="flex items-center">
+          //       <div className="ml-3">
+          //         {/* <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} /> */}
+          //         <small
+          //           className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status]}`}
+          //         >
+          //           {"EXPIRED"}
+          //         </small>
+          //       </div>
+          //     </div>
+          //   );
+          // }
         },
       },
     },
@@ -211,7 +389,7 @@ const EventList = () => {
                   value={parseInt(items[i].avg_score, 10) * 10}
                   variant="determinate"
                 />
-                <small className={color}>{items[i].avg_score}</small>
+                <small className={color}>{Math.round(items[i].avg_score * 100) / 100}</small>
               </div>
             );
           }

@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import StaffDetails from './StaffDetails';
+import CohortStaff from './CohortStaff';
 import DowndownMenu from '../../../components/DropdownMenu';
 import axios from '../../../../axios';
 
@@ -164,7 +165,7 @@ const Staff = () => {
         </Grid>
         {member?.role.name.includes('Teacher') && (
           <Grid item md={7} xs={12}>
-            <StaffDetails staffId={staffId} user={member} />
+            <CohortStaff staffId={staffId} user={member} />
           </Grid>
         )}
       </Grid>
