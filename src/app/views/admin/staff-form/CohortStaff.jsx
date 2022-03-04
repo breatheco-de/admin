@@ -27,7 +27,7 @@ const propTypes = {
   staffId: PropTypes.number.isRequired,
 };
 
-const CohortStaff = ({ staffId, setCohortOptions }) => {
+const CohortStaff = ({ staffId, setCohortOptions, user }) => {
   const [setMsg] = useState({ alert: false, type: '', text: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
@@ -43,18 +43,29 @@ const CohortStaff = ({ staffId, setCohortOptions }) => {
         users: staffId,
       })
       .then(async ({ data }) => {
-        const { surveys } = await bc.feedback().getSurveys();
-        console.log(surveys);
+        const { data: surveysData } = await bc.feedback().getSurveys();
+        console.log(surveysData);
         setIsLoading(false);
         if (data.length < 1) {
           setStdCohorts([]);
         } else {
+          data.forEach((item, index, arr)=>{
+            arr[index].survey = surveysData.filter(p => p.cohort.slug == item.cohort.slug);
+            arr[index].surveyScore = findAverage(arr[index].survey, "avg_score");
+          });
           setStdCohorts(data);
           setCohortOptions(data);
         }
       })
       .catch((error) => error);
   };
+
+  const findAverage = (arr, attr) => {
+    const { length } = arr;
+    return arr.reduce((acc, val) => {
+      return Math.round((acc + (val[attr]/length)) * 100) / 100
+    }, 0);
+ };
 
   useEffect(() => {
     getStudentCohorts();
@@ -108,8 +119,8 @@ const CohortStaff = ({ staffId, setCohortOptions }) => {
         <Grid lg={3} md={3} sm={3} xs={3}>
           <Card className="p-4">
             <div className="flex-column items-center ">
-              <h3>8/10</h3>
-              <p>Kenny Bell</p>
+              <h3>{`${findAverage(stdCohorts, "surveyScore")}/10`}</h3>
+              <p>{`${user?.user.first_name} ${user?.user.last_name}`}</p>
             </div>
           </Card>
         </Grid>
@@ -218,7 +229,7 @@ const CohortStaff = ({ staffId, setCohortOptions }) => {
                     xs={4}
                     className="text-center"
                   >
-                    <div>{`Rating:8/10`}</div>
+                    <div>{`Rating: ${s.surveyScore}/10`}</div>
                   </Grid>
                   <Grid
                     item
