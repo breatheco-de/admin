@@ -12,8 +12,8 @@ import {
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
-import MentorDetails from './MentorDetails';
-import MentorSessions from './MentorSessions';
+import ServiceDetails from './ServiceDetails';
+import ServiceMentors from './ServiceMentors';
 import DowndownMenu from '../../../components/DropdownMenu';
 
 import { CopyDialog } from './staff-utils/Dialog';
@@ -22,9 +22,9 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 
 dayjs.extend(LocalizedFormat);
 
-const Mentors = () => {
-  const { staffId } = useParams();
-  const [mentor, setMentor] = useState(null);
+const Services = () => {
+  const { serviceID } = useParams();
+  const [service, setService] = useState(null);
   const [dialogState, setDialogState] = useState({
     openDialog: false,
     title: '',
@@ -37,12 +37,12 @@ const Mentors = () => {
     openDialog: false,
   });
 
-  const getMemberById = () => {
+  const getServiceById = () => {
     bc.mentorship()
-      .getSingleAcademyMentor(staffId)
+      .getSingleService(serviceID)
       .then(({ data }) => {
-        // console.log('this should be the mentor.', data);
-        setMentor(data);
+        // console.log('this should be the service.', data);
+        setService(data);
       })
       .catch((error) => error);
   };
@@ -91,7 +91,7 @@ const Mentors = () => {
   ];
 
   useEffect(() => {
-    getMemberById();
+    getServiceById();
   }, []);
 
   return (
@@ -129,11 +129,7 @@ const Mentors = () => {
         />
         {/* <ActionsDialog /> */}
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">{mentor && mentor.user.first_name + mentor.user.last_name}</h3>
-          <div className="flex">
-            Member since:
-            {dayjs(mentor?.created_at).format('LL')}
-          </div>
+          <h3 className="mt-0 mb-4 font-medium text-28">{service && service.name}</h3>
         </div>
         <DowndownMenu
           options={options}
@@ -159,16 +155,16 @@ const Mentors = () => {
 
       <Grid container spacing={3}>
         <Grid item md={5} xs={12}>
-          {mentor === null ? 'loading'
-            : <MentorDetails staffId={staffId} user={mentor} />}
+          {service === null ? 'loading'
+            : <ServiceDetails serviceID={serviceID} service={service} />}
         </Grid>
         <Grid item md={7} xs={12}>
-          {mentor === null ? 'loading'
-            : <MentorSessions staffId={staffId} user={mentor} />}
+          {service === null ? 'loading'
+            : <ServiceMentors serviceID={serviceID} service={service} />}
         </Grid>
       </Grid>
     </div>
   );
 };
 
-export default Mentors;
+export default Services;

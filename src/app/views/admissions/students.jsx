@@ -182,29 +182,29 @@ const Students = () => {
             // console.log('This is the original query', querys);
             // console.log('This is the query state', querys);
             // console.log('This is the results from the query: ', data.results);
-            const filteredResults = data.results.filter((student) => {
-              const queryArr = Object.entries(querys).filter((val) => !val.includes(null));
-              for (let i = 0; i < queryArr.length; i += 1) {
-                const key = 0; // used to access keys
-                const prop = 1; // used to access key properties
-                if (queryArr[i][key] in student) {
-                  const queryKey = queryArr[i][key];
-                  const queryValue = queryArr[i][prop];
-                  if (student[queryKey].toLowerCase()
-                    .startsWith(queryValue.slice(0, Math.max(queryValue.length - 1, 1)))) {
-                    return student;
-                  } if (queryValue.includes('@') && student.email === queryValue) {
-                    return student;
-                  } if (queryValue.length === 10 && student.phone === queryValue) {
-                    return student;
-                  }
-                } else {
-                  return student;
-                }
-              }
-            });
-            console.log(filteredResults);
-            setItems(filteredResults);
+            // const filteredResults = data.results.filter((student) => {
+            //   const queryArr = Object.entries(querys).filter((val) => !val.includes(null));
+            //   for (let i = 0; i < queryArr.length; i += 1) {
+            //     const key = 0; // used to access keys
+            //     const prop = 1; // used to access key properties
+            //     if (queryArr[i][key] in student) {
+            //       const queryKey = queryArr[i][key];
+            //       const queryValue = queryArr[i][prop];
+            //       if (student[queryKey].toLowerCase()
+            //         .startsWith(queryValue.slice(0, Math.max(queryValue.length - 1, 1)))) {
+            //         return student;
+            //       } if (queryValue.includes('@') && student.email === queryValue) {
+            //         return student;
+            //       } if (queryValue.length === 10 && student.phone === queryValue) {
+            //         return student;
+            //       }
+            //     } else {
+            //       return student;
+            //     }
+            //   }
+            // });
+            // console.log(filteredResults);
+            setItems(data);
             return data;
           }}
           deleting={async (querys) => {

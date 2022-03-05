@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/mentors/staff/new',
     exact: true,
-    component: React.lazy(() => import('./staff-form/NewStaff')),
+    component: React.lazy(() => import('./staff-form/NewMentor')),
   },
   {
     path: '/mentors/staff/:staffId',
@@ -25,6 +25,11 @@ const routes = [
     path: '/mentors/services',
     exact: true,
     component: React.lazy(() => import('./services')),
+  },
+  {
+    path: '/mentors/services/:serviceID',
+    exact: true,
+    component: React.lazy(() => import('./service-details')),
   },
 ];
 

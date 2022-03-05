@@ -265,13 +265,59 @@ class BreatheCodeClient {
 
   mentorship() {
     return {
-      getAcademyMentor: (query) => {
+      getAcademyMentors: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
           'Academy mentor',
           `${this.host}/mentorship/academy/mentor${query ? `?${qs}` : ''}`,
         );
       },
+      getAllMentorSessions: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy mentor sessions',
+          `${this.host}/mentorship/academy/session${query ? `?${qs}` : ''}`,
+        );
+      },
+      getSingleMentorSessions: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy single mentor sessions',
+          `${this.host}/mentorship/academy/session${query ? `?${qs}` : ''}`,
+        );
+      },
+      getAllServices: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          'Academy services',
+          `${this.host}/mentorship/academy/service${query ? `?${qs}` : ''}`,
+        );
+      },
+      getSingleService: (serviceId) => {
+        return axios.bcGet(
+          'Single Academy service',
+          `${this.host}/mentorship/academy/service/${serviceId}`,
+        );
+      },
+      getSingleAcademyMentor: (mentorID) => axios.bcGet(
+        'Academy mentor',
+        `${this.host}/mentorship/academy/mentor/${mentorID}`,
+      ),
+      updateAcademyMentor: (user, payload) => axios.bcPut(
+        'Academy mentor',
+        `${this.host}/mentorship/academy/mentor/${user}`,
+        payload,
+      ),
+      updateAcademyService: (service, payload) => axios.bcPut(
+        'Academy service',
+        `${this.host}/mentorship/academy/service/${service}`,
+        payload,
+      ),
+      addAcademyMentor: (payload) => axios.bcPost(
+        'Academy mentor',
+        `${this.host}/mentorship/academy/mentor`,
+        payload,
+      ),
     };
   }
 

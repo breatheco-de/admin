@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Button, Grow, Icon, IconButton, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import MUIDataTable from 'mui-datatables';
 import { MatxLoading } from 'matx';
-import {
-  Grow, Icon, IconButton, TextField, Button,
-} from '@material-ui/core';
+import MUIDataTable from 'mui-datatables';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useQuery } from '../hooks/useQuery';
 import { DownloadCsv } from './DownloadCsv';
 import BulkDelete from './ToolBar/BulkDelete';
@@ -46,6 +44,11 @@ export const SmartMUIDataTable = (props) => {
     limit: query.get('limit') || 10,
     offset: query.get('offset') || 0,
   });
+  console.log('Props items', props.items);
+  if (!Array.isArray(props.items)) {
+    console.log('SmartMUIDataTable.props.items:', props.items);
+    throw Error('Property items must be an array on SmartMUIDataTable');
+  }
 
   const loadData = () => {
     setIsLoading(true);
@@ -126,6 +129,7 @@ export const SmartMUIDataTable = (props) => {
           elevation: 0,
           count: table.count,
           page: table.page,
+          selectableRows: props.selectableRows,
           selectableRowsHeader: false,
           rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
           rowsPerPageOptions: [10, 20, 40, 80, 100],
@@ -288,10 +292,14 @@ export const SmartMUIDataTable = (props) => {
 SmartMUIDataTable.propTypes = {
   title: PropTypes.string,
   items: PropTypes.array,
+  selectableRows: PropTypes.bool,
   columns: PropTypes.any,
   search: PropTypes.any,
   options: PropTypes.object,
   view: PropTypes.string,
   historyReplace: PropTypes.string,
   children: PropTypes.element,
+};
+SmartMUIDataTable.defaultProps = {
+  selectableRows: true,
 };

@@ -1,102 +1,69 @@
-import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Button,
-  Card,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-  List,
+  Card, Dialog, DialogTitle, Divider, Grid, List,
   ListItem,
-  ListItemText,
-  DialogTitle,
-  Dialog,
+  ListItemText, MenuItem, TextField
 } from '@material-ui/core';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
-import DowndownMenu from '../../../components/DropdownMenu';
-
 
 const propTypes = {
-  user: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
   staffId: PropTypes.string.isRequired,
 };
 
 const MentorDetails = ({ user, staffId }) => {
-  const mentor = Array.isArray(user) ? user[0] : user;
-  console.log(mentor);
+  const [roleDialog, setRoleDialog] = useState(false);
+  const [mentor, setMentor] = useState(user);
+  const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
+  const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
+
   const initialValues = {
     first_name: mentor?.user.first_name === null ? '' : mentor?.user.first_name,
     last_name: mentor?.user.last_name === null ? '' : mentor?.user.last_name,
     booking_url: mentor?.booking_url === null ? '' : mentor?.booking_url,
-    services: mentor?.service.name === null ? '' : mentor?.service.name,
+    service: mentor?.service.name === null ? '' : mentor?.service.name,
+    service_status: mentor?.service.status === null ? '' : mentor?.service.status,
+    slug: mentor?.slug === null ? '' : mentor?.slug,
     meeting_url: mentor?.user.meeting_url === null ? 'URL NOT SET' : mentor?.user.meeting_url,
     status: mentor?.status === null ? '' : mentor?.status,
+    price_per_hour: mentor?.price_per_hour === null ? '' : mentor?.price_per_hour,
   };
-  const customerInfo = [
-    {
-      title: 'First Name',
-      name: 'first_name',
-      value: initialValues.first_name,
-    },
-    {
-      title: 'Last Name',
-      name: 'last_name',
-      value: initialValues.last_name,
-    },
-    {
-      title: 'Meeting Url',
-      name: 'meeting_url',
-      value: initialValues.meeting_url,
-    },
-    {
-      title: 'Services',
-      name: 'services',
-      value: initialValues.services,
-    },
-    {
-      title: 'Status',
-      name: 'status',
-      value: initialValues.status,
-    },
-    {
-      title: 'Booking Url',
-      name: 'booking_url',
-      value: initialValues.booking_url,
-    },
-  ];
 
-  const [roleDialog, setRoleDialog] = useState(false);
-  const [roles, setRoles] = useState(null);
-  const [role, setRole] = useState('');
-  const updateMemberProfile = (values) => {
-    bc.auth()
-      .updateAcademyMember(staffId, { ...values, role: user.role.slug })
+  useEffect(() => {
+    if (mentor.syllabus) {
+      setMentorSyllabusExpertise(mentor.syllabus);
+    }
+  }, []);
+
+  const updateMentorProfile = (values) => {
+    bc.mentorship()
+      .updateAcademyMentor(staffId, { ...values, service: mentor.service.id })
       .then((data) => data)
       .catch((error) => console.error(error));
   };
-  const updateRole = (currentRole) => {
-    bc.auth()
-      .updateAcademyMember(staffId, { role: currentRole })
-      .then(({ data, status }) => {
-        if (status >= 200 && status < 300) {
-          setRole(roles.find((roleData) => roleData.slug === data.role).name);
-        } else {
-          throw Error('Could not update Role');
-        }
+
+  const updateStatus = (currentStatus) => {
+    bc.mentorship()
+      .updateAcademyMentor(staffId, {
+        status: currentStatus.toUpperCase(),
+        slug: mentor.slug,
+        price_per_hour: mentor.price_per_hour,
+        service: mentor.service.id,
       })
-      .catch((error) => error);
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setMentor({ ...mentor, ...data });
+        } else {
+          throw Error('Could not update Status');
+        }
+      });
   };
-  useEffect(() => {
-    bc.auth()
-      .getRoles()
-      .then(({ data }) => setRoles(data))
-      .catch((error) => error);
-  }, []);
+
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
@@ -108,59 +75,183 @@ const MentorDetails = ({ user, staffId }) => {
           onClick={() => setRoleDialog(true)}
           style={{ cursor: 'pointer' }}
         >
-          {role.length ? role.toUpperCase() : mentor?.user.first_name.toUpperCase()}
+          {mentor?.status ? mentor.status.toUpperCase() : 'SET STATUS'}
         </button>
       </div>
       <Divider />
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => updateMemberProfile(values)}
+        onSubmit={(values) => updateMentorProfile(values)}
         enableReinitialize
       >
-        {({ values, handleChange, handleSubmit }) => (
+        {({
+          values, handleChange, handleSubmit, setFieldValue,
+        }) => (
           <form className="p-4" onSubmit={handleSubmit}>
-            <Table className="mb-4">
-              <TableBody>
-                <TableRow>
-                  <TableCell className="pl-4">Github</TableCell>
-                  <TableCell>
-                    <div>{mentor?.user.profile.github_username}</div>
-                    {mentor?.user.profile.github_username === undefined
-                      || !mentor?.user.profile.github_username ? (
-                      <small className="px-1 py-2px bg-light-error text-red border-radius-4">
-                        GITHUB UNVERIFIED
-                      </small>
-                    ) : (
-                      <small className="px-1 py-2px bg-light-green text-green border-radius-4">
-                        GITHUB VERIFIED
-                      </small>
-                    )}
-                  </TableCell>
-                </TableRow>
-                {customerInfo.map((item) => (
-                  <TableRow key={item}>
-                    <TableCell className="pl-4">{item.title}</TableCell>
-                    <TableCell>
-                      <TextField
-                        placeholder={item.title}
-                        name={item.name}
-                        size="small"
-                        variant="outlined"
-                        defaultValue=""
-                        required
-                        value={values[item.name]}
-                        onChange={handleChange}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="flex-column items-start px-4 mb-4">
-              <Button color="primary" variant="contained" type="submit">
-                Update Mentor Details
-              </Button>
-            </div>
+
+            <Grid container spacing={3} alignItems="center">
+              <Grid item md={3} sm={4} xs={12}>
+                Slug
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Slug"
+                  name="slug"
+                  data-cy="slug"
+                  disabled
+                  size="small"
+                  variant="outlined"
+                  value={values.slug}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                First Name
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="First Name"
+                  name="first_name"
+                  data-cy="first_name"
+                  size="small"
+                  variant="outlined"
+                  value={values.first_name}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Last Name
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Last Name"
+                  name="last_name"
+                  data-cy="last_name"
+                  size="small"
+                  variant="outlined"
+                  value={values.last_name}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Meeting URL
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Meeting URL"
+                  name="meeting_url"
+                  data-cy="meeting_url"
+                  size="small"
+                  variant="outlined"
+                  value={values.meeting_url}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Booking URL
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Booking URL"
+                  name="booking_url"
+                  data-cy="booking_url"
+                  size="small"
+                  variant="outlined"
+                  value={values.booking_url}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Price per hour
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Price per hour"
+                  name="price_per_hour"
+                  data-cy="price_per_hour"
+                  size="small"
+                  variant="outlined"
+                  value={values.price_per_hour}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Service
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Service"
+                  name="service"
+                  data-cy="service"
+                  disabled
+                  size="small"
+                  variant="outlined"
+                  value={values.service}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Service Status
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Service Status"
+                  data-cy="service"
+                  size="small"
+                  fullWidth
+                  variant="outlined"
+                  value={values.service_status}
+                  onChange={(e) => {
+                    setFieldValue('service_status', e.target.value);
+                  }}
+                  select
+                >
+                  {mentorStatusChoices.map((item) => (
+                    <MenuItem value={item} key={item}>
+                      {item.toUpperCase()}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Syllabus expertise
+              </Grid>
+              <Grid item md={7} sm={4} xs={6}>
+                <AsyncAutocomplete
+                  onChange={(value) => {
+                    setMentorSyllabusExpertise(value);
+                  }}
+                  width="100%"
+                  key={mentor.syllabus}
+                  asyncSearch={async () => {
+                    const response = await bc.admissions().getAllSyllabus();
+                    return response.data.map((syl) => syl.slug);
+                  }}
+                  size="small"
+                  label="Course expertise"
+                  data-cy="course_expertise"
+                  required
+                  multiple
+                  initialValues={mentor.syllabus}
+                  debounced={false}
+                  getOptionLabel={(option) => (option)}
+                  value={mentorSyllabusExpertise}
+                />
+              </Grid>
+              <div className="flex-column items-start px-4 mb-4">
+                <Button color="primary" variant="contained" type="submit">
+                  Update Mentor Details
+                </Button>
+              </div>
+            </Grid>
           </form>
         )}
       </Formik>
@@ -169,18 +260,18 @@ const MentorDetails = ({ user, staffId }) => {
         open={roleDialog}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">Change Member Role</DialogTitle>
+        <DialogTitle id="simple-dialog-title">Change Mentor Status</DialogTitle>
         <List>
-          {roles && roles.map((presentRole) => (
+          {mentorStatusChoices && mentorStatusChoices.map((currentStatus) => (
             <ListItem
               button
               onClick={() => {
-                updateRole(presentRole.slug);
+                updateStatus(currentStatus);
                 setRoleDialog(false);
               }}
-              key={presentRole?.name}
+              key={currentStatus?.name}
             >
-              <ListItemText primary={presentRole.name.toUpperCase()} />
+              <ListItemText primary={currentStatus.toUpperCase()} />
             </ListItem>
           ))}
         </List>
