@@ -9,6 +9,7 @@ import {
   Table,
   TableHead,
   TableRow,
+  Tooltip,
   TableCell,
   TableBody,
   CircularProgress,
@@ -82,7 +83,6 @@ export const Organizers = ({ className }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell className="pl-sm-24">ID</TableCell>
               <TableCell className="px-0">Organizer</TableCell>
               <TableCell className="px-0">Academy</TableCell>
               <TableCell className="px-0">Created</TableCell>
@@ -92,15 +92,12 @@ export const Organizers = ({ className }) => {
           {!isLoading ? (
             <TableBody>
               {organizers.map((organizer) => (
-                <TableRow>
-                  <TableCell className="pl-sm-24 capitalize" align="left">
-                    {organizer.id}
-                  </TableCell>
-                  <TableCell className="pl-0 capitalize" align="left">
-                    {organizer.organization.name}
-                  </TableCell>
+                <TableRow key={organizer.id}>
                   <TableCell className="pl-0 capitalize" align="left">
                     {organizer.name}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {organizer.academy?.name || <span className="text-error">No academy connected</span>}
                   </TableCell>
                   <TableCell className="pl-0">{`${dayjs(
                     organizer.created_at
@@ -108,7 +105,8 @@ export const Organizers = ({ className }) => {
                   <TableCell className="pl-0">
                     <div className="flex items-center">
                       <div className="flex-grow" />
-                      <span>
+                        {organizer.academy ?
+                        <Tooltip title="Disconect organizer from it's current academy">
                         <IconButton
                           onClick={() => {
                             setToDelete(organizer);
@@ -117,7 +115,13 @@ export const Organizers = ({ className }) => {
                         >
                           <Icon>delete</Icon>
                         </IconButton>
-                      </span>
+                        </Tooltip>
+                        :
+                        <Tooltip title="Connect organizer to another academy">
+                        <IconButton>
+                          <Icon>add</Icon>
+                        </IconButton></Tooltip>
+                        }
                     </div>
                   </TableCell>
                 </TableRow>
@@ -130,7 +134,7 @@ export const Organizers = ({ className }) => {
           )}
         </Table>
         {organizers.length === 0 && !isLoading && (
-          <p style={styles}> No Venues yet </p>
+          <p style={styles}> No Organizers yet </p>
         )}
       </Grid>
       {toDelete && (

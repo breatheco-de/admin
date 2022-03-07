@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from 'matx';
 import {
-  Icon, 
-  IconButton, 
+  Icon,
+  IconButton,
   Tooltip,
   Dialog,
   DialogTitle,
   DialogActions,
   Button,
   Grid,
+  TableCell,
+  CustomColumn,
   Switch,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -38,9 +40,9 @@ const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle 
-      sx={{ m: 0}} 
-      style={{padding:0, display:'flex', justifyContent:'flex-end'}} 
+    <DialogTitle
+      sx={{ m: 0 }}
+      style={{ padding: 0, display: 'flex', justifyContent: 'flex-end' }}
       {...other}
     >
       {children}
@@ -71,12 +73,12 @@ const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const [createUrl, setCreateUrl] = useState(false);
-  const [updateUrl, setUpdateUrl] = useState({open:false, item:{}});
+  const [updateUrl, setUpdateUrl] = useState({ open: false, item: {} });
   const [utmFiels, setUtmFields] = useState({
-    SOURCE:[], 
-    CAMPAIGN:[],
-    MEDIUM:[],
-    CONTENT:[]
+    SOURCE: [],
+    CAMPAIGN: [],
+    MEDIUM: [],
+    CONTENT: []
   });
 
   const addUrl = (url) => {
@@ -94,7 +96,7 @@ const Leads = () => {
       try {
         const { data } = await bc.marketing().getAcademyUtm();
 
-        data.map((item)=>{
+        data.map((item) => {
           utmFiels[item.utm_type].push(item);
         });
 
@@ -119,10 +121,10 @@ const Leads = () => {
               <h5 className="my-0 text-15">
                 {short?.slug}
               </h5>
-              <small className="text-muted underline pointer" onClick={() => { 
-                  navigator.clipboard.writeText(`https://s.4geeks.co/s/${short?.slug}`);
-                  toast.success('URL copied successfuly', toastOption);
-              }}>https://s.4geeks.co/a/{short?.slug || short.slug}</small>
+              <small className="text-muted underline pointer" onClick={() => {
+                navigator.clipboard.writeText(`https://s.4geeks.co/s/${short?.slug}`);
+                toast.success('Short URL copied successfuly', toastOption);
+              }}>Copy shortened URL</small>
             </div>
           );
         },
@@ -130,15 +132,22 @@ const Leads = () => {
     },
     {
       name: 'destination_status',
-      label: 'Destination Status',
+      label: 'Destination',
       options: {
         filter: true,
         filterType: 'multiselect',
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "300px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
+            <div>
+              <div>
                 {item.destination_status_text !== null ? (
                   <Tooltip title={item.destination_status_text}>
                     <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
@@ -151,7 +160,13 @@ const Leads = () => {
                   </small>
                 )}
               </div>
-            </div>
+              <Tooltip title={item.destination}>
+                <small className="text-muted underline pointer" onClick={() => {
+                  navigator.clipboard.writeText(item.destination);
+                  toast.success('Original URL copied successfuly', toastOption);
+                }}>{item.destination.substring(0, 50)}{item.destination.length > 50 && "..."}</small>
+              </Tooltip>
+            </div >
           );
         },
       },
@@ -162,6 +177,13 @@ const Leads = () => {
       options: {
         filter: true,
         filterType: 'multiselect',
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "70px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => (
           <span>
             {items[dataIndex].hits}
@@ -170,17 +192,36 @@ const Leads = () => {
       },
     },
     {
-      name: 'active',
-      label: 'Active',
+      name: 'utms',
+      label: 'UTMs',
       options: {
-        filter: true,
-        filterType: 'multiselect',
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
 
             <div className="flex items-center">
               <div className="ml-0">
+                <span className={`ellipsis border-radius-4 px-1 text-center bg-gray`}>{item.utm_source}</span>
+                <span className={`ellipsis border-radius-4 px-1 text-center bg-gray`}>{item.utm_content}</span>
+                <span className={`ellipsis border-radius-4 px-1 text-center bg-gray`}>{item.utm_campaign}</span>
+              </div>
+            </div>
+          )
+        }
+      },
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        customBodyRenderLite: (dataIndex) => {
+          const item = items[dataIndex];
+          return (
+            <div className="flex items-center">
+
+              <Tooltip title={item.active ? "Active" : "Blocked (404)"}>
                 <Switch
                   onChange={async () => {
                     const resp = await bc.marketing().updateShort({
@@ -198,37 +239,13 @@ const Leads = () => {
                   color="secondary"
                   size="small"
                 />
-                <small>{item.active ? "Active" : "Blocked (404)"}</small>
-              </div>
-            </div>
-          )
-        }
-      },
-    },
-    {
-      name: 'action',
-      label: ' ',
-      options: {
-        filter: false,
-        customBodyRenderLite: (dataIndex) => {
-          const item = items[dataIndex];
-          return (
-            <div className="flex items-center">
-              <Tooltip title="Copy Destination URL">
-                <IconButton onClick={() => {
-                  navigator.clipboard.writeText(item.destination);
-                  toast.success('URL copied successfuly', toastOption);
-                }}
-                >
-                  <Icon>link</Icon>
-                </IconButton>
               </Tooltip>
               <Tooltip title="Edit URL">
-                  <IconButton onClick={() => {
-                    if (item.id) setUpdateUrl({open:true, item})
-                  }}>
-                    <Icon>edit</Icon>
-                  </IconButton>
+                <IconButton onClick={() => {
+                  if (item.id) setUpdateUrl({ open: true, item })
+                }}>
+                  <Icon>edit</Icon>
+                </IconButton>
               </Tooltip>
             </div>
           );
@@ -239,9 +256,9 @@ const Leads = () => {
 
   const handleClose = () => {
     setCreateUrl(false);
-    setUpdateUrl({open:false, item:{}})
+    setUpdateUrl({ open: false, item: {} })
   }
-  
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">

@@ -4,6 +4,7 @@ const routes = [
   {
     path: '/events/settings',
     exact: true,
+    capabilities: ['read_organization'],
     component: React.lazy(() => import('./settings')),
   },
   {
