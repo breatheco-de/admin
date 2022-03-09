@@ -2,22 +2,10 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
-  Divider,
-  Card,
-  TextField,
   Icon,
-  List,
-  ListItem,
-  ListItemText,
-  DialogTitle,
-  Dialog,
-  Button,
-  MenuItem,
-  DialogActions,
   IconButton,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import bc from '../../../services/breathecode';
 import ConfirmAlert from '../../../components/ConfirmAlert';
 import { getSession } from '../../../redux/actions/SessionActions';
 
@@ -35,7 +23,7 @@ const TimeslotDetails = ({ timeslot, deleteTimeslot }) => {
   };
 
   const onClickDelete = () => setDeleteDialogIsOpen(true);
-  const onAccept = () => deleteTimeslot(timeslot?.specialty_mode, timeslot?.id);
+  const onAccept = () => deleteTimeslot(timeslot?.schedule, timeslot?.id);
 
   return (
     <>

@@ -1,7 +1,6 @@
 [{
     "id": 11,
-    "academy": 4,
-    "specialty_mode": 5,
+    "schedule": 5,
     "starting_at": "2021-10-12T20:40:07Z",
     "ending_at": "2021-10-12T21:40:10Z",
     "recurrent": true,

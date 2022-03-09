@@ -108,7 +108,7 @@ const Cohorts = () => {
       options: {
         filter: true,
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
-        customBodyRenderLite: (i) => items[i]?.specialty_mode?.name,
+        customBodyRenderLite: (i) => items[i]?.schedule?.name,
       },
     },
     {

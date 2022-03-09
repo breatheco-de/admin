@@ -12,7 +12,10 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
@@ -33,8 +36,8 @@ const NewCohort = () => {
   const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
-  const [timeZone, setTimeZone] = useState("");
-  const [language, setLanguage] = useState("EN");
+  const [timeZone, setTimeZone] = useState('');
+  const [language, setLanguage] = useState('EN');
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
@@ -87,7 +90,7 @@ const NewCohort = () => {
         ...values,
         time_zone: `${timeZone}`,
         syllabus: `${syllabus.slug}.v${version.version}`,
-        specialty_mode: schedule?.id,
+        schedule: schedule?.id,
       })
       .then((data) => {
         if (data.status === 201) {
@@ -159,7 +162,6 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-
                       debounced={false}
                       onChange={(x) => setSyllabus(x)}
                       width="30%"
@@ -179,8 +181,9 @@ const NewCohort = () => {
                         onChange={(v) => setVersion(v)}
                         width="30%"
                         key={syllabus.slug}
-                        asyncSearch={() => bc.admissions()
-                          .getAllCourseSyllabus(syllabus.slug)}
+                        asyncSearch={() =>
+                          bc.admissions().getAllCourseSyllabus(syllabus.slug)
+                        }
                         size="small"
                         data-cy="version"
                         label="Version"
@@ -207,8 +210,9 @@ const NewCohort = () => {
                       if (!syllabus) {
                         return Promise.resolve([]);
                       }
-                      return bc.admissions()
-                        .getAllRelatedSchedulesById(syllabus?.id);
+                      return bc
+                        .admissions()
+                        .getAllRelatedSchedulesById(syllabus?.id, academy?.id);
                     }}
                     size="small"
                     data-cy="schedule"
@@ -229,15 +233,18 @@ const NewCohort = () => {
                     label="Language"
                     data-cy="language"
                     size="small"
-                    style ={{width: '20%'}}
+                    style={{ width: '20%' }}
                     variant="outlined"
                     value={newCohort.language}
                     onChange={languageCohort}
-                  
                     select
                   >
                     {languages.map((option) => (
-                      <MenuItem value={option.value} key={option.value} width="40%">
+                      <MenuItem
+                        value={option.value}
+                        key={option.value}
+                        width="40%"
+                      >
                         {option.value}
                       </MenuItem>
                     ))}
@@ -260,14 +267,22 @@ const NewCohort = () => {
                       autoOk
                       value={newCohort.kickoff_date}
                       format="MMMM dd, yyyy"
-                      onChange={(date) => setNewCohort({
-                        ...newCohort,
-                        kickoff_date: date,
-                      })}
+                      onChange={(date) =>
+                        setNewCohort({
+                          ...newCohort,
+                          kickoff_date: date,
+                        })
+                      }
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
+                <Grid
+                  item
+                  md={2}
+                  sm={4}
+                  xs={12}
+                  className={neverEnd ? '' : classes.neverEnd}
+                >
                   End date
                 </Grid>
                 <Grid item md={3} sm={4} xs={6}>
@@ -283,11 +298,13 @@ const NewCohort = () => {
                       size="small"
                       value={newCohort.ending_date}
                       format="MMMM dd, yyyy"
-                      onChange={(date) => setNewCohort({
-                        ...newCohort,
-                        ending_date: date,
-                        never_ends: false,
-                      })}
+                      onChange={(date) =>
+                        setNewCohort({
+                          ...newCohort,
+                          ending_date: date,
+                          never_ends: false,
+                        })
+                      }
                       disabled={!neverEnd}
                       required
                     />
@@ -295,7 +312,7 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={7} sm={4} xs={6}>
                   <FormControlLabel
-                    control={(
+                    control={
                       <Checkbox
                         checked={checked}
                         onChange={handleNeverEnd}
@@ -304,7 +321,7 @@ const NewCohort = () => {
                         color="primary"
                         className="text-left"
                       />
-                    )}
+                    }
                     label="This cohort never ends."
                   />
                 </Grid>
@@ -333,7 +350,6 @@ const NewCohort = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-
                       debounced={false}
                       onChange={(x) => setTimeZone(x)}
                       width="40%"
@@ -345,12 +361,16 @@ const NewCohort = () => {
                       getOptionLabel={(option) => `${option}`}
                       value={timeZone}
                     />
-
                   </div>
                 </Grid>
               </Grid>
               <div className="mt-6">
-                <Button color="primary" variant="contained" type="submit" data-cy="submit">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  data-cy="submit"
+                >
                   Create
                 </Button>
               </div>
