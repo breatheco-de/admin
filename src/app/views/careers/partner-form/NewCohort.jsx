@@ -186,7 +186,7 @@ const NewCohort = () => {
                         return Promise.resolve([]);
                       }
                       return bc.admissions()
-                        .getAllRelatedSchedulesById(syllabus?.id);
+                        .getAllRelatedSchedulesById(syllabus?.id, academy?.id);
                     }}
                     size="small"
                     data-cy="schedule"

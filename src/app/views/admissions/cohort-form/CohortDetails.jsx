@@ -10,7 +10,10 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import { Formik } from 'formik';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
@@ -103,17 +106,17 @@ const CohortDetails = ({
         }}
         enableReinitialize
       >
-        {({
-          values, handleChange, handleSubmit, setFieldValue,
-        }) => (
+        {({ values, handleChange, handleSubmit, setFieldValue }) => (
           <form className="p-4" onSubmit={handleSubmit}>
             <Grid container spacing={3} alignItems="center">
               {isPrivate && (
-              <Grid item md={12} sm={12} xs={12}>
-                <Alert severity="warning">
-                  <AlertTitle className="m-auto">This cohort is private</AlertTitle>
-                </Alert>
-              </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <Alert severity="warning">
+                    <AlertTitle className="m-auto">
+                      This cohort is private
+                    </AlertTitle>
+                  </Alert>
+                </Grid>
               )}
               <Grid item md={3} sm={4} xs={12}>
                 Cohort Slug
@@ -158,8 +161,11 @@ const CohortDetails = ({
                   onChange={(v) => setVersion(v)}
                   width="100%"
                   key={syllabus !== null ? syllabus.slug : ''}
-                  asyncSearch={() => bc.admissions()
-                    .getAllCourseSyllabus(syllabus?.slug, academy.id)}
+                  asyncSearch={() =>
+                    bc
+                      .admissions()
+                      .getAllCourseSyllabus(syllabus?.slug, academy.id)
+                  }
                   size="small"
                   label="Version"
                   data-cy="version"
@@ -183,8 +189,9 @@ const CohortDetails = ({
                     if (!syllabus) {
                       return Promise.resolve([]);
                     }
-                    return bc.admissions()
-                      .getAllRelatedSchedulesById(syllabus?.id);
+                    return bc
+                      .admissions()
+                      .getAllRelatedSchedulesById(syllabus?.id, academy?.id);
                   }}
                   size="small"
                   data-cy="schedule"
@@ -235,7 +242,9 @@ const CohortDetails = ({
                     autoOk
                     value={values.kickoff_date}
                     format="yyyy-MM-dd"
-                    onChange={(date) => setFieldValue('kickoff_date', date.toISOString())}
+                    onChange={(date) =>
+                      setFieldValue('kickoff_date', date.toISOString())
+                    }
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
@@ -285,7 +294,6 @@ const CohortDetails = ({
                     label="This cohort never ends"
                   />
                 </Grid>
-
               )}
 
               <Grid item md={3} sm={4} xs={12}>
@@ -324,7 +332,12 @@ const CohortDetails = ({
                   />
                 </div>
               </Grid>
-              <Button color="primary" variant="contained" type="submit" data-cy="submit">
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                data-cy="submit"
+              >
                 Save Cohort Details
               </Button>
             </Grid>
