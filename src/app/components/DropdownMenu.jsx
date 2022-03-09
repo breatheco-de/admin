@@ -1,6 +1,11 @@
 import React from 'react';
 import {
-  IconButton, Icon, Button, Grid, Menu, MenuItem,
+  IconButton,
+  Icon,
+  Button,
+  Grid,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 
 const DropdownMenu = ({
@@ -18,18 +23,15 @@ const DropdownMenu = ({
 
   return (
     <>
-      <span onClick={(e) => {
-        setOpen(!open);
-        setAnchorEl(e.currentTarget);
-      }}
+      <span
+        onClick={(e) => {
+          setOpen(!open);
+          setAnchorEl(e.currentTarget);
+        }}
       >
         {children}
       </span>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {options.map((option) => (
           <MenuItem
             key={option.value}

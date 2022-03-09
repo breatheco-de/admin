@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Button} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../services/breathecode';
 import { useQuery } from '../../hooks/useQuery';
-
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -182,7 +181,7 @@ const Leads = () => {
           </div>
           <div className="">
             <Link
-              to="/leads/list/new"
+              to="/growth/sales/new"
               color="primary"
               className="btn btn-primary"
             >
@@ -193,29 +192,27 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div>
         <SmartMUIDataTable
-            title="All Leads"
-            columns={columns}
-            items={items}
-            view="leads?"
-            singlePage=""
-            historyReplace="/leads/list"
-            search={async (querys) => {
-              const { data } = await bc.marketing()
+          title="All Leads"
+          columns={columns}
+          items={items}
+          view="leads?"
+          singlePage=""
+          historyReplace="/leads/list"
+          search={async (querys) => {
+            const { data } = await bc.marketing()
               .getAcademyLeads(querys);
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteLeadsBulk(querys);
-              return status;
-            }}
-          /> 
-        </div>
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc
+              .admissions()
+              .deleteLeadsBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );

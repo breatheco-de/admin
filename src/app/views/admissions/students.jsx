@@ -31,7 +31,7 @@ const Students = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [
@@ -123,7 +123,7 @@ const Students = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admissions/students/${item.user !== null ? item.user.id : ''}`}>
+              <Link to={`/admissions/students/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -154,36 +154,35 @@ const Students = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          <SmartMUIDataTable
-            title="All Students"
-            columns={columns}
-            items={items}
-            view="student?"
-            historyReplace="/admissions/students"
-            singlePage=""
-            options={{
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-                <AddBulkToCohort
-                  selectedRows={selectedRows}
-                  displayData={displayData}
-                  setSelectedRows={setSelectedRows}
-                  items={items}
-                />
-              ),
-            }}
-            search={async (querys) => {
-              const { data } = await bc.auth().getAcademyStudents(querys);
-              setItems(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc.admissions().deleteStudentBulk(querys);
-              return status;
-            }}
-          />
-        </div>
+      <div>
+        <SmartMUIDataTable
+          title="All Students"
+          columns={columns}
+          items={items}
+          view="student?"
+          historyReplace="/admissions/students"
+          singlePage=""
+          options={{
+            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+              <AddBulkToCohort
+                selectedRows={selectedRows}
+                displayData={displayData}
+                setSelectedRows={setSelectedRows}
+                items={items}
+              />
+            ),
+          }}
+          search={async (querys) => {
+            const { data } = await bc.auth().getAcademyStudents(querys);
+            console.log('students');
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc.admissions().deleteStudentBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );

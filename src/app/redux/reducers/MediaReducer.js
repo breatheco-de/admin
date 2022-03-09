@@ -1,4 +1,4 @@
-import { startOfMinute } from "date-fns";
+import { startOfMinute } from 'date-fns';
 import {
   GET_PRODUCT_LIST,
   GET_CATEGORY_LIST,
@@ -7,8 +7,8 @@ import {
   DELETE_MEDIA_FILE,
   CREATE_CATEGORY,
   MEDIA_SELECTED,
-  CLEAN_MEDIA_SELECTED
-} from "../actions/MediaActions";
+  CLEAN_MEDIA_SELECTED,
+} from '../actions/MediaActions';
 
 const initialState = {
   productList: [],
@@ -17,7 +17,7 @@ const initialState = {
   pagination: {},
   next: null,
   previous: null,
-  selected: []
+  selected: [],
 };
 
 const MediaReducer = function (state = initialState, action) {
@@ -64,20 +64,20 @@ const MediaReducer = function (state = initialState, action) {
     }
     case MEDIA_SELECTED: {
       return {
-        ...state, 
-        selected: action.payload
-      }
+        ...state,
+        selected: action.payload,
+      };
     }
     case CLEAN_MEDIA_SELECTED: {
       return {
         ...state,
-        selected:[],
-        refresh: true
-      }
+        selected: [],
+        refresh: true,
+      };
     }
     default: {
       return {
-        ...state
+        ...state,
       };
     }
   }

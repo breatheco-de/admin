@@ -19,7 +19,7 @@ export const addUserToCohort = (cohort_id, user_id) => (dispatch) => {
       payload: data,
     });
   }).catch((error) => {
-    console.log(error, 'Error ');
+    console.error(error, 'Error ');
   });
 };
 

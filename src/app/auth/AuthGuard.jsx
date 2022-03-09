@@ -4,24 +4,26 @@ import AppContext from '../appContext';
 import useAuth from '../hooks/useAuth';
 import axios from '../../axios';
 
-const getUserRoleAuthStatus = (pathname, user, routes) => {
+const getUserRoleAuthStatus = (pathname, user, userCapabilities, routes) => {
   const matched = routes.find((r) => r.path === pathname);
+  if (!userCapabilities || userCapabilities === undefined || userCapabilities === '') userCapabilities = [];
+  else if (typeof (userCapabilities) === 'string') userCapabilities = [userCapabilities];
 
-  const authenticated = matched && matched.auth && matched.auth.length ? matched.auth.includes(user.role) : true;
+  const authenticated = matched && matched.capabilities && matched.capabilities.length
+    ? matched.capabilities.some(c => userCapabilities.includes(c))
+    : true;
 
-  console.log('AXIOS_DEFAULT', axios);
-
-  axios.defaults.headers.common.Academy = user ? (user.academy ? user.academy.id : '') : '';
+  axios.defaults.headers.common.Academy = user && user.academy ? user.academy.id : '';
   return authenticated;
 };
 
 const AuthGuard = ({ children }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, capabilities } = useAuth();
 
   const { pathname } = useLocation();
 
   const { routes } = useContext(AppContext);
-  const isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, routes);
+  const isUserRoleAuthenticated = getUserRoleAuthStatus(pathname, user, capabilities, routes);
   const authenticated = isAuthenticated && isUserRoleAuthenticated;
 
   // IF YOU NEED ROLE BASED AUTHENTICATION,

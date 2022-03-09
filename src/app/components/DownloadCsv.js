@@ -25,25 +25,25 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const handleDownloadAll = () => {
     (() => {
       getAllPagesCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     })();
     handleClose();
   };
-  
+
   const handleDownloadSingle = () => {
     (() => {
       getSinglePageCSV()
-        .then(( data ) => {
+        .then((data) => {
           downloadFile(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     })();
     handleClose();
   };
-  
+
   return (
     <>
       <Tooltip title="csv">

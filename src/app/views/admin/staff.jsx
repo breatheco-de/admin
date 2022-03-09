@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Breadcrumb} from 'matx';
+import { Breadcrumb } from 'matx';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Avatar,
@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
-
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -37,7 +36,7 @@ const Staff = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [
@@ -175,28 +174,27 @@ const Staff = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+      <div>
         <SmartMUIDataTable
-            title="All Staff"
-            columns={columns}
-            items={userList}
-            view="staff?"
-            singlePage=""
-            historyReplace="/admin/staff"
-            search={async (querys) => {
-              const { data } = await bc.auth().getAcademyMembers(querys);
-              setUserList(data.results);
-              return data;
-            }}
-            deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStaffBulk(querys);
-              return status;
-            }}
-          />
-        </div>
+          title="All Staff"
+          columns={columns}
+          items={userList}
+          view="staff?"
+          singlePage=""
+          historyReplace="/admin/staff"
+          search={async (querys) => {
+            const { data } = await bc.auth().getAcademyMembers(querys);
+            console.log('academy members');
+            setUserList(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc
+              .admissions()
+              .deleteStaffBulk(querys);
+            return status;
+          }}
+        />
       </div>
     </div>
   );

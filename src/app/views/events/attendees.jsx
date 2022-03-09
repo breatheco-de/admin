@@ -73,7 +73,7 @@ const AttendeeList = () => {
         setItems({ ...data, page });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setIsLoading(false);
       });
     const q = { ...querys, limit: rowsPerPage, offset: page * rowsPerPage };
@@ -93,7 +93,7 @@ const AttendeeList = () => {
         setItems({ ...data });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setIsLoading(false);
       });
   };

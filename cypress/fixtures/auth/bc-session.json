@@ -1,0 +1,9 @@
+{
+  "role": "admin",
+  "academy": {
+    "id": 4,
+    "name": "4Geeks Academy Miami",
+    "slug": "downtown-miami",
+    "timezone": "America/New_York"
+  }
+}

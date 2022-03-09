@@ -1,7 +1,5 @@
-import React from "react";
+import React from 'react';
 
-const MatxSidenavContainer = ({ children }) => {
-  return <div className="relative flex h-full">{children}</div>;
-};
+const MatxSidenavContainer = ({ children }) => <div className="relative flex h-full">{children}</div>;
 
 export default MatxSidenavContainer;

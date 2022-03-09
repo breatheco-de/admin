@@ -60,11 +60,11 @@ const StaffDetails = ({ user, staffId }) => {
     bc.auth()
       .updateAcademyMember(staffId, { ...values, role: user.role.slug })
       .then((data) => data)
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
   const updateRole = (currentRole) => {
     bc.auth()
-      .updateAcademyMember(staffId, { currentRole })
+      .updateAcademyMember(staffId, { role: currentRole })
       .then(({ data, status }) => {
         if (status >= 200 && status < 300) {
           setRole(roles.find((roleData) => roleData.slug === data.role).name);

@@ -1,0 +1,49 @@
+{
+  "id": 1695,
+  "email": "jdefreitaspinto@gmail.com",
+  "first_name": "Jeferson",
+  "last_name": "De Freitas",
+  "github": {
+    "avatar_url": "https://avatars.githubusercontent.com/u/3018142?v=4",
+    "name": "Jeferson De Freitas",
+    "username": "jefer94"
+  },
+  "roles": [
+    {
+      "academy": {
+        "id": 9,
+        "name": "4Geeks Academy Uruguay",
+        "slug": "sanjose-uruguay",
+        "timezone": "America/Montevideo"
+      },
+      "role": "admin"
+    },
+    {
+      "academy": {
+        "id": 5,
+        "name": "4Geeks Academy Santiago",
+        "slug": "santiago-chile",
+        "timezone": "America/Santiago"
+      },
+      "role": "admin"
+    },
+    {
+      "academy": {
+        "id": 4,
+        "name": "4Geeks Academy Miami",
+        "slug": "downtown-miami",
+        "timezone": "America/New_York"
+      },
+      "role": "admin"
+    },
+    {
+      "academy": {
+        "id": 6,
+        "name": "4Geeks Academy Madrid",
+        "slug": "madrid-spain",
+        "timezone": "Europe/Madrid"
+      },
+      "role": "admin"
+    }
+  ]
+}

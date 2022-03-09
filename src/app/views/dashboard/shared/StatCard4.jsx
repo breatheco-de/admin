@@ -26,12 +26,11 @@ const StatCard4 = () => {
       title: 'Total Views',
     },
   ];
-
   return (
     <div>
       <Grid container spacing={3}>
-        {statList.map((item) => (
-          <Grid key={item.title} item md={6} xs={12}>
+        {statList.map((item, ind) => (
+          <Grid key={item.title} item md={4} xs={12}>
             <Card elevation={3} className="p-5 flex-column justify-center items-center">
               <div className="mb-6px">
                 <IconButton className="p-3 bg-light-gray">
@@ -39,7 +38,7 @@ const StatCard4 = () => {
                 </IconButton>
               </div>
 
-              <h3 className="mt-1 text-32">{item.amount.toLocaleString()}</h3>
+              <h3 className="mt-1 text-32">{item.value}</h3>
               <p className="m-0 text-muted">{item.title}</p>
             </Card>
           </Grid>
@@ -48,5 +47,4 @@ const StatCard4 = () => {
     </div>
   );
 };
-
 export default StatCard4;

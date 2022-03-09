@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import { Breadcrumb} from '../../../matx';
+import { Breadcrumb } from '../../../matx';
 import bc from '../../services/breathecode';
 import CopyInviteModal from '../../components/InviteDetails';
 
@@ -22,7 +22,7 @@ const Students = () => {
     bc.auth()
       .resendInvite(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [
@@ -133,22 +133,20 @@ const Students = () => {
           </div>
         </div>
       </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
-          <SmartMUIDataTable
-            title="All Invites"
-            columns={columns}
-            items={userList}
-            view="invites?"
-            singlePage=""
-            historyReplace="/admin/invites"
-            search={async (querys) => {
-              const { data } = await bc.auth().getAcademyMembers({...querys, status:"INVITED"});
-              setUserList(data.results);
-              return data;
-            }}
-          />
-        </div>
+      <div>
+        <SmartMUIDataTable
+          title="All Invites"
+          columns={columns}
+          items={userList}
+          view="invites?"
+          singlePage=""
+          historyReplace="/admin/invites"
+          search={async (querys) => {
+            const { data } = await bc.auth().getAcademyMembers({ ...querys, status: 'INVITED' });
+            setUserList(data.results);
+            return data;
+          }}
+        />
       </div>
     </div>
   );

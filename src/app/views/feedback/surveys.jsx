@@ -12,15 +12,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { addHours } from 'date-fns'
-import { Breadcrumb } from '../../../matx';
+import { addHours } from 'date-fns';
 import bc from 'app/services/breathecode';
-import {SmartMUIDataTable} from '../../components/SmartDataTable';
 import { toast } from 'react-toastify';
+import { Breadcrumb } from '../../../matx';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 
 toast.configure();
 const toastOption = {
@@ -52,7 +52,7 @@ const EventList = () => {
     bc.auth()
       .resendSurvey(user)
       .then(({ data }) => console.log(data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const columns = [
@@ -93,10 +93,9 @@ const EventList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-          // console.log(dayjs(item.datetime))
-
+        
           if (parseInt(item.duration) === 3600) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 1);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 1);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -110,13 +109,13 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
           }
           if (parseInt(item.duration) === 10800) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 3);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 3);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -130,13 +129,13 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
           }
           if (parseInt(item.duration) === 86400) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 24);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 24);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -150,13 +149,13 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
           }
           if (parseInt(item.duration) === 172800) {
-            const Finalizacion = addHours(new Date(dayjs(item.created_at)), 48);
+            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 48);
 
             if (Finalizacion >= dayjs(item.datetime)) {
               return (
@@ -170,7 +169,7 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRADO" color={stageColors[item?.status]} />
+                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
                 </div>
               </div>
             );
@@ -186,8 +185,8 @@ const EventList = () => {
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+              <h5 className="my-0 text-15">{dayjs(items[i].sent_at).format('MM-DD-YYYY')}</h5>
+              <small className="text-muted">{dayjs(items[i].sent_at).fromNow()}</small>
             </div>
           </div>
         ),
@@ -293,9 +292,7 @@ const EventList = () => {
             )}
           </div>
         </div>
-      </div>
-      <div className="overflow-auto">
-        <div className="min-w-750">
+        <div className="overflow-auto">
           <SmartMUIDataTable
             title="All Surveys"
             columns={columns}
@@ -307,6 +304,10 @@ const EventList = () => {
               const { data } = await bc.feedback().getSurveys(querys);
               setItems(data.results);
               return data;
+            }}
+            deleting={async (querys) => {
+              const { status } = await bc.feedback().deleteSurveysBulk(querys);
+              return status;
             }}
           />
         </div>

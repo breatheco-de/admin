@@ -15,6 +15,7 @@ import {
   MenuItem,
   DialogActions,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { MatxLoading } from '../../../../matx';
@@ -26,7 +27,7 @@ const propTypes = {
   stdId: PropTypes.number.isRequired,
 };
 
-const StudentCohorts = ({ stdId }) => {
+const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [setMsg] = useState({ alert: false, type: '', text: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
@@ -42,11 +43,13 @@ const StudentCohorts = ({ stdId }) => {
         users: stdId,
       })
       .then(({ data }) => {
-        console.log(data);
         setIsLoading(false);
         if (data.length < 1) {
           setStdCohorts([]);
-        } else setStdCohorts(data);
+        } else {
+          setStdCohorts(data);
+          setCohortOptions(data);
+        }
       })
       .catch((error) => error);
   };
@@ -56,17 +59,16 @@ const StudentCohorts = ({ stdId }) => {
   }, []);
 
   const changeStudentStatus = (value, name, studentId, i) => {
-    console.log(value, name, i);
     const sStatus = {
       role: stdCohorts[i].role.toUpperCase(),
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status,
+      [name]: value,
     };
-    console.log(sStatus);
+
     bc.admissions()
-      .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, { ...sStatus, [name]: value })
+      .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, sStatus)
       .then((data) => {
-        console.log(data);
         if (data.status >= 200) getStudentCohorts();
       })
       .catch((error) => error);
@@ -230,6 +232,13 @@ const StudentCohorts = ({ stdId }) => {
                     >
                       <Icon fontSize="small">delete</Icon>
                     </IconButton>
+                    <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
+                      <Tooltip title="Student Report">
+                        <IconButton>
+                          <Icon fontSize="small">info</Icon>
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
                   </div>
                 </Grid>
               </Grid>

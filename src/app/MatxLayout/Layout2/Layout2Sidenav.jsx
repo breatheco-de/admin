@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useTheme } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { setLayoutSettings } from "app/redux/actions/LayoutActions";
-import { useLocation } from "react-router-dom";
-import Sidenav from "../SharedCompoents/Sidenav";
-import Brand from "../SharedCompoents/Brand";
-import SidenavTheme from "../MatxTheme/SidenavTheme/SidenavTheme";
-import { useMediaQuery } from "@material-ui/core";
-import { merge } from "lodash";
+import React, { useEffect } from 'react';
+import { useTheme } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLayoutSettings } from 'app/redux/actions/LayoutActions';
+import { useLocation } from 'react-router-dom';
+import { useMediaQuery } from '@material-ui/core';
+import { merge } from 'lodash';
+import Sidenav from '../SharedCompoents/Sidenav';
+import Brand from '../SharedCompoents/Brand';
+import SidenavTheme from '../MatxTheme/SidenavTheme/SidenavTheme';
 
 const Layout2Sidenav = () => {
   const theme = useTheme();
@@ -15,9 +15,8 @@ const Layout2Sidenav = () => {
 
   const { pathname } = useLocation();
   const { settings } = useSelector(({ layout }) => layout);
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const sidenavTheme =
-    settings.themes[settings.layout2Settings.leftSidebar.theme] || theme;
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const sidenavTheme = settings.themes[settings.layout2Settings.leftSidebar.theme] || theme;
 
   const updateSidebarMode = (sidebarSettings) => {
     dispatch(
@@ -28,13 +27,13 @@ const Layout2Sidenav = () => {
               ...sidebarSettings,
             },
           },
-        })
-      )
+        }),
+      ),
     );
   };
 
   useEffect(() => {
-    if (isMobile) updateSidebarMode({ mode: "close" });
+    if (isMobile) updateSidebarMode({ mode: 'close' });
   }, [pathname]);
 
   return (

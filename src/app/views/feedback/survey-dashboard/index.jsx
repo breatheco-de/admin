@@ -80,7 +80,7 @@ const Survey = ({ match }) => {
         {answered && answered.length > 0 ? <Grid container spacing={2}>
           <Grid item md={4} xs={12}>
             <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? "This survey expired": `This survey expires in ${survey.expires} hours`}</AlertTitle>
+              <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
             </Alert>
             <GaugeProgressCard score={overallScore} />
             <Grid container spacing={2}>
@@ -103,7 +103,7 @@ const Survey = ({ match }) => {
         </Grid>:<Grid container spacing={2}>
           <Grid item md={4} xs={12}>
             <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">{survey && survey.expires < 0 ? "This survey expired": `This survey expires in ${survey.expires} hours`}</AlertTitle>
+              <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expired ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
             </Alert>
             <GaugeProgressCard score={0} />
             <Grid container spacing={2}>

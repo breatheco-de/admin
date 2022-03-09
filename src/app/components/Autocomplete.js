@@ -20,6 +20,7 @@ export function AsyncAutocomplete(props) {
     asyncSearch,
     children,
     prefetch = false,
+    multiple = false,
     debounced = true,
     label,
     required,
@@ -30,7 +31,6 @@ export function AsyncAutocomplete(props) {
     if (cache[searchTerm] !== undefined && debounced) {
       setOptions(cache[searchTerm]);
       setLoading(false);
-      console.log(cache);
     } else {
       asyncSearch(searchTerm)
         .then(({ data }) => {
@@ -41,9 +41,8 @@ export function AsyncAutocomplete(props) {
             ...cache,
             [searchTerm]: data,
           });
-          console.log(options);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   };
 
@@ -72,6 +71,7 @@ export function AsyncAutocomplete(props) {
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         value={value}
+        multiple={multiple}
         onChange={(e, newValue) => {
           setOpen(false);
           onChange(newValue);
@@ -120,5 +120,6 @@ AsyncAutocomplete.propTypes = {
   asyncSearch: PropTypes.func,
   value: PropTypes.any,
   required: PropTypes.bool,
+  multiple: PropTypes.bool,
   prefetch: PropTypes.bool,
 };

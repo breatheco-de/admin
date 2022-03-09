@@ -13,3 +13,10 @@
 .d-block{
     display: block !important;
 }
+
+.MuiTableCell-root{
+  word-break: unset !important;
+}
+
+.underline{ text-decoration: underline; }
+.pointer{ cursor: pointer;}

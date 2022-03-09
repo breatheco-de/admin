@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Icon, IconButton, Hidden } from "@material-ui/core";
-import clsx from "clsx";
+import React, { useState } from 'react';
+import { Icon, IconButton, Hidden } from '@material-ui/core';
+import clsx from 'clsx';
 
 const MatxToolbarMenu = ({ offsetTop, children }) => {
   const [open, setOpen] = useState(false);
@@ -12,13 +12,13 @@ const MatxToolbarMenu = ({ offsetTop, children }) => {
   return (
     <div
       className={clsx({
-        "toolbar-menu-wrap": true,
-        open: open,
+        'toolbar-menu-wrap': true,
+        open,
       })}
     >
       <Hidden mdUp>
         <IconButton onClick={handleToggle}>
-          <Icon>{open ? "close" : "more_vert"}</Icon>
+          <Icon>{open ? 'close' : 'more_vert'}</Icon>
         </IconButton>
       </Hidden>
 

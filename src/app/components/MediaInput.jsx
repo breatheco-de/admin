@@ -22,9 +22,16 @@ export const MediaInput = ({
               <Icon>collections</Icon>
             </IconButton>
           </InputAdornment>
-            )}
+        )}
       />
-      {open ? <MediaDialog openDialog={open} onClose={() => setOpen(false)} setUrl={handleChange} name={name} /> : null}
+      {open ? (
+        <MediaDialog
+          openDialog={open}
+          onClose={() => setOpen(false)}
+          setUrl={handleChange}
+          name={name}
+        />
+      ) : null}
     </>
   );
 };

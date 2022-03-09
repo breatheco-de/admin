@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import {
   Grid,
   Icon,
-  IconButton,
   Select,
   DialogTitle,
   Dialog,
@@ -13,14 +12,13 @@ import {
   DialogContent,
   DialogContentText,
   MenuItem,
-  Tooltip,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-import { getToken, getSession } from "../../../redux/actions/SessionActions"
+import { getToken, getSession } from '../../../redux/actions/SessionActions';
 import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
@@ -47,8 +45,8 @@ const useStyles = makeStyles(() => ({
 
 const stageMap = [
   {
-    value: 'ACTIVE',
-    label: 'Active',
+    value: 'STARTED',
+    label: 'Started',
   },
   {
     value: 'INACTIVE',
@@ -82,6 +80,9 @@ const Cohort = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
 
+  const token = getToken();
+  const session = getSession();
+
   const options = [
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
@@ -106,7 +107,6 @@ const Cohort = () => {
   };
 
   const updateSurvey = (event) => {
-    console.log('update survey', event.target.name, event.target.value);
     setNewSurvey({
       ...newSurvey,
       [event.target.name]: event.target.value,
@@ -122,9 +122,9 @@ const Cohort = () => {
         setCurrentDay(data.current_day);
         setCohort(data);
         setStage(data.stage);
-        setMaxSyllabusDays(data.syllabus.certificate.duration_in_days);
+        setMaxSyllabusDays(data.syllabus_version.duration_in_days);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
@@ -138,12 +138,12 @@ const Cohort = () => {
       .updateCohort(cohort.id, {
         ...cohort,
         private: !cohort.private,
-        syllabus: `${cohort.syllabus.certificate.slug}.v${cohort.syllabus.version}`,
+        syllabus: `${cohort.syllabus_version.slug}.v${cohort.syllabus_version.version}`,
       })
       .then(() => {
         setCohort({ ...cohort, private: !cohort.private });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const updateCohort = (values) => {
@@ -152,12 +152,12 @@ const Cohort = () => {
       bc.admissions()
         .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     } else {
       bc.admissions()
         .updateCohort(cohort.id, { ...values, private: cohort.private })
         .then((data) => data)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   };
 
@@ -173,8 +173,7 @@ const Cohort = () => {
         <div className="flex flex-wrap justify-between mb-6">
           <div>
             <h3 className="mt-0 mb-4 font-medium text-28">
-              Cohort:
-              {slug}
+              {`Cohort: ${slug} (id: ${cohort && cohort.id})`}
             </h3>
             <div className="flex">
               <div
@@ -193,10 +192,6 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-
-              const token = getToken();
-              const session = getSession();
-
               if (value === 'current_day') {
                 setCohortDayDialog(true);
               } else setCohortDayDialog(false);
@@ -211,9 +206,9 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`)
+                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
-                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`)
+                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`);
               }
             }}
           >
@@ -225,24 +220,25 @@ const Cohort = () => {
         </div>
         <Grid container spacing={3}>
           <Grid item md={4} xs={12}>
-            {cohort !== null ? (
+            {cohort && (
               <CohortDetails
                 slug={slug}
                 language={cohort.language || 'en'}
                 endDate={cohort.ending_date}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
-                syllabus={cohort.syllabus}
-                never_ends={cohort.never_ends}
+                specialtyMode={cohort.specialty_mode}
+                syllabusVersion={cohort.syllabus_version}
+                neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
+                timeZone={cohort.timezone}
+                onlineMeetingUrl={cohort.online_meeting_url}
                 onSubmit={updateCohort}
               />
-            ) : (
-              ''
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort !== null ? <CohortStudents slug={slug} cohortId={cohort.id} /> : ''}
+            {cohort && <CohortStudents slug={slug} cohortId={cohort.id} />}
           </Grid>
         </Grid>
       </div>
@@ -457,58 +453,6 @@ const Cohort = () => {
             </form>
           )}
         </Formik>
-      </Dialog>
-
-      <Tooltip title="Copy invite link">
-        <IconButton
-          onClick={() => {
-            setOpenDialog(true);
-          }}
-        >
-          <Icon>assignment</Icon>
-        </IconButton>
-      </Tooltip>
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        aria-labelledby="form-dialog-title"
-        fullWidth
-      >
-        <form className="p-4">
-          <DialogTitle id="form-dialog-title">Survey public URL</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item md={12} sm={12} xs={10}>
-                <TextField
-                  label="URL"
-                  name="url"
-                  size="medium"
-                  disabled
-                  fullWidth
-                  variant="outlined"
-                  value={url}
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <Grid className="p-2">
-            <DialogActions>
-              <Button
-                className="bg-primary text-white"
-                onClick={() => {
-                  navigator.clipboard.writeText(url);
-                  toast.success('Invite url copied successfuly', toastOption);
-                }}
-                autoFocus
-              >
-                Copy
-              </Button>
-              <Button color="danger" variant="contained" onClick={() => setOpenDialog(false)}>
-                Close
-              </Button>
-            </DialogActions>
-          </Grid>
-        </form>
       </Dialog>
     </>
   );
