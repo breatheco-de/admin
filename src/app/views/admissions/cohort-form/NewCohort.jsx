@@ -87,7 +87,7 @@ const NewCohort = () => {
         ...values,
         time_zone: `${timeZone}`,
         syllabus: `${syllabus.slug}.v${version.version}`,
-        specialty_mode: schedule?.id,
+        schedule: schedule?.id,
       })
       .then((data) => {
         if (data.status === 201) {
@@ -233,7 +233,7 @@ const NewCohort = () => {
                     variant="outlined"
                     value={newCohort.language}
                     onChange={languageCohort}
-                  
+
                     select
                   >
                     {languages.map((option) => (

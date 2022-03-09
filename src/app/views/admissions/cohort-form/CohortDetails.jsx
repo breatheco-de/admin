@@ -98,7 +98,7 @@ const CohortDetails = ({
           return onSubmit({
             ...values,
             syllabus: `${syllabus.slug}.v${version.version}`,
-            specialty_mode: specialtyModeId,
+            schedule: specialtyModeId,
           });
         }}
         enableReinitialize

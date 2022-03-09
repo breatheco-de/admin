@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Card,
-  Grid,
-} from '@material-ui/core';
+import { Button, Card, Grid } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import * as Yup from 'yup';
@@ -36,35 +32,35 @@ const propTypes = {
 
 const schema = Yup.object().shape({
   // academy: yup.number().required().positive().integer(),
-  // specialty_mode: yup.number().required().positive().integer(),
+  // schedule: yup.number().required().positive().integer(),
   slug: schemas.slug(),
   name: schemas.name(),
   duration_in_hours: schemas.nonZeroPositiveNumber('Total hours'),
   week_hours: schemas.nonZeroPositiveNumber('Weekly hours'),
   duration_in_days: schemas.nonZeroPositiveNumber('Total days'),
-  github_url: Yup.string().url('Invalid github url').nullable(true)
+  github_url: Yup.string()
+    .url('Invalid github url')
+    .nullable(true)
     .test(
       'invalid-github-url',
       'URL must start with https://github.com',
-      (value) => /^(https?:\/\/github\.com\/)?/i.test(value),
+      (value) => /^(https?:\/\/github\.com\/)?/i.test(value)
     ),
   logo: Yup.string().url('Invalid logo url').nullable(true),
   // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
 
 const StudentDetails = ({ syllabus, onSubmit }) => {
-  // TODO: remove this console.log
-  console.log();
   return (
     <Card className="pt-6" elevation={3}>
       {syllabus.private && (
-      <Grid item md={12} sm={12} xs={12}>
-        <Alert severity="warning">
-          <AlertTitle className="m-auto" cy-data="syllabus-private-alert">
-            This syllabus is private
-          </AlertTitle>
-        </Alert>
-      </Grid>
+        <Grid item md={12} sm={12} xs={12}>
+          <Alert severity="warning">
+            <AlertTitle className="m-auto" cy-data="syllabus-private-alert">
+              This syllabus is private
+            </AlertTitle>
+          </Alert>
+        </Grid>
       )}
       <Formik
         initialValues={syllabus}
@@ -74,9 +70,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
           setSubmitting(false);
         }}
       >
-        {({
-          isSubmitting,
-        }) => (
+        {({ isSubmitting }) => (
           <Form className="p-4">
             <Grid container spacing={3} alignItems="center">
               <Field
@@ -125,7 +119,13 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
                 placeholder="https://storage.googleapis.com/bucket/filename"
               />
               <div className="flex-column items-start px-4 mb-4">
-                <Button color="primary" variant="contained" type="submit" data-cy="submit" disabled={isSubmitting}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  data-cy="submit"
+                  disabled={isSubmitting}
+                >
                   Save Syllabus Details
                 </Button>
               </div>

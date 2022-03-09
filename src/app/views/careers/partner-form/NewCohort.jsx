@@ -10,7 +10,10 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
@@ -61,8 +64,12 @@ const NewCohort = () => {
   const postCohort = (values) => {
     bc.admissions()
       // .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`,
-      //   specialty_mode: schedule.id })
-      .addCohort({ ...values, syllabus: `${syllabus.slug}.v${version.version}`, specialty_mode: null })
+      //   schedule: schedule.id })
+      .addCohort({
+        ...values,
+        syllabus: `${syllabus.slug}.v${version.version}`,
+        schedule: null,
+      })
       .then((data) => {
         if (data.status === 201) {
           history.push('/admissions/cohorts');
@@ -149,8 +156,9 @@ const NewCohort = () => {
                         onChange={(v) => setVersion(v)}
                         width="20%"
                         key={syllabus.slug}
-                        asyncSearch={() => bc.admissions()
-                          .getAllCourseSyllabus(syllabus.slug)}
+                        asyncSearch={() =>
+                          bc.admissions().getAllCourseSyllabus(syllabus.slug)
+                        }
                         size="small"
                         data-cy="version"
                         label="Version"
@@ -205,14 +213,22 @@ const NewCohort = () => {
                       autoOk
                       value={newCohort.kickoff_date}
                       format="MMMM dd, yyyy"
-                      onChange={(date) => setNewCohort({
-                        ...newCohort,
-                        kickoff_date: date,
-                      })}
+                      onChange={(date) =>
+                        setNewCohort({
+                          ...newCohort,
+                          kickoff_date: date,
+                        })
+                      }
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
-                <Grid item md={2} sm={4} xs={12} className={neverEnd ? '' : classes.neverEnd}>
+                <Grid
+                  item
+                  md={2}
+                  sm={4}
+                  xs={12}
+                  className={neverEnd ? '' : classes.neverEnd}
+                >
                   End date
                 </Grid>
                 <Grid item md={3} sm={4} xs={12}>
@@ -228,11 +244,13 @@ const NewCohort = () => {
                       size="small"
                       value={newCohort.ending_date}
                       format="MMMM dd, yyyy"
-                      onChange={(date) => setNewCohort({
-                        ...newCohort,
-                        ending_date: date,
-                        never_ends: false,
-                      })}
+                      onChange={(date) =>
+                        setNewCohort({
+                          ...newCohort,
+                          ending_date: date,
+                          never_ends: false,
+                        })
+                      }
                       disabled={!neverEnd}
                       required
                     />
@@ -240,7 +258,7 @@ const NewCohort = () => {
                 </Grid>
                 <Grid item md={3} sm={4} xs={12}>
                   <FormControlLabel
-                    control={(
+                    control={
                       <Checkbox
                         checked={checked}
                         onChange={handleNeverEnd}
@@ -248,7 +266,7 @@ const NewCohort = () => {
                         data-cy="never-ends"
                         color="primary"
                       />
-                    )}
+                    }
                     label="This cohort never ends."
                   />
                 </Grid>

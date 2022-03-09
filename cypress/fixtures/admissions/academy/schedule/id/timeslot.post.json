@@ -1,7 +1,6 @@
 {
     "id": 17,
-    "academy": 4,
-    "specialty_mode": 4,
+    "schedule": 4,
     "recurrent": true,
     "recurrency_type": "DAILY"
 }
