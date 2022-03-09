@@ -18,9 +18,8 @@ export const ProfileForm = ({ initialValues }) => {
 
   const postAcademyStudentProfile = (values) => {
     console.log(cohort);
-    const requestValues = cohort !== null
-      ? { ...values, cohort: cohort.id, invite: true }
-      : { ...values, invite: true };
+    let requestValues = cohort !== null ? { ...values, cohort: cohort.id } : values;
+    if(typeof(requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
     
     if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) === null) {
       console.error("The email entered has formatting errors (insert a valid email address)")
