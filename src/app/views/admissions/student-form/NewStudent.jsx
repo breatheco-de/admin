@@ -69,6 +69,7 @@ const NewStudent = () => {
                                 show: true,
                                 data: {
                                   first_name: params.inputValue,
+                                  invite: true,
                                 },
                               });
                             }}
