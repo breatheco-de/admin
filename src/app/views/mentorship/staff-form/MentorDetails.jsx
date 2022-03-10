@@ -21,7 +21,6 @@ const MentorDetails = ({ user, staffId }) => {
   const [mentor, setMentor] = useState(user);
   const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
-  console.log(mentor);
   const initialValues = {
     first_name: mentor?.user.first_name || "",
     last_name: mentor?.user.last_name || "",

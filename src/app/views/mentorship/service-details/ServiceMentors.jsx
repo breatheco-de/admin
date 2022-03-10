@@ -16,7 +16,6 @@ const toastOption = {
   autoClose: 8000,
 };
 const name = (user) => {
-  // console.log('Name fn user', user);
   if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
@@ -44,7 +43,6 @@ const ServiceMentors = ({ serviceId, service }) => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const serviceMentor = allServiceMentors[dataIndex];
-          console.log(serviceMentor)
           return (
             <div className="flex items-center">
               <div className="ml-0">

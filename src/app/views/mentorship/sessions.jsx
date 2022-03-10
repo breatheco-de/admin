@@ -30,7 +30,6 @@ const Sessions = () => {
         },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
-          console.log('Item: ', item);
           return (
             <div className="flex items-center">
               <div className="">

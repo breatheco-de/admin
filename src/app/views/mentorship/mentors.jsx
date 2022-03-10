@@ -43,7 +43,6 @@ const Mentors = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const { user } = mentorList[dataIndex];
-          console.log(user);
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.profile?.avatar_url} />
