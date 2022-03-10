@@ -21,7 +21,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const statusColors = {
-  INVITED: 'text-white bg-error',
+  INVITED: 'bg-secondary text-dark',
   ACTIVE: 'text-white bg-green',
   INNACTIVE: 'text-white bg-error',
 };
@@ -33,7 +33,7 @@ const name = (user) => {
 };
 
 const Mentors = () => {
-  const [userList, setUserList] = useState([]);
+  const [mentorList, setMentorList] = useState([]);
 
   const columns = [
     {
@@ -42,31 +42,18 @@ const Mentors = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { user } = userList[dataIndex];
+          const { user } = mentorList[dataIndex];
+          console.log(user);
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.profile?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">{name(user)}</h5>
-                <small className="text-muted">{user?.email}</small>
+                {/* <small className="text-muted">{'user?.service.name'}</small> */}
               </div>
             </div>
           );
         },
-      },
-    },
-    {
-      name: 'service',
-      label: 'Service(s)',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 py-1 text-15">{userList[dataIndex].service.slug}</h5>
-            </div>
-          </div>
-        ),
       },
     },
     {
@@ -75,11 +62,11 @@ const Mentors = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
+          const item = mentorList[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
+                <small className={`border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
                   {item.status.toUpperCase()}
                 </small>
                 {item.status === 'INVITED' && (
@@ -100,7 +87,7 @@ const Mentors = () => {
           <Tooltip title="Copy booking link">
             <IconButton
               onClick={() => {
-                navigator.clipboard.writeText(userList[dataIndex].booking_url);
+                navigator.clipboard.writeText(mentorList[dataIndex].booking_url);
                 toast.success('Copied to the clipboard', toastOption);
               }}
             >
@@ -116,12 +103,12 @@ const Mentors = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => (
-          userList[dataIndex].meeting_url
+          mentorList[dataIndex].meeting_url
             ? (
               <Tooltip title="Copy booking link">
                 <IconButton
                   onClick={() => {
-                    navigator.clipboard.writeText(userList[dataIndex].booking_url);
+                    navigator.clipboard.writeText(mentorList[dataIndex].booking_url);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
@@ -139,7 +126,7 @@ const Mentors = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          const item = userList[dataIndex];
+          const item = mentorList[dataIndex];
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
@@ -179,13 +166,13 @@ const Mentors = () => {
           title="All Mentors"
           columns={columns}
           selectableRows={true}
-          items={userList}
+          items={mentorList}
           view="staff?"
           singlePage=""
           historyReplace="/mentors/staff"
           search={async (querys) => {
             const { data } = await bc.mentorship().getAcademyMentors(querys);
-            setUserList(data.results);
+            setMentorList(data.results);
             return data;
           }}
           deleting={async (querys) => {

@@ -4,12 +4,22 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 // import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-
+import {
+  Tooltip,
+  TableCell,
+} from '@material-ui/core';
 // toast.configure();
 // const toastOption = {
 //   position: toast.POSITION.BOTTOM_RIGHT,
 //   autoClose: 8000,
 // };
+const statusColors = {
+  PENDING: 'bg-secondary text-dark',
+  COMPLETED: 'text-white bg-green',
+  FAILED: 'text-white bg-error',
+  STARTED: 'text-white bg-primary',
+};
+
 
 const MentorSessions = ({ staffId, mentor }) => {
   const [sessions, setSessions] = useState([]);
@@ -28,11 +38,18 @@ const MentorSessions = ({ staffId, mentor }) => {
       options: {
         selectableRows: false, // 'single' || 'multiple'
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="ml-3">
+              <div className="ml-0">
                 <p className="my-0 text-15">{item?.mentor.service?.slug}</p>
               </div>
             </div>
@@ -45,12 +62,20 @@ const MentorSessions = ({ staffId, mentor }) => {
       label: 'Mentor',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px", padding: "10px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
             <div className="flex items-start">
-              <div className="ml-3">
-                <p className="my-0 text-15">{`${item?.mentor.user?.first_name}  ${item?.mentor.user?.last_name}`}</p>
+              <div className="ml-0">
+                <p className="my-0 text-15">{`${item?.mentor.user?.first_name}`}</p>
+                <p className="my-0 text-15">{`${item?.mentor.user?.last_name}`}</p>
               </div>
             </div>
           );
@@ -62,12 +87,20 @@ const MentorSessions = ({ staffId, mentor }) => {
       label: 'Mentee',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
             <div className="flex items-start">
-              <div className="ml-3">
-                <p className="my-0 text-15">{`${item?.mentee?.first_name}  ${item?.mentee?.last_name}`}</p>
+              <div className="ml-0">
+                <p className="my-0 text-15">{`${item?.mentee?.first_name}`}</p>
+                <p className="my-0 text-15">{` ${item?.mentee?.last_name}`}</p>
               </div>
             </div>
           );
@@ -79,12 +112,93 @@ const MentorSessions = ({ staffId, mentor }) => {
       label: 'Status',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <Tooltip title={item?.summary || 'No summary provided'}>
+              <div className="flex items-center" style={{ width: '150px' }}>
+                <div className={`ml-0 border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
+                  {item?.status}
+                </div>
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+    },
+    {
+      name: 'started_at',
+      label: 'Started At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="ml-3">
-                {item?.status}
+              <div className={'ml-0'}>
+                {item?.started_at || ''}
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'mentor_joined_at',
+      label: 'Mentor Joined At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className={'ml-0'}>
+                {item?.mentor_joined_at || ''}
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'ended_at',
+      label: 'Ended At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className={'ml-0'}>
+                {item?.ended_at || ''}
               </div>
             </div>
           );

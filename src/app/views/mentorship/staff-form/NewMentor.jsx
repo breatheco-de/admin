@@ -1,16 +1,16 @@
+import React, { useState, useEffect } from 'react';
 import {
   Button, Card, Divider, Grid, TextField,
   MenuItem,
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from '../../../hooks/useQuery';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
-import { ProfileForm } from './staff-utils/ProfileForm';
+import { MentorProfileForm } from './staff-utils/MentorProfileForm';
 
 const initialValues = {
   first_name: '',
@@ -27,6 +27,16 @@ const initialValues = {
 const filter = createFilterOptions();
 
 const NewMentor = () => {
+
+  const [serviceList, setServiceList] = useState([]);
+
+  useEffect(() => {
+    bc.mentorship().getAllServices()
+      .then((payload) => {
+        // console.log('Mentorship Service response', payload);
+        setServiceList(payload.data || []);
+      });
+  }, []);
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
@@ -45,39 +55,6 @@ const NewMentor = () => {
       ...baseData,
     },
   });
-
-  // const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
-  // const [user, setUser] = useState({
-  //   id: '',
-  //   email: '',
-  //   first_name: '',
-  //   last_name: '',
-  // });
-
-  // const [role, setRole] = useState({
-  //   slug: '',
-  //   name: '',
-  // });
-
-  // const history = useHistory();
-
-  // const postMember = (values) => {
-  //   // console.log('post member values', values);
-  //   const refactor = user.id !== '' ? { user: user.id } : { email: values.email, invite: true, ...values };
-  //   console.log('REFACTOR ', refactor);
-
-  //   bc.mentorship()
-  //     .addAcademyMentor({ ...refactor, slug: `${values.first_name.toLowerCase()}-${values.last_name.toLowerCase()}` })
-  //     .then((data) => {
-  //       setShowForm(false);
-  //       if (data.status === 201) {
-  //         setRole(null);
-  //         setUser(null);
-  //         history.push('/admin/staff');
-  //       }
-  //     })
-  //     .catch(() => setShowForm(false));
-  // };
 
   return (
     <div className="m-sm-30">
@@ -113,7 +90,7 @@ const NewMentor = () => {
               </div>
             </>
           )
-            : <ProfileForm initialValues={showForm.data} />
+            : <MentorProfileForm initialValues={showForm.data} serviceList={serviceList} />
         }
       </Card>
     </div>

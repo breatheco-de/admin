@@ -21,17 +21,18 @@ const MentorDetails = ({ user, staffId }) => {
   const [mentor, setMentor] = useState(user);
   const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
-
+  console.log(mentor);
   const initialValues = {
-    first_name: mentor?.user.first_name === null ? '' : mentor?.user.first_name,
-    last_name: mentor?.user.last_name === null ? '' : mentor?.user.last_name,
-    booking_url: mentor?.booking_url === null ? '' : mentor?.booking_url,
-    service: mentor?.service.name === null ? '' : mentor?.service.name,
-    service_status: mentor?.service.status === null ? '' : mentor?.service.status,
-    slug: mentor?.slug === null ? '' : mentor?.slug,
+    first_name: mentor?.user.first_name || "",
+    last_name: mentor?.user.last_name || "",
+    booking_url: mentor?.booking_url || "",
+    service: mentor?.service.name || "",
+    email: mentor?.email || mentor?.user.email,
+    service_status: mentor?.service.status || "",
+    slug: mentor?.slug || "",
     meeting_url: mentor?.user.meeting_url === null ? 'URL NOT SET' : mentor?.user.meeting_url,
-    status: mentor?.status === null ? '' : mentor?.status,
-    price_per_hour: mentor?.price_per_hour === null ? '' : mentor?.price_per_hour,
+    status: mentor?.status || "",
+    price_per_hour: mentor?.price_per_hour || "",
   };
 
   useEffect(() => {
@@ -133,6 +134,21 @@ const MentorDetails = ({ user, staffId }) => {
                   size="small"
                   variant="outlined"
                   value={values.last_name}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Email
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Email"
+                  name="email"
+                  data-cy="email"
+                  size="small"
+                  variant="outlined"
+                  value={values.email}
                   onChange={handleChange}
                 />
               </Grid>

@@ -54,14 +54,7 @@ const ServiceDetails = ({ service, serviceID }) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <button
-          type="button"
-          className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
-          onClick={() => setRoleDialog(true)}
-          style={{ cursor: 'pointer' }}
-        >
-          {service?.name}
-        </button>
+        <h3>Edit this service</h3>
       </div>
       <Divider />
       <Formik
@@ -114,6 +107,7 @@ const ServiceDetails = ({ service, serviceID }) => {
                 <TextField
                   className="m-2"
                   label="Slug"
+                  disabled
                   name="slug"
                   data-cy="slug"
                   size="small"

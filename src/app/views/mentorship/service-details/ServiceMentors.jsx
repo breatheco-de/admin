@@ -28,7 +28,7 @@ const ServiceMentors = ({ serviceId, service }) => {
     bc.mentorship().getAcademyMentors()
       .then((payload) => {
 
-        setAllServiceMentors(payload.data.filter((mentor) => mentor.status === 'ACTIVE') || []);
+        setAllServiceMentors(payload.data || []);
       });
   }, []);
   const statusColors = {
@@ -44,29 +44,17 @@ const ServiceMentors = ({ serviceId, service }) => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const serviceMentor = allServiceMentors[dataIndex];
+          console.log(serviceMentor)
           return (
             <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-10">{serviceMentor?.slug}</h5>
-                <small className="text-muted">{serviceMentor?.email}</small>
+              <div className="ml-0">
+                <h5 className="my-0 text-10">{serviceMentor?.user.first_name}</h5>
+                <h5 className="my-0 text-10">{serviceMentor?.user.last_name}</h5>
+                <small className="text-muted">{serviceMentor?.slug}</small>
               </div>
             </div>
           );
         },
-      },
-    },
-    {
-      name: 'service',
-      label: 'Service(s)',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 py-1 text-10">{allServiceMentors[dataIndex].service.slug}</h5>
-            </div>
-          </div>
-        ),
       },
     },
     {
@@ -78,7 +66,7 @@ const ServiceMentors = ({ serviceId, service }) => {
           const serviceMentor = allServiceMentors[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="ml-3">
+              <div className="ml-0">
                 <small className={`border-radius-4 px-2 pt-2px${statusColors[serviceMentor.status]}`}>
                   {serviceMentor.status.toUpperCase()}
                 </small>

@@ -2,7 +2,15 @@ import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
+import { Tooltip, TableCell } from '@material-ui/core';
 
+
+const statusColors = {
+  PENDING: 'bg-secondary text-dark',
+  COMPLETED: 'text-white bg-green',
+  FAILED: 'text-white bg-error',
+  STARTED: 'text-white bg-primary',
+};
 
 const Sessions = () => {
   const [sessions, setSessions] = useState([]);
@@ -13,9 +21,16 @@ const Sessions = () => {
       label: 'Service', // column title that will be shown in table
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
-          console.log('Item: ',item);
+          console.log('Item: ', item);
           return (
             <div className="flex items-center">
               <div className="">
@@ -31,6 +46,13 @@ const Sessions = () => {
       label: 'Mentor',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -48,6 +70,13 @@ const Sessions = () => {
       label: 'Mentee',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -65,12 +94,93 @@ const Sessions = () => {
       label: 'Status',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <Tooltip title={item?.summary || 'No summary provided'}>
+              <div className="flex items-center">
+                <div className={`ml-0 border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
+                  {item?.status}
+                </div>
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+    },
+    {
+      name: 'started_at',
+      label: 'Started At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
             <div className="flex items-center">
-              <div className="">
-                {item?.status}
+              <div className={'ml-0'}>
+                {item?.started_at || ''}
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'mentor_joined_at',
+      label: 'Mentor Joined At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className={'ml-0'}>
+                {item?.mentor_joined_at || ''}
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'ended_at',
+      label: 'Ended At',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className={'ml-0'}>
+                {item?.ended_at || ''}
               </div>
             </div>
           );
