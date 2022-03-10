@@ -17,6 +17,7 @@ import pageLayoutRoutes from './views/page-layouts/PageLayoutRoutees';
 import ListRoute from './views/list/ListRoute';
 
 import pagesRoutes from './views/leads/pagesRoutes';
+import shortLinkRoutes from './views/growth/routes';
 
 const redirectRoute = [
   {
@@ -41,6 +42,7 @@ const routes = [
   ...feedbackRoutes,
   ...pageLayoutRoutes,
   ...ListRoute,
+  ...shortLinkRoutes,
   ...pagesRoutes,
   ...mentorshipRoutes,
   ...certificatesRoutes,

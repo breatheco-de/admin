@@ -1,9 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Grid,
-  IconButton,
-  Icon,
   Divider,
   Card,
   Table,
@@ -11,65 +9,96 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  CircularProgress,
+  Box,
 } from '@material-ui/core';
+import dayjs from 'dayjs';
+import bc from '../../../services/breathecode';
 
-export const Venues = ({ className }) => (
-  <Card container className={`p-4 ${className}`}>
-    <div className="flex p-4">
-      <h4 className="m-0">Your venues</h4>
-      <IconButton>
-        <Icon>sync</Icon>
-      </IconButton>
-    </div>
-    <Divider className="mb-2 flex" />
-    <Grid item md={12}>
-      The following venues were found in your eventbrite organization
-    </Grid>
-    <Grid item md={12} className="mt-2">
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell className="pl-sm-24">#</TableCell>
-            <TableCell className="px-0">Action</TableCell>
-            <TableCell className="px-0">Status</TableCell>
-            <TableCell className="px-0">Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell className="pl-sm-24 capitalize" align="left">
-              1
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              order.placed
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              <small className="border-radius-4 px-2 pt-2px text-white bg-warning">Error</small>
-            </TableCell>
-            <TableCell className="pl-0">5 days ago</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="pl-sm-24 capitalize" align="left">
-              1
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              order.placed
-            </TableCell>
-            <TableCell className="pl-0 capitalize" align="left">
-              <small className="border-radius-4 px-2 pt-2px text-white bg-error">Error</small>
-            </TableCell>
-            <TableCell className="pl-0">5 days ago</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Grid>
-  </Card>
-);
+const relativeTime = require('dayjs/plugin/relativeTime');
+
+dayjs.extend(relativeTime);
+
+export const Venues = ({ className }) => {
+  const [venues, setVenues] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    bc.events()
+      .getAcademyVenues()
+      .then(({ data }) => {
+        setVenues(data.sort((a,b)=>{
+          if ( a.updated_at > b.updated_at ){
+            return -1;
+          }
+          if ( a.updated_at < b.updated_at ){
+            return 1;
+          }
+          return 0;
+        }));
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        return error
+      });
+  }, []);
+
+  const styles = {
+    textAlign: 'center',
+    width: '100%',
+  };
+
+  return (
+    <Card container className={`p-4 ${className}`}>
+      <div className="flex p-4">
+        <h4 className="m-0">Your venues</h4>
+      </div>
+      <Divider className="mb-2 flex" />
+      <Grid item md={12}>
+        The following venues were found in your eventbrite organization
+      </Grid>
+      <Grid item md={12} className="mt-2">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className="px-0">Name</TableCell>
+              <TableCell className="px-0">City</TableCell>
+              <TableCell className="px-0">Updated At</TableCell>
+            </TableRow>
+          </TableHead>
+          {!isLoading ? (
+            <TableBody>
+              {venues.map((venue) => (
+                <TableRow>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {venue.title} ({venue.id})
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {venue.city}
+                  </TableCell>
+                  <TableCell className="pl-0">{`${dayjs(venue.updated_at).fromNow(true)} ago`}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <Box sx={{ display: 'flex', width: '100%' }}>
+              <CircularProgress />
+            </Box>
+          )}
+        </Table>
+        {venues.length === 0 && !isLoading && (
+          <p style={styles}> No Venues yet </p>
+        )}
+      </Grid>
+    </Card>
+  );
+};
 
 Venues.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 Venues.defaultProps = {
-  className: ''
+  className: '',
 };

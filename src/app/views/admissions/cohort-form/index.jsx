@@ -45,8 +45,8 @@ const useStyles = makeStyles(() => ({
 
 const stageMap = [
   {
-    value: 'ACTIVE',
-    label: 'Active',
+    value: 'STARTED',
+    label: 'Started',
   },
   {
     value: 'INACTIVE',
@@ -166,7 +166,7 @@ const Cohort = () => {
       .max(maxSyllabusDays, `You can not set a day greater than ${maxSyllabusDays}`)
       .required('Please enter a day'),
   });
-  
+
   return (
     <>
       <div className="m-sm-30">
@@ -206,9 +206,9 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`)
+                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
-                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`)
+                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`);
               }
             }}
           >

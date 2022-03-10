@@ -20,7 +20,7 @@ import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-import { getToken, getSession } from "../../../redux/actions/SessionActions"
+import { getToken, getSession } from '../../../redux/actions/SessionActions';
 import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
@@ -47,8 +47,8 @@ const useStyles = makeStyles(() => ({
 
 const stageMap = [
   {
-    value: 'ACTIVE',
-    label: 'Active',
+    value: 'STARTED',
+    label: 'Started',
   },
   {
     value: 'INACTIVE',
@@ -177,7 +177,11 @@ const Cohort = () => {
           <div>
             <h3 className="mt-0 mb-4 font-medium text-28">
               Cohort:
-              {slug} (id: {cohort && cohort.id})
+              {slug}
+              {' '}
+              (id:
+              {cohort && cohort.id}
+              )
             </h3>
             <div className="flex">
               <div
@@ -196,7 +200,6 @@ const Cohort = () => {
             options={options}
             icon="more_horiz"
             onSelect={({ value }) => {
-
               if (value === 'current_day') {
                 setCohortDayDialog(true);
               } else setCohortDayDialog(false);
@@ -211,9 +214,9 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`)
+                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
-                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`)
+                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`);
               }
             }}
           >

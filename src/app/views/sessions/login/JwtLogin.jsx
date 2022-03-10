@@ -74,7 +74,7 @@ const JwtLogin = () => {
         <Grid data-cy="login_card" container>
           <Grid item lg={5} md={5} sm={5} xs={12}>
             <div className="p-8 flex justify-center items-center h-full">
-              <img className="w-200" src="/assets/images/breathecode.small.png" alt="" />
+              <img className="w-200" src="/assets/images/4geeks-devs-logo.png" alt="" />
             </div>
           </Grid>
           <Grid item lg={7} md={7} sm={7} xs={12}>

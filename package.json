@@ -81,7 +81,6 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-big-calendar": "^0.38.0",
     "react-copy-to-clipboard": "^5.0.3",
-    "react-dev-utils": "^10.2.1",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.3.2",
     "react-infinite-scroller": "^1.2.4",
@@ -101,6 +100,7 @@
     "sass-loader": "8.0.2",
     "semver": "6.3.0",
     "shortid": "^2.2.14",
+    "slugify": "^1.6.5",
     "style-loader": "0.23.1",
     "swiper": "^4.5.0",
     "terser-webpack-plugin": "2.3.8",
@@ -132,6 +132,7 @@
     "docs": "python -m http.server 9000 --directory ./docs",
     "ghp": "node scripts/build.js && gh-pages -d build",
     "lint": "eslint ./src",
+    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
   },
@@ -173,6 +174,7 @@
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.1",
     "react-app-rewired": "^2.1.6",
+    "react-dev-utils": "^10.2.1",
     "wait-port": "^0.2.9"
   },
   "jest": {

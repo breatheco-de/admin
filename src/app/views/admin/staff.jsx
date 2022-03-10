@@ -184,7 +184,7 @@ const Staff = () => {
           historyReplace="/admin/staff"
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyMembers(querys);
-            console.log("academy members")
+            console.log('academy members');
             setUserList(data.results);
             return data;
           }}

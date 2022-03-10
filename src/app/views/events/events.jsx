@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import {
   Icon,
   IconButton,
@@ -11,15 +10,16 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { Breadcrumb } from '../../../matx';
-import { getSession } from "../../redux/actions/SessionActions";
-import bc from '../../services/breathecode';
 import { toast } from 'react-toastify';
+import { Breadcrumb } from '../../../matx';
+import { getSession } from '../../redux/actions/SessionActions';
+import bc from '../../services/breathecode';
+import { SmartMUIDataTable } from '../../components/SmartDataTable';
 
 toast.configure();
 const toastOption = {
@@ -39,12 +39,11 @@ const stageColors = {
 };
 
 const EventList = () => {
-
   const session = getSession();
 
   const [items, setItems] = useState([]);
-  
-  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`
+
+  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`;
 
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
@@ -139,7 +138,7 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
-            <Link to={`/events/EditEvent/${items[dataIndex].id}`}>
+            <Link to={`/events/event/${items[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -182,7 +181,8 @@ const EventList = () => {
               <div className="flex-grow" />
               <Tooltip title="Copy link">
                 <Button
-                  variant="outlined" color="primary"
+                  variant="outlined"
+                  color="primary"
                   className="text-primary"
                   onClick={() => {
                     navigator.clipboard.writeText(thisURL);
@@ -207,6 +207,10 @@ const EventList = () => {
                 const { data } = await bc.events().getAcademyEvents(querys);
                 setItems(data.results);
                 return data;
+              }}
+              deleting={async (querys) => {
+                const { status } = await bc.events().deleteEventsBulk(querys);
+                return status;
               }}
             />
           </div>

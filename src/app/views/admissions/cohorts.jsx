@@ -17,6 +17,7 @@ const stageColors = {
   INACTIVE: 'gray',
   PREWORK: 'main',
   STARTED: 'primary',
+  ACTIVE: 'primary',
   FINAL_PROJECT: 'error',
   ENDED: 'dark',
   DELETED: 'gray',
@@ -77,7 +78,10 @@ const Cohorts = () => {
                   to={`/admissions/cohorts/${item.slug}`}
                   style={{ textDecoration: 'underline' }}
                 >
-                  <h5 className="my-0 text-15">{item?.name} </h5>
+                  <h5 className="my-0 text-15">
+                    {item?.name}
+                    {' '}
+                  </h5>
                 </Link>
                 <small className="text-muted">{item?.slug}</small>
               </div>

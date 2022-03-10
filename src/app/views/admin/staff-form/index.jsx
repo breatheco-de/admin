@@ -55,7 +55,7 @@ const Staff = () => {
         }
       })
       .catch((error) => error);
-      setDialogState({ ...dialogState, openDialog: false });
+    setDialogState({ ...dialogState, openDialog: false });
   };
   const githubReset = () => {
     bc.admissions()

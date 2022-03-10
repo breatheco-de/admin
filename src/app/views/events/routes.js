@@ -4,6 +4,7 @@ const routes = [
   {
     path: '/events/settings',
     exact: true,
+    capabilities: ['read_organization'],
     component: React.lazy(() => import('./settings')),
   },
   {
@@ -17,7 +18,7 @@ const routes = [
     component: React.lazy(() => import('./forms/EventForm')),
   },
   {
-    path: '/events/EditEvent/:id',
+    path: '/events/event/:id',
     exact: true,
     component: React.lazy(() => import('./forms/EventForm')),
   },
