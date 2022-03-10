@@ -44,7 +44,6 @@ export const SmartMUIDataTable = (props) => {
     limit: query.get('limit') || 10,
     offset: query.get('offset') || 0,
   });
-  console.log('Props items', props.items);
   if (!Array.isArray(props.items)) {
     console.log('SmartMUIDataTable.props.items:', props.items);
     throw Error('Property items must be an array on SmartMUIDataTable');
