@@ -9,7 +9,7 @@
     "ending_date": null,
     "current_day": 0,
     "stage": "INACTIVE",
-    "specialty_mode": null,
+    "schedule": null,
     "syllabus_version": {
         "version": 1,
         "slug": "full-stack-ft",

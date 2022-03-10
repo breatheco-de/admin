@@ -91,7 +91,10 @@ const Cohort = () => {
     { label: 'Assignments', value: 'assignments' },
     { label: 'Attendancy', value: 'attendancy' },
     { label: 'Instant NPS Survey', value: 'new_survey' },
-    { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
+    {
+      label: cohort?.private ? 'Mark as public' : 'Mark as private',
+      value: 'privacy',
+    },
   ];
 
   const [newSurvey, setNewSurvey] = useState({
@@ -109,7 +112,6 @@ const Cohort = () => {
   };
 
   const updateSurvey = (event) => {
-    console.log('update survey', event.target.name, event.target.value);
     setNewSurvey({
       ...newSurvey,
       [event.target.name]: event.target.value,
@@ -153,7 +155,11 @@ const Cohort = () => {
     const { ending_date, ...rest } = values;
     if (values.never_ends) {
       bc.admissions()
-        .updateCohort(cohort.id, { ...rest, private: cohort.private, ending_date: null })
+        .updateCohort(cohort.id, {
+          ...rest,
+          private: cohort.private,
+          ending_date: null,
+        })
         .then((data) => data)
         .catch((error) => console.error(error));
     } else {
@@ -166,7 +172,10 @@ const Cohort = () => {
 
   const ProfileSchema = Yup.object().shape({
     current_day: Yup.number()
-      .max(maxSyllabusDays, `You can not set a day greater than ${maxSyllabusDays}`)
+      .max(
+        maxSyllabusDays,
+        `You can not set a day greater than ${maxSyllabusDays}`
+      )
       .required('Please enter a day'),
   });
 
@@ -177,11 +186,8 @@ const Cohort = () => {
           <div>
             <h3 className="mt-0 mb-4 font-medium text-28">
               Cohort:
-              {slug}
-              {' '}
-              (id:
-              {cohort && cohort.id}
-              )
+              {slug} (id:
+              {cohort && cohort.id})
             </h3>
             <div className="flex">
               <div
@@ -214,9 +220,13 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`);
+                window.open(
+                  `https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`
+                );
               } else if (value === 'assignments') {
-                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`);
+                window.open(
+                  `https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`
+                );
               }
             }}
           >
@@ -235,7 +245,7 @@ const Cohort = () => {
                 endDate={cohort.ending_date}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
-                specialtyMode={cohort.specialty_mode}
+                specialtyMode={cohort.schedule}
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}
@@ -253,7 +263,9 @@ const Cohort = () => {
         open={stageDialog}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">Select a Cohort Stage</DialogTitle>
+        <DialogTitle id="simple-dialog-title">
+          Select a Cohort Stage
+        </DialogTitle>
         <Formik
           initialValues={{
             stage,
@@ -276,9 +288,14 @@ const Cohort = () => {
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4">
+            <form
+              onSubmit={handleSubmit}
+              className="d-flex justify-content-center mt-0 p-4"
+            >
               <DialogContent>
-                <DialogContentText className={classes.dialogue}>Select a stage:</DialogContentText>
+                <DialogContentText className={classes.dialogue}>
+                  Select a stage:
+                </DialogContentText>
                 <TextField
                   select
                   className={classes.select}
@@ -322,11 +339,13 @@ const Cohort = () => {
           )}
         </Formik>
       </Dialog>
-      <Dialog onClose={handleClose} open={cohortDayDialog} aria-labelledby="simple-dialog-title">
+      <Dialog
+        onClose={handleClose}
+        open={cohortDayDialog}
+        aria-labelledby="simple-dialog-title"
+      >
         <DialogTitle id="simple-dialog-title">
-          Change cohort current day
-          {' '}
-          <br />
+          Change cohort current day <br />
           <small className="text-muted">{`This syllabus has a maximum duration of ${maxSyllabusDays} days.`}</small>
         </DialogTitle>
         <Formik
@@ -350,7 +369,10 @@ const Cohort = () => {
           }}
         >
           {({ errors, touched, handleSubmit }) => (
-            <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4">
+            <form
+              onSubmit={handleSubmit}
+              className="d-flex justify-content-center mt-0 p-4"
+            >
               <DialogContent>
                 <DialogContentText className={classes.dialogue}>
                   Select a current day:
@@ -378,7 +400,11 @@ const Cohort = () => {
           )}
         </Formik>
       </Dialog>
-      <Dialog onClose={handleClose} open={openSurveyDialog} aria-labelledby="simple-dialog-title">
+      <Dialog
+        onClose={handleClose}
+        open={openSurveyDialog}
+        aria-labelledby="simple-dialog-title"
+      >
         <DialogTitle id="simple-dialog-title">New Instant Survey</DialogTitle>
         <Formik
           initialValues={newSurvey}
@@ -399,7 +425,9 @@ const Cohort = () => {
           {({ handleSubmit }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <DialogContent>
-                <DialogContentText className={classes.dialogue}>Cohort:</DialogContentText>
+                <DialogContentText className={classes.dialogue}>
+                  Cohort:
+                </DialogContentText>
                 <TextField
                   type="text"
                   label="Cohort"
@@ -432,7 +460,9 @@ const Cohort = () => {
                   defaultValue={newSurvey.max_teachers}
                   onChange={updateSurvey}
                 />
-                <DialogContentText className={classes.dialogue}>Duration:</DialogContentText>
+                <DialogContentText className={classes.dialogue}>
+                  Duration:
+                </DialogContentText>
                 <Select
                   native
                   label="Duration"
@@ -449,10 +479,19 @@ const Cohort = () => {
                 </Select>
               </DialogContent>
               <DialogActions>
-                <Button color="primary" variant="contained" type="submit" onClick={handleClose}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  onClick={handleClose}
+                >
                   Send now
                 </Button>
-                <Button color="danger" variant="contained" onClick={handleClose}>
+                <Button
+                  color="danger"
+                  variant="contained"
+                  onClick={handleClose}
+                >
                   Close
                 </Button>
               </DialogActions>

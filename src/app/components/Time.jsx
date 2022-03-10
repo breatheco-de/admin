@@ -86,20 +86,7 @@ const Field = ({
   if (currentTimezone) dayjs.tz.setDefault(currentTimezone);
 
   const onChange = (date) => {
-    try {
-      if (currentTimezone) {
-        const dateFormat = 'YYYY-MM-DD';
-        const timeFormat = 'HH:mm';
-        const datetimeFormat = `${dateFormat} ${timeFormat}`;
-        const time = `${dayjs().format(dateFormat)} ${date.format(timeFormat)}`;
-
-        helpers.setValue(dayjs.tz(time, datetimeFormat, currentTimezone).toISOString());
-      } else {
-        helpers.setValue(date.toISOString());
-      }
-    } catch {
-      helpers.setValue('');
-    }
+    helpers.setValue(date);
   };
 
   const textProps = {
@@ -149,17 +136,6 @@ const Field = ({
       },
     },
   };
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (!textProps.required && elementRef.current.getAttribute('required') === '') {
-  //       elementRef.current.removeAttribute('required');
-  //     }
-  //     if (!textProps.readOnly && elementRef.current.getAttribute('readonly') === '') {
-  //       elementRef.current.removeAttribute('readonly');
-  //     }
-  //   }, 0);
-  // }, []);
 
   if (meta.value) textProps.value = meta.value;
   return (

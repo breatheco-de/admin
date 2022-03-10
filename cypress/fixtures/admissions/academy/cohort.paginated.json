@@ -16,7 +16,7 @@
             "ending_date": "2022-04-22T00:00:00Z",
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 4,
                 "slug": "full-stack",
@@ -54,7 +54,7 @@
             "ending_date": "2022-05-27T00:00:00Z",
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 4,
                 "slug": "full-stack",
@@ -92,7 +92,7 @@
             "ending_date": "2022-02-18T00:00:00Z",
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 4,
                 "slug": "full-stack",
@@ -130,7 +130,7 @@
             "ending_date": null,
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": {
+            "schedule": {
                 "id": 4,
                 "slug": "blabla",
                 "name": "blabla",
@@ -173,7 +173,7 @@
             "ending_date": null,
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 1,
                 "slug": "front-end-development",
@@ -211,7 +211,7 @@
             "ending_date": "2021-09-25T02:12:00Z",
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 1,
                 "slug": "software-engineering",
@@ -249,7 +249,7 @@
             "ending_date": null,
             "current_day": 0,
             "stage": "INACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 2,
                 "slug": "full-stack-ft",
@@ -287,7 +287,7 @@
             "ending_date": null,
             "current_day": 0,
             "stage": "DELETED",
-            "specialty_mode": {
+            "schedule": {
                 "id": 3,
                 "slug": "pt-tue-thu-frid-6-9",
                 "name": "PT Tues-Thru-Frid from 6-9",
@@ -330,7 +330,7 @@
             "ending_date": "2021-09-30T08:55:00Z",
             "current_day": 30,
             "stage": "DELETED",
-            "specialty_mode": {
+            "schedule": {
                 "id": 2,
                 "slug": "full-time",
                 "name": "FT (Every day, 9 to 6)",
@@ -373,7 +373,7 @@
             "ending_date": "2021-12-10T00:00:00Z",
             "current_day": 1,
             "stage": "ACTIVE",
-            "specialty_mode": null,
+            "schedule": null,
             "syllabus_version": {
                 "version": 4,
                 "slug": "full-stack",

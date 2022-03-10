@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import {
-  MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
   DialogActions,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import bc from '../../../services/breathecode';
-import ScheduleDetails from './ScheduleDetails';
 import { schemas } from '../../../utils';
 import Field from '../../../components/Field';
 import Select from '../../../components/Select';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -35,23 +40,28 @@ const scheduleTypes = ['Part time', 'Full time'];
 const schema = Yup.object().shape({
   name: schemas.name(),
   description: schemas.description(),
-  schedule_type: schemas.select('Schedule type', scheduleTypes),
+  schedule_type: schemas.select('Schedule type', scheduleTypes, true),
 });
 
-const NewSchedule = ({
-  isOpen, setIsOpen, syllabus, appendSchedule,
-}) => {
+const NewSchedule = ({ isOpen, setIsOpen, syllabus, appendSchedule }) => {
   const classes = useStyles();
+  const session = getSession();
 
   const saveSchedule = (values) => {
     const request = {
       ...values,
       syllabus: syllabus?.id,
-      schedule_type: values.schedule_type ? values.schedule_type.toUpperCase().replace(' ', '-') : null,
+      academy: session.academy.id,
+      schedule_type: values.schedule_type
+        ? values.schedule_type.toUpperCase().replace(' ', '-')
+        : null,
     };
-    bc.admissions().addSchedule(request).then(({ data }) => {
-      appendSchedule(data);
-    }).catch(console.error);
+    bc.admissions()
+      .addSchedule(request)
+      .then(({ data }) => {
+        appendSchedule(data);
+      })
+      .catch(console.error);
   };
 
   return (
@@ -62,17 +72,19 @@ const NewSchedule = ({
     >
       <DialogTitle id="simple-dialog-title">New schedule</DialogTitle>
       <Formik
-        initialValues={{}}
+        initialValues={{ schedule_type: '' }}
         validationSchema={schema}
         onSubmit={(values) => {
           saveSchedule(values);
           setIsOpen(false);
         }}
       >
-        {({
-          handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4" style={{ paddingTop: 0 }}>
+        {({ handleSubmit }) => (
+          <form
+            onSubmit={handleSubmit}
+            className="d-flex justify-content-center mt-0 p-4"
+            style={{ paddingTop: 0 }}
+          >
             <DialogContent style={{ paddingTop: 0 }}>
               <Field
                 form="new-schedule"
@@ -103,7 +115,12 @@ const NewSchedule = ({
               />
             </DialogContent>
             <DialogActions className={classes.button}>
-              <Button color="primary" variant="contained" type="submit" data-cy="new-schedule-submit">
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                data-cy="new-schedule-submit"
+              >
                 Send now
               </Button>
             </DialogActions>

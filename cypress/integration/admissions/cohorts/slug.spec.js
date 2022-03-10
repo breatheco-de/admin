@@ -58,7 +58,7 @@ describe('Login Screen', () => {
         cy.wrap(request.body).its('ending_date').should('eq', null);
         cy.wrap(request.body).its('never_ends').should('eq', true);
         cy.wrap(request.body).its('syllabus').should('eq', 'full-stack-ft.v1');
-        cy.wrap(request.body).its('specialty_mode').should('eq', 4);
+        cy.wrap(request.body).its('schedule').should('eq', 4);
         cy.wrap(request.body).its('language').should('eq', 'en');
         cy.wrap(request.body).its('private').should('eq', false);
       })

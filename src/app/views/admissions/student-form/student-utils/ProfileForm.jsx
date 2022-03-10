@@ -17,10 +17,9 @@ export const ProfileForm = ({ initialValues }) => {
   const history = useHistory();
 
   const postAcademyStudentProfile = (values) => {
+    let requestValues = { ...values, cohort: cohort ? cohort.id : undefined };
+    if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
-    if(typeof(requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
-    else if(cohort !== null) ? requestValues.cohort = cohort.id;
-    
     if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) === null) {
       console.error("The email entered has formatting errors (insert a valid email address)")
       toast.error("The email entered has formatting errors (insert a valid email address)")
@@ -38,7 +37,6 @@ export const ProfileForm = ({ initialValues }) => {
       .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
-          
            history.push('/admissions/students');
         }
       })
