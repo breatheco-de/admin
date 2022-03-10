@@ -38,7 +38,6 @@ export function AsyncAutocomplete(props) {
           setLoading(false);
           if (!Array.isArray(data)) throw Error('incoming search data must be an array');
           setOptions(data);
-          console.log('Data in autocomplete.js', data)
           setCache({
             ...cache,
             [searchTerm]: data,
