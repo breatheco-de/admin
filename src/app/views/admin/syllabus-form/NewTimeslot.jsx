@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import {
-  MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
   DialogActions,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -19,6 +25,7 @@ import Time from '../../../components/Time';
 import Select from '../../../components/Select';
 import Checkbox from '../../../components/Checkbox';
 import { getSession } from '../../../redux/actions/SessionActions';
+import { toISOStringFromTimezone } from '../../../../utils';
 
 const propTypes = {
   schedules: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -45,33 +52,48 @@ const schema = Yup.object().shape({
   starting_hour: schemas.time('starting hour'),
   ending_hour: schemas.time('ending hour'),
   starting_date: schemas.date('starting date'),
-  recurrent: Yup.bool().required(),
-  recurrency_type: schemas.select('Recurrency type', recurrencyTypes),
+  recurrent: Yup.bool(),
+  recurrency_type: schemas.select('Recurrency type', recurrencyTypes, false),
 });
 
-const NewTimeslot = ({
-  isOpen, setIsOpen, schedule, appendTimeslot,
-}) => {
+const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
   const [session] = useState(getSession());
   const classes = useStyles();
   const initialValues = {
     starting_date: '',
     starting_hour: '',
     ending_hour: '',
+    recurrent: false,
+    recurrency_type: '',
   };
 
   if (session?.academy?.timezone) dayjs.tz.setDefault(session.academy.timezone);
 
   const saveSchedule = ({
-    starting_date, starting_hour, ending_hour, recurrency_type, ...values
+    starting_date,
+    starting_hour,
+    ending_hour,
+    recurrency_type,
+    ...values
   }) => {
+    starting_hour = toISOStringFromTimezone(
+      starting_hour,
+      session.academy.timezone
+    );
+    ending_hour = toISOStringFromTimezone(
+      ending_hour,
+      session.academy.timezone
+    );
+
     const date = dayjs(starting_date).tz(session.academy.timezone);
-    const start = dayjs(starting_hour).tz(session.academy.timezone)
+    const start = dayjs(starting_hour)
+      .tz(session.academy.timezone)
       .year(date.year())
       .month(date.month())
       .date(date.date());
 
-    let end = dayjs(ending_hour).tz(session.academy.timezone)
+    let end = dayjs(ending_hour)
+      .tz(session.academy.timezone)
       .year(date.year())
       .month(date.month())
       .date(date.date());
@@ -85,18 +107,32 @@ const NewTimeslot = ({
     const dateFormat = 'YYYY-MM-DD';
     const timeFormat = 'HH:mm';
     const datetimeFormat = `${dateFormat} ${timeFormat}`;
-    const startingDate = `${start.format(dateFormat)} ${start.format(timeFormat)}`;
+    const startingDate = `${start.format(dateFormat)} ${start.format(
+      timeFormat
+    )}`;
     const endingDate = `${end.format(dateFormat)} ${end.format(timeFormat)}`;
 
-    const starting_at = dayjs.tz(startingDate, datetimeFormat, timezone).toISOString();
-    const ending_at = dayjs.tz(endingDate, datetimeFormat, timezone).toISOString();
+    const starting_at = dayjs
+      .tz(startingDate, datetimeFormat, timezone)
+      .toISOString();
+    const ending_at = dayjs
+      .tz(endingDate, datetimeFormat, timezone)
+      .toISOString();
 
-    bc.admissions().addTimeslot(schedule?.id, {
+    const body = {
       ...values,
       starting_at,
       ending_at,
-      recurrency_type: recurrency_type.toUpperCase(),
-    }).then(({ data }) => appendTimeslot(data)).catch(console.error);
+    };
+
+    if (recurrency_type) {
+      body['recurrency_type'] = recurrency_type.toUpperCase();
+    }
+
+    bc.admissions()
+      .addTimeslot(schedule?.id, body)
+      .then(({ data }) => appendTimeslot({ ...data, starting_at, ending_at }))
+      .catch(console.error);
   };
 
   return (
@@ -108,18 +144,18 @@ const NewTimeslot = ({
       <DialogTitle id="simple-dialog-title">New timeslot</DialogTitle>
       <Formik
         initialValues={initialValues}
-        // enableReinitialize
         validationSchema={schema}
-        // validate={validate}
         onSubmit={(values) => {
           saveSchedule(values);
           setIsOpen(false);
         }}
       >
-        {({
-          values, handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit} className="d-flex justify-content-center mt-0 p-4" style={{ paddingTop: 0 }}>
+        {({ values, handleSubmit }) => (
+          <form
+            onSubmit={handleSubmit}
+            className="d-flex justify-content-center mt-0 p-4"
+            style={{ paddingTop: 0 }}
+          >
             <DialogContent style={{ paddingTop: 0 }}>
               <Date
                 form="new-timeslot"
@@ -152,15 +188,15 @@ const NewTimeslot = ({
                 required
                 dialog
               />
-              <Checkbox
-                form="new-timeslot"
-                name="Recurrent"
-                required
-                dialog
-              />
+              <Checkbox form="new-timeslot" name="Recurrent" dialog />
             </DialogContent>
             <DialogActions className={classes.button}>
-              <Button color="primary" variant="contained" type="submit" data-cy="new-timeslot-submit">
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                data-cy="new-timeslot-submit"
+              >
                 Send now
               </Button>
             </DialogActions>

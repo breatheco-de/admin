@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  TextField,
-  DialogContentText,
-} from '@material-ui/core';
+import { Grid, TextField, DialogContentText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useField } from 'formik';
 import PropTypes from 'prop-types';
@@ -43,7 +39,11 @@ const propTypes = {
 };
 
 const Field = ({
-  form, label, dialog, children, ...props
+  form,
+  label,
+  dialog,
+  children,
+  ...props
   // values={}, errors={}, handleChange, handleBlur, name, label, placeholder,
   // type, required=false, dialog, touched={}, form='default', select=false, children,
   // multiline=false, ...props
@@ -76,26 +76,32 @@ const Field = ({
 
   if (meta.value) textProps.value = meta.value;
   if (extraProps.select) textProps.label = label;
+
   return (
     <>
       {dialog ? (
         <>
-          <DialogContentText className={classes.dialogue} style={{ marginTop: 12 }}>
+          <DialogContentText
+            className={classes.dialogue}
+            style={{ marginTop: 12 }}
+          >
             {labelText}
           </DialogContentText>
-          <TextField {...textProps}>
-            {children}
-          </TextField>
+          <TextField {...textProps}>{children}</TextField>
         </>
       ) : (
         <>
           <Grid item md={5} sm={5} xs={5}>
             {labelText}
           </Grid>
-          <Grid item md={7} sm={7} xs={7} style={meta.touched && meta.error ? { marginBottom: '-23px' } : {}}>
-            <TextField {...textProps}>
-              {children}
-            </TextField>
+          <Grid
+            item
+            md={7}
+            sm={7}
+            xs={7}
+            style={meta.touched && meta.error ? { marginBottom: '-23px' } : {}}
+          >
+            <TextField {...textProps}>{children}</TextField>
           </Grid>
         </>
       )}
