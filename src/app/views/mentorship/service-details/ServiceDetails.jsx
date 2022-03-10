@@ -20,12 +20,11 @@ const ServiceDetails = ({ service, serviceID }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [singleService, setService] = useState(service);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
-  // console.log('service PROP', service);
   const initialValues = {
-    id: singleService?.id === null ? '' : singleService?.id,
-    name: singleService?.name === null ? '' : singleService?.name,
-    slug: singleService?.slug === null ? '' : singleService?.slug,
-    status: singleService?.status === null ? '' : singleService?.status,
+    id: singleService?.id || "",
+    name: singleService?.name || "",
+    slug: singleService?.slug || "",
+    status: singleService?.status || "",
   };
 
   const updateAcademyService = (values) => {
