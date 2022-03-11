@@ -46,39 +46,6 @@ const NewMentor = () => {
     },
   });
 
-  // const [msg, setMsg] = useState({ alert: false, type: '', text: '' });
-  // const [user, setUser] = useState({
-  //   id: '',
-  //   email: '',
-  //   first_name: '',
-  //   last_name: '',
-  // });
-
-  // const [role, setRole] = useState({
-  //   slug: '',
-  //   name: '',
-  // });
-
-  // const history = useHistory();
-
-  // const postMember = (values) => {
-  //   // console.log('post member values', values);
-  //   const refactor = user.id !== '' ? { user: user.id } : { email: values.email, invite: true, ...values };
-  //   console.log('REFACTOR ', refactor);
-
-  //   bc.mentorship()
-  //     .addAcademyMentor({ ...refactor, slug: `${values.first_name.toLowerCase()}-${values.last_name.toLowerCase()}` })
-  //     .then((data) => {
-  //       setShowForm(false);
-  //       if (data.status === 201) {
-  //         setRole(null);
-  //         setUser(null);
-  //         history.push('/admin/staff');
-  //       }
-  //     })
-  //     .catch(() => setShowForm(false));
-  // };
-
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
