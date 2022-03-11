@@ -318,7 +318,7 @@ const Reviews = () => {
                     status: 'DONE',
                     total_rating: rating,
                     public_url: url,
-                    status_text: comment,
+                    comments: comment,
                   };
 
                   const result = await bc.feedback().updateReview(review.id, data);
