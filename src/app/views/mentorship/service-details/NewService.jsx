@@ -10,7 +10,7 @@ import { useQuery } from '../../../hooks/useQuery';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
-import { ProfileForm } from './staff-utils/ProfileForm';
+import { ServiceForm } from './service-utils/ServiceForm'
 
 const initialValues = {
   first_name: '',
@@ -26,23 +26,21 @@ const initialValues = {
 
 const filter = createFilterOptions();
 
-const NewMentor = () => {
+const NewService = () => {
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
-  const [showForm, setShowForm] = useState({
+  const [serviceFormInfo, setServiceFormInfo] = useState({
     show: !!baseData,
     data: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      booking_url: '',
       slug: '',
-      meeting_url: '',
-      status: 'INVITED',
-      price_per_hour: '',
-      existing_user: '',
-      ...baseData,
+      name: '',
+      status: 'INNACTIVE',
+      duration: '01:00:00',
+      description: null,
+      logo_url: null,
+      allow_mentee_to_extend: true,
+      allow_mentors_to_extend: true
     },
   });
 
@@ -50,41 +48,18 @@ const NewMentor = () => {
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
-          routeSegments={[{ name: 'Mentorship', path: '/mentors/staff' }, { name: 'New Staff' }]}
+          routeSegments={[{ name: 'Mentorship', path: '/mentors/services' }, { name: 'New Service' }]}
         />
       </div>
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add a New Mentor</h4>
+          <h4 className="m-0">Create a new service.</h4>
         </div>
         <Divider className="mb-2 flex" />
-        {
-          !showForm.show ? (
-            <>
-              <div className="m-3">
-                <Alert severity="success">
-                  <AlertTitle>To add a new mentor, they must first be a breathcode user.</AlertTitle>
-                </Alert>
-              </div>
-              <div className="flex m-4">
-                <AsyncAutocomplete
-                  onChange={(user) => setShowForm({ data: { ...showForm.data, ...user }, show: true })}
-                  width="100%"
-                  label="Search Users"
-                  asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
-                  debounced
-                  getOptionLabel={(option) => (option.newUser
-                    ? option.newUser
-                    : `${option.first_name} ${option.last_name}, (${option.email})`)}
-                />
-              </div>
-            </>
-          )
-            : <ProfileForm initialValues={showForm.data} />
-        }
+        <ServiceForm initialValues={serviceFormInfo.data} />
       </Card>
     </div>
   );
 };
 
-export default NewMentor;
+export default NewService;

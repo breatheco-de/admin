@@ -16,7 +16,7 @@ import ServiceDetails from './ServiceDetails';
 import ServiceMentors from './ServiceMentors';
 import DowndownMenu from '../../../components/DropdownMenu';
 
-import { CopyDialog } from './staff-utils/Dialog';
+import { CopyDialog } from './service-utils/Dialog';
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 

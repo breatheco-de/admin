@@ -3,6 +3,7 @@ import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Icon,
   IconButton,
+  Button,
   Tooltip,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
@@ -133,6 +134,13 @@ const Services = () => {
                 { name: 'All' },
               ]}
             />
+          </div>
+          <div className="">
+            <Link to="/mentors/service/new">
+              <Button variant="contained" color="primary">
+                Create New Service
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

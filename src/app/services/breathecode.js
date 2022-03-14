@@ -389,6 +389,11 @@ class BreatheCodeClient {
         `${this.host}/mentorship/academy/mentor`,
         payload,
       ),
+      addAcademyService: (payload) => axios.bcPost(
+        'Academy service',
+        `${this.host}/mentorship/academy/service`,
+        payload,
+      ),
     };
   }
 

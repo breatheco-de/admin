@@ -12,10 +12,6 @@ const propTypes = {
 };
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
-  console.log('InitialValues Mentor profile form: "', initialValues);
-  console.log('serviceList Mentor profile form: "', serviceList);
-
-
 
   return (
     <Formik
