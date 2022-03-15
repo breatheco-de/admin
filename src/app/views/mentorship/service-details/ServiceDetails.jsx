@@ -3,7 +3,8 @@ import {
   Button,
   Card, Dialog, DialogTitle, Divider, Grid, List,
   ListItem,
-  ListItemText, MenuItem, TextField
+  ListItemText, MenuItem, TextField,
+  FormControlLabel, Checkbox
 } from '@material-ui/core';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
@@ -19,17 +20,26 @@ const propTypes = {
 const ServiceDetails = ({ service, serviceID }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [singleService, setService] = useState(service);
-  const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
+  const serviceStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
     id: singleService?.id || "",
     name: singleService?.name || "",
     slug: singleService?.slug || "",
+    duration: singleService?.duration || "",
+    description: singleService?.description || "",
+    logo_url: singleService?.logo_url || "",
+    allow_mentee_to_extend: singleService?.allow_mentee_to_extend || "",
+    allow_mentors_to_extend: singleService?.allow_mentors_to_extend || "",
+    max_duration: singleService?.max_duration || "",
+    missed_meeting_duration: singleService?.missed_meeting_duration || "",
+    created_at: singleService?.created_at || "",
+    updated_at: singleService?.updated_at || "",
     status: singleService?.status || "",
   };
 
   const updateAcademyService = (values) => {
     bc.mentorship()
-      .updateAcademyService(serviceID, { ...values, service: serviceID })
+      .updateAcademyService(serviceID, { ...values, name: values.name })
       .then(({ data }) => data)
       .catch((error) => console.error(error));
   };
@@ -68,6 +78,7 @@ const ServiceDetails = ({ service, serviceID }) => {
           <form className="p-4" onSubmit={handleSubmit}>
 
             <Grid container spacing={3} alignItems="center">
+
               <Grid item md={3} sm={4} xs={12}>
                 Id
               </Grid>
@@ -84,6 +95,43 @@ const ServiceDetails = ({ service, serviceID }) => {
                   onChange={handleChange}
                 />
               </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Updated at
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Updated at"
+                  name="updated_at"
+                  data-cy="updated_at"
+                  disabled
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  value={values.updated_at}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Created at
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Created at"
+                  name="created_at"
+                  data-cy="created_at"
+                  disabled
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  value={values.created_at}
+                  onChange={handleChange}
+                />
+              </Grid>
+
               <Grid item md={3} sm={4} xs={12}>
                 Name
               </Grid>
@@ -96,6 +144,86 @@ const ServiceDetails = ({ service, serviceID }) => {
                   size="small"
                   variant="outlined"
                   value={values.name}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Description
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Description"
+                  name="description"
+                  data-cy="name"
+                  size="small"
+                  variant="outlined"
+                  value={values.description}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Duration
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  label="Example: 01:00:00"
+                  name="duration"
+                  size="small"
+                  type="text"
+                  required
+                  variant="outlined"
+                  value={values.duration}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Max Duration
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  label="Example: 7200.0"
+                  name="max_duration"
+                  size="small"
+                  type="text"
+                  required
+                  variant="outlined"
+                  value={values.max_duration}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Missed Meeting Duration
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  label="Example: 600.0"
+                  name="missed_meeting_duration"
+                  size="small"
+                  type="text"
+                  required
+                  variant="outlined"
+                  value={values.missed_meeting_duration}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item md={3} sm={4} xs={12}>
+                Logo URL
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  label="Logo Url"
+                  name="logo_url"
+                  data-cy="Logo Url"
+                  size="small"
+                  type="text"
+                  variant="outlined"
+                  value={values.logo_url}
                   onChange={handleChange}
                 />
               </Grid>
@@ -134,12 +262,62 @@ const ServiceDetails = ({ service, serviceID }) => {
                   }}
                   select
                 >
-                  {mentorStatusChoices.map((item, i) => (
+                  {serviceStatusChoices.map((item, i) => (
                     <MenuItem value={item} key={`${item}${i}`}>
                       {item.toUpperCase()}
                     </MenuItem>
                   ))}
                 </TextField>
+              </Grid>
+
+              <Grid item md={4} sm={4} xs={12}>
+                Allow Mentee extension?
+              </Grid>
+              <Grid item md={8} sm={8} xs={12}>
+                <FormControlLabel
+                  sx={{ mb: '16px' }}
+                  name="allow_mentee_to_extend"
+                  onChange={(e) =>
+                    handleChange({
+                      target: {
+                        name: 'allow_mentee_to_extend',
+                        value: e.target.checked,
+                      },
+                    })
+                  }
+                  control={
+                    <Checkbox
+                      size="large"
+                      checked={values?.allow_mentee_to_extend || false}
+                    />
+                  }
+                  label=""
+                />
+              </Grid>
+
+              <Grid item md={4} sm={4} xs={12}>
+                Allow Mentor extension?
+              </Grid>
+              <Grid item md={8} sm={8} xs={12}>
+                <FormControlLabel
+                  sx={{ mb: '16px' }}
+                  name="allow_mentors_to_extend"
+                  onChange={(e) =>
+                    handleChange({
+                      target: {
+                        name: 'allow_mentors_to_extend',
+                        value: e.target.checked,
+                      },
+                    })
+                  }
+                  control={
+                    <Checkbox
+                      size="large"
+                      checked={values?.allow_mentors_to_extend || false}
+                    />
+                  }
+                  label=""
+                />
               </Grid>
 
               <div className="flex-column items-start px-4 mb-4">
@@ -158,7 +336,7 @@ const ServiceDetails = ({ service, serviceID }) => {
       >
         <DialogTitle id="simple-dialog-title">Change Mentor Status</DialogTitle>
         <List>
-          {mentorStatusChoices && mentorStatusChoices.map((currentStatus, i) => (
+          {serviceStatusChoices && serviceStatusChoices.map((currentStatus, i) => (
             <ListItem
               button
               onClick={() => {

@@ -103,6 +103,38 @@ export const ServiceForm = ({ initialValues }) => (
           </Grid>
 
           <Grid item md={2} sm={4} xs={12}>
+            Max Duration
+          </Grid>
+          <Grid item md={10} sm={8} xs={12}>
+            <TextField
+              label="Example: 7200.0"
+              name="max_duration"
+              size="small"
+              type="text"
+              required
+              variant="outlined"
+              value={values.max_duration}
+              onChange={handleChange}
+            />
+          </Grid>
+
+          <Grid item md={2} sm={4} xs={12}>
+            Missed Meeting Duration
+          </Grid>
+          <Grid item md={10} sm={8} xs={12}>
+            <TextField
+              label="Example: 600.0"
+              name="missed_meeting_duration"
+              size="small"
+              type="text"
+              required
+              variant="outlined"
+              value={values.missed_meeting_duration}
+              onChange={handleChange}
+            />
+          </Grid>
+
+          <Grid item md={2} sm={4} xs={12}>
             Status
           </Grid>
           <Grid item md={10} sm={8} xs={12}>

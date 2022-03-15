@@ -37,10 +37,14 @@ const NewService = () => {
       name: '',
       status: 'INNACTIVE',
       duration: '01:00:00',
+      max_duration: '7200.0',
       description: null,
       logo_url: null,
       allow_mentee_to_extend: true,
-      allow_mentors_to_extend: true
+      allow_mentors_to_extend: true,
+      missed_meeting_duration: "600.0",
+      created_at: '',
+      updated_at: ''
     },
   });
 
