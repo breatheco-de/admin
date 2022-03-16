@@ -35,8 +35,10 @@ dayjs.extend(relativeTime);
 const stageColors = {
   INACTIVE: 'bg-gray',
   PREWORK: 'bg-secondary',
+  PENDING : 'bg-secondary',
   STARTED: 'text-white bg-warning',
   FINAL_PROJECT: 'text-white bg-error',
+  FATAL: 'bg-error',
   ENDED: 'text-white bg-green',
   DELETED: 'light-gray',
 };
@@ -55,17 +57,23 @@ const EventList = () => {
       .catch((error) => console.error(error));
   };
 
+  const isExpired = (item) => {
+    // return finalizacion < dayjs(item.datetime + item.duration)
+
+    return new Date() < dayjs(item.datetime + item.duration)
+  }
+
   const columns = [
     {
-      name: 'id', // field name in the row object
-      label: 'ID', // column title that will be shown in table
+      name: "id", // field name in the row object
+      label: "ID", // column title that will be shown in table
       options: {
         filter: true,
       },
     },
     {
-      name: 'cohort', // field name in the row object
-      label: 'Cohort', // column title that will be shown in table
+      name: "cohort", // field name in the row object
+      label: "Cohort", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
@@ -75,7 +83,7 @@ const EventList = () => {
               <div className="ml-3">
                 <Link
                   to={`/admissions/cohorts/${item?.cohort?.slug}`}
-                  style={{ textDecoration: 'underline' }}
+                  style={{ textDecoration: "underline" }}
                 >
                   <h5 className="my-0 text-15">{item?.cohort?.name}</h5>
                 </Link>
@@ -87,122 +95,96 @@ const EventList = () => {
       },
     },
     {
-      name: 'status', // field name in the row object
-      label: 'Status', // column title that will be shown in table
+      name: "status", // field name in the row object
+      label: "Status", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-        
-          if (parseInt(item.duration) === 3600) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 1);
 
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
+          if (item.status === "SEND" && isExpired(item)) {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
+                  <Tooltip title={"EXPIRED"}>
+                    <small
+                      className={`border-radius-4 px-2 pt-2px${
+                        stageColors[item?.status]
+                      }`}
+                    >
+                      {"EXPIRED"}
+                    </small>
+                  </Tooltip>
+                </div>
+              </div>
+            );
+          } else if (item.status === "SEND") {
+            return (
+              <div className="flex items-center">
+                <div className="ml-3">
+                  <Tooltip title={"SEND"}>
+                    <small
+                      className={`border-radius-4 px-2 pt-2px${
+                        stageColors[item?.status]
+                      }`}
+                    >
+                      {"SENT"}
+                    </small>
+                  </Tooltip>
                 </div>
               </div>
             );
           }
-          if (parseInt(item.duration) === 10800) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 3);
 
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Tooltip title={item?.status}>
+                  <small
+                    className={`border-radius-4 px-2 pt-2px text-white ${
+                      stageColors[item?.status]
+                    }`}
+                  >
+                    {item?.status}
+                  </small>
+                </Tooltip>
               </div>
-            );
-          }
-          if (parseInt(item.duration) === 86400) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 24);
-
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
-          if (parseInt(item.duration) === 172800) {
-            const Finalizacion = addHours(new Date(dayjs(item.sent_at || item.created_at)), 48);
-
-            if (Finalizacion >= dayjs(item.datetime)) {
-              return (
-                <div className="flex items-center">
-                  <div className="ml-3">
-                    <Chip size="small" label={item?.status} color={stageColors[item?.status]} />
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Chip size="small" label="EXPIRED" color={stageColors[item?.status]} />
-                </div>
-              </div>
-            );
-          }
+            </div>
+          );
         },
       },
     },
     {
-      name: 'sent_at',
-      label: 'Sent date',
+      name: "sent_at",
+      label: "Sent date",
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].sent_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(items[i].sent_at).fromNow()}</small>
+              <h5 className="my-0 text-15">
+                {dayjs(items[i].sent_at).format("MM-DD-YYYY")}
+              </h5>
+              <small className="text-muted">
+                {dayjs(items[i].sent_at).fromNow()}
+              </small>
             </div>
           </div>
         ),
       },
     },
     {
-      name: 'avg_score',
-      label: 'Score',
+      name: "avg_score",
+      label: "Score",
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
-          const color = items[i].avg_score > 7
-            ? 'text-green'
-            : items[i].avg_score < 7
-              ? 'text-error'
-              : 'text-orange';
+          const color =
+            items[i].avg_score > 7
+              ? "text-green"
+              : items[i].avg_score < 7
+              ? "text-error"
+              : "text-orange";
           if (items[i].avg_score) {
             return (
               <div className="flex items-center">
@@ -211,23 +193,25 @@ const EventList = () => {
                   value={parseInt(items[i].avg_score, 10) * 10}
                   variant="determinate"
                 />
-                <small className={color}>{items[i].avg_score}</small>
+                <small className={color}>
+                  {Math.round(items[i].avg_score * 100) / 100}
+                </small>
               </div>
             );
           }
-          return 'No avg yet';
+          return "No avg yet";
         },
       },
     },
     {
-      name: 'action',
-      label: ' ',
+      name: "action",
+      label: " ",
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
           const survey = items[dataIndex];
-          return survey.status === 'PENDING' ? (
+          return survey.status === "PENDING" ? (
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="Copy survey link">
@@ -241,7 +225,9 @@ const EventList = () => {
                   <Icon>assignment</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
+              <Link
+                to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
+              >
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>
@@ -255,7 +241,9 @@ const EventList = () => {
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
-              <Link to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}>
+              <Link
+                to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
+              >
                 <IconButton>
                   <Icon>arrow_right_alt</Icon>
                 </IconButton>

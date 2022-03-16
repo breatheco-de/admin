@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { Switch, Hidden } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';

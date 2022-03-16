@@ -12,43 +12,44 @@ import {
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
-import StaffDetails from './StaffDetails';
-import CohortStaff from './CohortStaff';
+import ServiceDetails from './ServiceDetails';
+import ServiceMentors from './ServiceMentors';
 import DowndownMenu from '../../../components/DropdownMenu';
-import axios from '../../../../axios';
 
-import { CopyDialog } from './staff-utils/Dialog';
+import { CopyDialog } from './service-utils/Dialog';
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 
 dayjs.extend(LocalizedFormat);
 
-const Staff = () => {
-  const { staffId } = useParams();
-  const [member, setMember] = useState(null);
+const Services = () => {
+  const { serviceID } = useParams();
+  const [service, setService] = useState(null);
   const [dialogState, setDialogState] = useState({
     openDialog: false,
     title: '',
-    action: () => {},
+    action: () => { },
   });
+
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
     openDialog: false,
   });
 
-  const getMemberById = () => {
-    bc.auth()
-      .getAcademyMember(staffId)
+  const getServiceById = () => {
+    bc.mentorship()
+      .getSingleService(serviceID)
       .then(({ data }) => {
-        console.log(data);
-        setMember(data);
+        // console.log('this should be the service.', data);
+        setService(data);
       })
       .catch((error) => error);
   };
+
   const passwordReset = () => {
     bc.auth()
-      .passwordReset(member.id)
+      .passwordReset(mentor.id)
       .then((res) => {
         setInviteLink(res.data.reset_password_url);
         if (res.data && res.data.reset_password_url) {
@@ -58,9 +59,10 @@ const Staff = () => {
       .catch((error) => error);
     setDialogState({ ...dialogState, openDialog: false });
   };
+
   const githubReset = () => {
     bc.admissions()
-      .getTemporalToken(member)
+      .getTemporalToken(mentor)
       .then(({ data }) => {
         setCopyDialog({
           ...copyDialog,
@@ -71,6 +73,7 @@ const Staff = () => {
       .catch((error) => error);
     setDialogState({ ...dialogState, openDialog: false });
   };
+
   const options = [
     {
       label: 'Send password reset',
@@ -86,13 +89,14 @@ const Staff = () => {
       action: githubReset,
     },
   ];
+
   useEffect(() => {
-    getMemberById();
+    getServiceById();
   }, []);
+
   return (
     <div className="m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
-        {/* This Dialog opens the modal to delete the user in the cohort */}
         <Dialog
           open={dialogState.openDialog}
           onClose={() => setDialogState({ ...dialogState, openDialog: false })}
@@ -102,23 +106,17 @@ const Staff = () => {
           <DialogTitle id="alert-dialog-title">{dialogState.title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {member?.user.email}
+              EMAIL GOES HERE
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() =>
-                setDialogState({ ...dialogState, openDialog: false })
-              }
+              onClick={() => setDialogState({ ...dialogState, openDialog: false })}
               color="primary"
             >
               Close
             </Button>
-            <Button
-              color="primary"
-              autoFocus
-              onClick={() => dialogState.action()}
-            >
+            <Button color="primary" autoFocus onClick={() => dialogState.action()}>
               Send
             </Button>
           </DialogActions>
@@ -131,17 +129,13 @@ const Staff = () => {
         />
         {/* <ActionsDialog /> */}
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">{`${member?.user.first_name} ${member?.user.last_name}`}</h3>
-          <div className="flex">
-            Member since:
-            {dayjs(member?.created_at).format("LL")}
-          </div>
+          <h3 className="mt-0 mb-4 font-medium text-28">{service && service.name}</h3>
         </div>
         <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if (value === "student_profile") {
+            if (value === 'student_profile') {
               return;
             }
             const selected = options.find((option) => option.value === value);
@@ -161,16 +155,16 @@ const Staff = () => {
 
       <Grid container spacing={3}>
         <Grid item md={5} xs={12}>
-          <StaffDetails staffId={staffId} user={member} />
+          {service === null ? 'loading'
+            : <ServiceDetails serviceID={serviceID} service={service} />}
         </Grid>
-        {member?.role.name.includes('Teacher') && (
-          <Grid item md={7} xs={12}>
-            <CohortStaff staffId={staffId} user={member} />
-          </Grid>
-        )}
+        <Grid item md={7} xs={12}>
+          {service === null ? 'loading'
+            : <ServiceMentors serviceID={serviceID} service={service} />}
+        </Grid>
       </Grid>
     </div>
   );
 };
 
-export default Staff;
+export default Services;
