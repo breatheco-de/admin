@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import StaffDetails from './StaffDetails';
+import CohortStaff from './CohortStaff';
 import DowndownMenu from '../../../components/DropdownMenu';
 import axios from '../../../../axios';
 
@@ -106,12 +107,18 @@ const Staff = () => {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => setDialogState({ ...dialogState, openDialog: false })}
+              onClick={() =>
+                setDialogState({ ...dialogState, openDialog: false })
+              }
               color="primary"
             >
               Close
             </Button>
-            <Button color="primary" autoFocus onClick={() => dialogState.action()}>
+            <Button
+              color="primary"
+              autoFocus
+              onClick={() => dialogState.action()}
+            >
               Send
             </Button>
           </DialogActions>
@@ -127,14 +134,14 @@ const Staff = () => {
           <h3 className="mt-0 mb-4 font-medium text-28">{`${member?.user.first_name} ${member?.user.last_name}`}</h3>
           <div className="flex">
             Member since:
-            {dayjs(member?.created_at).format('LL')}
+            {dayjs(member?.created_at).format("LL")}
           </div>
         </div>
         <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if (value === 'student_profile') {
+            if (value === "student_profile") {
               return;
             }
             const selected = options.find((option) => option.value === value);
@@ -156,6 +163,11 @@ const Staff = () => {
         <Grid item md={5} xs={12}>
           <StaffDetails staffId={staffId} user={member} />
         </Grid>
+        {member?.role.name.includes('Teacher') && (
+          <Grid item md={7} xs={12}>
+            <CohortStaff staffId={staffId} user={member} />
+          </Grid>
+        )}
       </Grid>
     </div>
   );
