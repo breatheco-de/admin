@@ -10,6 +10,7 @@ import eventsRoutes from './views/events/routes';
 import certificatesRoutes from './views/certificates/certificatesRoutes';
 
 import feedbackRoutes from './views/feedback/routes';
+import mentorshipRoutes from './views/mentorship/routes';
 import mediaRoutes from './views/media/routes';
 
 import pageLayoutRoutes from './views/page-layouts/PageLayoutRoutees';
@@ -43,6 +44,7 @@ const routes = [
   ...ListRoute,
   ...shortLinkRoutes,
   ...pagesRoutes,
+  ...mentorshipRoutes,
   ...certificatesRoutes,
   ...redirectRoute,
   ...errorRoute,

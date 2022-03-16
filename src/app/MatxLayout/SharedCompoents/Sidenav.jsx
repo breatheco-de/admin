@@ -1,11 +1,12 @@
+/* eslint-disable import/no-unresolved */
 import React, { Fragment } from 'react';
 import Scrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { MatxVerticalNav } from 'matx';
 import { setLayoutSettings } from 'app/redux/actions/LayoutActions';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import { navigations } from '../../navigations';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
