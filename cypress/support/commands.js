@@ -592,7 +592,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: null,
               current_day: 0,
               stage: "ENDED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -619,7 +619,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-09-14T23:03:32.338000Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -646,7 +646,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-09-14T22:55:21.542000Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -673,7 +673,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-09-20T21:37:00Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -700,7 +700,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-11-29T19:54:00Z",
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -727,7 +727,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-10-01T17:29:54Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -754,7 +754,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-07-16T14:24:00Z",
               current_day: 0,
               stage: "ENDED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -781,7 +781,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-08-27T14:23:00Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -808,7 +808,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-06-30T14:23:00Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -835,7 +835,7 @@ Cypress.Commands.add('mock_list_cohortsA', () => {
               ending_date: "2021-06-26T22:38:00Z",
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -878,7 +878,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: null,
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -905,7 +905,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: null,
               current_day: 0,
               stage: "ENDED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -932,7 +932,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-09-14T23:03:32.338000Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -959,7 +959,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-09-14T22:55:21.542000Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -986,7 +986,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-09-20T21:37:00Z",
               current_day: 0,
               stage: "INACTIVE",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1013,7 +1013,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-11-29T19:54:00Z",
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1040,7 +1040,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-10-01T17:29:54Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1067,7 +1067,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-07-16T14:24:00Z",
               current_day: 0,
               stage: "ENDED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1094,7 +1094,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-08-27T14:23:00Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1121,7 +1121,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-06-30T14:23:00Z",
               current_day: 0,
               stage: "DELETED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1148,7 +1148,7 @@ Cypress.Commands.add('mock_list_cohortsB', () => {
               ending_date: "2021-06-26T22:38:00Z",
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1193,7 +1193,7 @@ Cypress.Commands.add('cohort_search_result', () => {
               ending_date: null,
               current_day: 0,
               stage: "STARTED",
-              specialty_mode: null,
+              schedule: null,
               syllabus_version: null,
               academy: {
                   id: 4,
@@ -1235,7 +1235,7 @@ Cypress.Commands.add('cohort_edit_new', () => {
         "ending_date": "2022-04-22T00:00:00Z",
         "current_day": 0,
         "stage": "INACTIVE",
-        "specialty_mode": null,
+        "schedule": null,
         "syllabus_version": {
             "version": 4,
             "slug": "full-stack",

@@ -27,6 +27,10 @@ const name = (user) => {
 const Students = () => {
   const [items, setItems] = useState([]);
 
+  const [queryFilters, setQueryFilters] = useState({});
+
+  console.log(items);
+
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)
@@ -173,9 +177,9 @@ const Students = () => {
             ),
           }}
           search={async (querys) => {
-            const { data } = await bc.auth().getAcademyStudents(querys);
-            console.log('students');
-            setItems(data.results);
+            setQueryFilters(querys);
+            const { data } = await bc.auth().getAcademyStudents();
+            setItems(data);
             return data;
           }}
           deleting={async (querys) => {

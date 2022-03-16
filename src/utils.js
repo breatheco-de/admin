@@ -1,6 +1,14 @@
 import { differenceInSeconds } from 'date-fns';
 import { toast } from 'react-toastify';
 import axios from './axios';
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
+dayjs.extend(duration);
 
 toast.configure();
 const toastOption = {
@@ -214,3 +222,14 @@ export const npsScoreColors = {
   9: 'text-green',
   10: 'text-green',
 };
+
+export function toISOStringFromTimezone(date, timezone) {
+  dayjs.tz.setDefault(timezone);
+
+  const dateFormat = 'YYYY-MM-DD';
+  const timeFormat = 'HH:mm';
+  const datetimeFormat = `${dateFormat} ${timeFormat}`;
+  const time = `${dayjs().format(dateFormat)} ${date.format(timeFormat)}`;
+
+  return dayjs.tz(time, datetimeFormat, timezone).toISOString();
+}

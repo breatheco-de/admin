@@ -10,7 +10,7 @@
       "ending_date": null,
       "current_day": 0,
       "stage": "INACTIVE",
-      "specialty_mode": {
+      "schedule": {
           "id": 1,
           "slug": "full-stack-pt-mondays",
           "name": "Full Stack PT Mon",

@@ -227,7 +227,7 @@ const Cohort = () => {
                 endDate={cohort.ending_date}
                 startDate={cohort.kickoff_date}
                 id={cohort.id}
-                specialtyMode={cohort.specialty_mode}
+                specialtyMode={cohort.schedule}
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
                 isPrivate={cohort.private}

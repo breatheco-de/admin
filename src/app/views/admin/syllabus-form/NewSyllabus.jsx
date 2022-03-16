@@ -15,7 +15,7 @@ import { schemas } from '../../../utils';
 
 const schema = Yup.object().shape({
   // academy: yup.number().required().positive().integer(),
-  // specialty_mode: yup.number().required().positive().integer(),
+  // schedule: yup.number().required().positive().integer(),
   slug: schemas.slug(),
   name: schemas.name(),
   duration_in_hours: schemas.nonZeroPositiveNumber('Total hours'),

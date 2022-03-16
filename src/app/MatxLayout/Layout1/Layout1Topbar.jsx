@@ -136,7 +136,7 @@ const Layout1Topbar = () => {
               <IconButton onClick={() => {
                 navigator.clipboard.writeText(window.location.href + (window.location.href.indexOf('?') >= 0 ? '' : '?') + `&location=${user.academy.slug}`);
                 toast.success('Website url copied successfuly', toastOption);
-              }} className="hide-on-pc">
+              }}>
                 <Icon>share</Icon>
               </IconButton>
             </Tooltip>
