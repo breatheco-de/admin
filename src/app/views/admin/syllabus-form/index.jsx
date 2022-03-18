@@ -34,6 +34,7 @@ dayjs.extend(LocalizedFormat);
 const Student = () => {
   const { syllabusSlug } = useParams();
   const session = getSession();
+  console.log("session", session)
   const [syllabus, setSyllabus] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -119,7 +120,7 @@ const Student = () => {
           icon="more_horiz"
           onSelect={({ value }) => {
             if (value === 'edit_syllabus') {
-              window.open(`https://build.breatheco.de/?token=${session.token}`, '_blank');
+              window.open(`https://build.breatheco.de/?academy=${session.academy.slug}&syllabus=${syllabus?.slug}&token=${session.token}`, '_blank');
             } else if (value === 'make_public') {
               setMakePublicDialog(true);
             }
