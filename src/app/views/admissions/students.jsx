@@ -177,9 +177,8 @@ const Students = () => {
             ),
           }}
           search={async (querys) => {
-            setQueryFilters(querys);
-            const { data } = await bc.auth().getAcademyStudents();
-            setItems(data);
+            const { data } = await bc.auth().getAcademyStudents(querys);
+            setItems(data.results);
             return data;
           }}
           deleting={async (querys) => {
