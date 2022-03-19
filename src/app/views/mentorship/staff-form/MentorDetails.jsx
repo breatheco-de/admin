@@ -29,7 +29,8 @@ const MentorDetails = ({ user, staffId }) => {
     email: mentor?.email || mentor?.user.email,
     service_status: mentor?.service.status || "",
     slug: mentor?.slug || "",
-    meeting_url: mentor?.user.meeting_url === null ? 'URL NOT SET' : mentor?.user.meeting_url,
+    meeting_url: mentor?.meeting_url || "",
+    syllabus: mentor?.syllabus || "",
     status: mentor?.status || "",
     price_per_hour: mentor?.price_per_hour || "",
   };
@@ -67,7 +68,7 @@ const MentorDetails = ({ user, staffId }) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar className="w-84 h-84" src={mentor?.user.profile.avatar_url} />
+        <Avatar className="w-84 h-84" src={mentor?.user.profile?.avatar_url} />
         <h5 className="mt-4 mb-2">{ }</h5>
         <button
           type="button"
@@ -236,6 +237,7 @@ const MentorDetails = ({ user, staffId }) => {
                   ))}
                 </TextField>
               </Grid>
+
               <Grid item md={3} sm={4} xs={12}>
                 Syllabus expertise
               </Grid>
@@ -253,7 +255,6 @@ const MentorDetails = ({ user, staffId }) => {
                   size="small"
                   label="Course expertise"
                   data-cy="course_expertise"
-                  required
                   multiple
                   initialValues={mentor.syllabus}
                   debounced={false}
@@ -261,6 +262,7 @@ const MentorDetails = ({ user, staffId }) => {
                   value={mentorSyllabusExpertise}
                 />
               </Grid>
+
               <div className="flex-column items-start px-4 mb-4">
                 <Button color="primary" variant="contained" type="submit">
                   Update Mentor Details

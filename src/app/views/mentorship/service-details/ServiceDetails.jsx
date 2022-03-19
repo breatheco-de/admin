@@ -35,6 +35,7 @@ const ServiceDetails = ({ service, serviceID }) => {
     created_at: singleService?.created_at || "",
     updated_at: singleService?.updated_at || "",
     status: singleService?.status || "",
+    language: singleService?.language || "",
   };
 
   const updateAcademyService = (values) => {
@@ -265,6 +266,31 @@ const ServiceDetails = ({ service, serviceID }) => {
                   {serviceStatusChoices.map((item, i) => (
                     <MenuItem value={item} key={`${item}${i}`}>
                       {item.toUpperCase()}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+              <Grid item md={2} sm={4} xs={12}>
+                Language
+              </Grid>
+              <Grid item md={10} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Language"
+                  style={{ width: '50%' }}
+                  data-cy="language"
+                  size="small"
+                  variant="outlined"
+                  value={values.language}
+                  onChange={(e) => {
+                    setFieldValue('language', e.target.value);
+                  }}
+                  select
+                >
+                  {['English', 'Spanish'].map((item) => (
+                    <MenuItem value={item} key={item}>
+                      {item}
                     </MenuItem>
                   ))}
                 </TextField>

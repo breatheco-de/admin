@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
+import { useHistory } from 'react-router-dom';
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -12,24 +13,31 @@ const propTypes = {
 };
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
+  const history = useHistory();
+
+  const postMentor = (values) => {
+    let serviceIndex = serviceList.filter((service) => {
+      return values.service === service.name
+    })
+    bc.mentorship().addAcademyMentor({
+      user: values.id,
+      booking_url: values.booking_url,
+      meeting_url: values.meeting_url,
+      slug: `${values.first_name.toLowerCase().trim()}-${values.last_name.toLowerCase().trim()}`,
+      price_per_hour: values.price_per_hour,
+      service: serviceIndex[0].id,
+      email: values.email
+    }).then((data) => {
+      if (data.status === 200) {
+        history.push('/mentors/staff');
+      }
+    })
+  }
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values) => {
-        let serviceId = serviceList.filter((service) => {
-          return values.service === service.name
-        });
-        bc.mentorship().addAcademyMentor({
-          user: values.id,
-          booking_url: values.booking_url,
-          meeting_url: values.meeting_url,
-          slug: `${values.first_name.toLowerCase().trim()}-${values.last_name.toLowerCase().trim()}`,
-          price_per_hour: values.price_per_hour,
-          service: serviceId[0].id
-          // service: values.service.toLowerCase() === 'geekpal 1-1 mentoring' ? 1 : '',
-        });
-      }}
+      onSubmit={(values) => postMentor(values)}
       enableReinitialize
     >
       {({ values, handleChange, handleSubmit, setFieldValue }) => (
@@ -46,7 +54,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                   name="first_name"
                   size="small"
                   required
-                  disabled
                   variant="outlined"
                   value={values.first_name}
                   onChange={handleChange}
@@ -57,7 +64,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                   name="last_name"
                   size="small"
                   required
-                  disabled
                   variant="outlined"
                   value={values.last_name}
                   onChange={handleChange}
@@ -102,7 +108,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 size="small"
                 type="email"
                 required
-                disabled
                 variant="outlined"
                 value={values.email}
                 onChange={handleChange}
@@ -123,24 +128,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 onChange={handleChange}
               />
             </Grid>
-
-            {/*
-          *** CHANGE THIS TO A DROP DOWN ***
-          <Grid item md={2} sm={4} xs={12}>
-            Service
-          </Grid>
-          <Grid item md={10} sm={8} xs={12}>
-            <TextField
-              label="Service"
-              name="service"
-              size="small"
-              type="text"
-              required
-              variant="outlined"
-              value={values.service}
-              onChange={handleChange}
-            />
-          </Grid> */}
 
             <Grid item md={2} sm={4} xs={12}>
               Service
