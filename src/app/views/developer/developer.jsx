@@ -1,6 +1,6 @@
 import React from "react";
 import { Breadcrumb } from "../../../matx";
-import DeveloperToken from "./forms/DeveloperToken";
+import DeveloperToken from "./DeveloperToken";
 
 const Developer = () => {
   return (
