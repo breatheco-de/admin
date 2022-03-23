@@ -8,11 +8,6 @@ const routes = [
     component: React.lazy(() => import('./settings')),
   },
   {
-    path: '/events/developer',
-    exact: true,
-    component: React.lazy(() => import('./developer')),
-  },
-  {
     path: '/events/list',
     exact: true,
     component: React.lazy(() => import('./events')),
