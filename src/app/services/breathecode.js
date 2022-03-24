@@ -163,13 +163,13 @@ class BreatheCodeClient {
       getAllRelatedSchedulesById: (syllabus, academy) =>
         axios.bcGet(
           'Certificates',
-          `${this.host}/admissions/schedule?syllabus_id=${syllabus}` +
+          `${this.host}/admissions/academy/schedule?syllabus_id=${syllabus}` +
           (academy ? `&academy_id=${academy}` : '')
         ),
       getAllRelatedSchedulesBySlug: (query) =>
         axios.bcGet(
           'Certificates',
-          `${this.host}/admissions/schedule?syllabus_slug=${query}`
+          `${this.host}/admissions/academy/schedule?syllabus_slug=${query}`
         ),
       getAllTimeslotsBySchedule: (pk) =>
         axios.bcGet(
