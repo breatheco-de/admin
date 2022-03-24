@@ -99,6 +99,17 @@ export const navigations = [
             },
         ],
     },
+    {
+      name: "Developer",
+      icon: "code",
+      children: [
+          {
+              name: "Settings",
+              path: "/developer/settings",
+              iconText: "OL",
+          },
+      ],
+  },
   {
     name: 'Careers',
     icon: 'business_center',
