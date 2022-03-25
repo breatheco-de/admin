@@ -44,15 +44,16 @@ const CohortStaff = ({ staffId, setCohortOptions, user }) => {
       })
       .then(async ({ data }) => {
         const { data: surveysData } = await bc.feedback().getSurveys();
-        console.log(surveysData);
+
         setIsLoading(false);
         if (data.length < 1) {
           setStdCohorts([]);
         } else {
           data.forEach((item, index, arr)=>{
-            arr[index].survey = surveysData.filter(p => p.cohort.slug == item.cohort.slug);
+            arr[index].survey = surveysData.filter(p => p.cohort.slug == item.cohort.slug && isNumeric(p.avg_score));
             arr[index].surveyScore = findAverage(arr[index].survey, "avg_score");
           });
+
           setStdCohorts(data);
           setCohortOptions(data);
         }
@@ -66,6 +67,12 @@ const CohortStaff = ({ staffId, setCohortOptions, user }) => {
       return Math.round((acc + (val[attr]/length)) * 100) / 100
     }, 0);
  };
+
+ const isNumeric = (str) => {
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
 
   useEffect(() => {
     getStudentCohorts();
