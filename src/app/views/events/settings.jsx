@@ -6,7 +6,6 @@ import { WebhookInfo } from "./forms/WebhookInfo";
 import { Organizer } from "./forms/Organizer";
 import { Organizers } from "./forms/Organizers";
 import EventbriteCard from "./forms/EventbriteCard";
-import DeveloperToken from "./forms/DeveloperToken";
 import { Venues } from "./forms/Venues";
 import { MatxLoading } from 'matx';
 
@@ -129,9 +128,6 @@ const EventSettings = () => {
             status={status}
             organization={organization}
           />
-          <div style={{ marginTop: "15px" }}>
-            <DeveloperToken />
-          </div>
           <Grid container spacing={3} className="mt-4">
             <Grid item md={7} xs={12}>
               <WebhookInfo organization={organization} />

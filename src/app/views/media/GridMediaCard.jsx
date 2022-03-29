@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Icon } from '@material-ui/core';
+import { Card, Icon, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import useAuth from '../../hooks/useAuth';
 
 import clsx from 'clsx';
 
@@ -61,6 +62,8 @@ const GridMediaCard = ({
       'https://www.flaticon.es/svg/vstatic/svg/1783/1783489.svg?token=exp=1618899658~hmac=ff9e3b44a2210648785224fdcc192732',
   };
   const [selected, setSelected] = useState(false);
+  const { user } = useAuth();
+
   useEffect(() => {
     if (isSelected.length === 0) setSelected(false);
   }, [isSelected]);
@@ -70,26 +73,64 @@ const GridMediaCard = ({
     if (mediaType.mime.includes('video')) return type.pdf;
     return mediaType.thumbnail;
   };
+
+  const LockIcon = () => {
+    if (media.academy.id !== user.academy.id) {
+      return (
+        <button
+          type="button"
+          className={clsx(
+            "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
+            classes.button
+          )}
+        >
+          <Tooltip title={"This media was uploaded from another academy, therefor you will not be able to be able to delete it"}>
+            <Icon>lock</Icon>
+          </Tooltip>
+        </button>
+      );
+    }
+  };
+
+
   return (
     <Card
       elevation={3}
       className={clsx(
-        `text-center relative h-full ${selected ? 'selected' : ''}`,
-        classes.mediaCard,
+        `text-center relative h-full ${selected ? "selected" : ""}`,
+        classes.mediaCard
       )}
-      style={{ maxHeight: '300px' }}
+      style={{ maxHeight: "300px" }}
       onClick={(e) => {
-        e.stopPropagation();
-        console.log(media);
-        setSelected(!selected);
-        onSelected(media);
+        if(media.academy.id === user.academy.id){
+          e.stopPropagation();
+          console.log(media);
+          setSelected(!selected);
+          onSelected(media);
+        }
       }}
     >
+
       <div className="flex justify-center items-center relative">
+        {media.academy.id !== user.academy.id && (
+          <Tooltip 
+            style={{
+              position:'absolute',
+              top:'10%',
+              left:'5%',
+              zIndex:100
+            }}
+            title={"This media was uploaded from another academy, therefor you will not be able to delete it"}>
+            <Icon>lock</Icon>
+          </Tooltip>
+        )}
         {!selected ? (
           <button
             type="button"
-            className={clsx('product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer', classes.button)}
+            className={clsx(
+              "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
+              classes.button
+            )}
             onClick={(e) => {
               e.stopPropagation();
               onOpenDialog();
@@ -103,7 +144,7 @@ const GridMediaCard = ({
           </span>
         )}
         <img
-          className={clsx('w-full', classes.img)}
+          className={clsx("w-full", classes.img)}
           src={
             checkMedia(media)
             // media.mime.includes('pdf')
@@ -116,17 +157,18 @@ const GridMediaCard = ({
         />
         <div
           className={clsx(
-            `image-box-overlay flex justify-center items-center ${selected ? 'selected' : ''}`,
+            `image-box-overlay flex justify-center items-center ${selected ? "selected" : ""
+            }`
           )}
         />
       </div>
       <div
         className="p-2"
         style={{
-          position: 'absolute',
+          position: "absolute",
           bottom: 0,
-          background: 'white',
-          width: '100%',
+          background: "white",
+          width: "100%",
         }}
       >
         <h6 className="m-0">{media.name}</h6>
