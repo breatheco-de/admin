@@ -4,6 +4,7 @@ import {
   Card, Dialog, DialogTitle, Divider, Grid, List,
   ListItem,
   ListItemText, MenuItem, TextField,
+  TextareaAutosize,
   FormControlLabel, Checkbox
 } from '@material-ui/core';
 import { Formik } from 'formik';
@@ -153,12 +154,16 @@ const ServiceDetails = ({ service, serviceID }) => {
                 Description
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
-                <TextField
-                  className="m-2"
+                <TextareaAutosize
+                  aria-label="description"
+                  minRows={3}
+                  placeholder="Description"
+                  style={{ width: '30%' }}
                   label="Description"
                   name="description"
-                  data-cy="name"
                   size="small"
+                  type="text"
+                  required
                   variant="outlined"
                   value={values.description}
                   onChange={handleChange}

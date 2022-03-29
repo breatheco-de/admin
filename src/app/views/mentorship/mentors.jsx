@@ -127,11 +127,10 @@ const Mentors = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = mentorList[dataIndex];
-          //!REVERT THIS BEFORE PUSHING
+          //! TODO REVERT THIS BEFORE PUSHING
           return !item.status === 'INVITED' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
-              {/* TODO Resend invite link for new service mentors. */}
               <InviteDetails user={item.user?.id} />
               {/* <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>

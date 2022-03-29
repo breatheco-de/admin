@@ -4,17 +4,30 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom';
-import MinuteSlider from 'app/components/TimeSliders/MinuteSlider';
 
 const propTypes = {
   handleChange: PropTypes.string.isRequired,
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
+function minToHHMMSS(minutes) {
+  let m = minutes % 60;
+
+  let h = (minutes - m) / 60;
+
+  let HHMMSS = (h < 10 ? "0" : "") + h.toString() + ":" + (m < 10 ? "0" : "") + m.toString() + ":00";
+
+  return HHMMSS
+}
+
 export const ServiceForm = ({ initialValues }) => {
   const history = useHistory();
 
   const postService = (values) => {
+    values.duration = minToHHMMSS(values.duration)
+    values.max_duration = minToHHMMSS(values.max_duration)
+    values.missed_meeting_duration = minToHHMMSS(values.missed_meeting_duration)
+    console.log('Service Values to post', values);
     {
       bc.mentorship().addAcademyService(values)
         .then((data) => {
@@ -35,22 +48,20 @@ export const ServiceForm = ({ initialValues }) => {
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
 
-            <Grid item md={1} sm={4} xs={12}>
+            <Grid item md={2} sm={4} xs={12}>
               Slug
             </Grid>
-            <Grid item md={11} sm={8} xs={12}>
-              <div className="flex">
-                <TextField
-                  className="m-2"
-                  label="Slug"
-                  name="slug"
-                  size="small"
-                  required
-                  variant="outlined"
-                  value={values.slug}
-                  onChange={handleChange}
-                />
-              </div>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                className="m-2"
+                label="Slug"
+                name="slug"
+                size="small"
+                required
+                variant="outlined"
+                value={values.slug}
+                onChange={handleChange}
+              />
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -87,12 +98,12 @@ export const ServiceForm = ({ initialValues }) => {
               Description
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
-              <TextareaAutosize
+              <TextField
                 aria-label="description"
                 minRows={3}
                 placeholder="Description"
-                style={{ width: '30%' }}
                 label="Description"
+                multiline
                 name="description"
                 size="small"
                 type="text"
@@ -108,7 +119,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                label="Example: 01:00:00"
+                label="Minutes"
                 name="duration"
                 size="small"
                 type="text"
@@ -116,8 +127,8 @@ export const ServiceForm = ({ initialValues }) => {
                 variant="outlined"
                 value={values.duration}
                 onChange={handleChange}
+                helperText="The standard duration  for every session"
               />
-              <small className="text-muted">{`The standard duration  for every session`}</small>
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -133,19 +144,8 @@ export const ServiceForm = ({ initialValues }) => {
                 variant="outlined"
                 value={values.max_duration}
                 onChange={handleChange}
+                helperText={`Max duration that can be billed per session.`}
               />
-              <MinuteSlider
-                min={0}
-                max={180}
-                step={1}
-                value={values.max_duration}
-                name='max_duration'
-                defaultValue={0}
-                aria-label='max_duration'
-                onChange={handleChange}
-              >
-              </MinuteSlider>
-              <small className="text-muted">{`The max duration that can be billed for a session in minutes ${values.max_duration} `}</small>
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -153,16 +153,16 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                label="Example: 600.0"
+                label="Minutes"
                 name="missed_meeting_duration"
                 size="small"
                 type="text"
                 required
+                helperText={`Billable amount if mentee does not join.`}
                 variant="outlined"
                 value={values.missed_meeting_duration}
                 onChange={handleChange}
               />
-              <small className="text-muted">{`How long the mentor should wait for the mentter. If mentee does not arrive before this duration, this is the billable amount.`}</small>
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -179,8 +179,8 @@ export const ServiceForm = ({ initialValues }) => {
                 variant="outlined"
                 value={values.status}
                 onChange={handleChange}
+                helperText={`You can mark the service "ACTIVE" after creation.`}
               />
-              <small className="text-muted">{`You can mark the service "ACTIVE" after creation.`}</small>
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -229,9 +229,7 @@ export const ServiceForm = ({ initialValues }) => {
                     checked={values?.allow_mentee_to_extend || false}
                   />
                 }
-                label=""
               />
-              <small className="text-muted">{`Once the session is longer than expected duration, the mentee will be able to extended up to max duration`}</small>
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
@@ -255,9 +253,8 @@ export const ServiceForm = ({ initialValues }) => {
                     checked={values?.allow_mentors_to_extend || false}
                   />
                 }
-                label=""
+                helperText="Once the session is longer than expected duration, the mentor will be able to extended up to max duration"
               />
-              <small className="text-muted">{`Once the session is longer than expected duration, the mentor will be able to extended up to max duration`}</small>
             </Grid>
 
           </Grid>

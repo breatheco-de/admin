@@ -131,7 +131,7 @@ const Services = () => {
         <div>
           <h3 className="mt-0 mb-4 font-medium text-28">{service && service.name}</h3>
         </div>
-        <DowndownMenu
+        {/* <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
@@ -150,7 +150,7 @@ const Services = () => {
             <Icon>playlist_add</Icon>
             Additional Actions
           </Button>
-        </DowndownMenu>
+        </DowndownMenu> */}
       </div>
 
       <Grid container spacing={3}>

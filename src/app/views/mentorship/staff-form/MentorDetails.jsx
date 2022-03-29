@@ -20,6 +20,7 @@ const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [mentor, setMentor] = useState(user);
   const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
+  const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
     first_name: mentor?.user.first_name || "",
@@ -36,12 +37,19 @@ const MentorDetails = ({ user, staffId }) => {
   };
 
   useEffect(() => {
-    if (mentor.syllabus) {
+    if (mentor.syllabus.length > 0) {
       setMentorSyllabusExpertise(mentor.syllabus);
     }
   }, []);
-
-  const updateMentorProfile = (values) => {
+  // TODO Fix the mentor syllabus, it continues to send [] instead of an array of ids for each syllabus. 
+  const updateMentorProfile = async (values) => {
+    console.log(values.syllabus);
+    values.syllabus = syllabusArray.filter((sylObj, i) => {
+      if (syllabusArray[i].name === sylObj.name) {
+        console.log('Name matched: ', sylObj.id);
+        return sylObj.id
+      }
+    })
     bc.mentorship()
       .updateAcademyMentor(staffId, { ...values, service: mentor.service.id })
       .then((data) => data)
@@ -250,7 +258,8 @@ const MentorDetails = ({ user, staffId }) => {
                   key={mentor.syllabus}
                   asyncSearch={async () => {
                     const response = await bc.admissions().getAllSyllabus();
-                    return response.data.map((syl) => syl.slug);
+                    setSyllabusArray(response.data)
+                    return response.data.map((syl) => syl.name);
                   }}
                   size="small"
                   label="Course expertise"
