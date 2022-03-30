@@ -126,7 +126,7 @@ const CohortStaff = ({ staffId, setCohortOptions, user }) => {
         <Grid lg={3} md={3} sm={3} xs={3}>
           <Card className="p-4">
             <div className="flex-column items-center ">
-              <h3>{`${findAverage(stdCohorts, "surveyScore")}/10`}</h3>
+              <h3>{`${findAverage(stdCohorts.filter((cohort) => cohort.surveyScore !== 0), "surveyScore")}/10`}</h3>
               <p>{`${user?.user.first_name} ${user?.user.last_name}`}</p>
             </div>
           </Card>
