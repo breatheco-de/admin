@@ -1,27 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Button, MenuItem, FormControlLabel, Checkbox, TextareaAutosize } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom';
+import { minToHHMMSS } from '../../../../utils/minToHHMMSS'
+import { getSession } from 'app/redux/actions/SessionActions';
 
 const propTypes = {
   handleChange: PropTypes.string.isRequired,
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
-function minToHHMMSS(minutes) {
-  let m = minutes % 60;
-
-  let h = (minutes - m) / 60;
-
-  let HHMMSS = (h < 10 ? "0" : "") + h.toString() + ":" + (m < 10 ? "0" : "") + m.toString() + ":00";
-
-  return HHMMSS
-}
+const slugify = require('slugify')
 
 export const ServiceForm = ({ initialValues }) => {
   const history = useHistory();
+  const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
+  const session = getSession();
+
+
+  useEffect(() => {
+    console.log(session)
+    setSlug(slugify(name).toLowerCase());
+  }, [name]);
+
 
   const postService = (values) => {
     values.duration = minToHHMMSS(values.duration)
@@ -49,33 +53,34 @@ export const ServiceForm = ({ initialValues }) => {
           <Grid container spacing={3} alignItems="center">
 
             <Grid item md={2} sm={4} xs={12}>
-              Slug
-            </Grid>
-            <Grid item md={10} sm={8} xs={12}>
-              <TextField
-                className="m-2"
-                label="Slug"
-                name="slug"
-                size="small"
-                required
-                variant="outlined"
-                value={values.slug}
-                onChange={handleChange}
-              />
-            </Grid>
-
-            <Grid item md={2} sm={4} xs={12}>
               Name
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
+                className='m-0'
                 label="Name"
                 name="name"
                 size="small"
                 required
                 variant="outlined"
-                value={values.name}
-                onChange={handleChange}
+                value={name}
+                onChange={(e) => { setName(e.target.value) }}
+              />
+            </Grid>
+
+            <Grid item md={2} sm={4} xs={12}>
+              Slug
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                className='m-0'
+                label="Slug"
+                name="slug"
+                size="small"
+                required
+                variant="outlined"
+                value={slug}
+                onChange={(e) => { setSlug(e.target.value) }}
               />
             </Grid>
 
@@ -119,6 +124,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
+                className='m-0'
                 label="Minutes"
                 name="duration"
                 size="small"
@@ -128,6 +134,11 @@ export const ServiceForm = ({ initialValues }) => {
                 value={values.duration}
                 onChange={handleChange}
                 helperText="The standard duration  for every session"
+                FormHelperTextProps={{
+                  classes: {
+                    margin: "0 !important"
+                  }
+                }}
               />
             </Grid>
 
@@ -136,6 +147,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
+                className='m-0'
                 label="Minutes"
                 name="max_duration"
                 size="small"
@@ -153,6 +165,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
+                className='m-0'
                 label="Minutes"
                 name="missed_meeting_duration"
                 size="small"
@@ -170,6 +183,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
+                className='m-0'
                 label="Status"
                 name="status"
                 size="small"
@@ -188,13 +202,14 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                className="m-2"
+                className='m-0'
                 label="Language"
                 style={{ width: '25%' }}
                 data-cy="language"
                 size="small"
+                required
                 variant="outlined"
-                value={values.language}
+                value={session.academy.language || values.language || 'en'}
                 onChange={(e) => {
                   setFieldValue('language', e.target.value);
                 }}
@@ -202,7 +217,7 @@ export const ServiceForm = ({ initialValues }) => {
               >
                 {['es', 'en'].map((item) => (
                   <MenuItem value={item} key={item}>
-                    {item.toUpperCase()}
+                    {item}
                   </MenuItem>
                 ))}
               </TextField>

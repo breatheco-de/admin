@@ -7,39 +7,55 @@ import {
   TextareaAutosize,
   FormControlLabel, Checkbox
 } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
+
+import dayjs, { duration } from 'dayjs';
+
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
+import { minToHHMMSS } from '../../../utils/minToHHMMSS'
+import { secToMin } from '../../../utils/secToMin'
 
 const propTypes = {
   service: PropTypes.object.isRequired,
   serviceID: PropTypes.string.isRequired,
 };
 
+dayjs.extend(duration);
+
+
 const ServiceDetails = ({ service, serviceID }) => {
   const [roleDialog, setRoleDialog] = useState(false);
-  const [singleService, setService] = useState(service);
+  const [singleService, setSingleService] = useState(service);
   const serviceStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
     id: singleService?.id || "",
     name: singleService?.name || "",
     slug: singleService?.slug || "",
-    duration: singleService?.duration || "",
+    duration: secToMin(singleService?.duration) || "",
     description: singleService?.description || "",
     logo_url: singleService?.logo_url || "",
     allow_mentee_to_extend: singleService?.allow_mentee_to_extend || "",
     allow_mentors_to_extend: singleService?.allow_mentors_to_extend || "",
-    max_duration: singleService?.max_duration || "",
-    missed_meeting_duration: singleService?.missed_meeting_duration || "",
+    max_duration: secToMin(singleService?.max_duration) || "",
+    missed_meeting_duration: secToMin(singleService?.missed_meeting_duration) || "",
     created_at: singleService?.created_at || "",
     updated_at: singleService?.updated_at || "",
     status: singleService?.status || "",
     language: singleService?.language || "",
   };
 
+  useEffect(() => {
+    setSingleService(service)
+  }, [service])
+
+
   const updateAcademyService = (values) => {
+    values.duration = minToHHMMSS(values.duration)
+    values.max_duration = minToHHMMSS(values.max_duration)
+    values.missed_meeting_duration = minToHHMMSS(values.missed_meeting_duration)
     bc.mentorship()
       .updateAcademyService(serviceID, { ...values, name: values.name })
       .then(({ data }) => data)
@@ -80,13 +96,21 @@ const ServiceDetails = ({ service, serviceID }) => {
           <form className="p-4" onSubmit={handleSubmit}>
 
             <Grid container spacing={3} alignItems="center">
-
-              <Grid item md={3} sm={4} xs={12}>
+              {values.status === 'INNACTIVE' ? (
+                <Grid item md={12} sm={12} xs={12}>
+                  <Alert severity="warning">
+                    <AlertTitle className="m-auto">
+                      This service is inactive.
+                    </AlertTitle>
+                  </Alert>
+                </Grid>
+              ) : ''}
+              <Grid item md={2} sm={4} xs={12}>
                 Id
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="ID"
                   name="id"
                   data-cy="id"
@@ -98,17 +122,16 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Updated at
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Updated at"
                   name="updated_at"
                   data-cy="updated_at"
                   disabled
-                  fullWidth
                   size="small"
                   variant="outlined"
                   value={values.updated_at}
@@ -116,17 +139,16 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Created at
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Created at"
                   name="created_at"
                   data-cy="created_at"
                   disabled
-                  fullWidth
                   size="small"
                   variant="outlined"
                   value={values.created_at}
@@ -134,12 +156,12 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Name
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Name"
                   name="name"
                   data-cy="name"
@@ -150,78 +172,84 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Description
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
-                <TextareaAutosize
+              <Grid item md={10} sm={8} xs={12}>
+                <TextField
                   aria-label="description"
                   minRows={3}
                   placeholder="Description"
-                  style={{ width: '30%' }}
                   label="Description"
                   name="description"
                   size="small"
                   type="text"
                   required
+                  multiline
                   variant="outlined"
                   value={values.description}
                   onChange={handleChange}
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Duration
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  label="Example: 01:00:00"
+                  className='m-0'
+                  label="Minutes"
                   name="duration"
                   size="small"
-                  type="text"
+                  type="number"
                   required
                   variant="outlined"
                   value={values.duration}
                   onChange={handleChange}
+                  helperText="The standard duration  for every session"
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Max Duration
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  label="Example: 7200.0"
+                  className='m-0'
+                  label="Minutes"
                   name="max_duration"
                   size="small"
-                  type="text"
+                  type="number"
                   required
                   variant="outlined"
                   value={values.max_duration}
                   onChange={handleChange}
+                  helperText={`Max duration that can be billed per session.`}
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Missed Meeting Duration
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  label="Example: 600.0"
+                  className='m-0'
+                  label="Minutes"
                   name="missed_meeting_duration"
                   size="small"
-                  type="text"
+                  type="number"
                   required
+                  helperText={`Billable amount if mentee does not join.`}
                   variant="outlined"
                   value={values.missed_meeting_duration}
                   onChange={handleChange}
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Logo URL
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
                   label="Logo Url"
                   name="logo_url"
@@ -234,12 +262,12 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Slug
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Slug"
                   disabled
                   name="slug"
@@ -251,16 +279,15 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={3} sm={4} xs={12}>
+              {/* <Grid item md={2} sm={4} xs={12}>
                 Service Status
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Service Status"
                   data-cy="service"
                   size="small"
-                  fullWidth
                   variant="outlined"
                   value={values.status}
                   onChange={(e) => {
@@ -274,14 +301,14 @@ const ServiceDetails = ({ service, serviceID }) => {
                     </MenuItem>
                   ))}
                 </TextField>
-              </Grid>
+              </Grid> */}
 
               <Grid item md={2} sm={4} xs={12}>
                 Language
               </Grid>
               <Grid item md={10} sm={8} xs={12}>
                 <TextField
-                  className="m-2"
+                  className="m-0"
                   label="Language"
                   style={{ width: '50%' }}
                   data-cy="language"
@@ -293,7 +320,7 @@ const ServiceDetails = ({ service, serviceID }) => {
                   }}
                   select
                 >
-                  {['English', 'Spanish'].map((item) => (
+                  {['en', 'es'].map((item) => (
                     <MenuItem value={item} key={item}>
                       {item}
                     </MenuItem>
@@ -301,10 +328,10 @@ const ServiceDetails = ({ service, serviceID }) => {
                 </TextField>
               </Grid>
 
-              <Grid item md={4} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Allow Mentee extension?
               </Grid>
-              <Grid item md={8} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <FormControlLabel
                   sx={{ mb: '16px' }}
                   name="allow_mentee_to_extend"
@@ -326,10 +353,10 @@ const ServiceDetails = ({ service, serviceID }) => {
                 />
               </Grid>
 
-              <Grid item md={4} sm={4} xs={12}>
+              <Grid item md={2} sm={4} xs={12}>
                 Allow Mentor extension?
               </Grid>
-              <Grid item md={8} sm={8} xs={12}>
+              <Grid item md={10} sm={8} xs={12}>
                 <FormControlLabel
                   sx={{ mb: '16px' }}
                   name="allow_mentors_to_extend"

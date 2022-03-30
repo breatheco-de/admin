@@ -146,7 +146,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 select
               >
                 {serviceList.map((singleService, i) => {
-                  console.log('servince', singleService);
                   return (
                     <MenuItem value={singleService.name || 'Loading'} key={`${singleService.name}${i}`}>
                       {singleService.name.toUpperCase()}
