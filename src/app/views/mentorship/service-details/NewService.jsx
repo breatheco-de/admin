@@ -12,18 +12,6 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 import { ServiceForm } from './service-utils/ServiceForm'
 
-const initialValues = {
-  first_name: '',
-  last_name: '',
-  email: '',
-  booking_url: '',
-  slug: '',
-  meeting_url: '',
-  status: '',
-  price_per_hour: '',
-  existing_user: '',
-};
-
 const filter = createFilterOptions();
 
 const NewService = () => {
@@ -36,13 +24,13 @@ const NewService = () => {
       slug: '',
       name: '',
       status: 'INNACTIVE',
-      duration: '01:00:00',
-      max_duration: '7200.0',
+      duration: '60',
+      max_duration: '180',
       description: null,
       logo_url: null,
       allow_mentee_to_extend: true,
       allow_mentors_to_extend: true,
-      missed_meeting_duration: "600.0",
+      missed_meeting_duration: "10",
       created_at: '',
       updated_at: ''
     },

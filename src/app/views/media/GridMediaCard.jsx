@@ -74,8 +74,8 @@ const GridMediaCard = ({
     return mediaType.thumbnail;
   };
 
-  const MediaButton = () => {
-    if(media.academy.id !== user.academy.id) {
+  const LockIcon = () => {
+    if (media.academy.id !== user.academy.id) {
       return (
         <button
           type="button"
@@ -90,27 +90,9 @@ const GridMediaCard = ({
         </button>
       );
     }
-    
-    return !selected ? (
-      <button
-        type="button"
-        className={clsx(
-          "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
-          classes.button
-        )}
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpenDialog();
-        }}
-      >
-        <Icon>mode_edit</Icon>
-      </button>
-    ) : (
-      <span className="product-price font-medium bg-white text-green py-1 px-3 m-0">
-        <Icon>done</Icon>
-      </span>
-    )
   };
+
+
   return (
     <Card
       elevation={3}
@@ -120,14 +102,47 @@ const GridMediaCard = ({
       )}
       style={{ maxHeight: "300px" }}
       onClick={(e) => {
-        e.stopPropagation();
-        console.log(media);
-        setSelected(!selected);
-        onSelected(media);
+        if(media.academy.id === user.academy.id){
+          e.stopPropagation();
+          console.log(media);
+          setSelected(!selected);
+          onSelected(media);
+        }
       }}
     >
+
       <div className="flex justify-center items-center relative">
-        <MediaButton />
+        {media.academy.id !== user.academy.id && (
+          <Tooltip 
+            style={{
+              position:'absolute',
+              top:'10%',
+              left:'5%',
+              zIndex:100
+            }}
+            title={"This media was uploaded from another academy, therefor you will not be able to delete it"}>
+            <Icon>lock</Icon>
+          </Tooltip>
+        )}
+        {!selected ? (
+          <button
+            type="button"
+            className={clsx(
+              "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
+              classes.button
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDialog();
+            }}
+          >
+            <Icon>mode_edit</Icon>
+          </button>
+        ) : (
+          <span className="product-price font-medium bg-white text-green py-1 px-3 m-0">
+            <Icon>done</Icon>
+          </span>
+        )}
         <img
           className={clsx("w-full", classes.img)}
           src={
@@ -142,8 +157,7 @@ const GridMediaCard = ({
         />
         <div
           className={clsx(
-            `image-box-overlay flex justify-center items-center ${
-              selected ? "selected" : ""
+            `image-box-overlay flex justify-center items-center ${selected ? "selected" : ""
             }`
           )}
         />

@@ -6,6 +6,7 @@ import dashboardRoutes from './views/dashboard/DashboardRoutes';
 import adminRoutes from './views/admin/routes';
 import admissionsRoutes from './views/admissions/routes';
 import eventsRoutes from './views/events/routes';
+import developerRoutes from './views/developer/routes';
 
 import certificatesRoutes from './views/certificates/certificatesRoutes';
 
@@ -38,6 +39,7 @@ const routes = [
   ...adminRoutes,
   ...admissionsRoutes,
   ...eventsRoutes,
+  ...developerRoutes,
   ...mediaRoutes,
   ...feedbackRoutes,
   ...pageLayoutRoutes,

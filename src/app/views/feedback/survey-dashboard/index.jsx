@@ -11,6 +11,7 @@ import GaugeProgressCard from './GuageProgressCard';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSurveyAnswers, getSurvey, getAnswersBy } from '../../../redux/actions/SurveyActions';
+import {CopyDialog} from "../../../components/CopyDialog"
 
 const options = [
   { label: 'Copy survey public link', value: 'public_link' },
@@ -31,6 +32,8 @@ const Survey = ({ match }) => {
     filteredAnswers = []
   } = useSelector((state) => state.survey);
   const [filter, setFilter] = useState('answered');
+
+  const [copyDialog, setCopyDialog] = useState(false);
 
   useEffect(() => {
     dispatch(getSurveyAnswers({ survey: match.params.id }));
@@ -70,7 +73,13 @@ const Survey = ({ match }) => {
             </div>
           </div>
         </div>
-        <DowndownMenu options={options} icon="more_horiz">
+        <DowndownMenu options={options} icon="more_horiz"
+          onSelect={({ value }) => {
+            if(value==="public_link"){
+              setCopyDialog(true);
+            }
+          }}
+        >
           <Button>
             <Icon>playlist_add</Icon>
             Additional Actions
@@ -131,6 +140,13 @@ const Survey = ({ match }) => {
         }
       </>
       }
+      <CopyDialog
+        title={survey.title}
+        label={"URL"}
+        value={survey.public_url}
+        isOpened={copyDialog}
+        onClose={() => setCopyDialog(false)}
+      />
     </div>
   )
 };

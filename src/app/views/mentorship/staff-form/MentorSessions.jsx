@@ -216,7 +216,7 @@ const MentorSessions = ({ staffId, mentor }) => {
       singlePage=""
       historyReplace="/admin/syllabus"
       search={async (querys) => {
-        const { data } = await bc.mentorship().getSingleMentorSessions({ mentor: staffId });
+        const { data } = await bc.mentorship().getSingleMentorSessions({ ...querys, mentor: staffId });
         setSessions(data.results || data);
         return data;
       }}
