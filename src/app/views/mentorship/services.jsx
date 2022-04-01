@@ -21,7 +21,6 @@ const Services = () => {
   useEffect(() => {
     bc.mentorship().getAllServices()
       .then((payload) => {
-        // console.log('Mentorship Service response', payload);
         setServiceList(payload.data || []);
       });
   }, []);

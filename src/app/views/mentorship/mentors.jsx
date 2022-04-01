@@ -6,6 +6,7 @@ import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
+import InviteDetails from '../../components/InviteDetails';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -42,13 +43,13 @@ const Mentors = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { user } = mentorList[dataIndex];
+          const mentor = mentorList[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.profile?.avatar_url} />
+              <Avatar className="w-48 h-48" src={mentor.user?.profile?.avatar_url} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">{name(user)}</h5>
-                {/* <small className="text-muted">{'user?.service.name'}</small> */}
+                <h5 className="my-0 text-15">{name(mentor.user)}</h5>
+                <small className="text-muted">{mentor?.service.name}</small>
               </div>
             </div>
           );
@@ -126,18 +127,30 @@ const Mentors = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = mentorList[dataIndex];
-          return (
+          //! TODO REVERT THIS BEFORE PUSHING
+          return !item.status === 'INVITED' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/mentors/staff/${item.id}`}>
-                <Tooltip title="Edit">
-                  <IconButton>
-                    <Icon>edit</Icon>
-                  </IconButton>
-                </Tooltip>
-              </Link>
+              <InviteDetails user={item.user?.id} />
+              {/* <Tooltip title="Resend Invite">
+                <IconButton onClick={() => resendInvite(item.id)}>
+                  <Icon>refresh</Icon>
+                </IconButton>
+              </Tooltip> */}
             </div>
-          );
+          )
+            : (
+              <div className="flex items-center">
+                <div className="flex-grow" />
+                <Link to={`/mentors/staff/${item.id}`}>
+                  <Tooltip title="Edit">
+                    <IconButton>
+                      <Icon>edit</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </Link>
+              </div>
+            );
         },
       },
     },
@@ -175,10 +188,10 @@ const Mentors = () => {
             return data;
           }}
           deleting={async (querys) => {
-            const { status } = await bc
-              .admissions()
-              .deleteStaffBulk(querys);
-            return status;
+            // const { status } = await bc
+            //   .admissions()
+            //   .deleteStaffBulk(querys);
+            // return status;
           }}
         />
       </div>
