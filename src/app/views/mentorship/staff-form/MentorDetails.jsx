@@ -20,6 +20,7 @@ const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [mentor, setMentor] = useState(user);
   const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
+  const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
     first_name: mentor?.user.first_name || "",
@@ -29,18 +30,26 @@ const MentorDetails = ({ user, staffId }) => {
     email: mentor?.email || mentor?.user.email,
     service_status: mentor?.service.status || "",
     slug: mentor?.slug || "",
-    meeting_url: mentor?.user.meeting_url === null ? 'URL NOT SET' : mentor?.user.meeting_url,
+    meeting_url: mentor?.meeting_url || "",
+    syllabus: mentor?.syllabus || "",
     status: mentor?.status || "",
     price_per_hour: mentor?.price_per_hour || "",
   };
 
   useEffect(() => {
-    if (mentor.syllabus) {
+    if (mentor.syllabus.length > 0) {
       setMentorSyllabusExpertise(mentor.syllabus);
     }
   }, []);
-
-  const updateMentorProfile = (values) => {
+  // TODO Fix the mentor syllabus, it continues to send [] instead of an array of ids for each syllabus. 
+  const updateMentorProfile = async (values) => {
+    console.log(values.syllabus);
+    values.syllabus = syllabusArray.filter((sylObj, i) => {
+      if (syllabusArray[i].name === sylObj.name) {
+        console.log('Name matched: ', sylObj.id);
+        return sylObj.id
+      }
+    })
     bc.mentorship()
       .updateAcademyMentor(staffId, { ...values, service: mentor.service.id })
       .then((data) => data)
@@ -67,7 +76,7 @@ const MentorDetails = ({ user, staffId }) => {
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
-        <Avatar className="w-84 h-84" src={mentor?.user.profile.avatar_url} />
+        <Avatar className="w-84 h-84" src={mentor?.user.profile?.avatar_url} />
         <h5 className="mt-4 mb-2">{ }</h5>
         <button
           type="button"
@@ -236,6 +245,7 @@ const MentorDetails = ({ user, staffId }) => {
                   ))}
                 </TextField>
               </Grid>
+
               <Grid item md={3} sm={4} xs={12}>
                 Syllabus expertise
               </Grid>
@@ -248,12 +258,12 @@ const MentorDetails = ({ user, staffId }) => {
                   key={mentor.syllabus}
                   asyncSearch={async () => {
                     const response = await bc.admissions().getAllSyllabus();
-                    return response.data.map((syl) => syl.slug);
+                    setSyllabusArray(response.data)
+                    return response.data.map((syl) => syl.name);
                   }}
                   size="small"
                   label="Course expertise"
                   data-cy="course_expertise"
-                  required
                   multiple
                   initialValues={mentor.syllabus}
                   debounced={false}
@@ -261,6 +271,7 @@ const MentorDetails = ({ user, staffId }) => {
                   value={mentorSyllabusExpertise}
                 />
               </Grid>
+
               <div className="flex-column items-start px-4 mb-4">
                 <Button color="primary" variant="contained" type="submit">
                   Update Mentor Details

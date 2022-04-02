@@ -20,3 +20,7 @@
 
 .underline{ text-decoration: underline; }
 .pointer{ cursor: pointer;}
+
+.MuiFormHelperText-contained{
+  margin-left: 0 !important;
+}
