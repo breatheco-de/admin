@@ -79,49 +79,41 @@ const ServiceMentors = ({ serviceId, service }) => {
     },
     {
       name: 'booking_url',
-      label: 'Booking Link',
+      label: 'Book & Meet links',
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const serviceMentor = allServiceMentors[dataIndex];
           return (
-            <Tooltip title={serviceMentor.booking_url}>
-              <small
-                className='underline pointer'
-                onClick={() => {
-                  navigator.clipboard.writeText(serviceMentor.booking_url);
-                  toast.success('Copied to the clipboard', toastOption);
-                }}
-              >
-                {serviceMentor.booking_url && serviceMentor.booking_url.substring(0, 15)}
-                {serviceMentor.booking_url && serviceMentor.booking_url.length > 5 && "..."}
-              </small>
-            </Tooltip>
-          )
-        }
-      },
-    },
-    {
-      name: 'meeting_url',
-      label: 'Meeting Link',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          allServiceMentors[dataIndex].meeting_url
-            ? (
-              <Tooltip title="Copy booking link">
-                <IconButton
+            <>
+              <Tooltip title={serviceMentor.booking_url}>
+                <small
+                  className='underline pointer'
                   onClick={() => {
-                    navigator.clipboard.writeText(allServiceMentors[dataIndex].booking_url);
+                    navigator.clipboard.writeText(serviceMentor.booking_url);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
-                  <Icon>assignment</Icon>
-                </IconButton>
+                  {serviceMentor.booking_url && serviceMentor.booking_url.substring(0, 25)}
+                  {serviceMentor.booking_url && serviceMentor.booking_url.length > 25 && "..."}
+                </small>
               </Tooltip>
-            )
-            : 'No meeting URL yet.'
-        ),
+              <br></br>
+              <Tooltip title={serviceMentor.online_meeting_url}>
+                <small
+                  className='underline pointer'
+                  onClick={() => {
+                    navigator.clipboard.writeText(serviceMentor.online_meeting_url);
+                    toast.success('Copied to the clipboard', toastOption);
+                  }}
+                >
+                  {serviceMentor.online_meeting_url && serviceMentor.online_meeting_url.substring(0, 25)}
+                  {serviceMentor.online_meeting_url && serviceMentor.online_meeting_url.length > 25 && "..."}
+                </small>
+              </Tooltip>
+            </>
+          )
+        }
       },
     },
     {
