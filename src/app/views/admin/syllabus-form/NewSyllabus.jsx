@@ -21,13 +21,18 @@ const schema = Yup.object().shape({
   duration_in_hours: schemas.nonZeroPositiveNumber('Total hours'),
   week_hours: schemas.nonZeroPositiveNumber('Weekly hours'),
   duration_in_days: schemas.nonZeroPositiveNumber('Total days'),
-  github_url: Yup.string().url('Invalid github url').required('Github url is a required field')
+  github_url: Yup.string().url('Invalid github url')
+    .nullable()
+    .notRequired()
     .test(
       'invalid-github-url',
       'Invalid github url',
-      (value) => /^https?:\/\/github\.com\//i.test(value),
+      (value) => value === null || value === undefined || /^https?:\/\/github\.com\//i.test(value),
     ),
-  logo: Yup.string().url('Invalid logo url').required('Logo is a required field'),
+  logo: Yup.string()
+    .nullable()
+    .notRequired()
+    .url('Invalid logo url'),
   // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
 

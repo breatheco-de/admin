@@ -178,7 +178,8 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 required
                 dialog
               />
-              <Select
+              <Checkbox form="new-timeslot" name="Recurrent" dialog />
+              {values.recurrent && <Select
                 disabled={!values.recurrent}
                 form="new-timeslot"
                 type="text"
@@ -187,8 +188,8 @@ const NewTimeslot = ({ isOpen, setIsOpen, schedule, appendTimeslot }) => {
                 label="Recurrency type"
                 required
                 dialog
-              />
-              <Checkbox form="new-timeslot" name="Recurrent" dialog />
+              />}
+              
             </DialogContent>
             <DialogActions className={classes.button}>
               <Button
