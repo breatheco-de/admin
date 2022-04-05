@@ -105,56 +105,6 @@ const ServiceDetails = ({ service, serviceID }) => {
                   </Alert>
                 </Grid>
               ) : ''}
-              <Grid item md={2} sm={4} xs={12}>
-                Id
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
-                <TextField
-                  className="m-0"
-                  label="ID"
-                  name="id"
-                  data-cy="id"
-                  disabled
-                  size="small"
-                  variant="outlined"
-                  value={values.id}
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={4} xs={12}>
-                Updated at
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
-                <TextField
-                  className="m-0"
-                  label="Updated at"
-                  name="updated_at"
-                  data-cy="updated_at"
-                  disabled
-                  size="small"
-                  variant="outlined"
-                  value={values.updated_at}
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={4} xs={12}>
-                Created at
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
-                <TextField
-                  className="m-0"
-                  label="Created at"
-                  name="created_at"
-                  data-cy="created_at"
-                  disabled
-                  size="small"
-                  variant="outlined"
-                  value={values.created_at}
-                  onChange={handleChange}
-                />
-              </Grid>
 
               <Grid item md={2} sm={4} xs={12}>
                 Name
