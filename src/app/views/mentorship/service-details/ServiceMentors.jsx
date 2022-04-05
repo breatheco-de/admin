@@ -93,8 +93,8 @@ const ServiceMentors = ({ serviceId, service }) => {
                   toast.success('Copied to the clipboard', toastOption);
                 }}
               >
-                {serviceMentor && serviceMentor.booking_url.substring(0, 15)}
-                {serviceMentor && serviceMentor.booking_url.length > 5 && "..."}
+                {serviceMentor.booking_url && serviceMentor.booking_url.substring(0, 15)}
+                {serviceMentor.booking_url && serviceMentor.booking_url.length > 5 && "..."}
               </small>
             </Tooltip>
           )

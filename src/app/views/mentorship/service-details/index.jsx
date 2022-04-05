@@ -29,6 +29,11 @@ const Services = () => {
     action: () => { },
   });
 
+  const statusColors = {
+    ACTIVE: 'text-white bg-green',
+    INNACTIVE: 'text-white yellow',
+  };
+
   const [copyDialog, setCopyDialog] = useState({
     title: "Reset Github url",
     url: "https://github.something.com",
@@ -84,6 +89,9 @@ const Services = () => {
           <h3 className="mt-0 mb-4 font-medium text-28">
             {service && service.name}
           </h3>
+          <small className={`border-radius-4 px-2 pt-2px ${service && statusColors[service.status]}`}>
+            {service && service.status.toUpperCase()}
+          </small>
         </div>
         <DowndownMenu
           options={options}

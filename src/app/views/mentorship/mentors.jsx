@@ -83,18 +83,23 @@ const Mentors = () => {
       label: 'Booking Link',
       options: {
         filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <Tooltip title="Copy booking link">
-            <IconButton
-              onClick={() => {
-                navigator.clipboard.writeText(mentorList[dataIndex].booking_url);
-                toast.success('Copied to the clipboard', toastOption);
-              }}
-            >
-              <Icon>assignment</Icon>
-            </IconButton>
-          </Tooltip>
-        ),
+        customBodyRenderLite: (dataIndex) => {
+          const _mentor = mentorList[dataIndex];
+          return (
+            <Tooltip title={_mentor.booking_url}>
+              <small
+                className='underline pointer'
+                onClick={() => {
+                  navigator.clipboard.writeText(_mentor.booking_url);
+                  toast.success('Copied to the clipboard', toastOption);
+                }}
+              >
+                {_mentor.booking_url !== null && _mentor.booking_url.substring(0, 15)}
+                {_mentor.booking_url !== null && _mentor.booking_url.length > 5 && "..."}
+              </small>
+            </Tooltip>
+          )
+        }
       },
     },
     {

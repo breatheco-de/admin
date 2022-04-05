@@ -34,13 +34,13 @@ const ServiceDetails = ({ service, serviceID }) => {
     id: singleService?.id || "",
     name: singleService?.name || "",
     slug: singleService?.slug || "",
-    duration: secToMin(singleService?.duration) || "",
+    duration: secToMin(parseInt(singleService?.duration)) || "",
     description: singleService?.description || "",
     logo_url: singleService?.logo_url || "",
     allow_mentee_to_extend: singleService?.allow_mentee_to_extend || "",
     allow_mentors_to_extend: singleService?.allow_mentors_to_extend || "",
-    max_duration: secToMin(singleService?.max_duration) || "",
-    missed_meeting_duration: secToMin(singleService?.missed_meeting_duration) || "",
+    max_duration: secToMin(parseInt(singleService?.max_duration)) || "",
+    missed_meeting_duration: secToMin(parseInt(singleService?.missed_meeting_duration)) || "",
     created_at: singleService?.created_at || "",
     updated_at: singleService?.updated_at || "",
     status: singleService?.status || "",
@@ -53,11 +53,16 @@ const ServiceDetails = ({ service, serviceID }) => {
 
 
   const updateAcademyService = (values) => {
-    values.duration = minToHHMMSS(values.duration)
-    values.max_duration = minToHHMMSS(values.max_duration)
-    values.missed_meeting_duration = minToHHMMSS(values.missed_meeting_duration)
+    let formattedDuration = minToHHMMSS(values.duration)
+    let formattedMaxDuration = minToHHMMSS(values.max_duration)
+    let formattedMissedMeetingDuration = minToHHMMSS(values.missed_meeting_duration)
     bc.mentorship()
-      .updateAcademyService(serviceID, { ...values, name: values.name })
+      .updateAcademyService(serviceID, {
+        ...values, duration: formattedDuration,
+        max_duration: formattedMaxDuration,
+        missed_meeting_duration: formattedMissedMeetingDuration,
+        name: values.name
+      })
       .then(({ data }) => data)
       .catch((error) => console.error(error));
   };
@@ -228,30 +233,6 @@ const ServiceDetails = ({ service, serviceID }) => {
                   onChange={handleChange}
                 />
               </Grid>
-
-              {/* <Grid item md={2} sm={4} xs={12}>
-                Service Status
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
-                <TextField
-                  className="m-0"
-                  label="Service Status"
-                  data-cy="service"
-                  size="small"
-                  variant="outlined"
-                  value={values.status}
-                  onChange={(e) => {
-                    setFieldValue('status', e.target.value);
-                  }}
-                  select
-                >
-                  {serviceStatusChoices.map((item, i) => (
-                    <MenuItem value={item} key={`${item}${i}`}>
-                      {item.toUpperCase()}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid> */}
 
               <Grid item md={2} sm={4} xs={12}>
                 Language
