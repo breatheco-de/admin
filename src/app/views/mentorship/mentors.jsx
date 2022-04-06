@@ -80,44 +80,41 @@ const Mentors = () => {
     },
     {
       name: 'booking_url',
-      label: 'Booking Link',
+      label: 'Book & Meet links',
       options: {
         filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <Tooltip title="Copy booking link">
-            <IconButton
-              onClick={() => {
-                navigator.clipboard.writeText(mentorList[dataIndex].booking_url);
-                toast.success('Copied to the clipboard', toastOption);
-              }}
-            >
-              <Icon>assignment</Icon>
-            </IconButton>
-          </Tooltip>
-        ),
-      },
-    },
-    {
-      name: 'meeting_url',
-      label: 'Meeting Link',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          mentorList[dataIndex].meeting_url
-            ? (
-              <Tooltip title="Copy booking link">
-                <IconButton
+        customBodyRenderLite: (dataIndex) => {
+          const _mentor = mentorList[dataIndex];
+          return (
+            <>
+              <Tooltip title={_mentor.booking_url}>
+                <small
+                  className='underline pointer'
                   onClick={() => {
-                    navigator.clipboard.writeText(mentorList[dataIndex].booking_url);
+                    navigator.clipboard.writeText(_mentor.booking_url);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
-                  <Icon>assignment</Icon>
-                </IconButton>
+                  {_mentor.booking_url && _mentor.booking_url.substring(0, 25)}
+                  {_mentor.booking_url && _mentor.booking_url.length > 25 && "..."}
+                </small>
               </Tooltip>
-            )
-            : 'No meeting URL yet.'
-        ),
+              <br></br>
+              <Tooltip title={_mentor.online_meeting_url}>
+                <small
+                  className='underline pointer'
+                  onClick={() => {
+                    navigator.clipboard.writeText(_mentor.online_meeting_url);
+                    toast.success('Copied to the clipboard', toastOption);
+                  }}
+                >
+                  {_mentor.online_meeting_url && _mentor.online_meeting_url.substring(0, 25)}
+                  {_mentor.online_meeting_url && _mentor.online_meeting_url.length > 25 && "..."}
+                </small>
+              </Tooltip>
+            </>
+          )
+        }
       },
     },
     {

@@ -24,3 +24,19 @@
 .MuiFormHelperText-contained{
   margin-left: 0 !important;
 }
+
+.no-margin{
+  margin: 0;
+}
+
+.red{
+  color: red;
+}
+
+.green{
+  color: green;
+}
+
+.yellow{
+  background-color: rgb(227, 227, 4);
+}

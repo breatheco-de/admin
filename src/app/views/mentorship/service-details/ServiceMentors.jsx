@@ -9,27 +9,27 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import bc from '../../../services/breathecode';
+import { useQuery } from '../../../hooks/useQuery'
+
 
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
-  autoClose: 8000,
-};
-const name = (user) => {
-  if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
-  return 'No name';
+  autoClose: 5000,
 };
 
 const ServiceMentors = ({ serviceId, service }) => {
   const [allServiceMentors, setAllServiceMentors] = useState([]);
+  const [queryString, setQueryString] = useState({ limit: 10, offset: 0 })
+  const query = useQuery();
 
-  useEffect(() => {
-    bc.mentorship().getAcademyMentors()
-      .then((payload) => {
-
-        setAllServiceMentors(payload.data || []);
-      });
-  }, []);
+  // useEffect(() => {
+  //   bc.mentorship().getAcademyMentors(queryString)
+  //     .then((payload) => {
+  //       console.log('getAcademyMentors Paylod: ', payload)
+  //       setAllServiceMentors(payload.data || []);
+  //     });
+  // }, []);
   const statusColors = {
     INVITED: 'text-white bg-error',
     ACTIVE: 'text-white bg-green',
@@ -79,44 +79,41 @@ const ServiceMentors = ({ serviceId, service }) => {
     },
     {
       name: 'booking_url',
-      label: 'Booking Link',
+      label: 'Book & Meet links',
       options: {
         filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          <Tooltip title="Copy booking link">
-            <IconButton
-              onClick={() => {
-                navigator.clipboard.writeText(allServiceMentors[dataIndex].booking_url);
-                toast.success('Copied to the clipboard', toastOption);
-              }}
-            >
-              <Icon>assignment</Icon>
-            </IconButton>
-          </Tooltip>
-        ),
-      },
-    },
-    {
-      name: 'meeting_url',
-      label: 'Meeting Link',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => (
-          allServiceMentors[dataIndex].meeting_url
-            ? (
-              <Tooltip title="Copy booking link">
-                <IconButton
+        customBodyRenderLite: (dataIndex) => {
+          const serviceMentor = allServiceMentors[dataIndex];
+          return (
+            <>
+              <Tooltip title={serviceMentor.booking_url}>
+                <small
+                  className='underline pointer'
                   onClick={() => {
-                    navigator.clipboard.writeText(allServiceMentors[dataIndex].booking_url);
+                    navigator.clipboard.writeText(serviceMentor.booking_url);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
-                  <Icon>assignment</Icon>
-                </IconButton>
+                  {serviceMentor.booking_url && serviceMentor.booking_url.substring(0, 25)}
+                  {serviceMentor.booking_url && serviceMentor.booking_url.length > 25 && "..."}
+                </small>
               </Tooltip>
-            )
-            : 'No meeting URL yet.'
-        ),
+              <br></br>
+              <Tooltip title={serviceMentor.online_meeting_url}>
+                <small
+                  className='underline pointer'
+                  onClick={() => {
+                    navigator.clipboard.writeText(serviceMentor.online_meeting_url);
+                    toast.success('Copied to the clipboard', toastOption);
+                  }}
+                >
+                  {serviceMentor.online_meeting_url && serviceMentor.online_meeting_url.substring(0, 25)}
+                  {serviceMentor.online_meeting_url && serviceMentor.online_meeting_url.length > 25 && "..."}
+                </small>
+              </Tooltip>
+            </>
+          )
+        }
       },
     },
     {
@@ -155,7 +152,7 @@ const ServiceMentors = ({ serviceId, service }) => {
   ];
   return (
     <SmartMUIDataTable
-      title="Active service mentors"
+      title={`Service mentors`}
       columns={columns}
       items={allServiceMentors}
       selectableRows={false}
@@ -163,8 +160,9 @@ const ServiceMentors = ({ serviceId, service }) => {
       singlePage=""
       historyReplace="/admin/syllabus"
       search={async (querys) => {
-        const { data } = await bc.mentorship().getSingleMentorSessions({ mentor: staffId });
-        setSessions(data.results || data);
+        setQueryString(querys)
+        const { data } = await bc.mentorship().getAcademyMentors(querys);
+        setAllServiceMentors(data.results || data);
         return data;
       }}
       deleting={async (querys) => {

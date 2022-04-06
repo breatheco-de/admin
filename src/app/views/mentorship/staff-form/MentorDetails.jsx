@@ -19,7 +19,6 @@ const propTypes = {
 const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [mentor, setMentor] = useState(user);
-  const [mentorSyllabusExpertise, setMentorSyllabusExpertise] = useState([]);
   const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
@@ -31,27 +30,15 @@ const MentorDetails = ({ user, staffId }) => {
     service_status: mentor?.service.status || "",
     slug: mentor?.slug || "",
     meeting_url: mentor?.meeting_url || "",
-    syllabus: mentor?.syllabus || "",
     status: mentor?.status || "",
     price_per_hour: mentor?.price_per_hour || "",
   };
 
-  useEffect(() => {
-    if (mentor.syllabus.length > 0) {
-      setMentorSyllabusExpertise(mentor.syllabus);
-    }
-  }, []);
-  // TODO Fix the mentor syllabus, it continues to send [] instead of an array of ids for each syllabus. 
   const updateMentorProfile = async (values) => {
-    console.log(values.syllabus);
-    values.syllabus = syllabusArray.filter((sylObj, i) => {
-      if (syllabusArray[i].name === sylObj.name) {
-        console.log('Name matched: ', sylObj.id);
-        return sylObj.id
-      }
-    })
+    let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
+    console.log(filteredSyllArr);
     bc.mentorship()
-      .updateAcademyMentor(staffId, { ...values, service: mentor.service.id })
+      .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, service: mentor.service.id })
       .then((data) => data)
       .catch((error) => console.error(error));
   };
@@ -198,7 +185,13 @@ const MentorDetails = ({ user, staffId }) => {
                   className="m-2"
                   label="Price per hour"
                   name="price_per_hour"
+                  type='number'
                   data-cy="price_per_hour"
+                  InputProps={{
+                    inputProps: {
+                      max: 40, min: 12
+                    }
+                  }}
                   size="small"
                   variant="outlined"
                   value={values.price_per_hour}
@@ -251,24 +244,23 @@ const MentorDetails = ({ user, staffId }) => {
               </Grid>
               <Grid item md={7} sm={4} xs={6}>
                 <AsyncAutocomplete
-                  onChange={(value) => {
-                    setMentorSyllabusExpertise(value);
+                  getOptionLabel={(option) => `${option.name}`}
+                  onChange={(selectedSyllabus) => {
+                    setMentor({ ...mentor, syllabus: selectedSyllabus })
                   }}
                   width="100%"
                   key={mentor.syllabus}
                   asyncSearch={async () => {
                     const response = await bc.admissions().getAllSyllabus();
                     setSyllabusArray(response.data)
-                    return response.data.map((syl) => syl.name);
+                    return response.data;
                   }}
                   size="small"
-                  label="Course expertise"
-                  data-cy="course_expertise"
+                  label="Syllabus expertise"
                   multiple
                   initialValues={mentor.syllabus}
                   debounced={false}
-                  getOptionLabel={(option) => (option)}
-                  value={mentorSyllabusExpertise}
+                  value={mentor.syllabus}
                 />
               </Grid>
 

@@ -28,12 +28,19 @@ export const ServiceForm = ({ initialValues }) => {
 
 
   const postService = (values) => {
-    values.duration = minToHHMMSS(values.duration)
-    values.max_duration = minToHHMMSS(values.max_duration)
-    values.missed_meeting_duration = minToHHMMSS(values.missed_meeting_duration)
+    let formattedDuration = minToHHMMSS(values.duration)
+    let formattedMaxDuration = minToHHMMSS(values.max_duration)
+    let formattedMissedMeetingDuration = minToHHMMSS(values.missed_meeting_duration)
     console.log('Service Values to post', values);
     {
-      bc.mentorship().addAcademyService(values)
+      bc.mentorship().addAcademyService({
+        ...values,
+        name: name,
+        slug: slug,
+        duration: formattedDuration,
+        max_duration: formattedMaxDuration,
+        missed_meeting_duration: formattedMissedMeetingDuration
+      })
         .then((data) => {
           if (data.status === 200) {
             history.push('/mentors/services');
