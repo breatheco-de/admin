@@ -179,9 +179,20 @@ const EventForm = () => {
             In you "Sync with Eventbrite" the event will be published to eventbrite as a DRAFT and you will have to finish its publication on eventbrite.com
           </Alert>
         )}
-        <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize>
+        <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize
+          validate={(values)=>{
+            let errors= {}
+            if(!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))){
+              errors.ending_at = 'The ending date should be earlier than the starting date'
+            }
+
+            return errors
+          }}
+        >
           {({
             values,
+            errors,
+            touched,
             handleChange,
             handleSubmit,
             setFieldValue,
@@ -279,7 +290,13 @@ const EventForm = () => {
                     variant="outlined"
                     type="datetime-local"
                     value={values.starting_at}
-                    onChange={handleChange}
+                    onChange={(e)=>{
+                      if(values.ending_at === ''){
+                        const newEnding = dayjs(e.target.value).add(2, 'h')
+                        values.ending_at = dayjs(newEnding).format('YYYY-MM-DDTHH:mm');
+                      }
+                      handleChange(e);
+                    }}
                   />
                   <small className="text-muted">{`The event timezone will be the same as the academy timezone ${user?.academy.timezone}`}</small>
                 </Grid>
@@ -296,6 +313,8 @@ const EventForm = () => {
                     type="datetime-local"
                     variant="outlined"
                     value={values.ending_at}
+                    error={errors.ending_at && touched.ending_at}
+                    helperText={touched.ending_at && errors.ending_at}
                     onChange={handleChange}
                   />
                 </Grid>

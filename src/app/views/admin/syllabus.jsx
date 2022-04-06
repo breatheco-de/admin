@@ -72,10 +72,12 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Tooltip title="This syllabus is not shared with other academies">
+              {item?.private? <Tooltip title="This syllabus is not shared with other academies">
                 <Icon>lock</Icon>
                 {/** <Icon>lock_open</Icon> */}
-              </Tooltip>
+              </Tooltip> : (
+                <p>Not Private</p>
+              )}
             </div>
           );
         },
