@@ -45,7 +45,8 @@ const EventForm = () => {
   const history = useHistory();
   
   useEffect(() => {
-    setSlug(slugify(title).toLowerCase());
+    console.log("idddd", id)
+    if(!id) setSlug(slugify(title).toLowerCase());
   }, [title]);
 
   useEffect(() => {
@@ -92,7 +93,7 @@ const EventForm = () => {
         })
         .then(({ data }) => {
 
-          if (data.academy !== undefined) history.push('/events/list');
+          if (data.academy !== undefined && !id) history.push('/events/list');
         })
         .catch((error) => error);
     } else {
@@ -225,10 +226,11 @@ const EventForm = () => {
                     size="small"
                     fullWidth
                     variant="outlined"
-
+                    disabled={id ? true : false}
                     value={slug}
                     onChange={(e)=>{setSlug(e.target.value)}}
                   />
+                  <small className="text-muted">Can only be updated when creating the event</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Banner URL
@@ -253,7 +255,7 @@ const EventForm = () => {
                     size="small"
                     type="url"
                     variant="outlined"
-                    value={values.sync_with_eventbrite ? '' : values.url}
+                    value={values.url}
                     onChange={handleChange}
                     name="url"
                     fullWidth
