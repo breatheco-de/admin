@@ -51,6 +51,7 @@ const NewMentor = () => {
       meeting_url: '',
       status: 'INVITED',
       price_per_hour: '',
+      syllabus: [],
       existing_user: '',
       ...baseData,
     },
@@ -60,7 +61,7 @@ const NewMentor = () => {
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
-          routeSegments={[{ name: 'Mentorship', path: '/mentors/staff' }, { name: 'New Staff' }]}
+          routeSegments={[{ name: 'Mentorship', path: '/mentors' }, { name: 'New Mentor' }]}
         />
       </div>
       <Card elevation={3}>

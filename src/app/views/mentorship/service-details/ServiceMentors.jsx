@@ -137,7 +137,7 @@ const ServiceMentors = ({ serviceId, service }) => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/mentors/staff/${serviceMentor.id}`}>
+              <Link to={`/mentors/${serviceMentor.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
