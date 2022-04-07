@@ -19,7 +19,7 @@ const propTypes = {
 const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [mentor, setMentor] = useState(user);
-  const [ mentorSlug, setMentorSlug ] = useState(mentor?.slug || "")
+  const [mentorSlug, setMentorSlug] = useState(mentor?.slug || "")
   const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
@@ -37,7 +37,6 @@ const MentorDetails = ({ user, staffId }) => {
 
   const updateMentorProfile = async (values) => {
     let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
-    console.log(filteredSyllArr);
     bc.mentorship()
       .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, service: mentor.service.id, slug: mentorSlug })
       .then((data) => data)
@@ -63,9 +62,9 @@ const MentorDetails = ({ user, staffId }) => {
 
   const validate = (values, props /* only available when using withFormik */) => {
     const errors = {};
-  
+
     const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(values.booking_url);
-    if(!match || match[1] == undefined){
+    if (!match || match[1] == undefined) {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
     else setMentorSlug(match[1])
