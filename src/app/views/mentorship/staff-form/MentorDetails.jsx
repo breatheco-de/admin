@@ -189,7 +189,7 @@ const MentorDetails = ({ user, staffId }) => {
                   data-cy="price_per_hour"
                   InputProps={{
                     inputProps: {
-                      max: 40, min: 12
+                      max: 100, min: 1
                     }
                   }}
                   size="small"

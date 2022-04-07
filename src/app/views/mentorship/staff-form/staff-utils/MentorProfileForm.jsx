@@ -125,6 +125,11 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 required
                 variant="outlined"
                 value={values.price_per_hour}
+                InputProps={{
+                  inputProps: {
+                    max: 100, min: 1
+                  }
+                }}
                 onChange={handleChange}
               />
             </Grid>
