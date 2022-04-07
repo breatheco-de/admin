@@ -19,6 +19,7 @@ const propTypes = {
 const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [mentor, setMentor] = useState(user);
+  const [ mentorSlug, setMentorSlug ] = useState(mentor?.slug || "")
   const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
   const initialValues = {
@@ -38,7 +39,7 @@ const MentorDetails = ({ user, staffId }) => {
     let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
     console.log(filteredSyllArr);
     bc.mentorship()
-      .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, service: mentor.service.id })
+      .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, service: mentor.service.id, slug: mentorSlug })
       .then((data) => data)
       .catch((error) => console.error(error));
   };
@@ -60,6 +61,18 @@ const MentorDetails = ({ user, staffId }) => {
       });
   };
 
+  const validate = (values, props /* only available when using withFormik */) => {
+    const errors = {};
+  
+    const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(values.booking_url);
+    if(!match || match[1] == undefined){
+      errors.booking_url = 'Booking URL must start with https://calendly.com'
+    }
+    else setMentorSlug(match[1])
+
+    return errors;
+  };
+
   return (
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
@@ -77,11 +90,12 @@ const MentorDetails = ({ user, staffId }) => {
       <Divider />
       <Formik
         initialValues={initialValues}
+        validate={validate}
         onSubmit={(values) => updateMentorProfile(values)}
         enableReinitialize
       >
         {({
-          values, handleChange, handleSubmit, setFieldValue,
+          values, handleChange, handleSubmit, setFieldValue, errors,
         }) => (
           <form className="p-4" onSubmit={handleSubmit}>
 
@@ -98,8 +112,7 @@ const MentorDetails = ({ user, staffId }) => {
                   disabled
                   size="small"
                   variant="outlined"
-                  value={values.slug}
-                  onChange={handleChange}
+                  value={mentorSlug}
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
@@ -176,6 +189,7 @@ const MentorDetails = ({ user, staffId }) => {
                   value={values.booking_url}
                   onChange={handleChange}
                 />
+                {errors.booking_url && <small className="text-error d-block">{errors.booking_url}</small>}
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Price per hour
@@ -214,31 +228,6 @@ const MentorDetails = ({ user, staffId }) => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item md={3} sm={4} xs={12}>
-                Service Status
-              </Grid>
-              <Grid item md={9} sm={8} xs={12}>
-                <TextField
-                  className="m-2"
-                  label="Service Status"
-                  data-cy="service"
-                  size="small"
-                  fullWidth
-                  variant="outlined"
-                  value={values.service_status}
-                  onChange={(e) => {
-                    setFieldValue('service_status', e.target.value);
-                  }}
-                  select
-                >
-                  {mentorStatusChoices.map((item) => (
-                    <MenuItem value={item} key={item}>
-                      {item.toUpperCase()}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
               <Grid item md={3} sm={4} xs={12}>
                 Syllabus expertise
               </Grid>

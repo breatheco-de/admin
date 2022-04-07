@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid, TextField, Button, MenuItem
 } from '@material-ui/core';
@@ -14,33 +14,44 @@ const propTypes = {
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
   const history = useHistory();
+  const [ mentorSlug, setMentorSlug ] = useState('')
 
   const postMentor = (values) => {
     let serviceIndex = serviceList.filter((service) => {
       return values.service === service.name
     })
+
     bc.mentorship().addAcademyMentor({
       user: values.id,
       booking_url: values.booking_url,
       meeting_url: values.meeting_url,
-      slug: `${values.first_name.toLowerCase().trim()}-${values.last_name.toLowerCase().trim()}`,
+      slug: mentorSlug,
       price_per_hour: values.price_per_hour,
       service: serviceIndex[0].id,
       email: values.email
-    }).then((data) => {
-      if (data.status === 200) {
-        history.push('/mentors/staff');
-      }
-    })
+    }).then((data) => (data.status == 200) && history.push('/mentors')).catch(error => setFormError('Error while saving mentor'))
   }
+
+  const validate = (values, props /* only available when using withFormik */) => {
+    const errors = {};
+  
+    const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(values.booking_url);
+    if(!match || match[1] == undefined){
+      errors.booking_url = 'Booking URL must start with https://calendly.com'
+    }
+    else setMentorSlug(match[1])
+
+    return errors;
+  };
 
   return (
     <Formik
       initialValues={initialValues}
+      validate={validate}
       onSubmit={(values) => postMentor(values)}
       enableReinitialize
     >
-      {({ values, handleChange, handleSubmit, setFieldValue }) => (
+      {({ values, handleChange, handleSubmit, setFieldValue, errors }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={1} sm={4} xs={12}>
@@ -83,9 +94,10 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.booking_url}
                 onChange={handleChange}
               />
+              {errors.booking_url && <small className="text-error d-block">{errors.booking_url}</small>}
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
-              Meeting URL
+              Backup Meeting URL
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
@@ -97,6 +109,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.meeting_url}
                 onChange={handleChange}
               />
+              {errors.meeting_url && <small className="text-error d-block">{errors.meeting_url}</small>}
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Email
@@ -166,13 +179,14 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               <TextField
                 label="Slug"
                 name="slug"
+                disabled={true}
+
                 size="small"
                 type="text"
-                required
                 variant="outlined"
-                value={`${values.first_name.toLowerCase()}-${values.last_name.toLowerCase()}`}
-                onChange={handleChange}
+                value={mentorSlug}
               />
+              <small className="text-muted d-block">Will be generated from the booking url</small>
             </Grid>
           </Grid>
           <div className="mt-6">

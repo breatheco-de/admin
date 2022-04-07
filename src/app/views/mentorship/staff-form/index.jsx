@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core';
+import { Breadcrumb } from 'matx';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
@@ -67,7 +68,7 @@ const Mentors = () => {
         setCopyDialog({
           ...copyDialog,
           openDialog: true,
-          url: `${data.reset_github_url}?url=https://staff.breatheco.de/login`,
+          url: `${data.reset_github_url}?url=https://${window.location.hostname}/login`,
         });
       })
       .catch((error) => error);
@@ -127,9 +128,9 @@ const Mentors = () => {
           open={copyDialog.openDialog}
           setCopyDialog={setCopyDialog}
         />
-        {/* <ActionsDialog /> */}
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">{mentor && mentor.user.first_name + mentor.user.last_name}</h3>
+          <Breadcrumb routeSegments={[{ name: 'Mentors', path: '/mentors' }, { name: mentor ? mentor.user.first_name + " " + mentor.user.last_name : "Loading mentor"} ]} />
+          <h3 className="mt-0 mb-4 font-medium text-28"></h3>
           <div className="flex">
             Member since:
             {dayjs(mentor?.created_at).format('LL')}

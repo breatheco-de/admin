@@ -1,4 +1,4 @@
-import { authRoles } from './auth/authRoles';
+import { authRoles } from "./auth/authRoles";
 
 export const navigations = [
     {
@@ -100,82 +100,82 @@ export const navigations = [
         ],
     },
     {
-      name: "Developer",
-      icon: "code",
-      children: [
-          {
-              name: "Settings",
-              path: "/developer/settings",
-              iconText: "OL",
-          },
-      ],
-  },
-  {
-    name: 'Careers',
-    icon: 'business_center',
-    auth: authRoles.contry_manager,
-    beta: true,
-    children: [
-      {
-        name: 'Partners',
-        path: '/career/partners',
-        iconText: 'CO',
+        name: "Developer",
+        icon: "code",
+        children: [
+            {
+                name: "Settings",
+                path: "/developer/settings",
+                iconText: "OL",
+            },
+        ],
+    },
+    {
+        name: "Careers",
+        icon: "business_center",
+        auth: authRoles.contry_manager,
         beta: true,
-      },
-      {
-        name: 'Student Profiles',
-        path: '/career/students',
-        iconText: 'STU',
+        children: [
+            {
+                name: "Partners",
+                path: "/career/partners",
+                iconText: "CO",
+                beta: true,
+            },
+            {
+                name: "Student Profiles",
+                path: "/career/students",
+                iconText: "STU",
+                beta: true,
+            },
+        ],
+    },
+    {
+        name: "Media Gallery",
+        icon: "collections",
+        path: "/media/gallery",
+    },
+    {
+        name: "Mentorship",
+        icon: "school",
         beta: true,
-      },
-    ],
-  },
-  {
-    name: 'Media Gallery',
-    icon: 'collections',
-    path: '/media/gallery',
-  },
-  {
-    name: 'Mentorship',
-    icon: 'school',
-    beta: true,
-    children: [
-      {
-        name: 'Mentors',
-        path: '/mentors/staff',
-        iconText: 'STA',
-      },
-      {
-        name: 'Services',
-        path: '/mentors/services',
-        iconText: 'STA',
-      },
-      {
-        name: 'Sessions',
-        path: '/mentors/sessions',
-        iconText: 'STA',
-      },
-    ],
-  },
-  {
-    name: 'Admin',
-    icon: 'account_circle',
-    children: [
-      {
-        name: 'Staff',
-        path: '/admin/staff',
-        iconText: 'STA',
-      },
-      {
-        name: 'Invites',
-        path: '/admin/invites',
-        iconText: 'STA',
-      },
-      {
-        name: 'Syllabus',
-        path: '/admin/syllabus',
-        iconText: 'STA',
-      },
-    ],
-  },
+        children: [
+            {
+                name: "Mentors",
+                path: "/mentors",
+                iconText: "STA",
+            },
+            {
+                name: "Services",
+                path: "/mentors/services",
+                iconText: "STA",
+            },
+            {
+                name: "Sessions",
+                path: "/mentors/sessions",
+                iconText: "STA",
+            },
+        ],
+    },
+    {
+        name: "Admin",
+        icon: "account_circle",
+        children: [
+            {
+                name: "Staff",
+                path: "/admin/staff",
+                iconText: "STA",
+            },
+            {
+                name: "Invites",
+                path: "/admin/invites",
+                iconText: "STA",
+            },
+            {
+                name: "Syllabus",
+                path: "/admin/syllabus",
+                iconText: "STA",
+            },
+        ],
+    },
 ];
