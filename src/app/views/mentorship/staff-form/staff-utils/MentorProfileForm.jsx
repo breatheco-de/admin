@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom';
+import { AsyncAutocomplete } from '../../../../components/Autocomplete'
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -14,13 +15,16 @@ const propTypes = {
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
   const history = useHistory();
-  const [ mentorSlug, setMentorSlug ] = useState('')
+  const [mentorSlug, setMentorSlug] = useState('')
+  const [mentor, setMentor] = useState({})
+
+  const [syllabusArray, setSyllabusArray] = useState([]);
 
   const postMentor = (values) => {
     let serviceIndex = serviceList.filter((service) => {
       return values.service === service.name
     })
-
+    let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
     bc.mentorship().addAcademyMentor({
       user: values.id,
       booking_url: values.booking_url,
@@ -28,15 +32,15 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
       slug: mentorSlug,
       price_per_hour: values.price_per_hour,
       service: serviceIndex[0].id,
+      syllabus: filteredSyllArr,
       email: values.email
     }).then((data) => (data.status == 200) && history.push('/mentors')).catch(error => setFormError('Error while saving mentor'))
   }
 
   const validate = (values, props /* only available when using withFormik */) => {
     const errors = {};
-  
     const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(values.booking_url);
-    if(!match || match[1] == undefined){
+    if (!match || match[1] == undefined) {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
     else setMentorSlug(match[1])
@@ -187,6 +191,30 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={mentorSlug}
               />
               <small className="text-muted d-block">Will be generated from the booking url</small>
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Syllabus expertise
+            </Grid>
+            <Grid item md={4} sm={8} xs={12}>
+              <AsyncAutocomplete
+                getOptionLabel={(option) => `${option.name}`}
+                onChange={(selectedSyllabus) => {
+                  setMentor({ ...mentor, syllabus: selectedSyllabus })
+                }}
+                width="100%"
+                key={mentor.syllabus}
+                asyncSearch={async () => {
+                  const response = await bc.admissions().getAllSyllabus();
+                  setSyllabusArray(response.data)
+                  return response.data;
+                }}
+                size="small"
+                label="Syllabus expertise"
+                multiple
+                initialValues={mentor.syllabus}
+                debounced={false}
+                value={mentor.syllabus}
+              />
             </Grid>
           </Grid>
           <div className="mt-6">
