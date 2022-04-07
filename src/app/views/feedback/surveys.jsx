@@ -21,6 +21,7 @@ import bc from 'app/services/breathecode';
 import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import SingleDelete from '../../components/ToolBar/SingleDelete';
 
 toast.configure();
 const toastOption = {
@@ -34,6 +35,7 @@ dayjs.extend(relativeTime);
 
 const stageColors = {
   INACTIVE: 'bg-gray',
+  SENT: 'bg-gray',
   PREWORK: 'bg-secondary',
   PENDING : 'bg-secondary',
   STARTED: 'text-white bg-warning',
@@ -50,9 +52,15 @@ const EventList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
 
-  const resendSurvey = (user) => {
-    bc.auth()
-      .resendSurvey(user)
+  const [toResend, setToResend] = useState(null);
+
+  const resendSurvey = (survey) => {
+    bc.feedback()
+      .updateSurvey({
+        cohort: survey.cohort.id, 
+        send_now: true
+      }, 
+      survey.id)
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
@@ -237,7 +245,10 @@ const EventList = () => {
             <div className="flex items-center">
               <div className="flex-grow" />
               <Tooltip title="Resend Survey">
-                <IconButton onClick={() => resendSurvey(survey.id)}>
+                <IconButton onClick={() => 
+                  setToResend(survey)
+                  // resendSurvey(survey)
+                }>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
@@ -300,6 +311,15 @@ const EventList = () => {
           />
         </div>
       </div>
+      {toResend && (
+        <SingleDelete
+          deleting={() => {
+            resendSurvey(toResend);
+          }}
+          onClose={setToResend}
+          message="Are you sure you want to resend this survey?"
+        />
+      )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -315,7 +335,7 @@ const EventList = () => {
                   label="URL"
                   name="url"
                   size="medium"
-                  disabled
+                  // disabled
                   fullWidth
                   variant="outlined"
                   value={url}
