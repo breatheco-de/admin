@@ -29,7 +29,7 @@ dayjs.extend(duration);
 const ServiceDetails = ({ service, serviceID }) => {
   const [roleDialog, setRoleDialog] = useState(false);
   const [singleService, setSingleService] = useState(service);
-  const serviceStatusChoices = ['ACTIVE', 'INNACTIVE'];
+  const serviceStatusChoices = ['ACTIVE', 'INNACTIVE', "UNLISTED"];
   const initialValues = {
     id: singleService?.id || "",
     name: singleService?.name || "",

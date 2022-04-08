@@ -28,7 +28,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
     bc.mentorship().addAcademyMentor({
       user: values.id,
       booking_url: values.booking_url,
-      meeting_url: values.meeting_url,
+      online_meeting_url: values.online_meeting_url,
       slug: mentorSlug,
       price_per_hour: values.price_per_hour,
       service: serviceIndex[0].id,
@@ -105,15 +105,15 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                label="Meeting Url"
-                name="meeting_url"
+                label="Backup Meeting Url"
+                name="meeonline_meeting_urlting_url"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.meeting_url}
+                value={values.online_meeting_url}
                 onChange={handleChange}
               />
-              {errors.meeting_url && <small className="text-error d-block">{errors.meeting_url}</small>}
+              {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Email
