@@ -21,7 +21,7 @@ const MentorDetails = ({ user, staffId }) => {
   const [mentor, setMentor] = useState(user);
   const [ mentorSlug, setMentorSlug ] = useState(mentor?.slug || "")
   const [syllabusArray, setSyllabusArray] = useState([]);
-  const mentorStatusChoices = ['ACTIVE', 'INNACTIVE'];
+  const mentorStatusChoices = ['ACTIVE', 'INNACTIVE', "UNLISTED"];
   const initialValues = {
     first_name: mentor?.user.first_name || "",
     last_name: mentor?.user.last_name || "",
@@ -30,7 +30,7 @@ const MentorDetails = ({ user, staffId }) => {
     email: mentor?.email || mentor?.user.email,
     service_status: mentor?.service.status || "",
     slug: mentor?.slug || "",
-    meeting_url: mentor?.meeting_url || "",
+    online_meeting_url: mentor?.online_meeting_url || "",
     status: mentor?.status || "",
     price_per_hour: mentor?.price_per_hour || "",
   };
@@ -161,17 +161,17 @@ const MentorDetails = ({ user, staffId }) => {
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
-                Meeting URL
+                Backup Meeting URL
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
                 <TextField
                   className="m-2"
                   label="Meeting URL"
-                  name="meeting_url"
-                  data-cy="meeting_url"
+                  name="online_meeting_url"
+                  data-cy="online_meeting_url"
                   size="small"
                   variant="outlined"
-                  value={values.meeting_url}
+                  value={values.online_meeting_url}
                   onChange={handleChange}
                 />
               </Grid>

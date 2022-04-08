@@ -131,7 +131,7 @@ const ServiceMentors = ({ serviceId, service }) => {
                 last_name: '',
                 services: '',
                 booking_url: '',
-                meeting_url: '',
+                online_meeting_url: '',
               },
             };
           return (
