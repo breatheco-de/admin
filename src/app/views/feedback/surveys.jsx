@@ -168,7 +168,7 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
+          <div className="flex items-center"  style={{ width: "80%" }}>
             <div className="ml-3">
               <h5 className="my-0 text-15">
                 {dayjs(items[i].sent_at).format("MM-DD-YYYY")}
@@ -217,22 +217,33 @@ const EventList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
           const survey = items[dataIndex];
-          return survey.status === "PENDING" ? (
+          return (
             <div className="flex items-center">
-              <div className="flex-grow" />
-              <Tooltip title="Copy survey link">
-                <IconButton
-                  onClick={() => {
-                    console.log(survey.public_url);
-                    setOpenDialog(true);
-                    setUrl(survey.public_url);
-                  }}
-                >
-                  <Icon>assignment</Icon>
-                </IconButton>
-              </Tooltip>
+              {/* <div className="flex-grow" /> */}
+              {survey.status !== "FATAL" && !isExpired(survey) &&
+                <>
+                  <Tooltip title="Copy survey link">
+                    <IconButton
+                      onClick={() => {
+                        console.log(survey.public_url);
+                        setOpenDialog(true);
+                        setUrl(survey.public_url);
+                      }}
+                    >
+                      <Icon>assignment</Icon>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Resend Survey">
+                    <IconButton onClick={() =>
+                      setToResend(survey)
+                      // resendSurvey(survey)
+                    }>
+                      <Icon>refresh</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </>
+              }
               <Link
                 to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
               >
@@ -241,26 +252,7 @@ const EventList = () => {
                 </IconButton>
               </Link>
             </div>
-          ) : (
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <Tooltip title="Resend Survey">
-                <IconButton onClick={() => 
-                  setToResend(survey)
-                  // resendSurvey(survey)
-                }>
-                  <Icon>refresh</Icon>
-                </IconButton>
-              </Tooltip>
-              <Link
-                to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
-              >
-                <IconButton>
-                  <Icon>arrow_right_alt</Icon>
-                </IconButton>
-              </Link>
-            </div>
-          );
+          )
         },
       },
     },
