@@ -139,7 +139,7 @@ const Mentors = () => {
             : (
               <div className="flex items-center">
                 <div className="flex-grow" />
-                <Link to={`/mentors/staff/${item.id}`}>
+                <Link to={`/mentors/${item.id}`}>
                   <Tooltip title="Edit">
                     <IconButton>
                       <Icon>edit</Icon>
@@ -158,11 +158,11 @@ const Mentors = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Mentorship', path: '/mentors/staff' }, { name: 'Staff' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Mentorship', path: '/mentors' }, { name: 'Mentor' }]} />
           </div>
 
           <div className="">
-            <Link to="/mentors/staff/new">
+            <Link to="/mentors/new">
               <Button variant="contained" color="primary">
                 Add new Mentor
               </Button>
@@ -176,9 +176,9 @@ const Mentors = () => {
           columns={columns}
           selectableRows={true}
           items={mentorList}
-          view="staff?"
+          view="?"
           singlePage=""
-          historyReplace="/mentors/staff"
+          historyReplace="/mentors"
           search={async (querys) => {
             const { data } = await bc.mentorship().getAcademyMentors(querys);
             setMentorList(data.results);
