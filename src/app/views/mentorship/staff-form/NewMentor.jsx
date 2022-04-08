@@ -51,6 +51,7 @@ const NewMentor = () => {
       online_meeting_url: '',
       status: 'INVITED',
       price_per_hour: '',
+      syllabus: [],
       existing_user: '',
       ...baseData,
     },
