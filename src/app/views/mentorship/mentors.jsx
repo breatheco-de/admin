@@ -1,6 +1,6 @@
 import {
   Avatar, Button, Icon,
-  IconButton, Tooltip
+  IconButton, Tooltip, TableCell,
 } from '@material-ui/core';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
@@ -83,33 +83,42 @@ const Mentors = () => {
       label: 'Book & Meet links',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "300px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const _mentor = mentorList[dataIndex];
+          const book = `https://s.4geeks.com/mentor/${_mentor.slug}`
+          const meet = `https://s.4geeks.com/mentor/meet/${_mentor.slug}`
           return (
             <>
-              <Tooltip title={_mentor.booking_url}>
+              <Tooltip title={book}>
                 <small
                   className='underline pointer'
                   onClick={() => {
-                    navigator.clipboard.writeText(_mentor.booking_url);
+                    navigator.clipboard.writeText(book);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
-                  {_mentor.booking_url && _mentor.booking_url.substring(0, 25)}
-                  {_mentor.booking_url && _mentor.booking_url.length > 25 && "..."}
+                  Book: {book.substring(0, 40)}
+                  {book.length > 40 && "..."}
                 </small>
               </Tooltip>
               <br></br>
-              <Tooltip title={_mentor.online_meeting_url}>
+              <Tooltip title={meet}>
                 <small
                   className='underline pointer'
                   onClick={() => {
-                    navigator.clipboard.writeText(_mentor.online_meeting_url);
+                    navigator.clipboard.writeText(meet);
                     toast.success('Copied to the clipboard', toastOption);
                   }}
                 >
-                  {_mentor.online_meeting_url && _mentor.online_meeting_url.substring(0, 25)}
-                  {_mentor.online_meeting_url && _mentor.online_meeting_url.length > 25 && "..."}
+                  Meet: {meet.substring(0, 40)}
+                  {meet.length > 40 && "..."}
                 </small>
               </Tooltip>
             </>
@@ -122,6 +131,13 @@ const Mentors = () => {
       label: ' ',
       options: {
         filter: false,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = mentorList[dataIndex];
           //! TODO REVERT THIS BEFORE PUSHING
