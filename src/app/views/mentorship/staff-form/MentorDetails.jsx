@@ -54,8 +54,6 @@ const MentorDetails = ({ user, staffId }) => {
       .then(({ data, status }) => {
         if (status === 200) {
           setMentor({ ...mentor, ...data });
-        } else {
-          throw Error('Could not update Status');
         }
       });
   };
