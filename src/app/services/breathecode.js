@@ -4,8 +4,8 @@ function serializeQuerystring(object) {
     const querystring =
         object !== undefined
             ? Object.keys(object)
-                  .map((key) => `${key}=${object[key]}`)
-                  .join("&")
+                .map((key) => `${key}=${object[key]}`)
+                .join("&")
             : "";
     return querystring;
 }
@@ -143,8 +143,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Cohorts",
-                    `${this.host}/admissions/academy/cohort${
-                        query ? `?${qs}` : ""
+                    `${this.host}/admissions/academy/cohort${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -176,7 +175,7 @@ class BreatheCodeClient {
                 axios.bcGet(
                     "Certificates",
                     `${this.host}/admissions/academy/schedule?syllabus_id=${syllabus}` +
-                        (academy ? `&academy_id=${academy}` : "")
+                    (academy ? `&academy_id=${academy}` : "")
                 ),
             getAllRelatedSchedulesBySlug: (query) =>
                 axios.bcGet(
@@ -307,8 +306,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy lead",
-                    `${this.host}/marketing/academy/lead${
-                        query ? `?${qs}` : ""
+                    `${this.host}/marketing/academy/lead${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -323,8 +321,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy short",
-                    `${this.host}/marketing/academy/short${
-                        query ? `?${qs}` : ""
+                    `${this.host}/marketing/academy/short${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -373,8 +370,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy mentor",
-                    `${this.host}/mentorship/academy/mentor${
-                        query ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/mentor${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -382,8 +378,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy mentor sessions",
-                    `${this.host}/mentorship/academy/session${
-                        query ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/session${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -391,8 +386,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy single mentor sessions",
-                    `${this.host}/mentorship/academy/mentor/${
-                        query.mentor
+                    `${this.host}/mentorship/academy/mentor/${query.mentor
                     }/session${query ? `?${qs}` : ""}`
                 );
             },
@@ -400,8 +394,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(querys);
                 return axios.bcGet(
                     "all service sessions",
-                    `${this.host}/mentorship/academy/service/${id}/session${
-                        query ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/service/${id}/session${querys ? `?${qs}` : ""
                     }`
                 );
             },
@@ -409,8 +402,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy services",
-                    `${this.host}/mentorship/academy/service${
-                        query ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/service${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -480,8 +472,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy survey",
-                    `${this.host}/feedback/academy/survey${
-                        query ? `?${qs}` : ""
+                    `${this.host}/feedback/academy/survey${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -569,8 +560,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Event",
-                    `${this.host}/events/academy/checkin${
-                        query ? `?${qs}` : ""
+                    `${this.host}/events/academy/checkin${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -631,8 +621,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy event",
-                    `${this.host}/events/academy/organization/organizer${
-                        query ? `?${qs}` : ""
+                    `${this.host}/events/academy/organization/organizer${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -645,10 +634,8 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Eventbrite_Webhook",
-                    `${
-                        this.host
-                    }/events/academy/organization/eventbrite/webhook${
-                        query ? `?${qs}` : ""
+                    `${this.host
+                    }/events/academy/organization/eventbrite/webhook${query ? `?${qs}` : ""
                     }`
                 );
             },
@@ -665,8 +652,7 @@ class BreatheCodeClient {
                     .join("&");
                 return axios.bcGet(
                     "Download CSV",
-                    `${this.host}/events/academy/checkin${
-                        query ? `?${qs}` : ""
+                    `${this.host}/events/academy/checkin${query ? `?${qs}` : ""
                     }`,
                     {
                         headers: { Accept: "text/csv" },
@@ -747,8 +733,7 @@ class BreatheCodeClient {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Cohort Activity",
-                    `${this.host}/activity/academy/cohort/${cohortID}${
-                        query ? `?${qs}` : ""
+                    `${this.host}/activity/academy/cohort/${cohortID}${query ? `?${qs}` : ""
                     }`
                 );
             },
