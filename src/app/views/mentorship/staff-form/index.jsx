@@ -31,7 +31,6 @@ const Mentors = () => {
     title: '',
     action: () => { },
   });
-
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
@@ -42,7 +41,6 @@ const Mentors = () => {
     bc.mentorship()
       .getSingleAcademyMentor(staffId)
       .then(({ data }) => {
-        // console.log('this should be the mentor.', data);
         setMentor(data);
       })
       .catch((error) => error);
