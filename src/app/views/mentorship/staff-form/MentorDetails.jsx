@@ -23,8 +23,8 @@ const MentorDetails = ({ user, staffId }) => {
   const [syllabusArray, setSyllabusArray] = useState([]);
   const mentorStatusChoices = ['ACTIVE', 'INNACTIVE', "UNLISTED"];
   const initialValues = {
-    first_name: mentor?.user.first_name || "",
-    last_name: mentor?.user.last_name || "",
+    first_name: mentor?.user?.first_name || "",
+    last_name: mentor?.user?.last_name || "",
     booking_url: mentor?.booking_url || "",
     service: mentor?.service.name || "",
     email: mentor?.email || mentor?.user.email,
