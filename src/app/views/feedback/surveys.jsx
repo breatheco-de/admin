@@ -21,6 +21,7 @@ import bc from 'app/services/breathecode';
 import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import SingleDelete from '../../components/ToolBar/SingleDelete';
 
 toast.configure();
 const toastOption = {
@@ -34,6 +35,7 @@ dayjs.extend(relativeTime);
 
 const stageColors = {
   INACTIVE: 'bg-gray',
+  SENT: 'bg-gray',
   PREWORK: 'bg-secondary',
   PENDING : 'bg-secondary',
   STARTED: 'text-white bg-warning',
@@ -50,9 +52,15 @@ const EventList = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
 
-  const resendSurvey = (user) => {
-    bc.auth()
-      .resendSurvey(user)
+  const [toResend, setToResend] = useState(null);
+
+  const resendSurvey = (survey) => {
+    bc.feedback()
+      .updateSurvey({
+        cohort: survey.cohort.id, 
+        send_now: true
+      }, 
+      survey.id)
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
@@ -160,7 +168,7 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
+          <div className="flex items-center"  style={{ width: "80%" }}>
             <div className="ml-3">
               <h5 className="my-0 text-15">
                 {dayjs(items[i].sent_at).format("MM-DD-YYYY")}
@@ -209,22 +217,33 @@ const EventList = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          // console.log(`ESTOS SON LOS ITEMS`, items[dataIndex])
           const survey = items[dataIndex];
-          return survey.status === "PENDING" ? (
+          return (
             <div className="flex items-center">
-              <div className="flex-grow" />
-              <Tooltip title="Copy survey link">
-                <IconButton
-                  onClick={() => {
-                    console.log(survey.public_url);
-                    setOpenDialog(true);
-                    setUrl(survey.public_url);
-                  }}
-                >
-                  <Icon>assignment</Icon>
-                </IconButton>
-              </Tooltip>
+              {/* <div className="flex-grow" /> */}
+              {survey.status !== "FATAL" && !isExpired(survey) &&
+                <>
+                  <Tooltip title="Copy survey link">
+                    <IconButton
+                      onClick={() => {
+                        console.log(survey.public_url);
+                        setOpenDialog(true);
+                        setUrl(survey.public_url);
+                      }}
+                    >
+                      <Icon>assignment</Icon>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Resend Survey">
+                    <IconButton onClick={() =>
+                      setToResend(survey)
+                      // resendSurvey(survey)
+                    }>
+                      <Icon>refresh</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </>
+              }
               <Link
                 to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
               >
@@ -233,23 +252,7 @@ const EventList = () => {
                 </IconButton>
               </Link>
             </div>
-          ) : (
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <Tooltip title="Resend Survey">
-                <IconButton onClick={() => resendSurvey(survey.id)}>
-                  <Icon>refresh</Icon>
-                </IconButton>
-              </Tooltip>
-              <Link
-                to={`/feedback/surveys/${survey?.cohort?.slug}/${survey?.id}`}
-              >
-                <IconButton>
-                  <Icon>arrow_right_alt</Icon>
-                </IconButton>
-              </Link>
-            </div>
-          );
+          )
         },
       },
     },
@@ -300,6 +303,15 @@ const EventList = () => {
           />
         </div>
       </div>
+      {toResend && (
+        <SingleDelete
+          deleting={() => {
+            resendSurvey(toResend);
+          }}
+          onClose={setToResend}
+          message="Are you sure you want to resend this survey?"
+        />
+      )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -315,7 +327,7 @@ const EventList = () => {
                   label="URL"
                   name="url"
                   size="medium"
-                  disabled
+                  // disabled
                   fullWidth
                   variant="outlined"
                   value={url}
