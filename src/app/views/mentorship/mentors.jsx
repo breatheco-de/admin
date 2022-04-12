@@ -6,7 +6,6 @@ import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
-import InviteDetails from '../../components/InviteDetails';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -141,18 +140,7 @@ const Mentors = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = mentorList[dataIndex];
           //! TODO REVERT THIS BEFORE PUSHING
-          return !item.status === 'INVITED' ? (
-            <div className="flex items-center">
-              <div className="flex-grow" />
-              <InviteDetails user={item.user?.id} />
-              {/* <Tooltip title="Resend Invite">
-                <IconButton onClick={() => resendInvite(item.id)}>
-                  <Icon>refresh</Icon>
-                </IconButton>
-              </Tooltip> */}
-            </div>
-          )
-            : (
+           return (
               <div className="flex items-center">
                 <div className="flex-grow" />
                 <Link to={`/mentors/${item.id}`}>

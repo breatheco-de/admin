@@ -11,7 +11,6 @@ import {
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
-import InviteDetails from 'app/components/InviteDetails';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 

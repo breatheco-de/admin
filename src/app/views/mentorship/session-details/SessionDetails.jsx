@@ -15,7 +15,7 @@ const SessionDetails = ({ session }) => {
         <div>
             <p className='no-margin'>
                 {dayjs(session?.started_at).format('lll')} with <strong>
-                    {session?.mentee.first_name} {session?.mentee.last_name}</strong>
+                    {session?.mentee?.first_name} {session?.mentee?.last_name}</strong>
             </p>
             <small>
                 meeting lasted: {session?.duration_string}
