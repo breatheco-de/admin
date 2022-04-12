@@ -16,7 +16,7 @@ import useAuth from '../../../hooks/useAuth';
 const utc = require('dayjs/plugin/utc');
 
 // Slugify Library
-const slugify = require('slugify')
+const slugify = require('slugify');
 
 dayjs.extend(utc);
 
@@ -45,7 +45,6 @@ const EventForm = () => {
   const history = useHistory();
   
   useEffect(() => {
-    console.log("idddd", id)
     if(!id) setSlug(slugify(title).toLowerCase());
   }, [title]);
 

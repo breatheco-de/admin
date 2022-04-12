@@ -133,7 +133,6 @@ export const SmartMUIDataTable = (props) => {
           selectableRowsHeader: false,
           rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
           rowsPerPageOptions: [10, 20, 40, 80, 100],
-          viewColumns: true,
           onTableChange: (action, tableState) => {
             switch (action) {
               case 'changePage':

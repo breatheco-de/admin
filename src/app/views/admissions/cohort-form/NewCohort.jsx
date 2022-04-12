@@ -22,6 +22,8 @@ import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
+const slugify = require('slugify')
+
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
     color: palette.text.secondary,
@@ -99,6 +101,8 @@ const NewCohort = () => {
       })
       .catch((error) => console.error(error));
   };
+  
+  console.log(slugify('-').toLowerCase())
 
   return (
     <div className="m-sm-30">
@@ -138,7 +142,10 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={newCohort.name}
-                    onChange={createCohort}
+                    onChange={(e)=>{
+                      newCohort.slug = slugify(e.target.value).toLowerCase();
+                      createCohort(e);
+                    }}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -153,7 +160,12 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={newCohort.slug}
-                    onChange={createCohort}
+                    onChange={(e)=>{
+                      // newCohort.slug = slugify(e.target.value).toLowerCase()
+                      
+                      e.target.value = slugify(e.target.value).toLowerCase();
+                      createCohort(e);
+                    }}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
