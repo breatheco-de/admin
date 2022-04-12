@@ -7,7 +7,7 @@ const SessionBill = ({ session }) => {
         <div>
             {session?.billed_str}
             {session?.extra_time ?
-                <small style={{ display: 'block', fontSize: '8px' }} class="text-danger">overtime
+                <small style={{ display: 'block', fontSize: '8px' }} className="text-danger">overtime
 
                 </small> : ''}
         </div>
