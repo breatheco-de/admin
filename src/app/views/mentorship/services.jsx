@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import {
   Icon,
@@ -6,24 +6,12 @@ import {
   Button,
   Tooltip,
 } from '@material-ui/core';
-import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '../../../matx';
 import bc from '../../services/breathecode';
 
-// const relativeTime = require('dayjs/plugin/relativeTime');
-
-// dayjs.extend(relativeTime);
-
 const Services = () => {
   const [serviceList, setServiceList] = useState([]);
-
-  useEffect(() => {
-    bc.mentorship().getAllServices()
-      .then((payload) => {
-        setServiceList(payload.data || []);
-      });
-  }, []);
 
   const columns = [
     {
@@ -104,7 +92,6 @@ const Services = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const singleService = serviceList[dataIndex];
-          // console.log('THE CULPRIT AT HAND', singleService);
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
@@ -129,7 +116,7 @@ const Services = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Services', path: '/' },
+                { name: 'Services', path: '/mentors/services' },
                 { name: 'All' },
               ]}
             />
@@ -148,9 +135,9 @@ const Services = () => {
           title="All Services"
           columns={columns}
           items={serviceList}
-          view="invites?"
+          view="services"
           singlePage=""
-          historyReplace="/admin/invites"
+          historyReplace="/mentors/services"
           search={async (querys) => {
             const { data } = await bc.mentorship().getAllServices(querys);
             setServiceList(data.results);

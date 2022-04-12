@@ -99,7 +99,7 @@ const MentorSessions = ({ staffId, mentor }) => {
       title="Sessions"
       columns={columns}
       items={sessions}
-      selectableRows={false}
+      selectableRows="multiple"
       view="mentor sessions"
       singlePage=""
       historyReplace="/admin/syllabus"

@@ -31,7 +31,6 @@ const Mentors = () => {
     title: '',
     action: () => { },
   });
-
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
@@ -42,7 +41,6 @@ const Mentors = () => {
     bc.mentorship()
       .getSingleAcademyMentor(staffId)
       .then(({ data }) => {
-        // console.log('this should be the mentor.', data);
         setMentor(data);
       })
       .catch((error) => error);
@@ -129,14 +127,14 @@ const Mentors = () => {
           setCopyDialog={setCopyDialog}
         />
         <div>
-          <Breadcrumb routeSegments={[{ name: 'Mentors', path: '/mentors' }, { name: mentor ? mentor.user.first_name + " " + mentor.user.last_name : "Loading mentor"} ]} />
+          <Breadcrumb routeSegments={[{ name: 'Mentors', path: '/mentors' }, { name: mentor ? mentor?.user?.first_name + " " + mentor?.user?.last_name : "Loading mentor" }]} />
           <h3 className="mt-0 mb-4 font-medium text-28"></h3>
           <div className="flex">
             Member since:
             {dayjs(mentor?.created_at).format('LL')}
           </div>
         </div>
-        {/* <DowndownMenu
+        <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
@@ -155,7 +153,7 @@ const Mentors = () => {
             <Icon>playlist_add</Icon>
             Additional Actions
           </Button>
-        </DowndownMenu> */}
+        </DowndownMenu>
       </div>
 
       <Grid container spacing={3}>
