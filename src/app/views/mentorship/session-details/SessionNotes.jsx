@@ -4,7 +4,6 @@ import { Tooltip, Icon } from '@material-ui/core'
 
 
 const SessionNotes = ({ session }) => {
-    console.log(session);
     return (
         <div>
             {session && session.summary ?
@@ -26,6 +25,8 @@ const SessionNotes = ({ session }) => {
     )
 }
 
-SessionNotes.propTypes = {}
+SessionNotes.propTypes = {
+    session: PropTypes.object
+}
 
 export default SessionNotes

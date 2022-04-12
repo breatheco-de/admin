@@ -53,7 +53,6 @@ const Services = () => {
     bc.mentorship()
       .getSingleService(serviceID)
       .then(({ data }) => {
-        // console.log('this should be the service.', data);
         setService(data);
       })
       .catch((error) => error);
@@ -69,8 +68,6 @@ const Services = () => {
       .then(({ data, status }) => {
         if (status === 200) {
           setService({ ...data });
-          console.log("service PUT", service);
-          console.log("service PUT DATA", data);
         } else {
           throw Error("Could not update Status");
         }
