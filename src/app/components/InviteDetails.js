@@ -20,13 +20,12 @@ const toastOption = {
     autoClose: 8000,
 };
 
-const InviteDetails = ({ user }) => {
+const InviteDetails = ({ getter }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [inviteLink, setInviteLink] = useState("");
 
-    const getMemberInvite = (user) => {
-        bc.auth()
-            .getUserInvite(user)
+    const getInvite = () => {
+        getter()
             .then((res) => {
                 if (res === undefined) setOpenDialog(false);
                 if (res.data) {
@@ -42,7 +41,7 @@ const InviteDetails = ({ user }) => {
                 <IconButton
                     onClick={() => {
                         setOpenDialog(true);
-                        getMemberInvite(user);
+                        getInvite();
                     }}
                 >
                     <Icon>assignment</Icon>

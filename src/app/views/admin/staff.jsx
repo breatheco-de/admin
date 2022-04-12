@@ -133,7 +133,7 @@ const Staff = () => {
           return item.status === 'INVITED' ? (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <InviteDetails user={item.id} />
+              <InviteDetails getter={() => bc.auth().getMemberInvite(item.id)} />
               <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>

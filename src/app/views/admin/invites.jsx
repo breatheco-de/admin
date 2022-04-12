@@ -9,7 +9,7 @@ import {
 import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../matx';
 import bc from '../../services/breathecode';
-import CopyInviteModal from '../../components/InviteDetails';
+import InviteDetails from '../../components/InviteDetails';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -106,7 +106,7 @@ const Students = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <CopyInviteModal user={item.id} />
+              <InviteDetails getter={() => bc.auth().getUserInvite(item.id)} />
               <Tooltip title="Resend Invite">
                 <IconButton onClick={() => resendInvite(item.id)}>
                   <Icon>refresh</Icon>

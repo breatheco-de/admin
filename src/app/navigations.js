@@ -111,26 +111,6 @@ export const navigations = [
         ],
     },
     {
-        name: "Careers",
-        icon: "business_center",
-        auth: authRoles.contry_manager,
-        beta: true,
-        children: [
-            {
-                name: "Partners",
-                path: "/career/partners",
-                iconText: "CO",
-                beta: true,
-            },
-            {
-                name: "Student Profiles",
-                path: "/career/students",
-                iconText: "STU",
-                beta: true,
-            },
-        ],
-    },
-    {
         name: "Media Gallery",
         icon: "collections",
         path: "/media/gallery",

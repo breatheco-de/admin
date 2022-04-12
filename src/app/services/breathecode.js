@@ -290,6 +290,11 @@ class BreatheCodeClient {
                 ),
             getUserInvite: (id) =>
                 axios.bcGet("Invite", `${this.host}/auth/academy/invite/${id}`),
+            getMemberInvite: (id) =>
+                axios.bcGet(
+                    "Invite",
+                    `${this.host}/auth/academy/member/${id}/invite`
+                ),
             passwordReset: (userId, payload) =>
                 axios.bcPost(
                     "Password reset",
