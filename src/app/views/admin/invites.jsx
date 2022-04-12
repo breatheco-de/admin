@@ -32,23 +32,23 @@ const Students = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const user = userList[dataIndex].user !== null
+          const invite = userList[dataIndex].user !== null
             ? userList[dataIndex]
             : {
               ...userList[dataIndex],
-              user: { first_name: '', last_name: '', imgUrl: '' },
+              invite: { first_name: '', last_name: '', imgUrl: '' },
             };
 
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user.user?.imgUrl} />
+              <Avatar className="w-48 h-48" src={invite.user?.imgUrl} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {user.user?.first_name}
+                  {invite.user?.first_name || invite.first_name}
                   {' '}
-                  {user.user?.last_name}
+                  {invite.user?.last_name || invite.last_name}
                 </h5>
-                <small className="text-muted">{user?.email}</small>
+                <small className="text-muted">{invite?.email}</small>
               </div>
             </div>
           );
@@ -143,8 +143,7 @@ const Students = () => {
           historyReplace="/admin/invites"
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyInvites({ ...querys, status: 'PENDING' });
-            // setUserList(data.results);
-            setUserList(data);
+            setUserList(data.results || data);
             return data;
           }}
         />
