@@ -142,8 +142,9 @@ const Students = () => {
           singlePage=""
           historyReplace="/admin/invites"
           search={async (querys) => {
-            const { data } = await bc.auth().getAcademyMembers({ ...querys, status: 'INVITED' });
-            setUserList(data.results);
+            const { data } = await bc.auth().getAcademyInvites({ ...querys, status: 'PENDING' });
+            // setUserList(data.results);
+            setUserList(data);
             return data;
           }}
         />
