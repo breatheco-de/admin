@@ -25,13 +25,6 @@ const statusColors = {
 const MentorSessions = ({ staffId, mentor }) => {
   const [sessions, setSessions] = useState([]);
 
-  // useEffect(() => {
-  //   bc.mentorship().getSingleMentorSessions({ mentor: staffId })
-  //     .then((payload) => {
-  //       setSessions(payload.data || []);
-  //     });
-  // }, []);
-
   const columns = [
     {
       name: 'session',
@@ -74,8 +67,8 @@ const MentorSessions = ({ staffId, mentor }) => {
       },
     },
     {
-      name: 'billing',
-      label: 'Billing', // column title that will be shown in table
+      name: 'duration',
+      label: 'Duration', // column title that will be shown in table
       options: {
         filter: true,
         customHeadRender: ({ index, ...column }) => {

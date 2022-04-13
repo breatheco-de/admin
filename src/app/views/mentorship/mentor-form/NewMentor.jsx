@@ -10,7 +10,7 @@ import { useQuery } from '../../../hooks/useQuery';
 import { Breadcrumb } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
-import { MentorProfileForm } from './staff-utils/MentorProfileForm';
+import { MentorProfileForm } from './mentor-utils/MentorProfileForm';
 
 const initialValues = {
   first_name: '',

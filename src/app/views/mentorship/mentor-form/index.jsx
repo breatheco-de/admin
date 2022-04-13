@@ -9,6 +9,10 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { TabPanel } from '@material-ui/lab';
 import { Breadcrumb } from 'matx';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -16,8 +20,8 @@ import bc from '../../../services/breathecode';
 import MentorDetails from './MentorDetails';
 import MentorSessions from './MentorSessions';
 import DowndownMenu from '../../../components/DropdownMenu';
-
-import { CopyDialog } from './staff-utils/Dialog';
+import { CopyDialog } from './mentor-utils/Dialog';
+import BasicTabs from 'app/components/smartTabs';
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 
@@ -26,16 +30,30 @@ dayjs.extend(LocalizedFormat);
 const Mentors = () => {
   const { staffId } = useParams();
   const [mentor, setMentor] = useState(null);
+  const [value, setValue] = useState(0);
+
   const [dialogState, setDialogState] = useState({
     openDialog: false,
     title: '',
     action: () => { },
   });
+
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
     openDialog: false,
   });
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
 
   const getMemberById = () => {
     bc.mentorship()
@@ -92,6 +110,17 @@ const Mentors = () => {
   useEffect(() => {
     getMemberById();
   }, []);
+
+  const tabs = [
+    {
+      component: <MentorSessions staffId={staffId} user={mentor} />,
+      label: 'Sessions',
+    },
+    // {
+    //   component: <MentorSessions staffId={staffId} user={mentor} />,
+    //   label: 'Sessions',
+    // },
+  ]
 
   return (
     <div className="m-sm-30">
@@ -162,8 +191,7 @@ const Mentors = () => {
             : <MentorDetails staffId={staffId} user={mentor} />}
         </Grid>
         <Grid item md={7} xs={12}>
-          {mentor === null ? 'loading'
-            : <MentorSessions staffId={staffId} user={mentor} />}
+          <BasicTabs tabs={tabs} />
         </Grid>
       </Grid>
     </div>
