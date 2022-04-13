@@ -240,8 +240,11 @@ class BreatheCodeClient {
                     payload
                 ),
             getRoles: () => axios.bcGet("Role", `${this.host}/auth/role`),
-            getSingleRole: (slug) =>
-                axios.bcGet("Role", `${this.host}/auth/role/${slug}`),
+            getSingleRole: (role) =>
+                axios.bcGet(
+                    "Role",
+                    `${this.host}/auth/role/${role.slug || role}`
+                ),
             updateAcademyStudent: (user, payload) =>
                 axios.bcPut(
                     "Academy student",
