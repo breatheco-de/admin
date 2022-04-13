@@ -183,7 +183,7 @@ const EventForm = () => {
           validate={(values)=>{
             let errors= {}
             if(!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))){
-              errors.ending_at = 'The ending date should be earlier than the starting date'
+              errors.ending_at = 'The ending date should be after the starting date'
             }
 
             return errors

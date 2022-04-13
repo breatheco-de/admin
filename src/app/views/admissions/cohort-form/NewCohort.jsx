@@ -16,6 +16,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import * as Yup from 'yup';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
@@ -62,6 +63,10 @@ const NewCohort = () => {
     },
   ];
 
+  const ProfileSchema = Yup.object().shape({
+    slug: Yup.string().required().matches(/^[a-z0-9]+(?:(-|_)[a-z0-9]+)*$/, 'Invalid Slug')
+  });
+
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
     setNeverEnd(!neverEnd);
@@ -101,8 +106,6 @@ const NewCohort = () => {
       })
       .catch((error) => console.error(error));
   };
-  
-  console.log(slugify('-').toLowerCase())
 
   return (
     <div className="m-sm-30">
@@ -126,8 +129,13 @@ const NewCohort = () => {
           initialValues={newCohort}
           onSubmit={(newPostCohort) => postCohort(newPostCohort)}
           enableReinitialize
+          validationSchema={ProfileSchema}
         >
-          {({ handleSubmit }) => (
+          {({ 
+            handleSubmit, 
+            errors,
+            touched, 
+          }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
@@ -160,12 +168,9 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={newCohort.slug}
-                    onChange={(e)=>{
-                      // newCohort.slug = slugify(e.target.value).toLowerCase()
-                      
-                      e.target.value = slugify(e.target.value).toLowerCase();
-                      createCohort(e);
-                    }}
+                    onChange={createCohort}
+                    error={errors.slug && touched.slug}
+                    helperText={touched.slug && errors.slug}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
