@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-    console.log('props : ', props)
+
     return (
         <div
             role="tabpanel"
@@ -41,7 +41,6 @@ function a11yProps(index) {
 
 export default function BasicTabs(props) {
     const [value, setValue] = React.useState(0);
-    console.log(props)
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -57,7 +56,7 @@ export default function BasicTabs(props) {
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     {props.tabs.map((_tab, i) => {
                         return (
-                            <Tab label={_tab.label} {...a11yProps(i)} />
+                            <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(i)} />
                         )
                     })}
                 </Tabs>

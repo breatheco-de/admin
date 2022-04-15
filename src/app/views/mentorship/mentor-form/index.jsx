@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import MentorDetails from './MentorDetails';
 import MentorSessions from './MentorSessions';
+import { MentorPayment } from './MentorPayment';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { CopyDialog } from './mentor-utils/Dialog';
 import BasicTabs from 'app/components/smartTabs';
@@ -30,8 +31,7 @@ dayjs.extend(LocalizedFormat);
 const Mentors = () => {
   const { staffId } = useParams();
   const [mentor, setMentor] = useState(null);
-  const [value, setValue] = useState(0);
-
+  const [toggleBillTab, setToggleBillTab] = useState(false)
   const [dialogState, setDialogState] = useState({
     openDialog: false,
     title: '',
@@ -44,17 +44,6 @@ const Mentors = () => {
     openDialog: false,
   });
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
-
   const getMemberById = () => {
     bc.mentorship()
       .getSingleAcademyMentor(staffId)
@@ -62,19 +51,6 @@ const Mentors = () => {
         setMentor(data);
       })
       .catch((error) => error);
-  };
-
-  const passwordReset = () => {
-    bc.auth()
-      .passwordReset(mentor.id)
-      .then((res) => {
-        setInviteLink(res.data.reset_password_url);
-        if (res.data && res.data.reset_password_url) {
-          navigator.clipboard.writeText(res.data.reset_password_url);
-        }
-      })
-      .catch((error) => error);
-    setDialogState({ ...dialogState, openDialog: false });
   };
 
   const githubReset = () => {
@@ -91,19 +67,24 @@ const Mentors = () => {
     setDialogState({ ...dialogState, openDialog: false });
   };
 
+  const genereateBills = () => {
+    console.log('Generate bills fn:')
+    setDialogState({ ...dialogState, openDialog: false });
+    setToggleBillTab(!toggleBillTab)
+  };
+
   const options = [
-    {
-      label: 'Send password reset',
-      value: 'password_reset',
-      title: 'An email to reset password will be sent to',
-      action: passwordReset,
-    },
-    { label: 'Open student profile', value: 'student_profile', title: '' },
     {
       label: 'Reset Github Link',
       value: 'github_reset',
       title: 'A reset github url will be generated for',
       action: githubReset,
+    },
+    {
+      label: 'Generate Bills',
+      value: 'Bills',
+      title: 'Generates billing periods',
+      action: genereateBills,
     },
   ];
 
@@ -113,13 +94,15 @@ const Mentors = () => {
 
   const tabs = [
     {
+      disabled: false,
       component: <MentorSessions staffId={staffId} user={mentor} />,
       label: 'Sessions',
     },
-    // {
-    //   component: <MentorSessions staffId={staffId} user={mentor} />,
-    //   label: 'Sessions',
-    // },
+    {
+      disabled: toggleBillTab,
+      component: <MentorPayment staffId={staffId} mentor={mentor} />,
+      label: 'Payments',
+    },
   ]
 
   return (
@@ -134,7 +117,7 @@ const Mentors = () => {
           <DialogTitle id="alert-dialog-title">{dialogState.title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              EMAIL GOES HERE
+              Dialog state goes here
             </DialogContentText>
           </DialogContent>
           <DialogActions>

@@ -4,12 +4,23 @@ import dayjs from "dayjs";
 import calcMeetingDuration from 'app/utils/calcMeetingDuration';
 
 const duration = require("dayjs/plugin/duration");
+const relativeTime = require('dayjs/plugin/relativeTime')
 const localizedFormat = require('dayjs/plugin/localizedFormat')
+const utc = require("dayjs/plugin/utc");
+
 dayjs.extend(duration);
+dayjs.extend(utc);
 dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
+
 
 
 const SessionDetails = ({ session }) => {
+    let now = dayjs.utc();
+    // now.format();
+    // now.local().format();
+    let daysAgo = dayjs(session?.started_at).from(now);
+
 
     return (
         <div>
@@ -18,7 +29,7 @@ const SessionDetails = ({ session }) => {
                     {session?.mentee?.first_name} {session?.mentee?.last_name}</strong>
             </p>
             <small>
-                meeting lasted: {session?.duration_string}
+                {daysAgo}
             </small>
         </div>
     )

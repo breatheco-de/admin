@@ -41,7 +41,7 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionDetails session={item} />
+            item && <SessionDetails session={item} />
           );
         },
       },
@@ -61,7 +61,7 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionNotes session={item} />
+            item && <SessionNotes session={item} />
           );
         },
       },
@@ -81,8 +81,14 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionBill session={item} />
-          );
+            <div>
+              <small>
+                {item?.duration == "none" ? '' : `${item?.duration_string}`}
+              </small>
+              {item?.extra_time ?
+                <small style={{ display: 'block', fontSize: '8px' }} className="text-danger">overtime
+                </small> : ''}
+            </div>);
         },
       },
     },

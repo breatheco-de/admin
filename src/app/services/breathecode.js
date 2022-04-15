@@ -390,11 +390,11 @@ class BreatheCodeClient {
                     }/session${query ? `?${qs}` : ""}`
                 );
             },
-            getAllAcademyServicesSessions: (querys) => {
+            getAllAcademyMentorshipBills: (querys) => {
                 const qs = serializeQuerystring(querys);
                 return axios.bcGet(
                     "all service sessions",
-                    `${this.host}/mentorship/academy/service/${id}/session${querys ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/bill${querys ? `?${qs}` : ""
                     }`
                 );
             },
