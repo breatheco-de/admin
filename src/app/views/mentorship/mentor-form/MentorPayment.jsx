@@ -1,120 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Divider } from '@material-ui/core';
 import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
+import DateFnsUtils from '@date-io/date-fns';
+import { getSession } from 'app/redux/actions/SessionActions';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 export const MentorPayment = ({ mentor, staffId }) => {
+  const [session] = useState(getSession());
   const [payments, setPayments] = useState([]);
+  const lastYear = dayjs().year() - 1;
+  const [paymentRange, setPaymentRange] = useState({
+    before: dayjs(),
+    after: dayjs()
+  });
 
   useEffect(async () => {
-    const { data } = await bc.mentorship().getAllAcademyMentorshipBills({ mentor: staffId });
+    const { data } = await bc.mentorship()
+      .getAllAcademyMentorshipBills({
+        mentor: staffId,
+        before: paymentRange?.before.format('YYYY-MM-DD'),
+        after: paymentRange?.after.format('YYYY-MM-DD'),
+        token: session.token
+      });
     setPayments(data || []);
-  }, [])
-
-  const paymentStatusOptions = ['ACTIVE', 'INNACTIVE', "UNLISTED"];
-  const statusColors = {
-    PAID: 'text-white bg-green',
-    DUE: 'text-white orange',
-  };
-  const _MOCKDATA = [
-    {
-      id: 44,
-      status: "PAID",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 2,
-      total_price: 20,
-      started_at: "2022-01-27T00:38:02Z",
-      ended_at: "2022-01-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-01-12T00:39:43.621955Z"
-    },
-    {
-      id: 22,
-      status: "PAID",
-      total_duration_in_minutes: 120,
-      total_duration_in_hours: 2,
-      total_price: 120,
-      started_at: "2022-01-01T00:38:02Z",
-      ended_at: "2022-01-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-01-12T00:39:43.621955Z"
-    },
-    {
-      id: 2982,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 1,
-      total_price: 10,
-      started_at: "2022-02-01T00:38:02Z",
-      ended_at: "2022-02-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-02-12T00:39:43.621955Z"
-    },
-    {
-      id: 2982,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 1,
-      total_price: 10,
-      started_at: "2022-02-01T00:38:02Z",
-      ended_at: "2022-02-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-02-12T00:39:43.621955Z"
-    },
-    {
-      id: 32342,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 2,
-      total_price: 10,
-      started_at: "2022-03-01T00:38:02Z",
-      ended_at: "2022-04-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-04-12T00:39:43.621955Z"
-    },
-    {
-      id: 123134,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 2,
-      total_price: 10,
-      started_at: "2022-10-01T00:38:02Z",
-      ended_at: "2022-10-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-10-12T00:39:43.621955Z"
-    },
-    {
-      id: 123115,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 2,
-      total_price: 10,
-      started_at: "2022-03-01T00:38:02Z",
-      ended_at: "2022-04-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-04-12T00:39:43.621955Z"
-    },
-    {
-      id: 12313216,
-      status: "DUE",
-      total_duration_in_minutes: 60,
-      total_duration_in_hours: 2,
-      total_price: 10,
-      started_at: "2022-07-01T00:38:02Z",
-      ended_at: "2022-07-27T00:38:42Z",
-      overtime_minutes: 58,
-      paid_at: null,
-      created_at: "2022-04-12T00:39:43.621955Z"
-    }
-  ];
+  }, [paymentRange])
 
   const rows = [
     { id: 0, month: "January", amount_due: null, total_amount_paid: null, total_approved: null },
@@ -166,8 +80,52 @@ export const MentorPayment = ({ mentor, staffId }) => {
   ];
   return (
     <>
-      <h1>Date range picker here</h1>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          className="m-2"
+          margin="none"
+          label="After"
+          inputVariant="outlined"
+          type="text"
+          size="small"
+          clearable
+          data-cy="after"
+          autoOk
+          value={paymentRange.after}
+          format="yyyy-MMM-dd"
+          onChange={(date) =>
+            setPaymentRange({
+              ...paymentRange,
+              after: date,
+            })
+          }
+        />
+      </MuiPickersUtilsProvider>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          className="m-2"
+          margin="none"
+          label="Before"
+          inputVariant="outlined"
+          type="text"
+          size="small"
+          data-cy="before"
+          clearable
+          autoOk
+          value={paymentRange.before}
+          format="yyyy-MMM-dd"
+          onChange={(date) =>
+            setPaymentRange({
+              ...paymentRange,
+              before: date,
+            })
+          }
+        />
+      </MuiPickersUtilsProvider>
+      <Divider />
       <DataTable
+        before={paymentRange.before}
+        after={paymentRange.after}
         data={payments || []}
         columns={columns}
         rows={rows} />
