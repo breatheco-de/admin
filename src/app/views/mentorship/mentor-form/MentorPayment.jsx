@@ -23,27 +23,15 @@ export const MentorPayment = ({ mentor, staffId }) => {
     const { data } = await bc.mentorship()
       .getAllAcademyMentorshipBills({
         mentor: staffId,
-        before: paymentRange?.before.format('YYYY-MM-DD'),
-        after: paymentRange?.after.format('YYYY-MM-DD'),
+        // before: paymentRange?.before.format('YYYY-MM-DD'),
+        // after: paymentRange?.after.format('YYYY-MM-DD'),
         token: session.token
       });
     setPayments(data || []);
   }, [paymentRange])
 
-  const rows = [
-    { id: 0, month: "January", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 1, month: "February", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 2, month: "March", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 3, month: "April", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 4, month: "May", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 5, month: "June", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 6, month: "July", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 7, month: "August", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 8, month: "September", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 9, month: "October", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 10, month: "November", amount_due: null, total_amount_paid: null, total_approved: null },
-    { id: 11, month: "December", amount_due: null, total_amount_paid: null, total_approved: null },
-  ];
+  // total amount, overtime, due, status
+
 
   const columns = [
     {
@@ -51,12 +39,16 @@ export const MentorPayment = ({ mentor, staffId }) => {
       headerName: "Month",
       width: 90,
       valueGetter: function (params) {
-        return `${params.row.month}`;
+        return dayjs(params.row.started_at).format("MMMM");
       },
     },
-    { field: "amount_due", headerName: "Amount due", width: 130, },
-    { field: "total_approved", headerName: "Total approved", width: 130 },
-    { field: "total_amount_paid", headerName: "Total paid", width: 130 },
+    {
+      field: "total_price", headerName: "Amount", width: 130,
+      valueGetter: function (params) {
+        return `$${params.row.total_price}`
+      },
+    },
+    { field: "status", headerName: "Status", width: 130 },
     {
       field: "invoice",
       headerName: "View invoice",
@@ -69,18 +61,17 @@ export const MentorPayment = ({ mentor, staffId }) => {
           color="primary"
           size="small"
           style={{ marginLeft: 16 }}
+          onClick={() => window.open(`${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html`)}
         >
-          Open
+          View bill
         </Button>
       ),
-      // valueGetter: (params) => {
-      //    return( `${params.row.amount_due || ""} ${params.row.amount_paid || ""}`)
-      // },
     },
   ];
   return (
     <>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+     // TODO: change to drop down with options ( this year, last year, previous years)
+      {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           className="m-2"
           margin="none"
@@ -100,35 +91,13 @@ export const MentorPayment = ({ mentor, staffId }) => {
             })
           }
         />
-      </MuiPickersUtilsProvider>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          className="m-2"
-          margin="none"
-          label="Before"
-          inputVariant="outlined"
-          type="text"
-          size="small"
-          data-cy="before"
-          clearable
-          autoOk
-          value={paymentRange.before}
-          format="yyyy-MMM-dd"
-          onChange={(date) =>
-            setPaymentRange({
-              ...paymentRange,
-              before: date,
-            })
-          }
-        />
-      </MuiPickersUtilsProvider>
+      </MuiPickersUtilsProvider> */}
       <Divider />
       <DataTable
         before={paymentRange.before}
         after={paymentRange.after}
-        data={payments || []}
         columns={columns}
-        rows={rows} />
+        rows={payments || []} />
     </>
   )
 }

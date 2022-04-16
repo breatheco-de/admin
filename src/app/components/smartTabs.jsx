@@ -4,10 +4,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+// import { useHash } from '../hooks/useQuery'
+import { useLocation } from 'react-router-dom';
 
+function useHash() {
+    return new URLSearchParams(useLocation().hash);
+}
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
+
 
     return (
         <div
@@ -40,9 +46,16 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs(props) {
-    const [value, setValue] = React.useState(0);
+    const hash = useHash();
+    const [hashStr, setHash] = React.useState({
+        smartTab: hash.get('smarTab') || 0,
+    });
+
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        hash.append('smartTab', `${newValue}`)
+        setHash({ smartTab: newValue });
+        hash.set('smartTab', `${newValue}`) // newValue == <number>
+        console.log('HASH IS: ', hash) // URLSearchParams {}
     };
 
     if (props._tabs && !Array.isArray(props._tabs)) {
@@ -53,7 +66,7 @@ export default function BasicTabs(props) {
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tabs value={hashStr.smartTab} onChange={handleChange} aria-label="basic tabs example">
                     {props.tabs.map((_tab, i) => {
                         return (
                             <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(i)} />
@@ -63,7 +76,7 @@ export default function BasicTabs(props) {
             </Box>
             {props.tabs.map((_tab, i) => {
                 return (
-                    <TabPanel value={value} index={i}>
+                    <TabPanel value={hashStr.smartTab} index={i}>
                         {_tab.component}
                     </TabPanel>
                 )
