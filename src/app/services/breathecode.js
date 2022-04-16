@@ -239,8 +239,11 @@ class BreatheCodeClient {
                     payload
                 ),
             getRoles: () => axios.bcGet("Role", `${this.host}/auth/role`),
-            getSingleRole: (slug) =>
-                axios.bcGet("Role", `${this.host}/auth/role/${slug}`),
+            getSingleRole: (role) =>
+                axios.bcGet(
+                    "Role",
+                    `${this.host}/auth/role/${role.slug || role}`
+                ),
             updateAcademyStudent: (user, payload) =>
                 axios.bcPut(
                     "Academy student",
@@ -266,6 +269,15 @@ class BreatheCodeClient {
                     `${this.host}/auth/academy/member${query ? `?${qs}` : ""}`
                 );
             },
+            getAcademyInvites: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Academy member",
+                    `${this.host}/auth/academy/user/invite${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             getAcademyStudents: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -278,10 +290,12 @@ class BreatheCodeClient {
                     "Invite",
                     `${this.host}/auth/member/invite/resend/${user}`
                 ),
-            getMemberInvite: (user) =>
+            getUserInvite: (id) =>
+                axios.bcGet("Invite", `${this.host}/auth/academy/invite/${id}`),
+            getMemberInvite: (id) =>
                 axios.bcGet(
                     "Invite",
-                    `${this.host}/auth/academy/user/${user}/invite`
+                    `${this.host}/auth/academy/member/${id}/invite`
                 ),
             passwordReset: (userId, payload) =>
                 axios.bcPost(
