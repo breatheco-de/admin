@@ -48,14 +48,13 @@ function a11yProps(index) {
 export default function BasicTabs(props) {
     const hash = useHash();
     const [hashStr, setHash] = React.useState({
-        smartTab: hash.get('smarTab') || 0,
+        smartTab: hash.get('smartTab') || 0,
     });
 
     const handleChange = (event, newValue) => {
-        hash.append('smartTab', `${newValue}`)
         setHash({ smartTab: newValue });
-        hash.set('smartTab', `${newValue}`) // newValue == <number>
-        console.log('HASH IS: ', hash) // URLSearchParams {}
+        history.pushState(null, null, `#${newValue}`)
+        console.log(hash, hashStr);
     };
 
     if (props._tabs && !Array.isArray(props._tabs)) {
@@ -69,7 +68,7 @@ export default function BasicTabs(props) {
                 <Tabs value={hashStr.smartTab} onChange={handleChange} aria-label="basic tabs example">
                     {props.tabs.map((_tab, i) => {
                         return (
-                            <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(i)} />
+                            <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(hashStr.smartTab)} />
                         )
                     })}
                 </Tabs>

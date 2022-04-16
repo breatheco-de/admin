@@ -1,37 +1,71 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider } from '@material-ui/core';
+import { Button, Divider, TextField, MenuItem } from '@material-ui/core';
 import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
-import DateFnsUtils from '@date-io/date-fns';
 import { getSession } from 'app/redux/actions/SessionActions';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
 
 export const MentorPayment = ({ mentor, staffId }) => {
   const [session] = useState(getSession());
   const [payments, setPayments] = useState([]);
-  const lastYear = dayjs().year() - 1;
+  const currentYear = dayjs().get('year')
   const [paymentRange, setPaymentRange] = useState({
-    before: dayjs(),
-    after: dayjs()
+    label: 'This Year',
+    after: `${currentYear}-01-01`,
+    before: `${currentYear + 1}-01-01`
   });
+
+  const billingPeriods = [
+    {
+      label: "This Year",
+      year: `${currentYear}-01-01`
+    },
+    {
+      label: "Previous Year",
+      year: `${currentYear - 1}-01-01`
+    }
+  ];
+
+  function handleYearChange(e) {
+    if (e.target.value === 'This Year') {
+      setPaymentRange({
+        ...paymentRange,
+        label: e.target.value,
+        after: `${currentYear}-01-01`,
+        before: `${currentYear + 1}-01-01`,
+      })
+    }
+    if (e.target.value === 'Previous Year') {
+      setPaymentRange({
+        label: e.target.value,
+        after: `${currentYear - 1}-01-01`,
+        before: `${currentYear}-01-01`
+      })
+    }
+    fetchBills()
+  }
+
+  const fetchBills = async () => {
+    const { data } = await bc.mentorship()
+      .getAllAcademyMentorshipBills({
+        mentor: staffId,
+        before: paymentRange?.before,
+        after: paymentRange?.after,
+        token: session.token
+      });
+    return data
+  }
 
   useEffect(async () => {
     const { data } = await bc.mentorship()
       .getAllAcademyMentorshipBills({
         mentor: staffId,
-        // before: paymentRange?.before.format('YYYY-MM-DD'),
-        // after: paymentRange?.after.format('YYYY-MM-DD'),
+        before: paymentRange?.before,
+        after: paymentRange?.after,
         token: session.token
       });
     setPayments(data || []);
   }, [paymentRange])
-
-  // total amount, overtime, due, status
-
 
   const columns = [
     {
@@ -63,35 +97,31 @@ export const MentorPayment = ({ mentor, staffId }) => {
           style={{ marginLeft: 16 }}
           onClick={() => window.open(`${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html`)}
         >
-          View bill
+          Open
         </Button>
       ),
     },
   ];
   return (
     <>
-     // TODO: change to drop down with options ( this year, last year, previous years)
-      {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          className="m-2"
-          margin="none"
-          label="After"
-          inputVariant="outlined"
-          type="text"
-          size="small"
-          clearable
-          data-cy="after"
-          autoOk
-          value={paymentRange.after}
-          format="yyyy-MMM-dd"
-          onChange={(date) =>
-            setPaymentRange({
-              ...paymentRange,
-              after: date,
-            })
-          }
-        />
-      </MuiPickersUtilsProvider> */}
+      <TextField
+        className='m-0'
+        label="Billing Period"
+        style={{ width: '25%' }}
+        data-cy="billing_period"
+        size="small"
+        required
+        variant="outlined"
+        value={paymentRange.label}
+        onChange={(e) => { handleYearChange(e) }}
+        select
+      >
+        {billingPeriods.map((period) => (
+          <MenuItem value={period.label} key={period.label}>
+            {period.label}
+          </MenuItem>
+        ))}
+      </TextField>
       <Divider />
       <DataTable
         before={paymentRange.before}
