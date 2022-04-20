@@ -89,17 +89,21 @@ export const MentorPayment = ({ mentor, staffId }) => {
       description: "Open invoice to view session details.",
       sortable: false,
       width: 160,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          style={{ marginLeft: 16 }}
-          onClick={() => window.open(`${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html`)}
-        >
-          Open
-        </Button>
-      ),
+      renderCell: (params) => {
+        const token = session.token.length > 0 ? `?token=${session.token}` : null;
+        let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
+        return (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={() => window.open(billUrl)}
+          >
+            Open
+          </Button>
+        )
+      }
     },
   ];
   return (
