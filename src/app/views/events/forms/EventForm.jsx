@@ -16,7 +16,7 @@ import useAuth from '../../../hooks/useAuth';
 const utc = require('dayjs/plugin/utc');
 
 // Slugify Library
-const slugify = require('slugify')
+const slugify = require('slugify');
 
 dayjs.extend(utc);
 
@@ -45,7 +45,6 @@ const EventForm = () => {
   const history = useHistory();
   
   useEffect(() => {
-    console.log("idddd", id)
     if(!id) setSlug(slugify(title).toLowerCase());
   }, [title]);
 
@@ -184,7 +183,7 @@ const EventForm = () => {
           validate={(values)=>{
             let errors= {}
             if(!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))){
-              errors.ending_at = 'The ending date should be earlier than the starting date'
+              errors.ending_at = 'The ending date should be after the starting date'
             }
 
             return errors

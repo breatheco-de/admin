@@ -16,11 +16,14 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import * as Yup from 'yup';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+
+const slugify = require('slugify')
 
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
@@ -59,6 +62,10 @@ const NewCohort = () => {
       label: 'English',
     },
   ];
+
+  const ProfileSchema = Yup.object().shape({
+    slug: Yup.string().required().matches(/^[a-z0-9]+(?:(-|_)[a-z0-9]+)*$/, 'Invalid Slug')
+  });
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
@@ -122,8 +129,13 @@ const NewCohort = () => {
           initialValues={newCohort}
           onSubmit={(newPostCohort) => postCohort(newPostCohort)}
           enableReinitialize
+          validationSchema={ProfileSchema}
         >
-          {({ handleSubmit }) => (
+          {({ 
+            handleSubmit, 
+            errors,
+            touched, 
+          }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
@@ -138,7 +150,10 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={newCohort.name}
-                    onChange={createCohort}
+                    onChange={(e)=>{
+                      newCohort.slug = slugify(e.target.value).toLowerCase();
+                      createCohort(e);
+                    }}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -154,6 +169,8 @@ const NewCohort = () => {
                     variant="outlined"
                     value={newCohort.slug}
                     onChange={createCohort}
+                    error={errors.slug && touched.slug}
+                    helperText={touched.slug && errors.slug}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>

@@ -29,13 +29,6 @@ const Cohorts = () => {
 
   const columns = [
     {
-      name: 'id', // field name in the row object
-      label: 'ID', // column title that will be shown in table
-      options: {
-        filter: true,
-      },
-    },
-    {
       name: 'stage', // field name in the row object
       label: 'Stage', // column title that will be shown in table
       options: {
@@ -112,7 +105,13 @@ const Cohorts = () => {
       options: {
         filter: true,
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
-        customBodyRenderLite: (i) => items[i]?.schedule?.name,
+        customBodyRenderLite: (i) => (
+          <div>
+            <p>{items[i]?.schedule?.name}</p>
+            <p>{items[i]?.timezone}</p>
+          </div>
+          
+        ),
       },
     },
     {
@@ -161,6 +160,10 @@ const Cohorts = () => {
           view="cohorts?"
           historyReplace="/admissions/cohorts"
           singlePage=""
+          tableOptions={{
+            print: false,
+            viewColumns: false
+          }}
           search={async (querys) => {
             const { data } = await bc.admissions().getAllCohorts(querys);
             setItems(data.results);
