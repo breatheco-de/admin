@@ -77,12 +77,18 @@ export const MentorPayment = ({ mentor, staffId }) => {
       },
     },
     {
-      field: "total_price", headerName: "Amount", width: 130,
+      field: "total_price",
+      headerName: "Amount",
+      width: 130,
       valueGetter: function (params) {
         return `$${params.row.total_price}`
       },
     },
-    { field: "status", headerName: "Status", width: 130 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 130
+    },
     {
       field: "invoice",
       headerName: "View invoice",
