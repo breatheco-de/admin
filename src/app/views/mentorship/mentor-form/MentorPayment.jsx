@@ -105,9 +105,9 @@ export const MentorPayment = ({ mentor, staffId }) => {
   return (
     <>
       <TextField
-        className='m-0'
+        className='m-1'
         label="Billing Period"
-        style={{ width: '25%' }}
+        style={{ width: '25%', margin: '0.5em' }}
         data-cy="billing_period"
         size="small"
         required
