@@ -142,14 +142,20 @@ const Reviews = () => {
       label: 'Status',
       options: {
         filter: true,
-        customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
-                <p className="my-0"><small className="text-muted">{dayjs(items[i].updated_at).fromNow()}</small></p>
+        customBodyRenderLite: (i) => {
+          let newDay = dayjs(items[i].updated_at).add(dayjs.duration({ 'days': 30 }))
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
+                <p className="my-0"><small className={`text-muted ${!dayjs().isBefore(newDay) ? 'text-error' : ''}`}>
+                  {dayjs(items[i].updated_at).fromNow()}
+                  </small>
+                </p>
+              </div>
             </div>
-          </div>
-        ),
+          )
+        },
       },
     },
     {
@@ -276,6 +282,11 @@ const Reviews = () => {
             view="reviews?"
             historyReplace="/feedback/reviews"
             singlePage=""
+            tableOptions={{
+              selectableRows: false,
+              print: false,
+              viewColumns: false
+            }}
             search={async (querys) => {
               const { data } = await bc.feedback().getReviews(querys);
               setItems(data.results || data);
