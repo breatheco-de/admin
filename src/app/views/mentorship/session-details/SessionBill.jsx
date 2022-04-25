@@ -7,9 +7,11 @@ const SessionBill = ({ session }) => {
         <div>
             {session?.billed_str}
             {session?.extra_time ?
-                <small style="display: block; font-size: 8px;" class="text-danger">overtime
-
+                <small style={{ display: 'block', fontSize: '8px' }} className="text-danger">overtime
                 </small> : ''}
+            <small>
+                meeting lasted: {session?.duration_string}
+            </small>
         </div>
     )
 }

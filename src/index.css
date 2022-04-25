@@ -38,5 +38,8 @@
 }
 
 .yellow{
-  background-color: rgb(227, 227, 4);
+  background-color: rgb(255, 234, 0);
+}
+.orange{
+  background-color: rgb(255, 153, 0);
 }

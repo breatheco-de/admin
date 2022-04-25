@@ -25,13 +25,6 @@ const statusColors = {
 const MentorSessions = ({ staffId, mentor }) => {
   const [sessions, setSessions] = useState([]);
 
-  // useEffect(() => {
-  //   bc.mentorship().getSingleMentorSessions({ mentor: staffId })
-  //     .then((payload) => {
-  //       setSessions(payload.data || []);
-  //     });
-  // }, []);
-
   const columns = [
     {
       name: 'session',
@@ -48,7 +41,7 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionDetails session={item} />
+            item && <SessionDetails session={item} />
           );
         },
       },
@@ -68,14 +61,14 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionNotes session={item} />
+            item && <SessionNotes session={item} />
           );
         },
       },
     },
     {
-      name: 'billing',
-      label: 'Billing', // column title that will be shown in table
+      name: 'duration',
+      label: 'Duration', // column title that will be shown in table
       options: {
         filter: true,
         customHeadRender: ({ index, ...column }) => {
@@ -88,8 +81,14 @@ const MentorSessions = ({ staffId, mentor }) => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionBill session={item} />
-          );
+            <div>
+              <small>
+                {item?.duration == "none" ? '' : `${item?.duration_string}`}
+              </small>
+              {item?.extra_time ?
+                <small style={{ display: 'block', fontSize: '8px' }} className="text-danger">overtime
+                </small> : ''}
+            </div>);
         },
       },
     },

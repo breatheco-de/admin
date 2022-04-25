@@ -239,8 +239,11 @@ class BreatheCodeClient {
                     payload
                 ),
             getRoles: () => axios.bcGet("Role", `${this.host}/auth/role`),
-            getSingleRole: (slug) =>
-                axios.bcGet("Role", `${this.host}/auth/role/${slug}`),
+            getSingleRole: (role) =>
+                axios.bcGet(
+                    "Role",
+                    `${this.host}/auth/role/${role.slug || role}`
+                ),
             updateAcademyStudent: (user, payload) =>
                 axios.bcPut(
                     "Academy student",
@@ -401,11 +404,11 @@ class BreatheCodeClient {
                     }/session${query ? `?${qs}` : ""}`
                 );
             },
-            getAllAcademyServicesSessions: (querys) => {
+            getAllAcademyMentorshipBills: (querys) => {
                 const qs = serializeQuerystring(querys);
                 return axios.bcGet(
                     "all service sessions",
-                    `${this.host}/mentorship/academy/service/${id}/session${querys ? `?${qs}` : ""
+                    `${this.host}/mentorship/academy/bill${querys ? `?${qs}` : ""
                     }`
                 );
             },

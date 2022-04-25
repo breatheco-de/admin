@@ -9,15 +9,20 @@ import {
   DialogContent,
   DialogContentText,
 } from '@material-ui/core';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { TabPanel } from '@material-ui/lab';
 import { Breadcrumb } from 'matx';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from '../../../services/breathecode';
 import MentorDetails from './MentorDetails';
 import MentorSessions from './MentorSessions';
+import { MentorPayment } from './MentorPayment';
 import DowndownMenu from '../../../components/DropdownMenu';
-
-import { CopyDialog } from './staff-utils/Dialog';
+import { CopyDialog } from './mentor-utils/Dialog';
+import BasicTabs from 'app/components/smartTabs';
 
 const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 
@@ -26,11 +31,13 @@ dayjs.extend(LocalizedFormat);
 const Mentors = () => {
   const { staffId } = useParams();
   const [mentor, setMentor] = useState(null);
+  const [toggleBillTab, setToggleBillTab] = useState(false)
   const [dialogState, setDialogState] = useState({
     openDialog: false,
     title: '',
     action: () => { },
   });
+
   const [copyDialog, setCopyDialog] = useState({
     title: 'Reset Github url',
     url: 'https://github.something.com',
@@ -44,19 +51,6 @@ const Mentors = () => {
         setMentor(data);
       })
       .catch((error) => error);
-  };
-
-  const passwordReset = () => {
-    bc.auth()
-      .passwordReset(mentor.id)
-      .then((res) => {
-        setInviteLink(res.data.reset_password_url);
-        if (res.data && res.data.reset_password_url) {
-          navigator.clipboard.writeText(res.data.reset_password_url);
-        }
-      })
-      .catch((error) => error);
-    setDialogState({ ...dialogState, openDialog: false });
   };
 
   const githubReset = () => {
@@ -73,25 +67,43 @@ const Mentors = () => {
     setDialogState({ ...dialogState, openDialog: false });
   };
 
+  const genereateBills = () => {
+    console.log('Generate bills fn:')
+    setDialogState({ ...dialogState, openDialog: false });
+    setToggleBillTab(!toggleBillTab)
+  };
+
   const options = [
-    {
-      label: 'Send password reset',
-      value: 'password_reset',
-      title: 'An email to reset password will be sent to',
-      action: passwordReset,
-    },
-    { label: 'Open student profile', value: 'student_profile', title: '' },
     {
       label: 'Reset Github Link',
       value: 'github_reset',
       title: 'A reset github url will be generated for',
       action: githubReset,
     },
+    {
+      label: 'Generate Bills',
+      value: 'Bills',
+      title: 'Generates billing periods',
+      action: genereateBills,
+    },
   ];
 
   useEffect(() => {
     getMemberById();
   }, []);
+
+  const tabs = [
+    {
+      disabled: false,
+      component: <MentorSessions staffId={staffId} user={mentor} />,
+      label: 'Sessions',
+    },
+    {
+      disabled: toggleBillTab,
+      component: <MentorPayment staffId={staffId} mentor={mentor} />,
+      label: 'Payments',
+    },
+  ]
 
   return (
     <div className="m-sm-30">
@@ -105,7 +117,7 @@ const Mentors = () => {
           <DialogTitle id="alert-dialog-title">{dialogState.title}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              EMAIL GOES HERE
+              Dialog state goes here
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -162,8 +174,7 @@ const Mentors = () => {
             : <MentorDetails staffId={staffId} user={mentor} />}
         </Grid>
         <Grid item md={7} xs={12}>
-          {mentor === null ? 'loading'
-            : <MentorSessions staffId={staffId} user={mentor} />}
+          <BasicTabs tabs={tabs} />
         </Grid>
       </Grid>
     </div>
