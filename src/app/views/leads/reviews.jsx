@@ -280,7 +280,7 @@ const Reviews = () => {
             columns={columns}
             items={items}
             view="reviews?"
-            historyReplace="/feedback/reviews"
+            historyReplace="/growth/reviews"
             singlePage=""
             tableOptions={{
               selectableRows: false,
