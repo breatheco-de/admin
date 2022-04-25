@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { Breadcrumb } from 'matx';
 import {
-  Icon, IconButton, Button, Chip,
+  Icon, IconButton, Button, Chip, Card, TextField, InputAdornment, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { useQuery } from '../../hooks/useQuery';
+import { getSession } from '../../redux/actions/SessionActions';
+import { toast } from 'react-toastify';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 dayjs.extend(relativeTime);
 
@@ -24,7 +32,11 @@ const stageColors = {
 };
 
 const Cohorts = () => {
+  const session = getSession();
+
   const [items, setItems] = useState([]);
+
+  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/cohorts?academy=${session.academy.id}`;
   const query = useQuery();
 
   const columns = [
@@ -40,16 +52,16 @@ const Cohorts = () => {
             <div className="flex items-center">
               <div className="">
                 {dayjs().isAfter(dayjs(item?.ending_date))
-                && !['ENDED', 'DELETED'].includes(item?.stage) ? (
+                  && !['ENDED', 'DELETED'].includes(item?.stage) ? (
                   <Chip
                     size="small"
                     icon={<Icon fontSize="small">error</Icon>}
                     label="Out of sync"
                     color="secondary"
                   />
-                  ) : (
-                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
-                  )}
+                ) : (
+                  <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
+                )}
               </div>
             </div>
           );
@@ -110,7 +122,7 @@ const Cohorts = () => {
             <p>{items[i]?.schedule?.name}</p>
             <p>{items[i]?.timezone}</p>
           </div>
-          
+
         ),
       },
     },
@@ -152,6 +164,44 @@ const Cohorts = () => {
           </div>
         </div>
       </div>
+      <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
+        <div className="flex items-center">
+          <div style={{ width: '100%' }}>
+            <h5 className="mt-0 mb-2 font-medium text-primary">
+              Follow the academy cohorts schedule by adding the following link as one of your personal calendars
+            </h5>
+            <TextField
+              fullWidth
+              label="Cohort"
+              name="cohort"
+              size="small"
+              type="text"
+              variant="outlined"
+              value={thisURL}
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Tooltip title="Copy link">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        className="text-primary"
+                        onClick={() => {
+                          navigator.clipboard.writeText(thisURL);
+                          toast.success('Calendar link url copied successfuly', toastOption);
+                        }}
+                      >
+                        Copy
+                      </Button>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+        </div>
+      </Card>
       <div>
         <SmartMUIDataTable
           title="All Cohorts"

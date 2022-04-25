@@ -11,6 +11,7 @@ import {
   DialogActions,
   DialogContent,
   TextField,
+  InputAdornment,
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
@@ -170,15 +171,41 @@ const EventList = () => {
         <div className="overflow-auto">
           <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
             <div className="flex items-center">
-              <div>
+              <div style={{width:'100%'}}>
                 <h5 className="mt-0 mb-2 font-medium text-primary">
                   You can add this events to your calendar using this URL:
                 </h5>
-                <p className="alert-link">
-                  {thisURL}
-                </p>
+                <TextField
+                  fullWidth
+                  label="Events"
+                  name="events"
+                  size="small"
+                  type="text"
+                  variant="outlined"
+                  value={thisURL}
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Tooltip title="Copy link">
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            className="text-primary"
+                            onClick={() => {
+                              navigator.clipboard.writeText(thisURL);
+                              toast.success('Calendar link url copied successfuly', toastOption);
+                            }}
+                          >
+                            Copy
+                          </Button>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </div>
-              <div className="flex-grow" />
+              {/* <div className="flex-grow" />
               <Tooltip title="Copy link">
                 <Button
                   variant="outlined"
@@ -192,7 +219,7 @@ const EventList = () => {
                 >
                   Copy
                 </Button>
-              </Tooltip>
+              </Tooltip> */}
             </div>
           </Card>
           <div className="min-w-750">

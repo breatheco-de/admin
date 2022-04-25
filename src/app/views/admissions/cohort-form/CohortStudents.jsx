@@ -36,6 +36,19 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
+const actionController = {
+  message: {
+    educational_status: 'Educational Status',
+    finantial_status: 'Finantial Status',
+    role: 'Cohort Role'
+  },
+  options: {
+    educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''],
+    finantial_status: ['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''],
+    role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT']
+  }
+}
+
 const CohortStudents = ({ slug, cohortId }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -213,18 +226,40 @@ const CohortStudents = ({ slug, cohortId }) => {
                             aria-hidden="true"
                             onClick={() => {
                               setRoleDialog(true);
-                              setCurrentStd({ id: s.user.id, positionInArray: i });
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'role' });
                             }}
                             className="border-radius-4 px-2 pt-2px bg-secondary"
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', margin:'0 3px' }}
                           >
                             {s.role}
+                          </small>
+                          <small
+                            aria-hidden="true"
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'finantial_status' });
+                            }}
+                            className="border-radius-4 px-2 pt-2px bg-secondary"
+                            style={{ cursor: 'pointer', margin:'0 3px' }}
+                          >
+                            {s.finantial_status ? s.finantial_status : 'NONE'}
+                          </small>
+                          <small
+                            aria-hidden="true"
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'educational_status' });
+                            }}
+                            className="border-radius-4 px-2 pt-2px bg-secondary"
+                            style={{ cursor: 'pointer', margin:'0 3px' }}
+                          >
+                            {s.educational_status}
                           </small>
                         </p>
                       </div>
                     </div>
                   </Grid>
-                  <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
+                  {/* <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
                     <TextField
                       className="min-w-100"
                       label="Finantial Status"
@@ -265,8 +300,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                         ),
                       )}
                     </TextField>
-                  </Grid>
-                  <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
+                  </Grid> */}
+                  <Grid item lg={6} md={6} sm={6} xs={6} className="text-center">
                     <div className="flex justify-end items-center">
                       <IconButton
                         onClick={() => {
@@ -301,18 +336,18 @@ const CohortStudents = ({ slug, cohortId }) => {
         open={openRoleDialog}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle id="simple-dialog-title">Select a Cohort Role</DialogTitle>
+        <DialogTitle id="simple-dialog-title">{`Select a ${actionController.message[currentStd.action]}`}</DialogTitle>
         <List>
-          {['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'].map((role, i) => (
+          {currentStd.action && actionController.options[currentStd.action].map((opt, i) => (
             <ListItem
               button
               onClick={() => {
-                changeStudentStatus(role, 'role', currentStd.id, currentStd.positionInArray);
+                changeStudentStatus(opt, currentStd.action, currentStd.id, currentStd.positionInArray);
                 setRoleDialog(false);
               }}
               key={i}
             >
-              <ListItemText primary={role} />
+              <ListItemText primary={opt} />
             </ListItem>
           ))}
         </List>
