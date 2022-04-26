@@ -72,7 +72,7 @@ const Cohorts = () => {
       name: 'slug', // field name in the row object
       label: 'Slug', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('slug') !== null ? [query.get('slug')] : [],
         customBodyRenderLite: (i) => {
           const item = items[i];
@@ -99,7 +99,7 @@ const Cohorts = () => {
       name: 'kickoff_date',
       label: 'Kickoff Date',
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
@@ -115,7 +115,7 @@ const Cohorts = () => {
       name: 'schedule',
       label: 'Schedule',
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
         customBodyRenderLite: (i) => (
           <div>
