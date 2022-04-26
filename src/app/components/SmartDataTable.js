@@ -30,6 +30,19 @@ const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
   name: 'SmartMUIDataTable',
 })(DefaultToobar);
 
+const getParams = (url = window.location) => {
+
+	// Create a params object
+	let params = {};
+
+	new URL(url).searchParams.forEach(function (val, key) {
+		params[key] = val;
+	});
+
+	return params;
+
+}
+
 export const SmartMUIDataTable = (props) => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +87,9 @@ export const SmartMUIDataTable = (props) => {
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     console.log('####### I excuted');
     setIsLoading(true);
+    const { limit, offser, ...restParams } = getParams();
     const q = {
+      ...restParams,
       limit: rowsPerPage,
       offset: rowsPerPage * page,
       ...like && { like },
