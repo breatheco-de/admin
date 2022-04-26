@@ -118,7 +118,7 @@ const Reviews = () => {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const { author } = items[dataIndex];
           return (
@@ -142,6 +142,14 @@ const Reviews = () => {
       label: 'Status',
       options: {
         filter: true,
+        filterType: "dropdown",
+        // filterList: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE'],
+        // customFilterListOptions: {
+        //   render: () => ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
+        // },
+        filterOptions: {
+          names: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
+        },
         customBodyRenderLite: (i) => {
           let newDay = dayjs(items[i].updated_at).add(dayjs.duration({ 'days': 30 }))
           return (
@@ -162,7 +170,7 @@ const Reviews = () => {
       name: 'total_rating',
       label: 'Rating',
       options: {
-        filter: true,
+        filter: false,
         filterType: 'multiselect',
         customBodyRenderLite: (i) => {
           const rating = items[i].total_rating;

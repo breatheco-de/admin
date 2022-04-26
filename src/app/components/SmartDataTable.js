@@ -111,7 +111,7 @@ export const SmartMUIDataTable = (props) => {
   };
   const clearSearchBox = () => {
     setSearchBoxValue('');
-    handlePageChange();
+    handlePageChange(0, querys.limit);
   };
   return (
     <>
