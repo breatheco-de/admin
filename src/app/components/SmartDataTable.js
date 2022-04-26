@@ -87,13 +87,13 @@ export const SmartMUIDataTable = (props) => {
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     console.log('####### I excuted');
     setIsLoading(true);
-    const { limit, offser, ...restParams } = getParams();
+    const { limit, offset, ...restParams } = getParams();
     const q = {
-      ...restParams,
       limit: rowsPerPage,
       offset: rowsPerPage * page,
       ...like && { like },
       ...sort && { sort },
+      ...restParams,
     };
     setQuerys(q);
     props
