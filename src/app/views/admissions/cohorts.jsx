@@ -3,6 +3,7 @@ import { Breadcrumb } from 'matx';
 import {
   Icon, IconButton, Button, Chip, Card, TextField, InputAdornment, Tooltip,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
@@ -124,7 +125,7 @@ const Cohorts = () => {
         customBodyRenderLite: (i) => (
           <div>
             <p>{items[i]?.schedule?.name}</p>
-            <p>{items[i]?.timezone}</p>
+            <small className="text-muted">{items[i]?.timezone}</small>
           </div>
 
         ),
@@ -176,7 +177,6 @@ const Cohorts = () => {
             </h5>
             <TextField
               fullWidth
-              label="Cohort"
               name="cohort"
               size="small"
               type="text"
@@ -186,19 +186,15 @@ const Cohorts = () => {
                 readOnly: true,
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Tooltip title="Copy link">
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        className="text-primary"
-                        onClick={() => {
-                          navigator.clipboard.writeText(thisURL);
-                          toast.success('Calendar link url copied successfuly', toastOption);
-                        }}
-                      >
-                        Copy
-                      </Button>
-                    </Tooltip>
+                    <IconButton
+                      aria-label="copy"
+                      onClick={() => {
+                        navigator.clipboard.writeText(thisURL);
+                        toast.success('Calendar link url copied successfuly', toastOption);
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

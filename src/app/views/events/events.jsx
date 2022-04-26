@@ -13,6 +13,7 @@ import {
   TextField,
   InputAdornment,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -177,7 +178,6 @@ const EventList = () => {
                 </h5>
                 <TextField
                   fullWidth
-                  label="Events"
                   name="events"
                   size="small"
                   type="text"
@@ -187,19 +187,15 @@ const EventList = () => {
                     readOnly: true,
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Tooltip title="Copy link">
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            className="text-primary"
-                            onClick={() => {
-                              navigator.clipboard.writeText(thisURL);
-                              toast.success('Calendar link url copied successfuly', toastOption);
-                            }}
-                          >
-                            Copy
-                          </Button>
-                        </Tooltip>
+                        <IconButton
+                          aria-label="copy"
+                          onClick={() => {
+                            navigator.clipboard.writeText(thisURL);
+                            toast.success('Calendar link url copied successfuly', toastOption);
+                          }}
+                        >
+                          <FileCopyIcon />
+                        </IconButton>
                       </InputAdornment>
                     ),
                   }}

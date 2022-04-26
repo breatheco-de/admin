@@ -115,7 +115,10 @@ export const SmartMUIDataTable = (props) => {
   const handleFilterSubmit = () => {
     setIsLoading(true);
     props.search(querys)
-      .then(() => setIsLoading(false))
+      .then((result) => {
+        setTable({ count: result.count, page: 0 });
+        setIsLoading(false)
+      })
       .catch(() => {
         setIsLoading(false);
       });
@@ -147,6 +150,9 @@ export const SmartMUIDataTable = (props) => {
           selectableRowsHeader: false,
           rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
           rowsPerPageOptions: [10, 20, 40, 80, 100],
+          onFilterChipClose: ()=>{
+            handlePageChange(0, querys.limit);
+          },
           onTableChange: (action, tableState) => {
             switch (action) {
               case 'changePage':
