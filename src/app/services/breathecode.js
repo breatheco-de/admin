@@ -506,8 +506,10 @@ class BreatheCodeClient {
                     "Academy survey",
                     `${this.host}/feedback/academy/survey/${id}`
                 ),
-            getReviews: () =>
-                axios.bcGet("Review", `${this.host}/feedback/academy/review`),
+            getReviews: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet("Review", `${this.host}/feedback/academy/review${query ? `?${qs}` : ""}`)
+            },
             updateReview: (id, data) =>
                 axios.bcPut(
                     "Review",
