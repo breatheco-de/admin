@@ -66,7 +66,7 @@ const NewMentor = () => {
       </div>
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add a New Mentor</h4>
+          <h4 className="m-0">Add a mentor to service</h4>
         </div>
         <Divider className="mb-2 flex" />
         {

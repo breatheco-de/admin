@@ -20,7 +20,7 @@ const toastOption = {
 
 const ServiceMentors = ({ serviceId, service }) => {
   const [allServiceMentors, setAllServiceMentors] = useState([]);
-  const [queryString, setQueryString] = useState({ limit: 10, offset: 0 })
+
   const query = useQuery();
 
   // useEffect(() => {
@@ -160,8 +160,7 @@ const ServiceMentors = ({ serviceId, service }) => {
       singlePage=""
       historyReplace="/admin/syllabus"
       search={async (querys) => {
-        setQueryString(querys)
-        const { data } = await bc.mentorship().getAcademyMentors(querys);
+        const { data } = await bc.mentorship().getAcademyMentors({ ...querys, service: service.slug });
         setAllServiceMentors(data.results || data);
         return data;
       }}
