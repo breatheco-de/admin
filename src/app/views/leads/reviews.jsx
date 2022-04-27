@@ -118,7 +118,7 @@ const Reviews = () => {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const { author } = items[dataIndex];
           return (
@@ -142,21 +142,35 @@ const Reviews = () => {
       label: 'Status',
       options: {
         filter: true,
-        customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
-                <p className="my-0"><small className="text-muted">{dayjs(items[i].updated_at).fromNow()}</small></p>
+        filterType: "dropdown",
+        // filterList: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE'],
+        // customFilterListOptions: {
+        //   render: () => ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
+        // },
+        filterOptions: {
+          names: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
+        },
+        customBodyRenderLite: (i) => {
+          let newDay = dayjs(items[i].updated_at).add(dayjs.duration({ 'days': 30 }))
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
+                <p className="my-0"><small className={`text-muted ${!dayjs().isBefore(newDay) ? 'text-error' : ''}`}>
+                  {dayjs(items[i].updated_at).fromNow()}
+                  </small>
+                </p>
+              </div>
             </div>
-          </div>
-        ),
+          )
+        },
       },
     },
     {
       name: 'total_rating',
       label: 'Rating',
       options: {
-        filter: true,
+        filter: false,
         filterType: 'multiselect',
         customBodyRenderLite: (i) => {
           const rating = items[i].total_rating;
@@ -274,8 +288,13 @@ const Reviews = () => {
             columns={columns}
             items={items}
             view="reviews?"
-            historyReplace="/feedback/reviews"
+            historyReplace="/growth/reviews"
             singlePage=""
+            tableOptions={{
+              selectableRows: false,
+              print: false,
+              viewColumns: false
+            }}
             search={async (querys) => {
               const { data } = await bc.feedback().getReviews(querys);
               setItems(data.results || data);

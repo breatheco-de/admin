@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { Breadcrumb } from 'matx';
 import {
-  Icon, IconButton, Button, Chip,
+  Icon, IconButton, Button, Chip, Card, TextField, InputAdornment, Tooltip,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { useQuery } from '../../hooks/useQuery';
+import { getSession } from '../../redux/actions/SessionActions';
+import { toast } from 'react-toastify';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 dayjs.extend(relativeTime);
 
@@ -24,7 +33,11 @@ const stageColors = {
 };
 
 const Cohorts = () => {
+  const session = getSession();
+
   const [items, setItems] = useState([]);
+
+  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/cohorts?academy=${session.academy.id}`;
   const query = useQuery();
 
   const columns = [
@@ -33,6 +46,10 @@ const Cohorts = () => {
       label: 'Stage', // column title that will be shown in table
       options: {
         filter: true,
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['INACTIVE', 'PREWORK', 'STARTED', 'ACTIVE', 'FINAL_PROJECT', 'ENDED', 'DELETED']
+        },
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
@@ -40,16 +57,16 @@ const Cohorts = () => {
             <div className="flex items-center">
               <div className="">
                 {dayjs().isAfter(dayjs(item?.ending_date))
-                && !['ENDED', 'DELETED'].includes(item?.stage) ? (
+                  && !['ENDED', 'DELETED'].includes(item?.stage) ? (
                   <Chip
                     size="small"
                     icon={<Icon fontSize="small">error</Icon>}
                     label="Out of sync"
                     color="secondary"
                   />
-                  ) : (
-                    <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
-                  )}
+                ) : (
+                  <Chip size="small" label={item?.stage} color={stageColors[item?.stage]} />
+                )}
               </div>
             </div>
           );
@@ -60,7 +77,7 @@ const Cohorts = () => {
       name: 'slug', // field name in the row object
       label: 'Slug', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('slug') !== null ? [query.get('slug')] : [],
         customBodyRenderLite: (i) => {
           const item = items[i];
@@ -87,7 +104,7 @@ const Cohorts = () => {
       name: 'kickoff_date',
       label: 'Kickoff Date',
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
@@ -103,14 +120,14 @@ const Cohorts = () => {
       name: 'schedule',
       label: 'Schedule',
       options: {
-        filter: true,
+        filter: false,
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
         customBodyRenderLite: (i) => (
           <div>
             <p>{items[i]?.schedule?.name}</p>
-            <p>{items[i]?.timezone}</p>
+            <small className="text-muted">{items[i]?.timezone}</small>
           </div>
-          
+
         ),
       },
     },
@@ -152,6 +169,39 @@ const Cohorts = () => {
           </div>
         </div>
       </div>
+      <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
+        <div className="flex items-center">
+          <div style={{ width: '100%' }}>
+            <h5 className="mt-0 mb-2 font-medium text-primary">
+              Follow the academy cohorts schedule by adding the following link as one of your personal calendars
+            </h5>
+            <TextField
+              fullWidth
+              name="cohort"
+              size="small"
+              type="text"
+              variant="outlined"
+              value={thisURL}
+              InputProps={{
+                readOnly: true,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="copy"
+                      onClick={() => {
+                        navigator.clipboard.writeText(thisURL);
+                        toast.success('Calendar link url copied successfuly', toastOption);
+                      }}
+                    >
+                      <FileCopyIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+        </div>
+      </Card>
       <div>
         <SmartMUIDataTable
           title="All Cohorts"

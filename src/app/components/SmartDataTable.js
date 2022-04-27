@@ -30,6 +30,19 @@ const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
   name: 'SmartMUIDataTable',
 })(DefaultToobar);
 
+const getParams = (url = window.location) => {
+
+	// Create a params object
+	let params = {};
+
+	new URL(url).searchParams.forEach(function (val, key) {
+		params[key] = val;
+	});
+
+	return params;
+
+}
+
 export const SmartMUIDataTable = (props) => {
   const [isAlive, setIsAlive] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,11 +87,13 @@ export const SmartMUIDataTable = (props) => {
   const handlePageChange = (page, rowsPerPage, like, sort) => {
     console.log('####### I excuted');
     setIsLoading(true);
+    const { limit, offset, ...restParams } = getParams();
     const q = {
       limit: rowsPerPage,
       offset: rowsPerPage * page,
       ...like && { like },
       ...sort && { sort },
+      ...restParams,
     };
     setQuerys(q);
     props
@@ -100,7 +115,10 @@ export const SmartMUIDataTable = (props) => {
   const handleFilterSubmit = () => {
     setIsLoading(true);
     props.search(querys)
-      .then(() => setIsLoading(false))
+      .then((result) => {
+        setTable({ count: result.count, page: 0 });
+        setIsLoading(false)
+      })
       .catch(() => {
         setIsLoading(false);
       });
@@ -111,7 +129,7 @@ export const SmartMUIDataTable = (props) => {
   };
   const clearSearchBox = () => {
     setSearchBoxValue('');
-    handlePageChange();
+    handlePageChange(0, querys.limit);
   };
   return (
     <>
@@ -129,10 +147,12 @@ export const SmartMUIDataTable = (props) => {
           elevation: 0,
           count: table.count,
           page: table.page,
-          selectableRows: props.selectableRows,
           selectableRowsHeader: false,
           rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
           rowsPerPageOptions: [10, 20, 40, 80, 100],
+          onFilterChipClose: ()=>{
+            handlePageChange(0, querys.limit);
+          },
           onTableChange: (action, tableState) => {
             switch (action) {
               case 'changePage':
