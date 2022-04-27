@@ -45,6 +45,8 @@ const stageColors = {
   DELETED: 'light-gray',
 };
 
+const defaultBg = 'bg-gray';
+
 const EventList = () => {
   const { settings } = useSelector(({ layout }) => layout);
   const [items, setItems] = useState([]);
@@ -117,7 +119,7 @@ const EventList = () => {
                   <Tooltip title={"EXPIRED"}>
                     <small
                       className={`border-radius-4 px-2 pt-2px${
-                        stageColors[item?.status]
+                        stageColors[item?.status] || defaultBg
                       }`}
                     >
                       {"EXPIRED"}
@@ -133,7 +135,7 @@ const EventList = () => {
                   <Tooltip title={"SEND"}>
                     <small
                       className={`border-radius-4 px-2 pt-2px${
-                        stageColors[item?.status]
+                        stageColors[item?.status] || defaultBg
                       }`}
                     >
                       {"SENT"}
@@ -150,7 +152,7 @@ const EventList = () => {
                 <Tooltip title={item?.status}>
                   <small
                     className={`border-radius-4 px-2 pt-2px text-white ${
-                      stageColors[item?.status]
+                      stageColors[item?.status] || defaultBg
                     }`}
                   >
                     {item?.status}
