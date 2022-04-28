@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import SingleDelete from '../../components/ToolBar/SingleDelete';
+import StatusTable from './StatusTable';
 
 toast.configure();
 const toastOption = {
@@ -37,7 +38,7 @@ const stageColors = {
   INACTIVE: 'bg-gray',
   SENT: 'bg-gray',
   PREWORK: 'bg-secondary',
-  PENDING : 'bg-secondary',
+  PENDING: 'bg-secondary',
   STARTED: 'text-white bg-warning',
   FINAL_PROJECT: 'text-white bg-error',
   FATAL: 'bg-error',
@@ -47,7 +48,7 @@ const stageColors = {
 
 const defaultBg = 'bg-gray';
 
-const EventList = () => {
+const SurveyList = () => {
   const { settings } = useSelector(({ layout }) => layout);
   const [items, setItems] = useState([]);
 
@@ -55,17 +56,22 @@ const EventList = () => {
   const [url, setUrl] = useState('');
 
   const [toResend, setToResend] = useState(null);
+  const [status, setStatus] = useState({ open: false, value: null });
 
   const resendSurvey = (survey) => {
     bc.feedback()
       .updateSurvey({
-        cohort: survey.cohort.id, 
+        cohort: survey.cohort.id,
         send_now: true
-      }, 
-      survey.id)
+      },
+        survey.id)
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
+
+  const showStatus = (item) => {
+    setStatus({ open: true, value: JSON.parse(item.status_json) });
+  }
 
   const isExpired = (item) => {
     // return finalizacion < dayjs(item.datetime + item.duration)
@@ -116,11 +122,10 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Tooltip title={"EXPIRED"}>
+                  <Tooltip style={{ cursor: 'pointer' }} title={"EXPIRED"} onClick={() => { showStatus(item) }}>
                     <small
-                      className={`border-radius-4 px-2 pt-2px${
-                        stageColors[item?.status] || defaultBg
-                      }`}
+                      className={`border-radius-4 px-2 pt-2px${stageColors[item?.status] || defaultBg
+                        }`}
                     >
                       {"EXPIRED"}
                     </small>
@@ -132,11 +137,10 @@ const EventList = () => {
             return (
               <div className="flex items-center">
                 <div className="ml-3">
-                  <Tooltip title={"SEND"}>
+                  <Tooltip style={{ cursor: 'pointer' }} title={"SEND"} onClick={() => { showStatus(item) }}>
                     <small
-                      className={`border-radius-4 px-2 pt-2px${
-                        stageColors[item?.status] || defaultBg
-                      }`}
+                      className={`border-radius-4 px-2 pt-2px${stageColors[item?.status] || defaultBg
+                        }`}
                     >
                       {"SENT"}
                     </small>
@@ -149,11 +153,10 @@ const EventList = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <Tooltip title={item?.status}>
+                <Tooltip style={{ cursor: 'pointer' }} title={item?.status} onClick={() => { showStatus(item) }}>
                   <small
-                    className={`border-radius-4 px-2 pt-2px text-white ${
-                      stageColors[item?.status] || defaultBg
-                    }`}
+                    className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status] || defaultBg
+                      }`}
                   >
                     {item?.status}
                   </small>
@@ -170,7 +173,7 @@ const EventList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => (
-          <div className="flex items-center"  style={{ width: "80%" }}>
+          <div className="flex items-center" style={{ width: "80%" }}>
             <div className="ml-3">
               <h5 className="my-0 text-15">
                 {dayjs(items[i].sent_at).format("MM-DD-YYYY")}
@@ -193,8 +196,8 @@ const EventList = () => {
             items[i].avg_score > 7
               ? "text-green"
               : items[i].avg_score < 7
-              ? "text-error"
-              : "text-orange";
+                ? "text-error"
+                : "text-orange";
           if (items[i].avg_score) {
             return (
               <div className="flex items-center">
@@ -260,6 +263,10 @@ const EventList = () => {
     },
   ];
 
+  if (items.length > 0) {
+    console.log(JSON.parse(items[0].status_json));
+  }
+
   return (
     <>
       <div className="m-sm-30">
@@ -314,6 +321,13 @@ const EventList = () => {
           message="Are you sure you want to resend this survey?"
         />
       )}
+      {status.open && (
+        <StatusTable
+          openDialog={status.open}
+          setOpenDialog={setStatus}
+          status={status.value}
+        />
+      )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -360,4 +374,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default SurveyList;
