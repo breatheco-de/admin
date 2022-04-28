@@ -118,7 +118,6 @@ export const navigations = [
     {
         name: "Mentorship",
         icon: "school",
-        beta: true,
         children: [
             {
                 name: "Mentors",

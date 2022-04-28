@@ -183,14 +183,12 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               <TextField
                 label="Slug"
                 name="slug"
-                disabled={true}
-
                 size="small"
                 type="text"
                 variant="outlined"
                 value={mentorSlug}
               />
-              <small className="text-muted d-block">Will be generated from the booking url</small>
+              <small className="text-muted d-block">Will be suggested from the booking url</small>
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Syllabus expertise
