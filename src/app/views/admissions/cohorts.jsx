@@ -124,7 +124,7 @@ const Cohorts = () => {
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
         customBodyRenderLite: (i) => (
           <div>
-            <p>{items[i]?.schedule?.name}</p>
+            <p style={{marginBottom:'0'}}>{items[i]?.schedule?.name}</p>
             <small className="text-muted">{items[i]?.timezone}</small>
           </div>
 
