@@ -195,13 +195,22 @@ export const SmartMUIDataTable = (props) => {
                 querys.like,
                 changedColumn,
               );
-            }
-            if (direction === 'desc') {
+            } else if (direction === 'desc') {
               handlePageChange(
                 querys.offset,
                 querys.limit,
                 querys.like,
                 `-${changedColumn}`,
+              );
+            } else {
+              query.delete('sort');
+              history.replace({
+                search: query.toString(),
+              })
+              handlePageChange(
+                querys.offset,
+                querys.limit,
+                querys.like,
               );
             }
           },

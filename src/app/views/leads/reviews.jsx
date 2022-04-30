@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { makeStyles } from '@material-ui/core/styles';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import { useQuery } from '../../hooks/useQuery';
 import AnswerStatus from '../../components/AnswerStatus';
 import SingleDelete from '../../components/ToolBar/SingleDelete';
 
@@ -57,6 +58,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Reviews = () => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -113,12 +115,33 @@ const Reviews = () => {
   //   },
   // });
 
+  let getSort = () => {
+    let sort = {};
+    let value = query.get('sort');
+    if(value){
+      if(value[0] === '-'){
+        value = value.substring(1);
+        sort = {
+          name: value,
+          direction: 'desc'
+        }
+      } else {
+        sort = {
+          name: value,
+          direction: 'asc'
+        }
+      }
+    }
+    return sort;
+  }
+
   const columns = [
     {
-      name: 'first_name', // field name in the row object
+      name: 'author__first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
         filter: false,
+        sortThirdClickReset: true,
         customBodyRenderLite: (dataIndex) => {
           const { author } = items[dataIndex];
           return (
@@ -142,6 +165,8 @@ const Reviews = () => {
       label: 'Status',
       options: {
         filter: true,
+        filterList: query.get('status') !== null ? [query.get('status')] : [],
+        sortThirdClickReset: true,
         filterType: "dropdown",
         // filterList: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE'],
         // customFilterListOptions: {
@@ -168,6 +193,7 @@ const Reviews = () => {
     },
     {
       name: 'total_rating',
+      sortThirdClickReset: true,
       label: 'Rating',
       options: {
         filter: false,
@@ -210,6 +236,8 @@ const Reviews = () => {
       label: 'Platform',
       options: {
         filter: true,
+        sortThirdClickReset: true,
+        filterList: query.get('platform') !== null ? [query.get('platform')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             {items[i].platform?.name}
@@ -222,6 +250,7 @@ const Reviews = () => {
       label: ' ',
       options: {
         filter: false,
+        sort: false,
         customBodyRenderLite: (dataIndex) => {
           const _review = items[dataIndex];
           if (['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
@@ -293,7 +322,8 @@ const Reviews = () => {
             tableOptions={{
               selectableRows: false,
               print: false,
-              viewColumns: false
+              viewColumns: false,
+              sortOrder: getSort()
             }}
             search={async (querys) => {
               const { data } = await bc.feedback().getReviews(querys);
