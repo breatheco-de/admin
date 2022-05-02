@@ -323,7 +323,6 @@ const Reviews = () => {
               selectableRows: false,
               print: false,
               viewColumns: false,
-              sortOrder: getSort()
             }}
             search={async (querys) => {
               const { data } = await bc.feedback().getReviews(querys);

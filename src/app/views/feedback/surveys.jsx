@@ -79,6 +79,15 @@ const SurveyList = () => {
     return new Date() < dayjs(item.datetime + item.duration)
   }
 
+  const statusMsg = (item) => {
+    if (item.status === "SEND" && isExpired(item)) {
+      return "EXPIRED";
+    } else if (item.status === "SEND") {
+      return "SENT";
+    }
+    return item?.status;
+  }
+
   const columns = [
     {
       name: "id", // field name in the row object
@@ -117,48 +126,20 @@ const SurveyList = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
-
-          if (item.status === "SEND" && isExpired(item)) {
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Tooltip style={{ cursor: 'pointer' }} title={"EXPIRED"} onClick={() => { showStatus(item) }}>
-                    <small
-                      className={`border-radius-4 px-2 pt-2px${stageColors[item?.status] || defaultBg
-                        }`}
-                    >
-                      {"EXPIRED"}
-                    </small>
-                  </Tooltip>
-                </div>
-              </div>
-            );
-          } else if (item.status === "SEND") {
-            return (
-              <div className="flex items-center">
-                <div className="ml-3">
-                  <Tooltip style={{ cursor: 'pointer' }} title={"SEND"} onClick={() => { showStatus(item) }}>
-                    <small
-                      className={`border-radius-4 px-2 pt-2px${stageColors[item?.status] || defaultBg
-                        }`}
-                    >
-                      {"SENT"}
-                    </small>
-                  </Tooltip>
-                </div>
-              </div>
-            );
-          }
-
+          
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <Tooltip style={{ cursor: 'pointer' }} title={item?.status} onClick={() => { showStatus(item) }}>
+                <Tooltip 
+                  style={{ cursor: 'pointer' }} 
+                  title={item.status_json? "Click to view Status Json" : "No Status Json"} 
+                  onClick={() => { showStatus(item) }}
+                >
                   <small
                     className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status] || defaultBg
                       }`}
                   >
-                    {item?.status}
+                    {statusMsg(item)}
                   </small>
                 </Tooltip>
               </div>

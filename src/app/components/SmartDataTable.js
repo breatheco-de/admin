@@ -62,6 +62,26 @@ export const SmartMUIDataTable = (props) => {
     throw Error('Property items must be an array on SmartMUIDataTable');
   }
 
+  let getSort = () => {
+    let sort = {};
+    let value = query.get('sort');
+    if(value){
+      if(value[0] === '-'){
+        value = value.substring(1);
+        sort = {
+          name: value,
+          direction: 'desc'
+        }
+      } else {
+        sort = {
+          name: value,
+          direction: 'asc'
+        }
+      }
+    }
+    return sort;
+  }
+
   const loadData = () => {
     setIsLoading(true);
     props
@@ -145,6 +165,7 @@ export const SmartMUIDataTable = (props) => {
         columns={props.columns}
         options={{
           ...props.tableOptions,
+          sortOrder: getSort(),
           download: false,
           filterType: 'textField',
           responsive: 'vertical',
