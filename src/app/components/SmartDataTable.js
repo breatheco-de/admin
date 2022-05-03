@@ -50,9 +50,9 @@ export const SmartMUIDataTable = (props) => {
     count: 100,
     page: 0,
   });
-  const [searchBoxValue, setSearchBoxValue] = useState('');
   const query = useQuery();
   const history = useHistory();
+  const [searchBoxValue, setSearchBoxValue] = useState(query.get('like') ||'');
   const [querys, setQuerys] = useState({
     limit: query.get('limit') || 10,
     offset: query.get('offset') || 0,
@@ -62,10 +62,30 @@ export const SmartMUIDataTable = (props) => {
     throw Error('Property items must be an array on SmartMUIDataTable');
   }
 
+  let getSort = () => {
+    let sort = {};
+    let value = query.get('sort');
+    if(value){
+      if(value[0] === '-'){
+        value = value.substring(1);
+        sort = {
+          name: value,
+          direction: 'desc'
+        }
+      } else {
+        sort = {
+          name: value,
+          direction: 'asc'
+        }
+      }
+    }
+    return sort;
+  }
+
   const loadData = () => {
     setIsLoading(true);
     props
-      .search(querys)
+      .search({...querys, ...getParams()})
       .then((data) => {
         setIsLoading(false);
         if (isAlive) {
@@ -88,12 +108,13 @@ export const SmartMUIDataTable = (props) => {
     console.log('####### I excuted');
     setIsLoading(true);
     const { limit, offset, ...restParams } = getParams();
+    delete restParams.sort;
     const q = {
       limit: rowsPerPage,
       offset: rowsPerPage * page,
+      ...restParams,
       ...like && { like },
       ...sort && { sort },
-      ...restParams,
     };
     setQuerys(q);
     props
@@ -129,6 +150,10 @@ export const SmartMUIDataTable = (props) => {
   };
   const clearSearchBox = () => {
     setSearchBoxValue('');
+    query.delete('like');
+    history.replace({
+      search: query.toString(),
+    })
     handlePageChange(0, querys.limit);
   };
   return (
@@ -140,6 +165,7 @@ export const SmartMUIDataTable = (props) => {
         columns={props.columns}
         options={{
           ...props.tableOptions,
+          sortOrder: getSort(),
           download: false,
           filterType: 'textField',
           responsive: 'vertical',
@@ -190,13 +216,22 @@ export const SmartMUIDataTable = (props) => {
                 querys.like,
                 changedColumn,
               );
-            }
-            if (direction === 'desc') {
+            } else if (direction === 'desc') {
               handlePageChange(
                 querys.offset,
                 querys.limit,
                 querys.like,
                 `-${changedColumn}`,
+              );
+            } else {
+              query.delete('sort');
+              history.replace({
+                search: query.toString(),
+              })
+              handlePageChange(
+                querys.offset,
+                querys.limit,
+                querys.like,
               );
             }
           },

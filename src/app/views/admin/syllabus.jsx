@@ -52,13 +52,15 @@ const Syllabus = () => {
       label: 'Owner',
       options: {
         filter: true,
-        customBodyRenderLite: (i) => (
+        customBodyRenderLite: (dataIndex) => {
+          const item = list[dataIndex];
+          return(
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">4Geeks Academy Miami</h5>
+              <h5 className="my-0 text-15">{item?.academy_owner?.name}</h5>
             </div>
           </div>
-        ),
+        )},
       },
     },
     {

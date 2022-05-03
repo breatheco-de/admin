@@ -45,6 +45,7 @@ const Cohorts = () => {
       name: 'stage', // field name in the row object
       label: 'Stage', // column title that will be shown in table
       options: {
+        sortThirdClickReset: true,
         filter: true,
         filterType: "dropdown",
         filterOptions: {
@@ -77,6 +78,7 @@ const Cohorts = () => {
       name: 'slug', // field name in the row object
       label: 'Slug', // column title that will be shown in table
       options: {
+        sortThirdClickReset: true,
         filter: false,
         filterList: query.get('slug') !== null ? [query.get('slug')] : [],
         customBodyRenderLite: (i) => {
@@ -104,6 +106,7 @@ const Cohorts = () => {
       name: 'kickoff_date',
       label: 'Kickoff Date',
       options: {
+        sortThirdClickReset: true,
         filter: false,
         filterList: query.get('kickoff_date') !== null ? [query.get('kickoff_date')] : [],
         customBodyRenderLite: (i) => (
@@ -120,11 +123,12 @@ const Cohorts = () => {
       name: 'schedule',
       label: 'Schedule',
       options: {
+        sortThirdClickReset: true,
         filter: false,
         filterList: query.get('schedule') !== null ? [query.get('schedule')] : [],
         customBodyRenderLite: (i) => (
           <div>
-            <p>{items[i]?.schedule?.name}</p>
+            <p style={{marginBottom:'0'}}>{items[i]?.schedule?.name}</p>
             <small className="text-muted">{items[i]?.timezone}</small>
           </div>
 
@@ -135,6 +139,7 @@ const Cohorts = () => {
       name: 'action',
       label: ' ',
       options: {
+        sort: false,
         filter: false,
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
