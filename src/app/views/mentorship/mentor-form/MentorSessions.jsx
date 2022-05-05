@@ -24,7 +24,6 @@ const statusColors = {
 
 const MentorSessions = ({ staffId, mentor }) => {
   const [sessions, setSessions] = useState([]);
-
   const columns = [
     {
       name: 'session',
@@ -98,7 +97,7 @@ const MentorSessions = ({ staffId, mentor }) => {
       title="Sessions"
       columns={columns}
       items={sessions}
-      selectableRows="multiple"
+      // selectableRows="multiple"
       view="mentor sessions"
       singlePage=""
       historyReplace="/admin/syllabus"
@@ -106,12 +105,6 @@ const MentorSessions = ({ staffId, mentor }) => {
         const { data } = await bc.mentorship().getSingleMentorSessions({ ...querys, mentor: staffId });
         setSessions(data.results);
         return data;
-      }}
-      deleting={async (querys) => {
-        const { status } = await bc
-          .admissions()
-          .deleteStaffBulk(querys);
-        return status;
       }}
     />
   );
