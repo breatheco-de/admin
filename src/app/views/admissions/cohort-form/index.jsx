@@ -233,6 +233,7 @@ const Cohort = () => {
                 specialtyMode={cohort.schedule}
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
+                remote_available={cohort.remote_available}
                 isPrivate={cohort.private}
                 timeZone={cohort.timezone}
                 onlineMeetingUrl={cohort.online_meeting_url}

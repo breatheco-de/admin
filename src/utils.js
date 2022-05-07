@@ -183,7 +183,9 @@ export function resolveResponse(res) {
     delete: 'deleted',
   };
   if (res.config.method !== 'get' && res.status >= 200) {
-    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
+    let msg = `${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`;
+    if(res.data === 'One or more events were not draft' ) msg = res.data;
+    return toast.success(msg, toastOption);
   }
 }
 
