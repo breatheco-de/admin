@@ -57,6 +57,7 @@ const CohortDetails = ({
   specialtyMode,
   syllabusVersion,
   neverEnds,
+  remote_available,
   isPrivate,
   timeZone,
   onlineMeetingUrl,
@@ -65,6 +66,7 @@ const CohortDetails = ({
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
+  const [remote, setRemote] = useState(remote_available || true);
 
   useEffect(() => {
     // setIsLoading(true);
@@ -100,6 +102,7 @@ const CohortDetails = ({
           const specialtyModeId = cert ? cert.id : null;
           return onSubmit({
             ...values,
+            remote_available: remote,
             syllabus: `${syllabus.slug}.v${version.version}`,
             schedule: specialtyModeId,
           });
@@ -295,7 +298,23 @@ const CohortDetails = ({
                   />
                 </Grid>
               )}
-
+              <Grid item md={12} sm={12} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={remote}
+                        onChange={()=>{
+                          setRemote(!remote);
+                        }}
+                        name="remote"
+                        data-cy="remote"
+                        color="primary"
+                        className="text-left"
+                      />
+                    }
+                    label="Enable Remote"
+                  />
+                </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Live meeting URL
               </Grid>

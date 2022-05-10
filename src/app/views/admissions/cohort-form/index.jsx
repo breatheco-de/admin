@@ -134,9 +134,12 @@ const Cohort = () => {
   }, [stage]);
 
   const makePrivate = () => {
+    const {academy, ...cohortValues} = cohort;
     bc.admissions()
       .updateCohort(cohort.id, {
-        ...cohort,
+        ...cohortValues,
+        current_module: cohort.current_module ? cohort.current_module : 1,
+        schedule: cohort.schedule.id,
         private: !cohort.private,
         syllabus: `${cohort.syllabus_version.slug}.v${cohort.syllabus_version.version}`,
       })
@@ -230,6 +233,7 @@ const Cohort = () => {
                 specialtyMode={cohort.schedule}
                 syllabusVersion={cohort.syllabus_version}
                 neverEnds={cohort.never_ends}
+                remote_available={cohort.remote_available}
                 isPrivate={cohort.private}
                 timeZone={cohort.timezone}
                 onlineMeetingUrl={cohort.online_meeting_url}

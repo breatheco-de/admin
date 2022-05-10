@@ -168,10 +168,6 @@ const Reviews = () => {
         filterList: query.get('status') !== null ? [query.get('status')] : [],
         sortThirdClickReset: true,
         filterType: "dropdown",
-        // filterList: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE'],
-        // customFilterListOptions: {
-        //   render: () => ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
-        // },
         filterOptions: {
           names: ['REQUESTED', 'PENDING', 'DONE', 'IGNORE']
         },
@@ -180,8 +176,8 @@ const Reviews = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <Chip size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
-                <p className="my-0"><small className={`text-muted ${!dayjs().isBefore(newDay) ? 'text-error' : ''}`}>
+                <Chip className={stageColors[items[i]?.status]} size="small" label={items[i]?.status} color={stageColors[items[i]?.status]} />
+                <p className="my-0"><small className={`text-muted ${!dayjs().isBefore(newDay) && items[i].status === "PENDING" ? 'text-error' : ''}`}>
                   {dayjs(items[i].updated_at).fromNow()}
                   </small>
                 </p>

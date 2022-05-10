@@ -19,7 +19,6 @@ const statusColors = {
 
 const Sessions = () => {
   const [sessions, setSessions] = useState([]);
-
   const columns = [
     {
       name: 'session',
@@ -120,11 +119,11 @@ const Sessions = () => {
             columns={columns}
             items={sessions}
             selectableRows={false}
-            view="syllabus?"
+            view="sessions?"
             singlePage=""
-            historyReplace="/admin/syllabus"
+            historyReplace="/mentors/sessions"
             search={async (querys) => {
-              const { data } = await bc.mentorship().getAllAcademyServicesSessions({ ...querys });
+              const { data } = await bc.mentorship().getAllMentorSessions({ ...querys });
               setSessions(data.results);
               return data;
             }}
