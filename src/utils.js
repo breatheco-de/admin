@@ -184,7 +184,17 @@ export function resolveResponse(res) {
   };
   if (res.config.method !== 'get' && res.status >= 200) {
     let msg = `${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`;
-    if(res.data === 'One or more events were not draft' ) msg = res.data;
+    if(res.status === 207 && axios.scopes[res.config.url] === 'Event'){
+
+      let joinFailure = res.data.failure.map((fail)=>{
+        return fail.resources
+      })
+
+      if(res.data.success.length !== 0) msg = `The events ${res.data.success.join(',')} were draft but the events ${joinFailure.flat().join(',')} were not`;
+      else msg = `The events ${joinFailure.flat().join(',')} were not Draft`;
+      return toast.warning(msg, toastOption);
+    }
+
     return toast.success(msg, toastOption);
   }
 }

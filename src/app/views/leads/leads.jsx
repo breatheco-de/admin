@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
@@ -84,11 +84,18 @@ const Leads = () => {
       options: {
         filterList: query.get('utm_url') !== null ? [query.get('utm_url')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">
-            {items[dataIndex].utm_url
+          <Tooltip
+            title={items[dataIndex].utm_url
               ? items[dataIndex].utm_url
               : '---'}
-          </span>
+          >
+            <span className="ellipsis">
+              {items[dataIndex].utm_url
+                ? items[dataIndex].utm_url
+                : '---'}
+            </span>
+          </Tooltip>
+          
         ),
       },
     },
