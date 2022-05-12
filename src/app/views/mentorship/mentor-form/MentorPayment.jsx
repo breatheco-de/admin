@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, TextField, MenuItem } from '@material-ui/core';
-import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
 import { getSession } from 'app/redux/actions/SessionActions';
+import dayjs from "dayjs";
+const localizedFormat = require('dayjs/plugin/localizedFormat')
+dayjs.extend(localizedFormat)
 
-export const MentorPayment = ({ mentor, staffId }) => {
+export const MentorPayment = ({ mentor, staffId, bills }) => {
   const [session] = useState(getSession());
   const [payments, setPayments] = useState([]);
   const currentYear = dayjs().get('year')
@@ -65,7 +67,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
         token: session.token
       });
     setPayments(data || []);
-  }, [paymentRange])
+  }, [paymentRange, bills])
 
   const columns = [
     {
@@ -73,7 +75,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
       headerName: "Month",
       width: 90,
       valueGetter: function (params) {
-        return dayjs(params.row.started_at).format("MMMM");
+        return dayjs(params.row.started_at).utc().format("MMMM")
       },
     },
     {

@@ -31,6 +31,7 @@ dayjs.extend(LocalizedFormat);
 const Mentors = () => {
   const { staffId } = useParams();
   const [mentor, setMentor] = useState(null);
+  const [bills, setBills] = useState([]);
   const [toggleBillTab, setToggleBillTab] = useState(false)
   const [dialogState, setDialogState] = useState({
     openDialog: false,
@@ -70,7 +71,7 @@ const Mentors = () => {
   const genereateBills = () => {
     setDialogState({ ...dialogState, openDialog: false });
     setToggleBillTab(!toggleBillTab)
-    bc.mentorship().generateBills(mentor).then(bills => console.log(`${bills.length} bills generated`));
+    bc.mentorship().generateBills(mentor).then(b => setBills(b));
   };
 
   const options = [
@@ -100,7 +101,7 @@ const Mentors = () => {
     },
     {
       disabled: toggleBillTab,
-      component: <MentorPayment staffId={staffId} mentor={mentor} />,
+      component: <MentorPayment staffId={staffId} mentor={mentor} bills={bills} />,
       label: 'Payments',
     },
   ]
@@ -115,11 +116,6 @@ const Mentors = () => {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">{dialogState.title}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Dialog state goes here
-            </DialogContentText>
-          </DialogContent>
           <DialogActions>
             <Button
               onClick={() => setDialogState({ ...dialogState, openDialog: false })}
@@ -128,7 +124,7 @@ const Mentors = () => {
               Close
             </Button>
             <Button color="primary" autoFocus onClick={() => dialogState.action()}>
-              Send
+              Generate
             </Button>
           </DialogActions>
         </Dialog>
