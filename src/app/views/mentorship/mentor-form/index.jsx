@@ -68,9 +68,9 @@ const Mentors = () => {
   };
 
   const genereateBills = () => {
-    console.log('Generate bills fn:')
     setDialogState({ ...dialogState, openDialog: false });
     setToggleBillTab(!toggleBillTab)
+    bc.mentorship().generateBills(mentor).then(bills => console.log(`${bills.length} bills generated`));
   };
 
   const options = [
