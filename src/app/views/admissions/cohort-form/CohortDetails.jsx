@@ -172,7 +172,7 @@ const CohortDetails = ({
                   required
                   debounced={false}
                   initialValue={version}
-                  getOptionLabel={(option) => `${option.version}`}
+                  getOptionLabel={(option) => option.status === 'PUBLISHED' ? `${option.version}` : "⚠️ "+option.version+" ("+option.status+")"}
                   value={version}
                 />
               </Grid>
