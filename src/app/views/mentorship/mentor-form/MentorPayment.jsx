@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, TextField, MenuItem } from '@material-ui/core';
+import { Button, Divider, TextField, MenuItem, IconButton, } from '@material-ui/core';
 import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
 import { getSession } from 'app/redux/actions/SessionActions';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
+import Delete from '@material-ui/icons/Delete';
+
 
 export const MentorPayment = ({ mentor, staffId }) => {
   const [session] = useState(getSession());
   const [payments, setPayments] = useState([]);
-  const currentYear = dayjs().get('year')
+  const [bulk, setBulk] = useState('');
+  const [selectionModel, setSelectionModel] = React.useState([]);
+  const currentYear = dayjs().get('year');
   const [paymentRange, setPaymentRange] = useState({
     label: 'This Year',
     after: `${currentYear}-01-01`,
@@ -24,6 +29,13 @@ export const MentorPayment = ({ mentor, staffId }) => {
       label: "Previous Year",
       year: `${currentYear - 1}-01-01`
     }
+  ];
+
+  const bulkActions = [
+    "Mark ad Paid",
+    "Mark ad due",
+    "Mark ad approved",
+    "Mark ad ignored",
   ];
 
   function handleYearChange(e) {
@@ -91,7 +103,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
     },
     {
       field: "invoice",
-      headerName: "View invoice",
+      headerName: "Actions",
       description: "Open invoice to view session details.",
       sortable: false,
       width: 160,
@@ -99,39 +111,77 @@ export const MentorPayment = ({ mentor, staffId }) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
         let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         return (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: 16 }}
-            onClick={() => window.open(billUrl)}
-          >
-            Open
-          </Button>
+          // <Button
+          //   variant="contained"
+          //   color="primary"
+          //   size="small"
+          //   style={{ marginLeft: 16 }}
+          //   onClick={() => window.open(billUrl)}
+          // >
+          //   Open
+          // </Button>
+          
+          <div>
+            <IconButton
+              aria-label="Open"
+              onClick={() => {
+                () => window.open(billUrl)
+              }}
+            >
+              <OpenInBrowser />
+            </IconButton>
+            <IconButton
+              aria-label="Delete"
+              onClick={() => {
+                () => window.open(billUrl)
+              }}
+            >
+              <Delete />
+            </IconButton>
+          </div>
         )
       }
     },
   ];
   return (
     <>
+      <div className="flex justify-between">
       <TextField
-        className='m-1'
-        label="Billing Period"
-        style={{ width: '25%', margin: '0.5em' }}
-        data-cy="billing_period"
-        size="small"
-        required
-        variant="outlined"
-        value={paymentRange.label}
-        onChange={(e) => { handleYearChange(e) }}
-        select
-      >
-        {billingPeriods.map((period) => (
-          <MenuItem value={period.label} key={period.label}>
-            {period.label}
-          </MenuItem>
-        ))}
-      </TextField>
+          className='m-1'
+          label="Bulk Action"
+          style={{ width: '25%', margin: '0.5em' }}
+          size="small"
+          variant="outlined"
+          value={bulk}
+          onChange={(e) => { setBulk(e.target.value) }}
+          select
+        >
+          {bulkActions.map((action) => (
+            <MenuItem value={action} key={action}>
+              {action}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          className='m-1'
+          label="Billing Period"
+          style={{ width: '25%', margin: '0.5em' }}
+          data-cy="billing_period"
+          size="small"
+          required
+          variant="outlined"
+          value={paymentRange.label}
+          onChange={(e) => { handleYearChange(e) }}
+          select
+        >
+          {billingPeriods.map((period) => (
+            <MenuItem value={period.label} key={period.label}>
+              {period.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </div>
+      
       <Divider />
       <DataTable
         before={paymentRange.before}
