@@ -31,11 +31,22 @@ export const MentorPayment = ({ mentor, staffId }) => {
     }
   ];
 
-  const bulkActions = [
-    "Mark ad Paid",
-    "Mark ad due",
-    "Mark ad approved",
-    "Mark ad ignored",
+  const bulkActions = [{
+    label: "Mark as Paid",
+    value: `PAID`
+  },
+  {
+    label: "Mark as Due",
+    value: `DUE`
+  },
+  {
+    label: "Mark as approved",
+    value: `APPROVED`
+  },
+  {
+    label: "Mark as ignored",
+    value: `IGNORED`
+  },
   ];
 
   function handleYearChange(e) {
@@ -77,7 +88,26 @@ export const MentorPayment = ({ mentor, staffId }) => {
         token: session.token
       });
     setPayments(data || []);
-  }, [paymentRange])
+  }, [paymentRange]);
+
+  useEffect(() => {
+    const onBulk = async () => {
+      console.log(' HOLA :)');
+      console.log(selectionModel);
+      console.log(selectionModel.join(','));
+      console.log(bulk);
+      let bills = selectionModel.map((s)=>{
+        return {id:s, status: bulk}
+      });
+      console.log(bills);
+      const { data } = await bc.mentorship()
+      .updateMentorshipBills(bills);
+      console.log(data);
+      setBulk('');
+      setSelectionModel([])
+    }
+    if(bulk !== '') onBulk();
+  }, [bulk]);
 
   const columns = [
     {
@@ -157,8 +187,8 @@ export const MentorPayment = ({ mentor, staffId }) => {
           select
         >
           {bulkActions.map((action) => (
-            <MenuItem value={action} key={action}>
-              {action}
+            <MenuItem value={action.value} key={action.value}>
+              {action.label}
             </MenuItem>
           ))}
         </TextField>
@@ -187,7 +217,12 @@ export const MentorPayment = ({ mentor, staffId }) => {
         before={paymentRange.before}
         after={paymentRange.after}
         columns={columns}
+        onSelectionModelChange={(newSelectionModel) => {
+          setSelectionModel(newSelectionModel);
+        }}
+        selectionModel={selectionModel}
         rows={payments || []} />
+        
     </>
   )
 }

@@ -18,10 +18,7 @@ export default function DataTable({ rows, columns, ...props }) {
                 pageSize={12}
                 rowsPerPageOptions={[12]}
                 checkboxSelection
-                onSelectionModelChange={(newSelectionModel) => {
-                    if(props.setSelected) props.setSelected(newSelectionModel)
-                    console.log(newSelectionModel);
-                }}
+                {...props}
             />
         </div>
     );

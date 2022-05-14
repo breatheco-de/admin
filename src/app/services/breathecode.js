@@ -412,6 +412,13 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            updateMentorshipBills: (payload) =>{
+                return axios.bcPut(
+                    "Update Bills",
+                    `${this.host}/mentorship/academy/bill`,
+                    payload
+                )
+            },
             getAllServices: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
