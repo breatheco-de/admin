@@ -419,6 +419,12 @@ class BreatheCodeClient {
                     payload
                 )
             },
+            deleteMentorshipBill: (id) =>{
+                return axios.bcDelete(
+                    "Bill",
+                    `${this.host}/mentorship/academy/bill/${id}`,
+                )
+            },
             getAllServices: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(

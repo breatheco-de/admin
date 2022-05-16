@@ -115,26 +115,6 @@ const Reviews = () => {
   //   },
   // });
 
-  let getSort = () => {
-    let sort = {};
-    let value = query.get('sort');
-    if(value){
-      if(value[0] === '-'){
-        value = value.substring(1);
-        sort = {
-          name: value,
-          direction: 'desc'
-        }
-      } else {
-        sort = {
-          name: value,
-          direction: 'asc'
-        }
-      }
-    }
-    return sort;
-  }
-
   const columns = [
     {
       name: 'author__first_name', // field name in the row object

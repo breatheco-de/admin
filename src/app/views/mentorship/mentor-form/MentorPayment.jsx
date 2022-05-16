@@ -5,6 +5,7 @@ import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
 import { getSession } from 'app/redux/actions/SessionActions';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
+import SingleDelete from '../../../components/ToolBar/SingleDelete';
 import Delete from '@material-ui/icons/Delete';
 
 
@@ -13,6 +14,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
   const [payments, setPayments] = useState([]);
   const [bulk, setBulk] = useState('');
   const [selectionModel, setSelectionModel] = React.useState([]);
+  const [toDelete, setToDelete] = useState(null);
   const currentYear = dayjs().get('year');
   const [paymentRange, setPaymentRange] = useState({
     label: 'This Year',
@@ -92,22 +94,41 @@ export const MentorPayment = ({ mentor, staffId }) => {
 
   useEffect(() => {
     const onBulk = async () => {
-      console.log(' HOLA :)');
-      console.log(selectionModel);
-      console.log(selectionModel.join(','));
-      console.log(bulk);
+
       let bills = selectionModel.map((s)=>{
         return {id:s, status: bulk}
       });
-      console.log(bills);
+      
       const { data } = await bc.mentorship()
       .updateMentorshipBills(bills);
-      console.log(data);
+
+      let itemsCopy = [...payments];
+
+      data.map((bill)=>{
+        const pos = payments.map((e) => { return e.id; }).indexOf(bill.id);
+        itemsCopy[pos].status = bill.status;
+      });
+
+      setPayments([...itemsCopy])
+      
       setBulk('');
       setSelectionModel([])
     }
     if(bulk !== '') onBulk();
   }, [bulk]);
+
+  const deleteBill = async (bill) => {
+
+    const pos = payments.map((e) => { return e.id; }).indexOf(bill.id);
+
+    let itemsCopy = [...payments];
+
+    itemsCopy.splice(pos,1);
+
+    const res = await bc.mentorship().deleteMentorshipBill(bill.id);
+
+    return res.status !== 400 ? setPayments([...itemsCopy]) : console.log(res);
+  }
 
   const columns = [
     {
@@ -140,22 +161,12 @@ export const MentorPayment = ({ mentor, staffId }) => {
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
         let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
-        return (
-          // <Button
-          //   variant="contained"
-          //   color="primary"
-          //   size="small"
-          //   style={{ marginLeft: 16 }}
-          //   onClick={() => window.open(billUrl)}
-          // >
-          //   Open
-          // </Button>
-          
+        return (     
           <div>
             <IconButton
               aria-label="Open"
               onClick={() => {
-                () => window.open(billUrl)
+                window.open(billUrl)
               }}
             >
               <OpenInBrowser />
@@ -163,7 +174,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
             <IconButton
               aria-label="Delete"
               onClick={() => {
-                () => window.open(billUrl)
+                setToDelete(params.row); 
               }}
             >
               <Delete />
@@ -183,6 +194,7 @@ export const MentorPayment = ({ mentor, staffId }) => {
           size="small"
           variant="outlined"
           value={bulk}
+          disabled={!selectionModel.length > 0}
           onChange={(e) => { setBulk(e.target.value) }}
           select
         >
@@ -221,7 +233,18 @@ export const MentorPayment = ({ mentor, staffId }) => {
           setSelectionModel(newSelectionModel);
         }}
         selectionModel={selectionModel}
+        disableSelectionOnClick={true}
         rows={payments || []} />
+
+      {toDelete && (
+        <SingleDelete
+          deleting={() => {
+            deleteBill(toDelete);
+          }}
+          onClose={setToDelete}
+          message="Are you sure you want to delete this Bill?"
+        />
+      )}
         
     </>
   )
