@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, TextField, MenuItem } from '@material-ui/core';
+import { Button, Divider, TextField, MenuItem, IconButton, } from '@material-ui/core';
 import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
 import { getSession } from 'app/redux/actions/SessionActions';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
+import SingleDelete from '../../../components/ToolBar/SingleDelete';
+import Delete from '@material-ui/icons/Delete';
+
 
 export const MentorPayment = ({ mentor, staffId }) => {
   const [session] = useState(getSession());
   const [payments, setPayments] = useState([]);
-  const currentYear = dayjs().get('year')
+  const [bulk, setBulk] = useState('');
+  const [selectionModel, setSelectionModel] = React.useState([]);
+  const [toDelete, setToDelete] = useState(null);
+  const currentYear = dayjs().get('year');
   const [paymentRange, setPaymentRange] = useState({
     label: 'This Year',
     after: `${currentYear}-01-01`,
@@ -24,6 +31,24 @@ export const MentorPayment = ({ mentor, staffId }) => {
       label: "Previous Year",
       year: `${currentYear - 1}-01-01`
     }
+  ];
+
+  const bulkActions = [{
+    label: "Mark as Paid",
+    value: `PAID`
+  },
+  {
+    label: "Mark as Due",
+    value: `DUE`
+  },
+  {
+    label: "Mark as approved",
+    value: `APPROVED`
+  },
+  {
+    label: "Mark as ignored",
+    value: `IGNORED`
+  },
   ];
 
   function handleYearChange(e) {
@@ -65,7 +90,45 @@ export const MentorPayment = ({ mentor, staffId }) => {
         token: session.token
       });
     setPayments(data || []);
-  }, [paymentRange])
+  }, [paymentRange]);
+
+  useEffect(() => {
+    const onBulk = async () => {
+
+      let bills = selectionModel.map((s)=>{
+        return {id:s, status: bulk}
+      });
+      
+      const { data } = await bc.mentorship()
+      .updateMentorshipBills(bills);
+
+      let itemsCopy = [...payments];
+
+      data.map((bill)=>{
+        const pos = payments.map((e) => { return e.id; }).indexOf(bill.id);
+        itemsCopy[pos].status = bill.status;
+      });
+
+      setPayments([...itemsCopy])
+      
+      setBulk('');
+      setSelectionModel([])
+    }
+    if(bulk !== '') onBulk();
+  }, [bulk]);
+
+  const deleteBill = async (bill) => {
+
+    const pos = payments.map((e) => { return e.id; }).indexOf(bill.id);
+
+    let itemsCopy = [...payments];
+
+    itemsCopy.splice(pos,1);
+
+    const res = await bc.mentorship().deleteMentorshipBill(bill.id);
+
+    return res.status !== 400 ? setPayments([...itemsCopy]) : console.log(res);
+  }
 
   const columns = [
     {
@@ -91,53 +154,98 @@ export const MentorPayment = ({ mentor, staffId }) => {
     },
     {
       field: "invoice",
-      headerName: "View invoice",
+      headerName: "Actions",
       description: "Open invoice to view session details.",
       sortable: false,
       width: 160,
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
         let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
-        return (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{ marginLeft: 16 }}
-            onClick={() => window.open(billUrl)}
-          >
-            Open
-          </Button>
+        return (     
+          <div>
+            <IconButton
+              aria-label="Open"
+              onClick={() => {
+                window.open(billUrl)
+              }}
+            >
+              <OpenInBrowser />
+            </IconButton>
+            <IconButton
+              aria-label="Delete"
+              onClick={() => {
+                setToDelete(params.row); 
+              }}
+            >
+              <Delete />
+            </IconButton>
+          </div>
         )
       }
     },
   ];
   return (
     <>
+      <div className="flex justify-between">
       <TextField
-        className='m-1'
-        label="Billing Period"
-        style={{ width: '25%', margin: '0.5em' }}
-        data-cy="billing_period"
-        size="small"
-        required
-        variant="outlined"
-        value={paymentRange.label}
-        onChange={(e) => { handleYearChange(e) }}
-        select
-      >
-        {billingPeriods.map((period) => (
-          <MenuItem value={period.label} key={period.label}>
-            {period.label}
-          </MenuItem>
-        ))}
-      </TextField>
+          className='m-1'
+          label="Bulk Action"
+          style={{ width: '25%', margin: '0.5em' }}
+          size="small"
+          variant="outlined"
+          value={bulk}
+          disabled={!selectionModel.length > 0}
+          onChange={(e) => { setBulk(e.target.value) }}
+          select
+        >
+          {bulkActions.map((action) => (
+            <MenuItem value={action.value} key={action.value}>
+              {action.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          className='m-1'
+          label="Billing Period"
+          style={{ width: '25%', margin: '0.5em' }}
+          data-cy="billing_period"
+          size="small"
+          required
+          variant="outlined"
+          value={paymentRange.label}
+          onChange={(e) => { handleYearChange(e) }}
+          select
+        >
+          {billingPeriods.map((period) => (
+            <MenuItem value={period.label} key={period.label}>
+              {period.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </div>
+      
       <Divider />
       <DataTable
         before={paymentRange.before}
         after={paymentRange.after}
         columns={columns}
+        onSelectionModelChange={(newSelectionModel) => {
+          setSelectionModel(newSelectionModel);
+        }}
+        selectionModel={selectionModel}
+        disableSelectionOnClick={true}
         rows={payments || []} />
+
+      {toDelete && (
+        <SingleDelete
+          deleting={() => {
+            deleteBill(toDelete);
+          }}
+          onClose={setToDelete}
+          message="Are you sure you want to delete this Bill?"
+        />
+      )}
+        
     </>
   )
 }

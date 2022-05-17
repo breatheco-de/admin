@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 
 
-export default function DataTable({ rows, columns }) {
+export default function DataTable({ rows, columns, ...props }) {
     // const hash = useHash();
     // const [hash, setHash] = useState({
     // limit: hash.get('limit') || 10,
@@ -18,6 +18,7 @@ export default function DataTable({ rows, columns }) {
                 pageSize={12}
                 rowsPerPageOptions={[12]}
                 checkboxSelection
+                {...props}
             />
         </div>
     );

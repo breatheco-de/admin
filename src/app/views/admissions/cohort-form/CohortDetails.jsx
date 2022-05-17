@@ -66,7 +66,7 @@ const CohortDetails = ({
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
-  const [remote, setRemote] = useState(remote_available || true);
+  const [remote, setRemote] = useState(remote_available);
 
   useEffect(() => {
     // setIsLoading(true);

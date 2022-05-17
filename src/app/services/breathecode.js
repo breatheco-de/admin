@@ -412,6 +412,19 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            updateMentorshipBills: (payload) =>{
+                return axios.bcPut(
+                    "Update Bills",
+                    `${this.host}/mentorship/academy/bill`,
+                    payload
+                )
+            },
+            deleteMentorshipBill: (id) =>{
+                return axios.bcDelete(
+                    "Bill",
+                    `${this.host}/mentorship/academy/bill/${id}`,
+                )
+            },
             getAllServices: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
