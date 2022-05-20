@@ -20,7 +20,6 @@ const NewStudent = () => {
       email: '',
       address: '',
       phone: '',
-      cohort: '',
       ...baseData,
     },
   });
