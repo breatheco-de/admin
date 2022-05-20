@@ -286,6 +286,21 @@ class BreatheCodeClient {
                     `${this.host}/auth/academy/student${query ? `?${qs}` : ""}`
                 );
             },
+            getGitpodUsers: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Gitpod Users",
+                    `${this.host}/auth/academy/gitpod/user${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            updateGitpodUser: (id, user) =>
+                axios.bcPut(
+                    "Invite",
+                    `${this.host}/auth/academy/gitpod/user/${id}`,
+                    user
+                ),
             resendInvite: (user) =>
                 axios.bcPut(
                     "Invite",

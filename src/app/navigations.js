@@ -151,6 +151,11 @@ export const navigations = [
                 iconText: "STA",
             },
             {
+                name: "Gitpod",
+                path: "/admin/gitpod",
+                iconText: "STA",
+            },
+            {
                 name: "Syllabus",
                 path: "/admin/syllabus",
                 iconText: "STA",
