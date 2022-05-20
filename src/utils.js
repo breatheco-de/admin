@@ -183,7 +183,19 @@ export function resolveResponse(res) {
     delete: 'deleted',
   };
   if (res.config.method !== 'get' && res.status >= 200) {
-    return toast.success(`${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`, toastOption);
+    let msg = `${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`;
+    if(res.status === 207 && axios.scopes[res.config.url] === 'Event'){
+
+      let joinFailure = res.data.failure.map((fail)=>{
+        return fail.resources
+      })
+
+      if(res.data.success.length !== 0) msg = `The events ${res.data.success.join(',')} were draft but the events ${joinFailure.flat().join(',')} were not`;
+      else msg = `The events ${joinFailure.flat().join(',')} were not Draft`;
+      return toast.warning(msg, toastOption);
+    }
+
+    return toast.success(msg, toastOption);
   }
 }
 
