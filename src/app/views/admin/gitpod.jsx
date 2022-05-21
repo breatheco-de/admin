@@ -44,13 +44,13 @@ const GitpodUsers = () => {
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
-          const { github_username, user, academy } = userList.results[dataIndex];
+          const { github_username, user, academy, cohort } = userList.results[dataIndex];
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">{github_username}</h5>
-                <small className="text-muted">{academy ? academy.name : "No academy"}</small>
+                <small className="text-muted">{cohort ? cohort.name : academy ? academy.name : "No academy or cohort"}</small>
               </div>
             </div>
           );
@@ -121,15 +121,14 @@ const GitpodUsers = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = userList.results[dataIndex]
-          return (<div className="flex items-center">
-              <div className="flex-grow" />
+          return (item.academy ? <div className="flex items-center">
               <Tooltip title="Expire immediately">
                 <IconButton onClick={() => bc.auth().updateGitpodUser(item.id, { expires_at: dayjs().subtract(1,'day') })}>
                   <Icon>alarm_off</Icon>
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Extend gitpod license for 4 months">
-                <IconButton onClick={() => bc.auth().updateGitpodUser(item.id, { expires_at: dayjs().add(4,'month') })}>
+              <Tooltip title="Extend gitpod license for 2 weeks">
+                <IconButton onClick={() => bc.auth().updateGitpodUser(item.id, { expires_at: dayjs().add(14,'day') })}>
                   <Icon>alarm_add</Icon>
                 </IconButton>
               </Tooltip>
@@ -139,6 +138,8 @@ const GitpodUsers = () => {
                 </IconButton>
               </Tooltip>
             </div>
+            :
+            <div className="flex items-center">No matching student found</div>
           );
         },
       },

@@ -15,9 +15,17 @@ import {
   Button,
   MenuItem,
   DialogActions,
+  Tooltip,
   IconButton,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
+dayjs.tz.guess();
 
 import { format } from 'date-fns';
 import clsx from 'clsx';
@@ -62,7 +70,7 @@ const CohortStudents = ({ slug, cohortId }) => {
   
   const query = useQuery();
 
-  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 10);
+  const [queryLimit, setQueryLimit] = useState(query.get('limit') || 17);
   const [hasMore, setHasMore] = useState(true);
 
   const handlePaginationNextPage = () => {
@@ -211,7 +219,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                         src={s.user.profile !== undefined ? s.user.profile.avatar_url : ''}
                       />
                       <div className="flex-grow">
-                        <Link to={`/admissions/students/${s.user.id}`}>
+                        <Link to={`/${s.role === "STUDENT" ? "admissions/students" : "admin/staff"}/${s.user.id}`}>
                           <h6 className="mt-0 mb-0 text-15 text-primary">
                             {s.user.first_name}
                             {' '}
@@ -219,7 +227,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                           </h6>
                         </Link>
                         <p className="mt-0 mb-6px text-13">
-                          <span className="font-medium">{s.created_at}</span>
+                          <span className="font-medium">on {dayjs(s.created_at).format('YYYY-MM-DD')}</span>
                         </p>
                         <p className="mt-0 mb-6px text-13">
                           <small
@@ -233,7 +241,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                           >
                             {s.role}
                           </small>
-                          <small
+                          {s.role === "STUDENT" && <><small
                             aria-hidden="true"
                             onClick={() => {
                               setRoleDialog(true);
@@ -254,7 +262,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                             style={{ cursor: 'pointer', margin:'0 3px' }}
                           >
                             {s.educational_status}
-                          </small>
+                          </small></>}
                         </p>
                       </div>
                     </div>
@@ -311,6 +319,36 @@ const CohortStudents = ({ slug, cohortId }) => {
                       >
                         <Icon fontSize="small">delete</Icon>
                       </IconButton>
+                      {s.role === "STUDENT" && <>
+                        <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
+                          <Tooltip title="Student<>Cohort Report">
+                            <IconButton>
+                              <Icon fontSize="small">assignment_ind</Icon>
+                            </IconButton>
+                          </Tooltip>
+                        </Link>
+                        {s.watching ? 
+                          <Tooltip title="This student is being watched, click to remove it">
+                            <IconButton
+                              onClick={() => {
+                                changeStudentStatus(false, 'watching', s.user.id);
+                              }}
+                            >
+                              <Icon fontSize="small" color="secondary">visibility</Icon>
+                            </IconButton>
+                          </Tooltip>
+                          :
+                          <Tooltip title="Add this student to the watchlist">
+                            <IconButton
+                              onClick={() => {
+                                changeStudentStatus(true, 'watching', s.user.id);
+                              }}
+                            >
+                              <Icon fontSize="small">visibility_off</Icon>
+                            </IconButton>
+                          </Tooltip>
+                      }
+                      </>}
                     </div>
                   </Grid>
                 </Grid>

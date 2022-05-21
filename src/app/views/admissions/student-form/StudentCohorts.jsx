@@ -235,7 +235,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                     <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
                       <Tooltip title="Student Report">
                         <IconButton>
-                          <Icon fontSize="small">info</Icon>
+                          <Icon fontSize="small">assignment_ind</Icon>
                         </IconButton>
                       </Tooltip>
                     </Link>
