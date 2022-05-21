@@ -39,6 +39,7 @@ const NewCohort = () => {
   const [schedule, setSchedule] = useState(null);
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
+  const [remote, setRemote] = useState(true);
   const [timeZone, setTimeZone] = useState('');
   const [language, setLanguage] = useState('EN');
   const [newCohort, setNewCohort] = useState({
@@ -48,6 +49,7 @@ const NewCohort = () => {
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
+    remote_available: true,
     time_zone: '',
   });
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
@@ -342,7 +344,27 @@ const NewCohort = () => {
                     label="This cohort never ends."
                   />
                 </Grid>
-
+                <Grid item md={12} sm={12} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={remote}
+                        onChange={()=>{
+                          setNewCohort({
+                            ...newCohort,
+                            remote_available:!remote
+                          });
+                          setRemote(!remote);
+                        }}
+                        name="remote"
+                        data-cy="remote"
+                        color="primary"
+                        className="text-left"
+                      />
+                    }
+                    label="Enable Remote"
+                  />
+                </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Live meeting URL
                 </Grid>
