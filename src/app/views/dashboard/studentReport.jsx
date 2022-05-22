@@ -118,7 +118,7 @@ const studentReport = () => {
           const newData = data?.results || [];
           setHasMoreActivity(data?.next);
           setStudentActivity(
-            studentActivity.length !== 0 ? [...studentActivity, ...newData] : data?.results || [],
+            query.offset > 0 ? [...studentActivity, ...newData] : data?.results || [],
           );
         })
         .catch((err) => console.error(err));
