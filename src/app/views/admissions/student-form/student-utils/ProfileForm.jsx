@@ -18,14 +18,18 @@ export const ProfileForm = ({ initialValues }) => {
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
-    let requestValues = cohort.map(c => {
-      return { ...values, cohort: c.id} 
+    // let requestValues = cohort.map(c => {
+    //   return { ...values, cohort: c.id} 
+    // });
+
+    let cohortId = cohort.map(c => {
+      return c.id 
     });
 
-    // let requestValues = { ...values, 
-    //   cohort: cohort.length > 0 ? cohortId : undefined 
-    // };
-    // if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
+    let requestValues = { ...values, 
+      cohort: cohort.length > 0 ? cohortId : undefined 
+    };
+    if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
     if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) === null) {
       console.error("The email entered has formatting errors (insert a valid email address)")
