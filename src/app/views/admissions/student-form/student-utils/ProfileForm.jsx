@@ -18,9 +18,6 @@ export const ProfileForm = ({ initialValues }) => {
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
-    // let requestValues = cohort.map(c => {
-    //   return { ...values, cohort: c.id} 
-    // });
 
     let cohortId = cohort.map(c => {
       return c.id 
@@ -49,7 +46,6 @@ export const ProfileForm = ({ initialValues }) => {
       .then((data) => {
         if (data !== undefined) {
            history.push('/admissions/students');
-           console.log(data);
         }
       })
       .catch((error) => console.error(error));
@@ -66,9 +62,7 @@ export const ProfileForm = ({ initialValues }) => {
       enableReinitialize
       validate={(values)=>{
         let errors = {}
-        console.log(cohort)
-        console.log(cohort.length);
-        console.log(values);
+
         if (cohort.length === 0) {
           errors.cohort = 'You must select at least one cohort'
         }
