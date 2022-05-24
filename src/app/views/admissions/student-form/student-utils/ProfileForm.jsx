@@ -48,7 +48,7 @@ export const ProfileForm = ({ initialValues }) => {
       .addAcademyStudent(requestValues)
       .then((data) => {
         if (data !== undefined) {
-          //  history.push('/admissions/students');
+           history.push('/admissions/students');
            console.log(data);
         }
       })
