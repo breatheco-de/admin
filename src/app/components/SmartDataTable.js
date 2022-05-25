@@ -295,6 +295,7 @@ export const SmartMUIDataTable = (props) => {
                                 items={props.items}
                                 onBulkDelete={loadData}
                                 deleting={props.deleting}
+                                bulkActions={props.bulkActions}
                             >
                                 {children}
                             </StyledDefaultToobar>

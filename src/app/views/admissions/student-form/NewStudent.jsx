@@ -20,7 +20,6 @@ const NewStudent = () => {
       email: '',
       address: '',
       phone: '',
-      cohort: '',
       ...baseData,
     },
   });
@@ -68,7 +67,8 @@ const NewStudent = () => {
                               setShowForm({
                                 show: true,
                                 data: {
-                                  first_name: params.inputValue,
+                                  first_name: !params.inputValue.includes('@') ? params.inputValue : '',
+                                  email: params.inputValue.includes('@') ? params.inputValue : '',
                                   invite: true,
                                 },
                               });
