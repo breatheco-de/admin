@@ -56,7 +56,7 @@ const BulkDelete = (props) => {
   return (
  
     <>
-       
+      {props.bulkActions && <props.bulkActions />}
       <Tooltip title="Delete ALL">
         <IconButton className={classes.iconButton}>
           <DeleteIcon
