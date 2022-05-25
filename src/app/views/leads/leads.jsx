@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Tooltip, Chip, IconButton } from '@material-ui/core';
-// import OutboxIcon from '@mui/icons-material/Outbox';
 import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
-// import IosShareIcon from '@mui/icons-material/IosShare';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
@@ -194,14 +192,14 @@ const Leads = () => {
   ];
 
   const SendCRM = (items) => {
-    console.log(items, 'items');
+    console.log('sendcrm');
     return (
       <div>
         <Tooltip title="Send to CRM">
           <IconButton>
             <ArrowUpwardRounded
               onClick={() => {
-                console.log('er boton');
+                console.log(items, 'items');
               }}
             />
           </IconButton>
