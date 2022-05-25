@@ -207,7 +207,7 @@ const NewCohort = () => {
                         data-cy="version"
                         label="Version"
                         required
-                        getOptionLabel={(option) => `${option.version}`}
+                        getOptionLabel={(option) => option.status === 'PUBLISHED' ? `${option.version}` : "⚠️ "+option.version+" ("+option.status+")"}
                         value={version}
                       />
                     ) : (

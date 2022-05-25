@@ -53,6 +53,11 @@ export const navigations = [
                 path: "/admissions/students",
                 iconText: "STU",
             },
+            {
+                name: "Watch List",
+                path: "/admissions/watchlist",
+                iconText: "WATCH",
+            },
         ],
     },
     {
@@ -148,6 +153,11 @@ export const navigations = [
             {
                 name: "Invites",
                 path: "/admin/invites",
+                iconText: "STA",
+            },
+            {
+                name: "Gitpod",
+                path: "/admin/gitpod",
                 iconText: "STA",
             },
             {

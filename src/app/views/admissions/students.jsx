@@ -27,10 +27,6 @@ const name = (user) => {
 const Students = () => {
   const [items, setItems] = useState([]);
 
-  const [queryFilters, setQueryFilters] = useState({});
-
-  console.log(items);
-
   const resendInvite = (user) => {
     bc.auth()
       .resendInvite(user)

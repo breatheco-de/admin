@@ -235,10 +235,31 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                     <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
                       <Tooltip title="Student Report">
                         <IconButton>
-                          <Icon fontSize="small">info</Icon>
+                          <Icon fontSize="small">assignment_ind</Icon>
                         </IconButton>
                       </Tooltip>
                     </Link>
+                    {s.watching ? 
+                          <Tooltip title="This student is being watched, click to remove it">
+                            <IconButton
+                              onClick={() => {
+                                changeStudentStatus(false, 'watching', s.user.id, i);
+                              }}
+                            >
+                              <Icon fontSize="small" color="secondary">visibility</Icon>
+                            </IconButton>
+                          </Tooltip>
+                          :
+                          <Tooltip title="Add this student to the watchlist">
+                            <IconButton
+                              onClick={() => {
+                                changeStudentStatus(true, 'watching', s.user.id, i);
+                              }}
+                            >
+                              <Icon fontSize="small">visibility_off</Icon>
+                            </IconButton>
+                          </Tooltip>
+                      }
                   </div>
                 </Grid>
               </Grid>
