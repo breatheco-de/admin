@@ -116,42 +116,6 @@ const Leads = () => {
         ),
       },
     },
-    // {
-    //   name: 'utm_medium',
-    //   label: 'Utm Medium',
-    //   options: {
-    //     filterList:
-    //       query.get('utm_medium') !== null ? [query.get('utm_medium')] : [],
-    //     customBodyRenderLite: (dataIndex) => (
-    //       <span className="ellipsis">
-    //         {items[dataIndex].utm_medium
-    //           ? items[dataIndex].utm_medium
-    //           : '---'}
-    //       </span>
-    //     ),
-    //   },
-    // },
-    // {
-    //   name: 'utm_source',
-    //   label: 'Utm Source',
-    //   options: {
-    //     filter: true,
-    //     filterType: 'multiselect',
-    //     filterList:
-    //       query.get('utm_source') !== null ? [query.get('utm_source')] : [],
-    //     customBodyRenderLite: (dataIndex) => (
-    //       <span
-    //         className={`ellipsis ${
-    //           stageColors[items[dataIndex].utm_source]
-    //         } border-radius-4 px-2 pt-2px text-center`}
-    //       >
-    //         {items[dataIndex].utm_source
-    //           ? items[dataIndex].utm_source
-    //           : '---'}
-    //       </span>
-    //     ),
-    //   },
-    // },
     {
       name: 'tags',
       label: 'Tags',
@@ -191,15 +155,35 @@ const Leads = () => {
     },
   ];
 
-  const SendCRM = (items) => {
-    console.log('sendcrm');
+  const SendCRM = ({ids, setSelectedRows}) => {
+
+    //find the elements in the array
+    const positions = ids.map((id)=>{
+      return items.map((e) => { return e.id; }).indexOf(id);
+    });
+
+    let notPending = false;
+    
+    //check if all of them are pending
+    for(let i = 0; i < positions.length; i++){
+      if(items[positions[i]].storage_status !== 'PENDING') {
+        notPending = true;
+        break;
+      }
+    }
+
     return (
       <div>
-        <Tooltip title="Send to CRM">
-          <IconButton>
+        <Tooltip title={!notPending ? "Send to CRM" : "Select Pending leads only"}>
+          <IconButton
+            disabled={notPending}
+          >
             <ArrowUpwardRounded
-              onClick={() => {
-                console.log(items, 'items');
+              onClick={async () => {
+                const { data } = await bc.marketing()
+                  .bulkSendToCRM(ids);
+                setSelectedRows([]);
+                return data;
               }}
             />
           </IconButton>

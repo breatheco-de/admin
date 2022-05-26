@@ -392,6 +392,12 @@ class BreatheCodeClient {
                     `${this.host}/marketing/lead`,
                     newLead
                 ),
+            bulkSendToCRM: (query) =>{
+                const qs = query.join(",");
+                return axios.bcPut(
+                    "Send to CRM",
+                    `${this.host}/marketing/academy/lead/process?id=${qs}`
+                )},
         };
     }
 
