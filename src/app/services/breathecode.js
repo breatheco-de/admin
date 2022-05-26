@@ -279,6 +279,13 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            deleteAcademyInvites: (query) => {
+                const qs = query.join(",");
+                return axios.bcDelete(
+                    "Academy member",
+                    `${this.host}/auth/academy/user/invite?id=${qs}`
+                );
+            },
             getAcademyStudents: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(

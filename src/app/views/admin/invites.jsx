@@ -9,6 +9,7 @@ import {
 import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../matx';
 import bc from '../../services/breathecode';
+import { useQuery } from '../../hooks/useQuery';
 import InviteDetails from '../../components/InviteDetails';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -16,6 +17,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const Students = () => {
+  const query = useQuery();
   const [userList, setUserList] = useState([]);
 
   const resendInvite = (user) => {
@@ -30,7 +32,7 @@ const Students = () => {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const invite = userList[dataIndex].user !== null
             ? userList[dataIndex]
@@ -59,7 +61,7 @@ const Students = () => {
       name: 'created_at',
       label: 'Created At',
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -79,6 +81,7 @@ const Students = () => {
       label: 'Role',
       options: {
         filter: true,
+        filterList: query.get('role') !== null ? [query.get('role')] : [],
         customBodyRenderLite: (dataIndex) => {
           const item = userList[dataIndex];
           return (
@@ -141,10 +144,19 @@ const Students = () => {
           view="invites?"
           singlePage=""
           historyReplace="/admin/invites"
+          downloadCsv={false}
+          tableOptions={{
+            print: false,
+            viewColumns: false
+          }}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyInvites({ ...querys, status: 'PENDING' });
             setUserList(data.results || data);
             return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc.auth().deleteAcademyInvites(querys);
+            return status;
           }}
         />
       </div>
