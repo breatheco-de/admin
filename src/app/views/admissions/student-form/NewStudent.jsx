@@ -62,7 +62,8 @@ const NewStudent = () => {
                     if (params.inputValue !== '') {
                       filtered.push({
                         newUser: (
-                          <Button
+                          <div
+                            style={{ width: "100%"}}
                             onClick={(e) => {
                               e.stopPropagation();
                               setShowForm({
@@ -76,8 +77,8 @@ const NewStudent = () => {
                           >
                             {`Invite '
                           ${params.inputValue}
-                          ' to Breathecode`}
-                          </Button>
+                          ' to 4Geeks`}
+                          </div>
                         ),
                         first_name: params.inputValue,
                       });

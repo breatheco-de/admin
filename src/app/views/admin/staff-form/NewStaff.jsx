@@ -102,7 +102,7 @@ const NewStaff = () => {
                       if (params.inputValue !== '') {
                         filtered.push({
                           newUser: (
-                            <Button
+                            <div
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setShowForm(true);
@@ -112,8 +112,8 @@ const NewStaff = () => {
                             >
                               Invite
                               {params.inputValue}
-                              to Breathecode
-                            </Button>
+                              to 4Geeks
+                            </div>
                           ),
                         });
                       }
