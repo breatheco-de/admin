@@ -240,7 +240,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                       </Tooltip>
                     </Link>
                     {s.watching ? 
-                          <Tooltip title="This student is being watched, click to remove it">
+                          <Tooltip title="This student is being watched, click to stop watching">
                             <IconButton
                               onClick={() => {
                                 changeStudentStatus(false, 'watching', s.user.id, i);
