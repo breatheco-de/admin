@@ -20,7 +20,7 @@ export const ProfileForm = ({ initialValues }) => {
     let requestValues = { ...values, cohort: cohort ? cohort.id : undefined };
     if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
-    if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) === null) {
+    if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/) === null) {
       console.error("The email entered has formatting errors (insert a valid email address)")
       toast.error("The email entered has formatting errors (insert a valid email address)")
     }
