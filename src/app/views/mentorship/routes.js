@@ -36,6 +36,11 @@ const routes = [
         exact: true,
         component: React.lazy(() => import("./service-details/NewService")),
     },
+    {
+        path: "/mentors/:mentorID/invoice/:invoiceID",
+        exact: true,
+        component: React.lazy(() => import("./invoice-detail")),
+    },
 ];
 
 export default routes;

@@ -203,7 +203,7 @@ export const SmartMUIDataTable = (props) => {
                                 break;
                         }
                     },
-                    customToolbar: () => (
+                    customToolbar: () => props.downloadCsv && (
                         <DownloadCsv
                             getAllPagesCSV={() =>
                                 props.downloadCSV(querys.like)
@@ -359,6 +359,7 @@ SmartMUIDataTable.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
     selectableRows: PropTypes.bool,
+    downloadCsv: PropTypes.bool,
     columns: PropTypes.any,
     search: PropTypes.any,
     options: PropTypes.object,
@@ -370,4 +371,5 @@ SmartMUIDataTable.propTypes = {
 SmartMUIDataTable.defaultProps = {
     selectableRows: true,
     defaultLimit: 10,
+    downloadCsv: true
 };

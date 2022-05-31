@@ -57,7 +57,7 @@ const BulkDelete = (props) => {
  
     <>
       <div className="flex flex-wrap " >
-        {props.bulkActions && <props.bulkActions items={idsArr} />}
+        {props.bulkActions && <props.bulkActions ids={idsArr} setSelectedRows={setSelectedRows} />}
         <Tooltip title="Delete ALL">
           <IconButton className={classes.iconButton}>
             <DeleteIcon
