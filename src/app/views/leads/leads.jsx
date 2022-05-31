@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Tooltip } from '@material-ui/core';
+import { Button, Tooltip, Chip, IconButton } from '@material-ui/core';
+import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
@@ -19,21 +20,20 @@ const stageColors = {
   bing: 'text-white bg-green',
 };
 
+const statusColors = {
+  REQUESTED: 'text-white bg-warning',
+  PENDING: 'text-white bg-error',
+  DONE: 'text-white bg-green',
+  IGNORE: 'light-gray',
+};
+
+const defaultBg = 'bg-gray';
+
 const Leads = () => {
   const [items, setItems] = useState([]);
   const query = useQuery();
 
   const columns = [
-    {
-      name: 'id',
-      label: 'ID',
-      options: {
-        filterList: query.get('id') !== null ? [query.get('id')] : [],
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">{items[dataIndex].id}</span>
-        ),
-      },
-    },
     {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
@@ -64,17 +64,17 @@ const Leads = () => {
       },
     },
     {
-      name: 'lead_type',
-      label: 'Lead Type',
+      name: 'storage_status',
+      label: 'Lead Status',
       options: {
         filterList:
-          query.get('lead_type') !== null ? [query.get('lead_type')] : [],
+          query.get('storage_status') !== null ? [query.get('storage_status')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">
-            {items[dataIndex].lead_type
-              ? items[dataIndex].lead_type
-              : '---'}
-          </span>
+          <div className="flex items-center">
+            <div className="ml-3">
+              <Chip className={statusColors[items[dataIndex]?.storage_status] || defaultBg} size="small" label={items[dataIndex]?.storage_status} />
+            </div>
+          </div>
         ),
       },
     },
@@ -84,54 +84,35 @@ const Leads = () => {
       options: {
         filterList: query.get('utm_url') !== null ? [query.get('utm_url')] : [],
         customBodyRenderLite: (dataIndex) => (
-          <Tooltip
-            title={items[dataIndex].utm_url
-              ? items[dataIndex].utm_url
-              : '---'}
-          >
-            <span className="ellipsis">
-              {items[dataIndex].utm_url
-                ? items[dataIndex].utm_url
-                : '---'}
-            </span>
-          </Tooltip>
+          <div>
+            {/* <div className="flex items-center flex-column"> */}
+              <Tooltip
+                title={items[dataIndex].utm_url
+                  ? items[dataIndex].utm_url
+                  : '---'}
+              >
+                <span className="ellipsis">
+                  {items[dataIndex].utm_url
+                    ? items[dataIndex].utm_url
+                    : '---'}
+                </span>
+              </Tooltip>
+              
+            {/* </div> */}
+            <div  className="flex justify-around items-center">
+              <small className={`text-muted`}>
+                {items[dataIndex].utm_medium
+                  ? items[dataIndex].utm_medium
+                  : '---'}
+              </small>
+              <small className={`text-muted`}>
+                {items[dataIndex].utm_source
+                  ? items[dataIndex].utm_source
+                  : '---'}
+              </small>
+            </div>
+          </div>
           
-        ),
-      },
-    },
-    {
-      name: 'utm_medium',
-      label: 'Utm Medium',
-      options: {
-        filterList:
-          query.get('utm_medium') !== null ? [query.get('utm_medium')] : [],
-        customBodyRenderLite: (dataIndex) => (
-          <span className="ellipsis">
-            {items[dataIndex].utm_medium
-              ? items[dataIndex].utm_medium
-              : '---'}
-          </span>
-        ),
-      },
-    },
-    {
-      name: 'utm_source',
-      label: 'Utm Source',
-      options: {
-        filter: true,
-        filterType: 'multiselect',
-        filterList:
-          query.get('utm_source') !== null ? [query.get('utm_source')] : [],
-        customBodyRenderLite: (dataIndex) => (
-          <span
-            className={`ellipsis ${
-              stageColors[items[dataIndex].utm_source]
-            } border-radius-4 px-2 pt-2px text-center`}
-          >
-            {items[dataIndex].utm_source
-              ? items[dataIndex].utm_source
-              : '---'}
-          </span>
         ),
       },
     },
@@ -173,6 +154,43 @@ const Leads = () => {
       },
     },
   ];
+
+  const SendCRM = ({ids, setSelectedRows}) => {
+
+    //find the elements in the array
+    const positions = ids.map((id)=>{
+      return items.map((e) => { return e.id; }).indexOf(id);
+    });
+
+    let notPending = false;
+    
+    //check if all of them are pending
+    for(let i = 0; i < positions.length; i++){
+      if(items[positions[i]].storage_status !== 'PENDING') {
+        notPending = true;
+        break;
+      }
+    }
+
+    return (
+      <div>
+        <Tooltip title={!notPending ? "Send to CRM" : "Select Pending leads only"}>
+          <IconButton
+            disabled={notPending}
+          >
+            <ArrowUpwardRounded
+              onClick={async () => {
+                const { data } = await bc.marketing()
+                  .bulkSendToCRM(ids);
+                setSelectedRows([]);
+                return data;
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </div>
+    )
+  }
 
   return (
     <div className="m-sm-30">
@@ -219,6 +237,7 @@ const Leads = () => {
               .deleteLeadsBulk(querys);
             return status;
           }}
+          bulkActions={SendCRM}
         />
       </div>
     </div>

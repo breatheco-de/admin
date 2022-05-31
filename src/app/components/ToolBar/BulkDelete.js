@@ -56,17 +56,19 @@ const BulkDelete = (props) => {
   return (
  
     <>
-       
-      <Tooltip title="Delete ALL">
-        <IconButton className={classes.iconButton}>
-          <DeleteIcon
-            className={classes.icon}
-            onClick={(e) => {
-              setOpenDialog(true);
-            }}
-          />
-        </IconButton>
-      </Tooltip>
+      <div className="flex flex-wrap " >
+        {props.bulkActions && <props.bulkActions ids={idsArr} setSelectedRows={setSelectedRows} />}
+        <Tooltip title="Delete ALL">
+          <IconButton className={classes.iconButton}>
+            <DeleteIcon
+              className={classes.icon}
+              onClick={(e) => {
+                setOpenDialog(true);
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </div>
       {/* Dialog */}
       <Dialog
         open={openDialog}

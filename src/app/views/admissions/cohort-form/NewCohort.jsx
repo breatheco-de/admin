@@ -97,7 +97,7 @@ const NewCohort = () => {
     bc.admissions()
       .addCohort({
         ...values,
-        time_zone: `${timeZone}`,
+        timezone: `${timeZone}`,
         syllabus: `${syllabus.slug}.v${version.version}`,
         schedule: schedule?.id,
       })

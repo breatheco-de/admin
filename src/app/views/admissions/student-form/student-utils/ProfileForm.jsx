@@ -13,11 +13,19 @@ const propTypes = {
 };
 
 export const ProfileForm = ({ initialValues }) => {
-  const [cohort, setCohort] = useState(null);
+  const [cohort, setCohort] = useState([]);
   const history = useHistory();
 
   const postAcademyStudentProfile = (values) => {
-    let requestValues = { ...values, cohort: cohort ? cohort.id : undefined };
+    if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
+
+    let cohortId = cohort.map(c => {
+      return c.id 
+    });
+
+    let requestValues = { ...values, 
+      cohort: cohort.length > 0 ? cohortId : undefined 
+    };
     if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
     if (values.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/) === null) {
@@ -52,9 +60,18 @@ export const ProfileForm = ({ initialValues }) => {
       initialValues={initialValues}
       onSubmit={(values) => postAcademyStudentProfile(values)}
       enableReinitialize
+      validate={(values)=>{
+        let errors = {}
+
+        if (cohort.length === 0) {
+          errors.cohort = 'You must select at least one cohort'
+        }
+
+        return errors
+      }}
     >
       
-      {({ values, handleChange, handleSubmit }) => (
+      {({ values, errors, touched, handleChange, handleSubmit }) => (
         <form className="p-4" onSubmit={handleSubmit}>
           <ToastContainer/>
           <Grid container spacing={3} alignItems="center">
@@ -134,11 +151,17 @@ export const ProfileForm = ({ initialValues }) => {
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
                 onChange={(newCohort) => setCohort(newCohort)}
+                // name="cohort"
+                error={errors.cohort && touched.cohort}
+                helperText={touched.cohort && errors.cohort}
                 width="30%"
                 size="small"
                 label="Cohort"
-                required
+                required={cohort.length === 0}
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.id === value.id}  
                 getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                multiple={true}
                 asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED,ACTIVE`)}
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
