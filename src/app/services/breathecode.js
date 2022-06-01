@@ -447,6 +447,12 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getSingleAcademyMentorshipBill: (id) => {
+                return axios.bcGet(
+                    "Mentorship Bill",
+                    `${this.host}/mentorship/academy/bill/${id}`
+                );
+            },
             updateMentorshipBills: (payload) =>{
                 return axios.bcPut(
                     "Update Bills",

@@ -8,7 +8,7 @@ import { getSession } from 'app/redux/actions/SessionActions';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import SingleDelete from '../../../components/ToolBar/SingleDelete';
 import Delete from '@material-ui/icons/Delete';
-
+import { useHistory } from 'react-router-dom';
 const localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
 
@@ -24,6 +24,7 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
     after: `${currentYear}-01-01`,
     before: `${currentYear + 1}-01-01`
   });
+  const history = useHistory();
 
   const billingPeriods = [
     {
@@ -163,13 +164,15 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
       width: 160,
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
+        // let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         return (     
           <div>
             <IconButton
               aria-label="Open"
               onClick={() => {
-                window.open(billUrl)
+                // window.open(billUrl)
+                history.push(`/mentors/${staffId}/invoice/${params.row.id}`)
               }}
             >
               <OpenInBrowser />
