@@ -6,7 +6,7 @@ import bc from '../../../services/breathecode'
 import DataTable from 'app/components/SmartMUIDataGrid';
 import { getSession } from 'app/redux/actions/SessionActions';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
-import SingleDelete from '../../../components/ToolBar/SingleDelete';
+import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
 import { useHistory } from 'react-router-dom';
 const localizedFormat = require('dayjs/plugin/localizedFormat')

@@ -42,13 +42,13 @@ const getParams = (url = window.location) => {
 };
 
 export const SmartMUIDataTable = (props) => {
+    const query = useQuery();
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [table, setTable] = useState({
         count: 100,
-        page: 0,
+        page: query.get("offset")/query.get("limit") || 0,
     });
-    const query = useQuery();
     const history = useHistory();
     const [searchBoxValue, setSearchBoxValue] = useState(
         query.get("like") || ""

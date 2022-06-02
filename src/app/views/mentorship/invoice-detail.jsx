@@ -11,7 +11,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  TextField
 } from '@material-ui/core';
+import { Formik } from 'formik';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import School from '@material-ui/icons/School';
 import AccessTime from '@material-ui/icons/AccessTime';
@@ -177,6 +179,36 @@ const InvoiceDetail = () => {
   //   },
   // ];
 
+  const InputAccounted = ({session, index}) => {
+    const [value, setValue] = useState(session.accounted_duration);
+    const [focus, setFocus] = useState(false);
+
+    const submit = async (accounted) => {
+      const { data } = await bc.mentorship().getSingleAcademyMentorshipBill(invoiceID);
+    }
+
+    return (
+      <div className="flex">
+        <div style={{width:'45%'}}>
+        <TextField
+          name={`accounted-${index}`}
+          size="small"
+          variant="outlined"
+          value={Math.round(value * 100) / 100}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          onChange={(e) => {
+            setValue(e.target.value)
+          }}
+
+        />
+        </div>
+        {focus && <Button onClick={()=>{ submit(value)}}>Send</Button>}
+      </div>
+      
+    )
+  }
+
   if(loading) return <MatxLoading />
 
   return (
@@ -216,19 +248,19 @@ const InvoiceDetail = () => {
         </div>
         <Divider />
         <div className="flex justify-between p-5" id="bill-detail">
-          <div id="bill-from">
+          {/* <div id="bill-from">
             <h5 className="mb-2" >Bill From</h5>
             <p>UI LIB</p>
             <p className="m-0" >sales@ui-lib.com</p>
             <p className="m-0" >8254 S. Garfield Street. Villa Rica,</p>
             <p className="m-0" >GA 30180.</p>
-          </div>
+          </div> */}
           <div id="bill-to">
             <h5 className="mb-2" >Bill To</h5>
-            <p>Hane PLC</p>
-            <p className="m-0" >sales@ui-lib.com</p>
-            <p className="m-0" >8254 S. Garfield Street. Villa Rica,</p>
-            <p className="m-0" >GA 30180.</p>
+            <p>{`${bill?.mentor.user.first_name} ${bill?.mentor.user.last_name}`}</p>
+            <p className="m-0" >{bill?.mentor.user.email}</p>
+            {/* <p className="m-0" >8254 S. Garfield Street. Villa Rica,</p>
+            <p className="m-0" >GA 30180.</p> */}
           </div>
         </div>
 				<div id="table" className='p-4'>
@@ -245,7 +277,7 @@ const InvoiceDetail = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-              {bill?.sessions.map(session => {
+              {bill?.sessions.map((session, index) => {
                 return(
                   <TableRow>
                     <TableCell className="pl-0 capitalize" align="left">
@@ -266,7 +298,21 @@ const InvoiceDetail = () => {
                       <p className="mb-0">{session?.billed_str}</p>
                       {session?.extra_time && <small className="text-muted text-error">Overtime</small>}
                     </TableCell>
-                    <TableCell className="pl-0">{session?.accounted_duration}</TableCell>
+                    <TableCell className="pl-0">
+                        {session && <InputAccounted session={session} index={index}/>}
+                        {/* <TextField
+                          name={`accounted-${index}`}
+                          size="small"
+                          variant="outlined"
+                          value={Math.round(session.accounted_duration * 100) / 100}
+                          onFocus={() => console.log('toy focus')}
+                          onBlur={() => console.log('fuera de foco')}
+                          onChange={(e) => {
+                            // console.log(e.target.value);
+                            bill.sessions[index].accounted_duration = e.target.value;
+                          }}
+                        /> */}   
+                    </TableCell>
                   </TableRow>
               )})}
 							
