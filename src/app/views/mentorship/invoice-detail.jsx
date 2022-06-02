@@ -19,6 +19,7 @@ import School from '@material-ui/icons/School';
 import AccessTime from '@material-ui/icons/AccessTime';
 import DirectionsRun from '@material-ui/icons/DirectionsRun';
 import MonetizationOn from '@material-ui/icons/MonetizationOn';
+import Edit from '@material-ui/icons/Edit';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { MatxLoading } from "matx";
 import bc from 'app/services/breathecode';
@@ -179,7 +180,7 @@ const InvoiceDetail = () => {
   //   },
   // ];
 
-  const InputAccounted = ({session, index}) => {
+  const InputAccounted = ({ session, index }) => {
     const [value, setValue] = useState(session.accounted_duration);
     const [focus, setFocus] = useState(false);
 
@@ -189,23 +190,28 @@ const InvoiceDetail = () => {
 
     return (
       <div className="flex">
-        <div style={{width:'45%'}}>
-        <TextField
-          name={`accounted-${index}`}
-          size="small"
-          variant="outlined"
-          value={Math.round(value * 100) / 100}
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-          onChange={(e) => {
-            setValue(e.target.value)
-          }}
+        <div style={{ width: '45%' }}>
+          <TextField
+            name={`accounted-${index}`}
+            // size="small"
+            variant="outlined"
+            value={Math.round(value * 100) / 100}
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
+            onChange={(e) => {
+              setValue(e.target.value)
+            }}
 
-        />
+          />
         </div>
-        {focus && <Button onClick={()=>{ submit(value)}}>Send</Button>}
+        {focus && <IconButton onClick={() => { submit(value) }}><Icon fontSize='1'>check</Icon></IconButton>}
+        {session.suggested_accounted_duration !== session.accounted_duration && <Tooltip
+          title={`It was edited, original was ${Math.round(session.suggested_accounted_duration * 100) / 100}`}
+        >
+          <Edit fontSize='3' />
+        </Tooltip>}
       </div>
-      
+
     )
   }
 
@@ -271,9 +277,6 @@ const InvoiceDetail = () => {
 								<TableCell className="px-0">Notes</TableCell>
 								<TableCell className="px-0">Billed</TableCell>
                  <TableCell className="px-0">Accounted Duration</TableCell>
-                {/* <TableCell className="px-0">Unit Price</TableCell> */}
-								{/* <TableCell className="px-0">Unit</TableCell> */}
-								{/* <TableCell className="px-0">Cost</TableCell> */}
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -300,18 +303,7 @@ const InvoiceDetail = () => {
                     </TableCell>
                     <TableCell className="pl-0">
                         {session && <InputAccounted session={session} index={index}/>}
-                        {/* <TextField
-                          name={`accounted-${index}`}
-                          size="small"
-                          variant="outlined"
-                          value={Math.round(session.accounted_duration * 100) / 100}
-                          onFocus={() => console.log('toy focus')}
-                          onBlur={() => console.log('fuera de foco')}
-                          onChange={(e) => {
-                            // console.log(e.target.value);
-                            bill.sessions[index].accounted_duration = e.target.value;
-                          }}
-                        /> */}   
+                        <small className="text-muted">{`Suggested: $${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
                     </TableCell>
                   </TableRow>
               )})}
@@ -320,10 +312,10 @@ const InvoiceDetail = () => {
 					</Table>
 				</div>
         <div className="flex-column p-4 items-end" id="total-info" >
-          <p className="mb-0">{`Total duration in hours: ${bill?.total_duration_in_hours}`}</p>
+          <p className="mb-0">{`Total duration in hours: ${Math.round(bill?.total_duration_in_hours * 100) / 100}`}</p>
           {bill?.overtime_hours && <small className="text-muted text-error">{`${bill.overtime_hours} Hours of overtime`}</small>}
-          <p>{`Total duration in minutes: ${bill?.total_duration_in_minutes}`}</p>
-          <p>{`Total: ${bill?.total_price}$`}</p>
+          <p>{`Total duration in minutes: ${Math.round(bill?.total_duration_in_minutes * 100) / 100}`}</p>
+          <p>{`Total: $${bill?.total_price}`}</p>
         </div>
       </Card>
     </div>
