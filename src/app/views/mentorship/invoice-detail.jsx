@@ -13,6 +13,10 @@ import {
   TableBody,
 } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
+import School from '@material-ui/icons/School';
+import AccessTime from '@material-ui/icons/AccessTime';
+import DirectionsRun from '@material-ui/icons/DirectionsRun';
+import MonetizationOn from '@material-ui/icons/MonetizationOn';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { MatxLoading } from "matx";
 import bc from 'app/services/breathecode';
@@ -180,7 +184,7 @@ const InvoiceDetail = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Mentorship', path: '/mentors' }, { name: 'Mentor' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Mentorship', path: '/mentors' }, { name: 'Mentor', path: `/mentors/${mentorID}` }, { name: 'Invoice' }]} />
           </div>
         </div>
       </div>
@@ -234,6 +238,7 @@ const InvoiceDetail = () => {
 								<TableCell className="px-0">Item</TableCell>
 								<TableCell className="px-0">Notes</TableCell>
 								<TableCell className="px-0">Billed</TableCell>
+                 <TableCell className="px-0">Accounted Duration</TableCell>
                 {/* <TableCell className="px-0">Unit Price</TableCell> */}
 								{/* <TableCell className="px-0">Unit</TableCell> */}
 								{/* <TableCell className="px-0">Cost</TableCell> */}
@@ -241,20 +246,39 @@ const InvoiceDetail = () => {
 						</TableHead>
 						<TableBody>
               {bill?.sessions.map(session => {
-                console.log(session.started_at);
                 return(
-                <TableRow>
-                  <TableCell className="pl-0 capitalize" align="left">
-                    {`${dayjs(session?.started_at).format('MMMM D, YYYY, h:mm a')} with ${session.mentee.first_name} ${session.mentee.last_name}`}
-                  </TableCell>
-                  <TableCell className="pl-0">4000</TableCell>
-                  <TableCell className="pl-0">4</TableCell>
-                </TableRow>
+                  <TableRow>
+                    <TableCell className="pl-0 capitalize" align="left">
+                      <p className='mb-0'>
+                        {`${dayjs(session?.started_at).format('MMMM D, YYYY, h:mm a')} with ${session.mentee.first_name} ${session.mentee.last_name}`}
+                      </p>
+                      <small className="text-muted">{`Meeting lasted: ${session?.duration_string}`}</small>
+                    </TableCell>
+                    <TableCell className="pl-0">
+                      <div>
+                        {session?.status_message && <Tooltip title={session.status_message}><MonetizationOn /></Tooltip>}
+                        {session?.summary && <Tooltip title={session.summary}><School /></Tooltip>}
+                        {session?.extra_time && <Tooltip title={session.extra_time}><AccessTime /></Tooltip>}
+                        {session?.mentor_late && <Tooltip title={session.mentor_late}><DirectionsRun /></Tooltip>}
+                      </div>
+                    </TableCell>
+                    <TableCell className="pl-0">
+                      <p className="mb-0">{session?.billed_str}</p>
+                      {session?.extra_time && <small className="text-muted text-error">Overtime</small>}
+                    </TableCell>
+                    <TableCell className="pl-0">{session?.accounted_duration}</TableCell>
+                  </TableRow>
               )})}
 							
 						</TableBody>
 					</Table>
 				</div>
+        <div className="flex-column p-4 items-end" id="total-info" >
+          <p className="mb-0">{`Total duration in hours: ${bill?.total_duration_in_hours}`}</p>
+          {bill?.overtime_hours && <small className="text-muted text-error">{`${bill.overtime_hours} Hours of overtime`}</small>}
+          <p>{`Total duration in minutes: ${bill?.total_duration_in_minutes}`}</p>
+          <p>{`Total: ${bill?.total_price}$`}</p>
+        </div>
       </Card>
     </div>
   );
