@@ -41,7 +41,6 @@ const NewCohort = () => {
   const [neverEnd, setNeverEnd] = useState(true);
   const [remote, setRemote] = useState(true);
   const [timeZone, setTimeZone] = useState('');
-  const [language, setLanguage] = useState('EN');
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
@@ -56,11 +55,11 @@ const NewCohort = () => {
   const history = useHistory();
   const languages = [
     {
-      value: 'ES',
+      value: 'es',
       label: 'Spanish',
     },
     {
-      value: 'EN',
+      value: 'en',
       label: 'English',
     },
   ];
