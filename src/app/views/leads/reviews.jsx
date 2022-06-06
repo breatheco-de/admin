@@ -312,7 +312,7 @@ const Reviews = () => {
             view="reviews?"
             historyReplace="/growth/reviews"
             singlePage=""
-            tableOptions={{
+            options={{
               selectableRows: false,
               print: false,
               viewColumns: false,

@@ -99,6 +99,7 @@ export const SmartMUIDataTable = (props) => {
     };
 
     useEffect(() => {
+        console.log((props.options === undefined || props.options.downloadCsv === undefined) || props.options.downloadCsv);
         loadData();
         return () => {
             setIsAlive(false);
@@ -166,7 +167,7 @@ export const SmartMUIDataTable = (props) => {
                 data={props.items}
                 columns={props.columns}
                 options={{
-                    ...props.tableOptions,
+                    ...props.options,
                     sortOrder: getSort(),
                     download: false,
                     filterType: "textField",
@@ -203,7 +204,7 @@ export const SmartMUIDataTable = (props) => {
                                 break;
                         }
                     },
-                    customToolbar: () => props.downloadCsv && (
+                    customToolbar: () => ((props.options === undefined || props.options.downloadCsv === undefined) || props.options.downloadCsv) && (
                         <DownloadCsv
                             getAllPagesCSV={() =>
                                 props.downloadCSV(querys.like)
@@ -359,7 +360,6 @@ SmartMUIDataTable.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
     selectableRows: PropTypes.bool,
-    downloadCsv: PropTypes.bool,
     columns: PropTypes.any,
     search: PropTypes.any,
     options: PropTypes.object,

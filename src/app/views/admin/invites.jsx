@@ -144,10 +144,10 @@ const Students = () => {
           view="invites?"
           singlePage=""
           historyReplace="/admin/invites"
-          downloadCsv={false}
-          tableOptions={{
+          options={{
             print: false,
-            viewColumns: false
+            viewColumns: false,
+            downloadCsv: false
           }}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyInvites({ ...querys, status: 'PENDING' });
