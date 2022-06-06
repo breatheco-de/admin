@@ -185,7 +185,11 @@ const InvoiceDetail = () => {
     const [focus, setFocus] = useState(false);
 
     const submit = async (accounted) => {
-      const { data } = await bc.mentorship().getSingleAcademyMentorshipBill(invoiceID);
+      await bc.mentorship().updateMentorSession(session.id,
+        {
+          accounted_duration: accounted,
+          mentor: session.mentor.id
+        });
     }
 
     return (
@@ -193,18 +197,21 @@ const InvoiceDetail = () => {
         <div style={{ width: '45%' }}>
           <TextField
             name={`accounted-${index}`}
-            // size="small"
+            size="small"
             variant="outlined"
             value={Math.round(value * 100) / 100}
             onFocus={() => setFocus(true)}
-            onBlur={() => setFocus(false)}
+            onBlur={() => setTimeout(function(){
+              setFocus(false)
+          }, 500)}
             onChange={(e) => {
               setValue(e.target.value)
             }}
 
           />
         </div>
-        {focus && <IconButton onClick={() => { submit(value) }}><Icon fontSize='1'>check</Icon></IconButton>}
+        {/* {focus && <IconButton onClick={() => { submit(value) }}><Icon fontSize='1'>check</Icon></IconButton>} */}
+        {focus && <Button onClick={() => submit(value) }>Save</Button>}
         {session.suggested_accounted_duration !== session.accounted_duration && <Tooltip
           title={`It was edited, original was ${Math.round(session.suggested_accounted_duration * 100) / 100}`}
         >
@@ -285,7 +292,7 @@ const InvoiceDetail = () => {
                   <TableRow>
                     <TableCell className="pl-0 capitalize" align="left">
                       <p className='mb-0'>
-                        {`${dayjs(session?.started_at).format('MMMM D, YYYY, h:mm a')} with ${session.mentee.first_name} ${session.mentee.last_name}`}
+                        {`${dayjs(session?.started_at).format('MMMM D, YYYY, h:mm a')} with ${session.mentee?.first_name} ${session.mentee?.last_name}`}
                       </p>
                       <small className="text-muted">{`Meeting lasted: ${session?.duration_string}`}</small>
                     </TableCell>
@@ -303,7 +310,7 @@ const InvoiceDetail = () => {
                     </TableCell>
                     <TableCell className="pl-0">
                         {session && <InputAccounted session={session} index={index}/>}
-                        <small className="text-muted">{`Suggested: $${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
+                        <small className="text-muted">{`Suggested: ${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
                     </TableCell>
                   </TableRow>
               )})}

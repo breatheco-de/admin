@@ -438,6 +438,12 @@ class BreatheCodeClient {
                     }/session${query ? `?${qs}` : ""}`
                 );
             },
+            updateMentorSession: (id, payload) =>
+                axios.bcPut(
+                    "Academy session",
+                    `${this.host}/mentorship/academy/session/${id}`,
+                    payload
+                ),
             getAllAcademyMentorshipBills: (querys) => {
                 const qs = serializeQuerystring(querys);
                 return axios.bcGet(
