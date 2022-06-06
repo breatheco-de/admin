@@ -203,7 +203,7 @@ const InvoiceDetail = () => {
             onFocus={() => setFocus(true)}
             onBlur={() => setTimeout(function(){
               setFocus(false)
-          }, 500)}
+          }, 100)}
             onChange={(e) => {
               setValue(e.target.value)
             }}
