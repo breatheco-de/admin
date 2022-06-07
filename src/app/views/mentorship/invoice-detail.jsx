@@ -1,6 +1,5 @@
 import {
   Button,
-  Icon,
   IconButton,
   Tooltip,
   Card,
@@ -24,23 +23,11 @@ import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
-toast.configure();
-const toastOption = {
-  position: toast.POSITION.BOTTOM_RIGHT,
-  autoClose: 8000,
-};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
-
-const statusColors = {
-  INVITED: 'bg-secondary text-dark',
-  ACTIVE: 'text-white bg-green',
-  INNACTIVE: 'text-white bg-error',
-};
 
 const InvoiceDetail = () => {
   const { mentorID, invoiceID } = useParams();
@@ -48,12 +35,17 @@ const InvoiceDetail = () => {
   const [bill, setBill] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async ()=>{
-    setLoading(true);
-    const { data } = await bc.mentorship().getSingleAcademyMentorshipBill(invoiceID);
-    if(data) setBill(data);
-    setLoading(false);
-  },[]);
+  useEffect(async () => {
+    try {
+      setLoading(true);
+      const { data } = await bc.mentorship().getSingleAcademyMentorshipBill(invoiceID);
+      if (data) setBill(data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+
+  }, []);
 
   const InputAccounted = ({ session, index }) => {
     const [value, setValue] = useState(session.accounted_duration);
@@ -76,9 +68,9 @@ const InvoiceDetail = () => {
             variant="outlined"
             value={Math.round(value * 100) / 100}
             onFocus={() => setFocus(true)}
-            onBlur={() => setTimeout(function(){
+            onBlur={() => setTimeout(function () {
               setFocus(false)
-          }, 100)}
+            }, 100)}
             onChange={(e) => {
               setValue(e.target.value)
             }}
@@ -90,13 +82,13 @@ const InvoiceDetail = () => {
         >
           <sup><Edit fontSize='1' /></sup>
         </Tooltip>}
-        {focus && <Button onClick={() => submit(value) }>Save</Button>}
+        {focus && <Button onClick={() => submit(value)}>Save</Button>}
       </div>
 
     )
   }
 
-  if(loading) return <MatxLoading />
+  if (loading) return <MatxLoading />
 
   return (
     <div className="m-sm-30">
@@ -137,23 +129,23 @@ const InvoiceDetail = () => {
         <div className="flex justify-between p-5" id="bill-detail">
           <div id="bill-to">
             <h5 className="mb-2" >Bill To</h5>
-            <p>{`${bill?.mentor.user.first_name} ${bill?.mentor.user.last_name}`}</p>
-            <p className="m-0" >{bill?.mentor.user.email}</p>
+            <p>{`${bill?.mentor?.user.first_name} ${bill?.mentor?.user.last_name}`}</p>
+            <p className="m-0" >{bill?.mentor?.user.email}</p>
           </div>
         </div>
-				<div id="table" className='p-4'>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell className="px-0">Item</TableCell>
-								<TableCell className="px-0">Notes</TableCell>
-								<TableCell className="px-0">Billed</TableCell>
-                 <TableCell className="px-0">Accounted Duration</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-              {bill?.sessions.map((session, index) => {
-                return(
+        <div id="table" className='p-4'>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell className="px-0">Item</TableCell>
+                <TableCell className="px-0">Notes</TableCell>
+                <TableCell className="px-0">Billed</TableCell>
+                <TableCell className="px-0">Accounted Duration</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {bill?.sessions?.map((session, index) => {
+                return (
                   <TableRow>
                     <TableCell className="pl-0 capitalize" align="left">
                       <p className='mb-0'>
@@ -174,15 +166,16 @@ const InvoiceDetail = () => {
                       {session?.extra_time && <small className="text-muted text-error">Overtime</small>}
                     </TableCell>
                     <TableCell className="pl-0">
-                        {session && <InputAccounted key={session.id} session={session} index={index}/>}
-                        <small className="text-muted">{`Suggested: ${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
+                      {session && <InputAccounted key={session.id} session={session} index={index} />}
+                      <small className="text-muted">{`Suggested: ${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
                     </TableCell>
                   </TableRow>
-              )})}
-							
-						</TableBody>
-					</Table>
-				</div>
+                )
+              })}
+
+            </TableBody>
+          </Table>
+        </div>
         <div className="flex-column p-4 items-end" id="total-info" >
           <p className="mb-0">{`Total duration in hours: ${Math.round(bill?.total_duration_in_hours * 100) / 100}`}</p>
           {bill?.overtime_hours && <small className="text-muted text-error">{`${bill.overtime_hours} Hours of overtime`}</small>}
