@@ -165,7 +165,6 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
         // let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
-        let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         return (     
           <div>
             <IconButton

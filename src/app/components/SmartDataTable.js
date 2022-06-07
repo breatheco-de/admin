@@ -167,7 +167,6 @@ export const SmartMUIDataTable = (props) => {
                 data={props.items}
                 columns={props.columns}
                 options={{
-                    
                     sortOrder: getSort(),
                     download: false,
                     filterType: "textField",
