@@ -167,7 +167,7 @@ export const SmartMUIDataTable = (props) => {
                 data={props.items}
                 columns={props.columns}
                 options={{
-                    ...props.options,
+                    
                     sortOrder: getSort(),
                     download: false,
                     filterType: "textField",
@@ -204,7 +204,7 @@ export const SmartMUIDataTable = (props) => {
                                 break;
                         }
                     },
-                    customToolbar: () => ((props.options === undefined || props.options.downloadCsv === undefined) || props.options.downloadCsv) && (
+                    customToolbar: () => (
                         <DownloadCsv
                             getAllPagesCSV={() =>
                                 props.downloadCSV(querys.like)
@@ -350,6 +350,7 @@ export const SmartMUIDataTable = (props) => {
                             />
                         </Grow>
                     ),
+                    ...props.options,
                 }}
             />
         </>
