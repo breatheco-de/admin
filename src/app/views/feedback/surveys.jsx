@@ -21,7 +21,7 @@ import bc from 'app/services/breathecode';
 import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
-import SingleDelete from '../../components/ToolBar/SingleDelete';
+import SingleDelete from '../../components/ToolBar/ConfirmationDialog';
 import StatusTable from './StatusTable';
 
 toast.configure();

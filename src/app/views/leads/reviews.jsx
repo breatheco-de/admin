@@ -24,7 +24,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import { useQuery } from '../../hooks/useQuery';
 import AnswerStatus from '../../components/AnswerStatus';
-import SingleDelete from '../../components/ToolBar/SingleDelete';
+import SingleDelete from '../../components/ToolBar/ConfirmationDialog';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -229,7 +229,24 @@ const Reviews = () => {
         sort: false,
         customBodyRenderLite: (dataIndex) => {
           const _review = items[dataIndex];
-          if (['IGNORE', 'DONE'].includes(_review.status)) return _review.status;
+          if (['IGNORE', 'DONE'].includes(_review.status)) return (
+            <div className="flex justify-around">
+              <p>{_review.status}</p>
+              <Button 
+                size="small"
+                onClick={async ()=>{
+                  try{
+                    const { status } = await bc.feedback().updateReview(_review.id, { status: "PENDING" });
+                    if(status >= 200 && status < 300) setItems(items.map(r => (r.id != _review.id) ? r : { ...r, status: "PENDING" }));
+                  }catch(e){
+                    console.log(e);
+                  }         
+                }}
+              >
+                UNDO
+              </Button>
+            </div>
+          );
           return (
             <>
               <div className="flex items-center">
@@ -295,7 +312,7 @@ const Reviews = () => {
             view="reviews?"
             historyReplace="/growth/reviews"
             singlePage=""
-            tableOptions={{
+            options={{
               selectableRows: false,
               print: false,
               viewColumns: false,

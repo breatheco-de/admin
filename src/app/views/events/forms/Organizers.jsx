@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Box,
 } from "@material-ui/core";
-import SingleDelete from '../../../components/ToolBar/SingleDelete';
+import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import bc from "../../../services/breathecode";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");

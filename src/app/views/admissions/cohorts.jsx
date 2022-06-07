@@ -215,7 +215,7 @@ const Cohorts = () => {
           view="cohorts?"
           historyReplace="/admissions/cohorts"
           singlePage=""
-          tableOptions={{
+          options={{
             print: false,
             viewColumns: false
           }}

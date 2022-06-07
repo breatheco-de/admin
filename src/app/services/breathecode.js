@@ -438,6 +438,12 @@ class BreatheCodeClient {
                     }/session${query ? `?${qs}` : ""}`
                 );
             },
+            updateMentorSession: (id, payload) =>
+                axios.bcPut(
+                    "Academy session",
+                    `${this.host}/mentorship/academy/session/${id}`,
+                    payload
+                ),
             getAllAcademyMentorshipBills: (querys) => {
                 const qs = serializeQuerystring(querys);
                 return axios.bcGet(
@@ -445,6 +451,12 @@ class BreatheCodeClient {
                     `${this.host}/mentorship/academy/bill${
                         querys ? `?${qs}` : ""
                     }`
+                );
+            },
+            getSingleAcademyMentorshipBill: (id) => {
+                return axios.bcGet(
+                    "Mentorship Bill",
+                    `${this.host}/mentorship/academy/bill/${id}`
                 );
             },
             updateMentorshipBills: (payload) =>{
