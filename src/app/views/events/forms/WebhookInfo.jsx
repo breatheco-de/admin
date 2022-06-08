@@ -118,7 +118,7 @@ export const WebhookInfo = ({ organization }) => {
           title="All Webhooks"
           columns={columns}
           items={items}
-          tableOptions={{
+          options={{
             selectableRows: false
           }}
           search={async (querys) => {

@@ -26,6 +26,7 @@ const name = (user) => {
 
 const Students = () => {
   const [cohortStudents, setCohortStudents] = useState([]);
+  const [count, setCount] = useState('');
   const [queryFilters, setQueryFilters] = useState({});
 
   const columns = [
@@ -33,16 +34,19 @@ const Students = () => {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
+        sortThirdClickReset: true,
         customBodyRenderLite: (dataIndex) => {
           const { user, ...rest } = cohortStudents[dataIndex];
           return (
             <div className="flex items-center">
-              <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
+              <Avatar className="w-48 h-48" src={user?.profile?.avatar_url} />
               <div className="ml-3">
-                <h5 className="my-0 text-15">
-                  {name(user)}
-                </h5>
+                <Link to={`/admissions/students/${user.id}`}>
+                  <h5 className="my-0 text-15">
+                    {name(user)}
+                  </h5>
+                </Link>
                 <small className="text-muted">{user?.email}</small>
               </div>
             </div>
@@ -55,10 +59,13 @@ const Students = () => {
       label: 'Cohort',
       options: {
         filter: true,
+        sortThirdClickReset: true,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
-              <h5 className="my-0 text-15">{cohortStudents[i].cohort.name}</h5>
+              <Link to={`/admissions/cohorts/${cohortStudents[i].cohort.slug}`}>
+                <h5 className="my-0 text-15">{cohortStudents[i].cohort.name}</h5>
+              </Link>
               <small className="text-muted">Started {dayjs(cohortStudents[i].cohort.kickoff_date).fromNow()}</small>
             </div>
           </div>
@@ -70,6 +77,7 @@ const Students = () => {
       label: ' ',
       options: {
         filter: false,
+        sort: false,
         customBodyRenderLite: (dataIndex) => {
           const { cohort, user, watching } = cohortStudents[dataIndex];
           return <div className="flex items-center">
@@ -119,7 +127,7 @@ const Students = () => {
       </div>
       <div>
         <SmartMUIDataTable
-          title="Student watch list"
+          title={`${count} Students on the watch list`}
           columns={columns}
           items={cohortStudents}
           view="watchlist?"
@@ -128,7 +136,13 @@ const Students = () => {
           search={async (query) => {
             const { data } = await bc.admissions().getAllUserCohorts({ ...query, watching: true });
             setCohortStudents(data.results);
+            setCount(data.count)
             return data;
+          }}
+          options={{
+            print: false,
+            viewColumns: false,
+            customToolbar: null
           }}
         />
       </div>

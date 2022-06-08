@@ -42,13 +42,13 @@ const getParams = (url = window.location) => {
 };
 
 export const SmartMUIDataTable = (props) => {
+    const query = useQuery();
     const [isAlive, setIsAlive] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [table, setTable] = useState({
         count: 100,
-        page: 0,
+        page: query.get("offset")/query.get("limit") || 0,
     });
-    const query = useQuery();
     const history = useHistory();
     const [searchBoxValue, setSearchBoxValue] = useState(
         query.get("like") || ""
@@ -99,6 +99,7 @@ export const SmartMUIDataTable = (props) => {
     };
 
     useEffect(() => {
+        console.log((props.options === undefined || props.options.downloadCsv === undefined) || props.options.downloadCsv);
         loadData();
         return () => {
             setIsAlive(false);
@@ -166,7 +167,6 @@ export const SmartMUIDataTable = (props) => {
                 data={props.items}
                 columns={props.columns}
                 options={{
-                    ...props.tableOptions,
                     sortOrder: getSort(),
                     download: false,
                     filterType: "textField",
@@ -203,7 +203,7 @@ export const SmartMUIDataTable = (props) => {
                                 break;
                         }
                     },
-                    customToolbar: () => props.downloadCsv && (
+                    customToolbar: () => (
                         <DownloadCsv
                             getAllPagesCSV={() =>
                                 props.downloadCSV(querys.like)
@@ -349,6 +349,7 @@ export const SmartMUIDataTable = (props) => {
                             />
                         </Grow>
                     ),
+                    ...props.options,
                 }}
             />
         </>
@@ -359,7 +360,6 @@ SmartMUIDataTable.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
     selectableRows: PropTypes.bool,
-    downloadCsv: PropTypes.bool,
     columns: PropTypes.any,
     search: PropTypes.any,
     options: PropTypes.object,

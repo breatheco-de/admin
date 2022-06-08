@@ -1,7 +1,7 @@
 import {
   Avatar,
   Button,
-  Card, Dialog, DialogTitle, Divider, Grid, List,
+  Card, Dialog, DialogTitle, DialogActions, Divider, Grid, List,
   ListItem,
   ListItemText, MenuItem, TextField
 } from '@material-ui/core';
@@ -18,6 +18,7 @@ const propTypes = {
 
 const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
+  const [confirmation, setConfirmation] = useState({open: false, values: {}});
   const [mentor, setMentor] = useState(user);
   const [mentorSlug, setMentorSlug] = useState(mentor?.slug || "")
   const [syllabusArray, setSyllabusArray] = useState([]);
@@ -88,7 +89,13 @@ const MentorDetails = ({ user, staffId }) => {
       <Formik
         initialValues={initialValues}
         validate={validate}
-        onSubmit={(values) => updateMentorProfile(values)}
+        onSubmit={(values) => {
+          if(mentor.syllabus.length === 1){
+            setConfirmation({open: true, values});
+          } else {
+            updateMentorProfile(values)
+          }
+        }}
         enableReinitialize
       >
         {({
@@ -248,6 +255,7 @@ const MentorDetails = ({ user, staffId }) => {
                   debounced={false}
                   value={mentor.syllabus}
                 />
+                <small className="text-muted">Make sure to select all the syllabus this person is able to mentor</small>
               </Grid>
 
               <div className="flex-column items-start px-4 mb-4">
@@ -259,6 +267,36 @@ const MentorDetails = ({ user, staffId }) => {
           </form>
         )}
       </Formik>
+      {/* Confirmation dialog */}
+      <Dialog
+        onClose={() => setConfirmation({open: false})}
+        open={confirmation.open}
+        aria-labelledby="simple-dialog-title"
+      >
+        <DialogTitle id="simple-dialog-title">Only One Syllabus expertise was selected for this mentor, are you sure?</DialogTitle>
+        <DialogActions>
+            <Button
+              onClick={() => {
+                setConfirmation({open: false});
+              }}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              type="submit"
+              autoFocus
+              onClick={ async () => {
+                await updateMentorProfile({...confirmation.values});
+                setConfirmation({open: false});
+              }}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+      </Dialog>
+      {/* Confirmation dialog */}
       <Dialog
         onClose={() => setRoleDialog(false)}
         open={roleDialog}
