@@ -9,7 +9,9 @@ const HelpIcon = ({ message, link }) => {
 
   return (
     <>
-      <Tooltip title={message} 
+      <Tooltip title={message}
+        fontSize="small"
+        color="primary"
         style={{cursor: link ? 'pointer' : 'auto'}}
         onClick={()=>{
             if(link){
