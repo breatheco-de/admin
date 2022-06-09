@@ -144,7 +144,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.price_per_hour}
                 InputProps={{
                   inputProps: {
-                    max: 100, min: 1
+                    max: 100, min: 0
                   }
                 }}
                 onChange={handleChange}
