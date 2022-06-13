@@ -40,10 +40,22 @@ const NewStaff = () => {
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
   const ProfileSchema = Yup.object().shape({
-    first_name: Yup.string().required('Please write the first name'),
-    last_name: Yup.string().required('Please write the last name'),
-    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
-    email: Yup.string().required('Please write the email'),
+    first_name: Yup.string().when('showForm', {
+      is: true,
+      then: Yup.string().required("Please write the name")
+    }),
+    last_name: Yup.string().when('showForm', {
+      is: true,
+      then: Yup.string().required("Please write the last name")
+    }),
+    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').when('showForm', {
+      is: true,
+      then: Yup.string().required("Please write the phone number")
+    }),
+    email: Yup.string().email('Field should contain a valid e-mail').when('showForm', {
+      is: true,
+      then: Yup.string().required("Please write the email")
+    })
   });
 
   const postMember = (values) => {
@@ -82,7 +94,7 @@ const NewStaff = () => {
           </Alert>
         </div>
         <Formik
-          initialValues={initialValues}
+          initialValues={{...initialValues, showForm}}
           onSubmit={(values) => postMember(values)}
           enableReinitialize
           validationSchema={ProfileSchema}
@@ -118,6 +130,7 @@ const NewStaff = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setShowForm(true);
+                                values.showForm = true;
                                 if (params.inputValue.includes('@')) setFieldValue('email', params.inputValue);
                                 else setFieldValue('first_name', params.inputValue);
                               }}
@@ -194,6 +207,8 @@ const NewStaff = () => {
                         variant="outlined"
                         value={values.phone}
                         onChange={handleChange}
+                        error={errors.phone && touched.phone}
+                        helperText={touched.phone && errors.phone}
                       />
                     </Grid>
                     <Grid item md={2} sm={4} xs={12}>
@@ -223,6 +238,8 @@ const NewStaff = () => {
                         variant="outlined"
                         value={values.email}
                         onChange={handleChange}
+                        error={errors.email && touched.email}
+                        helperText={touched.email && errors.email}
                       />
                     </Grid>
                   </>
