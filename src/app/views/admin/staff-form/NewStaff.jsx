@@ -10,6 +10,7 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import * as Yup from 'yup';
 
 const initialValues = {
   first_name: '',
@@ -35,18 +36,28 @@ const NewStaff = () => {
   });
   const [showForm, setShowForm] = useState(false);
   const history = useHistory();
+
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
+  const ProfileSchema = Yup.object().shape({
+    first_name: Yup.string().required('Please write the first name'),
+    last_name: Yup.string().required('Please write the last name'),
+    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    email: Yup.string().required('Please write the email'),
+  });
+
   const postMember = (values) => {
     console.log(values);
-    const refactor = user.id !== '' ? { user: user.id } : { email: values.email, invite: true, ...values };
+    const refactor = user && user.id !== '' ? { user: user.id } : { email: values.email, invite: true, ...values };
     console.log(refactor);
     bc.auth()
       .addAcademyMember({ ...refactor, role: role.slug !== '' ? role.slug : '' })
       .then((data) => {
-        setShowForm(false);
         if (data.status === 201) {
+          setShowForm(false);
           setRole(null);
           setUser(null);
-          history.push('/admin/staff');
+          history.push('/admin/staff');        
         }
       })
       .catch(() => setShowForm(false));
@@ -74,9 +85,10 @@ const NewStaff = () => {
           initialValues={initialValues}
           onSubmit={(values) => postMember(values)}
           enableReinitialize
+          validationSchema={ProfileSchema}
         >
           {({
-            values, handleChange, handleSubmit, setFieldValue,
+            errors, touched, values, handleChange, handleSubmit, setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
@@ -110,9 +122,7 @@ const NewStaff = () => {
                                 else setFieldValue('first_name', params.inputValue);
                               }}
                             >
-                              Invite
-                              {params.inputValue}
-                              to 4Geeks
+                              {`Invite ${params.inputValue} to 4Geeks`}
                             </div>
                           ),
                         });
@@ -154,7 +164,9 @@ const NewStaff = () => {
                           required
                           variant="outlined"
                           value={values.first_name}
-                          onChange={handleChange}
+                          onChange={handleChange}first_name
+                          error={errors.first_name && touched.first_name}
+                          helperText={touched.first_name && errors.first_name}
                         />
                         <TextField
                           className="m-2"
@@ -165,6 +177,8 @@ const NewStaff = () => {
                           variant="outlined"
                           value={values.last_name}
                           onChange={handleChange}
+                          error={errors.last_name && touched.last_name}
+                          helperText={touched.last_name && errors.last_name}
                         />
                       </div>
                     </Grid>
