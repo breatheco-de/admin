@@ -148,7 +148,7 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
       headerName: "Amount",
       width: 130,
       valueGetter: function (params) {
-        return `$${params.row.total_price}`
+        return `$${Math.round(params.row.total_price * 100) / 100}`
       },
     },
     {

@@ -22,6 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import HelpIcon from '../../../components/HelpIcon';
 
 const slugify = require('slugify')
 
@@ -107,6 +108,9 @@ const NewCohort = () => {
       })
       .catch((error) => console.error(error));
   };
+
+  let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts here.`;
+  let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
   return (
     <div className="m-sm-30">
@@ -342,6 +346,7 @@ const NewCohort = () => {
                     }
                     label="This cohort never ends."
                   />
+                  <HelpIcon message={helpText} link={helpLink} />
                 </Grid>
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel

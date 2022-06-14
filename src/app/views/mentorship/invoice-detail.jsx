@@ -16,7 +16,8 @@ import School from '@material-ui/icons/School';
 import AccessTime from '@material-ui/icons/AccessTime';
 import DirectionsRun from '@material-ui/icons/DirectionsRun';
 import MonetizationOn from '@material-ui/icons/MonetizationOn';
-import Edit from '@material-ui/icons/Edit';
+import SentimentSatisfiedAlt from '@material-ui/icons/SentimentSatisfiedAlt';
+import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisfied';
 import { MatxLoading } from "matx";
 import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
@@ -26,8 +27,10 @@ import { useParams, useHistory } from 'react-router-dom';
 
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+const duration = require('dayjs/plugin/duration');
 
 dayjs.extend(relativeTime);
+dayjs.extend(duration)
 
 const InvoiceDetail = () => {
   const { mentorID, invoiceID } = useParams();
@@ -48,13 +51,13 @@ const InvoiceDetail = () => {
   }, []);
 
   const InputAccounted = ({ session, index }) => {
-    const [value, setValue] = useState(session.accounted_duration);
+    const [value, setValue] = useState(Math.trunc(dayjs.duration({seconds: session.accounted_duration}).asMinutes()));
     const [focus, setFocus] = useState(false);
 
     const submit = async (accounted) => {
       await bc.mentorship().updateMentorSession(session.id,
         {
-          accounted_duration: accounted,
+          accounted_duration: dayjs.duration({minutes: accounted}).asSeconds(),
           mentor: session.mentor.id
         });
     }
@@ -66,7 +69,8 @@ const InvoiceDetail = () => {
             name={`accounted-${index}`}
             size="small"
             variant="outlined"
-            value={Math.round(value * 100) / 100}
+            // value={Math.round(value * 100) / 100}
+            value={value}
             onFocus={() => setFocus(true)}
             onBlur={() => setTimeout(function () {
               setFocus(false)
@@ -77,12 +81,7 @@ const InvoiceDetail = () => {
 
           />
         </div>
-        {session.suggested_accounted_duration !== session.accounted_duration && <Tooltip
-          title={`It was edited, original was ${Math.round(session.suggested_accounted_duration * 100) / 100}`}
-        >
-          <sup><Edit fontSize='1' /></sup>
-        </Tooltip>}
-        {focus && <Button onClick={() => submit(value)}>Save</Button>}
+        {focus && <Button style={{ marginLeft: '5px' }} size="small" variant="contained" color="primary" onClick={() => submit(value)}>Save</Button>}
       </div>
 
     )
@@ -138,8 +137,7 @@ const InvoiceDetail = () => {
             <TableHead>
               <TableRow>
                 <TableCell className="px-0">Item</TableCell>
-                <TableCell className="px-0">Notes</TableCell>
-                <TableCell className="px-0">Billed</TableCell>
+                <TableCell className="px-0 text-center"><p className="m-0 text-center">Notes</p></TableCell>
                 <TableCell className="px-0">Accounted Duration</TableCell>
               </TableRow>
             </TableHead>
@@ -154,20 +152,17 @@ const InvoiceDetail = () => {
                       <small className="text-muted">{`Meeting lasted: ${session?.duration_string}`}</small>
                     </TableCell>
                     <TableCell className="pl-0">
-                      <div>
+                      <div style={{textAlign: 'center'}}>
                         {session?.status_message && <Tooltip title={session.status_message}><MonetizationOn /></Tooltip>}
                         {session?.summary && <Tooltip title={session.summary}><School /></Tooltip>}
                         {session?.extra_time && <Tooltip title={session.extra_time}><AccessTime /></Tooltip>}
-                        {session?.mentor_late && <Tooltip title={session.mentor_late}><DirectionsRun /></Tooltip>}
+                        {session?.mentor_late && <Tooltip title={session.mentor_late.replace('<br />', '')}><DirectionsRun /></Tooltip>}
+                        {session?.rating && <Tooltip title={`Score: ${session.rating.score}`}>{session.rating.score <= 7 ? <SentimentVeryDissatisfied /> : <SentimentSatisfiedAlt />}</Tooltip>}
                       </div>
                     </TableCell>
                     <TableCell className="pl-0">
-                      <p className="mb-0">{session?.billed_str}</p>
-                      {session?.extra_time && <small className="text-muted text-error">Overtime</small>}
-                    </TableCell>
-                    <TableCell className="pl-0">
                       {session && <InputAccounted key={session.id} session={session} index={index} />}
-                      <small className="text-muted">{`Suggested: ${Math.round(session?.suggested_accounted_duration * 100) / 100}`}</small>
+                      <small className={`text-muted ${session.suggested_accounted_duration !== session.accounted_duration && "text-error"}`}>{`Suggested: ${Math.trunc(dayjs.duration({seconds: session.suggested_accounted_duration}).asMinutes())}`}</small>
                     </TableCell>
                   </TableRow>
                 )
@@ -180,7 +175,7 @@ const InvoiceDetail = () => {
           <p className="mb-0">{`Total duration in hours: ${Math.round(bill?.total_duration_in_hours * 100) / 100}`}</p>
           {bill?.overtime_hours && <small className="text-muted text-error">{`${bill.overtime_hours} Hours of overtime`}</small>}
           <p>{`Total duration in minutes: ${Math.round(bill?.total_duration_in_minutes * 100) / 100}`}</p>
-          <p>{`Total: $${bill?.total_price}`}</p>
+          <p>{`Total: $${Math.round(bill?.total_price * 100) / 100}`}</p>
         </div>
       </Card>
     </div>

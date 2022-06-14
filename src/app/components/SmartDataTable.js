@@ -99,7 +99,6 @@ export const SmartMUIDataTable = (props) => {
     };
 
     useEffect(() => {
-        console.log((props.options === undefined || props.options.downloadCsv === undefined) || props.options.downloadCsv);
         loadData();
         return () => {
             setIsAlive(false);
