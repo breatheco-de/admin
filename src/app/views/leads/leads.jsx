@@ -86,20 +86,20 @@ const Leads = () => {
         customBodyRenderLite: (dataIndex) => (
           <div>
             {/* <div className="flex items-center flex-column"> */}
-              <Tooltip
-                title={items[dataIndex].utm_url
+            <Tooltip
+              title={items[dataIndex].utm_url
+                ? items[dataIndex].utm_url
+                : '---'}
+            >
+              <span className="ellipsis">
+                {items[dataIndex].utm_url
                   ? items[dataIndex].utm_url
                   : '---'}
-              >
-                <span className="ellipsis">
-                  {items[dataIndex].utm_url
-                    ? items[dataIndex].utm_url
-                    : '---'}
-                </span>
-              </Tooltip>
-              
+              </span>
+            </Tooltip>
+
             {/* </div> */}
-            <div  className="flex justify-around items-center">
+            <div className="flex justify-around items-center">
               <small className={`text-muted`}>
                 {items[dataIndex].utm_medium
                   ? items[dataIndex].utm_medium
@@ -112,7 +112,7 @@ const Leads = () => {
               </small>
             </div>
           </div>
-          
+
         ),
       },
     },
@@ -155,18 +155,18 @@ const Leads = () => {
     },
   ];
 
-  const SendCRM = ({ids, setSelectedRows}) => {
+  const SendCRM = ({ ids, setSelectedRows }) => {
 
     //find the elements in the array
-    const positions = ids.map((id)=>{
+    const positions = ids.map((id) => {
       return items.map((e) => { return e.id; }).indexOf(id);
     });
 
     let notPending = false;
-    
+
     //check if all of them are pending
-    for(let i = 0; i < positions.length; i++){
-      if(items[positions[i]].storage_status !== 'PENDING') {
+    for (let i = 0; i < positions.length; i++) {
+      if (items[positions[i]].storage_status !== 'PENDING') {
         notPending = true;
         break;
       }
@@ -176,14 +176,16 @@ const Leads = () => {
       <div>
         <Tooltip title={!notPending ? "Send to CRM" : "Select Pending leads only"}>
           <IconButton
-            disabled={notPending}
+          // disabled={notPending}
           >
             <ArrowUpwardRounded
               onClick={async () => {
-                const { data } = await bc.marketing()
-                  .bulkSendToCRM(ids);
-                setSelectedRows([]);
-                return data;
+                if (!notPending) {
+                  const { data } = await bc.marketing()
+                    .bulkSendToCRM(ids);
+                  setSelectedRows([]);
+                  return data;
+                }
               }}
             />
           </IconButton>

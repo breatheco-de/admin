@@ -4,11 +4,18 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';
 import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -162,22 +169,48 @@ const Students = () => {
           view="student?"
           historyReplace="/admissions/students"
           singlePage=""
-          options={{
-            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-              <AddBulkToCohort
-                selectedRows={selectedRows}
-                displayData={displayData}
-                setSelectedRows={setSelectedRows}
-                items={items}
-              />
-            ),
-          }}
+          // options={{
+          //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+          //     <AddBulkToCohort
+          //       selectedRows={selectedRows}
+          //       displayData={displayData}
+          //       setSelectedRows={setSelectedRows}
+          //       items={items}
+          //     />
+          //   ),
+          // }}
+          bulkActions={(props) => (
+            <AddBulkToCohort
+              items={items}
+              {...props}
+            />
+          )}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyStudents(querys);
             setItems(data.results);
             return data;
           }}
           deleting={async (querys) => {
+            console.log(querys);
+            const positions = querys.map((id) => {
+              return items.map((e) => { return e.id; }).indexOf(id);
+            });
+            let notRecent = false;
+
+            //check if all of them are recent
+            for (let i = 0; i < positions.length; i++) {
+              if (dayjs(items[positions[i]].created_at).isBefore(dayjs().add(30, 'minute'))) {
+                notRecent = true;
+                break;
+              }
+            }
+            console.log(positions);
+            if(notRecent){
+              toast.error(('You may only delete recently created users', toastOption));
+              return 
+            }
+            // toast.error(('You may only delete recently created users', toastOption));
+            // return 
             const { status } = await bc.admissions().deleteStudentBulk(querys);
             return status;
           }}
