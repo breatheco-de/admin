@@ -38,7 +38,7 @@ const InvoiceDetail = () => {
   const [bill, setBill] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async () => {
+  const getBill = async () => {
     try {
       setLoading(true);
       const { data } = await bc.mentorship().getSingleAcademyMentorshipBill(invoiceID);
@@ -47,7 +47,10 @@ const InvoiceDetail = () => {
     } catch (e) {
       console.log(e);
     }
+  }
 
+  useEffect(async () => {
+    getBill();
   }, []);
 
   const InputAccounted = ({ session, index }) => {
@@ -60,6 +63,8 @@ const InvoiceDetail = () => {
           accounted_duration: dayjs.duration({minutes: accounted}).asSeconds(),
           mentor: session.mentor.id
         });
+
+      getBill();
     }
 
     return (
@@ -87,7 +92,7 @@ const InvoiceDetail = () => {
     )
   }
 
-  if (loading) return <MatxLoading />
+  // if (loading) return <MatxLoading />
 
   return (
     <div className="m-sm-30">
@@ -108,9 +113,9 @@ const InvoiceDetail = () => {
                 }}
               />
             </IconButton>
-            <Button variant="contained" color="primary">
+            {/* <Button variant="contained" color="primary">
               Print Invoice
-            </Button>
+            </Button> */}
           </div>
           <div className="flex justify-between">
             <div className="" id="order-info">
@@ -178,6 +183,7 @@ const InvoiceDetail = () => {
           <p>{`Total: $${Math.round(bill?.total_price * 100) / 100}`}</p>
         </div>
       </Card>
+      {loading && <MatxLoading />}
     </div>
   );
 };

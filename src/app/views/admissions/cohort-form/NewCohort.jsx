@@ -346,6 +346,7 @@ const NewCohort = () => {
                       />
                     }
                     label="This cohort never ends."
+                    style={{marginRight:'5px'}}
                   />
                   <HelpIcon message={helpText} link={helpLink} />
                 </Grid>

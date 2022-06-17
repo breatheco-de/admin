@@ -5,7 +5,7 @@ import {
 import HelpOutline from '@material-ui/icons/HelpOutline';
 // import { Link } from 'react-router-dom';
 
-const HelpIcon = ({ message, link }) => {
+const HelpIcon = ({ message, link, styles }) => {
 
   return (
     <>
@@ -19,7 +19,7 @@ const HelpIcon = ({ message, link }) => {
             }
         }}
     >
-        <HelpOutline />
+        <HelpOutline cursor={link && "pointer"} style={{verticalAlign:'middle', ...styles}} />
       </Tooltip>
     </>
   );
