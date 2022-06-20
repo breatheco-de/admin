@@ -191,26 +191,6 @@ const Students = () => {
             return data;
           }}
           deleting={async (querys) => {
-            console.log(querys);
-            const positions = querys.map((id) => {
-              return items.map((e) => { return e.id; }).indexOf(id);
-            });
-            let notRecent = false;
-
-            //check if all of them are recent
-            for (let i = 0; i < positions.length; i++) {
-              if (dayjs(items[positions[i]].created_at).isBefore(dayjs().add(30, 'minute'))) {
-                notRecent = true;
-                break;
-              }
-            }
-            console.log(positions);
-            if(notRecent){
-              toast.error(('You may only delete recently created users', toastOption));
-              return 
-            }
-            // toast.error(('You may only delete recently created users', toastOption));
-            // return 
             const { status } = await bc.admissions().deleteStudentBulk(querys);
             return status;
           }}
