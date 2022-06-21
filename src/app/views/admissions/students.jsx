@@ -4,11 +4,18 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';
 import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -66,6 +73,12 @@ const Students = () => {
             <div className="ml-3">
               <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
               <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+              {'  '}
+              {dayjs().isBefore(dayjs(items[i].created_at).add(30, 'minutes')) &&
+                <Tooltip title="Created less than 30 minutes ago">
+                  <small className="text-muted text-secondary">RECENT</small>
+                </Tooltip>
+              }
             </div>
           </div>
         ),
@@ -162,16 +175,22 @@ const Students = () => {
           view="student?"
           historyReplace="/admissions/students"
           singlePage=""
-          options={{
-            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-              <AddBulkToCohort
-                selectedRows={selectedRows}
-                displayData={displayData}
-                setSelectedRows={setSelectedRows}
-                items={items}
-              />
-            ),
-          }}
+          // options={{
+          //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+          //     <AddBulkToCohort
+          //       selectedRows={selectedRows}
+          //       displayData={displayData}
+          //       setSelectedRows={setSelectedRows}
+          //       items={items}
+          //     />
+          //   ),
+          // }}
+          bulkActions={(props) => (
+            <AddBulkToCohort
+              items={items}
+              {...props}
+            />
+          )}
           search={async (querys) => {
             const { data } = await bc.auth().getAcademyStudents(querys);
             setItems(data.results);

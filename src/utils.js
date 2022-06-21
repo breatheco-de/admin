@@ -184,14 +184,18 @@ export function resolveResponse(res) {
   };
   if (res.config.method !== 'get' && res.status >= 200) {
     let msg = `${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`;
-    if(res.status === 207 && axios.scopes[res.config.url] === 'Event'){
+    if(res.status === 207){
 
-      let joinFailure = res.data.failure.map((fail)=>{
-        return fail.resources
+      let joinFailure = res.data.failure[0].resources.map((fail)=>{
+        return fail.display_value
       })
 
-      if(res.data.success.length !== 0) msg = `The events ${res.data.success.join(',')} were draft but the events ${joinFailure.flat().join(',')} were not`;
-      else msg = `The events ${joinFailure.flat().join(',')} were not Draft`;
+      let joinSuccess = res.data.success[0].resources.map((success)=>{
+        return success.display_value
+      })
+
+      if(res.data.success.length !== 0) msg = `The ${axios.scopes[res.config.url]} ${joinSuccess.join(',')} were ${methods[res.config.method]} but the ${axios.scopes[res.config.url]} ${joinFailure.flat().join(',')} were not`;
+      else msg = `${res.data.failure[0].detail}`;
       return toast.warning(msg, toastOption);
     }
 
