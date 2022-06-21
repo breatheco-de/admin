@@ -83,7 +83,7 @@ const CohortDetails = ({
     }
   }, []);
 
-  let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts here.`;
+  let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
   return (
