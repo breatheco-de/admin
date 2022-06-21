@@ -73,6 +73,12 @@ const Students = () => {
             <div className="ml-3">
               <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
               <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+              {'  '}
+              {dayjs().isBefore(dayjs(items[i].created_at).add(30, 'minutes')) &&
+                <Tooltip title="Created less than 30 minutes ago">
+                  <small className="text-muted text-secondary">RECENT</small>
+                </Tooltip>
+              }
             </div>
           </div>
         ),
