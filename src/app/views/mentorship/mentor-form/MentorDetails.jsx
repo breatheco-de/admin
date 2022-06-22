@@ -76,6 +76,7 @@ const MentorDetails = ({ user, staffId }) => {
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src={mentor?.user.profile?.avatar_url} />
         <h5 className="mt-4 mb-2">{`${mentor?.user.first_name} ${mentor?.user.last_name}`}</h5>
+        <h5 className="mb-2">{`${mentor?.user.email}`}</h5>
         <button
           type="button"
           className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
