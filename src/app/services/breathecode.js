@@ -71,7 +71,7 @@ class BreatheCodeClient {
                 const qs = query.join(",");
                 return axios.bcDelete(
                     "Cohort",
-                    `${this.host}/auth/academy/student?id=${qs}`
+                    `${this.host}/auth/academy/student?id=${qs}&recent_only=True`
                 );
             },
             deleteCohortsBulk: (query) => {

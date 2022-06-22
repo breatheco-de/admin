@@ -7,10 +7,10 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
+import { toast } from 'react-toastify';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import { useQuery } from '../../hooks/useQuery';
 import { getSession } from '../../redux/actions/SessionActions';
-import { toast } from 'react-toastify';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
