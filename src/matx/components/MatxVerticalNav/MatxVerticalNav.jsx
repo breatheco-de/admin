@@ -48,9 +48,14 @@ const MatxVerticalNav = () => {
 
   const renderLevels = (data) => data.filter((item) => {
     let visible = true;
-    
-    if(!settings.beta && item.beta === true) return false;
-    if(Array.isArray(item.capabilities) && !item.capabilities.some(c => capabilities.includes(c))) return false;
+
+    if (!settings.beta && item.beta === true) return false;
+    if (Array.isArray(item.children)) {
+      const allChildrenCaps = item.children.reduce((allRoles, child) => [...allRoles, ...(child.capabilities || [])], []);
+      console.log("reduce", allChildrenCaps)
+      if (!allChildrenCaps.some(c => capabilities.includes(c))) return false;
+    }
+    else if (Array.isArray(item.capabilities) && !item.capabilities.some(c => capabilities.includes(c))) return false;
 
     return true;
   }).map((item, index) => {
@@ -59,10 +64,10 @@ const MatxVerticalNav = () => {
         <p
           key={index}
           className={clsx({
-       'px-4 mb-2 mt-6 uppercase text-12 sidenavHoverShow': true,
-       [classes.label]: true,
-       hidden: mode === 'compact',
-     })}
+            'px-4 mb-2 mt-6 uppercase text-12 sidenavHoverShow': true,
+            [classes.label]: true,
+            hidden: mode === 'compact',
+          })}
         >
           {item.label}
         </p>
@@ -110,9 +115,9 @@ const MatxVerticalNav = () => {
             </span>
             <div className="mx-auto" />
             {item.badge && (
-            <div className={`rounded bg-${item.badge.color} px-1 py-1px`}>
-              {item.badge.value}
-            </div>
+              <div className={`rounded bg-${item.badge.color} px-1 py-1px`}>
+                {item.badge.value}
+              </div>
             )}
           </TouchRipple>
         </a>
@@ -137,20 +142,20 @@ const MatxVerticalNav = () => {
           ) : (
             <>
               <div
-                    className={clsx({
-                      'nav-bullet p-2px rounded ml-6 mr-2': true,
-                      [classes.bulletIcon]: true,
-                      hidden: mode === 'compact',
-                    })}
-                  />
+                className={clsx({
+                  'nav-bullet p-2px rounded ml-6 mr-2': true,
+                  [classes.bulletIcon]: true,
+                  hidden: mode === 'compact',
+                })}
+              />
               <div
-                    className={clsx({
-                      'nav-bullet-text ml-5 text-11': true,
-                      hidden: mode !== 'compact',
-                    })}
-                  >
-                    {item.iconText}
-                  </div>
+                className={clsx({
+                  'nav-bullet-text ml-5 text-11': true,
+                  hidden: mode !== 'compact',
+                })}
+              >
+                {item.iconText}
+              </div>
             </>
           )}
           <span
@@ -163,15 +168,15 @@ const MatxVerticalNav = () => {
           </span>
           <div className="mx-auto" />
           {item.badge && (
-          <div
-            className={clsx(
-              `rounded bg-${item.badge.color} px-1 py-1px`,
-              'sidenavHoverShow',
-              classes.itemIcon,
-            )}
-          >
-            {item.badge.value}
-          </div>
+            <div
+              className={clsx(
+                `rounded bg-${item.badge.color} px-1 py-1px`,
+                'sidenavHoverShow',
+                classes.itemIcon,
+              )}
+            >
+              {item.badge.value}
+            </div>
           )}
         </TouchRipple>
       </NavLink>
