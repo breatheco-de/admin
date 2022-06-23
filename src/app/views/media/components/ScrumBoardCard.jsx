@@ -12,14 +12,16 @@ const ScrumBoardCard = ({ card }) => {
         attachments,
         comments,
     } = card;
-
+    console.log("card", card)
     return (
         <div className="scrum-board-card">
             <div className="px-4 py-3">
                 <div className="flex mb-3 font-medium">
                     <ScrumBoardLabelBar
-                        key={card.type}
-                        color={labels[card.type.toLowerCase()].color}
+                        color={labels[card.test_status.toLowerCase()]}
+                    ></ScrumBoardLabelBar>
+                    <ScrumBoardLabelBar
+                        color={labels[card.sync_status.toLowerCase()]}
                     ></ScrumBoardLabelBar>
                 </div>
 

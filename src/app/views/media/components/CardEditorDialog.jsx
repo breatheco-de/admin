@@ -8,7 +8,7 @@ import {
   Divider,
   IconButton,
   Grid,
-  Card,
+  Chip,
   MenuItem,
   Input,
   FormControlLabel,
@@ -112,16 +112,13 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
 
           <div className="ml-10">
             <div className="mb-4 flex flex-wrap">
-              <Button
-                key={card.type}
-                size="small"
-                variant="contained"
-                className={`capitalize mr-1 text-white text-small bg-${labels[card.type.toLowerCase()].color}`}
-              >
-                {card.type}
-              </Button>
+              <Chip
+                label={card.type}
+                variant="outlined"
+                className={`capitalize mr-1 mt-2 text-white text-small bg-${labels[card.test_status.toLowerCase()]}`}
+              />
               <div className="flex relative face-group">
-                {card.members.length === 0 ? <Tooltip title="No one has been assigned to this card">
+                {card.members.length === 0 ? <Tooltip title="No one has been assigned to this card, click to assign">
                   <IconButton>
                     <Icon>person_add</Icon>
                   </IconButton>
@@ -129,17 +126,36 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
                   card.members.map((member) => (
                     <Tooltip title={member.name}><Avatar
                       key={member.id}
-                      className="avatar"
+                      className="avatar mt-2 ml-2"
                       src={member.avatar}
                     /></Tooltip>
                   ))}
+                <Tooltip title={`Test status is ${card.test_status}, click to test again`}>
+                  <IconButton>
+                    <Icon color={labels[card.test_status.toLowerCase()]}>{card.sync_status === "OK" ? 'check_circle' : 'cancel'}</Icon>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={`Sync status is ${card.test_status}, click to sync again`}>
+                  <IconButton color={labels[card.sync_status.toLowerCase()]}>
+                    {card.sync_status === "OK" ? <Icon>cloud_done</Icon> : <Icon>cloud_download</Icon>}
+                  </IconButton>
+                </Tooltip>
               </div>
             </div>
           </div>
         </div>
+        <div className="px-sm-24">
+          <div className="flex items-center mb-2">
+            <Icon className="text-muted">search</Icon>
+            <h6 className="m-0 ml-4 uppercase text-muted">SEO Keywords</h6>
+          </div>
+          <div className="ml-10 mb-4 flex">
+            {card.seo_keywords.map(k => <Chip size="small" label={k} color='gray' className="mr-2" />)}
+          </div>
+        </div>
 
         <Scrollbar className="relative pt-4 mb-4 max-h-380">
-          <div className="px-sm-24 pt-4">
+          <div className="px-sm-24">
             <div className="flex items-center mb-2">
               <Icon className="text-muted">description</Icon>
               <h6 className="m-0 ml-4 uppercase text-muted">description</h6>
@@ -147,7 +163,6 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
             <div className="ml-10 mb-4 flex">
               <TextField
                 className="text-muted"
-                onChange={handleChange}
                 name="description"
                 value={card.description}
                 variant="outlined"
@@ -155,10 +170,23 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
                 multiline
               />
             </div>
-
           </div>
-
-          <Divider className="my-4"></Divider>
+          <div className="px-sm-24">
+            <div className="flex items-center mb-2">
+              <Icon className="text-muted">insert_link</Icon>
+              <h6 className="m-0 ml-4 uppercase text-muted">Article URL</h6>
+            </div>
+            <div className="ml-10 mb-4 flex">
+              <TextField
+                className="text-muted"
+                onChange={handleChange}
+                name="description"
+                value={card.url}
+                variant="outlined"
+                fullWidth
+              />
+            </div>
+          </div>
 
           {/* <div className="px-sm-24">
             <div className="flex items-center mb-2">
@@ -207,14 +235,6 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
           </div> */}
         </Scrollbar>
 
-        <div className="px-sm-24 mb-3 flex justify-end">
-          <Button className="mr-3" onClick={closeDialog}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
-            Save
-          </Button>
-        </div>
       </div>
     </Dialog>
   );

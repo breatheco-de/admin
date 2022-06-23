@@ -11,6 +11,9 @@ export const newCard = (asset) => {
         id: asset.slug,
         title: asset.title,
         type: asset.asset_type,
+        seo_keywords: asset.seo_keywords || [],
+        test_status: asset.test_status || 'PENDING',
+        sync_status: asset.sync_status || 'PENDING',
         members: asset.author ? [newMember(asset.author)] : [],
         description: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
         attachments: [
@@ -48,20 +51,9 @@ export const newBoard = ({ title, member_ids, columns }) => {
 }
 
 export const labels = {
-    lesson: {
-      title: "Lesson",
-      color: "error"
-    },
-    article: {
-      title: "Article",
-      color: "green"
-    },
-    project: {
-      title: "Project",
-      color: "secondary"
-    },
-    exercise: {
-      title: "Exercise",
-      color: "primary"
-    }
+    error: "error",
+    ok: "green",
+    warning: "warning",
+    pending: "warning",
+    undefined: "warning",
 };

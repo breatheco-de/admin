@@ -186,55 +186,6 @@ const BoardList = ({ data, handleCardClick }) => {
                 )}
             </Droppable>
 
-            {/* ===================================================== */}
-            {shouldOpenAddCard ? (
-                <ClickAwayListener onClickAway={() => openAddCard(false)}>
-                    <Card
-                        className="position-bottom border-radius-0 cursor-pointer p-4 w-full"
-                        elevation={5}
-                    >
-                        <TextField
-                            size="small"
-                            className="mb-3"
-                            variant="outlined"
-                            name="cardTitleText"
-                            value={cardTitleText}
-                            fullWidth
-                            onChange={handleChange}
-                            onKeyDown={handleChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton size="small" onClick={() => openAddCard(false)}>
-                                            <Icon fontSize="small">clear</Icon>
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <div className="flex justify-end">
-                            <Button
-                                onClick={handleAddNewCard}
-                                variant="contained"
-                                color="primary"
-                            >
-                                Add
-                            </Button>
-                        </div>
-                    </Card>
-                </ClickAwayListener>
-            ) : (
-                <div className="flex">
-                    <Button
-                        className="font-medium flex-grow border-radius-0"
-                        variant="contained"
-                        color="primary"
-                        onClick={() => openAddCard(true)}
-                    >
-                        + Add Card
-                    </Button>
-                </div>
-            )}
         </Card>
     );
 };
