@@ -263,9 +263,9 @@ class BreatheCodeClient {
                     `${this.host}/auth/academy/student`,
                     payload
                 ),
-            getAcademyMembers: (query) => {
+            getAcademyMembers: async (query) => {
                 const qs = serializeQuerystring(query);
-                return axios.bcGet(
+                return await axios.bcGet(
                     "Academy member",
                     `${this.host}/auth/academy/member${query ? `?${qs}` : ""}`
                 );
@@ -812,6 +812,21 @@ class BreatheCodeClient {
 
     registry() {
         return {
+            getAllAssets: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/asset${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            updateAsset: async (payload) =>
+                await axios.bcPut(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${payload.slug}`,
+                    payload
+                ),
             getAsset: (associatedSlug) =>
                 axios.bcGet(
                     "Asset",

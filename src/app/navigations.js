@@ -128,10 +128,31 @@ export const navigations = [
         ],
     },
     {
-        name: "Media Gallery",
+        name: "Content Gallery",
         icon: "collections",
-        path: "/media/gallery",
-        capabilities: ["read_media"],
+        children: [
+            {
+                name: "Media Gallery",
+                path: "/media/gallery",
+                iconText: "GAL",
+                capabilities: ["read_media"],
+            },
+            {
+                name: "Assets",
+                path: "/media/asset",
+                iconText: "ASS",
+                beta: true,
+                capabilities: ["read_asset"],
+            },
+            {
+                name: "Kanban",
+                path: "/media/kanban",
+                iconText: "KAN",
+                beta: true,
+                capabilities: ["read_asset"],
+            },
+        ]
+        
     },
     {
         name: "Mentorship",

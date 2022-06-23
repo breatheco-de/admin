@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb, MatxLoading } from '../../../matx';
@@ -125,7 +126,7 @@ const Certificates = () => {
                       <Tooltip
                         title={
                           items[i].preview_url !== null
-                            ? 'Preview Available'
+                            ? 'Preview Image'
                             : 'Preview Not available'
                         }
                       >
@@ -140,9 +141,9 @@ const Certificates = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Tooltip title="Image">
+                      <Tooltip title="Open in Web">
                         <IconButton>
-                          <Icon>search</Icon>
+                          <OpenInBrowser />
                         </IconButton>
                       </Tooltip>
                     </a>
