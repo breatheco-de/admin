@@ -186,11 +186,14 @@ export function resolveResponse(res) {
     let msg = `${axios.scopes[res.config.url]} ${methods[res.config.method]} successfully`;
     if(res.status === 207){
 
-      let joinFailure = res.data.failure[0].resources.map((fail)=>{
+      let joinFailure = [];
+      let joinSuccess = [];
+      
+      if(res.data.failure.length !== 0) joinFailure = res.data.failure[0].resources.map((fail)=>{
         return fail.display_value
       })
 
-      let joinSuccess = res.data.success[0].resources.map((success)=>{
+      if(res.data.success.length !== 0) joinSuccess = res.data.success[0].resources.map((success)=>{
         return success.display_value
       })
 
