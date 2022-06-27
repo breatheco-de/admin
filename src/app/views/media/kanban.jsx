@@ -77,6 +77,35 @@ const Board = () => {
       })
   }
 
+  const updateAsset = (updatedCard) => {
+    setBoard({
+      ...board, list: board.list.map(col => {
+        if (col.id === updatedCard.status) return {
+          ...col,
+          cardList: col.cardList.map(_card => {
+            return (_card.id == updatedCard.id) ? newCard(newCard) : _card
+          })
+        }
+        else return col
+      })
+    })
+  }
+  const handleCardAction = async (action, card) => {
+    if (action === 'assign') {
+      // TODO: if the session role is a content_write if will assign itself 
+      // otherwise it will show modal to search and pick a writter.
+    }
+    else {
+      const resp = await bc.registry().assetAction(card.slug, action);
+      if (resp.status == 200) updateAsset(resp.data);
+    }
+  }
+
+  const handleCardUpdate = async (_c) => {
+    const resp = await bc.registry().updateAsset({ url: _c.url, slug: _c.slug })
+    if (resp.status == 200) updateAsset(resp.data);
+  }
+
   return (
     <div className="scrum-board m-sm-30">
 
@@ -86,6 +115,8 @@ const Board = () => {
           // handleAddList={handleAddList}
           // handleAddNewCard={handleAddNewCard}
           handleMoveCard={handleMoveCard}
+          handleCardAction={handleCardAction}
+          onCardUpdate={handleCardUpdate}
         ></ScrumBoardContainer>
       </div>
     </div>

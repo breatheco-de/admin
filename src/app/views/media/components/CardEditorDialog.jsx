@@ -16,71 +16,48 @@ import {
   Tooltip,
   useMediaQuery,
 } from "@material-ui/core";
-import { useTheme } from "@material-ui/core/styles";
-import { getTimeDifference, generateRandomId } from "utils.js";
-import Scrollbar from "react-perfect-scrollbar";
-import { MatxMenu } from "matx";
-import { labels } from "./initBoard"
-import { updateCardInList } from "../../../redux/actions/ScrumBoardActions";
-import { CategoryRounded } from "@material-ui/icons";
+import dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
-const CardEditorDialog = ({ open, card, handleClose }) => {
-  const [state, setState] = useState({});
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { useTheme } from "@material-ui/core/styles";
+import Scrollbar from "react-perfect-scrollbar";
+import { labels, iconTypes } from "./initBoard"
+import bc from "../../../services/breathecode"
+
+const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpdate }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [comments, setComments] = useState([]);
+  const [url, setUrl] = useState(card.url);
+  const [newComment, setNewComment] = useState({});
 
   const closeDialog = () => {
     handleClose();
   };
 
-  const handleChange = (event) => {
-    let target = event.target;
-    let id = target.value;
-
-    if (target.name === "avatar") {
-      let { cardMembers, boardMembers } = state;
-      let member = boardMembers.find((user) => user.id === id);
-
-      if (!target.checked) {
-        cardMembers.splice(cardMembers.indexOf(member), 1);
-        setState({ ...state, cardMembers });
-      } else {
-        cardMembers.push(member);
-        setState({ ...state, cardMembers });
-      }
-    } else if (target.name === "label") {
-      let { labels } = state;
-      let label = labelList.find((item) => item.id === parseInt(id));
-
-      if (!target.checked) {
-        labels.splice(labels.indexOf(label), 1);
-        setState({ ...state, labels });
-      } else {
-        labels.push(label);
-        setState({ ...state, labels });
-      }
-    } else if (
-      event.key === "Enter" &&
-      !event.shiftKey &&
-      target.name === "commentText"
-    ) {
-      setState({
-        ...state,
-        [event.target.name]: event.target.value,
-      });
-      sendComment();
-    } else {
-      setState({
-        ...state,
-        [event.target.name]: event.target.value,
-      });
-    }
+  const sendComment = async () => {
+    const resp = await bc.registry().createAssetComment({ ...newComment, asset: card.id })
+    if (resp.status == 201) setComments([...comments, resp.data]);
   };
 
-  const handleSave = () => {
+  const toggleResolveComment = async (c) => {
+    const resp = await bc.registry().updateComment(c.id, { resolved: !c.resolved })
+    if (resp.status == 200) setComments(comments.map(com => com.id === resp.data.id ? resp.data : com));
+  };
 
-  }
+  const deleteComment = async (c) => {
+    const resp = await bc.registry().deleteComment(c.id)
+    if (resp.status == 204) setComments(comments.filter(com => com.id != c.id));
+  };
+
+  useEffect(async () => {
+    const resp = await bc.registry().getAssetComments(card.slug)
+    if (resp.status == 200) setComments(resp.data);
+  }, [])
+  useEffect(() => { setUrl(card.url) }, [card.url])
 
   return (
     <Dialog
@@ -91,18 +68,20 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
       scroll="body"
     >
       <div className="scrum-board">
+        {(card.sync_status != "OK" || card.test_status != "OK") && <Alert severity="warning">
+          <AlertTitle className="m-auto">{card.status_text}</AlertTitle>
+        </Alert>}
         <div className="px-sm-24 pt-sm-24">
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
-              <Icon className="text-muted">assignment</Icon>
+              <Icon className="text-muted">{iconTypes[card.type.toLowerCase()]}</Icon>
               <Input
                 className="flex-grow  ml-3 pl-3px pr-2 capitalize font-medium text-16"
                 type="text"
                 autoFocus
                 name="title"
-                onChange={handleChange}
                 disableUnderline={true}
-                value={card.title}
+                value={`${card.type}: ${card.title}`}
               ></Input>
             </div>
             <IconButton size="small" onClick={closeDialog}>
@@ -112,31 +91,25 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
 
           <div className="ml-10">
             <div className="mb-4 flex flex-wrap">
-              <Chip
-                label={card.type}
-                variant="outlined"
-                className={`capitalize mr-1 mt-2 text-white text-small bg-${labels[card.test_status.toLowerCase()]}`}
-              />
               <div className="flex relative face-group">
                 {card.members.length === 0 ? <Tooltip title="No one has been assigned to this card, click to assign">
-                  <IconButton>
+                  <IconButton onClick={() => handleAction('assign')}>
                     <Icon>person_add</Icon>
                   </IconButton>
                 </Tooltip> :
                   card.members.map((member) => (
-                    <Tooltip title={member.name}><Avatar
-                      key={member.id}
+                    <Tooltip title={member.name} key={member.id}><Avatar
                       className="avatar mt-2 ml-2"
                       src={member.avatar}
                     /></Tooltip>
                   ))}
                 <Tooltip title={`Test status is ${card.test_status}, click to test again`}>
-                  <IconButton>
-                    <Icon color={labels[card.test_status.toLowerCase()]}>{card.sync_status === "OK" ? 'check_circle' : 'cancel'}</Icon>
+                  <IconButton onClick={() => handleAction('test')}>
+                    <Icon color={labels[card.test_status.toLowerCase()]}>{card.test_status === "OK" ? 'check_circle' : 'cancel'}</Icon>
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={`Sync status is ${card.test_status}, click to sync again`}>
-                  <IconButton color={labels[card.sync_status.toLowerCase()]}>
+                  <IconButton color={labels[card.sync_status.toLowerCase()]} onClick={() => handleAction('sync')}>
                     {card.sync_status === "OK" ? <Icon>cloud_done</Icon> : <Icon>cloud_download</Icon>}
                   </IconButton>
                 </Tooltip>
@@ -144,31 +117,25 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
             </div>
           </div>
         </div>
-        <div className="px-sm-24">
+        {card.seo_keywords && card.seo_keywords.length > 0 && <div className="px-sm-24">
           <div className="flex items-center mb-2">
             <Icon className="text-muted">search</Icon>
             <h6 className="m-0 ml-4 uppercase text-muted">SEO Keywords</h6>
           </div>
           <div className="ml-10 mb-4 flex">
-            {card.seo_keywords.map(k => <Chip size="small" label={k} color='gray' className="mr-2" />)}
+            {card.seo_keywords.map(k => <Chip key={k} size="small" label={k} color='gray' className="mr-2" />)}
           </div>
-        </div>
+        </div>}
 
-        <Scrollbar className="relative pt-4 mb-4 max-h-380">
+        <Scrollbar className="relative mb-4 max-h-380">
           <div className="px-sm-24">
             <div className="flex items-center mb-2">
               <Icon className="text-muted">description</Icon>
-              <h6 className="m-0 ml-4 uppercase text-muted">description</h6>
+              <h6 className="m-0 ml-4 uppercase text-muted">Requirements</h6>
             </div>
             <div className="ml-10 mb-4 flex">
-              <TextField
-                className="text-muted"
-                name="description"
-                value={card.description}
-                variant="outlined"
-                fullWidth
-                multiline
-              />
+              {(!card.requirements || card.requirements == "") && <span>No requirements defined.</span>}
+              {card.requirements}
             </div>
           </div>
           <div className="px-sm-24">
@@ -179,32 +146,47 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
             <div className="ml-10 mb-4 flex">
               <TextField
                 className="text-muted"
-                onChange={handleChange}
+                onChange={(e) => setUrl(e.target.value)}
                 name="description"
-                value={card.url}
+                value={url}
                 variant="outlined"
                 fullWidth
               />
+              {url != card.url && <Button variant="contained" color="primary" onClick={() => handleCardUpdate({ ...card, url })}>Save</Button>}
             </div>
           </div>
 
-          {/* <div className="px-sm-24">
+          <div className="px-sm-24">
             <div className="flex items-center mb-2">
               <Icon className="text-muted">message</Icon>
               <h6 className="m-0 ml-4 uppercase text-muted">comments</h6>
             </div>
             <div className="comments ml-10">
               {comments.map((comment) => {
-                let user = memberList.find((user) => user.id === comment.uid);
                 return (
                   <div className="mb-4" key={comment.id}>
                     <div className="flex items-center mb-2">
-                      <Avatar className="avatar size-36" src={user.avatar} />
+                      <Avatar className="avatar size-36" src={comment.author.profile.avatar_url} />
                       <div className="ml-3">
-                        <h6 className="m-0">{user.name}</h6>
+                        <h6 className="m-0">{comment.author.first_name || "User without first name"} {comment.author.last_name}</h6>
                         <small>
-                          {getTimeDifference(new Date(comment.time))} ago
+                          {comment.created_at ? dayjs(comment.created_at).fromNow() : "0 sec ago"}
                         </small>
+                        <small>
+                          {comment.resolved ?
+                            <span><Icon size="small" className="text-11 ml-2">check</Icon> Resolved</span>
+                            :
+                            <span><Icon color="error" className="text-11 ml-2">cancel</Icon> Not resolved</span>
+                          }
+                        </small>
+                      </div>
+                      <div className="ml-3">
+                        <IconButton onClick={() => toggleResolveComment(comment)}>
+                          {comment.resolved ? <Icon size="small">undo</Icon> : <Icon size="small">check</Icon>}
+                        </IconButton>
+                        {!comment.resolved && <IconButton onClick={() => deleteComment(comment)}>
+                          <Icon size="small">delete</Icon>
+                        </IconButton>}
                       </div>
                     </div>
                     <p className="m-0 text-muted">{comment.text}</p>
@@ -216,11 +198,10 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
                 <div className="flex-grow flex">
                   <TextField
                     className="ml-3 text-muted"
-                    onChange={handleChange}
-                    onKeyDown={handleChange}
+                    onChange={(e) => setNewComment({ ...newComment, text: e.target.value })}
                     variant="outlined"
                     name="commentText"
-                    value={commentText || ""}
+                    value={newComment?.text || ""}
                     fullWidth
                     inputProps={{
                       style: {
@@ -232,11 +213,11 @@ const CardEditorDialog = ({ open, card, handleClose }) => {
                 <Button onClick={sendComment}>Send</Button>
               </div>
             </div>
-          </div> */}
+          </div>
         </Scrollbar>
 
-      </div>
-    </Dialog>
+      </div >
+    </Dialog >
   );
 };
 

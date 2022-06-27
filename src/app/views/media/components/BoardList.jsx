@@ -156,8 +156,8 @@ const BoardList = ({ data, handleCardClick }) => {
                         <Scrollbar className="relative h-380 px-4">
                             {column.cardList.map((card, index) => (
                                 <Draggable
-                                    key={card.id}
-                                    draggableId={card.id}
+                                    key={card.slug}
+                                    draggableId={card.slug}
                                     index={index}
                                     type="card"
                                 >

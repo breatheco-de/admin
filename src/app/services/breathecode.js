@@ -827,10 +827,37 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/asset/${payload.slug}`,
                     payload
                 ),
-            getAsset: (associatedSlug) =>
-                axios.bcGet(
+            assetAction: async (slug, action_slug) =>
+                await axios.bcPut(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${slug}/action/${action_slug}`
+                ),
+            createAssetComment: async (comment) =>
+                await axios.bcPost(
+                    "Comment",
+                    `${this.host}/registry/academy/asset/comment`,
+                    comment
+                ),
+            updateComment: async (id, payload) =>
+                await axios.bcPut(
+                    "Comment",
+                    `${this.host}/registry/academy/asset/comment/${id}`,
+                    payload
+                ),
+            deleteComment: async (id) =>
+                await axios.bcDelete(
+                    "Comment",
+                    `${this.host}/registry/academy/asset/comment/${id}`,
+                ),
+            getAsset: async (associatedSlug) =>
+                await axios.bcGet(
                     "Asset",
                     `${this.host}/registry/asset/${associatedSlug}`
+                ),
+            getAssetComments: async (asset_slug) =>
+                await axios.bcGet(
+                    "Comment",
+                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}`
                 ),
         };
     }

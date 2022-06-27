@@ -8,11 +8,19 @@ export const colorStyles = makeStyles(({ palette, ...theme }) => ({
             backgroundColor: "rgba(9, 182, 109, 1) !important",
             background: "#08ad6c !important",
         },
+        ".bg-success": {
+            backgroundColor: "rgba(9, 182, 109, 1) !important",
+            background: "#08ad6c !important",
+        },
         ".bg-error": {
             background: `${palette.error.main} !important`,
             color: "white !important",
         },
         ".bg-warning": {
+            background: `${palette.warning.main} !important`,
+            color: "white !important",
+        },
+        ".bg-action": {
             background: `${palette.warning.main} !important`,
             color: "white !important",
         },
