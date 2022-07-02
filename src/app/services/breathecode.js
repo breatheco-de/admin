@@ -821,6 +821,30 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllClusters: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/keywordcluster${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            getAllTechnologies: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/technology${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            updateTechnology: async (slug, payload) =>
+                await axios.bcPut(
+                    "Asset",
+                    `${this.host}/registry/academy/technology/${slug}`,
+                    payload
+                ),
             updateAsset: async (payload) =>
                 await axios.bcPut(
                     "Asset",
@@ -831,6 +855,12 @@ class BreatheCodeClient {
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/asset/${slug}/action/${action_slug}`
+                ),
+            createAsset: async (payload) =>
+                await axios.bcPost(
+                    "Asset",
+                    `${this.host}/registry/academy/asset`,
+                    payload
                 ),
             createAssetComment: async (comment) =>
                 await axios.bcPost(

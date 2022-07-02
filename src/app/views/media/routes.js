@@ -16,6 +16,16 @@ const routes = [
     exact: true,
     component: React.lazy(() => import('./kanban')),
   },
+  {
+    path: '/media/seo/cluster',
+    exact: true,
+    component: React.lazy(() => import('./clusters')),
+  },
+  {
+    path: '/media/seo/technology',
+    exact: true,
+    component: React.lazy(() => import('./technologies')),
+  },
 ];
 
 export default routes;

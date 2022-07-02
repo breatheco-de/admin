@@ -151,6 +151,13 @@ export const navigations = [
                 beta: true,
                 capabilities: ["read_asset"],
             },
+            {
+                name: "SEO",
+                path: "/media/seo/cluster",
+                iconText: "SEO",
+                beta: true,
+                capabilities: ["read_asset"],
+            },
         ]
         
     },

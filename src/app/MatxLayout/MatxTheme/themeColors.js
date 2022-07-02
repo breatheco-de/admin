@@ -57,6 +57,7 @@ export const themeColors = {
         main: '#EFA32E',
         contrastText: textLight.primary,
       },
+      error: errorColor,
       text: textLight,
     },
   },
