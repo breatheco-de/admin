@@ -192,7 +192,7 @@ const CohortStudents = ({ slug, cohortId }) => {
           onChange={(user) => setUser(user)}
           width="100%"
           label="Search Users"
-          asyncSearch={(searchTerm) => bc.auth().getAcademyMembers({like: searchTerm, include_students: true})}
+          asyncSearch={(searchTerm) => bc.auth().getAcademyMembers({like: searchTerm, include: 'student'})}
           debounced
           getOptionLabel={(option) => `${option.first_name} ${option.last_name}, (${option.email})`}
         >
