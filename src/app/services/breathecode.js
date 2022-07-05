@@ -4,6 +4,7 @@ function serializeQuerystring(object) {
     const querystring =
         object !== undefined
             ? Object.keys(object)
+                  .filter(key => object[key] != undefined)
                   .map((key) => `${key}=${object[key]}`)
                   .join("&")
             : "";
@@ -831,7 +832,7 @@ class BreatheCodeClient {
                 );
             },
             getAllTechnologies: async (query) => {
-                const qs = serializeQuerystring(query);
+                const qs = typeof(query) == 'object' ? serializeQuerystring(query) : query.replace("?", "");
                 return await axios.bcGet(
                     "Asset",
                     `${this.host}/registry/academy/technology${
@@ -843,6 +844,12 @@ class BreatheCodeClient {
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/technology/${slug}`,
+                    payload
+                ),
+            updateTechnologyBulk: async (slugs, payload) =>
+                await axios.bcPut(
+                    "Asset",
+                    `${this.host}/registry/academy/technology?slug=${slugs.join(",")}`,
                     payload
                 ),
             updateAsset: async (payload) =>

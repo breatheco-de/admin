@@ -108,7 +108,7 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
                     <Icon color={labels[card.test_status.toLowerCase()]}>{card.test_status === "OK" ? 'check_circle' : 'cancel'}</Icon>
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={`Sync status is ${card.test_status}, click to sync again`}>
+                <Tooltip title={`Sync status is ${card.sync_status}, click to sync again`}>
                   <IconButton color={labels[card.sync_status.toLowerCase()]} onClick={() => handleAction('sync')}>
                     {card.sync_status === "OK" ? <Icon>cloud_done</Icon> : <Icon>cloud_download</Icon>}
                   </IconButton>

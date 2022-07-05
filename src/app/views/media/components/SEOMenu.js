@@ -29,7 +29,11 @@ const SEOMenu = () => <Card className="pb-8">
     </Button>
     <Button onClick={() => history.push('./technology')} variant="text" className="w-full justify-start px-3">
         <Icon fontSize="small">important_devices</Icon>
-        <span className="ml-2">Technologies</span>
+        <span className="ml-2">Main Technologies</span>
+    </Button>
+    <Button onClick={() => history.push('./technology?include_children=true')} variant="text" className="w-full justify-start px-3">
+        <Icon fontSize="small">important_devices</Icon>
+        <span className="ml-2">All Technologies</span>
     </Button>
     {/* <Button onClick={() => history.push('./keyword')} variant="text" className="w-full justify-start px-3">
         <Icon fontSize="small">filter_1</Icon>

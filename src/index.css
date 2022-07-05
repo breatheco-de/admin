@@ -10,36 +10,46 @@
   }
 } */
 
-.d-block{
-    display: block !important;
+.d-block {
+  display: block !important;
 }
 
-.MuiTableCell-root{
+.MuiTableCell-root {
   word-break: unset !important;
 }
 
-.underline{ text-decoration: underline; }
-.pointer{ cursor: pointer;}
+.underline {
+  text-decoration: underline;
+}
 
-.MuiFormHelperText-contained{
+.pointer {
+  cursor: pointer !important;
+}
+
+.pointer:hover {
+  alpha: 0.7 !important;
+}
+
+.MuiFormHelperText-contained {
   margin-left: 0 !important;
 }
 
-.no-margin{
+.no-margin {
   margin: 0;
 }
 
-.red{
+.red {
   color: red;
 }
 
-.green{
+.green {
   color: green;
 }
 
-.yellow{
+.yellow {
   background-color: rgb(255, 234, 0);
 }
-.orange{
+
+.orange {
   background-color: rgb(255, 153, 0);
 }
