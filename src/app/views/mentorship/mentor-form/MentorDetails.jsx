@@ -75,10 +75,11 @@ const MentorDetails = ({ user, staffId }) => {
     <Card className="pt-6" elevation={3}>
       <div className="flex-column items-center mb-6">
         <Avatar className="w-84 h-84" src={mentor?.user.profile?.avatar_url} />
-        <h5 className="mt-4 mb-2">{ }</h5>
+        <h5 className="mt-4 mb-2">{`${mentor?.user.first_name} ${mentor?.user.last_name}`}</h5>
+        <h5 className="mb-2">{`${mentor?.user.email}`}</h5>
         <button
           type="button"
-          className="px-3 text-11 py-3px border-radius-4 text-white bg-green mr-3"
+          className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
           onClick={() => setRoleDialog(true)}
           style={{ cursor: 'pointer' }}
         >
@@ -119,7 +120,7 @@ const MentorDetails = ({ user, staffId }) => {
                   value={mentorSlug}
                 />
               </Grid>
-              <Grid item md={3} sm={4} xs={12}>
+              {/* <Grid item md={3} sm={4} xs={12}>
                 First Name
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
@@ -163,7 +164,7 @@ const MentorDetails = ({ user, staffId }) => {
                   value={values.email}
                   onChange={handleChange}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item md={3} sm={4} xs={12}>
                 Backup Meeting URL
               </Grid>

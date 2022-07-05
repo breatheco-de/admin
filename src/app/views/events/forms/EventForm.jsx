@@ -7,7 +7,7 @@ import {
 import dayjs from 'dayjs';
 import { useParams, useHistory } from 'react-router-dom';
 import bc from '../../../services/breathecode';
-import { Breadcrumb } from '../../../../matx';
+import { Breadcrumb, ConfirmationDialog } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { MediaInput } from '../../../components/MediaInput';
 import useAuth from '../../../hooks/useAuth';
@@ -40,6 +40,7 @@ const EventForm = () => {
   const [eventType, setEventType] = useState(null);
   const [slug, setSlug] = useState('');
   const [title, setTitle] = useState('');
+  const [showDialog, setShowDialog] = useState(false);
   const { id } = useParams();
   const { user } = useAuth();
   const history = useHistory();
@@ -78,13 +79,12 @@ const EventForm = () => {
 
     if (id) {
 
-      const { academy, status, ...rest } = values;
+      const { academy, status, slug, ...rest } = values;
       
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
           title,
-          slug,
           tags: tags.join(","),
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
@@ -92,9 +92,12 @@ const EventForm = () => {
         })
         .then(({ data }) => {
 
-          if (data.academy !== undefined && !id) history.push('/events/list');
+          if (data.academy !== undefined) history.push('/events/list');
         })
-        .catch((error) => error);
+        .catch((error) => {
+          setShowDialog(false);
+          return error
+        });
     } else {
       const { eventbrite_sync_status, ...restValues } = values
       const payload = {
@@ -132,7 +135,10 @@ const EventForm = () => {
             history.push('/events/list')
           }
         })
-        .catch((error) => error);
+        .catch((error) => {
+          setShowDialog(false);
+          return error
+        });
     }
   };
 
@@ -157,6 +163,7 @@ const EventForm = () => {
     }
   }
 
+  const dialogText = 'Warning! Please make sure the chosen tags are ideal for this audience, choosing the wrong tags will mislead the AI algorithms and result in a bad marketing for this and future events';
 
   return (
     <div className="m-sm-30">
@@ -179,7 +186,7 @@ const EventForm = () => {
             In you "Sync with Eventbrite" the event will be published to eventbrite as a DRAFT and you will have to finish its publication on eventbrite.com
           </Alert>
         )}
-        <Formik initialValues={event} onSubmit={(values) => postEvent(values)} enableReinitialize
+        <Formik initialValues={event} onSubmit={() => setShowDialog(true)} enableReinitialize
           validate={(values)=>{
             let errors= {}
             if(!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))){
@@ -198,6 +205,13 @@ const EventForm = () => {
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
+              <ConfirmationDialog
+                open={showDialog}
+                onConfirmDialogClose={() => setShowDialog(false)}
+                text={dialogText}
+                title="Confirm"
+                onYesClick={()=>postEvent(values)}
+              />
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={1} sm={4} xs={12}>
                   Event Title
