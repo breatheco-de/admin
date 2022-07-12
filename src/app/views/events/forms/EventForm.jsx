@@ -32,7 +32,7 @@ const EventForm = () => {
     ending_at: '',
     host: '',
     online_event: false,
-    eventbrite_sync_status:'',
+    eventbrite_sync_status: '',
     sync_with_eventbrite: true,
   });
   const [venue, setVenue] = useState(null);
@@ -44,9 +44,9 @@ const EventForm = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const history = useHistory();
-  
+
   useEffect(() => {
-    if(!id) setSlug(slugify(title).toLowerCase());
+    if (!id) setSlug(slugify(title).toLowerCase());
   }, [title]);
 
   useEffect(() => {
@@ -62,11 +62,11 @@ const EventForm = () => {
 
           setTitle(data.title);
 
-          if(data.tags !== "") setTags( data.tags.split(",") );
-          if(data.slug) setSlug(data.slug);
-          if(data.event_type) setEventType({...data.event_type, academy: data.academy});
-          if(data.venue) setVenue({ ...data.venue });
-          
+          if (data.tags !== "") setTags(data.tags.split(","));
+          if (data.slug) setSlug(data.slug);
+          if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
+          if (data.venue) setVenue({ ...data.venue });
+
         })
         .catch((error) => error);
     }
@@ -80,7 +80,7 @@ const EventForm = () => {
     if (id) {
 
       const { academy, status, slug, ...rest } = values;
-      
+
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
@@ -114,7 +114,7 @@ const EventForm = () => {
           ...payload
         })
         .then(({ data }) => {
-          
+
           if (data.academy !== undefined) {
             setEvent({
               title: '',
@@ -142,28 +142,29 @@ const EventForm = () => {
     }
   };
 
-  const removeDuplicates = (arr)=> {
-    return arr.filter((item, 
-        index) => arr.indexOf(item) === index);
+  const removeDuplicates = (arr) => {
+    return arr.filter((item,
+      index) => arr.indexOf(item) === index);
   }
 
 
 
   const getTags = async () => {
-    try{
+    try {
       const { data } = await bc.marketing().getAcademyTags({ type: 'DISCOVERY' })
 
       let slugs = removeDuplicates(data.map((item) => {
         return item['slug'];
       }));
 
-      return { data: slugs}
-    } catch (err){
+      return { data: slugs }
+    } catch (err) {
       return err
     }
   }
 
-  const dialogText = 'Warning! Please make sure the chosen tags are ideal for this audience, choosing the wrong tags will mislead the AI algorithms and result in a bad marketing for this and future events';
+  const dialogText = 'Warning! Please make sure the chosen tags are ideal for this audience, choosing the wrong tags will mislead the AI algorithms and result in a bad marketing for this and future events.';
+  const dialogUrl = 'https://4geeksacademy.notion.site/Choosing-event-tags-e11bc8405ddd4ceead6a66161af03b6b';
 
   return (
     <div className="m-sm-30">
@@ -187,9 +188,9 @@ const EventForm = () => {
           </Alert>
         )}
         <Formik initialValues={event} onSubmit={() => setShowDialog(true)} enableReinitialize
-          validate={(values)=>{
-            let errors= {}
-            if(!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))){
+          validate={(values) => {
+            let errors = {}
+            if (!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))) {
               errors.ending_at = 'The ending date should be after the starting date'
             }
 
@@ -208,10 +209,20 @@ const EventForm = () => {
               <ConfirmationDialog
                 open={showDialog}
                 onConfirmDialogClose={() => setShowDialog(false)}
-                text={dialogText}
+                // text={dialogText}
                 title="Confirm"
-                onYesClick={()=>postEvent(values)}
-              />
+                onYesClick={() => postEvent(values)}
+              >
+                <p>{dialogText} <a
+                  style={{ textDecoration: 'underline' }}
+                  href={dialogUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Click here to learn more
+                </a></p>
+
+              </ConfirmationDialog>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={1} sm={4} xs={12}>
                   Event Title
@@ -226,7 +237,7 @@ const EventForm = () => {
                     variant="outlined"
 
                     value={title}
-                    onChange={(e)=>{setTitle(e.target.value)}}
+                    onChange={(e) => { setTitle(e.target.value) }}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -241,7 +252,7 @@ const EventForm = () => {
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}
-                    onChange={(e)=>{setSlug(e.target.value)}}
+                    onChange={(e) => { setSlug(e.target.value) }}
                   />
                   <small className="text-muted">Can only be updated when creating the event</small>
                 </Grid>
@@ -305,8 +316,8 @@ const EventForm = () => {
                     variant="outlined"
                     type="datetime-local"
                     value={values.starting_at}
-                    onChange={(e)=>{
-                      if(values.ending_at === ''){
+                    onChange={(e) => {
+                      if (values.ending_at === '') {
                         const newEnding = dayjs(e.target.value).add(2, 'h')
                         values.ending_at = dayjs(newEnding).format('YYYY-MM-DDTHH:mm');
                       }
@@ -454,7 +465,7 @@ const EventForm = () => {
                     size="small"
                     label="Tags"
                     debounced={false}
-                    isOptionEqualToValue={(option, value) => option === value}                
+                    isOptionEqualToValue={(option, value) => option === value}
                     multiple={true}
                     required={tags.length <= 1}
                     getOptionLabel={(option) => option}
