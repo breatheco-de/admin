@@ -7,11 +7,13 @@ const ConfirmationDialog = ({
   text,
   title = 'confirm',
   onYesClick,
+  ...props
 }) => (
   <Dialog maxWidth="xs" open={open} onClose={onConfirmDialogClose}>
     <div className="p-8 text-center w-360 mx-auto">
       <h4 className="capitalize m-0 mb-2">{title}</h4>
       <p>{text}</p>
+      {props.children}
       <div className="flex justify-center pt-2 m--2">
         <Button
           className="m-2 rounded hover-bg-primary px-6"
