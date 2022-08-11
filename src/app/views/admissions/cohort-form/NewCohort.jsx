@@ -443,10 +443,18 @@ const NewCohort = () => {
                     Create
                   </Button> */}
 
-                  <Button onClick={handleOpen} color="primary"
+                  <Button onClick={() =>{
+                    if(neverEnd == false){
+
+                      return handleOpen()
+                    }
+                    }
+                       
+                    }
+                  color="primary"
                   variant="contained"
                   type="submit"
-                  data-cy="submit">Open modal</Button>
+                  data-cy="submit">Create</Button>
                   <Modal
                     open={open}
                     onClose={handleClose}
