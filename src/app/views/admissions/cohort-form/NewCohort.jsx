@@ -23,7 +23,8 @@ import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from '../../../components/HelpIcon';
-import CohortNoEndModal from 'app/components/CohortNoEndModal.jsx';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 
 
 const slugify = require('slugify')
@@ -114,6 +115,28 @@ const NewCohort = () => {
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
+  const noEndStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -411,16 +434,32 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
-                
-                <Button
-                  color="primary"
+                  {/* <Button
+                    color="primary"
+                    variant="contained"
+                    type="submit"
+                    data-cy="submit"
+                  >
+                    Create
+                  </Button> */}
+
+                  <Button onClick={handleOpen} color="primary"
                   variant="contained"
                   type="submit"
-                  data-cy="submit"
-                >
-                  Create
-                </Button>
-                <CohortNoEndModal />
+                  data-cy="submit">Open modal</Button>
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                  >
+                    <Box sx={{ ...noEndStyle, width: 400 }}>
+                      <h2 >Confirm</h2>
+                      <p >
+                      Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
+                      </p>
+                      <a href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
+                    </Box>
+                  </Modal>
+                  
               </div>
             </form>
             
