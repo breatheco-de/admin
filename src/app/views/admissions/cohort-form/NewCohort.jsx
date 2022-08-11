@@ -23,6 +23,8 @@ import { Breadcrumb } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from '../../../components/HelpIcon';
+import CohortNoEndModal from 'app/components/CohortNoEndModal.jsx';
+
 
 const slugify = require('slugify')
 
@@ -409,6 +411,7 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
+                
                 <Button
                   color="primary"
                   variant="contained"
@@ -417,8 +420,10 @@ const NewCohort = () => {
                 >
                   Create
                 </Button>
+                <CohortNoEndModal />
               </div>
             </form>
+            
           )}
         </Formik>
       </Card>
