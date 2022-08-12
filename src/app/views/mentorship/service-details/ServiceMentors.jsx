@@ -160,7 +160,7 @@ const ServiceMentors = ({ serviceId, service }) => {
       singlePage=""
       historyReplace="/admin/syllabus"
       search={async (querys) => {
-        const { data } = await bc.mentorship().getAcademyMentors({ ...querys, service: service.slug });
+        const { data } = await bc.mentorship().getAcademyMentors({ ...querys, services: service.slug });
         setAllServiceMentors(data.results || data);
         return data;
       }}
