@@ -17,15 +17,12 @@ const propTypes = {
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
   const history = useHistory();
   const [mentorSlug, setMentorSlug] = useState('');
-  const [mentor, setMentor] = useState({});
+  const [mentor, setMentor] = useState({ syllabus: [] });
   const [services, setServices] = useState([]);
   const [syllabusArray, setSyllabusArray] = useState([]);
   const { user } = useAuth();
 
   const postMentor = (values) => {
-    // let serviceIndex = serviceList.filter((service) => {
-    //   return values.service === service.name
-    // })
     let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
     bc.mentorship().addAcademyMentor({
       academy: user.academy.id,
@@ -184,7 +181,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 size="small"
                 label="Services"
                 debounced={false}
-                isOptionEqualToValue={(option, value) => option.name === value.name}  
+                isOptionEqualToValue={(option, value) => option.name === value.name}
                 getOptionLabel={(option) => option.name}
                 multiple={true}
                 asyncSearch={() => bc.mentorship().getAllServices()}
