@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Grid, TextField, Button, MenuItem
+  Grid, TextField, Button, MenuItem,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom';
+import useAuth from '../../../../hooks/useAuth';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete'
 
 const propTypes = {
@@ -15,26 +16,28 @@ const propTypes = {
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
   const history = useHistory();
-  const [mentorSlug, setMentorSlug] = useState('')
-  const [mentor, setMentor] = useState({})
-
+  const [mentorSlug, setMentorSlug] = useState('');
+  const [mentor, setMentor] = useState({});
+  const [services, setServices] = useState([]);
   const [syllabusArray, setSyllabusArray] = useState([]);
+  const { user } = useAuth();
 
   const postMentor = (values) => {
-    let serviceIndex = serviceList.filter((service) => {
-      return values.service === service.name
-    })
+    // let serviceIndex = serviceList.filter((service) => {
+    //   return values.service === service.name
+    // })
     let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
     bc.mentorship().addAcademyMentor({
+      academy: user.academy.id,
       user: values.id,
       booking_url: values.booking_url,
       online_meeting_url: values.online_meeting_url,
       slug: mentorSlug,
       price_per_hour: values.price_per_hour,
-      service: serviceIndex[0].id,
+      services: services.map((service) => service.id),
       syllabus: filteredSyllArr,
       email: values.email
-    }).then((data) => (data.status == 200) && history.push('/mentors')).catch(error => setFormError('Error while saving mentor'))
+    }).then((data) => (data.status == 201) && history.push('/mentors')).catch(error => setFormError('Error while saving mentor'))
   }
 
   const validate = (values, props /* only available when using withFormik */) => {
@@ -155,17 +158,17 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               Service
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
-              <TextField
+              {/* <TextField
                 className="m-2"
-                label="Service"
-                data-cy="service"
+                label="Services"
+                data-cy="services"
                 size="small"
-                variant="outlined"
-                value={values.service}
-                onChange={(e) => {
-                  setFieldValue('service', e.target.value);
-                }}
                 select
+                variant="outlined"
+                value={values.services}
+                onChange={(e) => {
+                  setFieldValue('services', [...values.services, e.target.value]);
+                }}
               >
                 {serviceList.map((singleService, i) => {
                   return (
@@ -174,7 +177,18 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                     </MenuItem>
                   )
                 })}
-              </TextField>
+              </TextField> */}
+              <AsyncAutocomplete
+                onChange={(newService) => setServices(newService)}
+                width="187px"
+                size="small"
+                label="Services"
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.name === value.name}  
+                getOptionLabel={(option) => option.name}
+                multiple={true}
+                asyncSearch={() => bc.mentorship().getAllServices()}
+              />
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Slug
