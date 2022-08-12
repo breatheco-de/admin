@@ -220,16 +220,17 @@ const MentorDetails = ({ user, staffId }) => {
                 Services
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
-                <TextField
-                  className="m-2"
-                  label="Servises"
-                  name="services"
-                  data-cy="services"
-                  disabled
+                <AsyncAutocomplete
+                  onChange={(newService) => setMentor({ ...mentor, services: newService })}
+                  value={mentor.services}
+                  width="187px"
                   size="small"
-                  variant="outlined"
-                  value={values.services}
-                  onChange={handleChange}
+                  label="Services"
+                  debounced={false}
+                  isOptionEqualToValue={(option, value) => option.name === value.name}
+                  getOptionLabel={(option) => option.name}
+                  multiple={true}
+                  asyncSearch={() => bc.mentorship().getAllServices()}
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
