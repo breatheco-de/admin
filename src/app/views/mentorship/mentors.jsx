@@ -48,7 +48,7 @@ const Mentors = () => {
               <Avatar className="w-48 h-48" src={mentor.user?.profile?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">{name(mentor.user)}</h5>
-                <small className="text-muted">{mentor?.service.name}</small>
+                <small className="text-muted">{mentor?.services.map(s => s.name).join(", ")}</small>
               </div>
             </div>
           );
@@ -140,18 +140,18 @@ const Mentors = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = mentorList[dataIndex];
           //! TODO REVERT THIS BEFORE PUSHING
-           return (
-              <div className="flex items-center">
-                <div className="flex-grow" />
-                <Link to={`/mentors/${item.id}`}>
-                  <Tooltip title="Edit">
-                    <IconButton>
-                      <Icon>edit</Icon>
-                    </IconButton>
-                  </Tooltip>
-                </Link>
-              </div>
-            );
+          return (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Link to={`/mentors/${item.id}`}>
+                <Tooltip title="Edit">
+                  <IconButton>
+                    <Icon>edit</Icon>
+                  </IconButton>
+                </Tooltip>
+              </Link>
+            </div>
+          );
         },
       },
     },

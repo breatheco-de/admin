@@ -8,6 +8,7 @@ import {
     Icon,
     TablePagination,
 } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import bc from 'app/services/breathecode';
 import ClusterCard from "./components/ClusterCard";
@@ -15,6 +16,7 @@ import SEOMenu from "./components/SEOMenu";
 
 const UserList3 = () => {
     const [clusters, setClusters] = useState([]);
+    const [addCluster, setAddCluster] = useState(null);
     const [technologies, setTechnologies] = useState([]);
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -36,7 +38,7 @@ const UserList3 = () => {
 
     return (
         <div className="m-sm-30">
-            <div className="mb-sm-30">
+            <div className="flex flex-wrap justify-between mb-6">
                 <Breadcrumb
                     routeSegments={[
                         { name: "Content Gallery", path: "#" },
@@ -44,6 +46,11 @@ const UserList3 = () => {
                         { name: "Clusters", path: "/media/seo/cluster" },
                     ]}
                 />
+                <div className="">
+                    <Button variant="contained" color="primary" onClick={() => setAddCluster(true)}>
+                        Add Topic Cluster
+                    </Button>
+                </div>
             </div>
             <Grid container spacing={2}>
                 <Grid item md={3} sm={12} xs={12}>
@@ -51,6 +58,18 @@ const UserList3 = () => {
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <Grid container spacing={2}>
+                        {addCluster && <Grid item sm={12} xs={12}>
+                            <ClusterCard isEditing
+                                cluster={{
+                                    title: 'Sample cluster',
+                                    slug: '',
+                                    lang: 'us',
+                                    isDeprecated: false,
+                                    keywords: []
+                                }}
+                                onSubmit={(_cluster) => console.log("save cluster", _cluster)}
+                            />
+                        </Grid>}
                         {clusters
                             .map((c) => (
                                 <Grid key={c.slug} item sm={12} xs={12}>

@@ -18,7 +18,7 @@ const propTypes = {
 
 const MentorDetails = ({ user, staffId }) => {
   const [roleDialog, setRoleDialog] = useState(false);
-  const [confirmation, setConfirmation] = useState({open: false, values: {}});
+  const [confirmation, setConfirmation] = useState({ open: false, values: {} });
   const [mentor, setMentor] = useState(user);
   const [mentorSlug, setMentorSlug] = useState(mentor?.slug || "")
   const [syllabusArray, setSyllabusArray] = useState([]);
@@ -27,9 +27,8 @@ const MentorDetails = ({ user, staffId }) => {
     first_name: mentor?.user?.first_name || "",
     last_name: mentor?.user?.last_name || "",
     booking_url: mentor?.booking_url || "",
-    service: mentor?.service.name || "",
+    services: mentor?.services || [],
     email: mentor?.email || mentor?.user.email,
-    service_status: mentor?.service.status || "",
     slug: mentor?.slug || "",
     online_meeting_url: mentor?.online_meeting_url || "",
     status: mentor?.status || "",
@@ -39,7 +38,7 @@ const MentorDetails = ({ user, staffId }) => {
   const updateMentorProfile = async (values) => {
     let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
     bc.mentorship()
-      .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, service: mentor.service.id, slug: mentorSlug })
+      .updateAcademyMentor(staffId, { ...values, syllabus: filteredSyllArr, services: mentor.services.map((s) => s.id), slug: mentorSlug })
       .then((data) => data)
       .catch((error) => console.error(error));
   };
@@ -50,7 +49,7 @@ const MentorDetails = ({ user, staffId }) => {
         status: currentStatus.toUpperCase(),
         slug: mentor.slug,
         price_per_hour: mentor.price_per_hour,
-        service: mentor.service.id,
+        services: mentor.services.map(s => s.id),
       })
       .then(({ data, status }) => {
         if (status === 200) {
@@ -90,8 +89,8 @@ const MentorDetails = ({ user, staffId }) => {
         initialValues={initialValues}
         validate={validate}
         onSubmit={(values) => {
-          if(mentor.syllabus.length === 1){
-            setConfirmation({open: true, values});
+          if (mentor.syllabus.length === 1) {
+            setConfirmation({ open: true, values });
           } else {
             updateMentorProfile(values)
           }
@@ -217,18 +216,18 @@ const MentorDetails = ({ user, staffId }) => {
                 />
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
-                Service
+                Services
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
                 <TextField
                   className="m-2"
-                  label="Service"
-                  name="service"
-                  data-cy="service"
+                  label="Servises"
+                  name="services"
+                  data-cy="services"
                   disabled
                   size="small"
                   variant="outlined"
-                  value={values.service}
+                  value={values.services}
                   onChange={handleChange}
                 />
               </Grid>
@@ -269,32 +268,32 @@ const MentorDetails = ({ user, staffId }) => {
       </Formik>
       {/* Confirmation dialog */}
       <Dialog
-        onClose={() => setConfirmation({open: false})}
+        onClose={() => setConfirmation({ open: false })}
         open={confirmation.open}
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle id="simple-dialog-title">Only One Syllabus expertise was selected for this mentor, are you sure?</DialogTitle>
         <DialogActions>
-            <Button
-              onClick={() => {
-                setConfirmation({open: false});
-              }}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              type="submit"
-              autoFocus
-              onClick={ async () => {
-                await updateMentorProfile({...confirmation.values});
-                setConfirmation({open: false});
-              }}
-            >
-              Yes
-            </Button>
-          </DialogActions>
+          <Button
+            onClick={() => {
+              setConfirmation({ open: false });
+            }}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            color="primary"
+            type="submit"
+            autoFocus
+            onClick={async () => {
+              await updateMentorProfile({ ...confirmation.values });
+              setConfirmation({ open: false });
+            }}
+          >
+            Yes
+          </Button>
+        </DialogActions>
       </Dialog>
       {/* Confirmation dialog */}
       <Dialog

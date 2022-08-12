@@ -846,6 +846,18 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/technology/${slug}`,
                     payload
                 ),
+            updateCluster: async (slug, payload) =>
+                await axios.bcPut(
+                    "Cluster",
+                    `${this.host}/registry/academy/cluster/${slug}`,
+                    payload
+                ),
+            createCluster: async (payload) =>
+                await axios.bcPost(
+                    "Cluster",
+                    `${this.host}/registry/academy/cluster`,
+                    payload
+                ),
             updateTechnologyBulk: async (slugs, payload) =>
                 await axios.bcPut(
                     "Asset",
@@ -867,6 +879,12 @@ class BreatheCodeClient {
                 await axios.bcPost(
                     "Asset",
                     `${this.host}/registry/academy/asset`,
+                    payload
+                ),
+            createSEOKeyword: async (payload) =>
+                await axios.bcPost(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword`,
                     payload
                 ),
             createAssetComment: async (comment) =>

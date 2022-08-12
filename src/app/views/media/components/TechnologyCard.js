@@ -58,24 +58,24 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                     <Grid item sm={4} xs={12}>
                         <div className="flex items-center m-2">
                             <div className="ml-4">
-                                <h5 className="m-0">{technology.title}</h5>
-                                <p className="mb-0 mt-2 text-muted font-normal capitalize">
+                                <h5 className="m-0 capitalize">{technology.title}</h5>
+                                <p className="mb-0 mt-2 text-muted font-normal">
                                     {technology.slug?.toLowerCase()}
                                 </p>
                             </div>
                         </div>
                     </Grid>
                     {technology.parent ? 
-                        <Grid item sm={4} xs={12}>
+                        <Grid item sm={8} xs={12}>
                             <strong className="m-0">This tecnology has a parent</strong>
                             <p className="mb-0 mt-2 text-muted font-normal capitalize">
                                 <Chip size="small" label={technology.parent.title} icon={<Delete label={technology.parent.slug} onClick={() => bc.registry().updateTechnology(technology.slug, { parent: null })} />} />
                             </p> 
                         </Grid>
                         : 
-                        <Grid item sm={4} xs={12}>
+                        <Grid item sm={8} xs={12}>
                             <strong className="m-0">Alias</strong><p className="mb-0 mt-2 text-muted font-normal capitalize">
-                                {technology.alias.map(a => <Chip key={a} size="small" label={a} className="mr-1" /> )}
+                                {technology.alias.map(a => <Chip key={a} size="small" label={a} className="mr-1 mb-1" /> )}
                                 <Chip size="small" className="pointer" icon={<Add onClick={() => setAddAlias(technology.alias)} />} />
                             </p>
                         </Grid>
