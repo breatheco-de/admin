@@ -53,3 +53,16 @@
 .orange {
   background-color: rgb(255, 153, 0);
 }
+
+@media only screen and (max-width : 959px) {
+  .MuiTableRow-root td:nth-child(1) {
+    background-color: white;
+    position: absolute;
+    padding: 0;
+  }
+
+  .MuiTableRow-root td:nth-child(2)>div {
+    margin-left: 40px;
+    width: calc(50% - 70px)
+  }
+}
