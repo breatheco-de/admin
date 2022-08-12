@@ -442,7 +442,7 @@ class BreatheCodeClient {
             updateMentorSession: (id, payload) =>
                 axios.bcPut(
                     "Academy session",
-                    `${this.host}/mentorship/academy/session/${id}`,
+                    `${this.host}/mentorship/academy/session${id ? `/${id}` : ''}`,
                     payload
                 ),
             getAllAcademyMentorshipBills: (querys) => {
