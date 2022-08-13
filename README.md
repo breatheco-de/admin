@@ -11,7 +11,7 @@ npm install --g --production windows-build-tools
 ## Installation
 
 1. Fork this repository into your account.
-2. Clone your fork repo into your computer `git clone https://github.com/<your_github_username>/admin`
+2. Clone your fork repository into your computer `git clone https://github.com/<your_github_username>/admin`
 3. Switch to the development branch:
 4. create the .env file following the template on .env.example and make sure to use the development API host.
 5. Install the packages: `npm install`
