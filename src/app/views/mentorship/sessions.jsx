@@ -6,6 +6,7 @@ import { Tooltip, TableCell } from '@material-ui/core';
 import SessionDetails from './session-details/SessionDetails'
 import SessionNotes from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
+import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
 import dayjs from "dayjs";
 const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
@@ -128,6 +129,12 @@ const Sessions = () => {
               setSessions(data.results);
               return data;
             }}
+            bulkActions={(props) => (
+              <AddServiceInBulk
+                items={sessions}
+                {...props}
+              />
+            )}
             deleting={async (querys) => {
               const { status } = await bc
                 .admissions()
