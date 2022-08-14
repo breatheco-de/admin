@@ -120,9 +120,7 @@ const NewCohort = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
     pt: 2,
     px: 4,
@@ -458,7 +456,7 @@ const NewCohort = () => {
                     open={open}
                     onClose={handleClose}
                   >
-                    <Box sx={{ ...noEndStyle, width: 400 }}>
+                    <Box className='border-none border-radius-4 w-400' sx={{ ...noEndStyle }}>
                       <h2 >Confirm</h2>
                       <p >
                       Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
@@ -466,6 +464,7 @@ const NewCohort = () => {
                       <div>
                       <Button
                       onClick={handleSubmit}
+
                   >
                     Yes
                   </Button>
