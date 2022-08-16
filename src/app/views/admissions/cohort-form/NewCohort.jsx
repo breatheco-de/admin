@@ -116,15 +116,10 @@ const NewCohort = () => {
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
   const noEndStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    
     transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    pt: 2,
-    px: 4,
-    pb: 3,
+    // boxShadow: 24,
+    
   };
 
   const [open, setOpen] = React.useState(false);
@@ -432,15 +427,7 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
-                  {/* <Button
-                    color="primary"
-                    variant="contained"
-                    type="submit"
-                    data-cy="submit"
-                  >
-                    Create
-                  </Button> */}
-
+                  
                   <Button onClick={() =>{
                     if(neverEnd == false){
 
@@ -456,24 +443,27 @@ const NewCohort = () => {
                     open={open}
                     onClose={handleClose}
                   >
-                    <Box className='border-none border-radius-4 w-400' sx={{ ...noEndStyle }}>
-                      <h2 >Confirm</h2>
-                      <p >
-                      Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
-                      </p>
-                      <div>
-                      <Button
-                      onClick={handleSubmit}
+         
+                    <Box className=' p-4 border-none border-radius-4 w-400 x-center y-center relative bg-paper' sx={{ ...noEndStyle }}>
+                      <div className="modalContent text-center">
 
-                  >
-                    Yes
-                  </Button>
-                      <button 
-                      onClick={handleClose}>
-                        No
-                        </button>
+                          <h2 >Confirm</h2>
+                          <p >
+                          Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
+                          </p>
+                      
+                          <div>
+                          <Button
+                          onClick={handleSubmit}>
+                              Yes
+                          </Button>
+                          <button 
+                          onClick={handleClose}>
+                            No
+                            </button>
+                          </div>
+                          <a className='text-primary' href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
                       </div>
-                      <a href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
                     </Box>
                   </Modal>
                   
