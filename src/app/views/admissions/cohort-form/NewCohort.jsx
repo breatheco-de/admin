@@ -445,7 +445,7 @@ const NewCohort = () => {
                     onClose={handleClose}
                   >
          
-                    <Box className=' p-4 border-none border-radius-4 w-400 x-center y-center relative bg-paper' sx={{ ...noEndStyle }}>
+                    <Box className=' p-6 border-none border-radius-4 w-400 x-center y-center relative bg-paper' sx={{ ...noEndStyle }}>
                       <div className="modalContent text-center">
 
                           <h2 >Confirm</h2>
@@ -453,10 +453,10 @@ const NewCohort = () => {
                           Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
                           </p>
                       
-                          <div>
+                          <div className="mb-2">
 
 
-                            <Button variant="outlined"  className="rounded "
+                            <Button variant="outlined"  className="rounded mr-4"
                             onClick={handleSubmit}>
                                 Yes
                             </Button>
@@ -467,8 +467,7 @@ const NewCohort = () => {
                               </Button>
                             
                           </div>
-                          
-                          <a className='text-primary' href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
+                         <a href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
                       </div>
                     </Box>
                   </Modal>
