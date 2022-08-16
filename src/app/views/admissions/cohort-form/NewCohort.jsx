@@ -16,6 +16,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import { yellow } from '@mui/material/colors';
 import * as Yup from 'yup';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
@@ -453,15 +454,20 @@ const NewCohort = () => {
                           </p>
                       
                           <div>
-                          <Button
-                          onClick={handleSubmit}>
-                              Yes
-                          </Button>
-                          <button 
-                          onClick={handleClose}>
-                            No
-                            </button>
+
+
+                            <Button variant="outlined"  className="rounded "
+                            onClick={handleSubmit}>
+                                Yes
+                            </Button>
+
+                            <Button variant="outlined"  className="rounded "
+                            onClick={handleClose}>
+                              No
+                              </Button>
+                            
                           </div>
+                          
                           <a className='text-primary' href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
                       </div>
                     </Box>
