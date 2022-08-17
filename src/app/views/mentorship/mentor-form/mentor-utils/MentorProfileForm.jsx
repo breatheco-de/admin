@@ -30,6 +30,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
       booking_url: values.booking_url,
       online_meeting_url: values.online_meeting_url,
       slug: mentorSlug,
+      one_line_bio: values.one_line_bio,
       price_per_hour: values.price_per_hour,
       services: services.map((service) => service.id),
       syllabus: filteredSyllArr,
@@ -129,6 +130,21 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.email}
                 onChange={handleChange}
               />
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              One Line Bio
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                label="One Line Bio"
+                name="one_line_bio"
+                size="small"
+                required
+                variant="outlined"
+                value={values.one_line_bio}
+                onChange={handleChange}
+              />
+              <small className="text-muted d-block">60 chars; What makes this mentor different form others?</small>
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Price per hour

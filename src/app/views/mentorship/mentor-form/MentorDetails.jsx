@@ -30,6 +30,7 @@ const MentorDetails = ({ user, staffId }) => {
     services: mentor?.services || [],
     email: mentor?.email || mentor?.user.email,
     slug: mentor?.slug || "",
+    one_line_bio: mentor?.one_line_bio || "",
     online_meeting_url: mentor?.online_meeting_url || "",
     status: mentor?.status || "",
     price_per_hour: mentor?.price_per_hour || "",
@@ -194,6 +195,22 @@ const MentorDetails = ({ user, staffId }) => {
                   onChange={handleChange}
                 />
                 {errors.booking_url && <small className="text-error d-block">{errors.booking_url}</small>}
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                One-Line Bio
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  label="One Line Bio"
+                  name="one_line_bio"
+                  size="small"
+                  length="60"
+                  required
+                  variant="outlined"
+                  value={values.one_line_bio}
+                  onChange={handleChange}
+                />
+                <small className="text-muted d-block">60 chars; What makes this mentor different form others?</small>
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Price per hour
