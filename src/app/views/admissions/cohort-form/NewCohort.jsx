@@ -420,7 +420,7 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
-              
+
                   <Button onClick={() =>{
                     if(neverEnd == false){
 
@@ -428,6 +428,7 @@ const NewCohort = () => {
                     } 
                     else{
                       handleSubmit()
+
                     }
                     }
                        
@@ -440,7 +441,7 @@ const NewCohort = () => {
                     onClose={handleClose}
                   >
 
-                    <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' >
+                    <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' />
                       <div className="modalContent text-center">
 
                           <h2 >Confirm</h2>
@@ -449,8 +450,6 @@ const NewCohort = () => {
                           </p>
                       
                           <div className="mb-2">
-
-
                             <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}  className="rounded mr-4"
                             onClick={handleSubmit}>
                                 Yes
@@ -460,11 +459,10 @@ const NewCohort = () => {
                             onClick={handleClose}>
                               No
                               </Button>
-                            
                           </div>
                          <a style={{ textDecoration: 'underline' }} href={helpLink} target='_blank'>Read more about never ending cohorts.</a>
                       </div>
-                    </Box>
+                    
                   </Modal>
                   
               </div>
