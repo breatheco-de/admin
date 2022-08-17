@@ -16,11 +16,10 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import { yellow } from '@mui/material/colors';
 import * as Yup from 'yup';
 import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles } from '@material-ui/core/styles';
-import { Breadcrumb } from '../../../../matx';
+import { Breadcrumb,  } from '../../../../matx';
 import bc from '../../../services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from '../../../components/HelpIcon';
@@ -46,6 +45,8 @@ const NewCohort = () => {
   const [neverEnd, setNeverEnd] = useState(true);
   const [remote, setRemote] = useState(true);
   const [timeZone, setTimeZone] = useState('');
+  const [showDialog, setShowDialog] = useState(false);
+
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
@@ -115,13 +116,6 @@ const NewCohort = () => {
 
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
-
-  const noEndStyle = {
-    
-    transform: 'translate(-50%, -50%)',
-    // boxShadow: 24,
-    
-  };
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -428,7 +422,7 @@ const NewCohort = () => {
                 </Grid>
               </Grid>
               <div className="mt-6">
-                  
+              
                   <Button onClick={() =>{
                     if(neverEnd == false){
 
@@ -444,8 +438,8 @@ const NewCohort = () => {
                     open={open}
                     onClose={handleClose}
                   >
-         
-                    <Box className=' p-6 border-none border-radius-4 w-400 x-center y-center relative bg-paper' sx={{ ...noEndStyle }}>
+
+                    <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' >
                       <div className="modalContent text-center">
 
                           <h2 >Confirm</h2>
@@ -456,18 +450,18 @@ const NewCohort = () => {
                           <div className="mb-2">
 
 
-                            <Button variant="outlined"  className="rounded mr-4"
+                            <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}  className="rounded mr-4"
                             onClick={handleSubmit}>
                                 Yes
                             </Button>
 
-                            <Button variant="outlined"  className="rounded "
+                            <Button variant="outlined" style={{ color: 'gold', borderColor: 'gold' }}  className="rounded "
                             onClick={handleClose}>
                               No
                               </Button>
                             
                           </div>
-                         <a href="https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee" target='_blank'>Read more about never ending cohorts.</a>
+                         <a style={{ textDecoration: 'underline' }} href={helpLink} target='_blank'>Read more about never ending cohorts.</a>
                       </div>
                     </Box>
                   </Modal>
