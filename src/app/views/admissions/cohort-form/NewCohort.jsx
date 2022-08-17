@@ -45,8 +45,6 @@ const NewCohort = () => {
   const [neverEnd, setNeverEnd] = useState(true);
   const [remote, setRemote] = useState(true);
   const [timeZone, setTimeZone] = useState('');
-  const [showDialog, setShowDialog] = useState(false);
-
   const [newCohort, setNewCohort] = useState({
     name: '',
     slug: '',
@@ -427,6 +425,9 @@ const NewCohort = () => {
                     if(neverEnd == false){
 
                       return handleOpen()
+                    } 
+                    else{
+                      handleSubmit()
                     }
                     }
                        

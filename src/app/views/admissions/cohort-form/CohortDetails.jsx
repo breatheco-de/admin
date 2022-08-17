@@ -9,6 +9,10 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
+import Box from '@mui/material/Box';
+
+import Modal from '@mui/material/Modal';
+
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   MuiPickersUtilsProvider,
@@ -68,6 +72,7 @@ const CohortDetails = ({
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
   const [remote, setRemote] = useState(remote_available);
+  console.log("remote", remote)
 
   useEffect(() => {
     // setIsLoading(true);
@@ -82,6 +87,15 @@ const CohortDetails = ({
         .catch((error) => console.error(error));
     }
   }, []);
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+ 
 
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
@@ -361,14 +375,53 @@ const CohortDetails = ({
                   />
                 </div>
               </Grid>
-              <Button
-                color="primary"
-                variant="contained"
-                type="submit"
-                data-cy="submit"
-              >
-                Save Cohort Details
-              </Button>
+
+              <Button onClick={() =>{
+                    if(remote == false){
+                      return handleOpen()
+                    }
+                    else{
+                      
+                      handleSubmit()
+                    }
+                    }
+                       
+                    }
+                  color="primary"
+                  variant="contained"
+                  >Save Cohort Details</Button>
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                  >
+
+                    <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' >
+                      <div className="modalContent text-center">
+
+                          <h2 >Confirm</h2>
+                          <p >
+                          Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
+                          </p>
+                      
+                          <div className="mb-2">
+
+
+                            <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}  className="rounded mr-4"
+                            onClick={handleSubmit}>
+                                Yes
+                            </Button>
+
+                            <Button variant="outlined" style={{ color: 'gold', borderColor: 'gold' }}  className="rounded "
+                            onClick={handleClose}>
+                              No
+                              </Button>
+                            
+                          </div>
+                         <a style={{ textDecoration: 'underline' }} href={helpLink} target='_blank'>Read more about never ending cohorts.</a>
+                      </div>
+                    </Box>
+                  </Modal>
+              
             </Grid>
           </form>
         )}
