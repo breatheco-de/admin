@@ -139,12 +139,11 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 label="One Line Bio"
                 name="one_line_bio"
                 size="small"
-                required
                 variant="outlined"
                 value={values.one_line_bio}
                 onChange={handleChange}
               />
-              <small className="text-muted d-block">60 chars; What makes this mentor different form others?</small>
+              <small className="text-muted d-block">60 chars; Make the mentor more friendly to students</small>
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Price per hour
