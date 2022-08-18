@@ -48,7 +48,7 @@ const Answers = () => {
 
   const columns = [
     {
-      name: 'first_name', // field name in the row object
+      name: 'user__first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
         filter: true,
