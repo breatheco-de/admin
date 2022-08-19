@@ -18,6 +18,7 @@ const initialValues = {
   email: '',
   booking_url: '',
   slug: '',
+  one_line_bio: '',
   online_meeting_url: '',
   status: '',
   price_per_hour: '',
@@ -40,6 +41,8 @@ const NewMentor = () => {
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
+  console.log('baseData');
+  console.log(baseData);
   const [showForm, setShowForm] = useState({
     show: !!baseData,
     data: {
@@ -48,6 +51,7 @@ const NewMentor = () => {
       email: '',
       booking_url: '',
       slug: '',
+      one_line_bio: '',
       online_meeting_url: '',
       status: 'INVITED',
       price_per_hour: '',

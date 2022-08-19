@@ -442,7 +442,7 @@ class BreatheCodeClient {
             updateMentorSession: (id, payload) =>
                 axios.bcPut(
                     "Academy session",
-                    `${this.host}/mentorship/academy/session/${id}`,
+                    `${this.host}/mentorship/academy/session${id ? `/${id}` : ''}`,
                     payload
                 ),
             getAllAcademyMentorshipBills: (querys) => {
@@ -822,11 +822,20 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllKeywords: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             getAllClusters: async (query) => {
                 const qs = serializeQuerystring(query);
                 return await axios.bcGet(
                     "Asset",
-                    `${this.host}/registry/keywordcluster${
+                    `${this.host}/registry/academy/keywordcluster${
                         query ? `?${qs}` : ""
                     }`
                 );
@@ -844,6 +853,24 @@ class BreatheCodeClient {
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/technology/${slug}`,
+                    payload
+                ),
+            updateCluster: async (slug, payload) =>
+                await axios.bcPut(
+                    "Cluster",
+                    `${this.host}/registry/academy/keywordcluster/${slug}`,
+                    payload
+                ),
+            updateKeyword: async (slug, payload) =>
+                await axios.bcPut(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword/${slug}`,
+                    payload
+                ),
+            createCluster: async (payload) =>
+                await axios.bcPost(
+                    "Cluster",
+                    `${this.host}/registry/academy/keywordcluster`,
                     payload
                 ),
             updateTechnologyBulk: async (slugs, payload) =>
@@ -867,6 +894,12 @@ class BreatheCodeClient {
                 await axios.bcPost(
                     "Asset",
                     `${this.host}/registry/academy/asset`,
+                    payload
+                ),
+            createSEOKeyword: async (payload) =>
+                await axios.bcPost(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword`,
                     payload
                 ),
             createAssetComment: async (comment) =>

@@ -231,7 +231,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
-              Allow Mentee extension?
+              Allow Mentee to extend sessions?
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <FormControlLabel
@@ -255,7 +255,7 @@ export const ServiceForm = ({ initialValues }) => {
             </Grid>
 
             <Grid item md={2} sm={4} xs={12}>
-              Allow Mentor extension?
+              Allow Mentor to extend sessions?
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <FormControlLabel
