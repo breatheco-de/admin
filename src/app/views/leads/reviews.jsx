@@ -308,37 +308,15 @@ const Reviews = () => {
           </div> */}
         </div>
       </div>
-      <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
-        <div className="flex items-center">
-          <div style={{ width: '100%' }}>
-            <h5 className="mt-0 mb-2 font-medium text-primary">
+      <Card style={{backgroundColor: "#d5eaf1"}}className="p-6 mb-5 ">
+        <div className="flex items-center bg-light-primary">
+          <div style={{ width: '100%' }} className="bg-light-primary">
+            <h1>About students review</h1>
+            <h5 className="mt-0 mb-2 font-medium ">
             The following students have been selected for potential reviews based on they engagement and feedback, please review each of the suggestions and complete or discard based on your own criteria.
             </h5>
-            
-            <TextField
-              fullWidth
-              name="cohort"
-              size="small"
-              type="text"
-              variant="outlined"
-              value="https://4geeksacademy.notion.site/Student-Reviews-762eb87ae8d84c26b305d7f5c677776f"
-              InputProps={{
-                readOnly: true,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="copy"
-                      onClick={() => {
-                        navigator.clipboard.writeText({thisURL});
-                        toast.success('Calendar link url copied successfuly', toastOption);
-                      }}
-                    >
-                      <FileCopyIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+
+          <a style={{textDecoration: 'underline', color: 'blue' }} href={thisURl} target="_blank">Click here to learn more about reviews.</a>
           </div>
         </div>
       </Card>
