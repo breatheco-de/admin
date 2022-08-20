@@ -8,6 +8,8 @@ import bc from 'app/services/breathecode';
 import { useHistory } from 'react-router-dom';
 import useAuth from '../../../../hooks/useAuth';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete'
+import HelpIcon from '../../../../components/HelpIcon';
+
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -44,10 +46,17 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
     if (!match || match[1] == undefined) {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
+    if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
+      console.log("success")
+      errors.online_meeting_url = 'Invalid backup url'
+    }
     else setMentorSlug(match[1])
 
     return errors;
   };
+
+  let helpText = `Example: whereby.com/something`;
+
 
   return (
     <Formik
@@ -114,7 +123,12 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.online_meeting_url}
                 onChange={handleChange}
               />
+                {/* {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>} */}
+
               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+              <small className="text-muted d-block">Video call link from video conference service</small>
+              <HelpIcon  message={helpText}  />
+
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Email
