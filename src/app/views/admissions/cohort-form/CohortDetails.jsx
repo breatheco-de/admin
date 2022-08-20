@@ -301,7 +301,7 @@ const CohortDetails = ({
                       data-cy="never-ends"
                       onChange={handleChange}
                       control={<Checkbox checked={values.never_ends} />}
-                      label="This cohort never ends"
+                      label=""
                       style={{marginRight:'5px'}}
                     />
                     <HelpIcon message={helpText} link={helpLink} />

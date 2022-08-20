@@ -1,15 +1,17 @@
 import {
-  Avatar,
+  Avatar, 
   Button,
   Card, Dialog, DialogTitle, DialogActions, Divider, Grid, List,
   ListItem,
   ListItemText, MenuItem, TextField
 } from '@material-ui/core';
+
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
+import HelpIcon from '../../../components/HelpIcon';
 
 const propTypes = {
   user: PropTypes.object.isRequired,
@@ -75,6 +77,12 @@ const MentorDetails = ({ user, staffId }) => {
 
     return errors;
   };
+
+  let helpText = `Example: whereby.com/something`;
+    
+  
+   
+
 
   return (
     <Card className="pt-6" elevation={3}>
@@ -184,7 +192,11 @@ const MentorDetails = ({ user, staffId }) => {
                   value={values.backing_url}
                   onChange={handleChange}
                 />
-              {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+
+               <small className="text-muted d-block">Video call link from video conference service</small>
+               <HelpIcon  message={helpText}  />
+
 
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
