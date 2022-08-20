@@ -66,7 +66,12 @@ const MentorDetails = ({ user, staffId }) => {
     if (!match || match[1] == undefined) {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
+    if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
+      console.log("success")
+      errors.online_meeting_url = 'Invalid backup url'
+    }
     else setMentorSlug(match[1])
+    console.log("errors",errors)
 
     return errors;
   };
@@ -176,9 +181,11 @@ const MentorDetails = ({ user, staffId }) => {
                   data-cy="online_meeting_url"
                   size="small"
                   variant="outlined"
-                  value={values.online_meeting_url}
+                  value={values.backing_url}
                   onChange={handleChange}
                 />
+              {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Booking URL
