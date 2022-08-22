@@ -67,13 +67,24 @@ const UserList3 = () => {
                                     isDeprecated: false,
                                     keywords: []
                                 }}
-                                onSubmit={(_cluster) => console.log("save cluster", _cluster)}
+                                onSubmit={async (_cluster) => {
+                                    const resp = await bc.registry().createCluster(_cluster)
+                                    console.log("resp", resp)
+                                    if (resp.status === 201) return true;
+                                    else return false;
+                                }}
                             />
                         </Grid>}
                         {clusters
                             .map((c) => (
                                 <Grid key={c.slug} item sm={12} xs={12}>
-                                    <ClusterCard cluster={c} />
+                                    <ClusterCard cluster={c}
+                                        onSubmit={async (_cluster) => {
+                                            const resp = await bc.registry().updateCluster(c.slug, _cluster)
+                                            if (resp.status === 200) return true;
+                                            else return false;
+                                        }}
+                                    />
                                 </Grid>
                             ))}
                     </Grid>

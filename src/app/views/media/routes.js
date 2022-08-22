@@ -12,6 +12,11 @@ const routes = [
     component: React.lazy(() => import('./assets')),
   },
   {
+    path: '/media/asset/:asset_id',
+    exact: true,
+    component: React.lazy(() => import('./components/ComposeAsset')),
+  },
+  {
     path: '/media/kanban',
     exact: true,
     component: React.lazy(() => import('./kanban')),

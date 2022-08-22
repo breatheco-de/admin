@@ -95,9 +95,10 @@ const Sessions = () => {
         },
         customBodyRenderLite: (dataIndex) => {
           const session = sessions[dataIndex];
-          return (
-            `${session?.mentor.user.first_name} ${session?.mentor.user.last_name}`
-          );
+          return (<>
+            <p className="m-0 p-0">{session?.mentor.user.first_name} {session?.mentor.user.last_name}</p>
+            <small className="m-0 p-0">{session?.service?.name}</small>
+          </>);
         },
       },
 

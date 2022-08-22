@@ -16,6 +16,7 @@ import bc from 'app/services/breathecode';
 import { AssetRequirementModal } from './AssetRequirementModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
+import { AddKeywordModal } from './AddKeywordModal';
 import clsx from "clsx";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -34,18 +35,17 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
     const [ editMode, setEditMode ] = useState(isEditing)
     const [ addKeyword, setAddKeyword ] = useState(false)
     const progress = (() => {
-        const without = cluster.keywords.filter(k => k.published_assets.length == 0).length;
-        const total = cluster.keywords.length;
+        const without = clusterForm.keywords.filter(k => k.published_assets.length == 0).length;
+        const total = clusterForm.keywords.length;
         return (without == 0 || total == 0) ? "100" : Math.round(100 - (without / total * 100));
     })();
+    const handleAddKeyword = async (keyword) => {
 
-    const handleAddKeyword = async (payload) => {
-
-        if(!payload) setAddKeyword(false);
+        if(!keyword) setAddKeyword(false);
         else{
-            const resp = await bc.registry().createSEOKeyword(payload)
+            const resp = await bc.registry().updateKeyword(keyword.slug, { cluster: keyword.cluster })
             if(resp.status == 200){
-                //onRefresh();
+                setClusterForm({ ...clusterForm, keywords: clusterForm.keywords.concat(keyword)})
                 setAddKeyword(false);
             }
         }
@@ -120,14 +120,14 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         </div>
                     </Grid>
                     <Grid item sm={5} xs={12}>
-                        {cluster.keywords.map(k => {
+                        {clusterForm.keywords.map(k => {
                             const _status = k.published_assets.length == 0 ? "error" : "default";
                             return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`media/seo/asset?keyword=${k.slug}`)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${_status == "error" && 'bg-error'}`} />;
                         })}
-                        <Chip size="small" className="pointer" icon={<Add onClick={() => setAddKeyword({ cluster: clister.id })} />} />
+                        <Chip size="small" className="pointer mr-2 mb-2" icon={<Add onClick={() => setAddKeyword({ cluster: clusterForm.id })} />} />
                     </Grid>
                 </Grid>
             }
@@ -145,8 +145,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             variant="contained"
                             className="px-5 mr-1"
                             onClick={() => {
-                                setEditMode(false);
-                                onSubmit(clusterForm)
+                                onSubmit(clusterForm).then((success) => success && setEditMode(false))
                             }}
                         >
                             Save cluster
@@ -173,6 +172,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             </Button>
                             <Button
                                 size="small"
+
                                 className="bg-light-primary hover-bg-primary text-primary px-5 mr-1"
                                 onClick={() => setEditMode(true)}
                             >
@@ -182,7 +182,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     }
                 </div>
             </div>
-            {addKeyword && <AddKeyword defaultAlias={addKeyword} onClose={handleAddKeyword} />}
+            {addKeyword && <AddKeywordModal cluster={cluster} onClose={handleAddKeyword} />}
         </Card>
     );
 };

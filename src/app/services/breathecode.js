@@ -822,11 +822,20 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllKeywords: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             getAllClusters: async (query) => {
                 const qs = serializeQuerystring(query);
                 return await axios.bcGet(
                     "Asset",
-                    `${this.host}/registry/keywordcluster${
+                    `${this.host}/registry/academy/keywordcluster${
                         query ? `?${qs}` : ""
                     }`
                 );
@@ -849,13 +858,19 @@ class BreatheCodeClient {
             updateCluster: async (slug, payload) =>
                 await axios.bcPut(
                     "Cluster",
-                    `${this.host}/registry/academy/cluster/${slug}`,
+                    `${this.host}/registry/academy/keywordcluster/${slug}`,
+                    payload
+                ),
+            updateKeyword: async (slug, payload) =>
+                await axios.bcPut(
+                    "Keyword",
+                    `${this.host}/registry/academy/keyword/${slug}`,
                     payload
                 ),
             createCluster: async (payload) =>
                 await axios.bcPost(
                     "Cluster",
-                    `${this.host}/registry/academy/cluster`,
+                    `${this.host}/registry/academy/keywordcluster`,
                     payload
                 ),
             updateTechnologyBulk: async (slugs, payload) =>

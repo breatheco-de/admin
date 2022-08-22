@@ -207,7 +207,6 @@ export function resolveResponse(res) {
 }
 
 export function resolveError(error) {
-  console.log(error.response);
   if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
     for (const item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {
