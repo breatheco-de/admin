@@ -41,8 +41,7 @@ const NewMentor = () => {
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
-  console.log('baseData');
-  console.log(baseData);
+  console.log('baseData',baseData);
   const [showForm, setShowForm] = useState({
     show: !!baseData,
     data: {

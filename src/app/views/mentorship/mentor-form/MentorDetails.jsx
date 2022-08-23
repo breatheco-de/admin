@@ -72,7 +72,7 @@ const MentorDetails = ({ user, staffId }) => {
       console.log("success")
       errors.online_meeting_url = 'Invalid backup url'
     }
-    else setMentorSlug(match[1])
+    else setMentorSlug(match)
     console.log("errors",errors)
 
     return errors;
@@ -189,7 +189,7 @@ const MentorDetails = ({ user, staffId }) => {
                   data-cy="online_meeting_url"
                   size="small"
                   variant="outlined"
-                  value={values.backing_url}
+                  value={values.online_meeting_url}
                   onChange={handleChange}
                 />
                {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}

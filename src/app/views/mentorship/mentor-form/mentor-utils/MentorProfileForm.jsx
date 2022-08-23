@@ -51,14 +51,12 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
     if (!match || match[1] == undefined) {
       errors.booking_url = "Booking URL must start with https://calendly.com";
     }
-    if (
-      values.online_meeting_url.includes("4geeks.co") ||
-      values.online_meeting_url.includes("4geeksacademy.com") ||
-      values.online_meeting_url.includes("heroku.com")
-    ) {
-      console.log("success");
-      errors.online_meeting_url = "Invalid backup url";
-    } else setMentorSlug(match[1]);
+    
+    if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
+      console.log("success")
+      errors.online_meeting_url = 'Invalid backup url'
+    }
+    else setMentorSlug(match)
 
     return errors;
   };
@@ -134,7 +132,21 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.online_meeting_url}
                 onChange={handleChange}
               />
-              {/* {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>} */}
+       
+            <TextField
+                  className="m-2"
+                  label="Meeting URL"
+                  name="online_meeting_url"
+                  data-cy="online_meeting_url"
+                  size="small"
+                  variant="outlined"
+                  value={values.online_meeting_url}
+                  onChange={handleChange}
+                />
+
+              {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+              <small className="text-muted d-block">Video call link from video conference service</small>
+              <HelpIcon  message={helpText}  />
 
               {errors.online_meeting_url && (
                 <small className="text-error d-block">
