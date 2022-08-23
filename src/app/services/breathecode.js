@@ -924,6 +924,11 @@ class BreatheCodeClient {
                     "Asset",
                     `${this.host}/registry/asset/${associatedSlug}`
                 ),
+            getAssetContent: async (associatedSlug, format='md') =>
+                await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/asset/${associatedSlug}.${format}`
+                ),
             getAssetComments: async (asset_slug) =>
                 await axios.bcGet(
                     "Comment",

@@ -81,7 +81,7 @@ const Assets = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/media/asset/${item.id}`}>
+              <Link to={`/media/asset/${item.slug}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>

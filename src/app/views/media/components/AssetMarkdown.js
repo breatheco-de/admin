@@ -14,10 +14,10 @@ import { format } from "date-fns";
 
 // Documentation for the Markdown Composer: https://github.com/RIP21/react-simplemde-editor
 
-const AssetMarkdown = () => {
+const AssetMarkdown = ({ value }) => {
   return (
     <Card>
-      <SimpleMDE />
+      <SimpleMDE value={value}  />
     </Card>
   );
 };

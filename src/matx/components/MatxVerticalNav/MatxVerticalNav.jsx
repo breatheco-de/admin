@@ -52,7 +52,6 @@ const MatxVerticalNav = () => {
     if (!settings.beta && item.beta === true) return false;
     if (Array.isArray(item.children)) {
       const allChildrenCaps = item.children.reduce((allRoles, child) => [...allRoles, ...(child.capabilities || [])], []);
-      console.log("reduce", allChildrenCaps)
       if (!allChildrenCaps.some(c => capabilities.includes(c))) return false;
     }
     else if (Array.isArray(item.capabilities) && !item.capabilities.some(c => capabilities.includes(c))) return false;
