@@ -50,7 +50,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
       console.log("success")
       errors.online_meeting_url = 'Invalid backup url'
     }
-    else setMentorSlug(match[1])
+    else setMentorSlug(match)
 
     return errors;
   };
@@ -114,16 +114,16 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               Backup Meeting URL
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
-              <TextField
-                label="Backup Meeting Url"
-                name="meeonline_meeting_urlting_url"
-                size="small"
-                type="text"
-                variant="outlined"
-                value={values.online_meeting_url}
-                onChange={handleChange}
-              />
-                {/* {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>} */}
+            <TextField
+                  className="m-2"
+                  label="Meeting URL"
+                  name="online_meeting_url"
+                  data-cy="online_meeting_url"
+                  size="small"
+                  variant="outlined"
+                  value={values.online_meeting_url}
+                  onChange={handleChange}
+                />
 
               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
               <small className="text-muted d-block">Video call link from video conference service</small>
