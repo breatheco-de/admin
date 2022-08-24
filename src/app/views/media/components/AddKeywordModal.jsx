@@ -13,35 +13,46 @@ import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import bc from 'app/services/breathecode';
 import slugify from "slugify";
 const filter = createFilterOptions();
+
+const defaultProps = {
+    query: {},
+    hint: null,
+    onClose: null,
+    defaultAlias: null,
+    open: true,
+  };
+
 export const AddKeywordModal = ({
     defaultAlias,
-    cluster,
-    onClose
+    query,
+    hint,
+    onClose,
+    open
 }) => {
 
     const [formData, setFormData] = useState([])
     return (
         <>
             <Dialog
-                open={true}
+                open={open}
                 onClose={() => onClose(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 fullWidth="md"
             >
                 <DialogTitle className="ml-2" id="alert-dialog-title">
-                    Add Keyword to cluster
+                    Find your keyword
                 </DialogTitle>
                 <DialogContent>
                     <AsyncAutocomplete
                         width="100%"
-                        onChange={(x) => setFormData({ ...x, cluster: cluster.id })}
+                        onChange={(x) => setFormData(x)}
                         label="Search keywords or type a new one"
                         value={formData}
                         getOptionLabel={(option) => `${option.title}`}
-                        asyncSearch={(searchTerm) => bc.registry().getAllKeywords({ like: searchTerm, cluster: "null" })}
+                        asyncSearch={(searchTerm) => bc.registry().getAllKeywords({ ...query, like: searchTerm })}
                     />
-                    <p className="my-2">Only orphan keywords (without cluster) will show here, if you want to move a keyword from one cluster to another find the keyword on the original cluster.</p>
+                    {hint && <p className="my-2">{hint}</p>}
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -57,3 +68,5 @@ export const AddKeywordModal = ({
         </>
     )
 }
+
+AddKeywordModal.defaultProps = defaultProps;

@@ -885,10 +885,11 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/asset/${payload.slug}`,
                     payload
                 ),
-            assetAction: async (slug, action_slug) =>
+            assetAction: async (slug, action_slug, options) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${slug}/action/${action_slug}`
+                    `${this.host}/registry/academy/asset/${slug}/action/${action_slug}`,
+                    options
                 ),
             createAsset: async (payload) =>
                 await axios.bcPost(
@@ -919,10 +920,11 @@ class BreatheCodeClient {
                     "Comment",
                     `${this.host}/registry/academy/asset/comment/${id}`,
                 ),
-            getAsset: async (associatedSlug) =>
+            getAsset: async (associatedSlug, options) =>
                 await axios.bcGet(
                     "Asset",
-                    `${this.host}/registry/asset/${associatedSlug}`
+                    `${this.host}/registry/asset/${associatedSlug}`,
+                    options
                 ),
             getAssetContent: async (associatedSlug, format='md') =>
                 await axios.bcGet(

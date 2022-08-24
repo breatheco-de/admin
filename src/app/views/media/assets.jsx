@@ -129,6 +129,7 @@ const Assets = () => {
           singlePage=""
           historyReplace="/assets"
           search={async (querys) => {
+            if(!querys.visibility) querys.visibility = "PRIVATE,VISIBLE,UNLISTED";
             const { data } = await bc.registry().getAllAssets(querys);
             setAssetList(data.results);
             return data;

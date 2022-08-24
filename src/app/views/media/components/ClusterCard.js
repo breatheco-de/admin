@@ -43,7 +43,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
 
         if(!keyword) setAddKeyword(false);
         else{
-            const resp = await bc.registry().updateKeyword(keyword.slug, { cluster: keyword.cluster })
+            const resp = await bc.registry().updateKeyword(keyword.slug, { cluster: cluster.id })
             if(resp.status == 200){
                 setClusterForm({ ...clusterForm, keywords: clusterForm.keywords.concat(keyword)})
                 setAddKeyword(false);
@@ -182,7 +182,11 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     }
                 </div>
             </div>
-            {addKeyword && <AddKeywordModal cluster={cluster} onClose={handleAddKeyword} />}
+            {addKeyword && <AddKeywordModal 
+                query={{cluster: "null"}} 
+                onClose={handleAddKeyword} 
+                hint="Only orphan keywords (without cluster) will show here, if you want to move a keyword from one cluster to another find the keyword on the original cluster."
+            />}
         </Card>
     );
 };
