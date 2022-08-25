@@ -147,11 +147,14 @@ const Layout1Topbar = () => {
               menuButton={(
                 <div className={classes.userMenu}>
                   <Hidden xsDown>
-                    <span>
-                      Hi
-                      {' '}
-                      <strong>{user.first_name}</strong>
-                    </span>
+                    <div>
+                      <span>
+                        Hi
+                        {' '}
+                        <strong>{user.first_name}</strong>
+                      </span>
+                      <small style={{fontSize: "8px"}} className="d-block mx-2">{user.academy?.name}</small>
+                    </div>
                   </Hidden>
                   <Avatar className="cursor-pointer" src={user.profile?.avatar_url} />
                 </div>

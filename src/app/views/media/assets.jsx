@@ -5,6 +5,7 @@ import {
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
+import ReactCountryFlag from "react-country-flag"
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
@@ -27,6 +28,10 @@ const statusColors = {
   INNACTIVE: 'text-white bg-error',
 };
 
+function ext(url) {
+  return (url = url.substr(1 + url.lastIndexOf("/")).split('?')[0]).split('#')[0].substr(url.lastIndexOf("."))
+}
+
 const Assets = () => {
   const [assetList, setAssetList] = useState([]);
 
@@ -41,8 +46,14 @@ const Assets = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className="text-muted">{asset.lang}</small>{" - "}
-                <small className="text-muted">{asset.asset_type.toLowerCase()}</small>
+                <ReactCountryFlag className="text-muted mr-2"
+                  countryCode={asset.lang.toUpperCase()} svg 
+                  style={{
+                    fontSize: '10px',
+                  }}
+                />
+                <small className="text-muted capitalize">{asset.asset_type.toLowerCase()}</small>
+                <small className="text-muted">{ext(asset.readme_url)}</small>
                 <h5 className="my-0 text-15">{asset.title}</h5>
                 <small className="text-muted">{asset.slug}</small>
               </div>
