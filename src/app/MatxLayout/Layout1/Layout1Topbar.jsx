@@ -9,6 +9,8 @@ import {
   Hidden,
   Switch,
 } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
 import { setLayoutSettings } from 'app/redux/actions/LayoutActions';
 import { MatxMenu } from 'matx';
@@ -151,7 +153,7 @@ const Layout1Topbar = () => {
                       <strong>{user.first_name}</strong>
                     </span>
                   </Hidden>
-                  <Avatar className="cursor-pointer" src={user.github?.avatar_url} />
+                  <Avatar className="cursor-pointer" src={user.profile?.avatar_url} />
                 </div>
               )}
             >
@@ -181,6 +183,12 @@ const Layout1Topbar = () => {
                   />
                 </IconButton>
                 <span className="pl-4"> Beta features </span>
+              </MenuItem>
+              <MenuItem>
+                <a className={classes.menuItem} href={`${process.env.REACT_APP_API_HOST}/v1/auth/github/${localStorage.getItem('accessToken')}?url=${window.location.href}`}>
+                  <FontAwesomeIcon fontSize={"20px"} icon={faGithub} />
+                  <span className="pl-4"> {user.github ? user.github.username : 'Connect Github'} </span>
+                </a>
               </MenuItem>
               <MenuItem>
                 <Link className={classes.menuItem} to="/">

@@ -16,7 +16,7 @@ import bc from 'app/services/breathecode';
 import { AssetRequirementModal } from './AssetRequirementModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { AddKeywordModal } from './AddKeywordModal';
+import { PickKeywordModal } from './PickKeywordModal';
 import clsx from "clsx";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -45,14 +45,35 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
         else{
             const resp = await bc.registry().updateKeyword(keyword.slug, { cluster: cluster.id })
             if(resp.status == 200){
-                setClusterForm({ ...clusterForm, keywords: clusterForm.keywords.concat(keyword)})
+                setClusterForm({ ...clusterForm, keywords: clusterForm.keywords.concat(resp.data)})
                 setAddKeyword(false);
             }
         }
     }
     return (
         <Card className="mb-4 pb-4">
-            {requestAssetModal && <AssetRequirementModal data={requestAssetModal} onClose={_asset => _asset ? bc.registry().createAsset(_asset) : setRequestAssetModal(null)} />}
+            {requestAssetModal && 
+                <AssetRequirementModal 
+                    data={requestAssetModal} 
+                    onClose={async _asset => {
+                        if(_asset){
+                            const resp = await bc.registry().createAsset(_asset);
+                            if(resp.status >= 200 && resp.status < 300){
+                                setClusterForm({
+                                    ...clusterForm,
+                                    keywords: clusterForm.keyword.map(k => {
+                                        if(_asset.seo_keywords.includes(k.slug)){ 
+                                            k.published_assets = k.published_assets.filter(a => a != _asset.slug).concat([_asset.slug])
+                                        }
+                                        return k
+                                    })
+                                })
+                            }
+                        }
+                        setRequestAssetModal(null);
+                    }} 
+                />
+            }
             <div className="p-3">
                 { editMode ? 
                 <Grid container spacing={3} alignItems="center" className="m-2">
@@ -95,31 +116,28 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                 </Grid>
                 :
                 <Grid container spacing={3} alignItems="center">
-                    <Grid item sm={3} xs={12}>
-                        <div className="flex items-center m-2">
-                            <div className="ml-4">
-                                <h5 className="m-0">{clusterForm.title}</h5>
-                                <p className="mb-0 mt-2 text-muted font-normal capitalize">
-                                    {clusterForm.slug?.toLowerCase()}
-                                </p>
+                    <Grid item sm={5} xs={12}>
+                        <div>
+                            <h5 className="m-0">{clusterForm.title}</h5>
+                            <p className="mb-0 mt-0 text-muted font-normal capitalize">
+                                {clusterForm.slug?.toLowerCase()}
+                            </p>
+                        </div>
+                        <div className="mt-2">
+                            <div className="flex justify-between items-center mb-1">
+                                <p className="m-0 font-medium text-muted">Progress</p>
+                                <p className="m-0 text-muted">{progress}%</p>
+                            </div>
+                            <div>
+                                <LinearProgress
+                                    color="primary"
+                                    value={progress}
+                                    variant="determinate"
+                                />
                             </div>
                         </div>
-                        
                     </Grid>
-                    <Grid item sm={3} xs={12}>
-                        <div className="flex justify-between items-center mb-1">
-                            <p className="m-0 font-medium text-muted">Progress</p>
-                            <p className="m-0 text-muted">{progress}%</p>
-                        </div>
-                        <div>
-                            <LinearProgress
-                                color="primary"
-                                value={progress}
-                                variant="determinate"
-                            />
-                        </div>
-                    </Grid>
-                    <Grid item sm={5} xs={12}>
+                    <Grid item sm={7} xs={12}>
                         {clusterForm.keywords.map(k => {
                             const _status = k.published_assets.length == 0 ? "error" : "default";
                             return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`media/seo/asset?keyword=${k.slug}`)}
@@ -182,8 +200,9 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     }
                 </div>
             </div>
-            {addKeyword && <AddKeywordModal 
-                query={{cluster: "null"}} 
+            {addKeyword && <PickKeywordModal 
+                query={{cluster: "null", lang: clusterForm.lang }} 
+                cluster={clusterForm}
                 onClose={handleAddKeyword} 
                 hint="Only orphan keywords (without cluster) will show here, if you want to move a keyword from one cluster to another find the keyword on the original cluster."
             />}
