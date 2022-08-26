@@ -193,9 +193,10 @@ const MentorDetails = ({ user, staffId }) => {
                   onChange={handleChange}
                 />
                {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
-
-               <small className="text-muted d-block">Video call link from video conference service</small>
+                <div className='flex'>
+               <small style={{ marginRight: '.7%' }} className="  text-muted d-block">Video call link from video conference service</small>
                <HelpIcon  message={helpText}  />
+                </div>
 
 
               </Grid>

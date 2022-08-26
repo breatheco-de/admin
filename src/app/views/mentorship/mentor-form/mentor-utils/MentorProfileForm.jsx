@@ -123,16 +123,6 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               Backup Meeting URL
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
-              <TextField
-                label="Backup Meeting Url"
-                name="meeonline_meeting_urlting_url"
-                size="small"
-                type="text"
-                variant="outlined"
-                value={values.online_meeting_url}
-                onChange={handleChange}
-              />
-       
             <TextField
                   className="m-2"
                   label="Meeting URL"
@@ -145,18 +135,12 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 />
 
               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
-              <small className="text-muted d-block">Video call link from video conference service</small>
-              <HelpIcon  message={helpText}  />
-
-              {errors.online_meeting_url && (
-                <small className="text-error d-block">
-                  {errors.online_meeting_url}
-                </small>
-              )}
-              <small className="text-muted d-block">
-                Video call link from video conference service
-              </small>
-              <HelpIcon message={helpText} />
+              <div className='flex'>
+               <small style={{ marginRight: '.7%' }} className="text-muted d-block">Video call link from video conference service</small>
+               <HelpIcon  message={helpText}  />
+                </div>
+             
+              
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Email
