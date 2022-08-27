@@ -167,7 +167,7 @@ const Layout1Topbar = () => {
                     {' '}
                     <strong>{user.first_name || 'No name'}</strong>
                   </p>
-                  <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
+                  <p className="m-0 w-100"><small className="d-block">{user.academy?.name.replace("4Geeks Academy", "")}</small></p>
                   <p className="m-0 w-100">
                     <small className="d-block">
                       Role:
