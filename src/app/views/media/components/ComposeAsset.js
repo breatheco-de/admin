@@ -19,7 +19,7 @@ import DialogPicker from '../../../components/DialogPicker';
 import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
-
+import CommentBar from "./CommentBar"
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
@@ -271,9 +271,7 @@ const ComposeAsset = () => {
           </Grid>
 
           <Grid item xs={6} sm={4} align="right">
-            <IconButton className="mr-2">
-              <Icon>more_horiz</Icon>
-            </IconButton>
+            <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
             <Button variant="contained" color={Object.keys(errors).length == 0 ? "primary": "error"}
               onClick={() => saveAsset().then(errors => (errors!==true) && setErrorDialog(true))}
             >

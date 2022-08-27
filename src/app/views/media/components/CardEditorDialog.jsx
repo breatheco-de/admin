@@ -123,7 +123,7 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
             <h6 className="m-0 ml-4 uppercase text-muted">SEO Keywords</h6>
           </div>
           <div className="ml-10 mb-4 flex">
-            {card.seo_keywords.map(k => <Chip key={k} size="small" label={k} color='gray' className="mr-2" />)}
+            {card.seo_keywords.map(k => <Chip key={k} size="small" label={k.title} color='gray' className="mr-2" />)}
           </div>
         </div>}
 

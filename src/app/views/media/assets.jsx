@@ -29,6 +29,7 @@ const statusColors = {
 };
 
 function ext(url) {
+  if(!url) return ".empty"
   return (url = url.substr(1 + url.lastIndexOf("/")).split('?')[0]).split('#')[0].substr(url.lastIndexOf("."))
 }
 
@@ -47,7 +48,7 @@ const Assets = () => {
             <div className="flex items-center">
               <div className="ml-3">
                 <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={asset.lang.toUpperCase()} svg 
+                  countryCode={asset.lang?.toUpperCase()} svg 
                   style={{
                     fontSize: '10px',
                   }}

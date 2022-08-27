@@ -22,9 +22,14 @@ const routes = [
     component: React.lazy(() => import('./components/ComposeAsset')),
   },
   {
-    path: '/media/kanban',
+    path: '/media/new_articles',
     exact: true,
-    component: React.lazy(() => import('./kanban')),
+    component: React.lazy(() => import('./new_articles')),
+  },
+  {
+    path: '/media/article_issues',
+    exact: true,
+    component: React.lazy(() => import('./article_issues')),
   },
   {
     path: '/media/seo/cluster',

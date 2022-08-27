@@ -936,7 +936,7 @@ class BreatheCodeClient {
             getAssetComments: async (asset_slug) =>
                 await axios.bcGet(
                     "Comment",
-                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}`
+                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}&sort=-created_at`
                 ),
         };
     }

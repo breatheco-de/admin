@@ -25,13 +25,32 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const LangCard = ({ asset, onAction }) => {
+const RequirementsCard = ({ asset, onAction }) => {
   //const [ keywords, setKeywords ] = useState(null);
   return <Card className="p-4 mb-4">
     <div className="flex justify-between items-center">
       <h4 className="m-0 font-medium">Languages: </h4>
       {Object.keys(asset.translations).map(t => 
         <Link to={`./${asset.translations[t]}`}>
+          <ReactCountryFlag 
+            countryCode={t.toUpperCase()} svg 
+            style={{
+              fontSize: t == asset.lang ? '2em' : '1.7em',
+            }}
+          />
+        </Link>
+      )}
+    </div>
+  </Card>;
+}
+
+const LangCard = ({ asset, onAction }) => {
+  //const [ keywords, setKeywords ] = useState(null);
+  return <Card className="p-4 mb-4">
+    <div className="flex justify-between items-center">
+      <h4 className="m-0 font-medium">Languages: </h4>
+      {Object.keys(asset.translations).map(t => 
+        <Link to={`./${asset.translations[t]}`} key={t}>
           <ReactCountryFlag 
             countryCode={t.toUpperCase()} svg 
             style={{
@@ -124,6 +143,7 @@ const SEOCard = ({ asset, onAction, onChange }) => {
         <>
           {asset.seo_keywords.map(k => 
             <Chip 
+              key={k.slug}
               className="mr-1" size="small" 
               label={k.title || k} 
               icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => _k != k)})}>delete</Icon>} 
