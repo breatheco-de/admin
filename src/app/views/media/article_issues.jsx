@@ -4,12 +4,14 @@ import {
   IconButton,
   Avatar,
   Tooltip,
-  FormControlLabel,
-  Checkbox,
+  Button,
+  Grid,
 } from "@material-ui/core";
+import history from "history.js";
 import bc from 'app/services/breathecode';
 import ScrumBoardContainer from "./components/ScrumBoardContainer";
 import { getSession } from '../../redux/actions/SessionActions';
+import DowndownMenu from '../../components/DropdownMenu';
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MatxMenu } from "matx";
@@ -47,7 +49,7 @@ const Board = () => {
   const [board, setBoard] = useState({ list: [] });
   const [assets, setAssets] = useState([]);
   const [memberList, setMemberList] = useState();
-  const ago30Days = dayjs().subtract(30, 'day').tz(session.academy.timezone);
+  const ago30Days = dayjs().subtract(30, 'day').tz(session.academy.timezone || 'America/New_York');
 
   const classes = useStyles();
 
@@ -58,7 +60,7 @@ const Board = () => {
     const _assets = await bc.registry().getAllAssets({ published_before: ago30Days.format('YYYY-MM-DD') });
     setAssets(_assets)
     setBoard(newBoard({
-      title: 'Asset Kanban',
+      title: 'Article Issues',
       members: members.data.map(m => newMember(m)),
       columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED'].map(c => newColumn(c, c, _assets.data.filter(a => a.status === c).map(a => newCard(a))))
     }))
@@ -108,16 +110,28 @@ const Board = () => {
 
   return (
     <div className="scrum-board m-sm-30">
+      <div className="flex flex-wrap justify-between mb-6">
+        <Grid item xs={12} sm={8}>
+          <h3 className="my-0 font-medium text-28">Article Issues Pipeline</h3>
+        </Grid>
 
+        <Grid item xs={6} sm={4} align="right">
+          <DowndownMenu
+            options={[
+              { label: 'Swich to: New Articles', value: 'new_articles'},
+              { label: 'Swich to: Issues on previous articles', value: 'article_issues'}
+            ]}
+            icon="more_horiz"
+            onSelect={({ value }) => history.push(`./${value}`)}
+          >
+            <Button variant="contained" color="primary">
+              Switch to another Pipeline
+            </Button>
+          </DowndownMenu>
+        </Grid>
+      </div>
       <div className="relative">
-        <ScrumBoardContainer
-          list={board.list}
-          // handleAddList={handleAddList}
-          // handleAddNewCard={handleAddNewCard}
-          handleMoveCard={handleMoveCard}
-          handleCardAction={handleCardAction}
-          onCardUpdate={handleCardUpdate}
-        ></ScrumBoardContainer>
+
       </div>
     </div>
   );

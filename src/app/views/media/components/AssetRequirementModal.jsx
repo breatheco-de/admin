@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-
+import slugify from "slugify"
 import bc from 'app/services/breathecode';
 
 export const AssetRequirementModal = ({
@@ -24,10 +24,9 @@ export const AssetRequirementModal = ({
         onClose={() => onClose(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        fullWidth="md"
       >
         <DialogTitle className="ml-2" id="alert-dialog-title">
-          Crea a new asset for the content team
+          Create a new asset for the content team
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -53,7 +52,7 @@ export const AssetRequirementModal = ({
             fullWidth
             variant="outlined"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: slugify(e.target.value) })}
           />
           <TextField
             className="m-2"

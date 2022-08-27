@@ -1,7 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { forEach, merge } from 'lodash';
 import layout1Settings from './Layout1/Layout1Settings';
-import layout2Settings from './Layout2/Layout2Settings';
 import { themeColors } from './MatxTheme/themeColors';
 import themeOptions from './MatxTheme/themeOptions';
 
@@ -22,7 +21,6 @@ export const MatxLayoutSettings = {
   beta: process.env.NODE_ENV != 'production',
   themes,
   layout1Settings, // open Layout1/Layout1Settings.js
-  layout2Settings, // open Layout1/Layout2Settings.js
 
   // Footer options
   footer: {

@@ -15,6 +15,8 @@ axiosInstance.scopes = {};
 axiosInstance.bcGet = function (...args) {
     const [scopeName, url, ...rest] = args;
     this.scopes[url] = scopeName;
+    
+    this.silent = rest[0] ? rest[0].silent || false : false;
     const resp = this.get(url, ...rest);
     return resp;
 };
@@ -22,6 +24,7 @@ axiosInstance.bcGet = function (...args) {
 axiosInstance.bcPost = function (...args) {
     const [scopeName, url, ...rest] = args;
     this.scopes[url] = scopeName;
+    this.silent = rest[0] ? rest[0].silent || false : false;
     const resp = this.post(url, ...rest);
     return resp;
 };
@@ -29,6 +32,7 @@ axiosInstance.bcPost = function (...args) {
 axiosInstance.bcPut = function (...args) {
     const [scopeName, url, ...rest] = args;
     this.scopes[url] = scopeName;
+    this.silent = rest[0] ? rest[0].silent || false : false;
     const resp = this.put(url, ...rest);
     return resp;
 };
@@ -36,6 +40,7 @@ axiosInstance.bcPut = function (...args) {
 axiosInstance.bcDelete = function (...args) {
     const [scopeName, url, ...rest] = args;
     this.scopes[url] = scopeName;
+    this.silent = rest[0] ? rest[0].silent || false : false;
     const resp = this.delete(url, ...rest);
     return resp;
 };

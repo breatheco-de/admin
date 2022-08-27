@@ -220,8 +220,10 @@ class BreatheCodeClient {
                 ),
             getUserByEmail: (email) =>
                 axios.bcGet("User", `${this.host}/auth/user/${email}`),
-            getAllUsers: (query) =>
-                axios.bcGet("Users", `${this.host}/auth/user?like=${query}`),
+            getAllUsers: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet("Users", `${this.host}/auth/user?${qs}`);
+            },
             getAcademyMember: (user) =>
                 axios.bcGet(
                     "Academy member",
@@ -885,10 +887,11 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/asset/${payload.slug}`,
                     payload
                 ),
-            assetAction: async (slug, action_slug) =>
+            assetAction: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${slug}/action/${action_slug}`
+                    `${this.host}/registry/academy/asset/${slug}/action/${payload.action_slug}`,
+                    payload
                 ),
             createAsset: async (payload) =>
                 await axios.bcPost(
@@ -919,15 +922,21 @@ class BreatheCodeClient {
                     "Comment",
                     `${this.host}/registry/academy/asset/comment/${id}`,
                 ),
-            getAsset: async (associatedSlug) =>
+            getAsset: async (associatedSlug, options) =>
                 await axios.bcGet(
                     "Asset",
-                    `${this.host}/registry/asset/${associatedSlug}`
+                    `${this.host}/registry/academy/asset/${associatedSlug}`,
+                    options
+                ),
+            getAssetContent: async (associatedSlug, { format='md', frontmatter='false' }) =>
+                await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/asset/${associatedSlug}.${format}?frontmatter=${frontmatter}`
                 ),
             getAssetComments: async (asset_slug) =>
                 await axios.bcGet(
                     "Comment",
-                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}`
+                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}&sort=-created_at`
                 ),
         };
     }

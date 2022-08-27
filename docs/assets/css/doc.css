@@ -589,6 +589,9 @@ small {
 .text-success {
   color: #28C76E !important; }
 
+.text-light-success {
+  color: #64c88f !important; }
+
 .bg-info {
   background-color: #4A90E2 !important; }
 

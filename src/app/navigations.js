@@ -145,9 +145,9 @@ export const navigations = [
                 capabilities: ["read_asset"],
             },
             {
-                name: "Kanban",
-                path: "/media/kanban",
-                iconText: "KAN",
+                name: "Pipeline",
+                path: "/media/article_issues",
+                iconText: "PIP",
                 beta: true,
                 capabilities: ["read_asset"],
             },
