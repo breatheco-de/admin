@@ -199,14 +199,18 @@ export function resolveResponse(res) {
 
       if(res.data.success.length !== 0) msg = `The ${axios.scopes[res.config.url]} ${joinSuccess.join(',')} were ${methods[res.config.method]} but the ${axios.scopes[res.config.url]} ${joinFailure.flat().join(',')} were not`;
       else msg = `${res.data.failure[0].detail}`;
-      return toast.warning(msg, toastOption);
+
+      if(!axios.silent) return toast.warning(msg, toastOption);
+      else return true;
     }
 
-    return toast.success(msg, toastOption);
+    if(!axios.silent) return toast.success(msg, toastOption);
+    else return true;
   }
 }
 
 export function resolveError(error) {
+  if(axios.silent) return false;
   if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
     for (const item in error.response.data) {
       if (Array.isArray(error.response.data[item])) {

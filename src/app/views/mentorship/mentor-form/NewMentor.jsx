@@ -86,7 +86,7 @@ const NewMentor = () => {
                   onChange={(user) => setShowForm({ data: { ...showForm.data, ...user }, show: true })}
                   width="100%"
                   label="Search Users"
-                  asyncSearch={(searchTerm) => bc.auth().getAllUsers(searchTerm)}
+                  asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm })}
                   debounced
                   getOptionLabel={(option) => (option.newUser
                     ? option.newUser

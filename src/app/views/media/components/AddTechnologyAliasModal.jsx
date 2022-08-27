@@ -24,7 +24,6 @@ export const AddTechnologyAliasModal = ({
                 onClose={() => onClose(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
-                fullWidth="md"
             >
                 <DialogTitle className="ml-2" id="alert-dialog-title">
                     Add tecnology alias
