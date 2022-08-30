@@ -1,15 +1,17 @@
 import {
-  Avatar,
+  Avatar, 
   Button,
   Card, Dialog, DialogTitle, DialogActions, Divider, Grid, List,
   ListItem,
   ListItemText, MenuItem, TextField
 } from '@material-ui/core';
+
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
+import HelpIcon from '../../../components/HelpIcon';
 
 const propTypes = {
   user: PropTypes.object.isRequired,
@@ -66,10 +68,21 @@ const MentorDetails = ({ user, staffId }) => {
     if (!match || match[1] == undefined) {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
-    else setMentorSlug(match[1])
+    if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
+      console.log("success")
+      errors.online_meeting_url = 'Invalid backup url'
+    }
+    else setMentorSlug(match)
+    console.log("errors",errors)
 
     return errors;
   };
+
+  let helpText = `Example: whereby.com/something`;
+    
+  
+   
+
 
   return (
     <Card className="pt-6" elevation={3}>
@@ -179,6 +192,13 @@ const MentorDetails = ({ user, staffId }) => {
                   value={values.online_meeting_url}
                   onChange={handleChange}
                 />
+               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+                <div className='flex'>
+               <small style={{ marginRight: '.7%' }} className="  text-muted d-block">Video call link from video conference service</small>
+               <HelpIcon  message={helpText}  />
+                </div>
+
+
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
                 Booking URL
