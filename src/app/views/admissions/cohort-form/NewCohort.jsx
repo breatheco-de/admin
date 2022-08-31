@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Formik } from 'formik';
+import React, { useState } from "react";
+import { Formik } from "formik";
 import {
   Grid,
   Card,
@@ -10,21 +10,23 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
+} from "@material-ui/core";
+import { Link, useHistory } from "react-router-dom";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
-import * as Yup from 'yup';
-import DateFnsUtils from '@date-io/date-fns';
-import { makeStyles } from '@material-ui/core/styles';
-import { Breadcrumb } from '../../../../matx';
-import bc from '../../../services/breathecode';
-import { AsyncAutocomplete } from '../../../components/Autocomplete';
-import HelpIcon from '../../../components/HelpIcon';
+} from "@material-ui/pickers";
+import * as Yup from "yup";
+import DateFnsUtils from "@date-io/date-fns";
+import { makeStyles } from "@material-ui/core/styles";
+import { Breadcrumb } from "../../../../matx";
+import bc from "../../../services/breathecode";
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
+import HelpIcon from "../../../components/HelpIcon";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 
-const slugify = require('slugify')
+const slugify = require("slugify");
 
 const useStyles = makeStyles(({ palette }) => ({
   neverEnd: {
@@ -41,32 +43,34 @@ const NewCohort = () => {
   const [checked, setChecked] = useState(false);
   const [neverEnd, setNeverEnd] = useState(true);
   const [remote, setRemote] = useState(true);
-  const [timeZone, setTimeZone] = useState('');
+  const [timeZone, setTimeZone] = useState("");
   const [newCohort, setNewCohort] = useState({
-    name: '',
-    slug: '',
-    language: '',
+    name: "",
+    slug: "",
+    language: "",
     kickoff_date: startDate,
     ending_date: null,
     never_ends: false,
     remote_available: true,
-    time_zone: '',
+    time_zone: "",
   });
-  const { academy } = JSON.parse(localStorage.getItem('bc-session'));
+  const { academy } = JSON.parse(localStorage.getItem("bc-session"));
   const history = useHistory();
   const languages = [
     {
-      value: 'es',
-      label: 'Spanish',
+      value: "es",
+      label: "Spanish",
     },
     {
-      value: 'en',
-      label: 'English',
+      value: "en",
+      label: "English",
     },
   ];
 
   const ProfileSchema = Yup.object().shape({
-    slug: Yup.string().required().matches(/^[a-z0-9]+(?:(-|_)[a-z0-9]+)*$/, 'Invalid Slug')
+    slug: Yup.string()
+      .required()
+      .matches(/^[a-z0-9]+(?:(-|_)[a-z0-9]+)*$/, "Invalid Slug"),
   });
 
   const handleNeverEnd = (event) => {
@@ -103,7 +107,7 @@ const NewCohort = () => {
       })
       .then((data) => {
         if (data.status === 201) {
-          history.push('/admissions/cohorts');
+          history.push("/admissions/cohorts");
         }
       })
       .catch((error) => console.error(error));
@@ -112,14 +116,22 @@ const NewCohort = () => {
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: 'Admin', path: '/admin' },
-            { name: 'Cohort', path: '/admissions/cohorts' },
-            { name: 'New Cohort' },
+            { name: "Admin", path: "/admin" },
+            { name: "Cohort", path: "/admissions/cohorts" },
+            { name: "New Cohort" },
           ]}
         />
       </div>
@@ -136,11 +148,7 @@ const NewCohort = () => {
           enableReinitialize
           validationSchema={ProfileSchema}
         >
-          {({ 
-            handleSubmit, 
-            errors,
-            touched, 
-          }) => (
+          {({ handleSubmit, errors, touched }) => (
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
@@ -155,7 +163,7 @@ const NewCohort = () => {
                     size="small"
                     variant="outlined"
                     value={newCohort.name}
-                    onChange={(e)=>{
+                    onChange={(e) => {
                       newCohort.slug = slugify(e.target.value).toLowerCase();
                       createCohort(e);
                     }}
@@ -210,11 +218,19 @@ const NewCohort = () => {
                         data-cy="version"
                         label="Version"
                         required
-                        getOptionLabel={(option) => option.status === 'PUBLISHED' ? `${option.version}` : "⚠️ "+option.version+" ("+option.status+")"}
+                        getOptionLabel={(option) =>
+                          option.status === "PUBLISHED"
+                            ? `${option.version}`
+                            : "⚠️ " +
+                              option.version +
+                              " (" +
+                              option.status +
+                              ")"
+                        }
                         value={version}
                       />
                     ) : (
-                      ''
+                      ""
                     )}
                   </div>
                 </Grid>
@@ -227,7 +243,7 @@ const NewCohort = () => {
                     debounced={false}
                     onChange={(v) => setSchedule(v)}
                     width="20%"
-                    key={syllabus ? syllabus.slug : ''}
+                    key={syllabus ? syllabus.slug : ""}
                     asyncSearch={() => {
                       if (!syllabus) {
                         return Promise.resolve([]);
@@ -255,7 +271,7 @@ const NewCohort = () => {
                     label="Language"
                     data-cy="language"
                     size="small"
-                    style={{ width: '20%' }}
+                    style={{ width: "20%" }}
                     variant="outlined"
                     value={newCohort.language}
                     onChange={languageCohort}
@@ -303,7 +319,7 @@ const NewCohort = () => {
                   md={2}
                   sm={4}
                   xs={12}
-                  className={neverEnd ? '' : classes.neverEnd}
+                  className={neverEnd ? "" : classes.neverEnd}
                 >
                   End date
                 </Grid>
@@ -345,7 +361,7 @@ const NewCohort = () => {
                       />
                     }
                     label="This cohort never ends."
-                    style={{marginRight:'5px'}}
+                    style={{ marginRight: "5px" }}
                   />
                   <HelpIcon message={helpText} link={helpLink} />
                 </Grid>
@@ -354,10 +370,10 @@ const NewCohort = () => {
                     control={
                       <Checkbox
                         checked={remote}
-                        onChange={()=>{
+                        onChange={() => {
                           setNewCohort({
                             ...newCohort,
-                            remote_available:!remote
+                            remote_available: !remote,
                           });
                           setRemote(!remote);
                         }}
@@ -410,13 +426,59 @@ const NewCohort = () => {
               </Grid>
               <div className="mt-6">
                 <Button
+                  onClick={() => {
+                    if (neverEnd == false) {
+                      return handleOpen();
+                    } else {
+                      handleSubmit();
+                    }
+                  }}
                   color="primary"
                   variant="contained"
-                  type="submit"
-                  data-cy="submit"
                 >
                   Create
                 </Button>
+                <Modal open={open} onClose={handleClose}>
+                  <Box
+                    style={{ position: "absolute", top: "33%", left: "41%" }}
+                    className=" p-6 border-none border-radius-4 w-400 bg-paper "
+                  >
+                  <div className="modalContent text-center">
+                    <h2>Confirm</h2>
+                    <p>
+                      Are you sure you want to create a cohort that doesn't end?
+                      Some functionalities will be limited.
+                    </p>
+
+                    <div className="mb-2">
+                      <Button
+                        variant="outlined"
+                        style={{ color: "blue", borderColor: "blue" }}
+                        className="rounded mr-4"
+                        onClick={handleSubmit}
+                      >
+                        Yes
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        style={{ color: "gold", borderColor: "gold" }}
+                        className="rounded "
+                        onClick={handleClose}
+                      >
+                        No
+                      </Button>
+                    </div>
+                    <a
+                      style={{ textDecoration: "underline" }}
+                      href={helpLink}
+                      target="_blank"
+                    >
+                      Read more about never ending cohorts.
+                    </a>
+                  </div>
+                  </Box>
+                </Modal>
               </div>
             </form>
           )}

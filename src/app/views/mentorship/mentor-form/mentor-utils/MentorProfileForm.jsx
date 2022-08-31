@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import {
-  Grid, TextField, Button, MenuItem,
-} from '@material-ui/core';
-import PropTypes from 'prop-types';
-import { Formik } from 'formik';
-import bc from 'app/services/breathecode';
-import { useHistory } from 'react-router-dom';
-import useAuth from '../../../../hooks/useAuth';
-import { AsyncAutocomplete } from '../../../../components/Autocomplete'
+import React, { useState } from "react";
+import { Grid, TextField, Button, MenuItem } from "@material-ui/core";
+import PropTypes from "prop-types";
+import { Formik } from "formik";
+import bc from "app/services/breathecode";
+import { useHistory } from "react-router-dom";
+import useAuth from "../../../../hooks/useAuth";
+import { AsyncAutocomplete } from "../../../../components/Autocomplete";
+import HelpIcon from "../../../../components/HelpIcon";
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -16,38 +15,53 @@ const propTypes = {
 
 export const MentorProfileForm = ({ initialValues, serviceList }) => {
   const history = useHistory();
-  const [mentorSlug, setMentorSlug] = useState('');
+  const [mentorSlug, setMentorSlug] = useState("");
   const [mentor, setMentor] = useState({ syllabus: [] });
   const [services, setServices] = useState([]);
   const [syllabusArray, setSyllabusArray] = useState([]);
   const { user } = useAuth();
 
   const postMentor = (values) => {
-    let filteredSyllArr = mentor.syllabus.map((syl) => syl.id)
-    bc.mentorship().addAcademyMentor({
-      academy: user.academy.id,
-      user: values.id,
-      booking_url: values.booking_url,
-      online_meeting_url: values.online_meeting_url,
-      slug: mentorSlug,
-      one_line_bio: values.one_line_bio,
-      price_per_hour: values.price_per_hour,
-      services: services.map((service) => service.id),
-      syllabus: filteredSyllArr,
-      email: values.email
-    }).then((data) => (data.status == 201) && history.push('/mentors')).catch(error => setFormError('Error while saving mentor'))
-  }
+    let filteredSyllArr = mentor.syllabus.map((syl) => syl.id);
+    bc.mentorship()
+      .addAcademyMentor({
+        academy: user.academy.id,
+        user: values.id,
+        booking_url: values.booking_url,
+        online_meeting_url: values.online_meeting_url,
+        slug: mentorSlug,
+        one_line_bio: values.one_line_bio,
+        price_per_hour: values.price_per_hour,
+        services: services.map((service) => service.id),
+        syllabus: filteredSyllArr,
+        email: values.email,
+      })
+      .then((data) => data.status == 201 && history.push("/mentors"))
+      .catch((error) => setFormError("Error while saving mentor"));
+  };
 
-  const validate = (values, props /* only available when using withFormik */) => {
+  const validate = (
+    values,
+    props /* only available when using withFormik */
+  ) => {
     const errors = {};
-    const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(values.booking_url);
+    const match = /https?:\/\/calendly\.com\/([\w\-]+)\/?/gm.exec(
+      values.booking_url
+    );
     if (!match || match[1] == undefined) {
-      errors.booking_url = 'Booking URL must start with https://calendly.com'
+      errors.booking_url = "Booking URL must start with https://calendly.com";
     }
-    else setMentorSlug(match[1])
+    
+    if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
+      console.log("success")
+      errors.online_meeting_url = 'Invalid backup url'
+    }
+    else setMentorSlug(match)
 
     return errors;
   };
+
+  let helpText = `Example: whereby.com/something`;
 
   return (
     <Formik
@@ -99,22 +113,34 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.booking_url}
                 onChange={handleChange}
               />
-              {errors.booking_url && <small className="text-error d-block">{errors.booking_url}</small>}
+              {errors.booking_url && (
+                <small className="text-error d-block">
+                  {errors.booking_url}
+                </small>
+              )}
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Backup Meeting URL
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
-              <TextField
-                label="Backup Meeting Url"
-                name="meeonline_meeting_urlting_url"
-                size="small"
-                type="text"
-                variant="outlined"
-                value={values.online_meeting_url}
-                onChange={handleChange}
-              />
+            <TextField
+                  className="m-2"
+                  label="Meeting URL"
+                  name="online_meeting_url"
+                  data-cy="online_meeting_url"
+                  size="small"
+                  variant="outlined"
+                  value={values.online_meeting_url}
+                  onChange={handleChange}
+                />
+
               {errors.online_meeting_url && <small className="text-error d-block">{errors.online_meeting_url}</small>}
+              <div className='flex'>
+               <small style={{ marginRight: '.7%' }} className="text-muted d-block">Video call link from video conference service</small>
+               <HelpIcon  message={helpText}  />
+                </div>
+             
+              
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Email
@@ -143,7 +169,9 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.one_line_bio}
                 onChange={handleChange}
               />
-              <small className="text-muted d-block">60 chars; Make the mentor more friendly to students</small>
+              <small className="text-muted d-block">
+                60 chars; Make the mentor more friendly to students
+              </small>
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Price per hour
@@ -159,8 +187,9 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 value={values.price_per_hour}
                 InputProps={{
                   inputProps: {
-                    max: 100, min: 0
-                  }
+                    max: 100,
+                    min: 0,
+                  },
                 }}
                 onChange={handleChange}
               />
@@ -196,7 +225,9 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 size="small"
                 label="Services"
                 debounced={false}
-                isOptionEqualToValue={(option, value) => option.name === value.name}
+                isOptionEqualToValue={(option, value) =>
+                  option.name === value.name
+                }
                 getOptionLabel={(option) => option.name}
                 multiple={true}
                 asyncSearch={() => bc.mentorship().getAllServices()}
@@ -214,7 +245,9 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 variant="outlined"
                 value={mentorSlug}
               />
-              <small className="text-muted d-block">Will be suggested from the booking url</small>
+              <small className="text-muted d-block">
+                Will be suggested from the booking url
+              </small>
             </Grid>
             <Grid item md={2} sm={4} xs={12}>
               Syllabus expertise
@@ -223,13 +256,13 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
               <AsyncAutocomplete
                 getOptionLabel={(option) => `${option.name}`}
                 onChange={(selectedSyllabus) => {
-                  setMentor({ ...mentor, syllabus: selectedSyllabus })
+                  setMentor({ ...mentor, syllabus: selectedSyllabus });
                 }}
                 width="100%"
                 key={mentor.syllabus}
                 asyncSearch={async () => {
                   const response = await bc.admissions().getAllSyllabus();
-                  setSyllabusArray(response.data)
+                  setSyllabusArray(response.data);
                   return response.data;
                 }}
                 size="small"
@@ -249,7 +282,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
         </form>
       )}
     </Formik>
-  )
+  );
 };
 
 MentorProfileForm.propTypes = propTypes;
