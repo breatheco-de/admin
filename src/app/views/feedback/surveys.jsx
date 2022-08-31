@@ -173,6 +173,7 @@ const SurveyList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
+          console.log("scores", items[i].scores)
           const avg_score = items[i].scores?.total || null;
           const color =
             avg_score > 7
