@@ -173,22 +173,24 @@ const SurveyList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
+          console.log("scores", items[i].scores)
+          const avg_score = items[i].scores?.total || null;
           const color =
-            items[i].avg_score > 7
+            avg_score > 7
               ? "text-green"
-              : items[i].avg_score < 7
+              : avg_score < 7
                 ? "text-error"
                 : "text-orange";
-          if (items[i].avg_score) {
+          if (avg_score) {
             return (
               <div className="flex items-center">
                 <LinearProgress
                   color="secondary"
-                  value={parseInt(items[i].avg_score, 10) * 10}
+                  value={parseInt(avg_score, 10) * 10}
                   variant="determinate"
                 />
                 <small className={color}>
-                  {Math.round(items[i].avg_score * 100) / 100}
+                  {Math.round(avg_score * 100) / 100}
                 </small>
               </div>
             );
