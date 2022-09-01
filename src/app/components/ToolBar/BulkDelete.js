@@ -34,24 +34,18 @@ const BulkDelete = (props) => {
     setIdsArr(selected.map((item) => props.items[item].id));
   }, [selected]);
 
-  const deleteBulkEntities = (e) => {
+  const deleteBulkEntities = async (e) => {
     e.preventDefault();
-    deleting(idsArr)
-      .then((status) => {
-        setOpenDialog(false);
-        if (status >= 200 && status < 300) {
-          setSelectedRows([]);
-          if (onBulkDelete) {
-            onBulkDelete();
-          }
-          return true;
-        }
-        throw Error('Items could not be deleted');
-      })
-      .catch((r) => {
-        setOpenDialog(false);
-        return r;
-      });
+    if(!deleting) throw Error('No deleting option has been passed to the SmartMuiDataTable');
+    
+    const status = await deleting(idsArr);
+    setOpenDialog(false);
+    if (status >= 200 && status < 300) {
+        setSelectedRows([]);
+        if (onBulkDelete) onBulkDelete();
+        return true;
+    }
+    setOpenDialog(false);
   };
   return (
  

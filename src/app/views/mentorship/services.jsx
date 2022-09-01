@@ -143,6 +143,12 @@ const Services = () => {
             setServiceList(data.results);
             return data;
           }}
+          deleting={async (ids) => {
+            const { status } = await bc
+              .mentorship()
+              .deleteServiceBulk(ids);
+            return status;
+          }}
         />
       </div>
     </div>
