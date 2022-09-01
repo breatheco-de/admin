@@ -108,7 +108,7 @@ const NewCertificate = () => {
                     size="small"
                     disabled={certificateSlug === 'single'}
                     width="100%"
-                    asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+                    asyncSearch={(query) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like=${query}`)}
                     onChange={(cohort) => handleChange({ slug: 'all', cohort })}
                     getOptionLabel={(option) => `${option.name}, (${option.slug})`}
                     label="Select a Cohort"
@@ -123,8 +123,8 @@ const NewCertificate = () => {
                     disabled={certificateSlug === 'all'}
                     key={state.cohort.slug}
                     width="100%"
-                    asyncSearch={() => axios.get(
-                      `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED`,
+                    asyncSearch={(query) => axios.get(
+                      `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED&like=${query}`,
                     )}
                     onChange={(student) => handleChange({ slug: 'single', student })}
                     getOptionLabel={(option) => option.length !== 0
