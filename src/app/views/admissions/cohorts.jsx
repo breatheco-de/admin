@@ -49,7 +49,7 @@ const Cohorts = () => {
         filter: true,
         filterType: "dropdown",
         filterOptions: {
-          names: ['INACTIVE', 'PREWORK', 'STARTED', 'ACTIVE', 'FINAL_PROJECT', 'ENDED', 'DELETED']
+          names: ['INACTIVE', 'PREWORK', 'STARTED', 'FINAL_PROJECT', 'ENDED', 'DELETED']
         },
         filterList: query.get('stage') !== null ? [query.get('stage')] : [],
         customBodyRenderLite: (dataIndex) => {
