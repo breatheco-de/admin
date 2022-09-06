@@ -54,7 +54,7 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
   };
 
   useEffect(async () => {
-    const resp = await bc.registry().getAssetComments(card.slug)
+    const resp = await bc.registry().getAssetComments({asset: card.slug })
     if (resp.status == 200) setComments(resp.data);
   }, [])
   useEffect(() => { setUrl(card.url) }, [card.url])

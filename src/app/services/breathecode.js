@@ -940,11 +940,14 @@ class BreatheCodeClient {
                     "Asset",
                     `${this.host}/registry/asset/${associatedSlug}.${format}?frontmatter=${frontmatter}`
                 ),
-            getAssetComments: async (asset_slug) =>
-                await axios.bcGet(
+            getAssetComments: async (query) => {
+                if(!query.sort) query.sort = "-created_at"
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
                     "Comment",
-                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}&sort=-created_at`
-                ),
+                    `${this.host}/registry/academy/asset/comment?${qs}`
+                );
+            }
         };
     }
 

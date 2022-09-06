@@ -63,7 +63,10 @@ const CommentBar = ({ container, iconName, title, asset }) => {
 
   const sendComment = async () => {
     const resp = await bc.registry().createAssetComment({ ...newComment, asset: asset.id })
-    if (resp.status == 201) setComments([...comments, resp.data]);
+    if (resp.status == 201){
+      setComments([...comments, resp.data]);
+      setNewComment({});
+    }
   };
 
   const toggleResolveComment = async (c) => {
@@ -77,7 +80,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
   };
 
   useEffect(async () => {
-    const resp = await bc.registry().getAssetComments(asset.slug);
+    const resp = await bc.registry().getAssetComments({ asset: asset.slug });
     if (resp.status == 200){
       setComments(resp.data);
     }

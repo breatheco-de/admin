@@ -2,111 +2,105 @@ import React, { useEffect, useState } from "react";
 import {
   Icon,
   IconButton,
-  Avatar,
   Tooltip,
   Button,
   Grid,
 } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import history from "history.js";
 import bc from 'app/services/breathecode';
-import ScrumBoardContainer from "./components/ScrumBoardContainer";
+import ReactCountryFlag from "react-country-flag"
 import { getSession } from '../../redux/actions/SessionActions';
 import DowndownMenu from '../../components/DropdownMenu';
-import { Link, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { MatxMenu } from "matx";
-
-import {
-  getBoardById,
-  addListInBoard,
-  getAllMembers,
-  getAllLabels,
-  addMemberInBoard,
-  addNewCardInList,
-  deleteMemberFromBoard,
-} from "../../redux/actions/ScrumBoardActions";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import { newMember, newBoard, newColumn, newCard } from "./components/initBoard"
+import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
-  avatar: {
-    border: "2px solid white",
-  },
-}));
-
 dayjs.extend(tz);
 dayjs.extend(utc);
 
+const statusColors = {
+  resolved: 'text-white bg-green',
+  pending: 'text-white bg-error',
+};
+
 const Board = () => {
 
+  const [issueList, setIssueList] = useState([]);
   const [session] = useState(getSession());
   if (session?.academy?.timezone) dayjs.tz.setDefault(session.academy.timezone);
 
-  const [board, setBoard] = useState({ list: [] });
-  const [assets, setAssets] = useState([]);
-  const [memberList, setMemberList] = useState();
-  const ago30Days = dayjs().subtract(30, 'day').tz(session.academy.timezone || 'America/New_York');
-
-  const classes = useStyles();
-
-  useEffect(async () => {
-    const members = await bc.auth().getAcademyMembers({ role: 'content_writter' });
-    setMemberList(members.data.map(m => newMember(m)));
-
-    const _assets = await bc.registry().getAllAssets({ published_before: ago30Days.format('YYYY-MM-DD') });
-    setAssets(_assets)
-    setBoard(newBoard({
-      title: 'Article Issues',
-      members: members.data.map(m => newMember(m)),
-      columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED'].map(c => newColumn(c, c, _assets.data.filter(a => a.status === c).map(a => newCard(a))))
-    }))
-  }, []);
-
-  const handleMoveCard = async (fromStatus, toStatus, assetSlug) => {
-    const resp = await bc.registry().updateAsset({ slug: assetSlug, status: toStatus });
-    console.log("board.list before", board.list)
-    if (resp.status == 200)
-      setBoard({
-        ...board, list: board.list.map(c => {
-          if (c.id === fromStatus) return { ...c, cardList: c.cardList.filter(card => card.id !== assetSlug) }
-          else if (c.id === toStatus) return { ...c, cardList: [newCard(resp.data), ...c.cardList] }
-          else return c
-        })
-      })
-  }
-
-  const updateAsset = (updatedCard) => {
-    setBoard({
-      ...board, list: board.list.map(col => {
-        if (col.id === updatedCard.status) return {
-          ...col,
-          cardList: col.cardList.map(_card => {
-            return (_card.id == updatedCard.id) ? newCard(newCard) : _card
-          })
-        }
-        else return col
-      })
-    })
-  }
-  const handleCardAction = async (action, card) => {
-    if (action === 'assign') {
-      // TODO: if the session role is a content_write if will assign itself 
-      // otherwise it will show modal to search and pick a writter.
-    }
-    else {
-      const resp = await bc.registry().assetAction(card.slug, action);
-      if (resp.status == 200) updateAsset(resp.data);
-    }
-  }
-
-  const handleCardUpdate = async (_c) => {
-    const resp = await bc.registry().updateAsset({ url: _c.url, slug: _c.slug })
-    if (resp.status == 200) updateAsset(resp.data);
-  }
+  const columns = [
+    {
+      name: 'title', // field name in the row object
+      label: 'Title', // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const comment = issueList[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <h5 className="my-0 text-15">{comment.text}</h5>
+                <ReactCountryFlag className="text-muted mr-2"
+                  countryCode={comment?.asset?.lang?.toUpperCase()} svg 
+                  style={{
+                    fontSize: '10px',
+                  }}
+                />
+                <small className="text-muted">{comment?.asset?.asset_type?.toLowerCase()}</small>
+                <small className="text-muted">{comment?.asset?.title}</small>
+                <small className="text-muted">{comment?.asset?.slug}</small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const item = issueList[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <small className={`border-radius-4 px-2 pt-2px ${statusColors[item.resolved ? "resolved" : "pending"]}`}>
+                  {item.resolved ? "resolved" : "pending"}
+                </small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        customBodyRenderLite: (dataIndex) => {
+          const item = issueList[dataIndex];
+          //! TODO REVERT THIS BEFORE PUSHING
+          return (
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <Link to={`/media/asset/${item.asset.slug}`}>
+                <Tooltip title="Go to asset">
+                  <IconButton>
+                    <Icon>arrow_right_alt</Icon>
+                  </IconButton>
+                </Tooltip>
+              </Link>
+            </div>
+          );
+        },
+      },
+    },
+  ];
 
   return (
     <div className="scrum-board m-sm-30">
@@ -131,7 +125,27 @@ const Board = () => {
         </Grid>
       </div>
       <div className="relative">
-
+        <SmartMUIDataTable
+          title="All Assets"
+          columns={columns}
+          selectableRows={true}
+          items={issueList}
+          view="?"
+          singlePage=""
+          historyReplace="/assets"
+          search={async (querys) => {
+            // if(!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
+            const { data } = await bc.registry().getAssetComments(querys);
+            setIssueList(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            // const { status } = await bc
+            //   .admissions()
+            //   .deleteStaffBulk(querys);
+            // return status;
+          }}
+        />
       </div>
     </div>
   );
