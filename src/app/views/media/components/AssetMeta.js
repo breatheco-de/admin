@@ -29,13 +29,14 @@ const RequirementsCard = ({ asset, onAction }) => {
   //const [ keywords, setKeywords ] = useState(null);
   return <Card className="p-4 mb-4">
     <div className="flex justify-between items-center">
-      <h4 className="m-0 font-medium">Languages: </h4>
+      <h4 className="m-0 font-medium" style={{ width: '100%'}}>Languages: </h4>
       {Object.keys(asset.translations).map(t => 
         <Link to={`./${asset.translations[t]}`}>
           <ReactCountryFlag 
             countryCode={t.toUpperCase()} svg 
             style={{
               fontSize: t == asset.lang ? '2em' : '1.7em',
+              marginLeft: "5px"
             }}
           />
         </Link>
@@ -48,13 +49,16 @@ const LangCard = ({ asset, onAction }) => {
   //const [ keywords, setKeywords ] = useState(null);
   return <Card className="p-4 mb-4">
     <div className="flex justify-between items-center">
-      <h4 className="m-0 font-medium">Languages: </h4>
+      <h4 className="m-0 font-medium" style={{ width: '100%'}}>Languages: </h4>
       {Object.keys(asset.translations).map(t => 
         <Link to={`./${asset.translations[t]}`} key={t}>
           <ReactCountryFlag 
             countryCode={t.toUpperCase()} svg 
             style={{
-              fontSize: t == asset.lang ? '2em' : '1.7em',
+              fontSize: '1.7em',
+              height: 'auto',
+              border: t == asset.lang ? '2px solid black' : null,
+              marginLeft: "5px"
             }}
           />
         </Link>

@@ -116,7 +116,7 @@ const ComposeAsset = () => {
       }
     }
 
-  }, []);
+  }, [asset_slug]);
 
   const handleAction = async (action, payload=null) => {
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug:action });

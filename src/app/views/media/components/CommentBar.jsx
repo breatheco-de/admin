@@ -8,9 +8,10 @@ import {
   Drawer,
   TextField,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { getTimeDifference } from 'utils.js';
+import { getHashtringParams, setHashstringParams } from '../../../../utils'
 import bc from 'app/services/breathecode';
 
 import clsx from 'clsx';
@@ -55,6 +56,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 const CommentBar = ({ container, iconName, title, asset }) => {
+  const history = useHistory();
   const [panelOpen, setPanelOpen] = React.useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({});
@@ -79,11 +81,28 @@ const CommentBar = ({ container, iconName, title, asset }) => {
     if (resp.status == 204) setComments(comments.filter(com => com.id != c.id));
   };
 
+  const getCommentFromURL = () => {
+    const { comment_bar } = getHashtringParams();
+    if(!comment_bar) return;
+    else setPanelOpen(comment_bar);
+  }
+
+  const closePanel = () => {
+    const { comment_bar, ...rest } = getHashtringParams();
+    setHashstringParams(rest)
+    setPanelOpen(false);
+  }
+
   useEffect(async () => {
     const resp = await bc.registry().getAssetComments({ asset: asset.slug });
     if (resp.status == 200){
       setComments(resp.data);
+      getCommentFromURL();
+      const unlisten = history.listen(getCommentFromURL);
+      return unlisten;
     }
+
+
   },[])
 
   return (
@@ -102,7 +121,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
         variant="temporary"
         anchor="right"
         open={panelOpen}
-        onClose={() => setPanelOpen(!panelOpen)}
+        onClose={() => closePanel()}
         ModalProps={{
           keepMounted: true,
         }}
@@ -155,7 +174,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
                   check
                 </Icon>
               </IconButton>
-              <Card className="mx-4 mb-3" elevation={3}>
+              <Card className={`mx-4 mb-3 ${comment.id == panelOpen ? 'bg-light-warning' : ''}`} elevation={3}>
                 <div className="px-4 pt-2 pb-4">
                   <p className="m-0">{comment.text}</p>
                   <small className="text-muted d-block">

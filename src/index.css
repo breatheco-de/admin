@@ -54,6 +54,9 @@
   background-color: rgb(255, 153, 0);
 }
 
+.bg-light-warning{
+  background: rgb(253, 245, 234) !important;
+}
 .text-light-success {
   color: #64c88f !important; }
 
@@ -68,4 +71,10 @@
     margin-left: 40px;
     width: calc(50% - 70px)
   }
+}
+
+.markdown-preview{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  width: 100%;
+  white-space: pre-wrap; 
 }

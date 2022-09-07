@@ -34,14 +34,12 @@ const NewMentor = () => {
   useEffect(() => {
     bc.mentorship().getAllServices()
       .then((payload) => {
-        // console.log('Mentorship Service response', payload);
         setServiceList(payload.data || []);
       });
   }, []);
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
-  console.log('baseData',baseData);
   const [showForm, setShowForm] = useState({
     show: !!baseData,
     data: {

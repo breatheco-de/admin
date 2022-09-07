@@ -68,7 +68,6 @@ const Board = () => {
 
   const handleMoveCard = async (fromStatus, toStatus, assetSlug) => {
     const resp = await bc.registry().updateAsset({ slug: assetSlug, status: toStatus });
-    console.log("board.list before", board.list)
     if (resp.status == 200)
       setBoard({
         ...board, list: board.list.map(c => {

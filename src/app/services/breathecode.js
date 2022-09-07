@@ -414,7 +414,6 @@ class BreatheCodeClient {
     mentorship() {
         return {
             getAcademyMentors: (query) => {
-                console.log("getAcadmyMentors querys", query);
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy mentor",

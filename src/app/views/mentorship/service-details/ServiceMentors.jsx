@@ -26,7 +26,6 @@ const ServiceMentors = ({ serviceId, service }) => {
   // useEffect(() => {
   //   bc.mentorship().getAcademyMentors(queryString)
   //     .then((payload) => {
-  //       console.log('getAcademyMentors Paylod: ', payload)
   //       setAllServiceMentors(payload.data || []);
   //     });
   // }, []);

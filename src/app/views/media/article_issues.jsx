@@ -42,16 +42,19 @@ const Board = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <h5 className="my-0 text-15">{comment.text}</h5>
+                <p className="my-0 text-15">{comment.text}</p>
                 <ReactCountryFlag className="text-muted mr-2"
                   countryCode={comment?.asset?.lang?.toUpperCase()} svg 
                   style={{
                     fontSize: '10px',
                   }}
                 />
-                <small className="text-muted">{comment?.asset?.asset_type?.toLowerCase()}</small>
-                <small className="text-muted">{comment?.asset?.title}</small>
-                <small className="text-muted">{comment?.asset?.slug}</small>
+                <small className="text-muted mr-2">{comment?.asset?.asset_type?.toLowerCase()}</small>
+                {comment.asset.title ? 
+                  <small className="text-muted">{comment.asset.title}</small>
+                  :
+                  <small className="text-muted">{comment?.asset.slug}</small>
+                }
               </div>
             </div>
           );
@@ -88,7 +91,7 @@ const Board = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/media/asset/${item.asset.slug}`}>
+              <Link to={`/media/asset/${item.asset.slug}#comment_bar=${item.id}`}>
                 <Tooltip title="Go to asset">
                   <IconButton>
                     <Icon>arrow_right_alt</Icon>

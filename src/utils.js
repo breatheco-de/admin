@@ -156,6 +156,19 @@ export function generateRandomId() {
   return uid;
 }
 
+export const getHashtringParams = () => {
+  var hash = window.location.hash.substr(1);
+  return hash.split('&').reduce(function (res, item) {
+      var parts = item.split('=');
+      res[parts[0]] = parts[1];
+      return res;
+  }, {});
+}
+
+export const setHashstringParams = (params) => {
+  window.location.hash = "#" + Object.keys(params).filter(key => params[key] != undefined).map(key => key+"="+params[key]).join('&')
+}
+
 export function getQueryParam(prop) {
   const params = {};
   const search = decodeURIComponent(
