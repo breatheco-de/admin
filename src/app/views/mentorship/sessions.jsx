@@ -22,17 +22,19 @@ const Sessions = () => {
   const [sessions, setSessions] = useState([]);
   const columns = [
     {
-      name: 'session',
+      name: 'started_at,created_at',
       label: 'Session',
       options: {
-        filter: true,
-        customHeadRender: ({ index, ...column }) => {
-          return (
-            <TableCell key={index} style={{ width: "100px" }}>
-              {column.label}
-            </TableCell>
-          )
-        },
+        filter: false,
+        // customHeadRender: ({ index, ...column }) => {
+        //   console.log('column');
+        //   console.log(column)
+        //   return (
+        //     <TableCell key={index} style={{ width: "100px" }}>
+        //       {column.label}
+        //     </TableCell>
+        //   )
+        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -45,14 +47,15 @@ const Sessions = () => {
       name: 'notes',
       label: 'Notes', // column title that will be shown in table
       options: {
-        filter: true,
-        customHeadRender: ({ index, ...column }) => {
-          return (
-            <TableCell key={index} style={{ width: "100px" }}>
-              {column.label}
-            </TableCell>
-          )
-        },
+        filter: false,
+        sort: false,
+        // customHeadRender: ({ index, ...column }) => {
+        //   return (
+        //     <TableCell key={index} style={{ width: "100px" }}>
+        //       {column.label}
+        //     </TableCell>
+        //   )
+        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -66,13 +69,13 @@ const Sessions = () => {
       label: 'Billing', // column title that will be shown in table
       options: {
         filter: true,
-        customHeadRender: ({ index, ...column }) => {
-          return (
-            <TableCell key={index} style={{ width: "100px" }}>
-              {column.label}
-            </TableCell>
-          )
-        },
+        // customHeadRender: ({ index, ...column }) => {
+        //   return (
+        //     <TableCell key={index} style={{ width: "100px" }}>
+        //       {column.label}
+        //     </TableCell>
+        //   )
+        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -86,13 +89,13 @@ const Sessions = () => {
       label: 'Mentor',
       options: {
         filter: true,
-        customHeadRender: ({ index, ...column }) => {
-          return (
-            <TableCell key={index} style={{ width: "50px" }}>
-              {column.label}
-            </TableCell>
-          )
-        },
+        // customHeadRender: ({ index, ...column }) => {
+        //   return (
+        //     <TableCell key={index} style={{ width: "50px" }}>
+        //       {column.label}
+        //     </TableCell>
+        //   )
+        // },
         customBodyRenderLite: (dataIndex) => {
           const session = sessions[dataIndex];
           return (<>
