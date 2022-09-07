@@ -27,8 +27,6 @@ const Sessions = () => {
       options: {
         filter: false,
         // customHeadRender: ({ index, ...column }) => {
-        //   console.log('column');
-        //   console.log(column)
         //   return (
         //     <TableCell key={index} style={{ width: "100px" }}>
         //       {column.label}
