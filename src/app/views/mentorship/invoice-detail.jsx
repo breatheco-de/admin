@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import School from '@material-ui/icons/School';
+import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import AccessTime from '@material-ui/icons/AccessTime';
 import DirectionsRun from '@material-ui/icons/DirectionsRun';
 import MonetizationOn from '@material-ui/icons/MonetizationOn';
@@ -92,6 +93,18 @@ const InvoiceDetail = () => {
     )
   }
 
+  const recalculateBill = async () => {
+    try {
+      setLoading(true);
+      const { data } = await bc.mentorship().generateBills({ id: mentorID });
+      console.log(data);
+      // if (data) setBill(data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   // if (loading) return <MatxLoading />
 
   return (
@@ -138,6 +151,12 @@ const InvoiceDetail = () => {
           </div>
         </div>
         <div id="table" className='p-4'>
+          {bill?.status === 'RECALCULATE' && (
+            <p className="text-error">
+              <ErrorOutline style={{ verticalAlign:'middle' }} />
+              This bill needs to be recalculated because some of the sessions were modified, please <a style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={recalculateBill}>click here to recalculate it</a>
+            </p> 
+          )}
           <Table>
             <TableHead>
               <TableRow>
@@ -162,7 +181,7 @@ const InvoiceDetail = () => {
                         {session?.summary && <Tooltip title={session.summary}><School /></Tooltip>}
                         {session?.extra_time && <Tooltip title={session.extra_time}><AccessTime /></Tooltip>}
                         {session?.mentor_late && <Tooltip title={session.mentor_late.replace('<br />', '')}><DirectionsRun /></Tooltip>}
-                        {session?.rating && <Tooltip title={`Score: ${session.rating.score}`}>{session.rating.score <= 7 ? <SentimentVeryDissatisfied /> : <SentimentSatisfiedAlt />}</Tooltip>}
+                        {session?.rating && session.rating.score && <Tooltip title={`Score: ${session.rating.score}`}>{session.rating.score <= 7 ? <SentimentVeryDissatisfied /> : <SentimentSatisfiedAlt />}</Tooltip>}
                       </div>
                     </TableCell>
                     <TableCell className="pl-0">
