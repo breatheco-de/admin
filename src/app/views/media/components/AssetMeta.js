@@ -159,7 +159,7 @@ const SEOCard = ({ asset, onAction, onChange }) => {
     </Grid>
 
     <SEOReport log={asset?.seo_json_status?.log} isOpened={openReport} onClose={() => setOpenReport(false)} />
-    {addKeyword && <PickKeywordModal onClose={handleAddKeyword} />}
+    {addKeyword && <PickKeywordModal onClose={handleAddKeyword} lang={asset.lang} />}
   </Card>;
 }
 
@@ -241,7 +241,12 @@ const GithubCard = ({ asset, onAction, onChange }) => {
 
 const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
   <div className="mb-4 flex justify-between items-center">
-    <h4 className="m-0 font-medium">Integrity</h4>
+    <div className="flex">
+      {asset.test_status != 'OK' && 
+        <Tooltip title={`${asset.test_status}: ${asset.status_text}`}><Icon color={syncColor[asset.test_status]}>warning</Icon></Tooltip>
+      }
+      <h4 className="m-0 font-medium  d-inline">Integrity</h4>
+    </div>
     <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
       Test
     </Button>
