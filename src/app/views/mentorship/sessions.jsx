@@ -2,12 +2,18 @@ import { SmartMUIDataTable } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
-import { Tooltip, TableCell } from '@material-ui/core';
+import { 
+  Tooltip, 
+  TableCell,
+  FormGroup,
+  TextField,
+ } from '@material-ui/core';
 import SessionDetails from './session-details/SessionDetails'
 import SessionNotes from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
 import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
 import dayjs from "dayjs";
+import { useQuery } from '../../hooks/useQuery';
 const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
 
@@ -20,12 +26,14 @@ const statusColors = {
 
 const Sessions = () => {
   const [sessions, setSessions] = useState([]);
+  const query = useQuery();
   const columns = [
     {
       name: 'started_at,created_at',
       label: 'Session',
       options: {
         filter: false,
+        sortThirdClickReset: true,
         // customHeadRender: ({ index, ...column }) => {
         //   return (
         //     <TableCell key={index} style={{ width: "100px" }}>
@@ -42,11 +50,31 @@ const Sessions = () => {
       },
     },
     {
-      name: 'notes',
+      name: 'student',
       label: 'Notes', // column title that will be shown in table
       options: {
-        filter: false,
+        filter: true,
+        filterList: query.get('student') !== null ? [query.get('student')] : [],
+        filterType: 'custom',
         sort: false,
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <FormGroup row>
+                  <TextField
+                    label="Student"
+                    value={filterList[index][0] || ''}
+                    onChange={event => {
+                      filterList[index][0] = event.target.value;
+                      onChange(filterList[index], index, column);
+                    }}
+                  />
+                </FormGroup>
+              </div>
+            );
+          }
+        },
         // customHeadRender: ({ index, ...column }) => {
         //   return (
         //     <TableCell key={index} style={{ width: "100px" }}>
@@ -63,10 +91,31 @@ const Sessions = () => {
       },
     },
     {
-      name: 'billing',
+      name: 'service',
       label: 'Billing', // column title that will be shown in table
       options: {
         filter: true,
+        filterList: query.get('service') !== null ? [query.get('service')] : [],
+        sort: false,
+        filterType: 'custom',
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <FormGroup row>
+                  <TextField
+                    label="Service"
+                    value={filterList[index][0] || ''}
+                    onChange={event => {
+                      filterList[index][0] = event.target.value;
+                      onChange(filterList[index], index, column);
+                    }}
+                  />
+                </FormGroup>
+              </div>
+            );
+          }
+        },
         // customHeadRender: ({ index, ...column }) => {
         //   return (
         //     <TableCell key={index} style={{ width: "100px" }}>
@@ -87,6 +136,8 @@ const Sessions = () => {
       label: 'Mentor',
       options: {
         filter: true,
+        filterList: query.get('mentor') !== null ? [query.get('mentor')] : [],
+        sortThirdClickReset: true,
         // customHeadRender: ({ index, ...column }) => {
         //   return (
         //     <TableCell key={index} style={{ width: "50px" }}>
@@ -125,6 +176,10 @@ const Sessions = () => {
             view="sessions?"
             singlePage=""
             historyReplace="/mentors/sessions"
+            options={{
+              print: false,
+              viewColumns: false,
+            }}
             search={async (querys) => {
               const { data } = await bc.mentorship().getAllMentorSessions({ ...querys });
               setSessions(data.results);
