@@ -34,13 +34,6 @@ const Sessions = () => {
       options: {
         filter: false,
         sortThirdClickReset: true,
-        // customHeadRender: ({ index, ...column }) => {
-        //   return (
-        //     <TableCell key={index} style={{ width: "100px" }}>
-        //       {column.label}
-        //     </TableCell>
-        //   )
-        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -75,13 +68,6 @@ const Sessions = () => {
             );
           }
         },
-        // customHeadRender: ({ index, ...column }) => {
-        //   return (
-        //     <TableCell key={index} style={{ width: "100px" }}>
-        //       {column.label}
-        //     </TableCell>
-        //   )
-        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -116,13 +102,6 @@ const Sessions = () => {
             );
           }
         },
-        // customHeadRender: ({ index, ...column }) => {
-        //   return (
-        //     <TableCell key={index} style={{ width: "100px" }}>
-        //       {column.label}
-        //     </TableCell>
-        //   )
-        // },
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
@@ -138,13 +117,6 @@ const Sessions = () => {
         filter: true,
         filterList: query.get('mentor') !== null ? [query.get('mentor')] : [],
         sortThirdClickReset: true,
-        // customHeadRender: ({ index, ...column }) => {
-        //   return (
-        //     <TableCell key={index} style={{ width: "50px" }}>
-        //       {column.label}
-        //     </TableCell>
-        //   )
-        // },
         customBodyRenderLite: (dataIndex) => {
           const session = sessions[dataIndex];
           return (<>
@@ -191,12 +163,6 @@ const Sessions = () => {
                 {...props}
               />
             )}
-            deleting={async (querys) => {
-              // const { status } = await bc
-              //   .admissions()
-              //   .deleteStaffBulk(querys);
-              // return status;
-            }}
           />
         </div>
       </div>
