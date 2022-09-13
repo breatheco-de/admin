@@ -192,10 +192,10 @@ const Sessions = () => {
               />
             )}
             deleting={async (querys) => {
-              const { status } = await bc
-                .admissions()
-                .deleteStaffBulk(querys);
-              return status;
+              // const { status } = await bc
+              //   .admissions()
+              //   .deleteStaffBulk(querys);
+              // return status;
             }}
           />
         </div>

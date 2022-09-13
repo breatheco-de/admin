@@ -15,7 +15,7 @@ const Services = () => {
 
   const columns = [
     {
-      name: 'Id', // field name in the row object
+      name: 'id', // field name in the row object
       label: 'Id', // column title that will be shown in table
       options: {
         filter: true,
