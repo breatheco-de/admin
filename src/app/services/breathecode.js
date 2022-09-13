@@ -507,6 +507,13 @@ class BreatheCodeClient {
                     `${this.host}/mentorship/academy/service/${service}`,
                     payload
                 ),
+            deleteServicesBulk: (query) => {
+                const qs = query.join(",");
+                return axios.bcDelete(
+                    "Service",
+                    `${this.host}/mentorship/academy/service?id=${qs}`
+                );
+            },
             addAcademyMentor: (payload) =>
                 axios.bcPost(
                     "Academy mentor",

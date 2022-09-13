@@ -8,6 +8,7 @@ import { getSession } from 'app/redux/actions/SessionActions';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
+import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import { useHistory } from 'react-router-dom';
 const localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
@@ -191,8 +192,14 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
   ];
   return (
     <>
+      {payments.find((el) => el.status === 'RECALCULATE') && (
+        <p className="text-error">
+          <ErrorOutline style={{ verticalAlign: 'middle' }} />
+          Some bills need to be recalculated, please generate the bills again
+        </p>
+      )}
       <div className="flex justify-between">
-      <TextField
+        <TextField
           className='m-1'
           label="Bulk Action"
           style={{ width: '25%', margin: '0.5em' }}
