@@ -230,6 +230,7 @@ export function resolveResponse(res) {
 }
 
 export function resolveError(error) {
+  
   if(axios.silent) return false;
   if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
     for (const item in error.response.data) {

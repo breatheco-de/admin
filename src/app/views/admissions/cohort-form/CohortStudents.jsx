@@ -140,16 +140,16 @@ const CohortStudents = ({ slug, cohortId }) => {
     bc.admissions()
       .deleteUserCohort(cohortId, currentStd.id)
       .then((data) => {
-        if (data.status === 204) getCohortStudents();
+        if (data.ok) getCohortStudents();
       })
       .catch((error) => error);
     setOpenDialog(false);
   };
 
-  const personsList = studenList.filter(p => p.role == "TEACHER").concat(
-    studenList.filter(p => p.role == "ASSISTANT"), 
-    studenList.filter(p => p.role == "REVIEWER"), 
-    studenList.filter(p => p.role == "STUDENT"))
+  const personsList = studenList.filter(p => p.role?.toUpperCase() == "TEACHER").concat(
+    studenList.filter(p => p.role?.toUpperCase() == "ASSISTANT"), 
+    studenList.filter(p => p.role?.toUpperCase() == "REVIEWER"), 
+    studenList.filter(p => p.role?.toUpperCase() == "STUDENT"))
 
   return (
     <Card className="p-4">
