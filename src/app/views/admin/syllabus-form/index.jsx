@@ -120,7 +120,7 @@ const Student = () => {
           icon="more_horiz"
           onSelect={({ value }) => {
             if (value === 'edit_syllabus') {
-              window.open(`https://syllabus.4geeks.com/?academy=${session.academy.slug}&syllabus=${syllabus?.slug}&token=${session.token}`, '_blank');
+              window.open(`https://syllabus.4geeks.com/?academy=${session.academy.id}&syllabus=${syllabus?.slug}&token=${session.token}`, '_blank');
             } else if (value === 'make_public') {
               setMakePublicDialog(true);
             }

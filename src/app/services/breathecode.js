@@ -414,7 +414,6 @@ class BreatheCodeClient {
     mentorship() {
         return {
             getAcademyMentors: (query) => {
-                console.log("getAcadmyMentors querys", query);
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
                     "Academy mentor",
@@ -474,6 +473,13 @@ class BreatheCodeClient {
                     "Bill",
                     `${this.host}/mentorship/academy/bill/${id}`,
                 )
+            },
+            deleteServiceBulk: (query) => {
+                const qs = query.join(",");
+                return axios.bcDelete(
+                    "Service",
+                    `${this.host}/mentorship/academy/service?id=${qs}`
+                );
             },
             getAllServices: (query) => {
                 const qs = serializeQuerystring(query);
@@ -940,11 +946,14 @@ class BreatheCodeClient {
                     "Asset",
                     `${this.host}/registry/asset/${associatedSlug}.${format}?frontmatter=${frontmatter}`
                 ),
-            getAssetComments: async (asset_slug) =>
-                await axios.bcGet(
+            getAssetComments: async (query) => {
+                if(!query.sort) query.sort = "-created_at"
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
                     "Comment",
-                    `${this.host}/registry/academy/asset/comment?asset=${asset_slug}&sort=-created_at`
-                ),
+                    `${this.host}/registry/academy/asset/comment?${qs}`
+                );
+            }
         };
     }
 

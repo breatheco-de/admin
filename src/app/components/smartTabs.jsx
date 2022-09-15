@@ -1,15 +1,10 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-// import { useHash } from '../hooks/useQuery'
-import { useLocation } from 'react-router-dom';
-
-function useHash() {
-    return new URLSearchParams(useLocation().hash);
-}
+import { getHashtringParams, setHashstringParams } from '../../utils'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -46,15 +41,13 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs(props) {
-    const hash = useHash();
-    const [hashStr, setHash] = React.useState({
-        smartTab: hash.get('smartTab') || 0,
-    });
+    
+    const [ smartTab, setSmartTab ] = useState();
 
-    const handleChange = (event, newValue) => {
-        setHash({ smartTab: newValue });
-        history.pushState(null, null, `#${newValue}`)
-        console.log(hash, hashStr);
+    const changeTab = (event, newValue) => {
+        const { smart_tab, ...rest } = getHashtringParams();
+        setSmartTab(newValue)
+        setHashstringParams({ smart_tab: parseInt(newValue), ...rest })
     };
 
     if (props._tabs && !Array.isArray(props._tabs)) {
@@ -62,20 +55,26 @@ export default function BasicTabs(props) {
         throw Error('Prop _tabs must be an Array[] on BasicTabs');
     }
 
+    useEffect(() => {
+        const { smart_tab, ...rest } = getHashtringParams();
+        if(smart_tab) setSmartTab(parseInt(smart_tab));
+        else changeTab(null, 0)
+    }, [])
+
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={hashStr.smartTab} onChange={handleChange} aria-label="basic tabs example">
+                <Tabs value={smartTab} onChange={changeTab} aria-label="basic tabs example">
                     {props.tabs.map((_tab, i) => {
                         return (
-                            <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(hashStr.smartTab)} />
+                            <Tab label={_tab.label} disabled={_tab.disabled} {...a11yProps(smartTab)} />
                         )
                     })}
                 </Tabs>
             </Box>
             {props.tabs.map((_tab, i) => {
                 return (
-                    <TabPanel value={hashStr.smartTab} index={i}>
+                    <TabPanel value={smartTab} index={i}>
                         {_tab.component}
                     </TabPanel>
                 )

@@ -69,7 +69,6 @@ const UserList3 = () => {
                                 }}
                                 onSubmit={async (_cluster) => {
                                     const resp = await bc.registry().createCluster(_cluster)
-                                    console.log("resp", resp)
                                     if (resp.status === 201) return true;
                                     else return false;
                                 }}

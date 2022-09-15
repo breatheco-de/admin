@@ -22,7 +22,6 @@ export const ServiceForm = ({ initialValues }) => {
 
 
   useEffect(() => {
-    console.log(session)
     setSlug(slugify(name).toLowerCase());
   }, [name]);
 
@@ -31,22 +30,17 @@ export const ServiceForm = ({ initialValues }) => {
     let formattedDuration = minToHHMMSS(values.duration)
     let formattedMaxDuration = minToHHMMSS(values.max_duration)
     let formattedMissedMeetingDuration = minToHHMMSS(values.missed_meeting_duration)
-    console.log('Service Values to post', values);
-    {
-      bc.mentorship().addAcademyService({
-        ...values,
-        name: name,
-        slug: slug,
-        duration: formattedDuration,
-        max_duration: formattedMaxDuration,
-        missed_meeting_duration: formattedMissedMeetingDuration
-      })
-        .then((data) => {
-          if (data.status === 200) {
-            history.push('/mentors/services');
-          }
-        })
-    }
+    
+    bc.mentorship().addAcademyService({
+      ...values,
+      name: name,
+      slug: slug,
+      duration: formattedDuration,
+      max_duration: formattedMaxDuration,
+      missed_meeting_duration: formattedMissedMeetingDuration
+    })
+      .then((resp) => (resp.status >= 200 && resp.status < 400) && history.push(`/mentors/service/${resp.data.id}`))
+    
   }
 
   return (

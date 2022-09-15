@@ -6,6 +6,13 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 
+export const availableLanguages = {
+  "us": "English",
+  "es": "Spanish",
+  "it": "Italian",
+  "ge": "German",
+  "po": "Portuguese",
+}
 dayjs.extend(tz);
 dayjs.extend(utc);
 dayjs.extend(duration);
@@ -156,6 +163,19 @@ export function generateRandomId() {
   return uid;
 }
 
+export const getHashtringParams = () => {
+  var hash = window.location.hash.substr(1);
+  return hash.split('&').reduce(function (res, item) {
+      var parts = item.split('=');
+      res[parts[0]] = parts[1];
+      return res;
+  }, {});
+}
+
+export const setHashstringParams = (params) => {
+  window.location.hash = "#" + Object.keys(params).filter(key => params[key] != undefined).map(key => key+"="+params[key]).join('&')
+}
+
 export function getQueryParam(prop) {
   const params = {};
   const search = decodeURIComponent(
@@ -210,6 +230,7 @@ export function resolveResponse(res) {
 }
 
 export function resolveError(error) {
+  
   if(axios.silent) return false;
   if (typeof error.response.data === 'object' && error.response.data.status_code === undefined && error.response !== undefined) {
     for (const item in error.response.data) {

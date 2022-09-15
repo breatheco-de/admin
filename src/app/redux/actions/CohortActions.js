@@ -13,7 +13,6 @@ export const addUserToCohort = (cohort_id, user_id) => (dispatch) => {
     finantial_status: null,
     educational_status: 'ACTIVE',
   }).then((data) => {
-    console.log('executed');
     dispatch({
       type: COHORT_ADD_USER,
       payload: data,

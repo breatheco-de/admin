@@ -16,22 +16,16 @@ import { MatxLoading } from '../../../../matx';
 import { ConfirmationDialog } from '../../../../matx';
 import EditableTextField from '../../../components/EditableTextField';
 import DialogPicker from '../../../components/DialogPicker';
+import StatCard from "../components/StatCard"
 import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
+import {availableLanguages} from "../../../../utils"
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
-
-const langs = {
-  "us": "English",
-  "es": "Spanish",
-  "it": "Italian",
-  "ge": "German",
-  "po": "Portuguese",
-}
 
 const statusColors = {
   "DRAFT": "bg-error",
@@ -57,6 +51,7 @@ const defaultAsset = {
   visibility: 'PRIVATE',
   asset_type: null,
   owner: null,
+  new: true,
 }
 
 const githubUrlRegex = /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+\.md$/g;
@@ -99,6 +94,7 @@ const ComposeAsset = () => {
 
     if(isCreating) {
       setAsset(defaultAsset);
+      setGithubUrl(defaultAsset.readme_url);
       setContent("Write your asset here, use `markdown` syntax");
     }
     else{
@@ -106,6 +102,7 @@ const ComposeAsset = () => {
         const resp = await bc.registry().getAsset(asset_slug);
         if (resp.status >= 200 && resp.status < 300) {
           setAsset({ ...resp.data, lang: resp.data.lang || "us" });
+          setGithubUrl(resp.data.readme_url);
         }
         else throw Error('Asset could not be retrieved');
         
@@ -116,46 +113,56 @@ const ComposeAsset = () => {
       }
     }
 
-  }, []);
+  }, [asset_slug]);
 
   const handleAction = async (action, payload=null) => {
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug:action });
     if(resp.status === 200){
-      if((action=="sync" && resp.data.sync_status != 'OK') || (action=="test" && resp.data.test_status != 'OK')) toast.error(`${action} returned with problems`)
+      if((action=="sync" && resp.data.sync_status != 'OK')){ 
+        toast.error(`Sync returned with problems: ${resp.data.status_text}`)
+      }
+      else if (action=="test" && resp.data.test_status != 'OK'){
+        toast.error(`Integrity test returned with problems: ${resp.data.status_text}`)
+      }
+      else if (action=="analyze_seo"){
+        // do nothing
+      }
       else toast.success(`${action} completed successfully`)
       setAsset(resp.data)
       await getAssetContent();
     }
   }
 
-  const hasErrors = () => {
-    let errors = {}
-    let _url = githubUrl || asset.readme_url;
-    if(!githubUrlRegex.test(_url)) errors['readme_url'] = "The url must point to a markdown file on github usually starting with: https://github.com/[username]/[repo_name]/blob..."
-    if(!slugRegex.test(asset.slug)) errors['slug'] = "Invalid slug, it can only contain letters, numbers - and _";
-    if(!asset.owner) errors['owner'] = "Please pick a github owner"
-    if(!asset.asset_type) errors['asset_type'] = "Choose an asset type"
-    if(!['OK', 'WARNING'].includes(asset.sync_status)) errors['sync_status'] = "Fix github synching";
-    if(!['OK', 'WARNING'].includes(asset.test_status)) errors['test_status'] = "Integrity tests failed";
-
-    return errors
+  const hasErrors = (_asset) => {
+    let _errors = {}
+    if(!githubUrlRegex.test(_asset.readme_url)) _errors['readme_url'] = "The url must point to a markdown file on github usually starting with: https://github.com/[username]/[repo_name]/blob..."
+    if(!slugRegex.test(_asset.slug)) _errors['slug'] = `Invalid slug, it can only contain letters, numbers - and _`;
+    if(!_asset.owner) _errors['owner'] = "Please pick a github owner"
+    if(!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
+    if(!isCreating && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Fix github synching";
+    if(!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
+    console.log("validate", _asset)
+    return _errors
   }
-
+  
   const saveAsset = async () => {
+    
+    const readme_url = githubUrl || asset.readme_url;
+    const _asset = { 
+      ...asset, 
+      readme_url,
+      owner: asset.owner.id,
+      readme: btoa(content), 
+      url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
+    };
 
-    const errors = hasErrors();
-    setErrors(errors);
-
-    if(Object.keys(errors).length == 0){
+    const _errors = hasErrors(_asset);
+    setErrors(_errors);
+    
+    if(Object.keys(_errors).length == 0){
       const action = isCreating ? "createAsset" : "updateAsset";
-      const readme_url = githubUrl || asset.readme_url;
-      const resp = await bc.registry()[action]({ 
-        ...asset, 
-        readme_url,
-        owner: asset.owner.id,
-        readme: btoa(content), 
-        url: readme_url.substring(0, readme_url.indexOf("/blob/"))
-      });
+      
+      const resp = await bc.registry()[action](_asset);
       if(resp.status >= 200 && resp.status < 300){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)
@@ -165,7 +172,7 @@ const ComposeAsset = () => {
         return { "details": resp.data.details }
       }
       else return { "details": "There was an error saving the asset" }
-    }else return errors;
+    }else return _errors;
 
   }
 
@@ -259,10 +266,10 @@ const ComposeAsset = () => {
               <div className="px-3 text-11 py-3px border-radius-4 text-dark bg-white mr-3 pointer"
                 onClick={() => setUpdateLanguage(true)}
               >
-                {langs[asset.lang] ? 
+                {availableLanguages[asset.lang] ? 
                   <>
                     <ReactCountryFlag className="mr-2" countryCode={asset.lang} svg />
-                    {langs[asset.lang].toUpperCase()}
+                    {availableLanguages[asset.lang].toUpperCase()}
                   </>
                   : `Uknown language ${asset.lang}`}
               </div>
@@ -273,7 +280,7 @@ const ComposeAsset = () => {
           <Grid item xs={6} sm={4} align="right">
             <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
             <Button variant="contained" color={Object.keys(errors).length == 0 ? "primary": "error"}
-              onClick={() => saveAsset().then(errors => (errors!==true) && setErrorDialog(true))}
+              onClick={() => saveAsset().then(_errors => (Object.keys(errors).length > 0) && setErrorDialog(true))}
             >
               {isCreating ? `Create asset` : `Update content`}
             </Button>
@@ -336,7 +343,7 @@ const ComposeAsset = () => {
         }}
         open={updateLanguage}
         title="Select a language"
-        options={Object.keys(langs).map(l => ({label: langs[l], value: l}))}
+        options={Object.keys(availableLanguages).map(l => ({label: availableLanguages[l], value: l}))}
       />
       <ConfirmationDialog
         open={errorDialog}

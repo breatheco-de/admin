@@ -51,12 +51,11 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
     if (!match || match[1] == undefined) {
       errors.booking_url = "Booking URL must start with https://calendly.com";
     }
+    else setMentorSlug(match[1])
     
     if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
-      console.log("success")
       errors.online_meeting_url = 'Invalid backup url'
     }
-    else setMentorSlug(match)
 
     return errors;
   };

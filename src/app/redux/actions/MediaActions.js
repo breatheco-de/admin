@@ -72,7 +72,6 @@ export const selectMedia = (value) => (dispatch) => {
 };
 
 export const bulkEditMedia = (value) => (distpach) => {
-  console.log(value);
   bc.media().updateMediaBulk(value).then((res) => {
     distpach({
       type: CLEAN_MEDIA_SELECTED,

@@ -141,21 +141,18 @@ export const navigations = [
                 name: "Assets",
                 path: "/media/asset",
                 iconText: "ASS",
-                beta: true,
                 capabilities: ["read_asset"],
             },
             {
                 name: "Pipeline",
                 path: "/media/article_issues",
                 iconText: "PIP",
-                beta: true,
                 capabilities: ["read_asset"],
             },
             {
                 name: "SEO",
                 path: "/media/seo/cluster",
                 iconText: "SEO",
-                beta: true,
                 capabilities: ["read_asset"],
             },
         ]

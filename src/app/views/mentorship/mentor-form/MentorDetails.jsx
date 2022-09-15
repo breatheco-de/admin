@@ -69,11 +69,8 @@ const MentorDetails = ({ user, staffId }) => {
       errors.booking_url = 'Booking URL must start with https://calendly.com'
     }
     if(values.online_meeting_url.includes("4geeks.co") || values.online_meeting_url.includes("4geeksacademy.com") || values.online_meeting_url.includes("heroku.com")) {
-      console.log("success")
       errors.online_meeting_url = 'Invalid backup url'
     }
-    else setMentorSlug(match)
-    console.log("errors",errors)
 
     return errors;
   };
