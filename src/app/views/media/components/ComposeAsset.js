@@ -21,18 +21,11 @@ import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
+import {availableLanguages} from "../../../../utils"
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
-
-const langs = {
-  "us": "English",
-  "es": "Spanish",
-  "it": "Italian",
-  "ge": "German",
-  "po": "Portuguese",
-}
 
 const statusColors = {
   "DRAFT": "bg-error",
@@ -101,6 +94,7 @@ const ComposeAsset = () => {
 
     if(isCreating) {
       setAsset(defaultAsset);
+      setGithubUrl(defaultAsset.readme_url);
       setContent("Write your asset here, use `markdown` syntax");
     }
     else{
@@ -108,6 +102,7 @@ const ComposeAsset = () => {
         const resp = await bc.registry().getAsset(asset_slug);
         if (resp.status >= 200 && resp.status < 300) {
           setAsset({ ...resp.data, lang: resp.data.lang || "us" });
+          setGithubUrl(resp.data.readme_url);
         }
         else throw Error('Asset could not be retrieved');
         
@@ -158,7 +153,7 @@ const ComposeAsset = () => {
       readme_url,
       owner: asset.owner.id,
       readme: btoa(content), 
-      url: readme_url.substring(0, readme_url.indexOf("/blob/"))
+      url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
     const _errors = hasErrors(_asset);
@@ -271,10 +266,10 @@ const ComposeAsset = () => {
               <div className="px-3 text-11 py-3px border-radius-4 text-dark bg-white mr-3 pointer"
                 onClick={() => setUpdateLanguage(true)}
               >
-                {langs[asset.lang] ? 
+                {availableLanguages[asset.lang] ? 
                   <>
                     <ReactCountryFlag className="mr-2" countryCode={asset.lang} svg />
-                    {langs[asset.lang].toUpperCase()}
+                    {availableLanguages[asset.lang].toUpperCase()}
                   </>
                   : `Uknown language ${asset.lang}`}
               </div>
@@ -348,7 +343,7 @@ const ComposeAsset = () => {
         }}
         open={updateLanguage}
         title="Select a language"
-        options={Object.keys(langs).map(l => ({label: langs[l], value: l}))}
+        options={Object.keys(availableLanguages).map(l => ({label: availableLanguages[l], value: l}))}
       />
       <ConfirmationDialog
         open={errorDialog}

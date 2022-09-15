@@ -1,20 +1,23 @@
 import React, {useState} from "react";
-import { Table, TableCell, TableRow, Card, DialogTitle, DialogContent, 
+import { Table, TableCell, TableRow, Card, MenuItem, DialogContent, 
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
   TableBody } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag"
 import { Rating } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import {availableLanguages} from "../../../../utils"
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { PickKeywordModal } from './PickKeywordModal';
 import tz from 'dayjs/plugin/timezone';
+import history from "history.js";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import utc from 'dayjs/plugin/utc';
+import slugify from "slugify";
+import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
 
 
@@ -46,24 +49,95 @@ const RequirementsCard = ({ asset, onAction }) => {
 }
 
 const LangCard = ({ asset, onAction }) => {
-  //const [ keywords, setKeywords ] = useState(null);
+  const [ addTranslation, setAddTranslation ] = useState(null);
+  const assetTranslations = Object.keys(asset.translations);
+  const allLangs = Object.keys(availableLanguages);
+
+  const handleAddTranslation = async () => {
+    const resp = await API.registry().createAsset(addTranslation);
+    console.log("resppppp", resp)
+    if(resp.status == 201){
+      setAddTranslation(null);
+      history.push(`./${resp.data.slug}`);
+    }
+  }
+
   return <Card className="p-4 mb-4">
-    <div className="flex justify-between items-center">
-      <h4 className="m-0 font-medium" style={{ width: '100%'}}>Languages: </h4>
-      {Object.keys(asset.translations).map(t => 
-        <Link to={`./${asset.translations[t]}`} key={t}>
-          <ReactCountryFlag 
-            countryCode={t.toUpperCase()} svg 
-            style={{
-              fontSize: '1.7em',
-              height: 'auto',
-              border: t == asset.lang ? '2px solid black' : null,
-              marginLeft: "5px"
+    {addTranslation ? 
+      <div>
+        <h3 className="m-0">Add translation:</h3>
+        <small className="p-0 mb-1">Select a language and lesson, you can also type the title for a new lesson on he dropdown:</small>
+        <TextField
+          className="m-0"
+          label="Language"
+          style={{ width: '100%' }}
+          data-cy="language"
+          size="small"
+          variant="outlined"
+          value={addTranslation.lang}
+          onChange={(e) => setAddTranslation({ lang: e.target.value })}
+          select
+        >
+          {allLangs.filter(t => !assetTranslations.includes(t)).map((langCode) => (
+            <MenuItem value={langCode} key={langCode}>
+              {availableLanguages[langCode]}
+            </MenuItem>
+          ))}
+        </TextField>
+      {addTranslation?.lang && <>
+          <AsyncAutocomplete
+            width="100%"
+            className="my-2"
+            onChange={(x) => {
+                if(x.value === 'new_asset') setAddTranslation({ 
+                  title: x.title.replace("New: ", ""), 
+                  asset_type: asset.asset_type,
+                  lang: addTranslation.lang,
+                  slug: slugify(x.title.replace("New: ", "")),
+                  all_translations: [asset.slug, ...assetTranslations.map(t=> asset.translations[t])]
+                })
+                else setAddTranslation(x)
+            }}
+            size="small"
+            label="Search or create Asset"
+            value={addTranslation.asset}
+            getOptionLabel={(option) => option.title || `Start typing here...`}
+            asyncSearch={async (searchTerm) => {
+                const resp = await bc.registry().getAllAssets({ lang: addTranslation.lang, asset_type: asset.asset_type })
+                if(resp.status === 200){
+                    resp.data = [{title: 'New: '+searchTerm, value: 'new_asset'}, ...resp.data]
+                    return resp
+                }
+                else return resp
             }}
           />
-        </Link>
-      )}
-    </div>
+          <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleAddTranslation}>
+            Add
+          </Button>
+          <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+            Cancel
+          </Button>
+        </>}
+      </div>
+      :
+      <div className="flex justify-between items-center">
+        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Translations: </h4>
+        {assetTranslations.filter(t => t != asset.lang).map(t => 
+          <Link to={`./${asset.translations[t]}`} key={t}>
+            <ReactCountryFlag 
+              countryCode={t.toUpperCase()} svg 
+              style={{
+                fontSize: '1.7em',
+                height: 'auto',
+                border: t == asset.lang ? '2px solid black' : null,
+                marginLeft: "5px"
+              }}
+            />
+          </Link>
+        )}
+        <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)}/>
+      </div>
+      }
   </Card>;
 }
 

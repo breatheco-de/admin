@@ -6,6 +6,13 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 
+export const availableLanguages = {
+  "us": "English",
+  "es": "Spanish",
+  "it": "Italian",
+  "ge": "German",
+  "po": "Portuguese",
+}
 dayjs.extend(tz);
 dayjs.extend(utc);
 dayjs.extend(duration);
