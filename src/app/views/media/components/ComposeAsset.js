@@ -6,6 +6,7 @@ import { IconButton, Icon, Button, Grid,
   TextField,
   Card,
 } from "@material-ui/core";
+import { Breadcrumb } from 'matx';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
@@ -187,6 +188,15 @@ const ComposeAsset = () => {
 
   return (
     <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
+            <Breadcrumb
+              routeSegments={[{ name: 'Assets', path: '/media/asset' }, { name: 'Single Asset' }]}
+            />
+          </div>
+        </div>
+      </div>
     {asset.readme_url === "" ? 
       <Card className="p-4 mt-4">
         <h1>Create a new asset</h1>

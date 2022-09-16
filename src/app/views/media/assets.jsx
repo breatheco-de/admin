@@ -1,5 +1,5 @@
 import {
-  Avatar, Button, Icon,
+  Avatar, Button, Icon,Chip,
   IconButton, Tooltip, TableCell,
 } from '@material-ui/core';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
@@ -16,6 +16,20 @@ toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
+};
+
+const stageColors = {
+  PUBLIC: 'default',
+  PUBLISHED: 'primary',
+  OK: 'primary',
+  DRAFT: 'default',
+  PRIVATE: 'secondary',
+  ERROR: 'secondary',
+  UNLISTED: 'default',
+  WRITING: 'secondary',
+  WARNING: 'secondary',
+  UNASSIGNED: 'secondary',
+  null: 'secondary',
 };
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -73,9 +87,29 @@ const Assets = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
-                  {item.status.toUpperCase()}
-                </small>
+                <Chip size="small" className="mr-2" label={item?.status} color={stageColors[item?.status]} />
+                <Chip size="small" label={item?.visibility} color={stageColors[item?.visibility]} />
+                <p className="p-0 m-0"><small className={`border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
+                  {item.category ? item.category.slug : "No category assigned"}
+                </small></p>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'tests',
+      label: 'Tests',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const item = assetList[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
+                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,5)} color={stageColors[item?.test_status]} />
               </div>
             </div>
           );
