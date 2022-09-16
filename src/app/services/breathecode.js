@@ -528,7 +528,7 @@ class BreatheCodeClient {
                 ),
             generateBills: (mentor) =>
                 axios.bcPost(
-                    "Academy service",
+                    "Academy Bill",
                     `${this.host}/mentorship/academy/mentor/${mentor.id}/bill`
                 ),
         };
