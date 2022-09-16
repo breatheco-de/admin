@@ -15,7 +15,7 @@ const Services = () => {
 
   const columns = [
     {
-      name: 'Id', // field name in the row object
+      name: 'id', // field name in the row object
       label: 'Id', // column title that will be shown in table
       options: {
         filter: true,
@@ -143,10 +143,9 @@ const Services = () => {
             setServiceList(data.results);
             return data;
           }}
-          deleting={async (ids) => {
-            const { status } = await bc
-              .mentorship()
-              .deleteServiceBulk(ids);
+          deleting={async (querys) => {
+            const { status } = await bc.mentorship().deleteServicesBulk(querys);
+
             return status;
           }}
         />
