@@ -17,6 +17,7 @@ import { ConfirmationDialog } from '../../../../matx';
 import EditableTextField from '../../../components/EditableTextField';
 import DialogPicker from '../../../components/DialogPicker';
 import StatCard from "../components/StatCard"
+import { PickCategoryModal } from "../components/PickCategoryModal"
 import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
@@ -63,6 +64,7 @@ const ComposeAsset = () => {
   const isCreating = (asset_slug === undefined && (!asset || asset.id === undefined));
   const [ asset, setAsset ] = useState(defaultAsset);
   const [ updateVisibility, setUpdateVisibility ] = useState(false);
+  const [ updateCategory, setUpdateCategory ] = useState(false);
   const [ updateStatus, setUpdateStatus ] = useState(false);
   const [ updateType, setUpdateType ] = useState(false);
   const [ updateLanguage, setUpdateLanguage ] = useState(false);
@@ -176,6 +178,11 @@ const ComposeAsset = () => {
 
   }
 
+  const handleUpdateCategory = async (category) => {
+    if(category) partialUpdateAsset({ category: category.id || category })
+    setUpdateCategory(false);
+  }
+
   if(!asset) return <MatxLoading />;
 
   return (
@@ -192,18 +199,18 @@ const ComposeAsset = () => {
             >{(asset && asset.asset_type) ? asset.asset_type : `Click to select`}</Button>
         </p>
         {errors["asset_type"] && <small className="text-error">{errors["asset_type"]}</small>}
-        <p>Choose a slug for the asset</p>
-        <TextField variant="outlined" size="small" value={asset.slug} fullWidth={true} onChange={(e) => {
-          setAsset({ ...asset, slug: slugify(e.target.value) })
-          setErrors({ ...errors, slug: "" })
-        }} />
-        {errors["slug"] && <small className="text-error">{errors["slug"]}</small>}
         <p>Please provied a Github URL to fetch the markdown file from:</p>
         <TextField variant="outlined" size="small" value={githubUrl} fullWidth={true} onChange={(e) => {
           setGithubUrl(e.target.value)
           setErrors({ ...errors, readme_url: "" })
         }} placeholder="https://github.com/" />
         {errors["readme_url"] && <small className="text-error">{errors["readme_url"]}</small>}
+        <p>Choose a slug for the asset</p>
+        <TextField variant="outlined" size="small" value={asset.slug} fullWidth={true} onChange={(e) => {
+          setAsset({ ...asset, slug: slugify(e.target.value.toLowerCase()) })
+          setErrors({ ...errors, slug: "" })
+        }} />
+        {errors["slug"] && <small className="text-error">{errors["slug"]}</small>}
         <p>Github Owner (with read permissions on the repository):</p>
         <AsyncAutocomplete
             width="100%"
@@ -262,6 +269,11 @@ const ComposeAsset = () => {
                 }}
               >
                 {asset.asset_type ? asset.asset_type : "NOT TYPE SPECIFIED"}
+              </div>
+              <div className="px-3 text-11 py-3px border-radius-4 text-white bg-dark mr-3 pointer"
+                onClick={() => setUpdateCategory(true)}
+              >
+                {asset.category ? asset.category.slug || asset.category.title : 'Category'}
               </div>
               <div className="px-3 text-11 py-3px border-radius-4 text-dark bg-white mr-3 pointer"
                 onClick={() => setUpdateLanguage(true)}
@@ -360,6 +372,7 @@ const ComposeAsset = () => {
         )}
       </List>
       </ConfirmationDialog>
+      {updateCategory && <PickCategoryModal onClose={handleUpdateCategory} lang={asset.lang} defaultCategory={asset.category} />}
     </div>
   );
 };

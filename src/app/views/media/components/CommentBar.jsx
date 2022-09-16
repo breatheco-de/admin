@@ -103,7 +103,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
     }
 
 
-  },[])
+  },[asset.slug])
 
   return (
     <div style={{ display: "inline" }}>

@@ -50,18 +50,18 @@ export const PickKeywordModal = ({
 
     const empty = (key) => (!newKeyword[key] || newKeyword[key] == "");
     const createKeyword = async () => {
-        let errors = {};
-        if(empty('title')) errors['title'] = "Empty keyword title";
-        if(empty('slug')) errors['slug'] = "Empty keyword slug";
-        if(empty('difficulty') || newKeyword['difficulty'] == 0) errors['difficulty'] = "Please specify a difficulty from 1 to 100";
-        if(empty('expected_monthly_traffic') || newKeyword['expected_monthly_traffic'] == 0) errors['expected_monthly_traffic'] = "Please specify an expected monthly traffic";
+        let _errors = {};
+        if(empty('title')) _errors['title'] = "Empty keyword title";
+        if(empty('slug')) _errors['slug'] = "Empty keyword slug";
+        if(empty('difficulty') || newKeyword['difficulty'] == 0) _errors['difficulty'] = "Please specify a difficulty from 1 to 100";
+        if(empty('expected_monthly_traffic') || newKeyword['expected_monthly_traffic'] == 0) _errors['expected_monthly_traffic'] = "Please specify an expected monthly traffic";
 
-        if(Object.keys(errors).length == 0){
+        if(Object.keys(_errors).length == 0){
             const resp = await bc.registry().createSEOKeyword({ ...newKeyword, cluster: cluster?.id || query.cluster, lang: lang || query.lang });
             if(resp.status > 200 && resp.status < 300) onClose(resp.data)
         }
 
-        setErrors(errors)
+        setErrors(_errors)
         return false;
     }
 
@@ -100,7 +100,11 @@ export const PickKeywordModal = ({
                         <AsyncAutocomplete
                             width="100%"
                             onChange={(x) => {
-                                if(x.value === 'new_keyword') setNewKeyword(defaultKeyword)
+                                if(x.value === 'new_keyword') setNewKeyword({
+                                    ...defaultKeyword,
+                                    title: x.title.replace('Add keyword: ',""),
+                                    slug: slugify(x.title.replace('Add keyword: ',""))
+                                })
                                 else setFormData(x)
                             }}
                             label="Search keywords or type a new one"

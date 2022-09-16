@@ -17,19 +17,10 @@ import { AssetRequirementModal } from './AssetRequirementModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { PickKeywordModal } from './PickKeywordModal';
+import slugify from "slugify";
 import clsx from "clsx";
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
-    google: {
-        color: "#ec412c",
-    },
-    twitter: {
-        color: "#039ff5",
-    },
-}));
-
 const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
-    const classes = useStyles();
     const [ requestAssetModal, setRequestAssetModal ] = useState(null)
     const [ clusterForm, setClusterForm ] = useState(cluster)
     const [ editMode, setEditMode ] = useState(isEditing)
@@ -85,7 +76,11 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         size="small"
                         variant="outlined"
                         value={clusterForm.title}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, title: e.target.value })}
+                        onChange={(e)=> setClusterForm({ 
+                            ...clusterForm, 
+                            title: e.target.value,
+                            slug: slugify(e.target.value.toLowerCase())
+                        })}
                     />
                     <TextField
                         className="m-2"
@@ -95,7 +90,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         size="small"
                         variant="outlined"
                         value={clusterForm.slug}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, slug: e.target.value })}
+                        onChange={(e)=> setClusterForm({ ...clusterForm, slug: slugify(e.target.value) })}
                     />
                     <TextField
                         className="m-2"
@@ -104,7 +99,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         size="small"
                         variant="outlined"
                         value={clusterForm.lang}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, lang: e.target.value })}
+                        onChange={(e)=> setClusterForm({ ...clusterForm, lang: e.target.value.toUpperCase() })}
                         select
                         >
                         {['es', 'us'].map((item) => (
@@ -162,8 +157,12 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             color="primary"
                             variant="contained"
                             className="px-5 mr-1"
-                            onClick={() => {
-                                onSubmit(clusterForm).then((success) => success && setEditMode(false))
+                            onClick={async () => {
+                                const data = await onSubmit(clusterForm)
+                                if(data){
+                                    setEditMode(false)
+                                    setClusterForm(data)
+                                }
                             }}
                         >
                             Save cluster

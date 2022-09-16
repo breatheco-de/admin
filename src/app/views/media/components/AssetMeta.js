@@ -14,6 +14,7 @@ import tz from 'dayjs/plugin/timezone';
 import history from "history.js";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { PickTechnologyModal } from './PickTechnologyModal';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
@@ -141,6 +142,7 @@ const LangCard = ({ asset, onAction }) => {
   </Card>;
 }
 
+
 const SEOReport = ({ log=[], isOpened, onClose }) => {
   
   return <Dialog
@@ -234,6 +236,36 @@ const SEOCard = ({ asset, onAction, onChange }) => {
 
     <SEOReport log={asset?.seo_json_status?.log} isOpened={openReport} onClose={() => setOpenReport(false)} />
     {addKeyword && <PickKeywordModal onClose={handleAddKeyword} lang={asset.lang} />}
+  </Card>;
+}
+
+
+const TechCard = ({ asset, onChange }) => {
+  const [ addTechnology, setAddTechnology ] = useState(null);
+
+  const handleAddTechnology = async (techonolgies) => {
+    if(techonolgies && techonolgies.length>0) onChange({ slug: asset.slug, technologies: asset.technologies.map(t => t.slug || t).concat(techonolgies.map(t => t.slug || t))})
+    setAddTechnology(false);
+  }
+
+  return <Card className="p-4 mb-4">
+      <h4 className="m-0 font-medium">Technologies</h4>
+      {asset.technologies.length == 0 ? 
+        <small className="p-0 m-0">No technologies assigned, <span className="underline text-primary pointer" onClick={() => setAddTechnology(true)}>add technologies</span></small>
+        : 
+        <>
+          {asset.technologies.map(t => 
+            <Chip 
+              key={t.slug}
+              className="mr-1" size="small" 
+              label={t.title || t} 
+              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ technologies: asset.technologies.map(_t => _t.id || _t).filter(_t => _t != t)})}>delete</Icon>} 
+            />
+          )}
+          <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
+        </>
+      }
+    {addTechnology && <PickTechnologyModal onClose={handleAddTechnology} lang={asset.lang} />}
   </Card>;
 }
 
@@ -343,6 +375,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
   return (
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <TechCard asset={asset} onChange={a => onChange(a)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <GithubCard asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />

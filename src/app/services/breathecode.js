@@ -857,10 +857,25 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAcademyCategories: async (query) => {
+                const qs = typeof(query) == 'object' ? serializeQuerystring(query) : query.replace("?", "");
+                return await axios.bcGet(
+                    "Category",
+                    `${this.host}/registry/academy/category${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             updateTechnology: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/technology/${slug}`,
+                    payload
+                ),
+            updateCategory: async (slug, payload) =>
+                await axios.bcPut(
+                    "Category",
+                    `${this.host}/registry/academy/category/${slug}`,
                     payload
                 ),
             updateCluster: async (slug, payload) =>
@@ -879,6 +894,12 @@ class BreatheCodeClient {
                 await axios.bcPost(
                     "Cluster",
                     `${this.host}/registry/academy/keywordcluster`,
+                    payload
+                ),
+            createAcademyCategory: async (payload) =>
+                await axios.bcPost(
+                    "Category",
+                    `${this.host}/registry/academy/category`,
                     payload
                 ),
             updateTechnologyBulk: async (slugs, payload) =>
