@@ -71,8 +71,6 @@ const CohortDetails = ({
   const [syllabus, setSyllabus] = useState(null);
   const [cert, setCert] = useState(specialtyMode);
   const [version, setVersion] = useState(syllabusVersion);
-  const [remote, setRemote] = useState(remote_available);
-  console.log("remote", remote)
 
   useEffect(() => {
     // setIsLoading(true);
@@ -116,12 +114,12 @@ const CohortDetails = ({
           specialtyMode,
           timezone: timeZone,
           online_meeting_url: onlineMeetingUrl,
+          remote_available: remote_available,
         }}
         onSubmit={({ specialtyMode, ...values }) => {
           const specialtyModeId = cert ? cert.id : null;
           return onSubmit({
             ...values,
-            remote_available: remote,
             syllabus: `${syllabus.slug}.v${version.version}`,
             schedule: specialtyModeId,
           });
@@ -301,7 +299,7 @@ const CohortDetails = ({
                       data-cy="never-ends"
                       onChange={handleChange}
                       control={<Checkbox checked={values.never_ends} />}
-                      label=""
+                      label="This cohort will never finish"
                       style={{marginRight:'5px'}}
                     />
                     <HelpIcon message={helpText} link={helpLink} />
@@ -316,7 +314,7 @@ const CohortDetails = ({
                     data-cy="never-ends"
                     onChange={handleChange}
                     control={<Checkbox checked={values.never_ends} />}
-                    label="This cohort never ends"
+                    label="This cohort will never finish"
                     style={{marginRight:'5px'}}
                   />
                   <HelpIcon message={helpText} link={helpLink} />
@@ -326,12 +324,10 @@ const CohortDetails = ({
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={remote}
-                        onChange={()=>{
-                          setRemote(!remote);
-                        }}
-                        name="remote"
-                        data-cy="remote"
+                        checked={values.remote_available}
+                        onChange={handleChange}
+                        name="remote_available"
+                        data-cy="remote_available"
                         color="primary"
                         className="text-left"
                       />
@@ -339,22 +335,25 @@ const CohortDetails = ({
                     label="Enable Remote"
                   />
                 </Grid>
-              <Grid item md={3} sm={4} xs={12}>
-                Live meeting URL
-              </Grid>
-              <Grid item md={9} sm={8} xs={12}>
-                <TextField
-                  className="m-2"
-                  label="URL"
-                  name="online_meeting_url"
-                  data-cy="meetingURL"
-                  size="small"
-                  variant="outlined"
-                  placeholder="https://..."
-                  value={values.online_meeting_url}
-                  onChange={handleChange}
-                />
-              </Grid>
+                {values.remote_available && <>
+                    <Grid item md={3} sm={4} xs={12}>
+                      Live meeting URL
+                    </Grid>
+                    <Grid item md={9} sm={8} xs={12}>
+                      <TextField
+                        className="m-2"
+                        label="URL"
+                        name="online_meeting_url"
+                        data-cy="meetingURL"
+                        size="small"
+                        variant="outlined"
+                        placeholder="https://..."
+                        value={values.online_meeting_url}
+                        onChange={handleChange}
+                      />
+                    </Grid>
+                    </>
+                }
 
               <Grid item md={3} sm={4} xs={12}>
                 Timezone
@@ -376,17 +375,11 @@ const CohortDetails = ({
                 </div>
               </Grid>
 
-              <Button onClick={() =>{
-                    if(remote == false){
-                      return handleOpen()
-                    }
-                    else{
-                      
-                      handleSubmit()
-                    }
-                    }
-                       
-                    }
+              <Button 
+                  onClick={() =>{
+                    if(values.never_ends == true) handleOpen()
+                    else handleSubmit()
+                  }}
                   color="primary"
                   variant="contained"
                   >Save Cohort Details</Button>
@@ -407,7 +400,10 @@ const CohortDetails = ({
 
 
                             <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}  className="rounded mr-4"
-                            onClick={handleSubmit}>
+                            onClick={() => {
+                              handleSubmit()
+                              handleClose()
+                            }}>
                                 Yes
                             </Button>
 

@@ -124,7 +124,7 @@ const NewCertificate = () => {
                     key={state.cohort.slug}
                     width="100%"
                     asyncSearch={(query) => axios.get(
-                      `${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/user?academy=${session?.academy.slug}&roles=STUDENT&educational_status=ACTIVE,GRADUATED&like=${query}`,
+                      `${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/user?roles=STUDENT&educational_status=ACTIVE,GRADUATED&like=${query}`,
                     )}
                     onChange={(student) => handleChange({ slug: 'single', student })}
                     getOptionLabel={(option) => option.length !== 0

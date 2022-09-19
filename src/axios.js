@@ -71,11 +71,13 @@ function printAxiosResponse(object) {
 
 axiosInstance.interceptors.response.use(
     (response) => {
+        response.ok = true; // <- this will always be used as reference for success
         printAxiosResponse(response);
         resolveResponse(response);
         return response;
     },
     (error) => {
+        error.response.ok = false;  // <- this will always be used as reference for failure
         printAxiosResponse(error.response);
         resolveError(error);
         Promise.reject(

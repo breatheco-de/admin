@@ -153,7 +153,7 @@ const Layout1Topbar = () => {
                         {' '}
                         <strong>{user.first_name}</strong>
                       </span>
-                      <small style={{fontSize: "8px"}} className="d-block mx-2">{user.academy?.name}</small>
+                      <small style={{fontSize: "8px"}} className="d-block mx-2">{user.academy?.name?.replace("4Geeks Academy", "")}</small>
                     </div>
                   </Hidden>
                   <Avatar className="cursor-pointer" src={user.profile?.avatar_url} />
@@ -167,7 +167,7 @@ const Layout1Topbar = () => {
                     {' '}
                     <strong>{user.first_name || 'No name'}</strong>
                   </p>
-                  <p className="m-0 w-100"><small className="d-block">{user.academy?.name.replace("4Geeks Academy", "")}</small></p>
+                  <p className="m-0 w-100"><small className="d-block">{user.academy?.name}</small></p>
                   <p className="m-0 w-100">
                     <small className="d-block">
                       Role:

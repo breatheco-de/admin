@@ -44,7 +44,8 @@ export const ProfileForm = ({ initialValues }) => {
       bc.auth()
       .addAcademyStudent(requestValues)
       .then((data) => {
-        if (data !== undefined) {
+        console.log("addAcademyStudent", data, data.ok)
+        if (data !== undefined && data.ok) {
            history.push('/admissions/students');
         }
       })

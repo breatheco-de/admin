@@ -145,6 +145,7 @@ const Services = () => {
           }}
           deleting={async (querys) => {
             const { status } = await bc.mentorship().deleteServicesBulk(querys);
+
             return status;
           }}
         />

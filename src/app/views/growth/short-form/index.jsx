@@ -91,8 +91,6 @@ const IndexShort = () => {
     bc.marketing()
       .getAcademyShort()
       .then(({ data }) => {
-        console.log("esta es data", data)
-        console.log("esta es author", )
         setShort(data);
       })
       .catch((error) => console.error(error));
