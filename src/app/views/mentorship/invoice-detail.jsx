@@ -46,6 +46,7 @@ const InvoiceDetail = () => {
       if (data) setBill(data);
       setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   }
@@ -96,11 +97,11 @@ const InvoiceDetail = () => {
   const recalculateBill = async () => {
     try {
       setLoading(true);
-      const { data } = await bc.mentorship().generateBills({ id: mentorID });
-      console.log(data);
-      // if (data) setBill(data);
-      setLoading(false);
+      await bc.mentorship().generateBills({ id: mentorID });
+      getBill();
+
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
   }
@@ -122,7 +123,7 @@ const InvoiceDetail = () => {
             <IconButton>
               <ArrowBack
                 onClick={() => {
-                  history.goBack();
+                  history.push( `/mentors/${mentorID}`);
                 }}
               />
             </IconButton>
