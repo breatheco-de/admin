@@ -123,7 +123,7 @@ const InvoiceDetail = () => {
             <IconButton>
               <ArrowBack
                 onClick={() => {
-                  history.push( `/mentors/${mentorID}`);
+                  history.push( `/mentors/${mentorID}#smart_tab=1`);
                 }}
               />
             </IconButton>
