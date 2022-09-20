@@ -5,7 +5,7 @@ import {
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Breadcrumb } from '../../../matx';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';
 import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
@@ -168,18 +168,15 @@ const Students = () => {
         filterOptions: {
           display: (filterList, onChange, index, column) => {
             return (
-              <div style={{ width: '150px' }}>
+              <div style={{ width: '180px' }}>
                 <AsyncAutocomplete
                   onChange={(newCohort) => {
                     setCohorts(newCohort);
-                    console.log('newCohort');
-                    console.log(newCohort);
                     const slugs = newCohort.map((i) => i.slug).join(',');
+
                     if (slugs !== '') filterList[index][0] = slugs;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);
-                    console.log('filterList');
-                    console.log(filterList);
                   }}
                   value={cohorts}
                   // name="cohort"
@@ -225,8 +222,11 @@ const Students = () => {
           options={{
             print: false,
             viewColumns: false,
-            onFilterChipClose: (index, removedFilter, filterList) => {
+            onFilterChipClose: async (index, removedFilter, filterList) => {
               setCohorts([]);
+              const querys = getParams();
+              const { data } = await bc.auth().getAcademyStudents(querys);
+              setItems(data.results);
             },
           }}
           view="student?"
