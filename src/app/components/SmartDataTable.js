@@ -30,7 +30,7 @@ const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
     name: "SmartMUIDataTable",
 })(DefaultToobar);
 
-const getParams = (url = window.location) => {
+export const getParams = (url = window.location) => {
     // Create a params object
     let params = {};
 
