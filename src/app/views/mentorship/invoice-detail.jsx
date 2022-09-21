@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   Button,
   IconButton,
@@ -9,23 +11,27 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import School from '@material-ui/icons/School';
-import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import AccessTime from '@material-ui/icons/AccessTime';
 import DirectionsRun from '@material-ui/icons/DirectionsRun';
 import MonetizationOn from '@material-ui/icons/MonetizationOn';
 import SentimentSatisfiedAlt from '@material-ui/icons/SentimentSatisfiedAlt';
 import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisfied';
 import { MatxLoading } from "matx";
+import { toast } from 'react-toastify';
 import bc from 'app/services/breathecode';
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import Alert from '../../components/Alert';
 
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 const duration = require('dayjs/plugin/duration');
@@ -97,7 +103,8 @@ const InvoiceDetail = () => {
   const recalculateBill = async () => {
     try {
       setLoading(true);
-      await bc.mentorship().generateBills({ id: mentorID });
+      const { data } = await bc.mentorship().generateBills({ id: mentorID }, { silent: true });
+      if (data.length === 0) toast.success('Nothing to recalculate on this bill', toastOption);
       getBill();
 
     } catch (e) {
@@ -153,10 +160,9 @@ const InvoiceDetail = () => {
         </div>
         <div id="table" className='p-4'>
           {bill?.status === 'RECALCULATE' && (
-            <p className="text-error">
-              <ErrorOutline style={{ verticalAlign:'middle' }} />
+            <Alert severity="error">
               This bill needs to be recalculated because some of the sessions were modified, please <a style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={recalculateBill}>click here to recalculate it</a>
-            </p> 
+            </Alert>
           )}
           <Table>
             <TableHead>
