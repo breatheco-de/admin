@@ -7,6 +7,7 @@ import NavigationReducer from './NavigationReducer';
 import CohortReducer from './CohortReducer';
 import DialogReducer from './DialogReducer';
 import SurveyReducer from './SurveyReducer';
+import HostReducer from './HostReducer';
 
 const RootReducer = combineReducers({
   user: UserReducer,
@@ -17,6 +18,7 @@ const RootReducer = combineReducers({
   cohorts: CohortReducer,
   dialog: DialogReducer,
   survey: SurveyReducer,
+  host: HostReducer
 });
 
 export default RootReducer;

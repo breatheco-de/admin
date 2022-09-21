@@ -12,6 +12,7 @@ import axios from '../../../axios';
 import UserProfileContent from './components/UserProfileContent';
 import UserProfileSidenav from './components/UserProfileSidenav';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
+import { Store } from '../../redux/Store';
 
 const usestyles = makeStyles(() => ({
   headerBG: {
@@ -36,7 +37,7 @@ const UserProfile = () => {
   };
 
   const getUser = (studentId) => {
-    axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student/${studentId}`)
+    axios.get(`${Store.getState().host}/v1/auth/academy/student/${studentId}`)
       .then((prof) => setProfile(prof));
   };
 
@@ -58,7 +59,7 @@ const UserProfile = () => {
             setProfile(newProfile);
             history.push(`/coursework/student/${profile.user.id}`);
           }}
-          asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/academy/student?like=${searchTerm}`)}
+          asyncSearch={(searchTerm) => axios.get(`${Store.getState().host}/v1/auth/academy/student?like=${searchTerm}`)}
         />
       </div>
     );

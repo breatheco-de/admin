@@ -22,6 +22,7 @@ import { MatxLoading } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 import axios from '../../../../axios';
+import { Store } from '../../../redux/Store';
 
 const propTypes = {
   staffId: PropTypes.number.isRequired,
@@ -172,7 +173,7 @@ const CohortStaff = ({ staffId, setCohortOptions, user }) => {
             getOptionLabel={(option) => `${option.name}, (${option.slug})`}
             asyncSearch={() =>
               axios.get(
-                `${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`
+                `${Store.getState().host}/v1/admissions/academy/cohort`
               )
             }
           >

@@ -9,6 +9,7 @@ import { MatxLoading } from 'matx';
 import { toast } from 'react-toastify';
 import bc from '../services/breathecode.js';
 import { setUserData } from '../redux/actions/UserActions.js';
+import { Store } from '../redux/Store';
 
 toast.configure();
 const toastOption = {
@@ -27,7 +28,7 @@ const isValidToken = async (accessToken) => {
     return false;
   }
 
-  const res = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/token/${accessToken}`);
+  const res = await axios.get(`${Store.getState().host}/v1/auth/token/${accessToken}`);
   return res.status === 200;
 };
 
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res1 = await axios.bcPost('Login', `${process.env.REACT_APP_API_HOST}/v1/auth/login/`, {
+      const res1 = await axios.bcPost('Login', `${Store.getState().host}/v1/auth/login/`, {
         email,
         password,
       });
@@ -125,7 +126,7 @@ export const AuthProvider = ({ children }) => {
       throw Error(message);
     }
     let capabilities = [];
-    const res2 = await axios.bcGet('User', `${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
+    const res2 = await axios.bcGet('User', `${Store.getState().host}/v1/auth/user/me`);
     const storedSession = JSON.parse(localStorage.getItem('bc-session'));
     if (!res2.data || res2.data.roles.length === 0) throw Error('You are not a staff member from any academy');
     else if (storedSession && typeof storedSession === 'object') {
@@ -154,7 +155,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (email, username, password) => {
-    const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/auth/register`, {
+    const response = await axios.post(`${Store.getState().host}/api/auth/register`, {
       email,
       username,
       password,
@@ -194,7 +195,7 @@ export const AuthProvider = ({ children }) => {
 
         if (accessToken && (await isValidToken(accessToken))) {
           setSession(accessToken);
-          const response = await axios.get(`${process.env.REACT_APP_API_HOST}/v1/auth/user/me`);
+          const response = await axios.get(`${Store.getState().host}/v1/auth/user/me`);
           const user = response.data;
           let capabilities = [];
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));

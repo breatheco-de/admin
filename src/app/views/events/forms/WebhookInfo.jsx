@@ -9,6 +9,7 @@ import {
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
+import { Store } from '../../../redux/Store';
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
@@ -108,7 +109,7 @@ export const WebhookInfo = ({ organization }) => {
           type="text"
           variant="outlined"
           value={organization.id !== '' ? 
-            `${process.env.REACT_APP_API_HOST}/eventbrite/webhook/${organization.id}` 
+            `${Store.getState().host}/eventbrite/webhook/${organization.id}` 
             : 'No organization'
           }
         />

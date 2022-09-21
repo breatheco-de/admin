@@ -10,6 +10,7 @@ import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import { useHistory } from 'react-router-dom';
+import { Store } from '../../../redux/Store';
 const localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
 
@@ -165,7 +166,7 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
       width: 160,
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
-        // let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
+        // let billUrl = `${Store.getState().host}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         return (     
           <div>
             <IconButton
