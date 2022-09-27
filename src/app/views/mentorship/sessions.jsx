@@ -3,8 +3,6 @@ import bc from 'app/services/breathecode';
 import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
 import { 
-  Tooltip, 
-  TableCell,
   FormGroup,
   TextField,
  } from '@material-ui/core';
@@ -16,13 +14,6 @@ import dayjs from "dayjs";
 import { useQuery } from '../../hooks/useQuery';
 const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
-
-const statusColors = {
-  PENDING: 'bg-secondary text-dark',
-  COMPLETED: 'text-white bg-green',
-  FAILED: 'text-white bg-error',
-  STARTED: 'text-white bg-primary',
-};
 
 const Sessions = () => {
   const [sessions, setSessions] = useState([]);
@@ -151,18 +142,20 @@ const Sessions = () => {
             options={{
               print: false,
               viewColumns: false,
+              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+                <AddServiceInBulk
+                  selectedRows={selectedRows}
+                  displayData={displayData}
+                  setSelectedRows={setSelectedRows}
+                  items={sessions}
+                />
+              ),
             }}
             search={async (querys) => {
               const { data } = await bc.mentorship().getAllMentorSessions({ ...querys });
               setSessions(data.results);
               return data;
             }}
-            bulkActions={(props) => (
-              <AddServiceInBulk
-                items={sessions}
-                {...props}
-              />
-            )}
           />
         </div>
       </div>
