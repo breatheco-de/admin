@@ -1,4 +1,5 @@
 import axios from "../../axios";
+import config from 'config.js';
 
 function serializeQuerystring(object) {
     const querystring =
@@ -13,7 +14,7 @@ function serializeQuerystring(object) {
 
 class BreatheCodeClient {
     constructor() {
-        this.host = `${process.env.REACT_APP_API_HOST}/v1`;
+        this.host = `${config.REACT_APP_API_HOST}/v1`;
     }
 
     admissions() {

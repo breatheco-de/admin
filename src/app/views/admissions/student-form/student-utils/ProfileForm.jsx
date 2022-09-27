@@ -7,6 +7,7 @@ import bc from '../../../../services/breathecode';
 import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
+import config from 'config.js';
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -163,7 +164,7 @@ export const ProfileForm = ({ initialValues }) => {
                 isOptionEqualToValue={(option, value) => option.id === value.id}  
                 getOptionLabel={(option) => `${option.name}, (${option.slug})`}
                 multiple={true}
-                asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED,ACTIVE`)}
+                asyncSearch={() => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED,ACTIVE`)}
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
             </Grid>

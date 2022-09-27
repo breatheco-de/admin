@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import useAuth from '../../../hooks/useAuth';
 import history from '../../../../history';
+import config from 'config.js';
 
 const useStyles = makeStyles(() => ({
   cardHolder: {
@@ -134,7 +135,7 @@ const JwtLogin = () => {
                   <span className="mr-2 ml-5">or</span>
                   <Button
                     onClick={() => {
-                      window.location.href = `${process.env.REACT_APP_API_HOST}/v1/auth/github?url=${window.location.href}`;
+                      window.location.href = `${config.REACT_APP_API_HOST}/v1/auth/github?url=${window.location.href}`;
                     }}
                     variant="contained"
                     className={classes.socialButton}
@@ -150,7 +151,7 @@ const JwtLogin = () => {
                 <Button
                   className="text-primary"
                   onClick={() => {
-                    window.location.href = `${process.env.REACT_APP_API_HOST}/v1/auth/password/reset`;
+                    window.location.href = `${config.REACT_APP_API_HOST}/v1/auth/password/reset`;
                   }}
                 >
                   Forgot password?

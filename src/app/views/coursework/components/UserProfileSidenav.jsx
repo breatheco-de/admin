@@ -7,6 +7,7 @@ import clsx from 'clsx';
 // import useAuth from 'app/hooks/useAuth';
 import PropTypes from 'prop-types';
 import axios from '../../../../axios';
+import config from 'config.js';
 
 const shortcutList = [
   {
@@ -49,7 +50,7 @@ const UserProfileSidenav = ({ user }) => {
   useEffect(() => {
     if (user) {
       axios
-        .get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort/user?users=${user.id}`)
+        .get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort/user?users=${user.id}`)
         .then((cu) => setCohorts(cu.map((cup) => cup.cohort)));
     }
   }, [user]);
