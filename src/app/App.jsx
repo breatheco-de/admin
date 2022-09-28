@@ -7,7 +7,7 @@ import history from 'history.js';
 import { AuthProvider } from 'app/contexts/JWTAuthContext';
 import MatxTheme from './MatxLayout/MatxTheme/MatxTheme';
 import AppContext from './appContext';
-
+import { renderRoutes } from 'react-router-config';
 import routes from './RootRoutes';
 import { Store } from './redux/Store';
 import sessionRoutes from './views/sessions/routes';
@@ -25,6 +25,13 @@ const App = () => (
                 <Switch>
                   {/* AUTHENTICATION PAGES */}
                   {sessionRoutes.map((item, ind) => (
+                    <Route
+                      key={ind}
+                      path={item.path}
+                      component={item.component}
+                    />
+                  ))}
+                  {routes.filter(r => r.public === true).map((item, ind) => (
                     <Route
                       key={ind}
                       path={item.path}

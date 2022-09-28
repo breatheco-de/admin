@@ -59,6 +59,12 @@ export const navigations = [
                 capabilities: ["read_student"],
             },
             {
+                name: "All Teachers",
+                path: "/admissions/teachers",
+                iconText: "TEA",
+                capabilities: ["read_member"],
+            },
+            {
                 name: "Watch List",
                 path: "/admissions/watchlist",
                 iconText: "WATCH",
@@ -112,18 +118,6 @@ export const navigations = [
                 iconText: "OL",
                 beta: true,
                 capabilities: ["read_eventcheckin"],
-            },
-        ],
-    },
-    {
-        name: "Developer",
-        icon: "code",
-        children: [
-            {
-                name: "Settings",
-                path: "/developer/settings",
-                iconText: "OL",
-                capabilities: ["get_academy_token"],
             },
         ],
     },
@@ -183,6 +177,18 @@ export const navigations = [
         ],
     },
     {
+        name: "Freelance",
+        icon: "account_circle",
+        children: [
+            {
+                name: "Projects",
+                path: "/freelance/project",
+                iconText: "PRJ",
+                capabilities: ["read_freelance_projects"],
+            },
+        ]
+    },
+    {
         name: "Admin",
         icon: "account_circle",
         children: [
@@ -209,6 +215,12 @@ export const navigations = [
                 path: "/admin/syllabus",
                 iconText: "STA",
                 capabilities: ["read_syllabus"],
+            },
+            {
+                name: "Developer Settings",
+                path: "/admin/dev-settings",
+                iconText: "DEV",
+                capabilities: ["get_academy_token"],
             },
         ],
     },

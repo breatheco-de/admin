@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Avatar, Icon, IconButton, Button, Tooltip,
+  Avatar, Icon, IconButton, Button, Tooltip, Chip, TableCell,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -9,7 +9,6 @@ import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';
 import bc from '../../services/breathecode';
-import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 
 toast.configure();
 const toastOption = {
@@ -31,12 +30,12 @@ const name = (user) => {
   return 'No name';
 };
 
-const Students = () => {
+const Teachers = () => {
   const [items, setItems] = useState([]);
 
-  const resendInvite = (user) => {
+  const resentMemberInvite = (user) => {
     bc.auth()
-      .resendInvite(user)
+      .resentMemberInvite(user)
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
@@ -54,7 +53,7 @@ const Students = () => {
               <Avatar className="w-48 h-48" src={user?.github?.avatar_url} />
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {user !== null ? name(user) : `${rest.first_name} ${rest.last_name}`}
+                  {rest.first_name} {rest.last_name}
                 </h5>
                 <small className="text-muted">{user?.email || rest.email}</small>
               </div>
@@ -68,18 +67,23 @@ const Students = () => {
       label: 'Created At',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "150px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (i) => (
-          <div className="flex items-center">
-            <div className="ml-3">
-              <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
-              <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
-              {'  '}
-              {dayjs().isBefore(dayjs(items[i].created_at).add(30, 'minutes')) &&
-                <Tooltip title="Created less than 30 minutes ago">
-                  <small className="text-muted text-secondary">RECENT</small>
-                </Tooltip>
-              }
-            </div>
+          <div>
+            <h5 className="my-0 text-15">{dayjs(items[i].created_at).format('MM-DD-YYYY')}</h5>
+            <small className="text-muted">{dayjs(items[i].created_at).fromNow()}</small>
+            {'  '}
+            {dayjs().isBefore(dayjs(items[i].created_at).add(30, 'minutes')) &&
+              <Tooltip title="Created less than 30 minutes ago">
+                <small className="text-muted text-secondary">RECENT</small>
+              </Tooltip>
+            }
           </div>
         ),
       },
@@ -89,16 +93,50 @@ const Students = () => {
       label: 'Status',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }} padding="0">
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
             <div>
-                <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
-                  {item.status.toUpperCase()}
-                </small>
-                {item.status === 'INVITED' && (
-                  <small className="text-muted d-block">Needs to accept invite</small>
-                )}
+              <p className="p-0 my-0">{item.role.name || item.role}</p>
+              {item.status != 'INVITED' ?
+              <small className={`border-radius-4 px-2 pt-2px${statusColors[item.status]}`}>
+                {item.status.toUpperCase()}
+              </small>
+              :
+              <small className="text-muted d-block">Needs to accept invite</small>
+              }
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'cohorts',
+      label: 'Latest Cohorts',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const item = items[dataIndex];
+          return (
+            <div>
+                {item.cohorts.slice(0,3).map(c => {
+                  const msg = dayjs().isBefore(c.ending_date) ? 
+                    `Ends on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`
+                    :
+                    `Ended ${dayjs(c.ending_date).fromNow()}, on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`;
+                  return <Tooltip title={msg}>
+                    <div className="chip mr-1">
+                      <p>{c.name}</p><small>{c.stage}</small>
+                    </div>
+                  </Tooltip>
+                })}
             </div>
           );
         },
@@ -126,7 +164,7 @@ const Students = () => {
               <div className="flex-grow" />
               <InviteDetails getter={() => bc.auth().getMemberInvite(item.id)} />
               <Tooltip title="Resend Invite">
-                <IconButton onClick={() => resendInvite(item.id)}>
+                <IconButton onClick={() => resentMemberInvite(item.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
@@ -134,7 +172,7 @@ const Students = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admissions/students/${item.user.id}`}>
+              <Link to={`/admissions/teachers/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -153,13 +191,13 @@ const Students = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Students' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Teachers' }]} />
           </div>
 
           <div className="">
-            <Link to="/admissions/students/new">
+            <Link to="/admin/staff/new">
               <Button variant="contained" color="primary">
-                Add new student
+                Add new teacher
               </Button>
             </Link>
           </div>
@@ -167,35 +205,21 @@ const Students = () => {
       </div>
       <div>
         <SmartMUIDataTable
-          title="All Students"
+          title="Tearchers and Assistants"
           columns={columns}
           items={items}
-          view="student?"
-          historyReplace="/admissions/students"
+          view="teachers?"
+          historyReplace="/admissions/teachers"
           singlePage=""
-          // options={{
-          //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-          //     <AddBulkToCohort
-          //       selectedRows={selectedRows}
-          //       displayData={displayData}
-          //       setSelectedRows={setSelectedRows}
-          //       items={items}
-          //     />
-          //   ),
-          // }}
-          bulkActions={(props) => (
-            <AddBulkToCohort
-              items={items}
-              {...props}
-            />
-          )}
           search={async (querys) => {
-            const { data } = await bc.auth().getAcademyStudents(querys);
-            setItems(data.results);
-            return data;
+            const { data } = await bc.admissions().getAllAcademyTeachers({ ...querys, roles: 'teacher,assistant' });
+            setItems(data.results || data);
+            return data.results || data;
           }}
           deleting={async (querys) => {
-            const { status } = await bc.admissions().deleteStudentBulk(querys);
+            const { status } = await bc
+              .admissions()
+              .deleteStaffBulk(querys);
             return status;
           }}
         />
@@ -204,4 +228,4 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default Teachers;

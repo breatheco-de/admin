@@ -267,48 +267,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </div>
                     </div>
                   </Grid>
-                  {/* <Grid item lg={2} md={2} sm={2} xs={2} className="text-center">
-                    <TextField
-                      className="min-w-100"
-                      label="Finantial Status"
-                      name="finantial_status"
-                      size="small"
-                      variant="outlined"
-                      value={s.finantial_status || ''}
-                      onChange={({ target: { name, value } }) => {
-                        changeStudentStatus(value, name, s.user.id);
-                      }}
-                      select
-                    >
-                      {['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''].map((item, ind) => (
-                        <MenuItem value={item} key={item}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item lg={2} md={4} sm={2} xs={2} className="text-center">
-                    <TextField
-                      className="min-w-100"
-                      label="Educational Status"
-                      name="educational_status"
-                      size="small"
-                      variant="outlined"
-                      value={s.educational_status || ''}
-                      onChange={({ target: { name, value } }) => {
-                        changeStudentStatus(value, name, s.user.id, i);
-                      }}
-                      select
-                    >
-                      {['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''].map(
-                        (item, ind) => (
-                          <MenuItem value={item} key={item}>
-                            {item}
-                          </MenuItem>
-                        ),
-                      )}
-                    </TextField>
-                  </Grid> */}
                   <Grid item lg={6} md={6} sm={6} xs={6} className="text-center">
                     <div className="flex justify-end items-center">
                       <IconButton

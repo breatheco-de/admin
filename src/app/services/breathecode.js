@@ -149,6 +149,15 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllAcademyTeachers: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Cohorts",
+                    `${this.host}/admissions/academy/teacher${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             getAllAcademySyllabus: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -315,6 +324,11 @@ class BreatheCodeClient {
                 axios.bcPut(
                     "Invite",
                     `${this.host}/auth/member/invite/resend/${user}`
+                ),
+            resentMemberInvite: (memberId) =>
+                axios.bcPut(
+                    "Invite",
+                    `${this.host}/auth/academy/member/${memberId}/invite`
                 ),
             getUserInvite: (id) =>
                 axios.bcGet("Invite", `${this.host}/auth/academy/invite/${id}`),
@@ -825,7 +839,36 @@ class BreatheCodeClient {
                 ),
         };
     }
-
+    freelance() {
+        return {
+            getAllProjects: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            getSingleProject: (id) => axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project/${id}`
+                ),
+            getSingleInvoice: (id) => axios.bcGet(
+                    "Invoice",
+                    `${this.host}/freelance/academy/project/invoice/${id}`
+                ),
+            getProjectMembers: async (query) => {
+                    const qs = serializeQuerystring(query);
+                    return await axios.bcGet(
+                        "Project",
+                        `${this.host}/freelance/academy/project/member${
+                            query ? `?${qs}` : ""
+                        }`
+                    );
+                },
+        }
+    }
     registry() {
         return {
             getAllAssets: async (query) => {

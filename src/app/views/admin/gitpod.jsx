@@ -12,9 +12,7 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import InviteDetails from 'app/components/InviteDetails';
-
 const relativeTime = require('dayjs/plugin/relativeTime');
-
 dayjs.extend(relativeTime);
 
 const statusColors = {
@@ -67,7 +65,9 @@ const GitpodUsers = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <h5 className={`my-0 text-15 ${!user ? 'text-error' : ''}`}>{user ? name(user) : "No user found"}</h5>
+                <Link to={`/admissions/students/${user?.id}`}>
+                  <h5 className={`my-0 text-15 ${!user ? 'text-error' : ''}`}>{user ? name(user) : "No user found"}</h5>
+                </Link>
                 <small className="text-muted">{user?.email}</small>
               </div>
             </div>
@@ -90,7 +90,7 @@ const GitpodUsers = () => {
             <div className="ml-3">
               <Tooltip title={item.delete_status}><div>
                   <h5 className="my-0 text-15">{item.expires_at ? dayjs(item.expires_at).format('MM-DD-YYYY') : "Never"}</h5>
-                  {item.expires_at && <small className={`${statusColors[stage]}`}>{dayjs(item.expires_at).fromNow()}</small>}
+                  {item.expires_at && <small className={`p-1 ${statusColors[stage]} pointer`}>{dayjs(item.expires_at).fromNow()}</small>}
                   </div></Tooltip>
             </div>
           </div>

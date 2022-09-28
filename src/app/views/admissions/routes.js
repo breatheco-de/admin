@@ -31,6 +31,10 @@ const routes = [
         component: React.lazy(() => import("./students")),
     },
     {
+        path: "/admissions/teachers",
+        component: React.lazy(() => import("./teachers")),
+    },
+    {
         path: "/admissions/watchlist",
         component: React.lazy(() => import("./watchlist")),
     },
