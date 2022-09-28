@@ -14,6 +14,7 @@ import { Formik } from 'formik';
 import { toast } from 'react-toastify';
 import { AsyncAutocomplete } from './Autocomplete';
 import bc from '../services/breathecode';
+import config from '../../config';
 
 toast.configure();
 const toastOption = {
@@ -79,7 +80,7 @@ const CustomDialog = ({
                     disabled
                     fullWidth
                     defaultValue={null}
-                    value={!values.mime.includes('image') ? values.url : `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}`}
+                    value={!values.mime.includes('image') ? values.url : `${config.REACT_APP_API_HOST}/v1/media/file/${values.slug}`}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -110,7 +111,7 @@ const CustomDialog = ({
                             setSize(e.target.value);
                             const query = {};
                             if (e.target.value != 'original') query.width = e.target.value;
-                            const url = `${process.env.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map((key) => `${key}=${query[key]}`).join('&')}`;
+                            const url = `${config.REACT_APP_API_HOST}/v1/media/file/${values.slug}?${Object.keys(query).map((key) => `${key}=${query[key]}`).join('&')}`;
                             navigator.clipboard.writeText(url);
                             toast.success('Copied to the clipboard', toastOption);
 

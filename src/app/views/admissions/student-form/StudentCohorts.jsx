@@ -22,6 +22,7 @@ import { MatxLoading } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 import axios from '../../../../axios';
+import config from '../../../../config.js';
 
 const propTypes = {
   stdId: PropTypes.number.isRequired,
@@ -147,7 +148,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
           width="100%"
           label="Search Cohorts"
           getOptionLabel={(option) => `${option.name}, (${option.slug})`}
-          asyncSearch={() => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
+          asyncSearch={() => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort`)}
         >
           <Button
             className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre"

@@ -8,6 +8,7 @@ import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
 import { useHistory } from 'react-router-dom';
+import config from '../../../../config.js';
 import Alert from '../../../components/Alert'
 const localizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(localizedFormat);
@@ -164,7 +165,7 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
       width: 160,
       renderCell: (params) => {
         const token = session.token.length > 0 ? `?token=${session.token}` : null;
-        // let billUrl = `${process.env.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
+        // let billUrl = `${config.REACT_APP_API_HOST}/v1/mentorship/academy/bill/${params.row.id}/html${token || ''}`
         return (     
           <div>
             <IconButton

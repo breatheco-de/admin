@@ -12,6 +12,7 @@ import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
+import config from '../../../config.js';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -187,7 +188,7 @@ const Students = () => {
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => `${option.slug}`}
                   multiple={true}
-                  asyncSearch={(searchTerm) => axios.get(`${process.env.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like${searchTerm}`)}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like${searchTerm}`)}
                 />
               </div>
             );

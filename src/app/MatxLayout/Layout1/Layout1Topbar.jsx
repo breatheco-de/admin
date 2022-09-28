@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import useAuth from 'app/hooks/useAuth';
 import history from 'history.js';
+import config from '../../../config.js';
 
 toast.configure();
 const toastOption = {
@@ -188,7 +189,7 @@ const Layout1Topbar = () => {
                 <span className="pl-4"> Beta features </span>
               </MenuItem>
               <MenuItem>
-                <a className={classes.menuItem} href={`${process.env.REACT_APP_API_HOST}/v1/auth/github/${localStorage.getItem('accessToken')}?url=${window.location.href}`}>
+                <a className={classes.menuItem} href={`${config.REACT_APP_API_HOST}/v1/auth/github/${localStorage.getItem('accessToken')}?url=${window.location.href}`}>
                   <FontAwesomeIcon fontSize={"20px"} icon={faGithub} />
                   <span className="pl-4"> {user.github ? user.github.username : 'Connect Github'} </span>
                 </a>
