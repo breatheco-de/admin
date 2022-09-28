@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar, Icon, IconButton, Button, Tooltip,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
-import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from '../../components/SmartDataTable';
 import InviteDetails from '../../components/InviteDetails';
 import bc from '../../services/breathecode';
 import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
-
-toast.configure();
-const toastOption = {
-  position: toast.POSITION.BOTTOM_RIGHT,
-  autoClose: 8000,
-};
+import { AsyncAutocomplete } from '../../components/Autocomplete';
+import axios from '../../../axios';
+import { useQuery } from '../../hooks/useQuery';
+import config from '../../../config.js';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -32,7 +29,9 @@ const name = (user) => {
 };
 
 const Students = () => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
+  const [cohorts, setCohorts] = useState([]);
 
   const resendInvite = (user) => {
     bc.auth()
@@ -41,12 +40,22 @@ const Students = () => {
       .catch((error) => console.error(error));
   };
 
+  useEffect(() => {
+    let slugs = query.get('cohort');
+    if(slugs) {
+      const cohortSlugs = slugs.split(',').map((c) => {
+        return { slug: c }
+      });
+      setCohorts(cohortSlugs);
+    }
+  }, []);
+
   const columns = [
     {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const { user, ...rest } = items[dataIndex];
           return (
@@ -67,7 +76,7 @@ const Students = () => {
       name: 'created_at',
       label: 'Created At',
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -88,7 +97,7 @@ const Students = () => {
       name: 'status',
       label: 'Status',
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           return (
@@ -146,6 +155,45 @@ const Students = () => {
         },
       },
     },
+    {
+      // This column is to display the filter
+      name: 'cohort',
+      label: 'cohort',
+      options: {
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('cohort') !== null ? [query.get('cohort')] : [],
+        display: false,
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div style={{ width: '180px' }}>
+                <AsyncAutocomplete
+                  onChange={(newCohort) => {
+                    setCohorts(newCohort);
+                    const slugs = newCohort.map((i) => i.slug).join(',');
+
+                    if (slugs !== '') filterList[index][0] = slugs;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  value={cohorts}
+                  // name="cohort"
+                  // width="30%"
+                  size="small"
+                  label="Cohort"
+                  debounced
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => `${option.slug}`}
+                  multiple={true}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like${searchTerm}`)}
+                />
+              </div>
+            );
+          }
+        },
+      },
+    },
   ];
 
   return (
@@ -170,6 +218,16 @@ const Students = () => {
           title="All Students"
           columns={columns}
           items={items}
+          options={{
+            print: false,
+            viewColumns: false,
+            onFilterChipClose: async (index, removedFilter, filterList) => {
+              setCohorts([]);
+              const querys = getParams();
+              const { data } = await bc.auth().getAcademyStudents(querys);
+              setItems(data.results);
+            },
+          }}
           view="student?"
           historyReplace="/admissions/students"
           singlePage=""

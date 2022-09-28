@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '../../../config.js';
 
 export const COHORT_GET_USERS = 'COHORT_GET_USERS';
 export const COHORT_REMOVE_USER = 'COHORT_REMOVE_USER';
@@ -7,7 +8,7 @@ export const COHORT_UPDATE_USER_INFO = 'COHORT_UPDATE_USER_INFO';
 export const GET_COHORT = 'GET_COHORT';
 
 export const addUserToCohort = (cohort_id, user_id) => (dispatch) => {
-  axios.post(`${process.env.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
+  axios.post(`${config.REACT_APP_API_HOST}/v1/admissions/cohort/${cohort_id}/user`, {
     user: user_id,
     role: 'STUDENT',
     finantial_status: null,

@@ -11,6 +11,7 @@ import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import config from '../../../config.js';
 
 toast.configure();
 const toastOption = {
@@ -135,7 +136,7 @@ const Assets = () => {
                 </Tooltip>
               </Link>
               <Tooltip title="Open">
-                <a target="_blank" rel="noopener noreferrer" href={`${process.env.REACT_APP_API_HOST}/v1/registry/asset/preview/${item.slug}`}>
+                <a target="_blank" rel="noopener noreferrer" href={`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${item.slug}`}>
                   <IconButton>
                     <OpenInBrowser />
                   </IconButton>
