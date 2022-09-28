@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { Button, Divider, TextField, MenuItem, IconButton, } from '@material-ui/core';
 import dayjs from "dayjs";
 import bc from '../../../services/breathecode'
@@ -8,11 +7,11 @@ import { getSession } from 'app/redux/actions/SessionActions';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
-import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import { useHistory } from 'react-router-dom';
 import config from '../../../../config.js';
-const localizedFormat = require('dayjs/plugin/localizedFormat')
-dayjs.extend(localizedFormat)
+import Alert from '../../../components/Alert'
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+dayjs.extend(localizedFormat);
 
 export const MentorPayment = ({ mentor, staffId, bills }) => {
   const [session] = useState(getSession());
@@ -194,10 +193,11 @@ export const MentorPayment = ({ mentor, staffId, bills }) => {
   return (
     <>
       {payments.find((el) => el.status === 'RECALCULATE') && (
-        <p className="text-error">
-          <ErrorOutline style={{ verticalAlign: 'middle' }} />
-          Some bills need to be recalculated, please generate the bills again
-        </p>
+        <div className="mb-5">
+          <Alert severity="error">
+            Some bills need to be recalculated, please generate the bills again
+          </Alert>
+        </div>
       )}
       <div className="flex justify-between">
         <TextField
