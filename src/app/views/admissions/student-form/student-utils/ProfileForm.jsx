@@ -7,7 +7,7 @@ import bc from '../../../../services/breathecode';
 import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
-import config from 'config.js';
+import config from '../../../../../config.js';
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,

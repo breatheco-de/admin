@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from 'config.js';
+import config from '../../../config.js';
 
 export const COHORT_GET_USERS = 'COHORT_GET_USERS';
 export const COHORT_REMOVE_USER = 'COHORT_REMOVE_USER';

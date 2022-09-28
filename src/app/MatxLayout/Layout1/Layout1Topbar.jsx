@@ -21,7 +21,7 @@ import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import useAuth from 'app/hooks/useAuth';
 import history from 'history.js';
-import config from 'config.js';
+import config from '../../../config.js';
 
 toast.configure();
 const toastOption = {

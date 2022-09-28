@@ -12,7 +12,7 @@ import AddBulkToCohort from './student-form/student-utils/AddBulkToCohort';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
-import config from 'config.js';
+import config from '../../../config.js';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 

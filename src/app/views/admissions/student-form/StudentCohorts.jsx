@@ -22,7 +22,7 @@ import { MatxLoading } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 import axios from '../../../../axios';
-import config from 'config.js';
+import config from '../../../../config.js';
 
 const propTypes = {
   stdId: PropTypes.number.isRequired,

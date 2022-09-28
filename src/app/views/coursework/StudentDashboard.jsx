@@ -12,7 +12,7 @@ import axios from '../../../axios';
 import UserProfileContent from './components/UserProfileContent';
 import UserProfileSidenav from './components/UserProfileSidenav';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
-import config from 'config.js';
+import config from '../../../config.js';
 
 const usestyles = makeStyles(() => ({
   headerBG: {

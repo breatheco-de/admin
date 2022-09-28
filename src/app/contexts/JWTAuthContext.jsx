@@ -9,7 +9,7 @@ import { MatxLoading } from 'matx';
 import { toast } from 'react-toastify';
 import bc from '../services/breathecode.js';
 import { setUserData } from '../redux/actions/UserActions.js';
-import config from 'config.js';
+import config from '../../config.js';
 
 toast.configure();
 const toastOption = {

@@ -7,7 +7,7 @@ import clsx from 'clsx';
 // import useAuth from 'app/hooks/useAuth';
 import PropTypes from 'prop-types';
 import axios from '../../../../axios';
-import config from 'config.js';
+import config from '../../../../config.js';
 
 const shortcutList = [
   {

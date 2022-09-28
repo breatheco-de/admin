@@ -9,7 +9,8 @@ import {
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
-import config from 'config.js';
+import config from '../../../../config.js';
+
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);

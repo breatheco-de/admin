@@ -10,7 +10,7 @@ import SingleDelete from '../../../components/ToolBar/ConfirmationDialog';
 import Delete from '@material-ui/icons/Delete';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import { useHistory } from 'react-router-dom';
-import config from 'config.js';
+import config from '../../../../config.js';
 const localizedFormat = require('dayjs/plugin/localizedFormat')
 dayjs.extend(localizedFormat)
 

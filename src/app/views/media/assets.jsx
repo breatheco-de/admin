@@ -11,7 +11,7 @@ import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import config from 'config.js';
+import config from '../../../config.js';
 
 toast.configure();
 const toastOption = {

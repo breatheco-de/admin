@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import useAuth from '../../../hooks/useAuth';
 import history from '../../../../history';
-import config from 'config.js';
+import config from '../../../../config.js';
 
 const useStyles = makeStyles(() => ({
   cardHolder: {

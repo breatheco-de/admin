@@ -14,7 +14,7 @@ import { Formik } from 'formik';
 import { toast } from 'react-toastify';
 import { AsyncAutocomplete } from './Autocomplete';
 import bc from '../services/breathecode';
-import config from 'config.js';
+import config from '../../config';
 
 toast.configure();
 const toastOption = {

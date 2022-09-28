@@ -10,7 +10,7 @@ import axios from '../../../axios';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import ResponseDialog from './ResponseDialog';
 import { getSession } from '../../redux/actions/SessionActions';
-import config from 'config.js';
+import config from '../../../config.js';
 
 const NewCertificate = () => {
   const [certificateSlug, setCertificateSlug] = React.useState('');
