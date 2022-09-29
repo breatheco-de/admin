@@ -21,10 +21,12 @@ const stageColors = {
 };
 
 const statusColors = {
-  REQUESTED: 'text-white bg-warning',
-  PENDING: 'text-white bg-error',
-  DONE: 'text-white bg-green',
-  IGNORE: 'light-gray',
+  REQUESTED: 'default',
+  PENDING: 'secondary',
+  ERROR: 'secondary',
+  PERSISTED: 'primary',
+  IGNORE: 'default',
+  DUPLICATED: 'default',
 };
 
 const defaultBg = 'bg-gray';
@@ -71,9 +73,9 @@ const Leads = () => {
           query.get('storage_status') !== null ? [query.get('storage_status')] : [],
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
-            <div className="ml-3">
-              <Chip className={statusColors[items[dataIndex]?.storage_status] || defaultBg} size="small" label={items[dataIndex]?.storage_status} />
-            </div>
+            <Tooltip title={items[dataIndex]?.storage_status_text}>
+              <Chip color={statusColors[items[dataIndex]?.storage_status]} className="pointer" size="small" label={items[dataIndex]?.storage_status} />
+            </Tooltip>
           </div>
         ),
       },
