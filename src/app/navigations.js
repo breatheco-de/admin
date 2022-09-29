@@ -179,6 +179,7 @@ export const navigations = [
     {
         name: "Freelance",
         icon: "account_circle",
+        beta: true,
         children: [
             {
                 name: "Projects",
