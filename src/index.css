@@ -53,7 +53,9 @@
 .orange {
   background-color: rgb(255, 153, 0);
 }
-
+.p-inherit{
+  position: inherit !important;
+}
 .bg-light-warning{
   background: rgb(253, 245, 234) !important;
 }

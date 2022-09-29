@@ -22,6 +22,7 @@ import SentimentSatisfiedAlt from '@material-ui/icons/SentimentSatisfiedAlt';
 import SentimentVeryDissatisfied from '@material-ui/icons/SentimentVeryDissatisfied';
 import { MatxLoading } from "matx";
 import bc from 'app/services/breathecode';
+import Alert from "app/components/Alert"
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
 import React, { useState, useEffect } from 'react';
@@ -37,35 +38,51 @@ dayjs.extend(duration)
 const InvoiceDetail = () => {
   const { invoiceID } = useParams();
   const history = useHistory();
-  const [bill, setBill] = useState(null);
+  const [invoice, setInvoice] = useState(null);
+  const [members, setMembers] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const getBill = async () => {
+  const getMembers = async () => {
+    try {
+      setLoading(true);
+      const { data } = await bc.freelance().getInvoiceMembers({ invoice: invoiceID });
+      if (data) setMembers(data.reduce((prev, curr) => ({ ...prev, [curr.freelancer.id]: curr }), {}));
+      setLoading(false);
+    } catch (e) {
+      setError("Error retriving members");
+      setLoading(false);
+    }
+  }
+  useEffect(() => getMembers(), [invoiceID]);
+
+  const getInvoice = async () => {
     try {
       setLoading(true);
       const { data } = await bc.freelance().getSingleInvoice(invoiceID);
-      if (data) setBill(data);
+      if (data) setInvoice(data);
       setLoading(false);
     } catch (e) {
       console.log(e);
+      setError("Error retriving invoice");
       setLoading(false);
     }
   }
 
-  useEffect(() => getBill(), []);
+  useEffect(() => getInvoice(), [invoiceID]);
 
-  const InputAccounted = ({ session, index }) => {
-    const [value, setValue] = useState(Math.trunc(dayjs.duration({seconds: session.accounted_duration}).asMinutes()));
+  const InputAccounted = ({ issue, index }) => {
+    const [value, setValue] = useState(Math.trunc(dayjs.duration({seconds: issue.accounted_duration}).asMinutes()));
     const [focus, setFocus] = useState(false);
 
     const submit = async (accounted) => {
-      await bc.mentorship().updateMentorSession(session.id,
+      await bc.mentorship().updateMentorSession(issue.id,
         {
           accounted_duration: dayjs.duration({minutes: accounted}).asSeconds(),
-          mentor: session.mentor.id
+          mentor: issue.mentor.id
         });
 
-      getBill();
+      getInvoice();
     }
 
     return (
@@ -96,7 +113,7 @@ const InvoiceDetail = () => {
   // if (loading) return <MatxLoading />
 
   let segments = [{ name: 'Freelance', path: '#' }, { name: 'Projects', path: `/freelance/project` }]
-  if(bill) segments.concat([{ name: bill.project.title, path: `/freelance/project/${bill.project.id}` }, { name: `Invoice ${bill.id}`, path: "#" }]);
+  if(invoice) segments.concat([{ name: invoice.project.title, path: `/freelance/project/${invoice.project.id}` }, { name: `Invoice ${invoice.id}`, path: "#" }]);
 
   return (
     <div className="m-sm-30">
@@ -108,6 +125,7 @@ const InvoiceDetail = () => {
         </div>
       </div>
       <Grid md={10} lg={8} className="mx-auto">
+        {error && <Alert className="mb-3" severity="error">{error.msg || error}</Alert>}
         <Card>
           <div className="p-5">
             <div className="flex justify-between mb-4">
@@ -126,59 +144,49 @@ const InvoiceDetail = () => {
               <div className="" id="order-info">
                 <h5 className="mb-2" >Order Info</h5>
                 <p>Order Number</p>
-                <p>{`#${bill?.id}`}</p>
+                <p>{`#${invoice?.id}`}</p>
               </div>
               <div className="" id="order-status">
-                <h5 className="font-normal mb-4 capitalize" ><strong>Order Status: </strong>{bill?.status}</h5>
-                <h5 className="font-normal mb-4 capitalize" ><strong>Order Date: </strong>{dayjs(bill?.created_at).format('MMMM D, YYYY')}</h5>
+                <h5 className="font-normal mb-4 capitalize" ><strong>Order Status: </strong>{invoice?.status}</h5>
+                <h5 className="font-normal mb-4 capitalize" ><strong>Order Date: </strong>{dayjs(invoice?.created_at).format('MMMM D, YYYY')}</h5>
               </div>
             </div>
           </div>
           <Divider />
-          <div className="flex justify-between p-5" id="bill-detail">
-            <div id="bill-to">
+          {/* <div className="flex justify-between p-5" id="invoice-detail">
+            <div id="invoice-to">
               <h5 className="mb-2" >Bill To</h5>
-              <p>{`${bill?.mentor?.user.first_name} ${bill?.mentor?.user.last_name}`}</p>
-              <p className="m-0" >{bill?.mentor?.user.email}</p>
+              <p>{`${invoice?.mentor?.user.first_name} ${invoice?.mentor?.user.last_name}`}</p>
+              <p className="m-0" >{invoice?.mentor?.user.email}</p>
             </div>
-          </div>
+          </div> */}
           <div id="table" className='p-4'>
-            {bill?.status === 'RECALCULATE' && (
-              <p className="text-error">
-                <ErrorOutline style={{ verticalAlign:'middle' }} />
-                This bill needs to be recalculated because some of the sessions were modified, please <a style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={recalculateBill}>click here to recalculate it</a>
-              </p> 
-            )}
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell className="px-0">Item</TableCell>
-                  <TableCell className="px-0 text-center"><p className="m-0 text-center">Notes</p></TableCell>
-                  <TableCell className="px-0">Accounted Duration</TableCell>
+                  <TableCell className="px-0" align="right">Accounted Duration</TableCell>
+                  <TableCell className="px-0" align="right">Total</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {bill?.sessions?.map((session, index) => {
+                {invoice?.issues?.map(({ freelancer, ...issue }, index) => {
+                  let price = invoice.project?.total_client_hourly_price;
+                  if(members && members[freelancer.id] && members[freelancer.id].total_client_hourly_price && members[freelancer.id].total_client_hourly_price > 0)
+                    price = members[freelancer.id].total_client_hourly_price
+
                   return (
                     <TableRow>
-                      <TableCell className="pl-0 capitalize" align="left">
-                        <p className='mb-0'>
-                          {`${dayjs(session?.started_at.slice(0, -1)).format('MMMM D, YYYY, h:mm a')} with ${session.mentee?.first_name} ${session.mentee?.last_name}`}
-                        </p>
-                        <small className="text-muted">{`Meeting lasted: ${session?.duration_string}`}</small>
+                      <TableCell className="pl-0 p-inherit" align="left">
+                        <p className='mb-0'><a href={issue.url} target="_blank" rel="noopener">{issue.title}</a></p>
+                        <small className="text-muted">by {freelancer.user?.first_name} {freelancer.user?.last_name}</small>
                       </TableCell>
-                      <TableCell className="pl-0">
-                        <div style={{textAlign: 'center'}}>
-                          {session?.status_message && <Tooltip title={session.status_message}><MonetizationOn /></Tooltip>}
-                          {session?.summary && <Tooltip title={session.summary}><School /></Tooltip>}
-                          {session?.extra_time && <Tooltip title={session.extra_time}><AccessTime /></Tooltip>}
-                          {session?.mentor_late && <Tooltip title={session.mentor_late.replace('<br />', '')}><DirectionsRun /></Tooltip>}
-                          {session?.rating && session.rating.score && <Tooltip title={`Score: ${session.rating.score}`}>{session.rating.score <= 7 ? <SentimentVeryDissatisfied /> : <SentimentSatisfiedAlt />}</Tooltip>}
-                        </div>
+                      <TableCell className="pl-0" align="right">
+                        <p className="mb-0">{issue.duration_in_hours} hrs</p>
+                        {price && <small className="text-muted">at ${price} /hr</small>}
                       </TableCell>
-                      <TableCell className="pl-0">
-                        {session && <InputAccounted key={session.id} session={session} index={index} />}
-                        <small className={`text-muted ${session.suggested_accounted_duration !== session.accounted_duration && "text-error"}`}>{`Suggested: ${Math.trunc(dayjs.duration({seconds: session.suggested_accounted_duration}).asMinutes())}`}</small>
+                      <TableCell className="pl-0" align="right">
+                        <p className="mb-0">${price * issue.duration_in_hours}</p>
                       </TableCell>
                     </TableRow>
                   )
@@ -188,10 +196,10 @@ const InvoiceDetail = () => {
             </Table>
           </div>
           <div className="flex-column p-4 items-end" id="total-info" >
-            <p className="mb-0">{`Total duration in hours: ${Math.round(bill?.total_duration_in_hours * 100) / 100}`}</p>
-            {bill?.overtime_hours && <small className="text-muted text-error">{`${bill.overtime_hours} Hours of overtime`}</small>}
-            <p>{`Total duration in minutes: ${Math.round(bill?.total_duration_in_minutes * 100) / 100}`}</p>
-            <p>{`Total: $${Math.round(bill?.total_price * 100) / 100}`}</p>
+            <p className="mb-0">{`Total duration in hours: ${Math.round(invoice?.total_duration_in_hours * 100) / 100}`}</p>
+            {invoice?.overtime_hours && <small className="text-muted text-error">{`${invoice.overtime_hours} Hours of overtime`}</small>}
+            <p>{`Total duration in minutes: ${Math.round(invoice?.total_duration_in_minutes * 100) / 100}`}</p>
+            <p>{`Total: $${Math.round(invoice?.total_price * 100) / 100}`}</p>
           </div>
         </Card>
       </Grid>

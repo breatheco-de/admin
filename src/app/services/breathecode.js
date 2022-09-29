@@ -858,15 +858,26 @@ class BreatheCodeClient {
                 ),
             getSingleInvoice: (id) => axios.bcGet(
                     "Invoice",
-                    `${this.host}/freelance/academy/project/invoice/${id}`
+                    `${this.host}/freelance/invoice/${id}`
                 ),
-            getProjectMembers: async (query) => {
+            getProjectMembers: async (query, options) => {
                     const qs = serializeQuerystring(query);
                     return await axios.bcGet(
                         "Project",
                         `${this.host}/freelance/academy/project/member${
                             query ? `?${qs}` : ""
-                        }`
+                        }`,
+                        options
+                    );
+                },
+            getInvoiceMembers: async (query, options) => {
+                    const qs = serializeQuerystring(query);
+                    return await axios.bcGet(
+                        "Project",
+                        `${this.host}/freelance/academy/project/invoice/${query.invoice}/member${
+                            query ? `?${qs}` : ""
+                        }`,
+                        options
                     );
                 },
         }
