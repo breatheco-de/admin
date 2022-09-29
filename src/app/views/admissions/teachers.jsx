@@ -118,7 +118,7 @@ const Teachers = () => {
       },
     },
     {
-      name: 'cohorts',
+      name: 'latest_cohorts',
       label: 'Latest Cohorts',
       options: {
         filter: true,
@@ -126,13 +126,13 @@ const Teachers = () => {
           const item = items[dataIndex];
           return (
             <div>
-                {item.cohorts.slice(0,3).map(c => {
+                {item.cohorts.slice(0,2).map(c => {
                   const msg = dayjs().isBefore(c.ending_date) ? 
                     `Ends on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`
                     :
                     `Ended ${dayjs(c.ending_date).fromNow()}, on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`;
                   return <Tooltip title={msg}>
-                    <div className="chip mr-1">
+                    <div className="chip mr-1 mb-1">
                       <p>{c.name}</p><small>{c.stage}</small>
                     </div>
                   </Tooltip>
@@ -172,7 +172,7 @@ const Teachers = () => {
           ) : (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admissions/teachers/${item.user.id}`}>
+              <Link to={`/admin/staff/${item.user.id}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -214,7 +214,7 @@ const Teachers = () => {
           search={async (querys) => {
             const { data } = await bc.admissions().getAllAcademyTeachers({ ...querys, roles: 'teacher,assistant' });
             setItems(data.results || data);
-            return data.results || data;
+            return data;
           }}
           deleting={async (querys) => {
             const { status } = await bc
