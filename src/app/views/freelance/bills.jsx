@@ -126,7 +126,7 @@ const Bills = () => {
           items={billList}
           view="?"
           singlePage=""
-          historyReplace="/freelance/payments"
+          historyReplace="/freelance/bills"
           search={async (querys) => {
             const { data } = await bc.freelance().getAllBills(querys);
             setBillList(data.results);

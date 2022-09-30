@@ -71,48 +71,9 @@ const InvoiceDetail = () => {
 
   useEffect(() => getInvoice(), [invoiceID]);
 
-  const InputAccounted = ({ issue, index }) => {
-    const [value, setValue] = useState(Math.trunc(dayjs.duration({seconds: issue.accounted_duration}).asMinutes()));
-    const [focus, setFocus] = useState(false);
-
-    const submit = async (accounted) => {
-      await bc.mentorship().updateMentorSession(issue.id,
-        {
-          accounted_duration: dayjs.duration({minutes: accounted}).asSeconds(),
-          mentor: issue.mentor.id
-        });
-
-      getInvoice();
-    }
-
-    return (
-      <div className="flex">
-        <div style={{ width: '45%' }}>
-          <TextField
-            name={`accounted-${index}`}
-            size="small"
-            variant="outlined"
-            // value={Math.round(value * 100) / 100}
-            value={value}
-            onFocus={() => setFocus(true)}
-            onBlur={() => setTimeout(function () {
-              setFocus(false)
-            }, 100)}
-            onChange={(e) => {
-              setValue(e.target.value)
-            }}
-
-          />
-        </div>
-        {focus && <Button style={{ marginLeft: '5px' }} size="small" variant="contained" color="primary" onClick={() => submit(value)}>Save</Button>}
-      </div>
-
-    )
-  }
-
   // if (loading) return <MatxLoading />
 
-  let segments = [{ name: 'Freelance', path: '#' }, { name: 'Projects', path: `/freelance/project` }]
+  let segments = [{ name: 'Projects', path: `/freelance/project` }]
   if(invoice) segments.concat([{ name: invoice.project.title, path: `/freelance/project/${invoice.project.id}` }, { name: `Invoice ${invoice.id}`, path: "#" }]);
 
   return (

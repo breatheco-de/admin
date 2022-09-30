@@ -6,11 +6,11 @@ const routes = [
         exact: true,
         component: React.lazy(() => import("./project-details/NewProject")),
     },
-    // {
-    //     path: "/freelance/:frelancerId",
-    //     exact: true,
-    //     component: React.lazy(() => import("./freelance-form/projects")),
-    // },
+    {
+        path: "/freelance/bills",
+        exact: true,
+        component: React.lazy(() => import("./bills")),
+    },
     // {
     //     path: "/freelance",
     //     exact: true,
@@ -26,11 +26,6 @@ const routes = [
         exact: true,
         component: React.lazy(() => import("./project-details")),
     },
-    // {
-    //     path: "/freelance/project/new",
-    //     exact: true,
-    //     component: React.lazy(() => import("./project/NewProject")),
-    // },
     {
         path: "/invoice/:invoiceID",
         exact: true,
