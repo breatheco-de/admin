@@ -8,13 +8,12 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from '../../../hooks/useQuery';
 import { Breadcrumb } from '../../../../matx';
-import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
-import { ServiceForm } from './service-utils/ServiceForm'
+import ProjectDetails from './ProjectDetails'
 
 const filter = createFilterOptions();
 
-const NewService = () => {
+const NewProject = () => {
 
   const query = useQuery();
   const baseData = query.has('data') ? JSON.parse(atob(query.get('data'))) : null;
@@ -36,22 +35,32 @@ const NewService = () => {
     },
   });
 
+  const createProject = (values) => {
+    bc.freelance()
+      .createAcademyProject({
+        ...values, 
+        // duration: formattedDuration,
+      })
+      .then(({ data }) => data)
+      .catch((error) => console.error(error));
+  };
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
         <Breadcrumb
-          routeSegments={[{ name: 'Mentorship', path: '/mentors/services' }, { name: 'New Service' }]}
+          routeSegments={[{ name: 'Freelance', path: '#' }, { name: 'Projects', path: '/freelance/project' }, { name: 'New Project' }]}
         />
       </div>
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Create a new service.</h4>
+          <h4 className="m-0">Create a new project</h4>
         </div>
         <Divider className="mb-2 flex" />
-        <ServiceForm initialValues={serviceFormInfo.data} />
+        <ProjectDetails onSubmit={createProject} />
       </Card>
     </div>
   );
 };
 
-export default NewService;
+export default NewProject;

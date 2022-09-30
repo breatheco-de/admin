@@ -852,6 +852,19 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllBills: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/bill${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            generatePendingInvoice: (id) => axios.bcPost(
+                    "Project Invoice",
+                    `${this.host}/freelance/academy/project/${id}/invoice`
+                ),
             getSingleProject: (id) => axios.bcGet(
                     "Project",
                     `${this.host}/freelance/academy/project/${id}`
@@ -860,6 +873,16 @@ class BreatheCodeClient {
                     "Invoice",
                     `${this.host}/freelance/invoice/${id}`
                 ),
+            getProjectInvoices: async (query, options) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project/invoice${
+                        query ? `?${qs}` : ""
+                    }`,
+                    options
+                );
+            },
             getProjectMembers: async (query, options) => {
                     const qs = serializeQuerystring(query);
                     return await axios.bcGet(

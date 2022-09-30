@@ -26,36 +26,22 @@ const propTypes = {
 dayjs.extend(duration);
 
 
-const ProjectDetails = ({ project, projectID }) => {
+const ProjectDetails = ({ project, onSubmit }) => {
+  
   const [singleProject, setSingleProject] = useState(project);
   const initialValues = {
     id: singleProject?.id || "",
-    name: singleProject?.name || "",
+    title: singleProject?.title || "",
     created_at: singleProject?.created_at || "",
     repository: singleProject?.repository || "",
     total_client_hourly_price: singleProject?.total_client_hourly_price || 0,
-  };
-
-  useEffect(() => {
-    setSingleProject(project)
-  }, [project])
-
-
-  const updateAcademyProject = (values) => {
-    bc.mentorship()
-      .updateAcademyService(projectID, {
-        ...values, 
-        // duration: formattedDuration,
-      })
-      .then(({ data }) => data)
-      .catch((error) => console.error(error));
   };
 
   return (
     <Card className="pt-6" elevation={3}>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => updateAcademyProject(values)}
+        onSubmit={(values) => onSubmit(values)}
         enableReinitialize
       >
         {({
@@ -64,13 +50,10 @@ const ProjectDetails = ({ project, projectID }) => {
           <form className="p-4" onSubmit={handleSubmit}>
 
             <Grid container spacing={3} alignItems="center">
-              <Grid item md={2} sm={4} xs={12}>
-                Title
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   className="m-0"
-                  label="Name"
+                  label="Project Title"
                   name="name"
                   data-cy="name"
                   size="small"
@@ -79,14 +62,10 @@ const ProjectDetails = ({ project, projectID }) => {
                   onChange={handleChange}
                 />
               </Grid>
-
-              <Grid item md={2} sm={4} xs={12}>
-                Hourly Price for the Client
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   className='m-0'
-                  label="Minutes"
+                  label="Default Hourly Price"
                   name="total_client_hourly_price"
                   size="small"
                   type="number"
@@ -97,17 +76,13 @@ const ProjectDetails = ({ project, projectID }) => {
                   helperText="This is a base default value, you can specify per project member"
                 />
               </Grid>
-
-              <Grid item md={2} sm={4} xs={12}>
-                Repository
-              </Grid>
-              <Grid item md={10} sm={8} xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   className='m-0'
                   label="Repository"
                   name="repository"
                   size="small"
-                  type="number"
+                  type="url"
                   required
                   helperText={`Github URL whre the issues will be stored`}
                   variant="outlined"

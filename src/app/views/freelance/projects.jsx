@@ -94,9 +94,9 @@ const Projects = () => {
             />
           </div>
           <div className="">
-            <Link to="/freelance/service/new">
+            <Link to="/freelance/project/new">
               <Button variant="contained" color="primary">
-                Create New Service
+                Create New Project
               </Button>
             </Link>
           </div>

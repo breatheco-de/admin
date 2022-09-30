@@ -1,11 +1,11 @@
 import React from "react";
 
 const routes = [
-    // {
-    //     path: "/freelance/new",
-    //     exact: true,
-    //     component: React.lazy(() => import("./freelance-form/NewFreelance")),
-    // },
+    {
+        path: "/freelance/project/new",
+        exact: true,
+        component: React.lazy(() => import("./project-details/NewProject")),
+    },
     // {
     //     path: "/freelance/:frelancerId",
     //     exact: true,
