@@ -32,10 +32,25 @@ const name = (user) => {
   return 'No name';
 };
 
+const round = (num) => Math.round(num);
+
 const Bills = () => {
   const [billList, setBillList] = useState([]);
 
   const columns = [
+    {
+      name: 'id', // field name in the row object
+      label: 'ID', // column title that will be shown in table
+      options: {
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "50px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+      }
+    },
     {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
@@ -60,18 +75,45 @@ const Bills = () => {
       label: 'Status',
       options: {
         filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "120px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = billList[dataIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px ${statusColors[item.status]}`}>
-                  {item.status.toUpperCase()}
-                </small>
-                {item.status === 'INVITED' && (
-                  <small className="text-muted d-block">Needs to accept invite</small>
-                )}
-              </div>
+            <div className="">
+                <p>{item.status.toUpperCase()}</p>
+                {item.status == "PAID" && item.paid_at &&
+                  <small>
+                    {dayjs(item.paid_at).fromNow()}
+                  </small>}
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'price',
+      label: 'Price',
+      options: {
+        filter: true,
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "120px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = billList[dataIndex];
+          return (
+            <div className="">
+                <p className="m-0">${round(item.total_price)}</p>
+                <small>{round(item.total_duration_in_hours)}hrs</small>
             </div>
           );
         },
@@ -95,10 +137,10 @@ const Bills = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/Bills/${item.id}`}>
-                <Tooltip title="Edit">
+              <Link to={`/payment/${item.id}`}>
+                <Tooltip title="View">
                   <IconButton>
-                    <Icon>edit</Icon>
+                    <Icon>arrow_right_alt</Icon>
                   </IconButton>
                 </Tooltip>
               </Link>
@@ -114,13 +156,13 @@ const Bills = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Freelance' }, { name: 'Payments', path: '/freelance/payments' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Freelance', path: "#" }, { name: 'Payments', path: '/freelance/payments' }]} />
           </div>
         </div>
       </div>
       <div>
         <SmartMUIDataTable
-          title="All Payments"
+          title="Freelancer Payments"
           columns={columns}
           selectableRows={true}
           items={billList}
@@ -129,7 +171,7 @@ const Bills = () => {
           historyReplace="/freelance/bills"
           search={async (querys) => {
             const { data } = await bc.freelance().getAllBills(querys);
-            setBillList(data.results);
+            setBillList(data.results || data);
             return data;
           }}
           deleting={async (querys) => {

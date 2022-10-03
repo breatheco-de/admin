@@ -32,6 +32,11 @@ const pagesRoutes = [
     exact: true,
     component: React.lazy(() => import('../growth/short-form/NewShort')),
   },
+  {
+    path: '/growth/settings',
+    exact: true,
+    component: React.lazy(() => import('../leads/settings')),
+  },
   // {
   //   path: '/growth/urls/:slug',
   //   exact: true,

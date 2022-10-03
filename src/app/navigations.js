@@ -39,6 +39,11 @@ export const navigations = [
                 path: "/growth/urls",
                 iconText: "OL",
             },
+            {
+                name: "Settings",
+                path: "/growth/settings",
+                iconText: "SE",
+            },
         ],
     },
     {
@@ -178,13 +183,19 @@ export const navigations = [
     },
     {
         name: "Freelance",
-        icon: "account_circle",
+        icon: "monetization_on",
         beta: true,
         children: [
             {
                 name: "Projects",
                 path: "/freelance/project",
                 iconText: "PRJ",
+                capabilities: ["read_freelance_projects"],
+            },
+            {
+                name: "Payments",
+                path: "/freelance/payments",
+                iconText: "BIL",
                 capabilities: ["read_freelance_projects"],
             },
         ]

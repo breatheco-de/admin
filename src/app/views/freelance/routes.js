@@ -7,9 +7,9 @@ const routes = [
         component: React.lazy(() => import("./project-details/NewProject")),
     },
     {
-        path: "/freelance/bills",
+        path: "/freelance/payments",
         exact: true,
-        component: React.lazy(() => import("./bills")),
+        component: React.lazy(() => import("./payments")),
     },
     // {
     //     path: "/freelance",
@@ -31,6 +31,12 @@ const routes = [
         exact: true,
         public: true,
         component: React.lazy(() => import("./invoice-detail")),
+    },
+    {
+        path: "/payment/:paymentID",
+        exact: true,
+        public: true,
+        component: React.lazy(() => import("./payment-detail")),
     },
 ];
 

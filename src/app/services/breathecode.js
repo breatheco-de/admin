@@ -873,6 +873,10 @@ class BreatheCodeClient {
                     "Invoice",
                     `${this.host}/freelance/invoice/${id}`
                 ),
+            getSingleBill: (id) => axios.bcGet(
+                    "Payment",
+                    `${this.host}/freelance/bills/${id}`
+                ),
             getProjectInvoices: async (query, options) => {
                 const qs = serializeQuerystring(query);
                 return await axios.bcGet(
