@@ -75,22 +75,20 @@ const Bills = () => {
       label: 'Status',
       options: {
         filter: true,
-        customHeadRender: ({ index, ...column }) => {
-          return (
-            <TableCell key={index} style={{ width: "120px" }}>
-              {column.label}
-            </TableCell>
-          )
-        },
         customBodyRenderLite: (dataIndex) => {
           const item = billList[dataIndex];
           return (
             <div className="">
-                <p>{item.status.toUpperCase()}</p>
-                {item.status == "PAID" && item.paid_at &&
+                <p className="m-0">{item.status.toUpperCase()}</p>
+                {(item.status == "PAID" && item.paid_at) ?
                   <small>
                     {dayjs(item.paid_at).fromNow()}
-                  </small>}
+                  </small>
+                  :
+                  <small>
+                    {dayjs(item.created_at).fromNow()}
+                  </small>
+                }
             </div>
           );
         },
