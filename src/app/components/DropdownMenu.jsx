@@ -34,6 +34,8 @@ const DropdownMenu = ({
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {options.map((option) => (
           <MenuItem
+            className="wrap"
+            style={options.style}
             key={option.value}
             selected={option.value === 'Pyxis'}
             onClick={() => {

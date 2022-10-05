@@ -275,7 +275,7 @@ const syncColor = {
   'OK': 'success'
 }
 const GithubCard = ({ asset, onAction, onChange }) => {
-  const [ githubUrl, setGithubUrl ] = useState(asset.url);
+  const [ githubUrl, setGithubUrl ] = useState(asset.readme_url);
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
@@ -284,8 +284,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         }
         <h4 className="m-0 font-medium d-inline">Github</h4>
       </div>
-      {asset.url!=githubUrl ?
-        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ url: githubUrl })}>
+      {asset.readme_url!=githubUrl ?
+        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ readme_url: githubUrl })}>
           Save URL
         </Button>
         :
@@ -296,8 +296,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if(value == 'only_content') onAction('sync');
-            else if(value == 'override') onAction('sync', { override_meta: true });
+            if(value == 'only_content') onAction('pull');
+            else if(value == 'override') onAction('pull', { override_meta: true });
           }}
         >
           <Button variant="contained" color="primary" size="small">
@@ -318,7 +318,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
     </Grid>
     <Grid item className="flex mt-2" xs={12}>
       <Grid item xs={4}>
-        Source URL:
+        Markdown:
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>

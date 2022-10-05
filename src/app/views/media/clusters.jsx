@@ -80,7 +80,7 @@ const UserList3 = () => {
                                     <ClusterCard cluster={c}
                                         onSubmit={async (_cluster) => {
                                             const resp = await bc.registry().updateCluster(c.slug, _cluster)
-                                            if (resp.status === 200) return true;
+                                            if (resp.status === 200) return resp.data;
                                             else return false;
                                         }}
                                     />

@@ -53,9 +53,9 @@ function printAxiosResponse(object) {
         throw new Error("No communication with the server");
 
     const log = [
-        object.config.method.toUpperCase(),
+        object.config?.method.toUpperCase(),
         object.status,
-        object.config.url,
+        object.config?.url,
     ];
 
     if (object.data) {

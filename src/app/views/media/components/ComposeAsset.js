@@ -6,10 +6,12 @@ import { IconButton, Icon, Button, Grid,
   TextField,
   Card,
 } from "@material-ui/core";
+import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
+import DowndownMenu from '../../../components/DropdownMenu';
 import AssetMarkdown from "./AssetMarkdown";
 import { useParams } from 'react-router-dom';
 import AssetMeta from "./AssetMeta";
@@ -93,35 +95,38 @@ const ComposeAsset = () => {
     }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
 
-    if(isCreating) {
-      setAsset(defaultAsset);
-      setGithubUrl(defaultAsset.readme_url);
-      setContent("Write your asset here, use `markdown` syntax");
-    }
-    else{
-      try{
-        const resp = await bc.registry().getAsset(asset_slug);
-        if (resp.status >= 200 && resp.status < 300) {
-          setAsset({ ...resp.data, lang: resp.data.lang || "us" });
-          setGithubUrl(resp.data.readme_url);
+    const load = async () => {
+      if(isCreating) {
+        setAsset(defaultAsset);
+        setGithubUrl(defaultAsset.readme_url);
+        setContent("Write your asset here, use `markdown` syntax");
+      }
+      else{
+        try{
+          const resp = await bc.registry().getAsset(asset_slug);
+          if (resp.status >= 200 && resp.status < 300) {
+            setAsset({ ...resp.data, lang: resp.data.lang || "us" });
+            setGithubUrl(resp.data.readme_url);
+          }
+          else throw Error('Asset could not be retrieved');
+          
+          await getAssetContent();
         }
-        else throw Error('Asset could not be retrieved');
-        
-        await getAssetContent();
-      }
-      catch(error){
-        console.log("Error log", error)
+        catch(error){
+          console.log("Error log", error)
+        }
       }
     }
+    load();
 
   }, [asset_slug]);
 
   const handleAction = async (action, payload=null) => {
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug:action });
     if(resp.status === 200){
-      if((action=="sync" && resp.data.sync_status != 'OK')){ 
+      if((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')){ 
         toast.error(`Sync returned with problems: ${resp.data.status_text}`)
       }
       else if (action=="test" && resp.data.test_status != 'OK'){
@@ -142,9 +147,9 @@ const ComposeAsset = () => {
     if(!slugRegex.test(_asset.slug)) _errors['slug'] = `Invalid slug, it can only contain letters, numbers - and _`;
     if(!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if(!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
-    if(!isCreating && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Fix github synching";
+    if(!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if(!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
-    console.log("validate", _asset)
+
     return _errors
   }
   
@@ -155,7 +160,7 @@ const ComposeAsset = () => {
       ...asset, 
       readme_url,
       owner: asset.owner.id,
-      readme: btoa(content), 
+      readme: Base64.encode(content), 
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
@@ -233,7 +238,7 @@ const ComposeAsset = () => {
         />
         {errors["owner"] && <small className="text-error">{errors["owner"]}</small>}
         <Button className="mt-2" variant="contained" color="primary"
-          onClick={() => saveAsset()}
+          onClick={() => saveAsset().then(_errors => (Object.keys(_errors).length > 0) && setErrorDialog(true))}
         >
           Create asset
         </Button>
@@ -301,11 +306,35 @@ const ComposeAsset = () => {
 
           <Grid item xs={6} sm={4} align="right">
             <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
-            <Button variant="contained" color={Object.keys(errors).length == 0 ? "primary": "error"}
-              onClick={() => saveAsset().then(_errors => (Object.keys(errors).length > 0) && setErrorDialog(true))}
+            <DowndownMenu
+              options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ? 
+              [
+                { label: 'Only save to 4Geeks.com', value: 'only_save'},
+                { label: 'Also commit markdown to github', value: 'push'}
+              ]
+              :
+              [
+                { 
+                  label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here', 
+                  style: { width: "200px" }, 
+                  value: null 
+                },
+              ]
+              }
+              icon="more_horiz"
+              onSelect={async ({ value }) => {
+                if(!value) return null;
+                const _errors = await saveAsset();
+                if(Object.keys(_errors).length > 0) setErrorDialog(true);
+                else{
+                  if(value == 'push') handleAction('push');
+                }
+              }}
             >
-              {isCreating ? `Create asset` : `Update content`}
-            </Button>
+              <Button variant="contained" color="primary">
+                {isCreating ? `Create asset` : `Update asset`}
+              </Button>
+            </DowndownMenu>
           </Grid>
         </div>
         
@@ -372,7 +401,7 @@ const ComposeAsset = () => {
         noLabel="Close"
         maxWidth="md"
         onConfirmDialogClose={() => setErrorDialog(false)}
-        title="There are errors"
+        title="We found some errors"
       >
       <List size="small">
         {Object.keys(errors).map((e,i) => 
