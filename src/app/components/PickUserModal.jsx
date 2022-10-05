@@ -17,14 +17,14 @@ const defaultProps = {
   };
 
 export const PickUserModal = ({
-    defaultUser,
+    defaultUser=null,
     query,
     hint,
     onClose,
     open
 }) => {
 
-    const [formData, setFormData] = useState(null)
+    const [formData, setFormData] = useState(defaultUser)
     const [ error, setError ] = useState(null)
 
     return (
@@ -46,7 +46,7 @@ export const PickUserModal = ({
                         onChange={(x) => setFormData(x)}
                         label="Search user"
                         value={formData}
-                        getOptionLabel={(option) => `${option.first_name} ${option.last_name} ${option.email}`}
+                        getOptionLabel={(option) => `${option.first_name} ${option.last_name} - ${option.email}`}
                         asyncSearch={async (searchTerm) => {
                             const resp = await bc.auth().getAllUsers({ ...query, like: searchTerm })
                             if(resp.ok) return resp.data

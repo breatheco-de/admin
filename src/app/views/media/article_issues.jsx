@@ -3,6 +3,7 @@ import {
   Icon,
   IconButton,
   Tooltip,
+  Avatar,
   Button,
   Grid,
 } from "@material-ui/core";
@@ -22,7 +23,13 @@ dayjs.extend(utc);
 
 const statusColors = {
   resolved: 'text-white bg-green',
+  delivered: 'text-white bg-warning',
   pending: 'text-white bg-error',
+};
+
+const name = (user) => {
+  if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
+  return 'No name';
 };
 
 const Board = () => {
@@ -40,21 +47,37 @@ const Board = () => {
         customBodyRenderLite: (dataIndex) => {
           const comment = issueList[dataIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
+            <div>
                 <p className="my-0 text-15">{comment.text}</p>
-                <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={comment?.asset?.lang?.toUpperCase()} svg 
-                  style={{
-                    fontSize: '10px',
-                  }}
-                />
-                <small className="text-muted mr-2">{comment?.asset?.asset_type?.toLowerCase()}</small>
                 {comment.asset.title ? 
                   <small className="text-muted">{comment.asset.title}</small>
                   :
                   <small className="text-muted">{comment?.asset.slug}</small>
                 }
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: 'owner', // field name in the row object
+      label: 'Owner', // column title that will be shown in table
+      options: {
+        filter: false,
+        customBodyRenderLite: (dataIndex) => {
+          const { owner, ...rest } = issueList[dataIndex];
+          if (!owner) return <div>
+            <small className="bg-warning text-white p-1 border-radius-4">Pending assignment</small>
+          </div>;
+
+          return (
+            <div className="flex items-center">
+              <Avatar className="w-48 h-48" src={owner?.profile?.avatar_url} />
+              <div className="ml-3">
+                <h5 className="my-0 text-15">
+                  {owner !== null ? name(owner) : `${rest.first_name} ${rest.last_name}`}
+                </h5>
+                <small className="text-muted">{owner?.email || rest.email}</small>
               </div>
             </div>
           );
@@ -69,12 +92,10 @@ const Board = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = issueList[dataIndex];
           return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px ${statusColors[item.resolved ? "resolved" : "pending"]}`}>
-                  {item.resolved ? "resolved" : "pending"}
+            <div>
+                <small className={`border-radius-4 p-1 ${statusColors[item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"]}`}>
+                  {item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"}
                 </small>
-              </div>
             </div>
           );
         },
@@ -109,7 +130,7 @@ const Board = () => {
     <div className="scrum-board m-sm-30">
       <div className="flex flex-wrap justify-between mb-6">
         <Grid item xs={12} sm={8}>
-          <h3 className="my-0 font-medium text-28">Article Issues Pipeline</h3>
+          <h3 className="my-0 font-medium text-28">Asset Issues Pipeline</h3>
         </Grid>
 
         <Grid item xs={6} sm={4} align="right">
@@ -129,7 +150,7 @@ const Board = () => {
       </div>
       <div className="relative">
         <SmartMUIDataTable
-          title="All Assets"
+          title="Asset Issues"
           columns={columns}
           selectableRows={true}
           items={issueList}

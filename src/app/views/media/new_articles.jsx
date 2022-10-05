@@ -27,6 +27,7 @@ import {
 } from "../../redux/actions/ScrumBoardActions";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import { PickUserModal } from "app/components/PickUserModal"
 import { newMember, newBoard, newColumn, newCard } from "./components/initBoard"
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
@@ -49,6 +50,7 @@ const Board = () => {
   const [board, setBoard] = useState({ list: [] });
   const [assets, setAssets] = useState([]);
   const [memberList, setMemberList] = useState();
+  const [assignAsset, setAssignAsset] = useState(null);
   const ago30Days = dayjs().subtract(30, 'day').tz(session.academy.timezone || 'America/New_York');
 
   const classes = useStyles();
@@ -57,7 +59,10 @@ const Board = () => {
     const members = await bc.auth().getAcademyMembers({ role: 'content_writter' });
     setMemberList(members.data.map(m => newMember(m)));
 
-    const _assets = await bc.registry().getAllAssets({ published_before: ago30Days.format('YYYY-MM-DD') });
+    const _assets = await bc.registry().getAllAssets({ 
+      published_before: ago30Days.format('YYYY-MM-DD'), 
+      visibility: "PRIVATE,PUBLIC,UNLISTED"  
+    });
     setAssets(_assets)
     setBoard(newBoard({
       title: 'New Articles',
@@ -95,20 +100,39 @@ const Board = () => {
     if (action === 'assign') {
       // TODO: if the session role is a content_write if will assign itself 
       // otherwise it will show modal to search and pick a writter.
+      setAssignAsset(card);
     }
     else {
-      const resp = await bc.registry().assetAction(card.slug, action);
+      const resp = await bc.registry().assetAction(card.slug, { action_slug: action });
       if (resp.status == 200) updateAsset(resp.data);
     }
   }
 
+  const handleAddAssignAsset = async (author) => {
+    if(!author){
+      setAssignAsset(null);
+      return;
+    }
+
+    const resp = await bc.registry().updateAsset({ author: author.id, slug: assignAsset.slug });
+    if (resp.ok){
+      updateAsset(resp.data);
+      setAssignAsset(null);
+    }
+  }
+
   const handleCardUpdate = async (_c) => {
-    const resp = await bc.registry().updateAsset({ url: _c.url, slug: _c.slug })
+    const resp = await bc.registry().updateAsset({ readme_url: _c.readme_url, slug: _c.slug })
     if (resp.status == 200) updateAsset(resp.data);
   }
 
   return (
     <div className="scrum-board m-sm-30">
+      {assignAsset && <PickUserModal 
+        defaultUser={assignAsset.owner}
+        onClose={handleAddAssignAsset} 
+        hint="Assign someone to resolve this comment"
+      />}
       <div className="flex flex-wrap justify-between mb-6">
         <Grid item xs={12} sm={8}>
           <h3 className="my-0 font-medium text-28">New Articles Pipeline</h3>
