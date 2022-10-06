@@ -19,27 +19,15 @@ export const newCard = (asset) => {
         type: asset.asset_type,
         seo_keywords: asset.seo_keywords || [],
         url: asset.url,
+        readme_url: asset.readme_url,
         status: asset.status,
         test_status: asset.test_status || 'PENDING',
         status_text: asset.status_text,
         sync_status: asset.sync_status || 'PENDING',
         members: asset.author ? [newMember(asset.author)] : [],
         description: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
-        attachments: [
-          {
-            name: "sky-life.jpg",
-            size: "1.2 MB",
-            url: "/assets/images/sq-11.jpg"
-          }
-        ],
-        comments: [
-          {
-            id: shortId.generate(),
-            uid: "7863a6802ez0e277a0f98534",
-            text: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
-            time: new Date()
-          }
-        ]
+        attachments: [],
+        comments: []
       }
 }
 

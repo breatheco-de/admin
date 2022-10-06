@@ -4,6 +4,8 @@ import {
   Badge,
   Card,
   Button,
+  Avatar,
+  Tooltip,
   IconButton,
   Drawer,
   TextField,
@@ -33,7 +35,6 @@ const useStyles = makeStyles(({ palette }) => ({
       },
       '& .assign-button': {
         cursor: 'pointer',
-        display: 'unset',
         zIndex: 2,
       },
       '& .resolve-button': {
@@ -55,9 +56,8 @@ const useStyles = makeStyles(({ palette }) => ({
       bottom: 8,
     },
     '& .assign-button': {
-      display: 'none',
       position: 'absolute',
-      right: 8,
+      right: 25,
       top: 8,
     },
     '& .card__topbar__button': {
@@ -90,7 +90,11 @@ const CommentBar = ({ container, iconName, title, asset }) => {
   };
 
   const handleAddAssignComment = async (user) => {
-    const resp = await bc.registry().updateComment(assignComment.id, { owner: user.id })
+    if(user === false){
+      setAssignComment(null)
+      return;
+    }
+    const resp = await bc.registry().updateComment(assignComment.id, { owner: user ? user.id : null })
     if (resp.ok){
       setAssignComment(null)
       setComments(comments.map(com => com.id === resp.data.id ? resp.data : com));
@@ -129,7 +133,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
   return (
     <div style={{ display: "inline" }}>
       {assignComment && <PickUserModal 
-        defaultUser={asset.owner}
+        defaultUser={assignComment.owner}
         onClose={handleAddAssignComment} 
         hint="Assign someone to resolve this comment"
       />}
@@ -182,15 +186,27 @@ const CommentBar = ({ container, iconName, title, asset }) => {
               key={comment.id}
               className={clsx('relative', classes.notificationCard)}
             >
-              <IconButton
-                size="small"
-                className="assign-button bg-light-gray mr-6"
-                onClick={() => setAssignComment(comment)}
-              >
-                <Icon className="text-muted" fontSize="small">
-                  person_add
-                </Icon>
-              </IconButton>
+              {comment.owner ? 
+                <Tooltip title={`${comment.owner?.first_name} ${comment.owner?.last_name}`}>
+                  <Avatar 
+                    className="assign-button" 
+                    src={comment.owner?.profile?.avatar_url} 
+                    style={{ width: 24, height: 24 }}
+                    onClick={() => setAssignComment(comment)}
+                  />
+                </Tooltip>
+                :
+                <IconButton
+                  size="small"
+                  className="assign-button bg-light-gray mr-6"
+                  onClick={() => setAssignComment(comment)}
+                  style={{right: 8}}
+                >
+                  <Icon className="text-muted" fontSize="small">
+                    person_add
+                  </Icon>
+                </IconButton>
+              }
               <IconButton
                 size="small"
                 className="delete-button bg-light-gray mr-6"
