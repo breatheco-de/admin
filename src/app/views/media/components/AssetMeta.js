@@ -265,7 +265,7 @@ const TechCard = ({ asset, onChange }) => {
           <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
         </>
       }
-    {addTechnology && <PickTechnologyModal onClose={handleAddTechnology} lang={asset.lang} />}
+    {addTechnology && <PickTechnologyModal onClose={handleAddTechnology} lang={asset.lang} query={{ include_children: false }} />}
   </Card>;
 }
 
