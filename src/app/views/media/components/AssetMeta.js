@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Table, TableCell, TableRow, Card, MenuItem, DialogContent, 
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
   TableBody } from "@material-ui/core";
@@ -276,6 +276,8 @@ const syncColor = {
 }
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [ githubUrl, setGithubUrl ] = useState(asset.readme_url);
+
+  useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
