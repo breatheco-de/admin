@@ -122,7 +122,7 @@ const LangCard = ({ asset, onAction }) => {
       </div>
       :
       <div className="flex justify-between items-center">
-        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Translations: </h4>
+        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Other langs: </h4>
         {assetTranslations.filter(t => t != asset.lang).map(t => 
           <Link to={`./${asset.translations[t]}`} key={t}>
             <ReactCountryFlag 
