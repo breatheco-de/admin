@@ -85,7 +85,11 @@ const LangCard = ({ asset, onAction }) => {
             </MenuItem>
           ))}
         </TextField>
-      {addTranslation?.lang && <>
+      {!addTranslation?.lang ?
+        <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+          Cancel
+        </Button>
+        : <>
           <AsyncAutocomplete
             width="100%"
             className="my-2"
@@ -265,7 +269,12 @@ const TechCard = ({ asset, onChange }) => {
           <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
         </>
       }
-    {addTechnology && <PickTechnologyModal onClose={handleAddTechnology} lang={asset.lang} query={{ include_children: false }} />}
+    {addTechnology && <PickTechnologyModal 
+      onClose={handleAddTechnology} 
+      lang={asset.lang} 
+      query={{ include_children: false }} 
+      hint="Only parent technologies will show here"
+    />}
   </Card>;
 }
 
