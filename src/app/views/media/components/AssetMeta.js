@@ -379,7 +379,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-      <GithubCard asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
