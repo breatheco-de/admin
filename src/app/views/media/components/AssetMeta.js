@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Table, TableCell, TableRow, Card, MenuItem, DialogContent, 
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
   TableBody } from "@material-ui/core";
@@ -85,7 +85,11 @@ const LangCard = ({ asset, onAction }) => {
             </MenuItem>
           ))}
         </TextField>
-      {addTranslation?.lang && <>
+      {!addTranslation?.lang ?
+        <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+          Cancel
+        </Button>
+        : <>
           <AsyncAutocomplete
             width="100%"
             className="my-2"
@@ -122,7 +126,7 @@ const LangCard = ({ asset, onAction }) => {
       </div>
       :
       <div className="flex justify-between items-center">
-        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Translations: </h4>
+        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Other langs: </h4>
         {assetTranslations.filter(t => t != asset.lang).map(t => 
           <Link to={`./${asset.translations[t]}`} key={t}>
             <ReactCountryFlag 
@@ -265,7 +269,12 @@ const TechCard = ({ asset, onChange }) => {
           <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
         </>
       }
-    {addTechnology && <PickTechnologyModal onClose={handleAddTechnology} lang={asset.lang} />}
+    {addTechnology && <PickTechnologyModal 
+      onClose={handleAddTechnology} 
+      lang={asset.lang} 
+      query={{ include_children: false }} 
+      hint="Only parent technologies will show here"
+    />}
   </Card>;
 }
 
@@ -276,6 +285,8 @@ const syncColor = {
 }
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [ githubUrl, setGithubUrl ] = useState(asset.readme_url);
+
+  useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
@@ -377,7 +388,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-      <GithubCard asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
