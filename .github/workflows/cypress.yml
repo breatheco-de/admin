@@ -1,58 +1,58 @@
-name: Cypress Test
+# name: Cypress Test
 
-on:
-  push: {}
-  pull_request:
-    branches:
-      - master
-      - development
+# on:
+#   push: {}
+#   pull_request:
+#     branches:
+#       - master
+#       - development
 
-jobs:
-  cypress-test:
-    name: Test with Server
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # node-version: [17.x, 16.x] # Latest, long term support
-        node-version: [16.x] # long term support
-        # browser: [chrome, firefox] # this is disabled because problems like the bug with Date.jsx
-        browser: [electron]
+# jobs:
+#   cypress-test:
+#     name: Test with Server
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         # node-version: [17.x, 16.x] # Latest, long term support
+#         node-version: [16.x] # long term support
+#         # browser: [chrome, firefox] # this is disabled because problems like the bug with Date.jsx
+#         browser: [electron]
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Cypress dependencies
-        run: |
-          sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 \
-          libxss1 libasound2 libxtst6 xauth xvfb
+#       - name: Cypress dependencies
+#         run: |
+#           sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 \
+#           libxss1 libasound2 libxtst6 xauth xvfb
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            # ${{ runner.os }}-build-${{ env.cache-name }}-
+#       - name: Cache node modules
+#         uses: actions/cache@v2
+#         env:
+#           cache-name: cache-node-modules
+#         with:
+#           path: '**/node_modules'
+#           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             # ${{ runner.os }}-build-${{ env.cache-name }}-
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: ${{ matrix.node-version }}
 
-      # is based in package-lock.json, it prevents run this test with other dependencies versions
-      - name: Install packages
-        run: npm ci
+#       # is based in package-lock.json, it prevents run this test with other dependencies versions
+#       - name: Install packages
+#         run: npm ci
 
-      - name: Production server
-        run: |
-          yarn build
-          yarn serve -l 3000 & # detach serve
+#       - name: Production server
+#         run: |
+#           yarn build
+#           yarn serve -l 3000 & # detach serve
 
-      # the original action maintained by cypress is generating bad executions of code (case Date.jsx)
-      - name: Cypress tests
-        run: |
-          yarn wait-port 3000
-          yarn cy:run --browser ${{ matrix.browser }}
+#       # the original action maintained by cypress is generating bad executions of code (case Date.jsx)
+#       - name: Cypress tests
+#         run: |
+#           yarn wait-port 3000
+#           yarn cy:run --browser ${{ matrix.browser }}

@@ -11,6 +11,7 @@ import { Breadcrumb } from 'matx';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import DowndownMenu from '../../../components/DropdownMenu';
 import AssetMarkdown from "./AssetMarkdown";
 import { useParams } from 'react-router-dom';
@@ -26,6 +27,7 @@ import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
 import {availableLanguages} from "../../../../utils"
+import config from '../../../../config.js';
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
@@ -89,7 +91,7 @@ const ComposeAsset = () => {
   }
 
   const getAssetContent = async () => {
-    const resp = await bc.registry().getAssetContent(asset_slug, { frontmatter: false });
+    const resp = await bc.registry().getAssetContent(asset_slug, { format: 'raw' });
     if (resp.status >= 200 && resp.status < 300) {
       setContent(resp.data);
     }
@@ -159,8 +161,8 @@ const ComposeAsset = () => {
     const _asset = { 
       ...asset, 
       readme_url,
-      owner: asset.owner.id,
-      readme: Base64.encode(content), 
+      owner: asset.owner?.id,
+      readme_raw: Base64.encode(content), 
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
@@ -171,7 +173,7 @@ const ComposeAsset = () => {
       const action = isCreating ? "createAsset" : "updateAsset";
       
       const resp = await bc.registry()[action](_asset);
-      if(resp.status >= 200 && resp.status < 300){
+      if(resp.ok){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)
         return true;
@@ -306,6 +308,9 @@ const ComposeAsset = () => {
 
           <Grid item xs={6} sm={4} align="right">
             <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
+            <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
+              <Icon><OpenInBrowser/></Icon>
+            </IconButton>
             <DowndownMenu
               options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ? 
               [
