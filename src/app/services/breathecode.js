@@ -373,6 +373,12 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/tag${query ? `?${qs}` : ""}`
                 );
             },
+            updateAcademyTags: (slug, tag) =>
+                axios.bcPut(
+                    "Academy tags",
+                    `${this.host}/marketing/academy/tag/${slug}`,
+                    tag
+                ),
             getAcademyShort: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
