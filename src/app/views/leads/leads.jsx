@@ -1,24 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Tooltip, Chip, IconButton } from '@material-ui/core';
 import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import bc from '../../services/breathecode';
+import { AsyncAutocomplete } from '../../components/Autocomplete';
+import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
+import config from '../../../config.js';
+import bc from '../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
-
-const stageColors = {
-  google: 'bg-gray',
-  facebook: 'bg-secondary',
-  coursereport: 'text-white bg-warning',
-  ActiveCampaign: 'text-white bg-error',
-  bing: 'text-white bg-green',
-};
 
 const statusColors = {
   REQUESTED: 'default',
@@ -33,14 +28,25 @@ const defaultBg = 'bg-gray';
 
 const Leads = () => {
   const [items, setItems] = useState([]);
+  const [tags, setTags] = useState([]);
   const query = useQuery();
+
+  useEffect(() => {
+    let slugs = query.get('tags');
+    if(slugs) {
+      const tagsSlugs = slugs.split(',').map((c) => {
+        return { slug: c }
+      });
+      setTags(tagsSlugs);
+    }
+  }, []);
 
   const columns = [
     {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const lead = items[dataIndex];
           return (
@@ -59,10 +65,37 @@ const Leads = () => {
       label: 'Course',
       options: {
         display: false,
+        filter: false,
         filterList: query.get('course') !== null ? [query.get('course')] : [],
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">{items[dataIndex].course}</span>
         ),
+      },
+    },
+    {
+      name: 'utm_campaign',
+      label: 'UTM Campaign',
+      options: {
+        display: false,
+        filterList: query.get('utm_campaign') !== null ? [query.get('utm_campaign')] : [],
+        customBodyRenderLite: (dataIndex) => (
+          <div className="text-center">
+            <h5 className="my-0 text-15">
+              {items[dataIndex].utm_campaign || 'None'}
+            </h5>
+            <small className="text-muted">
+              {items[dataIndex].utm_content || 'No Content'}
+            </small>
+          </div>
+        ),
+      },
+    },
+    {
+      name: 'utm_medium',
+      label: 'UTM Medium',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_medium') !== null ? [query.get('utm_medium')] : [],
       },
     },
     {
@@ -71,6 +104,10 @@ const Leads = () => {
       options: {
         filterList:
           query.get('storage_status') !== null ? [query.get('storage_status')] : [],
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['PENDING', 'PERSISTED', 'DUPLICATED', 'ERROR']
+        },
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <Tooltip title={items[dataIndex]?.storage_status_text}>
@@ -123,8 +160,35 @@ const Leads = () => {
       label: 'Tags',
       options: {
         filter: true,
-        filterType: 'multiselect',
+        // filterType: 'multiselect',
+        filterType: 'custom',
         filterList: query.get('tags') !== null ? [query.get('tags')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  onChange={(newTag) => {
+                    setTags(newTag);
+                    const slugs = newTag.map((i) => i.slug).join(',');
+
+                    if (slugs !== '') filterList[index][0] = slugs;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  value={tags}
+                  size="small"
+                  label="Tags"
+                  debounced
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => `${option.slug}`}
+                  multiple={true}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/marketing/academy/tag?like=${searchTerm}`)}
+                />
+              </div>
+            );
+          }
+        },
         customBodyRenderLite: (dataIndex) => (
           <span className="ellipsis">
             {items[dataIndex].tags
@@ -138,7 +202,7 @@ const Leads = () => {
       name: 'created_at',
       label: 'Created At',
       options: {
-        filter: true,
+        filter: false,
         filterList:
           query.get('created_at') !== null ? [query.get('created_at')] : [],
         customBodyRenderLite: (i) => (
@@ -228,7 +292,16 @@ const Leads = () => {
           items={items}
           view="leads?"
           singlePage=""
-          historyReplace="/leads/list"
+          historyReplace="/growth/leads"
+          options={{
+            print: false,
+            onFilterChipClose: async (index, removedFilter, filterList) => {
+              if (index === 6) setTags([]);
+              const querys = getParams();
+              const { data } = await bc.marketing().getAcademyLeads(querys);
+              setItems(data.results);
+            },
+          }}
           search={async (querys) => {
             const { data } = await bc.marketing()
               .getAcademyLeads(querys);
