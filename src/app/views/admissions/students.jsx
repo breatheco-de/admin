@@ -186,7 +186,7 @@ const Students = () => {
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => `${option.slug}`}
                   multiple={true}
-                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like${searchTerm}`)}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?like=${searchTerm}`)}
                 />
               </div>
             );
