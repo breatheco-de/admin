@@ -426,11 +426,15 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/short`,
                     newShort
                 ),
-            getAcademyAutomations: () =>
-                axios.bcGet(
+            getAcademyAutomations: (query) =>{
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
                     "Academy automations",
-                    `${this.host}/marketing/academy/automation`
-                ),
+                    `${this.host}/marketing/academy/automation${
+                        query ? `?${qs}` : ""
+                    }`
+                )
+            },
             getAcademyUtm: () =>
                 axios.bcGet(
                     "Academy Utm",
