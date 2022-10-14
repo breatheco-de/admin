@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
-  Grid,
   TextField,
-  Divider,
   Card,
   Tooltip,
   Button,
@@ -17,7 +15,7 @@ import bc from '../../../services/breathecode';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import dayjs from 'dayjs';
-import config from '../../../../config.js';
+import { useQuery } from '../../../hooks/useQuery';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -30,6 +28,7 @@ const statusColors = {
 };
 
 export const Tags = ({ organization }) => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
   const [disputeIndex, setDisputeIndex] = useState(null);
   const [disputedReason, setDisputedReason] = useState('');
@@ -51,7 +50,11 @@ export const Tags = ({ organization }) => {
       label: 'Status', // column title that will be shown in table
       options: {
         filter: true,
-        filterType: 'multiselect',
+        filterType: "dropdown",
+        filterList: query.get('status') !== null ? [query.get('status')] : [],
+        filterOptions: {
+          names: ['APROVED', 'DISPUTED']
+        },
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
@@ -95,9 +98,9 @@ export const Tags = ({ organization }) => {
     },
     {
       name: 'disputed',
-      label: ' ',
+      label: '',
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRenderLite: (dataIndex) => {
           return (
@@ -125,6 +128,7 @@ export const Tags = ({ organization }) => {
         title="All Tags"
         columns={columns}
         items={items}
+        historyReplace="/growth/settings"
         options={{
           selectableRows: false,
           print: false,
