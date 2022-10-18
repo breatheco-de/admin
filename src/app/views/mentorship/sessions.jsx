@@ -62,7 +62,7 @@ const Sessions = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionNotes session={item} />
+            <SessionNotes key={item.id} session={item} />
           );
         },
       },
