@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
 import bc from '../../../services/breathecode';
 
-export const AddActiveCampaign = ({ initialValues, isCreating }) => {
+export const AddActiveCampaign = ({ initialValues, isCreating, setACAcademy }) => {
   const ProfileSchema = Yup.object().shape({
     ac_key: Yup.string().required('Api Key required'),
     ac_url: Yup.string().required('Organizer Id required'),
@@ -18,10 +18,12 @@ export const AddActiveCampaign = ({ initialValues, isCreating }) => {
         ac_url: values.ac_url,
         ac_key: values.ac_key,
       };
-      await bc.marketing().createACAcademy(payload);
+      const res = await bc.marketing().createACAcademy(payload);
+      if (res.ok) setACAcademy(res.data);
     } else {
       // Call PUT
-      await bc.marketing().updateACAcademy({ ...values });
+      const res = await bc.marketing().updateACAcademy({ ...values });
+      if (res.ok) setACAcademy(res.data);
     }
   };
 
@@ -72,7 +74,7 @@ export const AddActiveCampaign = ({ initialValues, isCreating }) => {
                 variant="contained"
                 type="submit"
               >
-                Submit
+                {isCreating ? 'Save Integration' : 'Submit'}
               </Button>
             </Grid>
             {initialValues.sync_desc && (<Grid item md={12}>

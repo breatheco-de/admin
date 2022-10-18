@@ -373,6 +373,31 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/tag${query ? `?${qs}` : ""}`
                 );
             },
+            updateAcademyTags: (slug, tag) =>
+                axios.bcPut(
+                    "Academy tags",
+                    `${this.host}/marketing/academy/tag/${slug}`,
+                    tag
+                ),
+            getActiveCampaignAcademy: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign${query ? `?${qs}` : ""}`
+                );
+            },
+            createACAcademy: (payload) =>
+                axios.bcPost(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign`,
+                    payload
+                ),
+            updateACAcademy: (payload) =>
+                axios.bcPut(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign/${payload.id}`,
+                    payload
+                ),
             getAcademyShort: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -401,11 +426,15 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/short`,
                     newShort
                 ),
-            getAcademyAutomations: () =>
-                axios.bcGet(
+            getAcademyAutomations: (query) =>{
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
                     "Academy automations",
-                    `${this.host}/marketing/academy/automation`
-                ),
+                    `${this.host}/marketing/academy/automation${
+                        query ? `?${qs}` : ""
+                    }`
+                )
+            },
             getAcademyUtm: () =>
                 axios.bcGet(
                     "Academy Utm",
