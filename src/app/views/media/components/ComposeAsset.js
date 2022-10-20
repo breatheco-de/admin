@@ -60,7 +60,7 @@ const defaultAsset = {
   new: true,
 }
 
-const githubUrlRegex = /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+\.md$/g;
+const githubUrlRegex = /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+(:?\.[a-z]{2})?\.md$/g;
 const slugRegex = /[\w\-_]+$/g;
 
 const ComposeAsset = () => {

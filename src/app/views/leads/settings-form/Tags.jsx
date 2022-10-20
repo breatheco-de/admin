@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import {
-  Grid,
   TextField,
-  Divider,
   Card,
   Tooltip,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from "@material-ui/core";
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 import dayjs from 'dayjs';
-import config from '../../../../config.js';
+import { useQuery } from '../../../hooks/useQuery';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -22,15 +28,21 @@ const statusColors = {
 };
 
 export const Tags = ({ organization }) => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
-  
+  const [disputeIndex, setDisputeIndex] = useState(null);
+  const [disputedReason, setDisputedReason] = useState('');
+
+  const ProfileSchema = Yup.object().shape({
+    disputedReason: Yup.string().required('Please write the Disputed Reason'),
+  });
 
   const columns = [
     {
       name: 'slug', // field name in the row object
       label: 'slug', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
       },
     },
     {
@@ -38,7 +50,11 @@ export const Tags = ({ organization }) => {
       label: 'Status', // column title that will be shown in table
       options: {
         filter: true,
-        filterType: 'multiselect',
+        filterType: "dropdown",
+        filterList: query.get('status') !== null ? [query.get('status')] : [],
+        filterOptions: {
+          names: ['APROVED', 'DISPUTED']
+        },
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
           return (
@@ -65,10 +81,9 @@ export const Tags = ({ organization }) => {
       name: 'created_at',
       label: 'Date',
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (i) => {
           const item = items[i];
-
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -81,6 +96,30 @@ export const Tags = ({ organization }) => {
         },
       },
     },
+    {
+      name: 'disputed',
+      label: '',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRenderLite: (dataIndex) => {
+          return (
+            <>
+              <div className="flex items-center">
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setDisputeIndex(dataIndex)}
+                >
+                  Dispute
+                </Button>
+              </div>
+            </>
+          );
+        },
+      },
+    },
   ]
 
   return (
@@ -89,8 +128,11 @@ export const Tags = ({ organization }) => {
         title="All Tags"
         columns={columns}
         items={items}
+        historyReplace="/growth/settings"
         options={{
-          selectableRows: false
+          selectableRows: false,
+          print: false,
+          viewColumns: false,
         }}
         search={async (querys) => {
           const { data } = await bc.marketing().getAcademyTags(querys);
@@ -98,6 +140,79 @@ export const Tags = ({ organization }) => {
           return data;
         }}
       />
+      <Dialog
+        onClose={() => {
+          setDisputeIndex(null);
+        }}
+        // fullWidth
+        maxWidth="md"
+
+        open={disputeIndex !== null}
+        aria-labelledby="simple-dialog-title"
+      >
+        <DialogTitle id="simple-dialog-title">
+          Write the dispute reason
+        </DialogTitle>
+        <Formik
+          initialValues={{
+            disputedReason,
+          }}
+          enableReinitialize
+          validationSchema={ProfileSchema}
+          onSubmit={async (values) => {
+
+            const tag = items[disputeIndex];
+
+            const disputedAt = new Date();
+            const data = {
+              disputed_reason: disputedReason,
+              disputed_at: disputedAt,
+            };
+
+            const result = await bc.marketing().updateAcademyTags(tag.slug, data);
+
+            if (result.status >= 200 && result.status < 300) {
+              const newItems = items;
+              newItems[disputeIndex] = {
+                ...newItems[disputeIndex],
+                ...data
+              };
+              setItems(newItems);
+            }
+            setDisputeIndex(null);
+          }}
+        >
+          {({ errors, touched, handleSubmit }) => (
+            <form
+              onSubmit={handleSubmit}
+              className="d-flex justify-content-center mt-0 p-4"
+            >
+              <DialogContent>
+                <DialogContentText>
+                  Disputed Reason:
+                </DialogContentText>
+                <TextField
+                  error={errors.disputedReason && touched.disputedReason}
+                  helperText={touched.disputedReason && errors.disputedReason}
+                  name="disputedReason"
+                  size="small"
+                  variant="outlined"
+                  value={disputedReason}
+                  onChange={(e) => setDisputedReason(e.target.value)}
+                  multiline
+                  rows={4}
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button color="primary" variant="contained" type="submit">
+                  Send now
+                </Button>
+              </DialogActions>
+            </form>
+          )}
+        </Formik>
+      </Dialog>
     </Card>
   );
 };

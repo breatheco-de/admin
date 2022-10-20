@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Divider,
   Card,
-  Table,
-  TableHead,
-  TableRow,
   TableCell,
-  TableBody,
-  CircularProgress,
-  Box,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
+import InfiniteScrollTable from '../../../components/InfiniteScrollTable';
 import bc from '../../../services/breathecode';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -21,25 +16,27 @@ dayjs.extend(relativeTime);
 
 export const Automations = ({ className }) => {
   const [automations, setAutomations] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    setIsLoading(true);
-    bc.marketing()
-      .getAcademyAutomations()
-      .then(({ data }) => {
-        setAutomations(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        return error
-      });
-  }, []);
 
-  const styles = {
-    textAlign: 'center',
-    width: '100%',
-  };
+  const columns = [
+    {
+      name: 'name',
+      label: 'Name',
+      customBodyRender: (item) => (
+        <TableCell className="pl-0 capitalize" align="left">
+          {item.name || item.slug} ({item.id})
+        </TableCell>
+      )
+    },
+    {
+      name: 'stage',
+      label: 'Stage',
+      customBodyRender: (item) => (
+        <TableCell className="pl-0 capitalize" align="left">
+          {item.status}
+        </TableCell>
+      )
+    }
+  ];
 
   return (
     <Card container className={`p-4 ${className}`}>
@@ -51,35 +48,12 @@ export const Automations = ({ className }) => {
         The following automations were found in active campaign
       </Grid>
       <Grid item md={12} className="mt-2">
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="px-0">Name</TableCell>
-              <TableCell className="px-0">Stage</TableCell>
-            </TableRow>
-          </TableHead>
-          {!isLoading ? (
-            <TableBody>
-              {automations.map((auto) => (
-                <TableRow>
-                  <TableCell className="pl-0 capitalize" align="left">
-                    {auto.name || auto.slug} ({auto.id})
-                  </TableCell>
-                  <TableCell className="pl-0 capitalize" align="left">
-                    {auto.status}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          ) : (
-            <Box sx={{ display: 'flex', width: '100%' }}>
-              <CircularProgress />
-            </Box>
-          )}
-        </Table>
-        {automations.length === 0 && !isLoading && (
-          <p style={styles}> No Automations yet </p>
-        )}
+        <InfiniteScrollTable
+          items={automations}
+          setItems={setAutomations}
+          columns={columns}
+          search={bc.marketing().getAcademyAutomations} 
+        />
       </Grid>
     </Card>
   );

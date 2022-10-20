@@ -20,6 +20,26 @@ const GrowthSettings = () => {
     duplicate_leads_delta_avoidance: "",
   });
 
+  const getAcAcademy = async () => {
+    try {
+      const res = await bc.marketing().getActiveCampaignAcademy();
+      if (res.ok) {
+        setACAcademy(res.data);
+        // setStatus({ color: "success", message: "Active Campaign Integration" })
+      }
+    } catch (e){
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    getAcAcademy();
+  }, []);
+
+  useEffect(() => {
+    if (ACAcademy.id !== null) setStatus({ color: "success", message: "Active Campaign Integration" });
+  }, [ACAcademy]);
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -34,6 +54,7 @@ const GrowthSettings = () => {
         <ActiveCampaignCard
           status={status}
           defaultAcademy={ACAcademy}
+          setACAcademy={setACAcademy}
         />
         <Grid container spacing={3} className="mt-4">
           <Grid item md={7} xs={12}>

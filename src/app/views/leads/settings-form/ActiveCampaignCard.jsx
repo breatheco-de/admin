@@ -4,7 +4,7 @@ import { Card, Divider, CircularProgress, Box, } from "@material-ui/core";
 import { AddActiveCampaign } from "./AddActiveCampaign";
 
 
-const ActiveCampaignCard = ({defaultAcademy, status }) => {
+const ActiveCampaignCard = ({defaultAcademy, status, setACAcademy }) => {
   
     const Loader = () => (
         <Box sx={{ display: "flex", width: "100%" }}>
@@ -26,7 +26,7 @@ const ActiveCampaignCard = ({defaultAcademy, status }) => {
               {/* Please past here you Eventbrite Key to begin the integration */}
             </Alert>
           </div>
-          <AddActiveCampaign initialValues={defaultAcademy} />
+          <AddActiveCampaign setACAcademy={setACAcademy} initialValues={defaultAcademy} isCreating={defaultAcademy.id === null} />
         </Card>
   );
 };

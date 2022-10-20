@@ -138,7 +138,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     <Grid item sm={7} xs={12}>
                         {clusterForm.keywords?.map(k => {
                             const _status = k.published_assets.length == 0 ? "error" : "default";
-                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?keyword=${k.slug}`)}
+                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?like=${k.slug}`)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${_status == "error" && 'bg-error'}`} />;

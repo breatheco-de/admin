@@ -364,19 +364,29 @@ const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
       }
       <h4 className="m-0 font-medium  d-inline">Integrity</h4>
     </div>
-    <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
-      Test
-    </Button>
   </div>
 
-  <Grid item className="flex mb-2" xs={12}>
-    <Grid item xs={4}>
-      Status:
-    </Grid>
-    <Grid item xs={8}>
-      <Chip size="small" label={asset.test_status} className={`bg-${syncColor[asset.test_status]}`}/>
-      <small>{!asset.last_test_at ? "Never tested" : dayjs(asset.last_test_at).fromNow()}</small>
-    </Grid>
+  <Grid className="flex mb-2">
+      <div style={{width: "100%"}}>
+        <Chip size="small" label={`Test: ${asset.test_status}`} className={`bg-${syncColor[asset.test_status]} mr-1`}/>
+        <small>{!asset.last_test_at ? "never tested" : dayjs(asset.last_test_at).fromNow()}</small>
+      </div>
+      <div>
+        <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
+          Test
+        </Button>
+      </div>
+  </Grid>
+  <Grid className="flex mb-2">
+      <div style={{width: "100%"}}>
+        <Chip size="small" label={`Cleanup: ${asset.cleaning_status}`} className={`bg-${syncColor[asset.cleaning_status]} mr-1`}/>
+        <small>{!asset.last_cleaning_at ? "never cleaned" : dayjs(asset.last_cleaning_at).fromNow()}</small>
+      </div>
+      <div>
+        <Button variant="contained" color="primary" size="small" onClick={() => onAction('clean')}>
+          Clean
+        </Button>
+      </div>
   </Grid>
 </Card>;
 
