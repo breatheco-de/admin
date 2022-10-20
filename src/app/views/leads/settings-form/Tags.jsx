@@ -33,6 +33,23 @@ export const Tags = ({ organization }) => {
   const [disputeIndex, setDisputeIndex] = useState(null);
   const [disputedReason, setDisputedReason] = useState('');
 
+  Date.prototype.addDays = function (days) {
+    const date = new Date(this.valueOf())
+    date.setDate(date.getDate() + days)
+    return date
+  }
+
+  const deleteTime = (disputed_at) => {
+
+    const disputed = new Date(disputed_at);
+    const tenDays = disputed.addDays(10);
+
+    if(( tenDays - new Date()) / (1000 * 60 * 60 * 24) > 1) {
+      const timeFromNow = dayjs(tenDays).fromNow(true);
+      return `Will delete in ${timeFromNow}`;
+    } else return 'Will delete today';
+  }
+
   const ProfileSchema = Yup.object().shape({
     disputedReason: Yup.string().required('Please write the Disputed Reason'),
   });
@@ -61,11 +78,15 @@ export const Tags = ({ organization }) => {
             <div className="flex items-center">
               <div className="ml-3">
                 {item.disputed_at ? (
-                  <Tooltip title={item.disputed_reason}>
-                    <small className={`border-radius-4 px-2 pt-2px text-white bg-error`}>
-                      DISPUTED
-                    </small>
-                  </Tooltip>
+                  <>
+                    <Tooltip title={`${item.disputed_reason}. Disputed ${dayjs(item.disputed_at).fromNow()}`}>
+                      <small className={`border-radius-4 px-2 pt-2px text-white bg-error`}>
+                        DISPUTED
+                      </small>
+                    </Tooltip>
+                    <small className="block text-muted">{deleteTime(item.disputed_at)}</small>
+                  </>
+                  
                 ) : (
                   <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
                     APPROVED
@@ -88,7 +109,7 @@ export const Tags = ({ organization }) => {
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {item.updated_at ? `${dayjs(item.updated_at).fromNow(true)} ago` : '-'}
+                  {item.created_at ? dayjs(item.created_at).format('MM-DD-YYYY') : '--'}
                 </h5>
               </div>
             </div>
@@ -143,6 +164,7 @@ export const Tags = ({ organization }) => {
       <Dialog
         onClose={() => {
           setDisputeIndex(null);
+          setDisputedReason('');
         }}
         // fullWidth
         maxWidth="md"
@@ -187,10 +209,7 @@ export const Tags = ({ organization }) => {
               onSubmit={handleSubmit}
               className="d-flex justify-content-center mt-0 p-4"
             >
-              <DialogContent>
-                <DialogContentText>
-                  Disputed Reason:
-                </DialogContentText>
+              <DialogContent style={{ padding: '10px 0' }}>
                 <TextField
                   error={errors.disputedReason && touched.disputedReason}
                   helperText={touched.disputedReason && errors.disputedReason}
