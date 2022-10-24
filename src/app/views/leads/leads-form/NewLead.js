@@ -184,7 +184,7 @@ const NewLead = () => {
             let tags = '';
             if (newLead.tag_objects.length !== 0) tags = newLead.tag_objects.map(t => t.slug).join(',');
             bc.marketing().addNewLead({ ...newLead, tags }); 
-            history.push('/leads/list'); }}
+            history.push('/growth/leads'); }}
           enableReinitialize
         >
           {({
