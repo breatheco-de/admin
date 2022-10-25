@@ -291,20 +291,6 @@ const NewLead = () => {
                     onChange={createLead}
                   />
                 </Grid>
-                {/* <Grid item md={2} sm={4} xs={12}>
-                  Location
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Location"
-                    name="location"
-                    size="small"
-                    variant="outlined"
-                    value={newLead.location}
-                    readOnly
-                    defaultValue={newLead.location}
-                  />
-                </Grid> */}
                 <Grid item md={2} sm={4} xs={12}>
                   Language
                 </Grid>
