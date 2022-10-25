@@ -433,8 +433,7 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/automation${
                         query ? `?${qs}` : ""
                     }`
-                )
-            },
+                )},
             getAcademyUtm: () =>
                 axios.bcGet(
                     "Academy Utm",

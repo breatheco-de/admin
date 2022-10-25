@@ -34,9 +34,10 @@ export function AsyncAutocomplete(props) {
     } else {
       asyncSearch(searchTerm)
         .then((resp) => {
-          const data = resp.data || resp;
+          let data = resp.data || resp;
           setLoading(false);
           if (!Array.isArray(data)) throw Error('incoming search data must be an array');
+          if (rest.filter) data = data.filter(rest.filter);
           setOptions(data);
           setCache({
             ...cache,
