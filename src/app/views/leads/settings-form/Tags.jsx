@@ -202,6 +202,7 @@ export const Tags = ({ organization }) => {
               setItems(newItems);
             }
             setDisputeIndex(null);
+            setDisputedReason('');
           }}
         >
           {({ errors, touched, handleSubmit }) => (
