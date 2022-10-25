@@ -46,8 +46,8 @@ export const Tags = ({ organization }) => {
 
     if(( tenDays - new Date()) / (1000 * 60 * 60 * 24) > 1) {
       const timeFromNow = dayjs(tenDays).fromNow(true);
-      return `Will delete in ${timeFromNow}`;
-    } else return 'Will delete today';
+      return `Will de deleted in ${timeFromNow}`;
+    } else return 'Will be deleted today';
   }
 
   const ProfileSchema = Yup.object().shape({
