@@ -349,7 +349,7 @@ const ComposeAsset = () => {
             <AssetMarkdown asset={asset} value={content} onChange={(c) => setContent(c)} />
           </Grid>
           <Grid item md={4} xs={12}>
-            <AssetMeta asset={asset} onAction={(action, payload=null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(a.slug, a)} />
+            <AssetMeta asset={asset} onAction={(action, payload=null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(asset_slug, a)} />
           </Grid>
         </Grid>
       </>
