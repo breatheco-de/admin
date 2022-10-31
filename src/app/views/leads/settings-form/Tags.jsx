@@ -7,8 +7,6 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
-  DialogContent,
-  DialogContentText,
 } from "@material-ui/core";
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
@@ -44,7 +42,7 @@ export const Tags = ({ organization }) => {
     const disputed = new Date(disputed_at);
     const tenDays = disputed.addDays(10);
 
-    if(( tenDays - new Date()) / (1000 * 60 * 60 * 24) > 1) {
+    if ((tenDays - new Date()) / (1000 * 60 * 60 * 24) > 1) {
       const timeFromNow = dayjs(tenDays).fromNow(true);
       return `Will de deleted in ${timeFromNow}`;
     } else return 'Will be deleted today';
@@ -86,7 +84,7 @@ export const Tags = ({ organization }) => {
                     </Tooltip>
                     <small className="block text-muted">{deleteTime(item.disputed_at)}</small>
                   </>
-                  
+
                 ) : (
                   <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
                     APPROVED
@@ -100,7 +98,7 @@ export const Tags = ({ organization }) => {
     },
     {
       name: 'created_at',
-      label: 'Date',
+      label: 'Created At',
       options: {
         filter: false,
         customBodyRenderLite: (i) => {
@@ -167,14 +165,12 @@ export const Tags = ({ organization }) => {
           setDisputedReason('');
         }}
         // fullWidth
-        maxWidth="md"
+        // maxWidth="md"
 
         open={disputeIndex !== null}
-        aria-labelledby="simple-dialog-title"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="simple-dialog-title">
-          Write the dispute reason
-        </DialogTitle>
         <Formik
           initialValues={{
             disputedReason,
@@ -208,24 +204,36 @@ export const Tags = ({ organization }) => {
           {({ errors, touched, handleSubmit }) => (
             <form
               onSubmit={handleSubmit}
-              className="d-flex justify-content-center mt-0 p-4"
+              className="d-flex justify-content-center mt-0"
             >
-              <DialogContent style={{ padding: '10px 0' }}>
-                <TextField
-                  error={errors.disputedReason && touched.disputedReason}
-                  helperText={touched.disputedReason && errors.disputedReason}
-                  name="disputedReason"
-                  size="small"
-                  variant="outlined"
-                  value={disputedReason}
-                  onChange={(e) => setDisputedReason(e.target.value)}
-                  multiline
-                  rows={4}
-                  fullWidth
-                />
-              </DialogContent>
+              <DialogTitle id="simple-dialog-title">
+                Write the dispute reason
+                <div className="mt-4">
+                  <TextField
+                    error={errors.disputedReason && touched.disputedReason}
+                    helperText={touched.disputedReason && errors.disputedReason}
+                    name="disputedReason"
+                    size="small"
+                    variant="outlined"
+                    value={disputedReason}
+                    onChange={(e) => setDisputedReason(e.target.value)}
+                    multiline
+                    rows={4}
+                    fullWidth
+                  />
+                </div>
+              </DialogTitle>
               <DialogActions>
-                <Button color="primary" variant="contained" type="submit">
+                <Button
+                  onClick={() => {
+                    setDisputeIndex(null);
+                    setDisputedReason('');
+                  }}
+                  color="primary"
+                >
+                  Cancel
+                </Button>
+                <Button color="primary" type="submit" autoFocus >
                   Send now
                 </Button>
               </DialogActions>
