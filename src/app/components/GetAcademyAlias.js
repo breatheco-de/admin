@@ -29,7 +29,7 @@ const GetAcademyAlias = () => {
       useEffect(() => {
         if (alias.length !== 0) {
             const stringAlias = alias.map(a=> a.slug).join(', ');
-            setStatus({ color: "info", message: `Incoming leads are recognized by the following academy aliases: ${stringAlias} `});
+            setStatus({ color: "info", message: `Incoming leads are recognized by the following academy aliases: ${stringAlias} .`});
         }
         else {
             setStatus({ color: "error", message: `This academy does not have an alias for its own slug, which means that incoming leads with the location ${user.academy.slug} will not be included in this list, you can `});
