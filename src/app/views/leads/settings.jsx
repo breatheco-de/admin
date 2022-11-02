@@ -6,6 +6,7 @@ import ActiveCampaignCard from "./settings-form/ActiveCampaignCard";
 import { Tags } from "./settings-form/Tags";
 import { Automations } from "./settings-form/Automations";
 import { MatxLoading } from 'matx';
+import GetAcademyAlias from "app/components/GetAcademyAlias";
 
 const GrowthSettings = () => {
   const [status, setStatus] = useState({ color: "error", message: "No active campaign integration found" });
@@ -51,6 +52,8 @@ const GrowthSettings = () => {
         />
       </div>
       <div>
+        <GetAcademyAlias
+        />
         <ActiveCampaignCard
           status={status}
           defaultAcademy={ACAcademy}
