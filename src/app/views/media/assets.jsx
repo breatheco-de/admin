@@ -3,7 +3,7 @@ import {
   IconButton, Tooltip, TableCell,
 } from '@material-ui/core';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import ReactCountryFlag from "react-country-flag"
 import dayjs from 'dayjs';
@@ -116,24 +116,6 @@ const Assets = () => {
       },
     },
     {
-      name: 'tests',
-      label: 'Tests',
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          const item = assetList[dataIndex];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
-                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,5)} color={stageColors[item?.test_status]} />
-              </div>
-            </div>
-          );
-        },
-      },
-    },
-    {
       name: 'keywords',
       label: 'Keywords',
       options: {
@@ -148,7 +130,7 @@ const Assets = () => {
                 <AsyncAutocomplete
                   onChange={(newKeywords) => {
                     setKeywords(newKeywords);
-                    const slugs = newKeywords.map((i) => i.slug).join(',');
+                    const slugs = newKeywords.map((i) => i.seo_keywords.map((x) => x.slug).join(',')).join(',');
                     if (slugs !== '') filterList[index][0] = slugs;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);
@@ -232,10 +214,11 @@ const Assets = () => {
           items={assetList}
           view="?"
           singlePage=""
-          historyReplace="/assets"
+          historyReplace="/media/asset"
           options={{
             print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
+              if (index === 6) setKeywords([]);
               const querys = getParams();
               const { data } = await bc.registry().getAllAssets(querys);
               setAssetList(data.results);
