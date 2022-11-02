@@ -386,6 +386,11 @@ class BreatheCodeClient {
                     `${this.host}/marketing/activecampaign${query ? `?${qs}` : ""}`
                 );
             },
+            getAcademyAlias: () => 
+                axios.bcGet(
+                    "Academy Id",
+                    `${this.host}/marketing/academy/alias`
+                ),
             createACAcademy: (payload) =>
                 axios.bcPost(
                     "Active Campaign Academy",
