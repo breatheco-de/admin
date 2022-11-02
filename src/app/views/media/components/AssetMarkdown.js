@@ -16,12 +16,13 @@ import { format } from "date-fns";
 // Documentation for the Markdown Composer: https://github.com/RIP21/react-simplemde-editor
 
 const AssetMarkdown = ({ asset, value, onChange }) => {
+  const readOnly = !['ARTICLE', 'LESSON'].includes(asset.asset_type);
   return (
     <Card>
-      {asset.sync_status == 'OK' && 
+      {readOnly && 
         <Alert severity="warning">
           <AlertTitle>You cannot manually update this asset</AlertTitle>
-          This lesson is in synch with github, only pulling from the github repository you will be able to update its markdown content.
+          This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
         </Alert>
       }
       {typeof(value) !== "string" ? 
@@ -39,7 +40,7 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
           </ul>
         </div>
         :
-        asset.sync_status != 'OK' ?
+        !readOnly ?
           <SimpleMDE value={value} onChange={c => onChange(c)}  />
           :
           <pre className="markdown-preview px-3">{value}</pre>

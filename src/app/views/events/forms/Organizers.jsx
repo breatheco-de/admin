@@ -32,15 +32,17 @@ export const Organizers = ({ className }) => {
     bc.events()
       .getAcademyEventOrganizationOrganizer()
       .then(({ data }) => {
-        setOrganizers(data.sort((a,b)=>{
-          if ( a.created_at > b.created_at ){
-            return -1;
-          }
-          if ( a.created_at < b.created_at ){
-            return 1;
-          }
-          return 0;
-        }));
+        if(Array.isArray(data)){
+          setOrganizers(data.sort((a,b)=>{
+            if ( a.created_at > b.created_at ){
+              return -1;
+            }
+            if ( a.created_at < b.created_at ){
+              return 1;
+            }
+            return 0;
+          }));
+        }
         setIsLoading(false);
       })
       .catch((error) => {

@@ -125,7 +125,7 @@ export const WebhookInfo = ({ organization }) => {
           }}
           search={async (querys) => {
             const { data } = await bc.events().getEventbriteWebhook(querys);
-            setItems(data.results);
+            if (Array.isArray(data)) setItems(data.results);
             return data;
           }}
         />

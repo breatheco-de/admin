@@ -6,7 +6,6 @@ import dashboardRoutes from './views/dashboard/DashboardRoutes';
 import adminRoutes from './views/admin/routes';
 import admissionsRoutes from './views/admissions/routes';
 import eventsRoutes from './views/events/routes';
-import developerRoutes from './views/developer/routes';
 
 import certificatesRoutes from './views/certificates/certificatesRoutes';
 
@@ -19,6 +18,8 @@ import ListRoute from './views/list/ListRoute';
 
 import pagesRoutes from './views/leads/pagesRoutes';
 import shortLinkRoutes from './views/growth/routes';
+
+import freelanceRoutes from './views/freelance/routes';
 
 const redirectRoute = [
   {
@@ -39,7 +40,6 @@ const routes = [
   ...adminRoutes,
   ...admissionsRoutes,
   ...eventsRoutes,
-  ...developerRoutes,
   ...mediaRoutes,
   ...feedbackRoutes,
   ...pageLayoutRoutes,
@@ -49,6 +49,7 @@ const routes = [
   ...mentorshipRoutes,
   ...certificatesRoutes,
   ...redirectRoute,
+  ...freelanceRoutes,
   ...errorRoute,
 ];
 

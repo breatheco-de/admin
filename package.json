@@ -2,6 +2,9 @@
   "name": "matx-react",
   "version": "1.3.0",
   "private": true,
+  "engines": {
+    "node": ">=16.0.0 <17.0.0"
+  },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.12.1",
     "@babel/core": "7.9.0",
@@ -64,6 +67,7 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
+    "js-base64": "^3.7.2",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.0.0-beta.2",
     "lodash": "^4.17.21",

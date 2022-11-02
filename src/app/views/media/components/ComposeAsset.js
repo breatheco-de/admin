@@ -6,9 +6,13 @@ import { IconButton, Icon, Button, Grid,
   TextField,
   Card,
 } from "@material-ui/core";
+import { Base64 } from 'js-base64';
+import { Breadcrumb } from 'matx';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
+import DowndownMenu from '../../../components/DropdownMenu';
 import AssetMarkdown from "./AssetMarkdown";
 import { useParams } from 'react-router-dom';
 import AssetMeta from "./AssetMeta";
@@ -17,11 +21,13 @@ import { ConfirmationDialog } from '../../../../matx';
 import EditableTextField from '../../../components/EditableTextField';
 import DialogPicker from '../../../components/DialogPicker';
 import StatCard from "../components/StatCard"
+import { PickCategoryModal } from "../components/PickCategoryModal"
 import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
 import {availableLanguages} from "../../../../utils"
+import config from '../../../../config.js';
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
@@ -54,7 +60,7 @@ const defaultAsset = {
   new: true,
 }
 
-const githubUrlRegex = /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+\.md$/g;
+const githubUrlRegex = /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+(:?\.[a-z]{2})?\.md$/g;
 const slugRegex = /[\w\-_]+$/g;
 
 const ComposeAsset = () => {
@@ -63,6 +69,7 @@ const ComposeAsset = () => {
   const isCreating = (asset_slug === undefined && (!asset || asset.id === undefined));
   const [ asset, setAsset ] = useState(defaultAsset);
   const [ updateVisibility, setUpdateVisibility ] = useState(false);
+  const [ updateCategory, setUpdateCategory ] = useState(false);
   const [ updateStatus, setUpdateStatus ] = useState(false);
   const [ updateType, setUpdateType ] = useState(false);
   const [ updateLanguage, setUpdateLanguage ] = useState(false);
@@ -84,41 +91,44 @@ const ComposeAsset = () => {
   }
 
   const getAssetContent = async () => {
-    const resp = await bc.registry().getAssetContent(asset_slug, { frontmatter: false });
+    const resp = await bc.registry().getAssetContent(asset_slug, { format: 'raw' });
     if (resp.status >= 200 && resp.status < 300) {
       setContent(resp.data);
     }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
 
-    if(isCreating) {
-      setAsset(defaultAsset);
-      setGithubUrl(defaultAsset.readme_url);
-      setContent("Write your asset here, use `markdown` syntax");
-    }
-    else{
-      try{
-        const resp = await bc.registry().getAsset(asset_slug);
-        if (resp.status >= 200 && resp.status < 300) {
-          setAsset({ ...resp.data, lang: resp.data.lang || "us" });
-          setGithubUrl(resp.data.readme_url);
+    const load = async () => {
+      if(isCreating) {
+        setAsset(defaultAsset);
+        setGithubUrl(defaultAsset.readme_url);
+        setContent("Write your asset here, use `markdown` syntax");
+      }
+      else{
+        try{
+          const resp = await bc.registry().getAsset(asset_slug);
+          if (resp.status >= 200 && resp.status < 300) {
+            setAsset({ ...resp.data, lang: resp.data.lang || "us" });
+            setGithubUrl(resp.data.readme_url);
+          }
+          else throw Error('Asset could not be retrieved');
+          
+          await getAssetContent();
         }
-        else throw Error('Asset could not be retrieved');
-        
-        await getAssetContent();
-      }
-      catch(error){
-        console.log("Error log", error)
+        catch(error){
+          console.log("Error log", error)
+        }
       }
     }
+    load();
 
   }, [asset_slug]);
 
   const handleAction = async (action, payload=null) => {
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug:action });
     if(resp.status === 200){
-      if((action=="sync" && resp.data.sync_status != 'OK')){ 
+      if((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')){ 
         toast.error(`Sync returned with problems: ${resp.data.status_text}`)
       }
       else if (action=="test" && resp.data.test_status != 'OK'){
@@ -139,9 +149,9 @@ const ComposeAsset = () => {
     if(!slugRegex.test(_asset.slug)) _errors['slug'] = `Invalid slug, it can only contain letters, numbers - and _`;
     if(!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if(!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
-    if(!isCreating && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Fix github synching";
+    if(!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if(!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
-    console.log("validate", _asset)
+
     return _errors
   }
   
@@ -151,8 +161,8 @@ const ComposeAsset = () => {
     const _asset = { 
       ...asset, 
       readme_url,
-      owner: asset.owner.id,
-      readme: btoa(content), 
+      owner: asset.owner?.id,
+      readme_raw: Base64.encode(content), 
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
@@ -163,7 +173,7 @@ const ComposeAsset = () => {
       const action = isCreating ? "createAsset" : "updateAsset";
       
       const resp = await bc.registry()[action](_asset);
-      if(resp.status >= 200 && resp.status < 300){
+      if(resp.ok){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)
         return true;
@@ -176,10 +186,24 @@ const ComposeAsset = () => {
 
   }
 
+  const handleUpdateCategory = async (category) => {
+    if(category) partialUpdateAsset({ category: category.id || category })
+    setUpdateCategory(false);
+  }
+
   if(!asset) return <MatxLoading />;
 
   return (
     <div className="m-sm-30">
+      <div className="mb-sm-30">
+        <div className="flex flex-wrap justify-between mb-6">
+          <div>
+            <Breadcrumb
+              routeSegments={[{ name: 'Assets', path: '/media/asset' }, { name: 'Single Asset' }]}
+            />
+          </div>
+        </div>
+      </div>
     {asset.readme_url === "" ? 
       <Card className="p-4 mt-4">
         <h1>Create a new asset</h1>
@@ -192,18 +216,18 @@ const ComposeAsset = () => {
             >{(asset && asset.asset_type) ? asset.asset_type : `Click to select`}</Button>
         </p>
         {errors["asset_type"] && <small className="text-error">{errors["asset_type"]}</small>}
-        <p>Choose a slug for the asset</p>
-        <TextField variant="outlined" size="small" value={asset.slug} fullWidth={true} onChange={(e) => {
-          setAsset({ ...asset, slug: slugify(e.target.value) })
-          setErrors({ ...errors, slug: "" })
-        }} />
-        {errors["slug"] && <small className="text-error">{errors["slug"]}</small>}
         <p>Please provied a Github URL to fetch the markdown file from:</p>
         <TextField variant="outlined" size="small" value={githubUrl} fullWidth={true} onChange={(e) => {
           setGithubUrl(e.target.value)
           setErrors({ ...errors, readme_url: "" })
         }} placeholder="https://github.com/" />
         {errors["readme_url"] && <small className="text-error">{errors["readme_url"]}</small>}
+        <p>Choose a slug for the asset</p>
+        <TextField variant="outlined" size="small" value={asset.slug} fullWidth={true} onChange={(e) => {
+          setAsset({ ...asset, slug: slugify(e.target.value.toLowerCase()) })
+          setErrors({ ...errors, slug: "" })
+        }} />
+        {errors["slug"] && <small className="text-error">{errors["slug"]}</small>}
         <p>Github Owner (with read permissions on the repository):</p>
         <AsyncAutocomplete
             width="100%"
@@ -216,7 +240,7 @@ const ComposeAsset = () => {
         />
         {errors["owner"] && <small className="text-error">{errors["owner"]}</small>}
         <Button className="mt-2" variant="contained" color="primary"
-          onClick={() => saveAsset()}
+          onClick={() => saveAsset().then(_errors => (Object.keys(_errors).length > 0) && setErrorDialog(true))}
         >
           Create asset
         </Button>
@@ -263,6 +287,11 @@ const ComposeAsset = () => {
               >
                 {asset.asset_type ? asset.asset_type : "NOT TYPE SPECIFIED"}
               </div>
+              <div className="px-3 text-11 py-3px border-radius-4 text-white bg-dark mr-3 pointer"
+                onClick={() => setUpdateCategory(true)}
+              >
+                {asset.category ? asset.category.slug || asset.category.title : 'Category'}
+              </div>
               <div className="px-3 text-11 py-3px border-radius-4 text-dark bg-white mr-3 pointer"
                 onClick={() => setUpdateLanguage(true)}
               >
@@ -279,11 +308,38 @@ const ComposeAsset = () => {
 
           <Grid item xs={6} sm={4} align="right">
             <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
-            <Button variant="contained" color={Object.keys(errors).length == 0 ? "primary": "error"}
-              onClick={() => saveAsset().then(_errors => (Object.keys(errors).length > 0) && setErrorDialog(true))}
+            <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
+              <Icon><OpenInBrowser/></Icon>
+            </IconButton>
+            <DowndownMenu
+              options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ? 
+              [
+                { label: 'Only save to 4Geeks.com', value: 'only_save'},
+                { label: 'Also commit markdown to github', value: 'push'}
+              ]
+              :
+              [
+                { 
+                  label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here', 
+                  style: { width: "200px" }, 
+                  value: null 
+                },
+              ]
+              }
+              icon="more_horiz"
+              onSelect={async ({ value }) => {
+                if(!value) return null;
+                const _errors = await saveAsset();
+                if(Object.keys(_errors).length > 0) setErrorDialog(true);
+                else{
+                  if(value == 'push') handleAction('push');
+                }
+              }}
             >
-              {isCreating ? `Create asset` : `Update content`}
-            </Button>
+              <Button variant="contained" color="primary">
+                {isCreating ? `Create asset` : `Update asset`}
+              </Button>
+            </DowndownMenu>
           </Grid>
         </div>
         
@@ -350,7 +406,7 @@ const ComposeAsset = () => {
         noLabel="Close"
         maxWidth="md"
         onConfirmDialogClose={() => setErrorDialog(false)}
-        title="There are errors"
+        title="We found some errors"
       >
       <List size="small">
         {Object.keys(errors).map((e,i) => 
@@ -360,6 +416,7 @@ const ComposeAsset = () => {
         )}
       </List>
       </ConfirmationDialog>
+      {updateCategory && <PickCategoryModal onClose={handleUpdateCategory} lang={asset.lang} defaultCategory={asset.category} />}
     </div>
   );
 };

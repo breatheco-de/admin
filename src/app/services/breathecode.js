@@ -150,6 +150,15 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAllAcademyTeachers: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Cohorts",
+                    `${this.host}/admissions/academy/teacher${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             getAllAcademySyllabus: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -317,6 +326,11 @@ class BreatheCodeClient {
                     "Invite",
                     `${this.host}/auth/member/invite/resend/${user}`
                 ),
+            resentMemberInvite: (memberId) =>
+                axios.bcPut(
+                    "Invite",
+                    `${this.host}/auth/academy/member/${memberId}/invite`
+                ),
             getUserInvite: (id) =>
                 axios.bcGet("Invite", `${this.host}/auth/academy/invite/${id}`),
             getMemberInvite: (id) =>
@@ -359,6 +373,36 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/tag${query ? `?${qs}` : ""}`
                 );
             },
+            updateAcademyTags: (slug, tag) =>
+                axios.bcPut(
+                    "Academy tags",
+                    `${this.host}/marketing/academy/tag/${slug}`,
+                    tag
+                ),
+            getActiveCampaignAcademy: (query) => {
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign${query ? `?${qs}` : ""}`
+                );
+            },
+            getAcademyAlias: () => 
+                axios.bcGet(
+                    "Academy Id",
+                    `${this.host}/marketing/academy/alias`
+                ),
+            createACAcademy: (payload) =>
+                axios.bcPost(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign`,
+                    payload
+                ),
+            updateACAcademy: (payload) =>
+                axios.bcPut(
+                    "Active Campaign Academy",
+                    `${this.host}/marketing/activecampaign/${payload.id}`,
+                    payload
+                ),
             getAcademyShort: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -387,11 +431,14 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/short`,
                     newShort
                 ),
-            getAcademyAutomations: () =>
-                axios.bcGet(
+            getAcademyAutomations: (query) =>{
+                const qs = serializeQuerystring(query);
+                return axios.bcGet(
                     "Academy automations",
-                    `${this.host}/marketing/academy/automation`
-                ),
+                    `${this.host}/marketing/academy/automation${
+                        query ? `?${qs}` : ""
+                    }`
+                )},
             getAcademyUtm: () =>
                 axios.bcGet(
                     "Academy Utm",
@@ -827,7 +874,74 @@ class BreatheCodeClient {
                 ),
         };
     }
-
+    freelance() {
+        return {
+            getAllProjects: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            getAllBills: async (query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/bill${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            generatePendingInvoice: (id) => axios.bcPost(
+                    "Project Invoice",
+                    `${this.host}/freelance/academy/project/${id}/invoice`
+                ),
+            getSingleProject: (id) => axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project/${id}`
+                ),
+            getSingleInvoice: (id) => axios.bcGet(
+                    "Invoice",
+                    `${this.host}/freelance/invoice/${id}`
+                ),
+            getSingleBill: (id) => axios.bcGet(
+                    "Payment",
+                    `${this.host}/freelance/bills/${id}`
+                ),
+            getProjectInvoices: async (query, options) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Project",
+                    `${this.host}/freelance/academy/project/invoice${
+                        query ? `?${qs}` : ""
+                    }`,
+                    options
+                );
+            },
+            getProjectMembers: async (query, options) => {
+                    const qs = serializeQuerystring(query);
+                    return await axios.bcGet(
+                        "Project",
+                        `${this.host}/freelance/academy/project/member${
+                            query ? `?${qs}` : ""
+                        }`,
+                        options
+                    );
+                },
+            getInvoiceMembers: async (query, options) => {
+                    const qs = serializeQuerystring(query);
+                    return await axios.bcGet(
+                        "Project",
+                        `${this.host}/freelance/academy/project/invoice/${query.invoice}/member${
+                            query ? `?${qs}` : ""
+                        }`,
+                        options
+                    );
+                },
+        }
+    }
     registry() {
         return {
             getAllAssets: async (query) => {
@@ -866,10 +980,25 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAcademyCategories: async (query) => {
+                const qs = typeof(query) == 'object' ? serializeQuerystring(query) : query.replace("?", "");
+                return await axios.bcGet(
+                    "Category",
+                    `${this.host}/registry/academy/category${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
             updateTechnology: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/technology/${slug}`,
+                    payload
+                ),
+            updateCategory: async (slug, payload) =>
+                await axios.bcPut(
+                    "Category",
+                    `${this.host}/registry/academy/category/${slug}`,
                     payload
                 ),
             updateCluster: async (slug, payload) =>
@@ -888,6 +1017,12 @@ class BreatheCodeClient {
                 await axios.bcPost(
                     "Cluster",
                     `${this.host}/registry/academy/keywordcluster`,
+                    payload
+                ),
+            createAcademyCategory: async (payload) =>
+                await axios.bcPost(
+                    "Category",
+                    `${this.host}/registry/academy/category`,
                     payload
                 ),
             updateTechnologyBulk: async (slugs, payload) =>

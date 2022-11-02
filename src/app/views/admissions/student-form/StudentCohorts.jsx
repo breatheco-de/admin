@@ -22,6 +22,9 @@ import { MatxLoading } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import bc from '../../../services/breathecode';
 import axios from '../../../../axios';
+import dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 import config from '../../../../config.js';
 
 const propTypes = {
@@ -167,10 +170,14 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                   <div className="flex">
                     <div className="flex-grow">
                       <Link to={`/admissions/cohorts/${s.cohort.slug}`}>
-                        <h6 className="mt-0 mb-0 text-15 text-primary">{s.cohort.name}</h6>
+                        <h6 className="mt-0 mb-0 text-15 text-primary">
+                          {s.cohort.name}
+                          <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">{s.cohort.stage}</small>
+                        </h6>
                       </Link>
                       <p className="mt-0 mb-6px text-13">
-                        <span className="font-medium">{s.cohort.kickoff_date}</span>
+                        <span className="font-medium">{dayjs(s.cohort.kickoff_date).format('DD MMMM, YYYY')}</span>
+                        <small>, {dayjs(s.cohort.kickoff_date).fromNow()}</small>
                       </p>
                       <p className="mt-0 mb-6px text-13">
                         <small

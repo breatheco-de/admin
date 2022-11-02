@@ -39,6 +39,11 @@ export const navigations = [
                 path: "/growth/urls",
                 iconText: "OL",
             },
+            {
+                name: "Settings",
+                path: "/growth/settings",
+                iconText: "SE",
+            },
         ],
     },
     {
@@ -57,6 +62,12 @@ export const navigations = [
                 path: "/admissions/students",
                 iconText: "STU",
                 capabilities: ["read_student"],
+            },
+            {
+                name: "All Teachers",
+                path: "/admissions/teachers",
+                iconText: "TEA",
+                capabilities: ["read_member"],
             },
             {
                 name: "Watch List",
@@ -116,18 +127,6 @@ export const navigations = [
         ],
     },
     {
-        name: "Developer",
-        icon: "code",
-        children: [
-            {
-                name: "Settings",
-                path: "/developer/settings",
-                iconText: "OL",
-                capabilities: ["get_academy_token"],
-            },
-        ],
-    },
-    {
         name: "Content Gallery",
         icon: "collections",
         children: [
@@ -183,6 +182,25 @@ export const navigations = [
         ],
     },
     {
+        name: "Freelance",
+        icon: "monetization_on",
+        beta: true,
+        children: [
+            {
+                name: "Projects",
+                path: "/freelance/project",
+                iconText: "PRJ",
+                capabilities: ["read_freelance_projects"],
+            },
+            {
+                name: "Payments",
+                path: "/freelance/payments",
+                iconText: "BIL",
+                capabilities: ["read_freelance_projects"],
+            },
+        ]
+    },
+    {
         name: "Admin",
         icon: "account_circle",
         children: [
@@ -209,6 +227,12 @@ export const navigations = [
                 path: "/admin/syllabus",
                 iconText: "STA",
                 capabilities: ["read_syllabus"],
+            },
+            {
+                name: "Developer Settings",
+                path: "/admin/dev-settings",
+                iconText: "DEV",
+                capabilities: ["get_academy_token"],
             },
         ],
     },

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Grid, TextField, Button } from '@material-ui/core';
-import bc from '../../services/breathecode';
-import useAuth from '../../hooks/useAuth';
+import bc from '../../../services/breathecode';
+import useAuth from '../../../hooks/useAuth';
 
 export const ResetToken = ({ token }) => {
   const { user } = useAuth();

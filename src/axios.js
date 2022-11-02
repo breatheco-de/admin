@@ -53,9 +53,9 @@ function printAxiosResponse(object) {
         throw new Error("No communication with the server");
 
     const log = [
-        object.config.method.toUpperCase(),
+        object.config?.method.toUpperCase(),
         object.status,
-        object.config.url,
+        object.config?.url,
     ];
 
     if (object.data) {
@@ -77,6 +77,10 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
+        // this will always be used as reference for failure
+        if(!error.response) error.response = { ok: false };
+        else error.response.ok = false;  
+
         error.response.ok = false;  // <- this will always be used as reference for failure
         printAxiosResponse(error.response);
         resolveError(error);

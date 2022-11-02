@@ -10,8 +10,8 @@ import SessionDetails from './session-details/SessionDetails'
 import SessionNotes from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
 import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
-import dayjs from "dayjs";
 import { useQuery } from '../../hooks/useQuery';
+import dayjs from "dayjs";
 const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
 
@@ -62,7 +62,7 @@ const Sessions = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = sessions[dataIndex];
           return (
-            <SessionNotes session={item} />
+            <SessionNotes key={item.id} session={item} />
           );
         },
       },

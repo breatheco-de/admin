@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Divider } from "@material-ui/core";
 import { ResetToken } from "./ResetToken";
-import bc from "../../services/breathecode";
+import bc from "../../../services/breathecode";
 
 const DeveloperTokenCard = () => {
 

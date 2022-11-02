@@ -62,14 +62,14 @@ const UserList3 = () => {
                             <ClusterCard isEditing
                                 cluster={{
                                     title: 'Sample cluster',
-                                    slug: '',
+                                    slug: 'sample-cluster',
                                     lang: 'us',
                                     isDeprecated: false,
                                     keywords: []
                                 }}
                                 onSubmit={async (_cluster) => {
                                     const resp = await bc.registry().createCluster(_cluster)
-                                    if (resp.status === 201) return true;
+                                    if (resp.ok) return resp.data;
                                     else return false;
                                 }}
                             />
@@ -80,7 +80,7 @@ const UserList3 = () => {
                                     <ClusterCard cluster={c}
                                         onSubmit={async (_cluster) => {
                                             const resp = await bc.registry().updateCluster(c.slug, _cluster)
-                                            if (resp.status === 200) return true;
+                                            if (resp.status === 200) return resp.data;
                                             else return false;
                                         }}
                                     />

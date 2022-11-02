@@ -13,28 +13,21 @@ import {
 import { GoogleIcon } from "matx";
 import history from '../../../../history';
 import bc from 'app/services/breathecode';
+import ReactCountryFlag from "react-country-flag"
 import { AssetRequirementModal } from './AssetRequirementModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { PickKeywordModal } from './PickKeywordModal';
+import slugify from "slugify";
 import clsx from "clsx";
 
-const useStyles = makeStyles(({ palette, ...theme }) => ({
-    google: {
-        color: "#ec412c",
-    },
-    twitter: {
-        color: "#039ff5",
-    },
-}));
-
 const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
-    const classes = useStyles();
     const [ requestAssetModal, setRequestAssetModal ] = useState(null)
     const [ clusterForm, setClusterForm ] = useState(cluster)
     const [ editMode, setEditMode ] = useState(isEditing)
     const [ addKeyword, setAddKeyword ] = useState(false)
     const progress = (() => {
+        if(!clusterForm.keywords) return 0;
         const without = clusterForm.keywords.filter(k => k.published_assets.length == 0).length;
         const total = clusterForm.keywords.length;
         return (without == 0 || total == 0) ? "100" : Math.round(100 - (without / total * 100));
@@ -85,7 +78,11 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         size="small"
                         variant="outlined"
                         value={clusterForm.title}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, title: e.target.value })}
+                        onChange={(e)=> setClusterForm({ 
+                            ...clusterForm, 
+                            title: e.target.value,
+                            slug: slugify(e.target.value.toLowerCase())
+                        })}
                     />
                     <TextField
                         className="m-2"
@@ -95,7 +92,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         size="small"
                         variant="outlined"
                         value={clusterForm.slug}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, slug: e.target.value })}
+                        onChange={(e)=> setClusterForm({ ...clusterForm, slug: slugify(e.target.value) })}
                     />
                     <TextField
                         className="m-2"
@@ -103,8 +100,8 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         data-cy="language"
                         size="small"
                         variant="outlined"
-                        value={clusterForm.lang}
-                        onChange={(e)=> setClusterForm({ ...clusterForm, lang: e.target.value })}
+                        value={clusterForm.lang.toLowerCase()}
+                        onChange={(e)=> setClusterForm({ ...clusterForm, lang: e.target.value.toUpperCase() })}
                         select
                         >
                         {['es', 'us'].map((item) => (
@@ -119,7 +116,8 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     <Grid item sm={5} xs={12}>
                         <div>
                             <h5 className="m-0">{clusterForm.title}</h5>
-                            <p className="mb-0 mt-0 text-muted font-normal capitalize">
+                            <p className="mb-0 mt-0 text-muted font-normal">
+                                <ReactCountryFlag className="mr-2" countryCode={clusterForm.lang} svg />
                                 {clusterForm.slug?.toLowerCase()}
                             </p>
                         </div>
@@ -138,9 +136,9 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         </div>
                     </Grid>
                     <Grid item sm={7} xs={12}>
-                        {clusterForm.keywords.map(k => {
+                        {clusterForm.keywords?.map(k => {
                             const _status = k.published_assets.length == 0 ? "error" : "default";
-                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`media/seo/asset?keyword=${k.slug}`)}
+                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?like=${k.slug}`)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${_status == "error" && 'bg-error'}`} />;
@@ -162,8 +160,13 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             color="primary"
                             variant="contained"
                             className="px-5 mr-1"
-                            onClick={() => {
-                                onSubmit(clusterForm).then((success) => success && setEditMode(false))
+                            onClick={async () => {
+                                const data = await onSubmit(clusterForm)
+                                if(data){
+                                    console.log("onsubmit", data)
+                                    setEditMode(false)
+                                    setClusterForm(data)
+                                }
                             }}
                         >
                             Save cluster

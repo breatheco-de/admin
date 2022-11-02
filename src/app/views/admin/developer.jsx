@@ -1,6 +1,6 @@
 import React from "react";
 import { Breadcrumb } from "../../../matx";
-import DeveloperToken from "./DeveloperToken";
+import DeveloperToken from "./developer-form/DeveloperToken";
 
 const Developer = () => {
   return (
@@ -8,8 +8,8 @@ const Developer = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: 'Event', path: '/' }, 
-            { name: 'Developer' },
+            { name: 'Admin', path: '/' }, 
+            { name: 'Developer Settings' },
           ]}
         />
       </div>

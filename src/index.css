@@ -53,12 +53,21 @@
 .orange {
   background-color: rgb(255, 153, 0);
 }
-
+.text-warning{
+  color: rgb(255, 153, 0);
+}
+.p-inherit{
+  position: inherit !important;
+}
 .bg-light-warning{
   background: rgb(253, 245, 234) !important;
 }
 .text-light-success {
   color: #64c88f !important; }
+
+.wrap{
+  white-space: initial !important;
+}
 
 @media only screen and (max-width : 959px) {
   .MuiTableRow-root td:nth-child(1) {
@@ -77,4 +86,17 @@
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   width: 100%;
   white-space: pre-wrap; 
+}
+.chip{
+  display: inline-block;
+  border-radius: 5px;
+  background: #b4b4b4;
+  padding: 0px 5px;
+}
+.chip p{
+  margin: 0 0 -10px 0;
+  padding: 0;
+}
+.chip small{
+  font-size: 8px;
 }

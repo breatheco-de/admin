@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Table, TableCell, TableRow, Card, MenuItem, DialogContent, 
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
   TableBody } from "@material-ui/core";
@@ -14,6 +14,7 @@ import tz from 'dayjs/plugin/timezone';
 import history from "history.js";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { PickTechnologyModal } from './PickTechnologyModal';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
@@ -84,7 +85,11 @@ const LangCard = ({ asset, onAction }) => {
             </MenuItem>
           ))}
         </TextField>
-      {addTranslation?.lang && <>
+      {!addTranslation?.lang ?
+        <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+          Cancel
+        </Button>
+        : <>
           <AsyncAutocomplete
             width="100%"
             className="my-2"
@@ -121,7 +126,7 @@ const LangCard = ({ asset, onAction }) => {
       </div>
       :
       <div className="flex justify-between items-center">
-        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Translations: </h4>
+        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Other langs: </h4>
         {assetTranslations.filter(t => t != asset.lang).map(t => 
           <Link to={`./${asset.translations[t]}`} key={t}>
             <ReactCountryFlag 
@@ -140,6 +145,7 @@ const LangCard = ({ asset, onAction }) => {
       }
   </Card>;
 }
+
 
 const SEOReport = ({ log=[], isOpened, onClose }) => {
   
@@ -237,13 +243,50 @@ const SEOCard = ({ asset, onAction, onChange }) => {
   </Card>;
 }
 
+
+const TechCard = ({ asset, onChange }) => {
+  const [ addTechnology, setAddTechnology ] = useState(null);
+
+  const handleAddTechnology = async (techonolgies) => {
+    if(techonolgies && techonolgies.length>0) onChange({ slug: asset.slug, technologies: asset.technologies.map(t => t.slug || t).concat(techonolgies.map(t => t.slug || t))})
+    setAddTechnology(false);
+  }
+
+  return <Card className="p-4 mb-4">
+      <h4 className="m-0 font-medium">Technologies</h4>
+      {asset.technologies.length == 0 ? 
+        <small className="p-0 m-0">No technologies assigned, <span className="underline text-primary pointer" onClick={() => setAddTechnology(true)}>add technologies</span></small>
+        : 
+        <>
+          {asset.technologies.map(t => 
+            <Chip 
+              key={t.slug}
+              className="mr-1" size="small" 
+              label={t.title || t} 
+              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ technologies: asset.technologies.map(_t => _t.id || _t).filter(_t => _t != t)})}>delete</Icon>} 
+            />
+          )}
+          <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
+        </>
+      }
+    {addTechnology && <PickTechnologyModal 
+      onClose={handleAddTechnology} 
+      lang={asset.lang} 
+      query={{ include_children: false }} 
+      hint="Only parent technologies will show here"
+    />}
+  </Card>;
+}
+
 const syncColor = {
   'ERROR': 'error',
   'WARNING': 'warning',
   'OK': 'success'
 }
 const GithubCard = ({ asset, onAction, onChange }) => {
-  const [ githubUrl, setGithubUrl ] = useState(asset.url);
+  const [ githubUrl, setGithubUrl ] = useState(asset.readme_url);
+
+  useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
@@ -252,8 +295,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         }
         <h4 className="m-0 font-medium d-inline">Github</h4>
       </div>
-      {asset.url!=githubUrl ?
-        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ url: githubUrl })}>
+      {asset.readme_url!=githubUrl ?
+        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ readme_url: githubUrl })}>
           Save URL
         </Button>
         :
@@ -264,8 +307,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if(value == 'only_content') onAction('sync');
-            else if(value == 'override') onAction('sync', { override_meta: true });
+            if(value == 'only_content') onAction('pull');
+            else if(value == 'override') onAction('pull', { override_meta: true });
           }}
         >
           <Button variant="contained" color="primary" size="small">
@@ -286,7 +329,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
     </Grid>
     <Grid item className="flex mt-2" xs={12}>
       <Grid item xs={4}>
-        Source URL:
+        Markdown:
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
@@ -321,19 +364,29 @@ const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
       }
       <h4 className="m-0 font-medium  d-inline">Integrity</h4>
     </div>
-    <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
-      Test
-    </Button>
   </div>
 
-  <Grid item className="flex mb-2" xs={12}>
-    <Grid item xs={4}>
-      Status:
-    </Grid>
-    <Grid item xs={8}>
-      <Chip size="small" label={asset.test_status} className={`bg-${syncColor[asset.test_status]}`}/>
-      <small>{!asset.last_test_at ? "Never tested" : dayjs(asset.last_test_at).fromNow()}</small>
-    </Grid>
+  <Grid className="flex mb-2">
+      <div style={{width: "100%"}}>
+        <Chip size="small" label={`Test: ${asset.test_status}`} className={`bg-${syncColor[asset.test_status]} mr-1`}/>
+        <small>{!asset.last_test_at ? "never tested" : dayjs(asset.last_test_at).fromNow()}</small>
+      </div>
+      <div>
+        <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
+          Test
+        </Button>
+      </div>
+  </Grid>
+  <Grid className="flex mb-2">
+      <div style={{width: "100%"}}>
+        <Chip size="small" label={`Cleanup: ${asset.cleaning_status}`} className={`bg-${syncColor[asset.cleaning_status]} mr-1`}/>
+        <small>{!asset.last_cleaning_at ? "never cleaned" : dayjs(asset.last_cleaning_at).fromNow()}</small>
+      </div>
+      <div>
+        <Button variant="contained" color="primary" size="small" onClick={() => onAction('clean')}>
+          Clean
+        </Button>
+      </div>
   </Grid>
 </Card>;
 
@@ -343,8 +396,9 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
   return (
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <TechCard asset={asset} onChange={a => onChange(a)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-      <GithubCard asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );

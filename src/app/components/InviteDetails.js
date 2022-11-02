@@ -34,7 +34,6 @@ const InviteDetails = ({ getter }) => {
             })
             .catch((error) => error);
     };
-
     return (
         <>
             <Tooltip title="Copy invite link">

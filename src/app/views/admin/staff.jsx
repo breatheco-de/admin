@@ -32,9 +32,9 @@ const name = (user) => {
 
 const Staff = () => {
   const [userList, setUserList] = useState([]);
-  const resendInvite = (user) => {
+  const resentMemberInvite = (user) => {
     bc.auth()
-      .resendInvite(user)
+      .resentMemberInvite(user)
       .then(({ data }) => console.log(data))
       .catch((error) => console.error(error));
   };
@@ -135,7 +135,7 @@ const Staff = () => {
               <div className="flex-grow" />
               <InviteDetails getter={() => bc.auth().getMemberInvite(item.id)} />
               <Tooltip title="Resend Invite">
-                <IconButton onClick={() => resendInvite(item.id)}>
+                <IconButton onClick={() => resentMemberInvite(item.id)}>
                   <Icon>refresh</Icon>
                 </IconButton>
               </Tooltip>
