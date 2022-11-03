@@ -7,6 +7,11 @@ const pagesRoutes = [
     component: React.lazy(() => import('./leads')),
   },
   {
+    path: '/growth/leads/:id',
+    exact: true,
+    component: React.lazy(() => import('./leads-form/NewLead')),
+  },
+  {
     path: '/growth/reviews',
     exact: true,
     component: React.lazy(() => import('./reviews')),

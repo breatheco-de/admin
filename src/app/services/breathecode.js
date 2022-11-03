@@ -366,6 +366,12 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAcademySingleLead: (id) => {
+                return axios.bcGet(
+                    "Academy lead",
+                    `${this.host}/marketing/academy/lead/${id}`
+                );
+            },
             getAcademyTags: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
