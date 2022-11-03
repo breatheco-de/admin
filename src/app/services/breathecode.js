@@ -372,6 +372,12 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/lead/${id}`
                 );
             },
+            updateAcademyLead: (id, payload) =>
+                axios.bcPut(
+                    "Academy lead",
+                    `${this.host}/marketing/academy/lead/${id}`,
+                    payload
+                ),
             getAcademyTags: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(

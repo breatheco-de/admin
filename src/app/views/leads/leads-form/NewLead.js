@@ -55,7 +55,7 @@ const NewLead = () => {
       gclid: '',
       tags: '',
       automations: '',
-      street_Address: '',
+      street_address: '',
       country: '',
       city: '',
       latitude: 0,
@@ -198,13 +198,17 @@ const NewLead = () => {
             if (newLead.tag_objects.length !== 0) tags = newLead.tag_objects.map(t => t.slug).join(',');
             let automations = '';
             if (newLead.automation_objects.length !== 0) automations = newLead.automation_objects.map(a => a.slug).join(',');
-            const res = await bc.marketing().addNewLead({ 
+            const payload = { 
               ...newLead, 
               tags, 
               tag_objects: newLead.tag_objects.map((tag) => tag.id),
               automations,
               automation_objects: newLead.automation_objects.map((auto) => auto.id)
-            }); 
+            };
+            let res;
+            if (!id) res = await bc.marketing().addNewLead({ ...payload }); 
+            else res = await bc.marketing().updateAcademyLead(id, { ...payload }); 
+
             if (res.ok) history.push('/growth/leads'); 
           }}
           enableReinitialize
@@ -333,7 +337,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.language}
-                    value={languages.find((lang) => newLead.language === lang.value)}
+                    value={newLead.language}
                     onChange={selectLanguages}
                   >
                     {languages.map((option) => (
@@ -368,6 +372,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_medium}
+                    value={newLead.utm_medium}
                     onChange={createLead}
                   />
                 </Grid>
@@ -381,6 +386,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_campaign}
+                    value={newLead.utm_campaign}
                     onChange={createLead}
                   />
                 </Grid>
@@ -394,6 +400,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_source}
+                    value={newLead.utm_source}
                     onChange={createLead}
                   />
                 </Grid>
@@ -407,6 +414,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.referral_key}
+                    value={newLead.referral_key}
                     onChange={createLead}
                   />
                 </Grid>
@@ -420,6 +428,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.gclid}
+                    value={newLead.gclid}
                     onChange={createLead}
                   />
                 </Grid>
@@ -437,6 +446,7 @@ const NewLead = () => {
                       label="location"
                       required={false}
                       debounced={false}
+                      value={{slug: newLead.location}}
                       getOptionLabel={(option) => `${option.slug}`}
                     />
                   </div>
@@ -455,6 +465,7 @@ const NewLead = () => {
                       label="tags"
                       required={false}
                       multiple={true}
+                      value={newLead.tag_objects}
                       getOptionLabel={(option) => `${option.slug}`}
                     />
                   </div>
@@ -474,6 +485,7 @@ const NewLead = () => {
                       label="Automation"
                       required={false}
                       multiple={true}
+                      value={newLead.automation_objects}
                       getOptionLabel={(option) => `${option.name}`}
                     />
                   </div>
@@ -484,10 +496,11 @@ const NewLead = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Street address"
-                    name="street_Address"
+                    name="street_address"
                     size="small"
                     variant="outlined"
-                    defaultValue={newLead.street_Address}
+                    defaultValue={newLead.street_address}
+                    value={newLead.street_address}
                     onChange={createLead}
                   />
                 </Grid>
@@ -503,6 +516,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.country}
+                    value={newLead.country}
                     onChange={createLead}
                   >
                     {listCountrys}
@@ -517,7 +531,8 @@ const NewLead = () => {
                     name="state"
                     size="small"
                     variant="outlined"
-                    defaultValue={newLead.stats}
+                    defaultValue={newLead.state}
+                    value={newLead.state}
                     onChange={createLead}
                   />
                 </Grid>
@@ -531,6 +546,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.city}
+                    value={newLead.city}
                     onChange={createLead}
                   />
                 </Grid>
@@ -546,6 +562,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.zip_code}
+                    value={newLead.zip_code}
                     onChange={createLead}
                   />
                 </Grid>
@@ -561,6 +578,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.latitude}
+                    value={newLead.latitude}
                     onChange={createLead}
                   />
                 </Grid>
@@ -576,6 +594,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.longitude}
+                    value={newLead.longitude}
                     onChange={createLead}
                   />
                 </Grid>
@@ -589,6 +608,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.browser_lang}
+                    value={newLead.browser_lang}
                     onChange={createLead}
                   />
                 </Grid>
@@ -605,7 +625,7 @@ const NewLead = () => {
                     name="lead_type"
                     size="small"
                     variant="outlined"
-                    value={newLead.leadType}
+                    value={newLead.lead_type}
                     onChange={selectTypeLead}
                   >
                     {leadTypes.map((option) => (
@@ -618,7 +638,7 @@ const NewLead = () => {
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
-                  Create
+                  {id ? 'Update' :'Create'}
                 </Button>
               </div>
             </form>
