@@ -158,6 +158,25 @@ const Assets = () => {
       },
     },
     {
+      name: 'tests',
+      label: 'Tests',
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const item = assetList[dataIndex];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
+                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,5)} color={stageColors[item?.test_status]} />
+              </div>
+            </div>
+            );
+          }
+      },
+    },
+    
+    {
       name: 'action',
       label: ' ',
       options: {
