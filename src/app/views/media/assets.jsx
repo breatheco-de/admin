@@ -158,24 +158,43 @@ const Assets = () => {
       },
     },
     {
-      name: 'tests',
+      name: 'sync_status',
+      label: 'Sync Status',
+      options: {
+        filter: true,
+        filterList:
+          query.get('sync_status') !== null ? [query.get('sync_status')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['PENDING', 'ERROR', 'OK', 'WARNING', 'NEEDS RESYNC']
+        },
+      },
+    },
+    {
+      name: 'test_status',
       label: 'Tests',
       options: {
         filter: true,
+        filterList:
+          query.get('test_status') !== null ? [query.get('test_status')] : [],
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['PENDING', 'ERROR', 'OK', 'WARNING', 'NEEDS RESYNC']
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = assetList[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
                 <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
-                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,5)} color={stageColors[item?.test_status]} />
+                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,7)} color={stageColors[item?.test_status]} />
               </div>
             </div>
             );
           }
       },
     },
-    
     {
       name: 'action',
       label: ' ',
