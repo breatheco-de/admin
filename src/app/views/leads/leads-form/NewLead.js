@@ -13,6 +13,7 @@ import { Breadcrumb } from 'matx';
 import bc from 'app/services/breathecode';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
+import useAuth from "../../../hooks/useAuth";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -26,11 +27,13 @@ const countrys = require('./countrys.json');
 const NewLead = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { user } = useAuth();
 
   const [listCourse, setListCourse] = useState();
   const [course, setCourse] = useState();
 
-  const { academy } = JSON.parse(localStorage.getItem('bc-session'));
+  // const { academy } = JSON.parse(localStorage.getItem('bc-session'));
+  const { academy } = user;
 
   const [newLead, setNewLead] = useState(
     {
@@ -40,7 +43,7 @@ const NewLead = () => {
       phone: '',
       course: '',
       client_comments: '',
-      location: academy.active_campaign_slug,
+      location: academy.slug,
       language: '',
       utm_url: '',
       utm_medium: '',
@@ -122,7 +125,7 @@ const NewLead = () => {
     if (listCourse) {
       setCourse(listCourse.map((item) => (
         <MenuItem key={item.id} value={item.slug}>
-          {item.name}
+          {`${item.name} (${item.slug})`}
         </MenuItem>
       )));
     }
@@ -177,7 +180,11 @@ const NewLead = () => {
         <Formik
           initialValues={newLead}
           validationSchema={ProfileSchema}
-          onSubmit={(newLead) => { bc.marketing().addNewLead(newLead); history.push('/leads/list'); }}
+          onSubmit={(newLead) => { 
+            let tags = '';
+            if (newLead.tag_objects.length !== 0) tags = newLead.tag_objects.map(t => t.slug).join(',');
+            bc.marketing().addNewLead({ ...newLead, tags }); 
+            history.push('/growth/leads'); }}
           enableReinitialize
         >
           {({
@@ -285,20 +292,6 @@ const NewLead = () => {
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Location
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Location"
-                    name="location"
-                    size="small"
-                    variant="outlined"
-                    value={newLead.location}
-                    readOnly
-                    defaultValue={newLead.location}
-                  />
-                </Grid>
-                <Grid item md={2} sm={4} xs={12}>
                   Language
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -333,6 +326,7 @@ const NewLead = () => {
                     defaultValue={newLead.utm_url}
                     onChange={createLead}
                   />
+                  <small className="text-muted d-block">The url when the contact was filling the form, or the chat application if its coming from a chat. E.g: Whatsapp.</small>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Utm medium
@@ -399,7 +393,7 @@ const NewLead = () => {
                     onChange={createLead}
                   />
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
+                {/* <Grid item md={2} sm={4} xs={12}>
                   Tags
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -411,7 +405,7 @@ const NewLead = () => {
                     defaultValue={newLead.tags}
                     onChange={createLead}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item md={2} sm={4} xs={12}>
                   Automations
                 </Grid>
@@ -434,7 +428,7 @@ const NewLead = () => {
                       onChange={(tags) => { setNewLead({ ...newLead, tag_objects: [tags.id] }); }}
                       width="35%"
                       className="mr-2 ml-2"
-                      asyncSearch={() => bc.marketing().getAcademyTags()}
+                      asyncSearch={(search) => bc.marketing().getAcademyTags({like: search, type : 'SOFT,STRONG'})}
                       size="small"
                       label="tags"
                       required={false}
@@ -451,7 +445,8 @@ const NewLead = () => {
                       onChange={(automation) => setNewLead({ ...newLead, automation_objects: [automation.id] })}
                       width="35%"
                       className="mr-2 ml-2"
-                      asyncSearch={() => bc.marketing().getAcademyAutomations()}
+                      asyncSearch={(like) => bc.marketing().getAcademyAutomations({ like })}
+                      filter={(a) => a.slug !== ''}
                       size="small"
                       label="Automation"
                       required={false}

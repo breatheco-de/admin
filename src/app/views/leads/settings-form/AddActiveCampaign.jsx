@@ -22,7 +22,8 @@ export const AddActiveCampaign = ({ initialValues, isCreating, setACAcademy }) =
       if (res.ok) setACAcademy(res.data);
     } else {
       // Call PUT
-      const res = await bc.marketing().updateACAcademy({ ...values });
+      const { event_attendancy_automation, ...restValues } = values
+      const res = await bc.marketing().updateACAcademy({ ...restValues });
       if (res.ok) setACAcademy(res.data);
     }
   };

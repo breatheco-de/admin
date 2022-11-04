@@ -64,7 +64,7 @@ const GrowthSettings = () => {
             <Tags className="mt-4" />
           </Grid>
           <Grid item md={5} xs={12}>
-            <Automations className="mt-4" />
+            <Automations />
           </Grid>
         </Grid>
       </div>
