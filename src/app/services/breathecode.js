@@ -438,8 +438,7 @@ class BreatheCodeClient {
                     `${this.host}/marketing/academy/automation${
                         query ? `?${qs}` : ""
                     }`
-                )
-            },
+                )},
             getAcademyUtm: () =>
                 axios.bcGet(
                     "Academy Utm",
@@ -1032,10 +1031,10 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/technology?slug=${slugs.join(",")}`,
                     payload
                 ),
-            updateAsset: async (payload) =>
+            updateAsset: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${payload.slug}`,
+                    `${this.host}/registry/academy/asset/${slug}`,
                     payload
                 ),
             assetAction: async (slug, payload) =>

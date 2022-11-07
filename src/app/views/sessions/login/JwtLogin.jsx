@@ -31,6 +31,10 @@ const useStyles = makeStyles(() => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  hostBanner: {
+    padding: '1rem',
+    borderBottom: '1px solid #6b6b6b',
+  },
 }));
 
 const JwtLogin = () => {
@@ -72,6 +76,12 @@ const JwtLogin = () => {
       className={clsx('flex justify-center items-center  min-h-full-screen', classes.cardHolder)}
     >
       <Card className={classes.card}>
+        {
+          process.env.NODE_ENV === 'development' ?
+            (<Grid className={clsx(classes.hostBanner)}>
+              API Host used: {config.REACT_APP_API_HOST}
+            </Grid>) : ""
+        }
         <Grid data-cy="login_card" container>
           <Grid item lg={5} md={5} sm={5} xs={12}>
             <div className="p-8 flex justify-center items-center h-full">
