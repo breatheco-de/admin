@@ -100,6 +100,22 @@ const Leads = () => {
       },
     },
     {
+      name: 'utm_source',
+      label: 'UTM Source',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_source') !== null ? [query.get('utm_source')] : [],
+      },
+    },
+    {
+      name: 'utm_term',
+      label: 'UTM Term',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_term') !== null ? [query.get('utm_term')] : [],
+      },
+    },
+    {
       name: 'storage_status',
       label: 'Lead Status',
       options: {
@@ -154,6 +170,14 @@ const Leads = () => {
           </div>
 
         ),
+      },
+    },
+    {
+      name: 'location',
+      label: 'Location',
+      options: {
+        display: 'excluded',
+        filterList: query.get('location') !== null ? [query.get('location')] : [],
       },
     },
     {
@@ -298,7 +322,7 @@ const Leads = () => {
           options={{
             print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
-              if (index === 6) setTags([]);
+              if (index === 9) setTags([]);
               const querys = getParams();
               const { data } = await bc.marketing().getAcademyLeads(querys);
               setItems(data.results);
