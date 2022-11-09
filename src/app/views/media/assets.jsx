@@ -3,15 +3,18 @@ import {
   IconButton, Tooltip, TableCell,
 } from '@material-ui/core';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import ReactCountryFlag from "react-country-flag"
 import dayjs from 'dayjs';
 import { Breadcrumb } from 'matx';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import config from '../../../config.js';
+import { AsyncAutocomplete } from '../../components/Autocomplete';
+import { useQuery } from '../../hooks/useQuery';
+import axios from '../../../axios';
 
 toast.configure();
 const toastOption = {
@@ -44,26 +47,38 @@ const statusColors = {
 };
 
 function ext(url) {
-  if(!url) return ".empty"
+  if (!url) return ".empty"
   return (url = url.substr(1 + url.lastIndexOf("/")).split('?')[0]).split('#')[0].substr(url.lastIndexOf("."))
 }
 
 const Assets = () => {
   const [assetList, setAssetList] = useState([]);
+  const [keywords, setKeywords] = useState([]);
+  const query = useQuery();
+
+  useEffect(() => {
+    let slugs = query.get('keywords');
+    if(slugs) {
+      const keywordsSlugs = slugs.split(',').map((c) => {
+        return { slug: c }
+      });
+      setKeywords(keywordsSlugs);
+    }
+  }, []);
 
   const columns = [
     {
       name: 'title', // field name in the row object
       label: 'Title', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const asset = assetList[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
                 <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={asset.lang?.toUpperCase()} svg 
+                  countryCode={asset.lang?.toUpperCase()} svg
                   style={{
                     fontSize: '10px',
                   }}
@@ -82,6 +97,7 @@ const Assets = () => {
       name: 'status',
       label: 'Status',
       options: {
+        display: true,
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = assetList[dataIndex];
@@ -100,21 +116,83 @@ const Assets = () => {
       },
     },
     {
-      name: 'tests',
+      name: 'keywords',
+      label: 'Keywords',
+      options: {
+        filter: true,
+        display: false,
+        filterType: 'custom',
+        filterList: query.get('keywords') !== null ? [query.get('keywords')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  onChange={(newKeywords) => {
+                    setKeywords(newKeywords);
+                    const slugs = newKeywords.map((i) => i.seo_keywords.map((x) => x.slug).join(',')).join(',');
+                    if (slugs !== '') filterList[index][0] = slugs;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  value={keywords}
+                  size="small"
+                  label="Keywords"
+                  debounced
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => `${option.title}`}
+                  multiple={true}
+                  asyncSearch={async (searchTerm) => await axios.get(`${config.REACT_APP_API_HOST}/v1/registry/academy/asset?keywords=${searchTerm}`)}
+                />
+              </div>
+            );
+          }
+        },
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">
+            {assetList[dataIndex].tags
+              ? assetList[dataIndex].tags
+              : '---'}
+          </span>
+        ),
+      },
+    },
+    {
+      name: 'sync_status',
+      label: 'Sync Status',
+      options: {
+        filter: true,
+        filterList:
+          query.get('sync_status') !== null ? [query.get('sync_status')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['PENDING', 'ERROR', 'OK', 'WARNING', 'NEEDS RESYNC']
+        },
+      },
+    },
+    {
+      name: 'test_status',
       label: 'Tests',
       options: {
         filter: true,
+        filterList:
+          query.get('test_status') !== null ? [query.get('test_status')] : [],
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['PENDING', 'ERROR', 'OK', 'WARNING', 'NEEDS RESYNC']
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = assetList[dataIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
                 <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
-                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,5)} color={stageColors[item?.test_status]} />
+                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,7)} color={stageColors[item?.test_status]} />
               </div>
             </div>
-          );
-        },
+            );
+          }
       },
     },
     {
@@ -174,9 +252,18 @@ const Assets = () => {
           items={assetList}
           view="?"
           singlePage=""
-          historyReplace="/assets"
+          historyReplace="/media/asset"
+          options={{
+            print: false,
+            onFilterChipClose: async (index, removedFilter, filterList) => {
+              if (index === 6) setKeywords([]);
+              const querys = getParams();
+              const { data } = await bc.registry().getAllAssets(querys);
+              setAssetList(data.results);
+            },
+          }}
           search={async (querys) => {
-            if(!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
+            if (!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
             const { data } = await bc.registry().getAllAssets(querys);
             setAssetList(data.results);
             return data;
