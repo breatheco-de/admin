@@ -10,7 +10,7 @@ import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
-import GetAcademyAlias from 'app/components/GetAcademyAlias';
+import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -286,7 +286,7 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      <GetAcademyAlias />
+      <AlertAcademyAlias />
       <div>
         <SmartMUIDataTable
           title="All Leads"
