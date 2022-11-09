@@ -171,9 +171,16 @@ const ComposeAsset = () => {
     setErrors(_errors);
     
     if(Object.keys(_errors).length == 0){
-      const action = isCreating ? "createAsset" : "updateAsset";
-      
-      const resp = await bc.registry()[action](_asset);
+
+      const resp = isCreating ? 
+        await bc.registry().createAsset(_asset) 
+        : 
+        await bc.registry().updateAsset(_asset.slug, { 
+          ..._asset, 
+          author: undefined, 
+          seo_keywords: undefined, 
+        });
+
       if(resp.ok){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)
