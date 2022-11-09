@@ -130,7 +130,20 @@ const NewLead = () => {
   useEffect(() => {
     bc.admissions().getCertificates()
       .then(({ data }) => {
-        setListCourse(data);
+        // setListCourse(data);
+        setListCourse([
+          { slug: 'coding-introduction', name: 'Coding Introduction' },
+          { slug: 'full-stack', name: 'Full Stack Part-Time' },
+          { slug: 'full-stack-ft', name: 'Full Stack Full-Time' },
+          { slug: 'front-end-development', name: 'Front-End' },
+          { slug: 'back-end-development', name: 'Back-end' },
+          { slug: 'web-development', name: 'Web Development' },
+          { slug: 'datascience-ml', name: 'Data Science and ML' },
+          { slug: 'blockchain-development', name: 'Blockchain' },
+          { slug: 'software-engineering', name: 'Software Engineering' },
+          { slug: 'machine-learning-engineering', name: 'Machine Learning Engineering' },
+          { slug: 'node-js', name: 'Node JS' },
+        ]);
       });
   }, []);
 
@@ -164,6 +177,7 @@ const NewLead = () => {
       .email('The email is incorrect'),
     course: Yup.string().required('Please enter a course'),
     language: Yup.string().required('Please enter a language'),
+    location: Yup.string().required('Please enter a location'),
     lead_type: Yup.string().required('Please select one type of lead'),
     phone: Yup.string()
       .matches(phoneRegExp, `Please enter the correct format with the code of your country with a ${'+'}`),
@@ -438,13 +452,14 @@ const NewLead = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
+                      error={errors.location && touched.location}
                       onChange={(location) => { setNewLead({ ...newLead, location: location.slug }); }}
                       width="35%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.marketing().getAcademyAlias()}
                       size="small"
                       label="location"
-                      required={false}
+                      required={true}
                       debounced={false}
                       value={{slug: newLead.location}}
                       getOptionLabel={(option) => `${option.slug}`}

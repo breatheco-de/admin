@@ -398,7 +398,7 @@ class BreatheCodeClient {
                     `${this.host}/marketing/activecampaign${query ? `?${qs}` : ""}`
                 );
             },
-            AlertAcademyAlias: () => 
+            getAcademyAlias: () => 
                 axios.bcGet(
                     "Academy Id",
                     `${this.host}/marketing/academy/alias`
