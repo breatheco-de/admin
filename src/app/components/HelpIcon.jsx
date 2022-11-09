@@ -9,7 +9,9 @@ const HelpIcon = ({ message, link, styles }) => {
 
   return (
     <>
-      <Tooltip title={message}
+      <Tooltip 
+
+        title={message?.trim()}
         fontSize="small"
         color="primary"
         style={{cursor: link ? 'pointer' : 'auto'}}

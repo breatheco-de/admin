@@ -16,6 +16,7 @@ import { getTimeDifference } from 'utils.js';
 import { getHashtringParams, setHashstringParams } from '../../../../utils'
 import bc from 'app/services/breathecode';
 import { PickUserModal } from 'app/components/PickUserModal';
+import { PickTranslationModal } from './PickTranslationModal';
 
 import clsx from 'clsx';
 
@@ -28,6 +29,9 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   notificationCard: {
     '&:hover': {
+      '& .comment-text': {
+        opacity: '0.1',
+      },
       '& .delete-button': {
         cursor: 'pointer',
         display: 'unset',
@@ -35,6 +39,7 @@ const useStyles = makeStyles(({ palette }) => ({
       },
       '& .assign-button': {
         cursor: 'pointer',
+        display: 'unset',
         zIndex: 2,
       },
       '& .resolve-button': {
@@ -56,6 +61,7 @@ const useStyles = makeStyles(({ palette }) => ({
       bottom: 8,
     },
     '& .assign-button': {
+      display: 'none',
       position: 'absolute',
       right: 25,
       top: 8,
@@ -72,6 +78,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
   const [panelOpen, setPanelOpen] = React.useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({});
+  const [copyComment, setCopyComment] = useState(null);
   const [assignComment, setAssignComment] = useState(null);
 
   const classes = useStyles();
@@ -137,6 +144,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
         onClose={handleAddAssignComment} 
         hint="Assign someone to resolve this comment"
       />}
+      {copyComment && <PickTranslationModal asset={asset} originalComment={copyComment} onClose={() => setCopyComment(false)} />}
       <IconButton
         onClick={() => setPanelOpen(true)}
       >
@@ -196,17 +204,31 @@ const CommentBar = ({ container, iconName, title, asset }) => {
                   />
                 </Tooltip>
                 :
+                <Tooltip title={`Assign issue`}>
+                  <IconButton
+                    size="small"
+                    className="assign-button bg-light-gray mr-6"
+                    onClick={() => setAssignComment(comment)}
+                    style={{right: 8}}
+                  >
+                    <Icon className="text-muted" fontSize="small">
+                      person_add
+                    </Icon>
+                  </IconButton>
+                </Tooltip>
+              }
+              <Tooltip title={`Duplicate issue in other langs`}>
                 <IconButton
                   size="small"
                   className="assign-button bg-light-gray mr-6"
-                  onClick={() => setAssignComment(comment)}
-                  style={{right: 8}}
+                  onClick={() => setCopyComment(comment)}
+                  style={{right: 35}}
                 >
                   <Icon className="text-muted" fontSize="small">
-                    person_add
+                    queue
                   </Icon>
                 </IconButton>
-              }
+              </Tooltip>
               <IconButton
                 size="small"
                 className="delete-button bg-light-gray mr-6"
@@ -226,7 +248,7 @@ const CommentBar = ({ container, iconName, title, asset }) => {
               </div>
               <Card className={`mx-4 mb-3 ${comment.id == panelOpen ? 'bg-light-warning' : ''}`} elevation={3}>
                 <div className="px-4 pt-2 pb-4">
-                  <p className="m-0">{comment.text}</p>
+                  <p className="comment-text m-0">{comment.text}</p>
                   <small className="text-muted d-block">
                     {comment.author.first_name} {comment.author.last_name},{' '}
                     <small className="card__topbar__time text-muted">

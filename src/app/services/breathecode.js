@@ -1043,10 +1043,10 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/technology?slug=${slugs.join(",")}`,
                     payload
                 ),
-            updateAsset: async (payload) =>
+            updateAsset: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${payload.slug}`,
+                    `${this.host}/registry/academy/asset/${slug}`,
                     payload
                 ),
             assetAction: async (slug, payload) =>
@@ -1088,6 +1088,20 @@ class BreatheCodeClient {
                 await axios.bcGet(
                     "Asset",
                     `${this.host}/registry/academy/asset/${associatedSlug}`,
+                    options
+                ),
+            getAssetReport: async (associatedSlug, options, query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${associatedSlug}/seo_report?${qs}`,
+                    options
+                )
+            },
+            getCluster: async (associatedSlug, options) =>
+                await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/keywordcluster/${associatedSlug}`,
                     options
                 ),
             getAssetContent: async (associatedSlug, { format='md', frontmatter='false' }) =>

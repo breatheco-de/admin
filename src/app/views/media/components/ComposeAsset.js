@@ -78,14 +78,15 @@ const ComposeAsset = () => {
   const [ errorDialog, setErrorDialog] = useState(false);
   const [ content, setContent ] = useState(null);
 
-  const partialUpdateAsset = async (newAsset) => {
+  const partialUpdateAsset = async (_slug, newAsset) => {
     if(isCreating){
       toast.error("Please create the asset first", toastOption);
     }
     else{
-      const resp = await bc.registry().updateAsset({ ...newAsset, slug: asset_slug });
+      const resp = await bc.registry().updateAsset(_slug, { ...newAsset, slug: newAsset.slug });
       if (resp.status >= 200 && resp.status < 300) {
         setAsset(resp.data);
+        if(resp.data.slug != asset_slug) history.push(`./${resp.data.slug}`)
       }
     }
   }
@@ -170,9 +171,16 @@ const ComposeAsset = () => {
     setErrors(_errors);
     
     if(Object.keys(_errors).length == 0){
-      const action = isCreating ? "createAsset" : "updateAsset";
-      
-      const resp = await bc.registry()[action](_asset);
+
+      const resp = isCreating ? 
+        await bc.registry().createAsset(_asset) 
+        : 
+        await bc.registry().updateAsset(_asset.slug, { 
+          ..._asset, 
+          author: undefined, 
+          seo_keywords: undefined, 
+        });
+
       if(resp.ok){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)
@@ -187,7 +195,7 @@ const ComposeAsset = () => {
   }
 
   const handleUpdateCategory = async (category) => {
-    if(category) partialUpdateAsset({ category: category.id || category })
+    if(category) partialUpdateAsset(asset.slug, { category: category.id || category })
     setUpdateCategory(false);
   }
 
@@ -250,19 +258,19 @@ const ComposeAsset = () => {
         <div className="flex flex-wrap justify-between mb-6">
           <Grid item xs={12} sm={8}>
             <EditableTextField defaultValue={asset.title} onChange={(_v) => {
-              if(!isCreating) partialUpdateAsset({ title: _v });
+              if(!isCreating) partialUpdateAsset(asset.slug, { title: _v });
               else setAsset({ ...asset, title: _v })
             }}>
               <h3 className="my-0 font-medium text-28">{asset.title}</h3>
             </EditableTextField>
             <EditableTextField defaultValue={asset.slug} 
-            onValidate={async () => {
-              const available = (await bc.registry().getAsset(slugify(asset.slug), { silent: true })).status === 404;
+            onValidate={async (_val) => {
+              const available = (await bc.registry().getAsset(slugify(_val), { silent: true })).status === 404;
               setErrors({ ...errors, slug: available ? null : 'Slug already taken'});
               return available;
             }}
             onChange={(_v) => {
-              if(!isCreating) partialUpdateAsset({ slug: slugify(_v) });
+              if(!isCreating) partialUpdateAsset(asset.slug, { slug: slugify(_v) });
               else setAsset({ ...asset, slug: slugify(_v) })
             }}>
               <p className="my-0">{asset.slug}</p>
@@ -348,7 +356,7 @@ const ComposeAsset = () => {
             <AssetMarkdown asset={asset} value={content} onChange={(c) => setContent(c)} />
           </Grid>
           <Grid item md={4} xs={12}>
-            <AssetMeta asset={asset} onAction={(action, payload=null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(a)} />
+            <AssetMeta asset={asset} onAction={(action, payload=null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(asset_slug, a)} />
           </Grid>
         </Grid>
       </>
@@ -357,7 +365,7 @@ const ComposeAsset = () => {
         onClose={opt => { 
           if(opt){
             if(isCreating) setAsset({ ...asset, visibility: opt })
-            else partialUpdateAsset({ visibility: opt });
+            else partialUpdateAsset(asset.slug, { visibility: opt });
           }
           setUpdateVisibility(false)
         }}
@@ -369,7 +377,7 @@ const ComposeAsset = () => {
         onClose={opt => { 
           if(opt){
             if(isCreating) setAsset({ ...asset, asset_type: opt })
-            else partialUpdateAsset({ asset_type: opt });
+            else partialUpdateAsset(asset.slug, { asset_type: opt });
           }
           setUpdateType(false)
         }}
@@ -381,7 +389,7 @@ const ComposeAsset = () => {
         onClose={opt => { 
           if(opt){
             if(isCreating) setAsset({ ...asset, status: opt })
-            else partialUpdateAsset({ status: opt });
+            else partialUpdateAsset(asset.slug, { status: opt });
           }
           setUpdateStatus(false)
         }}
@@ -393,7 +401,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if(opt){
             if(isCreating) setAsset({ ...asset, lang: opt.value })
-            else partialUpdateAsset({ lang: opt.value });
+            else partialUpdateAsset(asset.slug, { lang: opt.value });
           } 
           setUpdateLanguage(false)
         }}
