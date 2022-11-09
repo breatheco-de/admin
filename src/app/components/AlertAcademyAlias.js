@@ -40,7 +40,7 @@ const AlertAcademyAlias = () => {
    {alias !== null && (<Alert severity={status.color}>
 
       <AlertTitle>{alias !== null
-      ?  ( <>{status.message} <a href='https://4geeksacademy.notion.site/The-academy-alias-8c8e5844e27342e2bd85571e1ff87542'><u>You can read more about it here.</u></a></> )
+      ?  ( <>{status.message} <a href='https://4geeksacademy.notion.site/The-academy-alias-8c8e5844e27342e2bd85571e1ff87542' target="_blank"><u>You can read more about it here.</u></a></> )
       : ""}
 
       </AlertTitle>
