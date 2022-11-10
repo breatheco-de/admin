@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Tooltip, Chip, IconButton } from '@material-ui/core';
+import { Button, Tooltip, Chip, IconButton, Icon, } from '@material-ui/core';
 import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
-import GetAcademyAlias from 'app/components/GetAcademyAlias';
+import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -228,8 +229,6 @@ const Leads = () => {
       label: 'Created At',
       options: {
         filter: false,
-        filterList:
-          query.get('created_at') !== null ? [query.get('created_at')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -240,6 +239,25 @@ const Leads = () => {
                 {dayjs(items[i].created_at).fromNow()}
               </small>
             </div>
+          </div>
+        ),
+      },
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRenderLite: (i) => (
+          <div className="flex items-center">
+            <Link to={`/growth/leads/${items[i].id}`}>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
+            </Link>
           </div>
         ),
       },
@@ -310,7 +328,7 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      <GetAcademyAlias />
+      <AlertAcademyAlias />
       <div>
         <SmartMUIDataTable
           title="All Leads"

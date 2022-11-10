@@ -72,7 +72,7 @@ const Board = () => {
   }, []);
 
   const handleMoveCard = async (fromStatus, toStatus, assetSlug) => {
-    const resp = await bc.registry().updateAsset({ slug: assetSlug, status: toStatus });
+    const resp = await bc.registry().updateAsset(assetSlug,{ status: toStatus });
     if (resp.status == 200)
       setBoard({
         ...board, list: board.list.map(c => {
@@ -104,7 +104,7 @@ const Board = () => {
     }
     else {
       const resp = await bc.registry().assetAction(card.slug, { action_slug: action });
-      if (resp.status == 200) updateAsset(resp.data);
+      if (resp.status == 200) updateAsset(card.slug, resp.data);
     }
   }
 
@@ -114,16 +114,16 @@ const Board = () => {
       return;
     }
 
-    const resp = await bc.registry().updateAsset({ author: author.id, slug: assignAsset.slug });
+    const resp = await bc.registry().updateAsset(assignAsset.slug, { author: author.id });
     if (resp.ok){
-      updateAsset(resp.data);
+      updateAsset(assignAsset.slug, resp.data);
       setAssignAsset(null);
     }
   }
 
   const handleCardUpdate = async (_c) => {
-    const resp = await bc.registry().updateAsset({ readme_url: _c.readme_url, slug: _c.slug })
-    if (resp.status == 200) updateAsset(resp.data);
+    const resp = await bc.registry().updateAsset(_c.slug, { readme_url: _c.readme_url })
+    if (resp.status == 200) updateAsset(_c.slug, resp.data);
   }
 
   return (
