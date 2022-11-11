@@ -193,7 +193,7 @@ const NewLead = () => {
 
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add New Lead</h4>
+          <h4 className="m-0">{id ? 'Update Lead' : 'Add New Lead'}</h4>
         </div>
         <Divider className="mb-2" />
 
