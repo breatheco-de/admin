@@ -193,8 +193,6 @@ const Leads = () => {
                   value={alias}
                   onChange={(newAlias) => {
                     setAlias(newAlias);
-                    console.log('newAlias');
-                    console.log(newAlias);
                     if (newAlias) filterList[index][0] = newAlias.slug;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);
