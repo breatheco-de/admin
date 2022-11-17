@@ -334,8 +334,7 @@ const Leads = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Pages', path: '/leads/list' },
-                { name: 'Order List' },
+                { name: 'Leads' },
               ]}
             />
           </div>

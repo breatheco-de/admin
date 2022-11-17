@@ -9,9 +9,9 @@ const AlertAcademyAlias = () => {
     const { user } = useAuth();
 
 
-    const getAcAcademyAlias = async () => {
+    const getAcademyAlias = async () => {
         try {
-          const res = await bc.marketing().AlertAcademyAlias();
+          const res = await bc.marketing().getAcademyAlias();
           setAlias(res.data);
         } catch (e) {
           console.log(e)
@@ -19,7 +19,7 @@ const AlertAcademyAlias = () => {
       }
 
       useEffect(() => {
-        getAcAcademyAlias();
+        getAcademyAlias();
       }, []);
 
     
