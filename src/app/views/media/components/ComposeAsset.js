@@ -162,7 +162,7 @@ const ComposeAsset = () => {
     const _asset = { 
       ...asset, 
       readme_url,
-      category: (typeof(asset.category) !== "object") ? asset.category : asset.category.id,
+      category: (!asset.category || typeof(asset.category) !== "object") ? asset.category : asset.category.id,
       owner: asset.owner?.id,
       readme_raw: Base64.encode(content), 
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
