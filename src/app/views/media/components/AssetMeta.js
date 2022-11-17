@@ -258,7 +258,7 @@ const SEOCard = ({ asset, onAction, onChange }) => {
 
     <Grid item className="flex" xs={12}>
       {asset.seo_keywords.length == 0 ? 
-        <p className="p-0 m-0">No keywords assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span></p>
+        <p className="p-0 m-0">No keywords assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span> or <span className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: false })}>disable seo.</span></p>
         : 
         <>
           {asset.seo_keywords.map(k => 
