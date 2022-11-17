@@ -258,17 +258,17 @@ const SEOCard = ({ asset, onAction, onChange }) => {
 
     <Grid item className="flex" xs={12}>
       {asset.seo_keywords.length == 0 ? 
-        <p className="p-0 m-0">No keywords assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span> or <span className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: false })}>disable seo.</span></p>
+        <p className="p-0 m-0">Nothing assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span> or <span className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: false })}>disable SEO.</span></p>
         : 
         <>
-          {asset.seo_keywords.map(k => 
-            <Chip 
+          {asset.seo_keywords.map(k => {
+            return <Chip 
               key={k.slug}
               className="mr-1" size="small" 
               label={k.title || k} 
-              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => _k != k)})}>delete</Icon>} 
+              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => (typeof(k) != "object") ?  _k != k : _k != k.id)})}>delete</Icon>} 
             />
-          )}
+          })}
           <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddKeyword(true)}/>
         </>
       }
