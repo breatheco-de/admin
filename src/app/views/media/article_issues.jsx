@@ -6,6 +6,9 @@ import {
   Avatar,
   Button,
   Grid,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import history from "history.js";
@@ -13,7 +16,9 @@ import bc from 'app/services/breathecode';
 import ReactCountryFlag from "react-country-flag"
 import { getSession } from '../../redux/actions/SessionActions';
 import DowndownMenu from '../../components/DropdownMenu';
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import { AsyncAutocomplete } from '../../components/Autocomplete';
+import { useQuery } from '../../hooks/useQuery';
+import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
@@ -35,25 +40,43 @@ const name = (user) => {
 const Board = () => {
 
   const [issueList, setIssueList] = useState([]);
+  const [resolved, setResolved] = useState(false);
+  const [delivered, setDelivered] = useState(false);
+  const [owner, setOwner] = useState(null);
+  const [author, setAuthor] = useState(null);
   const [session] = useState(getSession());
+  const query = useQuery();
   if (session?.academy?.timezone) dayjs.tz.setDefault(session.academy.timezone);
 
+  useEffect(() => {
+    let author_query = query.get('author');
+    if(author_query) setAuthor({ email: author_query });
+
+    let owner_query = query.get('owner');
+    if(owner_query) setOwner({ email: owner_query });
+
+    if(query.get('resolved')) setResolved(true);
+
+    if(query.get('delivered')) setDelivered(true);
+
+  }, []);
+  
   const columns = [
     {
       name: 'title', // field name in the row object
       label: 'Title', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const comment = issueList[dataIndex];
           return (
             <div>
-                <p className="my-0 text-15">{comment.text}</p>
-                {comment.asset.title ? 
-                  <small className="text-muted">{comment.asset.title}</small>
-                  :
-                  <small className="text-muted">{comment?.asset.slug}</small>
-                }
+              <p className="my-0 text-15">{comment.text}</p>
+              {comment.asset.title ?
+                <small className="text-muted">{comment.asset.title}</small>
+                :
+                <small className="text-muted">{comment?.asset.slug}</small>
+              }
             </div>
           );
         },
@@ -63,7 +86,35 @@ const Board = () => {
       name: 'owner', // field name in the row object
       label: 'Owner', // column title that will be shown in table
       options: {
-        filter: false,
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('owner') !== null ? [query.get('owner')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  onChange={(userData) => {
+                    setOwner(userData)
+                    if (userData) filterList[index][0] = userData.email;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  size="small"
+                  value={owner}
+                  label="Owner"
+                  debounced
+                  renderOption={(option) => (
+                    `${option.first_name} ${option.last_name}, (${option.email})`
+                  )}
+                  getOptionLabel={(option) => option.email}
+                  getOptionSelected={(option, value) => option.email === value.email}
+                  asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
+                />
+              </div>
+            );
+          }
+        },
         customBodyRenderLite: (dataIndex) => {
           const { owner, ...rest } = issueList[dataIndex];
           if (!owner) return <div>
@@ -85,19 +136,121 @@ const Board = () => {
       },
     },
     {
+      name: 'author', // field name in the row object
+      label: 'Author', // column title that will be shown in table
+      options: {
+        display: 'excluded',
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('author') !== null ? [query.get('author')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  onChange={(userData) => {
+                    setAuthor(userData)
+                    if (userData) filterList[index][0] = userData.email;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  size="small"
+                  value={author}
+                  label="Author"
+                  debounced
+                  renderOption={(option) => (
+                    `${option.first_name} ${option.last_name}, (${option.email})`
+                  )}
+                  getOptionLabel={(option) => option.email}
+                  getOptionSelected={(option, value) => option.email === value.email}
+                  asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
+                />
+              </div>
+            );
+          }
+        },
+      },
+    },
+    {
       name: 'status',
       label: 'Status',
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = issueList[dataIndex];
           return (
             <div>
-                <small className={`border-radius-4 p-1 ${statusColors[item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"]}`}>
-                  {item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"}
-                </small>
+              <small className={`border-radius-4 p-1 ${statusColors[item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"]}`}>
+                {item.resolved ? "resolved" : item.delivered ? "delivered" : "pending"}
+              </small>
             </div>
           );
+        },
+      },
+    },
+    {
+      name: 'delivered',
+      options: {
+        display: 'excluded',
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('delivered') !== null ? [query.get('delivered')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <FormGroup>
+                  <FormControlLabel
+                    label="Delivered"
+                    control={
+                      <Checkbox
+                        checked={delivered}
+                        onChange={(event) => {
+                          setDelivered(event.target.checked);
+                          if (event.target.checked) filterList[index][0] = 'true';
+                          else filterList[index] = []
+                          onChange(filterList[index], index, column);
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </div>
+            );
+          }
+        },
+      },
+    },
+    {
+      name: 'resolved',
+      options: {
+        display: 'excluded',
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('resolved') !== null ? [query.get('resolved')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <FormGroup>
+                  <FormControlLabel
+                    label="Resolved"
+                    control={
+                      <Checkbox
+                        checked={resolved}
+                        onChange={(event) => {
+                          setResolved(event.target.checked);
+                          if (event.target.checked) filterList[index][0] = 'true';
+                          else filterList[index] = []
+                          onChange(filterList[index], index, column);
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </div>
+            );
+          }
         },
       },
     },
@@ -136,8 +289,8 @@ const Board = () => {
         <Grid item xs={6} sm={4} align="right">
           <DowndownMenu
             options={[
-              { label: 'Swich to: New Articles', value: 'new_articles'},
-              { label: 'Swich to: Issues on previous articles', value: 'article_issues'}
+              { label: 'Swich to: New Articles', value: 'new_articles' },
+              { label: 'Swich to: Issues on previous articles', value: 'article_issues' }
             ]}
             icon="more_horiz"
             onSelect={({ value }) => history.push(`./${value}`)}
@@ -156,7 +309,18 @@ const Board = () => {
           items={issueList}
           view="?"
           singlePage=""
-          historyReplace="/assets"
+          historyReplace="/media/article_issues"
+          options={{
+            onFilterChipClose: async (index, removedFilter, filterList) => {
+              if (index === 1) setOwner(null);
+              else if (index === 2) setAuthor(null);
+              else if (index === 4) setDelivered(false);
+              else setResolved(false);
+              const querys = getParams();
+              const { data } = await bc.registry().getAssetComments(querys);
+              setIssueList(data.results);
+            },
+          }}
           search={async (querys) => {
             // if(!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
             const { data } = await bc.registry().getAssetComments(querys);
