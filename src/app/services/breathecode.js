@@ -1046,7 +1046,7 @@ class BreatheCodeClient {
             updateAsset: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${slug}`,
+                    `${this.host}/registry/academy/asset${slug ? `/${slug}` : ''}`,
                     payload
                 ),
             assetAction: async (slug, payload) =>
