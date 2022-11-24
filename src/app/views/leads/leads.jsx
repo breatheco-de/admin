@@ -12,8 +12,15 @@ import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
+import { toast } from "react-toastify";
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 dayjs.extend(relativeTime);
 
@@ -318,6 +325,9 @@ const Leads = () => {
                     .bulkSendToCRM(ids);
                   setSelectedRows([]);
                   return data;
+                }
+                else {
+                  return toast.error('No pending leads at the moment.', toastOption);
                 }
               }}
             />
