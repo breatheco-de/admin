@@ -6,9 +6,6 @@ import {
   Avatar,
   Button,
   Grid,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import history from "history.js";
@@ -40,8 +37,6 @@ const name = (user) => {
 const Board = () => {
 
   const [issueList, setIssueList] = useState([]);
-  const [resolved, setResolved] = useState(false);
-  const [delivered, setDelivered] = useState(false);
   const [owner, setOwner] = useState(null);
   const [author, setAuthor] = useState(null);
   const [session] = useState(getSession());
@@ -54,10 +49,6 @@ const Board = () => {
 
     let owner_query = query.get('owner');
     if(owner_query) setOwner({ email: owner_query });
-
-    if(query.get('resolved')) setResolved(true);
-
-    if(query.get('delivered')) setDelivered(true);
 
   }, []);
   
@@ -108,6 +99,7 @@ const Board = () => {
                     `${option.first_name} ${option.last_name}, (${option.email})`
                   )}
                   getOptionLabel={(option) => option.email}
+                  filterOptions={(options) => options}
                   getOptionSelected={(option, value) => option.email === value.email}
                   asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
                 />
@@ -158,6 +150,7 @@ const Board = () => {
                   value={author}
                   label="Author"
                   debounced
+                  filterOptions={(options) => options}
                   renderOption={(option) => (
                     `${option.first_name} ${option.last_name}, (${option.email})`
                   )}
@@ -193,31 +186,10 @@ const Board = () => {
       options: {
         display: 'excluded',
         filter: true,
-        filterType: 'custom',
+        filterType: 'dropdown',
         filterList: query.get('delivered') !== null ? [query.get('delivered')] : [],
         filterOptions: {
-          display: (filterList, onChange, index, column) => {
-            return (
-              <div>
-                <FormGroup>
-                  <FormControlLabel
-                    label="Delivered"
-                    control={
-                      <Checkbox
-                        checked={delivered}
-                        onChange={(event) => {
-                          setDelivered(event.target.checked);
-                          if (event.target.checked) filterList[index][0] = 'true';
-                          else filterList[index] = []
-                          onChange(filterList[index], index, column);
-                        }}
-                      />
-                    }
-                  />
-                </FormGroup>
-              </div>
-            );
-          }
+          names: ['true', 'false',],
         },
       },
     },
@@ -226,31 +198,10 @@ const Board = () => {
       options: {
         display: 'excluded',
         filter: true,
-        filterType: 'custom',
+        filterType: 'dropdown',
         filterList: query.get('resolved') !== null ? [query.get('resolved')] : [],
         filterOptions: {
-          display: (filterList, onChange, index, column) => {
-            return (
-              <div>
-                <FormGroup>
-                  <FormControlLabel
-                    label="Resolved"
-                    control={
-                      <Checkbox
-                        checked={resolved}
-                        onChange={(event) => {
-                          setResolved(event.target.checked);
-                          if (event.target.checked) filterList[index][0] = 'true';
-                          else filterList[index] = []
-                          onChange(filterList[index], index, column);
-                        }}
-                      />
-                    }
-                  />
-                </FormGroup>
-              </div>
-            );
-          }
+          names: ['true', 'false',],
         },
       },
     },
@@ -314,8 +265,6 @@ const Board = () => {
             onFilterChipClose: async (index, removedFilter, filterList) => {
               if (index === 1) setOwner(null);
               else if (index === 2) setAuthor(null);
-              else if (index === 4) setDelivered(false);
-              else setResolved(false);
               const querys = getParams();
               const { data } = await bc.registry().getAssetComments(querys);
               setIssueList(data.results);
