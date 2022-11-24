@@ -16,6 +16,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { PickTechnologyModal } from './PickTechnologyModal';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import HelpIcon from "../../../components/HelpIcon";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
 import API from "../../../services/breathecode"
@@ -147,38 +148,67 @@ const LangCard = ({ asset, onAction }) => {
 }
 
 
-const SEOReport = ({ log=[], isOpened, onClose }) => {
+const SEOReport = ({ asset, onClose }) => {
+
+  const [ report, setReport ] = useState({ results: [] });
+
+  const getReport = async () => {
+    const resp = await bc.registry().getAssetReport(asset.slug, {}, {
+      limit: 5, 
+      offset: report.results.length
+    });
+    if(resp.ok) setReport({ 
+      count: resp.data.count, 
+      next: resp.data.next, 
+      results: report.results.concat(resp.data.results) 
+    });
+    else console.error("Error fetching report");
+  }
+
+  useEffect(() => getReport(), []);
   
   return <Dialog
-      open={isOpened}
+      open={true}
       onClose={() => onClose()}
       aria-labelledby="form-dialog-title"
       fullWidth
     >
     <DialogContent className="p-0">
 
-      <Table className="mb-4">
+      <Table>
         <TableHead>
           <TableRow className="bg-default">
-            <TableCell className="pl-sm-24">Score</TableCell>
-            <TableCell className="px-0">Details</TableCell>
+            <TableCell width="150" className="pl-sm-24">Analysis</TableCell>
+            <TableCell width="80">Score</TableCell>
+            <TableCell>Details</TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {log.map((entry, index) => {
+          {report.results.map((entry, index) => {
             return (
               <TableRow key={index}>
-                <TableCell className="pl-sm-24 capitalize" align="left">
-                  {entry.rating}
+                <TableCell width="150" className="pl-sm-24 capitalize" align="left">
+                  <p className="m-0 p-0">{entry.report_type}</p>
+                  <small>{dayjs(entry.created_at).fromNow(true)} ago</small>
                 </TableCell>
-
+                <TableCell width="80" className="pl-0 capitalize" align="left">
+                  <span className={`mr-1 ${entry.rating > 80 ? "green" : "red"}`}>{entry.rating}</span>
+                  <HelpIcon message={entry.how_to_fix} />
+                </TableCell>
                 <TableCell className="pl-0 capitalize" align="left">
-                  {entry.msg}
+                  {Array.isArray(entry.log) && entry.log.length == 0 && "OK"}
+                  {!Array.isArray(entry.log) ? entry.log : entry.log.map(l => <li style={{ listStyle: "none" }}>{l.rating}: {l.msg}</li>)}
                 </TableCell>
               </TableRow>
             );
           })}
+          {report.next && 
+          <TableRow>
+            <TableCell colspan="3" align="center">
+              <small><a href="#" className="anchor" onClick={() => getReport()}>Load more</a></small>
+            </TableCell>
+          </TableRow>}
         </TableBody>
       </Table>
     </DialogContent>
@@ -200,6 +230,12 @@ const SEOCard = ({ asset, onAction, onChange }) => {
     else return "text-error";
   }
 
+  if(!asset.is_seo_tracked){
+    return <Card className="p-4 mb-4">
+      This asset is not being SEO optimized, <small className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: true })}>click here to activate it</small>.
+    </Card>
+  }
+
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div>
@@ -210,7 +246,7 @@ const SEOCard = ({ asset, onAction, onChange }) => {
             : 
             <p className="m-0 p-0">
               <small className="capitalize">{dayjs(asset.last_seo_scan_at).fromNow()}</small>{" "}
-              <small className="pointer underline text-primary" onClick={() => setOpenReport(true)}>read report</small>
+              <small className="pointer underline text-primary" onClick={async () => setOpenReport(true)}>read report</small>
             </p>
           }
         </div>
@@ -222,23 +258,23 @@ const SEOCard = ({ asset, onAction, onChange }) => {
 
     <Grid item className="flex" xs={12}>
       {asset.seo_keywords.length == 0 ? 
-        <p className="p-0 m-0">No keywords assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span></p>
+        <p className="p-0 m-0">Nothing assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span> or <span className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: false })}>disable SEO.</span></p>
         : 
         <>
-          {asset.seo_keywords.map(k => 
-            <Chip 
+          {asset.seo_keywords.map(k => {
+            return <Chip 
               key={k.slug}
               className="mr-1" size="small" 
               label={k.title || k} 
-              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => _k != k)})}>delete</Icon>} 
+              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => (typeof(k) != "object") ?  _k != k : _k != k.id)})}>delete</Icon>} 
             />
-          )}
+          })}
           <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddKeyword(true)}/>
         </>
       }
     </Grid>
 
-    <SEOReport log={asset?.seo_json_status?.log} isOpened={openReport} onClose={() => setOpenReport(false)} />
+    {openReport && <SEOReport asset={asset} onClose={() => setOpenReport(false)} />}
     {addKeyword && <PickKeywordModal onClose={handleAddKeyword} lang={asset.lang} />}
   </Card>;
 }

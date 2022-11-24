@@ -366,6 +366,18 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            getAcademySingleLead: (id) => {
+                return axios.bcGet(
+                    "Academy lead",
+                    `${this.host}/marketing/academy/lead/${id}`
+                );
+            },
+            updateAcademyLead: (id, payload) =>
+                axios.bcPut(
+                    "Academy lead",
+                    `${this.host}/marketing/academy/lead/${id}`,
+                    payload
+                ),
             getAcademyTags: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -1076,6 +1088,20 @@ class BreatheCodeClient {
                 await axios.bcGet(
                     "Asset",
                     `${this.host}/registry/academy/asset/${associatedSlug}`,
+                    options
+                ),
+            getAssetReport: async (associatedSlug, options, query) => {
+                const qs = serializeQuerystring(query);
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${associatedSlug}/seo_report?${qs}`,
+                    options
+                )
+            },
+            getCluster: async (associatedSlug, options) =>
+                await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/keywordcluster/${associatedSlug}`,
                     options
                 ),
             getAssetContent: async (associatedSlug, { format='md', frontmatter='false' }) =>

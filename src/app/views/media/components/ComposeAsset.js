@@ -162,6 +162,7 @@ const ComposeAsset = () => {
     const _asset = { 
       ...asset, 
       readme_url,
+      category: (!asset.category || typeof(asset.category) !== "object") ? asset.category : asset.category.id,
       owner: asset.owner?.id,
       readme_raw: Base64.encode(content), 
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ?  readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
@@ -171,9 +172,16 @@ const ComposeAsset = () => {
     setErrors(_errors);
     
     if(Object.keys(_errors).length == 0){
-      const action = isCreating ? "createAsset" : "updateAsset";
-      
-      const resp = await bc.registry()[action](_asset);
+
+      const resp = isCreating ? 
+        await bc.registry().createAsset(_asset) 
+        : 
+        await bc.registry().updateAsset(_asset.slug, { 
+          ..._asset, 
+          author: undefined, 
+          seo_keywords: undefined, 
+        });
+
       if(resp.ok){
         if(isCreating) history.push(`./${resp.data.slug}`);
         else setAsset(resp.data)

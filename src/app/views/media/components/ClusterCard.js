@@ -20,11 +20,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PickKeywordModal } from './PickKeywordModal';
 import slugify from "slugify";
 import clsx from "clsx";
+import { useEffect } from "react";
 
 const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
     const [ requestAssetModal, setRequestAssetModal ] = useState(null)
     const [ clusterForm, setClusterForm ] = useState(cluster)
-    const [ editMode, setEditMode ] = useState(isEditing)
+    const [ editMode, setEditMode ] = useState(false)
     const [ addKeyword, setAddKeyword ] = useState(false)
     const progress = (() => {
         if(!clusterForm.keywords) return 0;
@@ -32,16 +33,27 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
         const total = clusterForm.keywords.length;
         return (without == 0 || total == 0) ? "100" : Math.round(100 - (without / total * 100));
     })();
+
+    useEffect(() => setEditMode(isEditing), [isEditing])
     const handleAddKeyword = async (keyword) => {
 
         if(!keyword) setAddKeyword(false);
         else{
             const resp = await bc.registry().updateKeyword(keyword.slug, { cluster: cluster.id })
-            if(resp.status == 200){
+            if(resp.ok){
                 setClusterForm({ ...clusterForm, keywords: clusterForm.keywords.concat(resp.data)})
                 setAddKeyword(false);
             }
         }
+    }
+
+    const getClusterDetails = async (_c) => {
+        const resp = await bc.registry().getCluster(_c.slug);
+        if(resp.ok){
+            setClusterForm(resp.data)
+            return resp.data;
+        }
+        else throw new Error('Error fetching cluster details')
     }
     return (
         <Card className="mb-4 pb-4">
@@ -138,7 +150,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     <Grid item sm={7} xs={12}>
                         {clusterForm.keywords?.map(k => {
                             const _status = k.published_assets.length == 0 ? "error" : "default";
-                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?like=${k.slug}`)}
+                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?keyword=${k.slug}`)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${_status == "error" && 'bg-error'}`} />;
@@ -152,7 +164,21 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
             <Divider className="mb-4" />
 
             <div className="flex flex-wrap justify-between items-center px-5 m--2">
-                <p className="text-muted m-0 m-2">Registered 3 mins ago</p>
+                <p className="text-muted m-0 m-2">
+                    {editMode ? 
+                        <TextField
+                            className="m-2"
+                            label="Landing URL"
+                            data-cy="landing-url"
+                            size="small"
+                            variant="outlined"
+                            value={clusterForm.landing_page_url?.toLowerCase() || ""}
+                            onChange={(e)=> setClusterForm({ ...clusterForm, landing_page_url: e.target.value.toLowerCase() })}
+                        />
+                        :
+                        clusterForm.landing_page_url
+                    }
+                </p>
                 <div className="flex flex-wrap m-2">
                     {editMode ? 
                         <><Button
@@ -164,7 +190,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                                 const data = await onSubmit(clusterForm)
                                 if(data){
                                     console.log("onsubmit", data)
-                                    setEditMode(false)
+                                    setEditMode(null)
                                     setClusterForm(data)
                                 }
                             }}
@@ -176,7 +202,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             color="primary"
                             className="px-5 mr-1"
                             onClick={() => {
-                                setEditMode(false);
+                                setEditMode(null);
                                 setClusterForm(cluster);
                             }}
                         >
@@ -187,15 +213,9 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         <>
                             <Button
                                 size="small"
-                                className="bg-light-primary hover-bg-primary text-primary px-5 mr-1"
-                            >
-                                Keywords
-                            </Button>
-                            <Button
-                                size="small"
 
                                 className="bg-light-primary hover-bg-primary text-primary px-5 mr-1"
-                                onClick={() => setEditMode(true)}
+                                onClick={() => getClusterDetails(cluster).then(() => setEditMode(true))}
                             >
                                 Edit
                             </Button>

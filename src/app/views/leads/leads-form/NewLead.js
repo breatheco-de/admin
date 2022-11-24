@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { Breadcrumb } from 'matx';
 import bc from 'app/services/breathecode';
+import { useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import useAuth from "../../../hooks/useAuth";
@@ -24,13 +25,27 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const countrys = require('./countrys.json');
 
+const availableCourses = [
+  { slug: 'coding-introduction', name: 'Coding Introduction' },
+  { slug: 'full-stack', name: 'Full Stack Part-Time' },
+  { slug: 'full-stack-ft', name: 'Full Stack Full-Time' },
+  { slug: 'front-end-development', name: 'Front-End' },
+  { slug: 'back-end-development', name: 'Back-end' },
+  { slug: 'web-development', name: 'Web Development' },
+  { slug: 'datascience-ml', name: 'Data Science and ML' },
+  { slug: 'blockchain-development', name: 'Blockchain' },
+  { slug: 'software-engineering', name: 'Software Engineering' },
+  { slug: 'machine-learning-engineering', name: 'Machine Learning Engineering' },
+  { slug: 'node-js', name: 'Node JS' },
+]
+
 const NewLead = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { id } = useParams();
   const { user } = useAuth();
 
-  const [listCourse, setListCourse] = useState();
-  const [course, setCourse] = useState();
+  const [listCourse, setListCourse] = useState([]);
 
   // const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const { academy } = user;
@@ -41,9 +56,9 @@ const NewLead = () => {
       last_name: '',
       email: '',
       phone: '',
-      course: '',
+      course: null,
       client_comments: '',
-      location: academy.slug,
+      location: '',
       language: '',
       utm_url: '',
       utm_medium: '',
@@ -53,7 +68,7 @@ const NewLead = () => {
       gclid: '',
       tags: '',
       automations: '',
-      street_Address: '',
+      street_address: '',
       country: '',
       city: '',
       latitude: 0,
@@ -115,21 +130,26 @@ const NewLead = () => {
   // useeffect para hacer el dropdown de las academias\\
 
   useEffect(() => {
-    bc.admissions().getCertificates()
-      .then(({ data }) => {
-        setListCourse(data);
-      });
+    if (id) {
+      bc.marketing().getAcademySingleLead(id)
+        .then(({ data }) => {
+          const index = availableCourses.map((c) => c.slug).indexOf(data.course);
+          setNewLead({ 
+            ...data,
+            course: { ...availableCourses[index] }
+          });
+        })
+        .catch((e) => console.log(e))
+    }
   }, []);
 
-  useEffect(() => {
-    if (listCourse) {
-      setCourse(listCourse.map((item) => (
-        <MenuItem key={item.id} value={item.slug}>
-          {`${item.name} (${item.slug})`}
-        </MenuItem>
-      )));
-    }
-  }, [listCourse != undefined]);
+  const getCourses = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve(availableCourses);
+      }, 500);
+    });
+  }
 
   // Constante para definir la lista de paises que viene de un JSON de este mismo directorio\\
 
@@ -151,6 +171,7 @@ const NewLead = () => {
       .email('The email is incorrect'),
     course: Yup.string().required('Please enter a course'),
     language: Yup.string().required('Please enter a language'),
+    location: Yup.string().required('Please enter a location'),
     lead_type: Yup.string().required('Please select one type of lead'),
     phone: Yup.string()
       .matches(phoneRegExp, `Please enter the correct format with the code of your country with a ${'+'}`),
@@ -164,8 +185,7 @@ const NewLead = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: 'Pages', path: '/leads/list' },
-            { name: 'Order List', path: '/leads/list' },
+            { name: 'Leads', path: '/growth/leads' },
             { name: 'New Lead' },
           ]}
         />
@@ -173,18 +193,32 @@ const NewLead = () => {
 
       <Card elevation={3}>
         <div className="flex p-4">
-          <h4 className="m-0">Add New Lead</h4>
+          <h4 className="m-0">{id ? 'Update Lead' : 'Add New Lead'}</h4>
         </div>
         <Divider className="mb-2" />
 
         <Formik
           initialValues={newLead}
           validationSchema={ProfileSchema}
-          onSubmit={(newLead) => { 
+          onSubmit={async (newLead) => {
             let tags = '';
             if (newLead.tag_objects.length !== 0) tags = newLead.tag_objects.map(t => t.slug).join(',');
-            bc.marketing().addNewLead({ ...newLead, tags }); 
-            history.push('/growth/leads'); }}
+            let automations = '';
+            if (newLead.automation_objects.length !== 0) automations = newLead.automation_objects.map(a => a.slug).join(',');
+            const payload = {
+              ...newLead,
+              course: newLead.course.slug,
+              tags,
+              tag_objects: newLead.tag_objects.map((tag) => tag.id),
+              automations,
+              automation_objects: newLead.automation_objects.map((auto) => auto.id)
+            };
+            let res;
+            if (!id) res = await bc.marketing().addNewLead({ ...payload });
+            else res = await bc.marketing().updateAcademyLead(id, { ...payload });
+
+            if (res.ok) history.push('/growth/leads');
+          }}
           enableReinitialize
         >
           {({
@@ -212,6 +246,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.first_name}
+                    value={newLead.first_name}
                     onChange={createLead}
                   />
                 </Grid>
@@ -225,6 +260,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.last_name}
+                    value={newLead.last_name}
                     onChange={createLead}
                   />
                 </Grid>
@@ -240,6 +276,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.email}
+                    value={newLead.email}
                     onChange={createLead}
                   />
                 </Grid>
@@ -255,6 +292,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.phone}
+                    value={newLead.phone}
                     onChange={createLead}
                     placeholder="Enter the country code"
                   />
@@ -263,20 +301,22 @@ const NewLead = () => {
                   Course
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    error={errors.course && touched.course}
-                    helperText={touched.course && errors.course}
-                    select
-                    className={classes.select}
-                    label="Course"
-                    name="course"
-                    size="small"
-                    variant="outlined"
-                    defaultValue={newLead.course}
-                    onChange={createLead}
-                  >
-                    {course}
-                  </TextField>
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      error={errors.course && touched.course}
+                      onChange={(course) => { setNewLead({ ...newLead, course }); }}
+                      width="35%"
+                      className="mr-2 ml-2"
+                      asyncSearch={() => getCourses()}
+                      size="small"
+                      label="course"
+                      required={true}
+                      debounced={false}
+                      value={newLead.course}
+                      getOptionSelected={(option, value) => option.slug === value.slug}
+                      getOptionLabel={(option) => `${option.name} (${option.slug})`}
+                    />
+                  </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Client comments
@@ -288,6 +328,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.client_comments}
+                    value={newLead.client_comments}
                     onChange={createLead}
                   />
                 </Grid>
@@ -305,6 +346,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.language}
+                    value={newLead.language}
                     onChange={selectLanguages}
                   >
                     {languages.map((option) => (
@@ -324,6 +366,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_url}
+                    value={newLead.utm_url}
                     onChange={createLead}
                   />
                   <small className="text-muted d-block">The url when the contact was filling the form, or the chat application if its coming from a chat. E.g: Whatsapp.</small>
@@ -338,8 +381,10 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_medium}
+                    value={newLead.utm_medium}
                     onChange={createLead}
                   />
+                  <small className="text-muted d-block">E.g.: Social, Organic, Paid, Email, CPC, Referal</small>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Utm campaign
@@ -351,6 +396,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_campaign}
+                    value={newLead.utm_campaign}
                     onChange={createLead}
                   />
                 </Grid>
@@ -364,8 +410,10 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.utm_source}
+                    value={newLead.utm_source}
                     onChange={createLead}
                   />
+                  <small className="text-muted d-block">E.g.: fb, ig, whatsapp, etc</small>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Referral key
@@ -377,8 +425,10 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.referral_key}
+                    value={newLead.referral_key}
                     onChange={createLead}
                   />
+                  <small className="text-muted d-block">Name of the student referring or any other referral key</small>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
                   Gclid
@@ -390,59 +440,61 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.gclid}
-                    onChange={createLead}
-                  />
-                </Grid>
-                {/* <Grid item md={2} sm={4} xs={12}>
-                  Tags
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Tags"
-                    name="Tags"
-                    size="small"
-                    variant="outlined"
-                    defaultValue={newLead.tags}
-                    onChange={createLead}
-                  />
-                </Grid> */}
-                <Grid item md={2} sm={4} xs={12}>
-                  Automations
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    label="Automations"
-                    name="automations"
-                    size="small"
-                    variant="outlined"
-                    defaultValue={newLead.automations}
+                    value={newLead.gclid}
                     onChange={createLead}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Tags Objects
+                  Location
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      onChange={(tags) => { setNewLead({ ...newLead, tag_objects: [tags.id] }); }}
+                      error={errors.location && touched.location}
+                      onChange={(location) => { setNewLead({ ...newLead, location: location.slug }); }}
                       width="35%"
                       className="mr-2 ml-2"
-                      asyncSearch={(search) => bc.marketing().getAcademyTags({like: search, type : 'SOFT,STRONG'})}
+                      asyncSearch={() => bc.marketing().getAcademyAlias()}
                       size="small"
-                      label="tags"
-                      required={false}
+                      label="location"
+                      required={true}
+                      debounced={false}
+                      value={{ slug: newLead.location }}
                       getOptionLabel={(option) => `${option.slug}`}
                     />
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Automation Objects
+                  Tags Objects
                 </Grid>
-                <Grid item md={10} sm={8} xs={12}>
+                <Grid item md={10} sm={8} xs={12} className="mt-2">
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
-                      onChange={(automation) => setNewLead({ ...newLead, automation_objects: [automation.id] })}
+                      onChange={(tags) => { setNewLead({ ...newLead, tag_objects: tags }); }}
+                      width="35%"
+                      className="mr-2 ml-2"
+                      asyncSearch={(search) => bc.marketing().getAcademyTags({ like: search, type: 'SOFT,STRONG' })}
+                      size="small"
+                      label="tags"
+                      required={false}
+                      multiple={true}
+                      debounced={false}
+                      getOptionSelected={(option, value) => option.slug === value.slug}
+                      value={newLead.tag_objects}
+                      getOptionLabel={(option) => `${option.slug}`}
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <small className="text-muted d-block">E.g.: request_more_info, website_leads, or any other tag</small>
+                  </div>
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Automation Objects
+                </Grid>
+                <Grid item md={10} sm={8} xs={12} className="mt-2">
+                  <div className="flex flex-wrap m--2">
+                    <AsyncAutocomplete
+                      onChange={(automation) => setNewLead({ ...newLead, automation_objects: automation })}
                       width="35%"
                       className="mr-2 ml-2"
                       asyncSearch={(like) => bc.marketing().getAcademyAutomations({ like })}
@@ -450,8 +502,15 @@ const NewLead = () => {
                       size="small"
                       label="Automation"
                       required={false}
+                      multiple={true}
+                      debounced={false}
+                      getOptionSelected={(option, value) => option.slug === value.slug}
+                      value={newLead.automation_objects}
                       getOptionLabel={(option) => `${option.name}`}
                     />
+                  </div>
+                  <div className="mt-2">
+                    <small className="text-muted d-block">Usually a soft or strong automation</small>
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
@@ -460,10 +519,11 @@ const NewLead = () => {
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     label="Street address"
-                    name="street_Address"
+                    name="street_address"
                     size="small"
                     variant="outlined"
-                    defaultValue={newLead.street_Address}
+                    defaultValue={newLead.street_address}
+                    value={newLead.street_address}
                     onChange={createLead}
                   />
                 </Grid>
@@ -479,6 +539,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.country}
+                    value={newLead.country}
                     onChange={createLead}
                   >
                     {listCountrys}
@@ -493,7 +554,8 @@ const NewLead = () => {
                     name="state"
                     size="small"
                     variant="outlined"
-                    defaultValue={newLead.stats}
+                    defaultValue={newLead.state}
+                    value={newLead.state}
                     onChange={createLead}
                   />
                 </Grid>
@@ -507,6 +569,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.city}
+                    value={newLead.city}
                     onChange={createLead}
                   />
                 </Grid>
@@ -522,6 +585,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.zip_code}
+                    value={newLead.zip_code}
                     onChange={createLead}
                   />
                 </Grid>
@@ -537,6 +601,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.latitude}
+                    value={newLead.latitude}
                     onChange={createLead}
                   />
                 </Grid>
@@ -552,6 +617,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.longitude}
+                    value={newLead.longitude}
                     onChange={createLead}
                   />
                 </Grid>
@@ -565,6 +631,7 @@ const NewLead = () => {
                     size="small"
                     variant="outlined"
                     defaultValue={newLead.browser_lang}
+                    value={newLead.browser_lang}
                     onChange={createLead}
                   />
                 </Grid>
@@ -581,7 +648,7 @@ const NewLead = () => {
                     name="lead_type"
                     size="small"
                     variant="outlined"
-                    value={newLead.leadType}
+                    value={newLead.lead_type}
                     onChange={selectTypeLead}
                   >
                     {leadTypes.map((option) => (
@@ -594,7 +661,7 @@ const NewLead = () => {
               </Grid>
               <div className="mt-6">
                 <Button color="primary" variant="contained" type="submit">
-                  Create
+                  {id ? 'Update' : 'Create'}
                 </Button>
               </div>
             </form>

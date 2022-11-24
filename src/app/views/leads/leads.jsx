@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Tooltip, Chip, IconButton } from '@material-ui/core';
+import { Button, Tooltip, Chip, IconButton, Icon, } from '@material-ui/core';
 import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
 import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
-import GetAcademyAlias from 'app/components/GetAcademyAlias';
+import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -28,9 +29,10 @@ const statusColors = {
 const defaultBg = 'bg-gray';
 
 const Leads = () => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
   const [tags, setTags] = useState([]);
-  const query = useQuery();
+  const [alias, setAlias] = useState(query.get('location_alias') && { slug: query.get('location_alias') });
 
   useEffect(() => {
     let slugs = query.get('tags');
@@ -100,6 +102,22 @@ const Leads = () => {
       },
     },
     {
+      name: 'utm_source',
+      label: 'UTM Source',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_source') !== null ? [query.get('utm_source')] : [],
+      },
+    },
+    {
+      name: 'utm_term',
+      label: 'UTM Term',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_term') !== null ? [query.get('utm_term')] : [],
+      },
+    },
+    {
       name: 'storage_status',
       label: 'Lead Status',
       options: {
@@ -157,6 +175,37 @@ const Leads = () => {
       },
     },
     {
+      name: 'location_alias',
+      label: 'Location',
+      options: {
+        display: 'excluded',
+        filterList: query.get('location_alias') !== null ? [query.get('location_alias')] : [],
+        filterType: 'custom',
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  asyncSearch={() => bc.marketing().getAcademyAlias()}
+                  size="small"
+                  label="location"
+                  debounced={false}
+                  value={alias}
+                  onChange={(newAlias) => {
+                    setAlias(newAlias);
+                    if (newAlias) filterList[index][0] = newAlias.slug;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.slug}`}
+                />
+              </div>
+            );
+          }
+        },
+      },
+    },
+    {
       name: 'tags',
       label: 'Tags',
       options: {
@@ -204,8 +253,6 @@ const Leads = () => {
       label: 'Created At',
       options: {
         filter: false,
-        filterList:
-          query.get('created_at') !== null ? [query.get('created_at')] : [],
         customBodyRenderLite: (i) => (
           <div className="flex items-center">
             <div className="ml-3">
@@ -216,6 +263,25 @@ const Leads = () => {
                 {dayjs(items[i].created_at).fromNow()}
               </small>
             </div>
+          </div>
+        ),
+      },
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRenderLite: (i) => (
+          <div className="flex items-center">
+            <Link to={`/growth/leads/${items[i].id}`}>
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
+            </Link>
           </div>
         ),
       },
@@ -268,8 +334,7 @@ const Leads = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Pages', path: '/leads/list' },
-                { name: 'Order List' },
+                { name: 'Leads' },
               ]}
             />
           </div>
@@ -286,7 +351,7 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      <GetAcademyAlias />
+      <AlertAcademyAlias />
       <div>
         <SmartMUIDataTable
           title="All Leads"
@@ -298,7 +363,8 @@ const Leads = () => {
           options={{
             print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
-              if (index === 6) setTags([]);
+              if (index === 9) setTags([]);
+              else if (index === 8) setAlias(null);
               const querys = getParams();
               const { data } = await bc.marketing().getAcademyLeads(querys);
               setItems(data.results);
