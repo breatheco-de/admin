@@ -472,6 +472,7 @@ class BreatheCodeClient {
                 return axios.bcPut(
                     "Send to CRM",
                     `${this.host}/marketing/academy/lead/process?id=${qs}`
+                    
                 )},
         };
     }
