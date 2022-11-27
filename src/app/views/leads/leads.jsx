@@ -4,7 +4,6 @@ import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
-import { useParams, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
@@ -303,7 +302,6 @@ const Leads = () => {
     });
 
     let notPending = false;
-
     //check if all of them are pending
     for (let i = 0; i < positions.length; i++) {
       if (items[positions[i]].storage_status !== 'PENDING') {
@@ -327,9 +325,11 @@ const Leads = () => {
                   return data;
                 }
                 else {
-                  return toast.error('No pending leads at the moment.', toastOption);
+                  return toast.error('Please select ONLY pending leads', toastOption)
                 }
+                
               }}
+              
             />
           </IconButton>
         </Tooltip>
