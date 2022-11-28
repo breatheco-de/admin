@@ -50,6 +50,10 @@ const Leads = () => {
     }
   }, []);
 
+  const refresh = () => {
+    this.setState({});
+  };
+
   const columns = [
     {
       name: 'first_name', // field name in the row object
@@ -294,6 +298,14 @@ const Leads = () => {
     },
   ];
 
+   const getLeads = async (querys) => {
+    const { data } = await bc.marketing()
+      .getAcademyLeads(querys);
+    setItems(data.results);
+    return data
+  }
+
+
   const SendCRM = ({ ids, setSelectedRows }) => {
 
     //find the elements in the array
@@ -319,15 +331,15 @@ const Leads = () => {
             <ArrowUpwardRounded
               onClick={async () => {
                 if (!notPending) {
-                  const { data } = await bc.marketing()
+                  const res = await bc.marketing()
                     .bulkSendToCRM(ids);
                   setSelectedRows([]);
-                  return data;
+                  getLeads({ limit: 10, offset: 0, ...getParams(), });
+                  return res.data
                 }
                 else {
                   return toast.error('Please select ONLY pending leads', toastOption)
                 }
-                
               }}
               
             />
@@ -380,12 +392,9 @@ const Leads = () => {
               setItems(data.results);
             },
           }}
-          search={async (querys) => {
-            const { data } = await bc.marketing()
-              .getAcademyLeads(querys);
-            setItems(data.results);
-            return data;
-          }}
+          
+          search={getLeads}
+
           deleting={async (querys) => {
             const { status } = await bc
               .admissions()
