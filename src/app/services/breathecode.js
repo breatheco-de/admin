@@ -466,7 +466,7 @@ class BreatheCodeClient {
                 const qs = query.join(",");
                 return axios.bcPut(
                     "Send to CRM",
-                    `${this.host}/marketing/academy/lead/process?id=${qs}`  
+                    `${this.host}/marketing/academy/lead/process?id=${qs}`
                 )},
         };
     }
