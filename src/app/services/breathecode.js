@@ -388,7 +388,7 @@ class BreatheCodeClient {
             updateAcademyTags: (slug, tag) =>
                 axios.bcPut(
                     "Academy tags",
-                    `${this.host}/marketing/academy/tag/${slug}`,
+                    `${this.host}/marketing/academy/tag${slug ?  `/${slug}` : ''}`,
                     tag
                 ),
             getActiveCampaignAcademy: (query) => {

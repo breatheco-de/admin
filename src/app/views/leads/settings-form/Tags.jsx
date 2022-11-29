@@ -8,11 +8,12 @@ import {
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
-import { SmartMUIDataTable } from '../../../components/SmartDataTable';
-import bc from '../../../services/breathecode';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import dayjs from 'dayjs';
+import { SmartMUIDataTable } from '../../../components/SmartDataTable';
+import bc from '../../../services/breathecode';
+import BulkUpdateTag from './BulkUpdateTag';
 import { useQuery } from '../../../hooks/useQuery';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -25,7 +26,17 @@ const statusColors = {
   PENDING: 'text-white bg-secondary',
 };
 
-export const Tags = ({ organization }) => {
+const tagTpes = [
+  'STRONG',
+  'SOFT',
+  'DISCOVERY',
+  'COHORT',
+  'DOWNLOADABLE',
+  'EVENT',
+  'OTHER'
+];
+
+export const Tags = () => {
   const query = useQuery();
   const [items, setItems] = useState([]);
   const [disputeIndex, setDisputeIndex] = useState(null);
@@ -139,7 +150,34 @@ export const Tags = ({ organization }) => {
         },
       },
     },
-  ]
+    {
+      name: 'type',
+      label: '',
+      options: {
+        display: 'excluded',
+        filter: true,
+        filterType: 'dropdown',
+        filterList: query.get('type') !== null ? [query.get('type')] : [],
+        filterOptions: {
+          names: tagTpes,
+        },
+      },
+    },
+  ];
+
+  const getTypes = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(()=>{
+        resolve(tagTpes);
+      }, 500);
+    });
+  }
+
+  const loadData = async (querys) => {
+    const { data } = await bc.marketing().getAcademyTags(querys);
+    setItems(data.results || data);
+    return data;
+  };
 
   return (
     <Card container className="p-4">
@@ -149,15 +187,21 @@ export const Tags = ({ organization }) => {
         items={items}
         historyReplace="/growth/settings"
         options={{
-          selectableRows: false,
           print: false,
           viewColumns: false,
+          customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+            <BulkUpdateTag
+              selectedRows={selectedRows}
+              displayData={displayData}
+              setSelectedRows={setSelectedRows}
+              items={items}
+              setItems={setItems}
+              loadData={loadData}
+              asyncSearch={getTypes}
+            />
+          ),
         }}
-        search={async (querys) => {
-          const { data } = await bc.marketing().getAcademyTags(querys);
-          setItems(data.results || data);
-          return data;
-        }}
+        search={loadData}
       />
       <Dialog
         onClose={() => {
