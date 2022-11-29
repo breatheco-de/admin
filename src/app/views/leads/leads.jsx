@@ -29,9 +29,10 @@ const statusColors = {
 const defaultBg = 'bg-gray';
 
 const Leads = () => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
   const [tags, setTags] = useState([]);
-  const query = useQuery();
+  const [alias, setAlias] = useState(query.get('location_alias') && { slug: query.get('location_alias') });
 
   useEffect(() => {
     let slugs = query.get('tags');
@@ -101,6 +102,22 @@ const Leads = () => {
       },
     },
     {
+      name: 'utm_source',
+      label: 'UTM Source',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_source') !== null ? [query.get('utm_source')] : [],
+      },
+    },
+    {
+      name: 'utm_term',
+      label: 'UTM Term',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_term') !== null ? [query.get('utm_term')] : [],
+      },
+    },
+    {
       name: 'storage_status',
       label: 'Lead Status',
       options: {
@@ -155,6 +172,37 @@ const Leads = () => {
           </div>
 
         ),
+      },
+    },
+    {
+      name: 'location_alias',
+      label: 'Location',
+      options: {
+        display: 'excluded',
+        filterList: query.get('location_alias') !== null ? [query.get('location_alias')] : [],
+        filterType: 'custom',
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  asyncSearch={() => bc.marketing().getAcademyAlias()}
+                  size="small"
+                  label="location"
+                  debounced={false}
+                  value={alias}
+                  onChange={(newAlias) => {
+                    setAlias(newAlias);
+                    if (newAlias) filterList[index][0] = newAlias.slug;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.slug}`}
+                />
+              </div>
+            );
+          }
+        },
       },
     },
     {
@@ -315,7 +363,8 @@ const Leads = () => {
           options={{
             print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
-              if (index === 6) setTags([]);
+              if (index === 9) setTags([]);
+              else if (index === 8) setAlias(null);
               const querys = getParams();
               const { data } = await bc.marketing().getAcademyLeads(querys);
               setItems(data.results);

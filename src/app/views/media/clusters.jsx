@@ -15,7 +15,7 @@ import ClusterCard from "./components/ClusterCard";
 import SEOMenu from "./components/SEOMenu";
 
 const UserList3 = () => {
-    const [clusters, setClusters] = useState([]);
+    const [clusters, setClusters] = useState(null);
     const [addCluster, setAddCluster] = useState(null);
     const [technologies, setTechnologies] = useState([]);
 
@@ -32,9 +32,9 @@ const UserList3 = () => {
     };
 
     useEffect(async () => {
-        const resp = await bc.registry().getAllClusters();
+        const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
         if (resp.status == 200) setClusters(resp.data)
-    }, []);
+    }, [rowsPerPage, page]);
 
     return (
         <div className="m-sm-30">
@@ -74,7 +74,7 @@ const UserList3 = () => {
                                 }}
                             />
                         </Grid>}
-                        {clusters
+                        {clusters?.results
                             .map((c) => (
                                 <Grid key={c.slug} item sm={12} xs={12}>
                                     <ClusterCard cluster={c}
@@ -92,7 +92,7 @@ const UserList3 = () => {
                             className="px-4"
                             rowsPerPageOptions={[10, 25, 50]}
                             component="div"
-                            count={clusters.length}
+                            count={clusters?.count || 0}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onChangePage={handleChangePage}
