@@ -73,7 +73,7 @@ const ShopContainer = ({
                 disableUnderline: true,
               }}
             >
-              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="default">Sort by Default</MenuItem>
               <MenuItem value="created_at">Recents First</MenuItem>
               <MenuItem value="-created_at">Oldests First</MenuItem>
             </TextField>

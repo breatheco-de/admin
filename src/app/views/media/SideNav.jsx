@@ -1,16 +1,14 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   TextField,
   InputAdornment,
   Icon,
   FormControlLabel,
-  Radio,
-  RadioGroup,
-  FormControl,
   Checkbox,
   Button,
   Hidden,
+  Box,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -18,11 +16,25 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Formik } from 'formik';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ImageIcon from '@mui/icons-material/Image';
+import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import AppsIcon from '@mui/icons-material/Apps';
+//import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+//import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+//import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+
 
 const Sidenav = ({
   query,
   categories,
   type,
+  start,
+  end,
+  handleStartChange,
+  handleEndChange,
   categoryList,
   toggleSidenav,
   handleSearch,
@@ -32,6 +44,7 @@ const Sidenav = ({
   onNewCategory,
 }) => {
   const [dialog, setDialog] = useState(false);
+
   return (
     <>
       <div className="pl-4 flex items-center mb-4 mt-2">
@@ -57,41 +70,67 @@ const Sidenav = ({
           <Icon onClick={toggleSidenav}>clear</Icon>
         </Hidden>
       </div>
+
+
       <div className="px-4">
         <Card elevation={3} className="p-4 mb-4">
+          <h5 className="m-0 mb-4">Date range</h5>
+          <h5 className="m-0 mb-1">From:</h5>
+          <TextField
+            className="min-w-188"
+            name="starting_at"
+            size="small"
+            fullWidth
+            variant="outlined"
+            type="date"
+            value={start}
+            onChange={(e) => {
+              handleStartChange(e.target.value);
+            }}
+          />
+
+          <h5 className="m-0 mb-1 mt-2">To:</h5>
+          <TextField
+            className="min-w-188"
+            name="ending_at"
+            size="small"
+            fullWidth
+            variant="outlined"
+            type="date"
+            value={end}
+            onChange={(e) => {
+              handleEndChange(e.target.value);
+            }}
+          />
+
+        </Card>
+
+        <Card elevation={3} className="p-4 mb-4">
           <h5 className="m-0 mb-4">Type</h5>
-          <FormControl component="fieldset" className="w-full">
-            <RadioGroup aria-label="status" name="status" value={type} onChange={handleTypeChange}>
-              <FormControlLabel
+          <ToggleButtonGroup name="status" value={type} onChange={handleTypeChange} exclusive>
+            <ToggleButton value="image" ria-label='image'>
+              <ImageIcon
                 className="h-32"
-                value="image"
-                control={<Radio color="secondary" />}
-                label="Image"
-                labelPlacement="end"
               />
-              <FormControlLabel
+            </ToggleButton>
+
+            <ToggleButton value="video" aria-label='video'>
+              <VideoCameraBackIcon
                 className="h-32"
-                value="video"
-                control={<Radio color="secondary" />}
-                label="Video"
-                labelPlacement="end"
               />
-              <FormControlLabel
+            </ToggleButton>
+
+            <ToggleButton value="pdf" aria-label='pdf'>
+              <PictureAsPdfIcon
                 className="h-32"
-                value="pdf"
-                control={<Radio color="secondary" />}
-                label="PDF"
-                labelPlacement="end"
               />
-              <FormControlLabel
+            </ToggleButton>
+            <ToggleButton value="all" aria-label='all'>
+              <AppsIcon
                 className="h-32"
-                value="all"
-                control={<Radio color="secondary" />}
-                label="All"
-                labelPlacement="end"
               />
-            </RadioGroup>
-          </FormControl>
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Card>
 
         <Card elevation={3} className="relative p-4 mb-4">

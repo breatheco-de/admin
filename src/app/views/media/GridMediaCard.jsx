@@ -52,9 +52,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const GridMediaCard = ({
-  media, onOpenDialog, onSelected, isSelected,
-}) => {
+const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
   const classes = useStyles();
   const type = {
     pdf: 'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png',
@@ -63,7 +61,7 @@ const GridMediaCard = ({
   };
   const [selected, setSelected] = useState(false);
   const { user } = useAuth();
-
+  
   useEffect(() => {
     if (isSelected.length === 0) setSelected(false);
   }, [isSelected]);
@@ -74,24 +72,8 @@ const GridMediaCard = ({
     return mediaType.thumbnail;
   };
 
-  const LockIcon = () => {
-    if (media.academy.id !== user.academy.id) {
-      return (
-        <button
-          type="button"
-          className={clsx(
-            "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
-            classes.button
-          )}
-        >
-          <Tooltip title={"This media was uploaded from another academy, therefor you will not be able to be able to delete it"}>
-            <Icon>lock</Icon>
-          </Tooltip>
-        </button>
-      );
-    }
-  };
-
+  const MediaAcademyId = media.academy?.id;
+  const UserAcademyId = user.academy?.id;
 
   return (
     <Card
@@ -104,7 +86,6 @@ const GridMediaCard = ({
       onClick={(e) => {
         if(media.academy.id === user.academy.id){
           e.stopPropagation();
-          console.log(media);
           setSelected(!selected);
           onSelected(media);
         }
@@ -112,7 +93,7 @@ const GridMediaCard = ({
     >
 
       <div className="flex justify-center items-center relative">
-        {media.academy.id !== user.academy.id && (
+        {MediaAcademyId !== UserAcademyId && (
           <Tooltip 
             style={{
               position:'absolute',
