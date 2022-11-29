@@ -73,7 +73,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
   };
 
   const LockIcon = () => {
-    if (media.academy.id !== user.academy.id) {
+    if (mmedia.academy?.id !== user.academy?.id) {
       return (
         <button
           type="button"
@@ -90,9 +90,6 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
     }
   };
 
-  const MediaAcademyId = media.academy?.id;
-  const UserAcademyId = user.academy?.id;
-
   return (
     <Card
       elevation={3}
@@ -102,7 +99,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
       )}
       style={{ maxHeight: "300px" }}
       onClick={(e) => {
-        if(media.academy.id === user.academy.id){
+        if(media.academy?.id === user.academy?.id){
           e.stopPropagation();
           setSelected(!selected);
           onSelected(media);
