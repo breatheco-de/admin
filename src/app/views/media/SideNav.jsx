@@ -8,6 +8,7 @@ import {
   Checkbox,
   Button,
   Hidden,
+  Box,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -101,6 +102,7 @@ const Sidenav = ({
           <h5 className="m-0 mb-4">Type</h5>
           <ToggleButtonGroup name="status" value={type} onChange={handleTypeChange} exclusive>
             <ToggleButton value="image" ria-label='image'>
+
               <span className=" material-icons MuiIcon-root" aria-hidden="true">image</span>
             </ToggleButton>
 

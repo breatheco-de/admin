@@ -90,6 +90,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
     }
   };
 
+
   return (
     <Card
       elevation={3}
@@ -109,6 +110,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
 
       <div className="flex justify-center items-center relative">
         {media.academy?.id !== user.academy?.id && (
+
           <Tooltip 
             style={{
               position:'absolute',
