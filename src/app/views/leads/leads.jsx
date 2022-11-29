@@ -331,11 +331,11 @@ const Leads = () => {
             <ArrowUpwardRounded
               onClick={async () => {
                 if (!notPending) {
-                  const res = await bc.marketing()
+                  const { data } = await bc.marketing()
                     .bulkSendToCRM(ids);
                   setSelectedRows([]);
                   getLeads({ limit: 10, offset: 0, ...getParams(), });
-                  return res.data
+                  return data
                 }
                 else {
                   return toast.error('Please select ONLY pending leads', toastOption)
