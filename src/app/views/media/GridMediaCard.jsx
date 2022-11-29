@@ -73,7 +73,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
   };
 
   const LockIcon = () => {
-    if (mmedia.academy?.id !== user.academy?.id) {
+    if (media.academy?.id !== user.academy?.id) {
       return (
         <button
           type="button"
@@ -108,7 +108,7 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
     >
 
       <div className="flex justify-center items-center relative">
-        {MediaAcademyId !== UserAcademyId && (
+        {media.academy?.id !== user.academy?.id && (
           <Tooltip 
             style={{
               position:'absolute',
