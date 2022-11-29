@@ -72,6 +72,24 @@ const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
     return mediaType.thumbnail;
   };
 
+  const LockIcon = () => {
+    if (media.academy.id !== user.academy.id) {
+      return (
+        <button
+          type="button"
+          className={clsx(
+            "product-price font-medium bg-primary text-white py-1 px-3 m-0 cursor-pointer",
+            classes.button
+          )}
+        >
+          <Tooltip title={"This media was uploaded from another academy, therefor you will not be able to be able to delete it"}>
+            <Icon>lock</Icon>
+          </Tooltip>
+        </button>
+      );
+    }
+  };
+
   const MediaAcademyId = media.academy?.id;
   const UserAcademyId = user.academy?.id;
 
