@@ -4,7 +4,6 @@ import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
-import { useParams, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
@@ -12,8 +11,15 @@ import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
+import { toast } from "react-toastify";
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 dayjs.extend(relativeTime);
 
@@ -29,9 +35,10 @@ const statusColors = {
 const defaultBg = 'bg-gray';
 
 const Leads = () => {
+  const query = useQuery();
   const [items, setItems] = useState([]);
   const [tags, setTags] = useState([]);
-  const query = useQuery();
+  const [alias, setAlias] = useState(query.get('location_alias') && { slug: query.get('location_alias') });
 
   useEffect(() => {
     let slugs = query.get('tags');
@@ -42,6 +49,10 @@ const Leads = () => {
       setTags(tagsSlugs);
     }
   }, []);
+
+  const refresh = () => {
+    this.setState({});
+  };
 
   const columns = [
     {
@@ -101,6 +112,22 @@ const Leads = () => {
       },
     },
     {
+      name: 'utm_source',
+      label: 'UTM Source',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_source') !== null ? [query.get('utm_source')] : [],
+      },
+    },
+    {
+      name: 'utm_term',
+      label: 'UTM Term',
+      options: {
+        display: 'excluded',
+        filterList: query.get('utm_term') !== null ? [query.get('utm_term')] : [],
+      },
+    },
+    {
       name: 'storage_status',
       label: 'Lead Status',
       options: {
@@ -155,6 +182,37 @@ const Leads = () => {
           </div>
 
         ),
+      },
+    },
+    {
+      name: 'location_alias',
+      label: 'Location',
+      options: {
+        display: 'excluded',
+        filterList: query.get('location_alias') !== null ? [query.get('location_alias')] : [],
+        filterType: 'custom',
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  asyncSearch={() => bc.marketing().getAcademyAlias()}
+                  size="small"
+                  label="location"
+                  debounced={false}
+                  value={alias}
+                  onChange={(newAlias) => {
+                    setAlias(newAlias);
+                    if (newAlias) filterList[index][0] = newAlias.slug;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.slug}`}
+                />
+              </div>
+            );
+          }
+        },
       },
     },
     {
@@ -240,6 +298,14 @@ const Leads = () => {
     },
   ];
 
+   const getLeads = async (querys) => {
+    const { data } = await bc.marketing()
+      .getAcademyLeads(querys);
+    setItems(data.results);
+    return data
+  }
+
+
   const SendCRM = ({ ids, setSelectedRows }) => {
 
     //find the elements in the array
@@ -248,7 +314,6 @@ const Leads = () => {
     });
 
     let notPending = false;
-
     //check if all of them are pending
     for (let i = 0; i < positions.length; i++) {
       if (items[positions[i]].storage_status !== 'PENDING') {
@@ -269,9 +334,14 @@ const Leads = () => {
                   const { data } = await bc.marketing()
                     .bulkSendToCRM(ids);
                   setSelectedRows([]);
-                  return data;
+                  getLeads({ limit: 10, offset: 0, ...getParams(), });
+                  return data
+                }
+                else {
+                  return toast.error('Please select ONLY pending leads', toastOption)
                 }
               }}
+              
             />
           </IconButton>
         </Tooltip>
@@ -286,8 +356,7 @@ const Leads = () => {
           <div>
             <Breadcrumb
               routeSegments={[
-                { name: 'Pages', path: '/leads/list' },
-                { name: 'Order List' },
+                { name: 'Leads' },
               ]}
             />
           </div>
@@ -316,18 +385,16 @@ const Leads = () => {
           options={{
             print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
-              if (index === 6) setTags([]);
+              if (index === 9) setTags([]);
+              else if (index === 8) setAlias(null);
               const querys = getParams();
               const { data } = await bc.marketing().getAcademyLeads(querys);
               setItems(data.results);
             },
           }}
-          search={async (querys) => {
-            const { data } = await bc.marketing()
-              .getAcademyLeads(querys);
-            setItems(data.results);
-            return data;
-          }}
+          
+          search={getLeads}
+
           deleting={async (querys) => {
             const { status } = await bc
               .admissions()

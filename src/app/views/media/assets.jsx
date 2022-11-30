@@ -11,6 +11,7 @@ import { Breadcrumb } from 'matx';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import AddBulkToAssets from './components/AddBulkToAssets';
 import config from '../../../config.js';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import { useQuery } from '../../hooks/useQuery';
@@ -227,6 +228,13 @@ const Assets = () => {
     },
   ];
 
+  const loadData = async (querys) => {
+    if (!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
+    const { data } = await bc.registry().getAllAssets(querys);
+    setAssetList(data.results);
+    return data;
+  }
+
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -255,6 +263,16 @@ const Assets = () => {
           historyReplace="/media/asset"
           options={{
             print: false,
+            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+              <AddBulkToAssets
+                selectedRows={selectedRows}
+                displayData={displayData}
+                setSelectedRows={setSelectedRows}
+                items={assetList}
+                setItems={setAssetList}
+                loadData={loadData}
+              />
+            ),
             onFilterChipClose: async (index, removedFilter, filterList) => {
               if (index === 6) setKeywords([]);
               const querys = getParams();
@@ -262,18 +280,7 @@ const Assets = () => {
               setAssetList(data.results);
             },
           }}
-          search={async (querys) => {
-            if (!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
-            const { data } = await bc.registry().getAllAssets(querys);
-            setAssetList(data.results);
-            return data;
-          }}
-          deleting={async (querys) => {
-            // const { status } = await bc
-            //   .admissions()
-            //   .deleteStaffBulk(querys);
-            // return status;
-          }}
+          search={loadData}
         />
       </div>
     </div>

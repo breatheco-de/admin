@@ -11,6 +11,8 @@ const EditableTextField = ({ defaultValue, onChange, children, onValidate }) => 
     const [ value, setValue ] = useState(defaultValue);
     const [ valid, setValid ] = useState(true);
 
+    useEffect(() => setValue(defaultValue), [defaultValue])
+
     return updating ? 
         <div className="flex">
           <TextField size="small" variant="outlined" borderColor={valid ? "grey": "red"} fullWidth={true} value={value} onChange={(e) => setValue(e.target.value)} />
