@@ -388,7 +388,7 @@ class BreatheCodeClient {
             updateAcademyTags: (slug, tag) =>
                 axios.bcPut(
                     "Academy tags",
-                    `${this.host}/marketing/academy/tag/${slug}`,
+                    `${this.host}/marketing/academy/tag${slug ?  `/${slug}` : ''}`,
                     tag
                 ),
             getActiveCampaignAcademy: (query) => {
@@ -1046,7 +1046,7 @@ class BreatheCodeClient {
             updateAsset: async (slug, payload) =>
                 await axios.bcPut(
                     "Asset",
-                    `${this.host}/registry/academy/asset/${slug}`,
+                    `${this.host}/registry/academy/asset${slug ? `/${slug}` : ''}`,
                     payload
                 ),
             assetAction: async (slug, payload) =>
