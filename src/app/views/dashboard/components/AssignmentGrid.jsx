@@ -21,7 +21,7 @@ const AssignmentGrid = ({ data, classes, isLastItem }) => {
 
   useEffect(() => {
     bc.registry()
-      .getAsset(associated_slug)
+      .getAsset(associated_slug, { silent: true })
       .then(({ data }) => {
         setAssignmentsDetails(data);
       })

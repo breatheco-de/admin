@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Card, Divider } from '@material-ui/core';
 
 export const CohortDetailCard = ({
-  teachersArray, stage, endingDate, startDate, name,
+  teachersArray, stage, endingDate, startDate, name, currentDay
 }) => (
   <Grid container spacing={3}>
     <Grid item md={12} lg={12} xs={12}>
@@ -11,7 +11,7 @@ export const CohortDetailCard = ({
           <div className="flex items-center m-2">
             <div>
               <h5 className="m-0">{name}</h5>
-              <p className="mb-0 mt-2 text-muted font-normal capitalize">{stage}</p>
+              <p className="mb-0 mt-2 text-muted font-normal capitalize">{stage} <small className="d-block">Currently at day {currentDay}</small></p>
             </div>
           </div>
         </div>

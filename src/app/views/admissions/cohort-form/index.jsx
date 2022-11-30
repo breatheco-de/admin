@@ -24,6 +24,8 @@ import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
 import CohortStudents from './CohortStudents';
 
+const STUDENT_HOST = process.env.REACT_APP_STUDENT;
+
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -209,9 +211,9 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`https://attendance.breatheco.de/?token=${token}&cohort_slug=${slug}&academy=${session.academy.id}`);
+                window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}`);
               } else if (value === 'assignments') {
-                window.open(`https://assignments.breatheco.de/?token=${token}&cohort=${slug}&academy=${session.academy.id}`);
+                window.open(`${STUDENT_HOST}/cohort/${slug}/assignments?token=${token}`);
               }
             }}
           >
