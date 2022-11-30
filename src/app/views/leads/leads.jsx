@@ -4,7 +4,6 @@ import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
-import { useParams, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import axios from '../../../axios';
@@ -12,8 +11,15 @@ import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
+import { toast } from "react-toastify";
 
 const relativeTime = require('dayjs/plugin/relativeTime');
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 dayjs.extend(relativeTime);
 
@@ -43,6 +49,10 @@ const Leads = () => {
       setTags(tagsSlugs);
     }
   }, []);
+
+  const refresh = () => {
+    this.setState({});
+  };
 
   const columns = [
     {
@@ -288,6 +298,14 @@ const Leads = () => {
     },
   ];
 
+   const getLeads = async (querys) => {
+    const { data } = await bc.marketing()
+      .getAcademyLeads(querys);
+    setItems(data.results);
+    return data
+  }
+
+
   const SendCRM = ({ ids, setSelectedRows }) => {
 
     //find the elements in the array
@@ -296,7 +314,6 @@ const Leads = () => {
     });
 
     let notPending = false;
-
     //check if all of them are pending
     for (let i = 0; i < positions.length; i++) {
       if (items[positions[i]].storage_status !== 'PENDING') {
@@ -317,9 +334,14 @@ const Leads = () => {
                   const { data } = await bc.marketing()
                     .bulkSendToCRM(ids);
                   setSelectedRows([]);
-                  return data;
+                  getLeads({ limit: 10, offset: 0, ...getParams(), });
+                  return data
+                }
+                else {
+                  return toast.error('Please select ONLY pending leads', toastOption)
                 }
               }}
+              
             />
           </IconButton>
         </Tooltip>
@@ -370,12 +392,9 @@ const Leads = () => {
               setItems(data.results);
             },
           }}
-          search={async (querys) => {
-            const { data } = await bc.marketing()
-              .getAcademyLeads(querys);
-            setItems(data.results);
-            return data;
-          }}
+          
+          search={getLeads}
+
           deleting={async (querys) => {
             const { status } = await bc
               .admissions()
