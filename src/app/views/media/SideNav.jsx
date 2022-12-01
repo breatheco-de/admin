@@ -18,10 +18,6 @@ import {
 import { Formik } from 'formik';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ImageIcon from '@mui/icons-material/Image';
-import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import AppsIcon from '@mui/icons-material/Apps';
 
 
 const Sidenav = ({
@@ -106,27 +102,21 @@ const Sidenav = ({
           <h5 className="m-0 mb-4">Type</h5>
           <ToggleButtonGroup name="status" value={type} onChange={handleTypeChange} exclusive>
             <ToggleButton value="image" ria-label='image'>
-              <ImageIcon
-                className="h-32"
-              />
+              <span className=" material-icons MuiIcon-root" aria-hidden="true">image</span>
             </ToggleButton>
 
             <ToggleButton value="video" aria-label='video'>
-              <VideoCameraBackIcon
-                className="h-32"
-              />
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">videocam</span>
             </ToggleButton>
 
             <ToggleButton value="pdf" aria-label='pdf'>
-              <PictureAsPdfIcon
-                className="h-32"
-              />
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">picture_as_pdf</span>
             </ToggleButton>
+
             <ToggleButton value="all" aria-label='all'>
-              <AppsIcon
-                className="h-32"
-              />
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">view_module</span>
             </ToggleButton>
+
           </ToggleButtonGroup>
         </Card>
 
