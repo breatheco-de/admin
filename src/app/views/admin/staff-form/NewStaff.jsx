@@ -120,7 +120,7 @@ const NewStaff = () => {
                     renderOption={(option) => (option.newUser
                       ? option.newUser
                       : `${option.first_name} ${option.last_name}, (${option.email})`)}
-                    getOptionLabel={(option) => option.email}
+                    getOptionLabel={(option) => option.first_name}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
                     getOptions={(options, params) => {
                       const filtered = filter(options, params);
