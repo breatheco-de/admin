@@ -8,7 +8,6 @@ import {
   Checkbox,
   Button,
   Hidden,
-  Box,
   Dialog,
   DialogActions,
   DialogTitle,
