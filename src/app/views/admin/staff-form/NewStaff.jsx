@@ -136,7 +136,7 @@ const NewStaff = () => {
                                 else setFieldValue('first_name', params.inputValue);
                               }}
                             >
-                              {`Invite ${params.inputValue} to 4Geeks`}
+                              {`Invite ${params.inputValue} to 4Geeks.`}
                             </div>
                           ),
                         });
