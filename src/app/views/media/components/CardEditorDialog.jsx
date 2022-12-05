@@ -19,7 +19,7 @@ import {
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
-
+import { useHistory } from 'react-router-dom';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useTheme } from "@material-ui/core/styles";
 import Scrollbar from "react-perfect-scrollbar";
@@ -28,6 +28,7 @@ import bc from "../../../services/breathecode"
 
 const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpdate }) => {
 
+  const history = useHistory();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [comments, setComments] = useState([]);
@@ -76,14 +77,15 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
           <div className="flex items-center">
             <div className="flex items-center flex-grow">
               <Icon className="text-muted">{iconTypes[card.type.toLowerCase()]}</Icon>
-              <Input
+              <div
                 className="flex-grow  ml-3 pl-3px pr-2 capitalize font-medium text-16"
                 type="text"
                 autoFocus
                 name="title"
                 disableUnderline={true}
-                value={`${card.type}: ${card.title}`}
-              ></Input>
+                readOnly={true}
+              >{card.type}: {card.title} <Icon onClick={() => history.push(`/media/asset/${card.slug}`)} className="text-muted pointer">launch</Icon></div>
+              
             </div>
             <IconButton size="small" onClick={closeDialog}>
               <Icon>clear</Icon>
@@ -132,16 +134,6 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
         </div>}
 
         <Scrollbar className="relative mb-4 max-h-380">
-          {/* <div className="px-sm-24">
-            <div className="flex items-center mb-2">
-              <Icon className="text-muted">description</Icon>
-              <h6 className="m-0 ml-4 uppercase text-muted">Requirements</h6>
-            </div>
-            <div className="ml-10 mb-4 flex">
-              {(!card.requirements || card.requirements == "") && <span>No requirements defined.</span>}
-              {card.requirements}
-            </div>
-          </div> */}
           <div className="px-sm-24">
             <div className="flex items-center mb-2">
               <Icon className="text-muted">insert_link</Icon>
