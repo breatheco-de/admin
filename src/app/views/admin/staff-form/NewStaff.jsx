@@ -116,12 +116,13 @@ const NewStaff = () => {
                     value={user}
                     label="User"
                     debounced
+                    filterOptions={(options) => options}
                     renderOption={(option) => (option.newUser
                       ? option.newUser
                       : `${option.first_name} ${option.last_name}, (${option.email})`)}
-                    getOptionLabel={(option) => option.email}
+                    getOptionLabel={(option) => option.first_name}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
-                    filterOptions={(options, params) => {
+                    getOptions={(options, params) => {
                       const filtered = filter(options, params);
                       if (params.inputValue !== '') {
                         filtered.push({
@@ -135,7 +136,7 @@ const NewStaff = () => {
                                 else setFieldValue('first_name', params.inputValue);
                               }}
                             >
-                              {`Invite ${params.inputValue} to 4Geeks`}
+                              {`Invite ${params.inputValue} to 4Geeks.`}
                             </div>
                           ),
                         });
