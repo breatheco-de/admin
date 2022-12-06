@@ -34,7 +34,7 @@ const StudentIndicatorCards = ({ metrics }) => {
                 )}
               </div>
             </div>
-            <Icon className={classes.icon}>{v.icon}</Icon>
+            {v.icon && <Icon className={classes.icon}>{v.icon}</Icon>}
           </Card>
         </Grid>
       ))}

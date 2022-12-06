@@ -30,7 +30,7 @@ const EditableTextField = ({ defaultValue, onChange, children, onValidate }) => 
             setUpdating(false)
             setValue(defaultValue)
           }}>
-            <Icon>undo</Icon>
+            <Icon>close</Icon>
           </IconButton>
         </div>
         :

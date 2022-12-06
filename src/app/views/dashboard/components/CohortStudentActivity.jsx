@@ -38,7 +38,7 @@ const CohortStudentActivity = ({
   );
   const [limit, setLimit] = useState(15);
   const {
-    name, kickoff_date, ending_date, stage, teachers,
+    name, kickoff_date, ending_date, stage, teachers, current_day
   } = cohortData;
   const startDate = dayjs(kickoff_date).format('MM-DD-YYYY');
   const endingDate = dayjs(ending_date).format('MM-DD-YYYY');
@@ -86,6 +86,7 @@ const CohortStudentActivity = ({
           <CohortDetailCard
             teachersArray={teachersArray}
             stage={stage}
+            currentDay={current_day}
             endingDate={endingDate}
             startDate={startDate}
             name={name}

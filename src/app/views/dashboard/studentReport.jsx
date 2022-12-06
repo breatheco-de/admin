@@ -9,6 +9,7 @@ import StudentIndicators from './components/StudentIndicators';
 import StudentInformation from './components/StudentInformation';
 import CohortStudentActivity from './components/CohortStudentActivity';
 import DowndownMenu from '../../components/DropdownMenu';
+import { getToken, getSession } from '../../redux/actions/SessionActions';
 
 toast.configure();
 const toastOption = {
@@ -16,7 +17,13 @@ const toastOption = {
   autoClose: 8000,
 };
 
-const options = [{ label: 'Add new note', value: 'add_note' }];
+const STUDENT_HOST = process.env.REACT_APP_STUDENT;
+
+const options = [
+  { label: 'Add new note', value: 'add_note' },
+  { label: 'Assignments', value: 'assignments' },
+  { label: 'Attendancy', value: 'attendancy' },
+];
 
 const studentReport = () => {
   const [query, setQuery] = useState({ limit: 10, offset: 0 });
@@ -34,8 +41,9 @@ const studentReport = () => {
   const [studentStatus, setStudentStatus] = useState({});
   const [studentAssignments, setStudentAssignments] = useState([]);
   const [studentActivity, setStudentActivity] = useState([]);
-  const [studenAttendance, setStudenAttendance] = useState([]);
+  const [studentAttendance, setstudentAttendance] = useState({ attended:0, unattended: 0, total: 0 });
   const [hasMoreActivity, setHasMoreActivity] = useState(0);
+  const token = getToken();
 
   // notes modal
   const [newNoteDialog, setNewNoteDialog] = useState(false);
@@ -138,11 +146,36 @@ const studentReport = () => {
       .catch((err) => console.log(err));
   };
   // Attendance data
+  // useEffect(() => {
+  //   bc.activity()
+  //     .getCohortActivity(cohortID, studentAttendanceQuery)
+  //     .then(({ data }) => {
+  //       setstudentAttendance(data?.results || []);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
+
+  // Attendance data
   useEffect(() => {
-    bc.activity()
-      .getCohortActivity(cohortID, studentAttendanceQuery)
+    bc.admissions()
+      .getCohortLog(cohortID)
       .then(({ data }) => {
-        setStudenAttendance(data?.results || []);
+        
+        let total = 0;
+        let current = { attended: 0, unattended: 0, total: 0 };
+        for(let day in data){
+
+          const yes = data[day].attendance_ids.includes(parseInt(studentID)) ? 1 : 0;
+          const no = data[day].unattendance_ids.includes(parseInt(studentID)) ? 1 : 0;
+
+          current = { 
+            attended: current.attended + parseInt(yes),
+            unattended: current.unattended + parseInt(no),
+          }
+          total++;
+        }
+        console.log("attendance!!!!", current)
+        setstudentAttendance({ ...current, total });
       })
       .catch((err) => console.log(err));
   }, []);
@@ -161,6 +194,11 @@ const studentReport = () => {
               icon="more_horiz"
               onSelect={({ value }) => {
                 setNewNoteDialog(value === 'add_note');
+                if (value === 'attendancy') {
+                  window.open(`${STUDENT_HOST}/cohort/${cohortData.slug}/attendance?token=${token}`);
+                } else if (value === 'assignments') {
+                  window.open(`${STUDENT_HOST}/cohort/${cohortData.slug}/assignments?token=${token}`);
+                }
               }}
             >
               <Button style={{ color: 'white' }}>
@@ -171,8 +209,9 @@ const studentReport = () => {
           </div>
           <StudentIndicators
             data={studentAssignments}
+            cohort={cohortData}
             studentActivity={studentActivity}
-            studenAttendance={studenAttendance}
+            studentAttendance={studentAttendance}
             studentData={studentData}
           />
         </Grid>

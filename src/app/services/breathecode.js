@@ -104,6 +104,11 @@ class BreatheCodeClient {
                     `${this.host}/certificate/?id=${qs}`
                 );
             },
+            getCohortLog: (cohort) =>
+                axios.bcGet(
+                    "Cohort Log",
+                    `${this.host}/admissions/academy/cohort/${cohort}/log`
+                ),
             getCohort: (cohort) =>
                 axios.bcGet(
                     "Cohort",
