@@ -1089,6 +1089,12 @@ class BreatheCodeClient {
                     "Comment",
                     `${this.host}/registry/academy/asset/comment/${id}`,
                 ),
+            getAssetPreview: async (slug, options) =>
+                await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/asset/thumbnail/${slug}`,
+                    options
+                ),
             getAsset: async (associatedSlug, options) =>
                 await axios.bcGet(
                     "Asset",

@@ -19,6 +19,7 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from "../../../components/HelpIcon";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
+import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
 
@@ -30,23 +31,42 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const RequirementsCard = ({ asset, onAction }) => {
-  //const [ keywords, setKeywords ] = useState(null);
+const ThumbnailCard = ({ asset, onChange, onAction }) => {
+  const [ preview, setPreview ] = useState(null);
+
+  useEffect(() => {
+    setPreview(asset.preview)
+  },[asset.preview])
   return <Card className="p-4 mb-4">
-    <div className="flex justify-between items-center">
-      <h4 className="m-0 font-medium" style={{ width: '100%'}}>Languages: </h4>
-      {Object.keys(asset.translations).map(t => 
-        <Link to={`./${asset.translations[t]}`}>
-          <ReactCountryFlag 
-            countryCode={t.toUpperCase()} svg 
-            style={{
-              fontSize: t == asset.lang ? '2em' : '1.7em',
-              marginLeft: "5px"
-            }}
-          />
-        </Link>
-      )}
-    </div>
+      {preview ? 
+        <div className="flex">
+          <div style={{ 
+            height: "70px", width: "100px", 
+            backgroundPosition: "center center", 
+            backgroundSize: "contain", 
+            border: "1px solid #BDBDBD",
+            backgroundRepeat: "no-repeat", 
+            backgroundImage: `url(${preview})` 
+          }} className="text-center pt-5">
+              <Tooltip title="Remove Thumbnail"><Icon className="pointer" fontSize="small" onClick={() => onChange({ preview: null })}>delete</Icon></Tooltip>
+              <Tooltip title="Remove and generate thumbnail again">
+                <Icon className="pointer" fontSize="small" onClick={() => {
+                    onChange({ preview: null })
+                      .then(() => getAssetPreview(asset.slug))
+                      .then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))
+                  }}>sync</Icon>
+              </Tooltip>
+              <Tooltip title="Open in new window"><Icon className="pointer" fontSize="small" onClick={() => window.open(preview)}>launch</Icon></Tooltip>
+          </div>
+          <Grid className="pl-3">
+            <h5 className="m-0">
+              Preview image
+            </h5>
+          </Grid>
+        </div>
+        :
+        <p>No preview image has been generatd for this asset. <small><a href="#" className="anchor" onClick={() =>bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>click here to generate</a></small></p>
+      }
   </Card>;
 }
 
@@ -433,6 +453,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
+      <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
