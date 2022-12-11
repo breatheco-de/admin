@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import bc from '../../../services/breathecode';
 import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
+import { getSession } from '../../../redux/actions/SessionActions';
+
 
 const syllabusPropTypes = {
   id: PropTypes.number,
@@ -50,7 +52,22 @@ const schema = Yup.object().shape({
   // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
 
+
+
 const StudentDetails = ({ syllabus, onSubmit }) => {
+  const [status, setStatus] = useState({ color: "", message: "" }); 
+
+  const session = getSession();
+  const academyOwner = session.acadeny?.id
+
+  useEffect(() => {
+    if (syllabusPropTypes.id !== academyOwner) {
+      setStatus({ color: "error", message: `This syllabus is owned by another academy, you can not make changes to its basic information.` });
+    } else {
+      "";
+    }
+  }, [academyOwner]);
+
   return (
     <Card className="pt-6" elevation={3}>
       {syllabus.private && (
@@ -62,6 +79,15 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
           </Alert>
         </Grid>
       )}
+
+      {syllabusPropTypes.id !== academyOwner && (<Alert severity={status.color}>
+
+        <AlertTitle>{syllabusPropTypes.id !== academyOwner
+          ? (<>{status.message}</>)
+          : ""}
+        </AlertTitle>
+      </Alert>)}
+
       <Formik
         initialValues={syllabus}
         validationSchema={schema}
@@ -70,7 +96,32 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting }) => (
+    
+      {syllabusPropTypes.id == academyOwner ? (
+        <Grid className="p-4" container spacing={3} alignItems="center">
+          <Field
+            type="text"
+            name="Slug"
+            placeholder="full-stack-pt"
+            disabled
+            required
+          />
+          <Field
+            type="text"
+            name="Name"
+            placeholder="Full Stack PT"
+            required
+          />
+          <Field
+            type="number"
+            label="Total hours"
+            name="duration_in_hours"
+            placeholder="12345"
+            required
+          />
+        </Grid>
+      ) : (
+        ({ isSubmitting }) => (
           <Form className="p-4">
             <Grid container spacing={3} alignItems="center">
               <Field
@@ -93,6 +144,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
                 placeholder="12345"
                 required
               />
+
               <Field
                 type="number"
                 label="Weekly hours"
@@ -131,10 +183,10 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
               </div>
             </Grid>
           </Form>
-        )}
-      </Formik>
+        ))}
+        </Formik>
     </Card>
-  );
+  )
 };
 
 StudentDetails.propTypes = propTypes;
