@@ -58,7 +58,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
   const [status, setStatus] = useState({ color: "", message: "" }); 
 
   const session = getSession();
-  const academyOwner = session.acadeny?.id
+  const academyOwner = session.academy?.id
 
   useEffect(() => {
     if (syllabusPropTypes.id !== academyOwner) {
@@ -97,7 +97,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
         }}
       >
     
-      {syllabusPropTypes.id == academyOwner ? (
+      {syllabusPropTypes.id !== academyOwner ? (
         <Grid className="p-4" container spacing={3} alignItems="center">
           <Field
             type="text"
