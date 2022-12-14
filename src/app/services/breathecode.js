@@ -1060,6 +1060,12 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/asset/${slug}/action/${payload.action_slug}`,
                     payload
                 ),
+            bulkAssetAction: async (action_slug, payload) =>
+                await axios.bcPost(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/action/${action_slug}`,
+                    payload
+                ),
             createAsset: async (payload) =>
                 await axios.bcPost(
                     "Asset",
