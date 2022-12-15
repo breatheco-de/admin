@@ -55,21 +55,32 @@ const schema = Yup.object().shape({
 
 
 const StudentDetails = ({ syllabus, onSubmit }) => {
-  const [status, setStatus] = useState({ color: "", message: "" }); 
+  const [status, setStatus] = useState({ color: "", message: "" });
 
   const session = getSession();
-  const academyOwner = session.academy?.id
+  const academyOwner = session.academy.id
+  const syllabusId = syllabus.academy_owner.id
+
 
   useEffect(() => {
-    if (syllabusPropTypes.id !== academyOwner) {
-      setStatus({ color: "error", message: `This syllabus is owned by another academy, you can not make changes to its basic information.` });
+    if (syllabusId !== academyOwner) {
+      setStatus({ color: "warning", message: `This syllabus is owned by another academy, you can not make changes to its basic information.` });
     } else {
       "";
     }
   }, [academyOwner]);
 
   return (
-    <Card className="pt-6" elevation={3}>
+
+    <Card elevation={3}>
+      {syllabusId !== academyOwner && (<Alert severity={status.color}>
+
+        <AlertTitle>{syllabusPropTypes.id !== academyOwner
+          ? (<>{status.message}</>)
+          : ""}
+        </AlertTitle>
+      </Alert>)}
+
       {syllabus.private && (
         <Grid item md={12} sm={12} xs={12}>
           <Alert severity="warning">
@@ -80,13 +91,6 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
         </Grid>
       )}
 
-      {syllabusPropTypes.id !== academyOwner && (<Alert severity={status.color}>
-
-        <AlertTitle>{syllabusPropTypes.id !== academyOwner
-          ? (<>{status.message}</>)
-          : ""}
-        </AlertTitle>
-      </Alert>)}
 
       <Formik
         initialValues={syllabus}
@@ -96,95 +100,97 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
           setSubmitting(false);
         }}
       >
-    
-      {syllabusPropTypes.id !== academyOwner ? (
-        <Grid className="p-4" container spacing={3} alignItems="center">
-          <Field
-            type="text"
-            name="Slug"
-            placeholder="full-stack-pt"
-            disabled
-            required
-          />
-          <Field
-            type="text"
-            name="Name"
-            placeholder="Full Stack PT"
-            required
-          />
-          <Field
-            type="number"
-            label="Total hours"
-            name="duration_in_hours"
-            placeholder="12345"
-            required
-          />
-        </Grid>
-      ) : (
-        ({ isSubmitting }) => (
-          <Form className="p-4">
-            <Grid container spacing={3} alignItems="center">
-              <Field
-                type="text"
-                name="Slug"
-                placeholder="full-stack-pt"
-                disabled
-                required
-              />
-              <Field
-                type="text"
-                name="Name"
-                placeholder="Full Stack PT"
-                required
-              />
-              <Field
-                type="number"
-                label="Total hours"
-                name="duration_in_hours"
-                placeholder="12345"
-                required
-              />
 
-              <Field
-                type="number"
-                label="Weekly hours"
-                name="week_hours"
-                placeholder="12345"
-                required
-              />
-              <Field
-                type="number"
-                label="Total Days"
-                name="duration_in_days"
-                placeholder="12345"
-                required
-              />
-              <Field
-                type="text"
-                label="Github URL"
-                name="github_url"
-                placeholder="https://github.com/user/repo"
-              />
-              <Field
-                type="text"
-                name="logo"
-                placeholder="https://storage.googleapis.com/bucket/filename"
-              />
-              <div className="flex-column items-start px-4 mb-4">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="submit"
-                  data-cy="submit"
-                  disabled={isSubmitting}
-                >
-                  Save Syllabus Details
-                </Button>
-              </div>
-            </Grid>
-          </Form>
-        ))}
-        </Formik>
+        {syllabusId !== academyOwner ? (
+          <Grid className="p-4" container spacing={1} alignItems="center">
+            <Field
+              type="text"
+              name="Slug"
+              variant="filled"
+              placeholder="full-stack-pt"
+              disabled
+            />
+            <Field
+              type="text"
+              name="Name"
+              variant="filled"
+              placeholder="Full Stack PT"
+              disabled
+            />
+            <Field
+              type="number"
+              label="Total hours"
+              variant="filled"
+              name="duration_in_hours"
+              placeholder="12345"
+              disabled
+            />
+          </Grid>
+        ) : (
+          ({ isSubmitting }) => (
+            <Form className="p-4">
+              <Grid container spacing={3} alignItems="center">
+                <Field
+                  type="text"
+                  name="Slug"
+                  placeholder="full-stack-pt"
+                  disabled
+                  required
+                />
+                <Field
+                  type="text"
+                  name="Name"
+                  placeholder="Full Stack PT"
+                  required
+                />
+                <Field
+                  type="number"
+                  label="Total hours"
+                  name="duration_in_hours"
+                  placeholder="12345"
+                  required
+                />
+
+                <Field
+                  type="number"
+                  label="Weekly hours"
+                  name="week_hours"
+                  placeholder="12345"
+                  required
+                />
+                <Field
+                  type="number"
+                  label="Total Days"
+                  name="duration_in_days"
+                  placeholder="12345"
+                  required
+                />
+                <Field
+                  type="text"
+                  label="Github URL"
+                  name="github_url"
+                  placeholder="https://github.com/user/repo"
+                />
+                <Field
+                  type="text"
+                  name="logo"
+                  placeholder="https://storage.googleapis.com/bucket/filename"
+                />
+                <div className="flex-column items-start px-4 mb-4">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    type="submit"
+                    data-cy="submit"
+                    disabled={isSubmitting}
+                  >
+                    Save Syllabus Details
+                  </Button>
+                </div>
+              </Grid>
+            </Form>
+          ))}
+      </Formik>
     </Card>
   )
 };
