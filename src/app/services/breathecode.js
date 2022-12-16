@@ -911,6 +911,13 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            updateBillStatus: async (payload) => {
+                return await axios.bcPut(
+                    "Project",
+                    `${this.host}/freelance/academy/bill`,
+                    payload
+                );
+            },
             generatePendingInvoice: (id) => axios.bcPost(
                     "Project Invoice",
                     `${this.host}/freelance/academy/project/${id}/invoice`
