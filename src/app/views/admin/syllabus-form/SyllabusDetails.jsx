@@ -106,21 +106,18 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
             <Field
               type="text"
               name="Slug"
-              variant="filled"
               placeholder="full-stack-pt"
               disabled
             />
             <Field
               type="text"
               name="Name"
-              variant="filled"
               placeholder="Full Stack PT"
               disabled
             />
             <Field
               type="number"
               label="Total hours"
-              variant="filled"
               name="duration_in_hours"
               placeholder="12345"
               disabled
