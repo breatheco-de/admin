@@ -89,7 +89,7 @@ const Cohort = () => {
     { label: 'Change cohort stage', value: 'stage' },
     { label: 'Change cohort current day', value: 'current_day' },
     { label: 'Assignments', value: 'assignments' },
-    { label: 'Attendancy', value: 'attendancy' },
+    { label: 'Attendance', value: 'attendance' },
     { label: 'Instant NPS Survey', value: 'new_survey' },
     { label: cohort?.private ? 'Mark as public' : 'Mark as private', value: 'privacy' },
   ];
@@ -210,10 +210,10 @@ const Cohort = () => {
                 makePrivate();
               }
 
-              if (value === 'attendancy') {
-                window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}`);
+              if (value === 'attendance') {
+                window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
-                window.open(`${STUDENT_HOST}/cohort/${slug}/assignments?token=${token}`);
+                window.open(`${STUDENT_HOST}/cohort/${slug}/assignments?token=${token}&academy=${session.academy.id}`);
               }
             }}
           >
