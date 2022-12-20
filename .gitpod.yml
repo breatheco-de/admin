@@ -15,7 +15,7 @@ tasks:
   - init: |
       cp .env.example .env &&
       touch /tmp/.npm-lock
-      npm install
+      npm install --legacy-peer-deps
       rm /tmp/.npm-lock
     command: npm run start
   - init: sleep 1 && while [ -f /tmp/.npm-lock ]; do sleep 1; done

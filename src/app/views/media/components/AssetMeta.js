@@ -19,6 +19,7 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from "../../../components/HelpIcon";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
+import { MediaInput } from '../../../components/MediaInput';
 import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
@@ -33,12 +34,34 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const ThumbnailCard = ({ asset, onChange, onAction }) => {
   const [ preview, setPreview ] = useState(null);
+  const [ previewURL, setPreviewURL ] = useState(null);
+  const [ edit, setEdit ] = useState(null);
 
   useEffect(() => {
     setPreview(asset.preview)
+    setPreviewURL(asset.preview)
   },[asset.preview])
+
   return <Card className="p-4 mb-4">
-      {preview ? 
+      {edit ? 
+        <div className="flex">
+          <MediaInput
+            size="small"
+            placeholder="Image URL"
+            value={previewURL}
+            handleChange={(k,v) => setPreviewURL(v)}
+            name="preview_url"
+            fullWidth
+            inputProps={{ style: { padding: '10px' } }}
+          />
+          <Button variant="contained" color="primary" size="small" onClick={() => onChange({ preview: previewURL }).then(() => setEdit(false))}>
+            <Icon fontSize="small">check</Icon>
+          </Button>
+          <Button variant="contained" color="primary" size="small" onClick={() => setEdit(false)}>
+            <Icon fontSize="small">cancel</Icon>
+          </Button>
+        </div>
+        : preview ? 
         <div className="flex">
           <div style={{ 
             height: "70px", width: "100px", 
@@ -48,24 +71,27 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
             backgroundRepeat: "no-repeat", 
             backgroundImage: `url(${preview})` 
           }} className="text-center pt-5">
-              <Tooltip title="Remove Thumbnail"><Icon className="pointer" fontSize="small" onClick={() => onChange({ preview: null })}>delete</Icon></Tooltip>
-              <Tooltip title="Remove and generate thumbnail again">
-                <Icon className="pointer" fontSize="small" onClick={() => {
-                    onChange({ preview: null })
-                      .then(() => getAssetPreview(asset.slug))
-                      .then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))
-                  }}>sync</Icon>
-              </Tooltip>
-              <Tooltip title="Open in new window"><Icon className="pointer" fontSize="small" onClick={() => window.open(preview)}>launch</Icon></Tooltip>
           </div>
           <Grid className="pl-3">
             <h5 className="m-0">
               Preview image
             </h5>
+            <Tooltip title="Remove Thumbnail"><Icon className="pointer" fontSize="small" onClick={() => onChange({ preview: null })}>delete</Icon></Tooltip>
+            <Tooltip title="Remove and generate thumbnail again">
+              <Icon className="pointer" fontSize="small" onClick={() => {
+                  onChange({ preview: null })
+                    .then(() => getAssetPreview(asset.slug))
+                    .then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))
+                }}>sync</Icon>
+            </Tooltip>
+            <Tooltip title="Open in new window"><Icon className="pointer" fontSize="small" onClick={() => window.open(preview)}>launch</Icon></Tooltip>
           </Grid>
         </div>
         :
-        <p>No preview image has been generatd for this asset. <small><a href="#" className="anchor" onClick={() =>bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>click here to generate</a></small></p>
+        <p className="m-0">No preview image has been generatd for this asset.  
+            <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
+            <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
+        </p>
       }
   </Card>;
 }
