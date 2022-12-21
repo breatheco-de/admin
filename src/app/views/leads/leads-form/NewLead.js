@@ -217,7 +217,7 @@ const NewLead = () => {
             if (!id) res = await bc.marketing().addNewLead({ ...payload });
             else res = await bc.marketing().updateAcademyLead(id, { ...payload });
 
-            if (res.ok) history.push('/growth/leads');
+            if (res.ok) history.goBack();
           }}
           enableReinitialize
         >
