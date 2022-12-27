@@ -19,12 +19,24 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
   const readOnly = !['ARTICLE', 'LESSON'].includes(asset.asset_type);
   return (
     <Card>
-      {readOnly && 
+      {readOnly ?
         <Alert severity="warning">
           <AlertTitle>You cannot manually update this asset</AlertTitle>
           This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
         </Alert>
+        : asset.last_synch_at < asset.readme_url  ?
+        <Alert severity="warning">
+          <AlertTitle>Asset not in sync</AlertTitle>
+          The asset is not synched with GitHub, please push your changes.
+        </Alert>
+         : asset.last_synch_at == null ?
+         <Alert severity="warning">
+         <AlertTitle>Asset never synched</AlertTitle>
+         This asset has never been synched with GitHub, please pull the information from the GitHub repository.
+       </Alert> 
+        : ""
       }
+    
       {typeof(value) !== "string" ? 
         <div className="p-4">
           File content its not text-based, you have two possible ways to fix this:
