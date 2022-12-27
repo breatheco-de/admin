@@ -24,7 +24,7 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
           <AlertTitle>You cannot manually update this asset</AlertTitle>
           This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
         </Alert>
-        : asset.last_synch_at < asset.readme_url  ?
+        : asset.last_synch_at < asset.readme_updated_at  ?
         <Alert severity="warning">
           <AlertTitle>Asset not in sync</AlertTitle>
           The asset is not synched with GitHub, please push your changes.
