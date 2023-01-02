@@ -144,7 +144,7 @@ export const navigations = [
             },
             {
                 name: "Pipeline",
-                path: "/media/article_issues",
+                path: "/media/article_issues?limit=10&offset=0&resolved=false",
                 iconText: "PIP",
                 capabilities: ["read_asset"],
             },
