@@ -239,6 +239,7 @@ const Cohort = () => {
                 isPrivate={cohort.private}
                 timeZone={cohort.timezone}
                 onlineMeetingUrl={cohort.online_meeting_url}
+                isHiddenOnPrework={cohort.is_hidden_on_prework}
                 onSubmit={updateCohort}
               />
             )}

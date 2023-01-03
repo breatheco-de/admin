@@ -45,6 +45,7 @@ const propTypes = {
   isPrivate: PropTypes.bool.isRequired,
   timeZone: PropTypes.string.isRequired,
   onlineMeetingUrl: PropTypes.string.isRequired,
+  isHiddenOnPrework: PropTypes.bool.isRequired
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -66,6 +67,7 @@ const CohortDetails = ({
   isPrivate,
   timeZone,
   onlineMeetingUrl,
+  isHiddenOnPrework
 }) => {
   const { academy } = JSON.parse(localStorage.getItem('bc-session'));
   const [syllabus, setSyllabus] = useState(null);
@@ -115,6 +117,7 @@ const CohortDetails = ({
           timezone: timeZone,
           online_meeting_url: onlineMeetingUrl,
           remote_available: remote_available,
+          is_hidden_on_prework: isHiddenOnPrework
         }}
         onSubmit={({ specialtyMode, ...values }) => {
           const specialtyModeId = cert ? cert.id : null;
@@ -242,6 +245,30 @@ const CohortDetails = ({
                   {['es', 'en'].map((item) => (
                     <MenuItem value={item} key={item}>
                       {item.toUpperCase()}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item md={3} sm={4} xs={12}>
+                Is Hidden On Prework?
+              </Grid>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Is Hidden On Prework"
+                  data-cy="is-hidden-on-prework"
+                  size="small"
+                  fullWidth
+                  variant="outlined"
+                  value={values.is_hidden_on_prework}
+                  onChange={(e) => {
+                    setFieldValue('is_hidden_on_prework', e.target.value);
+                  }}
+                  select
+                >
+                  {[{value: 'academy_default', label: 'Default\'s academy value'}, {value: false, label: 'False'}, {value: true, label: 'True'}].map((item) => (
+                    <MenuItem value={item.value} key={item.value}>
+                      {item.label}
                     </MenuItem>
                   ))}
                 </TextField>
