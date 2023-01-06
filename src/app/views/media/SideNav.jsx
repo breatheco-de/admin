@@ -1,13 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   TextField,
   InputAdornment,
   Icon,
   FormControlLabel,
-  Radio,
-  RadioGroup,
-  FormControl,
   Checkbox,
   Button,
   Hidden,
@@ -18,11 +15,18 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Formik } from 'formik';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 
 const Sidenav = ({
   query,
   categories,
   type,
+  start,
+  end,
+  handleStartChange,
+  handleEndChange,
   categoryList,
   toggleSidenav,
   handleSearch,
@@ -32,6 +36,7 @@ const Sidenav = ({
   onNewCategory,
 }) => {
   const [dialog, setDialog] = useState(false);
+
   return (
     <>
       <div className="pl-4 flex items-center mb-4 mt-2">
@@ -57,41 +62,61 @@ const Sidenav = ({
           <Icon onClick={toggleSidenav}>clear</Icon>
         </Hidden>
       </div>
+
+
       <div className="px-4">
         <Card elevation={3} className="p-4 mb-4">
+          <h5 className="m-0 mb-4">Date range</h5>
+          <h5 className="m-0 mb-1">From:</h5>
+          <TextField
+            className="min-w-188"
+            name="starting_at"
+            size="small"
+            fullWidth
+            variant="outlined"
+            type="date"
+            value={start}
+            onChange={(e) => {
+              handleStartChange(e.target.value);
+            }}
+          />
+
+          <h5 className="m-0 mb-1 mt-2">To:</h5>
+          <TextField
+            className="min-w-188"
+            name="ending_at"
+            size="small"
+            fullWidth
+            variant="outlined"
+            type="date"
+            value={end}
+            onChange={(e) => {
+              handleEndChange(e.target.value);
+            }}
+          />
+
+        </Card>
+
+        <Card elevation={3} className="p-4 mb-4">
           <h5 className="m-0 mb-4">Type</h5>
-          <FormControl component="fieldset" className="w-full">
-            <RadioGroup aria-label="status" name="status" value={type} onChange={handleTypeChange}>
-              <FormControlLabel
-                className="h-32"
-                value="image"
-                control={<Radio color="secondary" />}
-                label="Image"
-                labelPlacement="end"
-              />
-              <FormControlLabel
-                className="h-32"
-                value="video"
-                control={<Radio color="secondary" />}
-                label="Video"
-                labelPlacement="end"
-              />
-              <FormControlLabel
-                className="h-32"
-                value="pdf"
-                control={<Radio color="secondary" />}
-                label="PDF"
-                labelPlacement="end"
-              />
-              <FormControlLabel
-                className="h-32"
-                value="all"
-                control={<Radio color="secondary" />}
-                label="All"
-                labelPlacement="end"
-              />
-            </RadioGroup>
-          </FormControl>
+          <ToggleButtonGroup name="status" value={type} onChange={handleTypeChange} exclusive>
+            <ToggleButton value="image" ria-label='image'>
+              <span className=" material-icons MuiIcon-root" aria-hidden="true">image</span>
+            </ToggleButton>
+
+            <ToggleButton value="video" aria-label='video'>
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">videocam</span>
+            </ToggleButton>
+
+            <ToggleButton value="pdf" aria-label='pdf'>
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">picture_as_pdf</span>
+            </ToggleButton>
+
+            <ToggleButton value="all" aria-label='all'>
+            <span className=" material-icons MuiIcon-root" aria-hidden="true">view_module</span>
+            </ToggleButton>
+
+          </ToggleButtonGroup>
         </Card>
 
         <Card elevation={3} className="relative p-4 mb-4">

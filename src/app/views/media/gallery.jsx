@@ -37,6 +37,8 @@ const Gallery = () => {
   const [categories, setCategories] = useState(
     pgQuery.get('categories') !== null ? [...pgQuery.get('categories').split(',')] : [],
   );
+  const [start, setStart] = React.useState(pgQuery.get('start') !== null ? pgQuery.get('start') : '');
+  const [end, setEnd] = React.useState(pgQuery.get('end') !== null ? pgQuery.get('end') : '');
   const dispatch = useDispatch();
   const { productList = [] } = useSelector((state) => state.ecommerce);
   const { categoryList = [] } = useSelector((state) => state.ecommerce);
@@ -118,9 +120,8 @@ const Gallery = () => {
     }, 300),
     [productList],
   );
-  const handleTypeChange = (event) => {
-    console.log(event.target.value);
-    const eventValue = event.target.value;
+  const handleTypeChange = (event, value) => {
+    const eventValue = value;
     setType(eventValue);
 
     if (eventValue === 'all') {
@@ -145,6 +146,36 @@ const Gallery = () => {
         .join('&')}`,
     );
   };
+
+  const handleStartChange = (date) => {
+    setStart(date);
+    dispatch(
+      getProductList({
+        ...pagination,
+        start: date
+      }),
+    );
+    history.replace(
+      `/media/gallery?${Object.keys({ ...pagination, start: date })
+        .map((key) => `${key}=${{ ...pagination, start: date }[key]}`)
+        .join('&')}`,
+    );
+  }
+  const handleEndChange = (date) => {
+    setEnd(date);
+    dispatch(
+      getProductList({
+        ...pagination,
+        end: date
+      }),
+    );
+    history.replace(
+      `/media/gallery?${Object.keys({ ...pagination, end: date })
+        .map((key) => `${key}=${{ ...pagination, end: date }[key]}`)
+        .join('&')}`,
+    );
+  }
+
 
   const handleCategoryChange = (event) => {
     const { target } = event;
@@ -267,9 +298,13 @@ const Gallery = () => {
               query={query}
               categories={categories}
               type={type}
+              start={start}
+              end={end}
               categoryList={categoryList}
               toggleSidenav={toggleSidenav}
               handleSearch={handleSearch}
+              handleStartChange={handleStartChange}
+              handleEndChange={handleEndChange}
               handleTypeChange={handleTypeChange}
               handleCategoryChange={handleCategoryChange}
               handleClearAllFilter={handleClearAllFilter}

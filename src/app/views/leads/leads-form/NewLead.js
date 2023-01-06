@@ -136,6 +136,10 @@ const NewLead = () => {
           const index = availableCourses.map((c) => c.slug).indexOf(data.course);
           setNewLead({ 
             ...data,
+            latitude: data.latitude || 0,
+            longitude: data.longitude || 0,
+            zip_code: data.zip_code || 0,
+            lead_type: data.lead_type || '',
             course: { ...availableCourses[index] }
           });
         })
@@ -172,7 +176,7 @@ const NewLead = () => {
     course: Yup.string().required('Please enter a course'),
     language: Yup.string().required('Please enter a language'),
     location: Yup.string().required('Please enter a location'),
-    lead_type: Yup.string().required('Please select one type of lead'),
+    lead_type: Yup.string('Select a valid type').required('Please select one type of lead'),
     phone: Yup.string()
       .matches(phoneRegExp, `Please enter the correct format with the code of your country with a ${'+'}`),
     latitude: Yup.number().typeError('Please enter a valid number and if not, leave the value at 0.'),
@@ -476,7 +480,7 @@ const NewLead = () => {
                       asyncSearch={(search) => bc.marketing().getAcademyTags({ like: search, type: 'SOFT,STRONG' })}
                       size="small"
                       label="tags"
-                      required={false}
+                      required={true}
                       multiple={true}
                       debounced={false}
                       getOptionSelected={(option, value) => option.slug === value.slug}
