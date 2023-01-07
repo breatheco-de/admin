@@ -52,9 +52,7 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
   },
 }));
 
-const GridMediaCard = ({
-  media, onOpenDialog, onSelected, isSelected,
-}) => {
+const GridMediaCard = ({media, onOpenDialog, onSelected, isSelected,}) => {
   const classes = useStyles();
   const type = {
     pdf: 'https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder-1024x512.png',
@@ -63,7 +61,7 @@ const GridMediaCard = ({
   };
   const [selected, setSelected] = useState(false);
   const { user } = useAuth();
-
+  
   useEffect(() => {
     if (isSelected.length === 0) setSelected(false);
   }, [isSelected]);
@@ -75,7 +73,7 @@ const GridMediaCard = ({
   };
 
   const LockIcon = () => {
-    if (media.academy.id !== user.academy.id) {
+    if (media.academy?.id !== user.academy?.id) {
       return (
         <button
           type="button"
@@ -102,9 +100,8 @@ const GridMediaCard = ({
       )}
       style={{ maxHeight: "300px" }}
       onClick={(e) => {
-        if(media.academy.id === user.academy.id){
+        if(media.academy?.id === user.academy?.id){
           e.stopPropagation();
-          console.log(media);
           setSelected(!selected);
           onSelected(media);
         }
@@ -112,7 +109,8 @@ const GridMediaCard = ({
     >
 
       <div className="flex justify-center items-center relative">
-        {media.academy.id !== user.academy.id && (
+        {media.academy?.id !== user.academy?.id && (
+
           <Tooltip 
             style={{
               position:'absolute',
