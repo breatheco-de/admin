@@ -266,7 +266,7 @@ const CohortDetails = ({
                   }}
                   select
                 >
-                  {[{value: 'academy_default', label: 'Default\'s academy value'}, {value: false, label: 'False'}, {value: true, label: 'True'}].map((item) => (
+                  {[{value: null, label: 'Default\'s academy value'}, {value: false, label: 'False'}, {value: true, label: 'True'}].map((item) => (
                     <MenuItem value={item.value} key={item.value}>
                       {item.label}
                     </MenuItem>

@@ -70,7 +70,7 @@ const NewCohort = () => {
 
   const isHiddenOnPreworkOptions = [
     {
-      value: "academy_default",
+      value: null,
       label: "Default's academy value"
     },
     {
@@ -116,7 +116,7 @@ const NewCohort = () => {
   const isHiddenOnPreworkCohort = (event) => {
       setNewCohort({
         ...newCohort,
-        is_hidden_on_prework: event.target.value == "Default's academy value" ? "academy_default" : event.target.value,
+        is_hidden_on_prework: event.target.value == "Default's academy value" ? null : event.target.value,
       });
   };
 
