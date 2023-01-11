@@ -487,7 +487,7 @@ const EventForm = () => {
                     size="small"
                     fullWidth
                     variant="outlined"
-                    value={event.live_stream_url}
+                    value={values.live_stream_url}
                     onChange={(e) => { setEvent({...event, live_stream_url: e.target.value}) }}
                   />
                   <small className="text-muted">In case the event is online, this field is mandatory. It's the meeting URL.</small>
