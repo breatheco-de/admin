@@ -211,9 +211,9 @@ const Cohort = () => {
               }
 
               if (value === 'attendancy') {
-                window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}`);
+                window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}&academy=${cohort?.academy?.id}`);
               } else if (value === 'assignments') {
-                window.open(`${STUDENT_HOST}/cohort/${slug}/assignments?token=${token}`);
+                window.open(`${STUDENT_HOST}/cohort/${slug}/assignments?token=${token}&academy=${cohort?.academy?.id}`);
               }
             }}
           >
