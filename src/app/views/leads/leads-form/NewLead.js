@@ -480,7 +480,7 @@ const NewLead = () => {
                       asyncSearch={(search) => bc.marketing().getAcademyTags({ like: search, type: 'SOFT,STRONG' })}
                       size="small"
                       label="tags"
-                      required={true}
+                      required={newLead.tag_objects.length === 0}
                       multiple={true}
                       debounced={false}
                       getOptionSelected={(option, value) => option.slug === value.slug}
