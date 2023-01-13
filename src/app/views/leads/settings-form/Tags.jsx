@@ -69,6 +69,17 @@ export const Tags = () => {
       label: 'slug', // column title that will be shown in table
       options: {
         filter: false,
+        customBodyRenderLite: (dataIndex) => {
+          const item = items[dataIndex];
+          return (
+            <>
+              <div className="text-center">
+                <p className="mb-1">{item.slug}</p>
+                <small className="text-muted">{item.tag_type}</small>
+              </div>
+            </>
+          );
+        },
       },
     },
     {
