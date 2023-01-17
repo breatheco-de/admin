@@ -1,23 +1,23 @@
-import { SmartMUIDataTable } from 'app/components/SmartDataTable';
+import React, { useState } from 'react';
+import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import bc from 'app/services/breathecode';
 import { Breadcrumb } from 'matx';
-import React, { useState } from 'react';
-import { 
-  FormGroup,
-  TextField,
- } from '@material-ui/core';
+import dayjs from "dayjs";
 import SessionDetails from './session-details/SessionDetails'
 import SessionNotes from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
 import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
 import { useQuery } from '../../hooks/useQuery';
-import dayjs from "dayjs";
+import { AsyncAutocomplete } from '../../components/Autocomplete';
 const duration = require("dayjs/plugin/duration");
 dayjs.extend(duration)
 
 const Sessions = () => {
-  const [sessions, setSessions] = useState([]);
   const query = useQuery();
+  const [sessions, setSessions] = useState([]);
+  const [student, setStudent] = useState(query.get('student') && { slug: query.get('student') });
+  const [service, setService] = useState(query.get('service') && { slug: query.get('service') });
+  const [mentor, setMentor] = useState(query.get('mentor') && { slug: query.get('mentor') });
   const columns = [
     {
       name: 'started_at,created_at',
@@ -45,16 +45,21 @@ const Sessions = () => {
           display: (filterList, onChange, index, column) => {
             return (
               <div>
-                <FormGroup row>
-                  <TextField
-                    label="Student"
-                    value={filterList[index][0] || ''}
-                    onChange={event => {
-                      filterList[index][0] = event.target.value;
-                      onChange(filterList[index], index, column);
-                    }}
-                  />
-                </FormGroup>
+                <AsyncAutocomplete
+                  asyncSearch={(searchTerm) => bc.auth().getAcademyMembers({like: searchTerm, include: 'student'})}
+                  size="small"
+                  label="Student"
+                  debounced
+                  value={student}
+                  filterOptions={(options) => options}
+                  onChange={(newStudent) => {
+                    setStudent(newStudent);
+                    if (newStudent) filterList[index][0] = newStudent.email;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.first_name} ${option.last_name}, (${option.email})`}
+                />
               </div>
             );
           }
@@ -79,16 +84,21 @@ const Sessions = () => {
           display: (filterList, onChange, index, column) => {
             return (
               <div>
-                <FormGroup row>
-                  <TextField
-                    label="Service"
-                    value={filterList[index][0] || ''}
-                    onChange={event => {
-                      filterList[index][0] = event.target.value;
-                      onChange(filterList[index], index, column);
-                    }}
-                  />
-                </FormGroup>
+                <AsyncAutocomplete
+                  asyncSearch={(searchTerm) => bc.mentorship().getAllServices({ name: searchTerm })}
+                  size="small"
+                  label="Service"
+                  debounced
+                  value={service}
+                  filterOptions={(options) => options}
+                  onChange={(newService) => {
+                    setService(newService);
+                    if (newService) filterList[index][0] = newService.name;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.name}`}
+                />
               </div>
             );
           }
@@ -107,6 +117,7 @@ const Sessions = () => {
       options: {
         filter: true,
         filterList: query.get('mentor') !== null ? [query.get('mentor')] : [],
+        filterType: 'custom',
         sortThirdClickReset: true,
         customBodyRenderLite: (dataIndex) => {
           const session = sessions[dataIndex];
@@ -114,6 +125,29 @@ const Sessions = () => {
             <p className="m-0 p-0">{session?.mentor.user.first_name} {session?.mentor.user.last_name}</p>
             <small className="m-0 p-0">{session?.service?.name}</small>
           </>);
+        },
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div>
+                <AsyncAutocomplete
+                  asyncSearch={(searchTerm) => bc.mentorship().getAcademyMentors({ like: searchTerm })}
+                  size="small"
+                  label="Mentor"
+                  debounced
+                  value={mentor}
+                  filterOptions={(options) => options}
+                  onChange={(newMentor) => {
+                    setMentor(newMentor);
+                    if (newMentor) filterList[index][0] = newMentor.email;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  getOptionLabel={(option) => `${option.user.first_name} ${option.user.last_name}, (${option.email})`}
+                />
+              </div>
+            );
+          }
         },
       },
 
@@ -142,6 +176,14 @@ const Sessions = () => {
             options={{
               print: false,
               viewColumns: false,
+              onFilterChipClose: async (index, removedFilter, filterList) => {
+                if (index === 1) setStudent(null);
+                else if (index === 2) setService(null);
+                else if (index === 3) setMentor(null);
+                const querys = getParams();
+                const { data } = await bc.mentorship().getAllMentorSessions({ ...querys });
+                setSessions(data.results);
+              },
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
                 <AddServiceInBulk
                   selectedRows={selectedRows}
