@@ -197,12 +197,12 @@ const Assets = () => {
       },
     },
     {
-      name: 'type',
+      name: 'asset_type',
       label: 'Asset Type',
       options: {
         filter: true,
         filterList:
-          query.get('type') !== null ? [query.get('type')] : [],
+          query.get('asset_type') !== null ? [query.get('asset_type')] : [],
         filterType: "dropdown",
         display: false,
         filterOptions: {
