@@ -229,6 +229,7 @@ const EventList = () => {
               search={async (querys) => {
                 const { data } = await bc.events().getAcademyEvents(querys);
                 setItems(data.results);
+                console.log(data)
                 return data;
               }}
               deleting={async (querys) => {

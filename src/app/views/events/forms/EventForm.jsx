@@ -421,6 +421,7 @@ const EventForm = () => {
                       <TextField {...params} label="Event Type" placeholder="Event Type" />
                     )}
                   />
+                  <small className="text-muted"><a href='/events/type/list'>Manage Event Types</a></small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Event Description

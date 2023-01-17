@@ -776,6 +776,16 @@ class BreatheCodeClient {
                     "Academy event",
                     `${this.host}/events/academy/organizer`
                 ),
+            getAcademyEventType: () =>
+                axios.bcGet(
+                    "Event Type",
+                    `${this.host}/events/academy/eventype`
+                ),
+            getAcademyEventTypeSlug: () =>
+                axios.bcGet(
+                    "Event Type",
+                    `${this.host}/events/academy/eventype/${eventtype_slug}`
+                ),
             postAcademyEventOrganization: (payload) =>
                 axios.bcPost(
                     "Academy event",
@@ -802,6 +812,11 @@ class BreatheCodeClient {
                     "Delete organizer",
                     `${this.host}/events/academy/organization/organizer/${org}`
                 ),
+            deleteAcademyEventTypes: (org) =>
+                axios.bcDelete(
+                    "Delete Eventtype",
+                    `${this.host}/events/academy/eventype`
+                ),
             getEventbriteWebhook: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -815,11 +830,6 @@ class BreatheCodeClient {
             },
             getAcademyVenues: () =>
                 axios.bcGet("Venues", `${this.host}/events/academy/venues`),
-            getAcademyEventType: () =>
-                axios.bcGet(
-                    "Event Type",
-                    `${this.host}/events/academy/eventype`
-                ),
             downloadCSV: (query) => {
                 const qs = Object.keys(query)
                     .map((key) => `${key}=${query[key]}`)
