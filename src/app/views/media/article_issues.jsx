@@ -60,9 +60,11 @@ const Board = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const comment = issueList[dataIndex];
+          const text = comment.text.split(/\r?\n|\r|\n/g) || [];
+
           return (
             <div>
-              <p className="my-0 text-15">{comment.text}</p>
+              <p className="my-0 text-15">{Array.isArray(text) ? text[0] : ""}</p>
               {comment.asset.title ?
                 <small className="text-muted">{comment.asset.title}</small>
                 :

@@ -47,7 +47,7 @@ const visibilityColors = {
   "PUBLIC": "bg-primary",
 }
 const defaultAsset = {
-  slug: "example-asset-slug",
+  slug: "",
   title: "Example asset title",
   seo_keywords: [],
   cluster: null,
