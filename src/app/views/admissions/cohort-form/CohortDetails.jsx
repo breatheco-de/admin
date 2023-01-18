@@ -93,7 +93,7 @@ const CohortDetails = ({
   const handleClose = () => {
     setOpen(false);
   };
- 
+
 
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
@@ -192,7 +192,7 @@ const CohortDetails = ({
                   required
                   debounced={false}
                   initialValue={version}
-                  getOptionLabel={(option) => option.status === 'PUBLISHED' ? `${option.version}` : "⚠️ "+option.version+" ("+option.status+")"}
+                  getOptionLabel={(option) => option.status === 'PUBLISHED' ? `${option.version}` : "⚠️ " + option.version + " (" + option.status + ")"}
                   value={version}
                 />
               </Grid>
@@ -246,30 +246,42 @@ const CohortDetails = ({
                   ))}
                 </TextField>
               </Grid>
-              <Grid item md={3} sm={4} xs={12}>
-                Start date
+              <Grid item md={12} sm={12} xs={12}>
+                <FormControlLabel
+                  className="flex-grow"
+                  name="never_ends"
+                  data-cy="never-ends"
+                  onChange={handleChange}
+                  control={<Checkbox checked={values.never_ends} />}
+                  label="This cohort will never finish"
+                  style={{ marginRight: '5px' }}
+                />
+                <HelpIcon message={helpText} link={helpLink} />
               </Grid>
-              <Grid item md={9} sm={8} xs={12}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <KeyboardDatePicker
-                    className="m-2"
-                    margin="none"
-                    label="Date"
-                    data-cy="start-date"
-                    inputVariant="outlined"
-                    type="text"
-                    size="small"
-                    autoOk
-                    value={values.kickoff_date}
-                    format="yyyy-MM-dd"
-                    onChange={(date) =>
-                      setFieldValue('kickoff_date', date.toISOString())
-                    }
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>
-              {!values.never_ends ? (
+              {!values.never_ends && (
                 <>
+                  <Grid item md={3} sm={4} xs={12}>
+                    Start date
+                  </Grid>
+                  <Grid item md={9} sm={8} xs={12}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        className="m-2"
+                        margin="none"
+                        label="Date"
+                        data-cy="start-date"
+                        inputVariant="outlined"
+                        type="text"
+                        size="small"
+                        autoOk
+                        value={values.kickoff_date}
+                        format="yyyy-MM-dd"
+                        onChange={(date) =>
+                          setFieldValue('kickoff_date', date.toISOString())
+                        }
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Grid>
                   <Grid item md={3} sm={4} xs={12}>
                     End date
                   </Grid>
@@ -292,68 +304,42 @@ const CohortDetails = ({
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
-                  <Grid item md={12} sm={12} xs={12}>
-                    <FormControlLabel
-                      className="flex-grow"
-                      name="never_ends"
-                      data-cy="never-ends"
-                      onChange={handleChange}
-                      control={<Checkbox checked={values.never_ends} />}
-                      label="This cohort will never finish"
-                      style={{marginRight:'5px'}}
-                    />
-                    <HelpIcon message={helpText} link={helpLink} />
-                  </Grid>
-                  
                 </>
-              ) : (
-                <Grid item md={12} sm={12} xs={12}>
-                  <FormControlLabel
-                    className="flex-grow"
-                    name="never_ends"
-                    data-cy="never-ends"
-                    onChange={handleChange}
-                    control={<Checkbox checked={values.never_ends} />}
-                    label="This cohort will never finish"
-                    style={{marginRight:'5px'}}
-                  />
-                  <HelpIcon message={helpText} link={helpLink} />
-                </Grid>
               )}
               <Grid item md={12} sm={12} xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={values.remote_available}
-                        onChange={handleChange}
-                        name="remote_available"
-                        data-cy="remote_available"
-                        color="primary"
-                        className="text-left"
-                      />
-                    }
-                    label="Enable Remote"
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.remote_available}
+                      onChange={handleChange}
+                      name="remote_available"
+                      data-cy="remote_available"
+                      color="primary"
+                      className="text-left"
+                    />
+                  }
+                  label="Enable Remote"
+                />
+              </Grid>
+              {values.remote_available && <>
+                <Grid item md={3} sm={4} xs={12}>
+                  Live meeting URL
+                </Grid>
+                <Grid item md={9} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
+                    name="online_meeting_url"
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    placeholder="https://..."
+                    value={values.online_meeting_url}
+                    onChange={handleChange}
                   />
                 </Grid>
-                {values.remote_available && <>
-                    <Grid item md={3} sm={4} xs={12}>
-                      Live meeting URL
-                    </Grid>
-                    <Grid item md={9} sm={8} xs={12}>
-                      <TextField
-                        className="m-2"
-                        label="URL"
-                        name="online_meeting_url"
-                        data-cy="meetingURL"
-                        size="small"
-                        variant="outlined"
-                        placeholder="https://..."
-                        value={values.online_meeting_url}
-                        onChange={handleChange}
-                      />
-                    </Grid>
-                    </>
-                }
+              </>
+              }
 
               <Grid item md={3} sm={4} xs={12}>
                 Timezone
@@ -375,49 +361,49 @@ const CohortDetails = ({
                 </div>
               </Grid>
 
-              <Button 
-                  onClick={() =>{
-                    if(values.never_ends == true) handleOpen()
-                    else handleSubmit()
-                  }}
-                  color="primary"
-                  variant="contained"
-                  >Save Cohort Details</Button>
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                  >
+              <Button
+                onClick={() => {
+                  if (values.never_ends == true) handleOpen()
+                  else handleSubmit()
+                }}
+                color="primary"
+                variant="contained"
+              >Save Cohort Details</Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+              >
 
-                    <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' >
-                      <div className="modalContent text-center">
+                <Box style={{ position: 'absolute', top: '33%', left: '41%' }} className=' p-6 border-none border-radius-4 w-400 bg-paper ' >
+                  <div className="modalContent text-center">
 
-                          <h2 >Confirm</h2>
-                          <p >
-                          Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited. 
-                          </p>
-                      
-                          <div className="mb-2">
+                    <h2 >Confirm</h2>
+                    <p >
+                      Are you sure you want to create a cohort that doesn't end? Some functionalities will be limited.
+                    </p>
+
+                    <div className="mb-2">
 
 
-                            <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}  className="rounded mr-4"
-                            onClick={() => {
-                              handleSubmit()
-                              handleClose()
-                            }}>
-                                Yes
-                            </Button>
+                      <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }} className="rounded mr-4"
+                        onClick={() => {
+                          handleSubmit()
+                          handleClose()
+                        }}>
+                        Yes
+                      </Button>
 
-                            <Button variant="outlined" style={{ color: 'gold', borderColor: 'gold' }}  className="rounded "
-                            onClick={handleClose}>
-                              No
-                              </Button>
-                            
-                          </div>
-                         <a style={{ textDecoration: 'underline' }} href={helpLink} target='_blank'>Read more about never ending cohorts.</a>
-                      </div>
-                    </Box>
-                  </Modal>
-              
+                      <Button variant="outlined" style={{ color: 'gold', borderColor: 'gold' }} className="rounded "
+                        onClick={handleClose}>
+                        No
+                      </Button>
+
+                    </div>
+                    <a style={{ textDecoration: 'underline' }} href={helpLink} target='_blank'>Read more about never ending cohorts.</a>
+                  </div>
+                </Box>
+              </Modal>
+
             </Grid>
           </form>
         )}

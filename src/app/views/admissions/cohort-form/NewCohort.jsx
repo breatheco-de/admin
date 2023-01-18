@@ -75,11 +75,13 @@ const NewCohort = () => {
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
+    console.log(event.target.checked);
     setNeverEnd(!neverEnd);
     setNewCohort({
       ...newCohort,
+      kickoff_date: null,
       ending_date: null,
-      never_ends: true,
+      never_ends: event.target.checked,
     });
   };
 
@@ -289,7 +291,13 @@ const NewCohort = () => {
                   </TextField>
                 </Grid>
 
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid
+                  item 
+                  md={2}
+                  sm={4}
+                  xs={12}
+                  className={neverEnd ? "" : classes.neverEnd}
+                >
                   Start date
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
@@ -311,6 +319,7 @@ const NewCohort = () => {
                           kickoff_date: date,
                         })
                       }
+                      disabled={!neverEnd}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
