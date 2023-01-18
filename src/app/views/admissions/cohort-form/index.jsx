@@ -209,7 +209,6 @@ const Cohort = () => {
               if (value === 'privacy') {
                 makePrivate();
               }
-
               if (value === 'attendance') {
                 window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
