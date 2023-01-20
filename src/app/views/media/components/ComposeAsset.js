@@ -151,6 +151,7 @@ const ComposeAsset = () => {
     if (!slugRegex.test(_asset.slug)) _errors['slug'] = `Invalid slug, it can only contain letters, numbers - and _`;
     if (!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if (!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
+    if (!_asset.category) _errors['category'] = "Choose a category"
     if (!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if (!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
 
@@ -197,7 +198,10 @@ const ComposeAsset = () => {
   }
 
   const handleUpdateCategory = async (category) => {
-    if (category) partialUpdateAsset(asset.slug, { category: category.id || category })
+    if (category) {
+      if (isCreating) setAsset({...asset, category})
+      else partialUpdateAsset(asset.slug, { category: category.id || category })
+    }
     setUpdateCategory(false);
   }
 
@@ -217,7 +221,7 @@ const ComposeAsset = () => {
       {asset.readme_url === "" ?
         <Card className="p-4 mt-4">
           <h1>Create a new asset</h1>
-          <p className="p-0 m-0">Select an asset type:
+          <p className="p-0 py-2 m-0">Select an asset type:
             <Button size="small" variant="outlined" color="primary" className="ml-3"
               onClick={() => {
                 setUpdateType(true)
@@ -226,6 +230,15 @@ const ComposeAsset = () => {
             >{(asset && asset.asset_type) ? asset.asset_type : `Click to select`}</Button>
           </p>
           {errors["asset_type"] && <small className="text-error">{errors["asset_type"]}</small>}
+          <p className="p-0 m-0">Select an asset category:
+            <Button size="small" variant="outlined" color="primary" className="ml-3"
+              onClick={() => {
+                setUpdateCategory(true)
+                setErrors({ ...errors, category: null })
+              }}
+              >{(asset && asset.category) ? asset.category.title || asset.category.slug : `Click to select`}</Button>
+          </p>
+          {errors["category"] && <small className="text-error">{errors["category"]}</small>}
           <p>Please provied a Github URL to fetch the markdown file from:</p>
           <TextField variant="outlined" size="small" value={githubUrl} fullWidth={true} onChange={(e) => {
             setGithubUrl(e.target.value)
