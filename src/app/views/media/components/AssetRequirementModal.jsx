@@ -13,15 +13,14 @@ import bc from 'app/services/breathecode';
 
 export const AssetRequirementModal = ({
   data,
-  onClose
+  onClose,
 }) => {
-
   const [formData, setFormData] = useState(data)
   return (
     <>
       <Dialog
         open={true}
-        onClose={() => onClose(false)}
+        onClose={() => onClose(true)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -73,10 +72,18 @@ export const AssetRequirementModal = ({
             variant="outlined"
             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
           />
+          <TextField
+            className="m-2"
+            label="Category"
+            fullWidth
+            value={formData.category}
+            variant="outlined"
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+          />
         </DialogContent>
         <DialogActions>
           <Button
-            color="primary" tma
+            color="primary"
             variant="contained"
             autoFocus
             onClick={() => onClose(formData)}

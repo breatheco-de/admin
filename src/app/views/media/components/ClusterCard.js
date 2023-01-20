@@ -64,9 +64,11 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                         if(_asset){
                             const resp = await bc.registry().createAsset(_asset);
                             if(resp.status >= 200 && resp.status < 300){
+                                console.log("clusterform:", clusterForm)
                                 setClusterForm({
                                     ...clusterForm,
-                                    keywords: clusterForm.keyword.map(k => {
+                                    keywords: clusterForm.keywords.map(k => {
+                                    
                                         if(_asset.seo_keywords.includes(k.slug)){ 
                                             k.published_assets = k.published_assets.filter(a => a != _asset.slug).concat([_asset.slug])
                                         }
