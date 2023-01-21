@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {
   Dialog,
+  List,
+  ListItem,
+  ListItemText,
   Button,
   DialogTitle,
   DialogActions,
@@ -9,13 +12,41 @@ import {
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import slugify from "slugify"
+import { useParams } from 'react-router-dom';
 import bc from 'app/services/breathecode';
+import { toast } from 'react-toastify';
+import ReactCountryFlag from "react-country-flag"
+import { ConfirmationDialog } from '../../../../matx';
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import { PickCategoryModal } from "../components/PickCategoryModal";
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
+
+export const availableLanguages = {
+  "us": "English",
+  "es": "Spanish",
+  "it": "Italian",
+  "ge": "German",
+  "po": "Portuguese",
+}
+
 
 export const AssetRequirementModal = ({
   data,
-  onClose,
+  onClose
 }) => {
   const [formData, setFormData] = useState(data)
+  const [updateCategory, setUpdateCategory] = useState(false);
+  const [errorDialog, setErrorDialog] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const handleUpdateCategory = async (c) => {
+    if (c) setFormData({ ...formData, category: c })
+    setUpdateCategory(false);
+  }
+
   return (
     <>
       <Dialog
@@ -70,16 +101,18 @@ export const AssetRequirementModal = ({
             fullWidth
             value={formData.requirements}
             variant="outlined"
-            onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+
           />
-          <TextField
-            className="m-2"
-            label="Category"
-            fullWidth
-            value={formData.category}
-            variant="outlined"
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-          />
+          <p className="p-0 m-2">Select an asset category:</p>
+              <Button size="small" variant="outlined" color="primary" className="ml-3"
+              onClick={() => {
+                setUpdateCategory(true)
+                setErrors({ ...errors, category: null })
+              }}
+            >{(formData && formData.category) ? formData.category.title || formData.category.slug : `Click to select`}
+          </Button>
+          {errors["category"] && <small className="text-error">{errors["category"]}</small>}
+
         </DialogContent>
         <DialogActions>
           <Button
@@ -92,6 +125,22 @@ export const AssetRequirementModal = ({
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmationDialog
+        open={errorDialog}
+        noLabel="Close"
+        maxWidth="md"
+        onConfirmDialogClose={() => setErrorDialog(false)}
+        title="We found some errors"
+      >
+        <List size="small">
+          {Object.keys(errors).map((e, i) =>
+            <ListItem key={i} size="small" className="p-0 m-0">
+              <ListItemText className="capitalize" primary={errors[e]} />
+            </ListItem>
+          )}
+        </List>
+      </ConfirmationDialog>
+      {updateCategory && <PickCategoryModal onClose={handleUpdateCategory} lang={formData.lang} defaultCategory={formData.category} />}
     </>
   )
 }
