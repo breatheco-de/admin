@@ -7,6 +7,7 @@ import {
   DialogContent,
   MenuItem,
 } from '@material-ui/core';
+import { PickCategoryModal } from "../components/PickCategoryModal"
 import TextField from '@material-ui/core/TextField';
 import slugify from "slugify"
 import bc from 'app/services/breathecode';
@@ -17,6 +18,13 @@ export const AssetRequirementModal = ({
 }) => {
 
   const [formData, setFormData] = useState(data)
+  const [updateCategory, setUpdateCategory]= useState(false);
+
+  const handleUpdateCategory = async (category) => {
+    if (category) setFormData({...formData, category})
+    setUpdateCategory(false);
+  }
+
   return (
     <>
       <Dialog
@@ -73,6 +81,9 @@ export const AssetRequirementModal = ({
             variant="outlined"
             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
           />
+            <Button size="small" variant="outlined" color="primary" className="ml-3"
+              onClick={() => setUpdateCategory(true)}
+            >{(formData && formData.category) ? formData.category.title || formData.category.slug : `Click to select`}</Button>
         </DialogContent>
         <DialogActions>
           <Button
@@ -85,6 +96,7 @@ export const AssetRequirementModal = ({
           </Button>
         </DialogActions>
       </Dialog>
+      {updateCategory && <PickCategoryModal onClose={handleUpdateCategory} lang={formData.lang} defaultCategory={formData.category} />}
     </>
   )
 }
