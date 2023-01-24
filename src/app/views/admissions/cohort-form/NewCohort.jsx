@@ -75,7 +75,6 @@ const NewCohort = () => {
 
   const handleNeverEnd = (event) => {
     setChecked(event.target.checked);
-    console.log(event.target.checked);
     setNeverEnd(!neverEnd);
     setNewCohort({
       ...newCohort,
