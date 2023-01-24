@@ -911,6 +911,13 @@ class BreatheCodeClient {
                     }`
                 );
             },
+            updateBillStatus: async (payload) => {
+                return await axios.bcPut(
+                    "Project",
+                    `${this.host}/freelance/academy/bill`,
+                    payload
+                );
+            },
             generatePendingInvoice: (id) => axios.bcPost(
                     "Project Invoice",
                     `${this.host}/freelance/academy/project/${id}/invoice`
@@ -1058,6 +1065,12 @@ class BreatheCodeClient {
                 await axios.bcPut(
                     "Asset",
                     `${this.host}/registry/academy/asset/${slug}/action/${payload.action_slug}`,
+                    payload
+                ),
+            bulkAssetAction: async (action_slug, payload) =>
+                await axios.bcPost(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/action/${action_slug}`,
                     payload
                 ),
             createAsset: async (payload) =>

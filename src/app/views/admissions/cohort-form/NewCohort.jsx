@@ -53,6 +53,7 @@ const NewCohort = () => {
     never_ends: false,
     remote_available: true,
     time_zone: "",
+    is_hidden_on_prework: true
   });
   const { academy } = JSON.parse(localStorage.getItem("bc-session"));
   const history = useHistory();
@@ -66,6 +67,21 @@ const NewCohort = () => {
       label: "English",
     },
   ];
+
+  const isHiddenOnPreworkOptions = [
+    {
+      value: null,
+      label: "Default's academy value"
+    },
+    {
+      value: true,
+      label: "True"
+    },
+    {
+      value: false,
+      label: "False"
+    }
+  ]
 
   const ProfileSchema = Yup.object().shape({
     slug: Yup.string()
@@ -96,6 +112,13 @@ const NewCohort = () => {
       ...newCohort,
       language: event.target.value,
     });
+  };
+
+  const isHiddenOnPreworkCohort = (event) => {
+      setNewCohort({
+        ...newCohort,
+        is_hidden_on_prework: event.target.value == "Default's academy value" ? null : event.target.value,
+      });
   };
 
   const postCohort = (values) => {
@@ -289,14 +312,34 @@ const NewCohort = () => {
                     ))}
                   </TextField>
                 </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Is Hidden On Prework?
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Is Hidden On Prework?"
+                    data-cy="is-hidden-on-prework"
+                    size="small"
+                    style={{ width: "30%" }}
+                    variant="outlined"
+                    value={newCohort.is_hidden_on_prework}
+                    onChange={isHiddenOnPreworkCohort}
+                    select
+                  >
+                    {isHiddenOnPreworkOptions.map((option) => (
+                      <MenuItem
+                        value={option.value}
+                        key={option.value}
+                        width="40%"
+                      >
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
 
-                <Grid
-                  item 
-                  md={2}
-                  sm={4}
-                  xs={12}
-                  className={neverEnd ? "" : classes.neverEnd}
-                >
+                <Grid item md={2} sm={4} xs={12} className={neverEnd ? "" : classes.neverEnd}>
                   Start date
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
