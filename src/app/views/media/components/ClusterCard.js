@@ -65,7 +65,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             _asset.category = _asset.category.id
                             const resp = await bc.registry().createAsset(_asset);
                             if(resp.status >= 200 && resp.status < 300){
-                                console.log("clusterForm", clusterForm)
                                 setClusterForm({
                                     ...clusterForm,
                                     keywords: clusterForm.keywords.map(k => {
