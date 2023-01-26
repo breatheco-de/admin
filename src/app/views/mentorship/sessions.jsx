@@ -93,7 +93,7 @@ const Sessions = () => {
                   filterOptions={(options) => options}
                   onChange={(newService) => {
                     setService(newService);
-                    if (newService) filterList[index][0] = newService.name;
+                    if (newService) filterList[index][0] = newService.slug;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);
                   }}
