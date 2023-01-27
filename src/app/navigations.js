@@ -75,6 +75,12 @@ export const navigations = [
                 iconText: "WATCH",
                 capabilities: ["read_student"],
             },
+            {
+                name: "Syllabus",
+                path: "/admin/syllabus",
+                iconText: "STA",
+                capabilities: ["read_syllabus"],
+            },
         ],
     },
     {
@@ -222,12 +228,7 @@ export const navigations = [
                 iconText: "STA",
                 capabilities: ["get_gitpod_user"],
             },
-            {
-                name: "Syllabus",
-                path: "/admin/syllabus",
-                iconText: "STA",
-                capabilities: ["read_syllabus"],
-            },
+           
             {
                 name: "Developer Settings",
                 path: "/admin/dev-settings",
