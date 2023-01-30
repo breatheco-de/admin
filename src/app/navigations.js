@@ -77,7 +77,7 @@ export const navigations = [
             },
             {
                 name: "Syllabus",
-                path: "/admin/syllabus",
+                path: "/admissions/syllabus",
                 iconText: "STA",
                 capabilities: ["read_syllabus"],
             },
