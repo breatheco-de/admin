@@ -9,6 +9,8 @@ import { Breadcrumb } from 'matx';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useQuery } from '../../hooks/useQuery';
+import BulkToChangeStatus from './bulk-to-change-status';
 
 toast.configure();
 const toastOption = {
@@ -36,12 +38,21 @@ const round = (num) => Math.round(num);
 
 const Bills = () => {
   const [billList, setBillList] = useState([]);
+  const query = useQuery();
+
+  const loadData = async (querys) => {
+    if (!querys.visibility) querys.visibility = "PRIVATE,PUBLIC,UNLISTED";
+    const { data } = await bc.freelance().getAllBills(querys);
+    setBillList(data.results);
+    return data;
+  }
 
   const columns = [
     {
       name: 'id', // field name in the row object
       label: 'ID', // column title that will be shown in table
       options: {
+        filter: false,
         customHeadRender: ({ index, ...column }) => {
           return (
             <TableCell key={index} style={{ width: "50px" }}>
@@ -55,7 +66,7 @@ const Bills = () => {
       name: 'first_name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
-        filter: true,
+        filter: false,
         customBodyRenderLite: (dataIndex) => {
           const freelancer = billList[dataIndex].freelancer;
           return (
@@ -75,6 +86,12 @@ const Bills = () => {
       label: 'Status',
       options: {
         filter: true,
+        filterList:
+          query.get('status') !== null ? [query.get('status')] : [],
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['DUE', 'APPROVED', 'IGNORED', 'PAID']
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = billList[dataIndex];
           return (
@@ -98,7 +115,7 @@ const Bills = () => {
       name: 'price',
       label: 'Price',
       options: {
-        filter: true,
+        filter: false,
         customHeadRender: ({ index, ...column }) => {
           return (
             <TableCell key={index} style={{ width: "120px" }}>
@@ -166,7 +183,26 @@ const Bills = () => {
           items={billList}
           view="?"
           singlePage=""
-          historyReplace="/freelance/bills"
+          historyReplace="/freelance/payments"
+          options={{
+            print: false,
+            viewColumns: false,
+            customToolbar: null,
+            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+              return (
+                <div className='ml-auto'>
+                  <BulkToChangeStatus
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={billList}
+                    setItems={setBillList}
+                    loadData={loadData}
+                  />
+                </div>
+              )
+            }
+          }}
           search={async (querys) => {
             const { data } = await bc.freelance().getAllBills(querys);
             setBillList(data.results || data);
