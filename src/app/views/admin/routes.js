@@ -17,17 +17,17 @@ const routes = [
         component: React.lazy(() => import("./staff")),
     },
     {
-        path: "/admin/syllabus",
+        path: "/admissions/syllabus",
         exact: true,
-        component: React.lazy(() => import("./syllabus")),
+        component: React.lazy(() => import("../admissions/syllabus")),
     },
     {
         path: "/admin/syllabus/new",
-        component: React.lazy(() => import("./syllabus-form/NewSyllabus")),
+        component: React.lazy(() => import("../admissions/syllabus-form/NewSyllabus")),
     },
     {
         path: "/admin/syllabus/:syllabusSlug",
-        component: React.lazy(() => import("./syllabus-form")),
+        component: React.lazy(() => import("../admissions/syllabus-form")),
     },
     {
         path: "/admin/invites",
