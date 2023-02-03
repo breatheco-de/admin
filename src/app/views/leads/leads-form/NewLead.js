@@ -469,7 +469,7 @@ const NewLead = () => {
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Tags Objects
+                  Tags
                 </Grid>
                 <Grid item md={10} sm={8} xs={12} className="mt-2">
                   <div className="flex flex-wrap m--2">
@@ -480,7 +480,7 @@ const NewLead = () => {
                       asyncSearch={(search) => bc.marketing().getAcademyTags({ like: search, type: 'SOFT,STRONG' })}
                       size="small"
                       label="tags"
-                      required={newLead.tag_objects.length === 0}
+                      required={true}
                       multiple={true}
                       debounced={false}
                       getOptionSelected={(option, value) => option.slug === value.slug}
@@ -493,7 +493,7 @@ const NewLead = () => {
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Automation Objects
+                  Automations
                 </Grid>
                 <Grid item md={10} sm={8} xs={12} className="mt-2">
                   <div className="flex flex-wrap m--2">
