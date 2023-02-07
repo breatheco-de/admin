@@ -1122,6 +1122,13 @@ class BreatheCodeClient {
                     options
                 )
             },
+            getAssetOriginalityReport: async (associatedSlug, options, query) => {
+                return await axios.bcGet(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${associatedSlug}/originality`,
+                    options
+                )
+            },
             getCluster: async (associatedSlug, options) =>
                 await axios.bcGet(
                     "Asset",
