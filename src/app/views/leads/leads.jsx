@@ -243,7 +243,7 @@ const Leads = () => {
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => `${option.slug}`}
                   multiple={true}
-                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/marketing/academy/tag?like=${searchTerm}`)}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/marketing/academy/tag?type=STRONG,SOFT,DISCOVERY&like=${searchTerm}`)}
                 />
               </div>
             );
