@@ -2,11 +2,22 @@ import React, { useState } from 'react';
 import {
   Icon,
   IconButton,
-  Button
+  Button,
+  Card,
+Tooltip  ,
+  Grid,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  TextField,
+  InputAdornment,
 } from '@material-ui/core';
 import A from '@material-ui/core/Link';
+import ReactCountryFlag from "react-country-flag"
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { createTheme } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { getSession } from '../../redux/actions/SessionActions';
@@ -23,14 +34,10 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const EventList = () => {
+const EventTypeList = () => {
   const session = getSession();
 
   const [items, setItems] = useState([]);
-
-  const thisURL = `https://breathecode.herokuapp.com/v1/events/academy/eventype`;
-
-  const [openDialog, setOpenDialog] = useState(false);
 
   const columns = [
     {
@@ -91,7 +98,7 @@ const EventList = () => {
             <div className="flex items-center">
               <div className="ml-3">
               <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={item.lang?.toUpperCase()} svg
+                  countryCode={item.lang?.toUpperCase()}
                   style={{
                     fontSize: '10px',
                   }}
@@ -111,7 +118,7 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
-            <Link to={`/events/event/${items[dataIndex].id}`}>
+            <Link to={`/events/eventype/${items[dataIndex].slug}`}>
               <IconButton>
                 <Icon>edit</Icon>
               </IconButton>
@@ -128,13 +135,13 @@ const EventList = () => {
         <div className="mb-sm-30">
           <div className="flex flex-wrap justify-between mb-6">
             <div>
-              <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Manage Event' }]} />
+              <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Event Types' }]} />
             </div>
 
             <div className="">
               <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
                 <Button variant="contained" color="primary">
-                  Edit Event Types
+                  Add Event Type
                 </Button>
               </Link>
             </div>
@@ -147,12 +154,11 @@ const EventList = () => {
               columns={columns}
               items={items}
               view="event?"
-              historyReplace="/events/eventtypes"
+              historyReplace="/events/eventype"
               singlePage=""
               search={async (querys) => {
                 const { data } = await bc.events().getAcademyEventType(querys);
-                setItems(data.results);
-                console.log('data', data)
+                setItems(data);
                 return data;
               }}
               deleting={async (querys) => {
@@ -167,4 +173,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default EventTypeList;

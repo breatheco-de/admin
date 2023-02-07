@@ -28,9 +28,14 @@ const routes = [
     component: React.lazy(() => import('./attendees')),
   },
   {
-    path: '/events/type/list',
+    path: '/events/eventype',
     exact: true,
     component: React.lazy(() => import('./eventtypes')),
+  },
+  {
+    path: '/events/eventype/:slug',
+    exact: true,
+    component: React.lazy(() => import('./EditAddEventTypes/index')),
   },
 ];
 

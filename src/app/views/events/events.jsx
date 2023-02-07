@@ -46,10 +46,6 @@ const EventList = () => {
   const [items, setItems] = useState([]);
 
   const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`;
-
-  const [openDialog, setOpenDialog] = useState(false);
-  const [url, setUrl] = useState('');
-
   const columns = [
     {
       name: 'id', // field name in the row object
@@ -229,7 +225,6 @@ const EventList = () => {
               search={async (querys) => {
                 const { data } = await bc.events().getAcademyEvents(querys);
                 setItems(data.results);
-                console.log(data)
                 return data;
               }}
               deleting={async (querys) => {

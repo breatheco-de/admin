@@ -1,35 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Grid } from '@material-ui/core';
+import { Button, Card, Grid, TextField, MenuItem, Checkbox, FormControlLabel } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import * as Yup from 'yup';
 // import axios from 'axios';
 // import * as yup from 'yup';
 import PropTypes from 'prop-types';
-import bc from '../../../services/breathecode';
 import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
 import { getSession } from '../../../redux/actions/SessionActions';
 
 
-const syllabusPropTypes = {
+const eventypePropTypes = {
   id: PropTypes.number,
   slug: PropTypes.string,
   name: PropTypes.string,
-  github_url: PropTypes.string,
-  duration_in_hours: PropTypes.number,
-  duration_in_days: PropTypes.number,
-  week_hours: PropTypes.number,
-  logo: PropTypes.string,
-  private: PropTypes.bool,
+  language: PropTypes.string,
+  onSubmit: PropTypes.func,
   academy_owner: PropTypes.number,
-  created_at: PropTypes.string,
-  updated_at: PropTypes.string,
 };
 
 const propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  syllabus: PropTypes.shape(syllabusPropTypes).isRequired,
+  eventype: PropTypes.shape(eventypePropTypes).isRequired,
 };
 
 const schema = Yup.object().shape({
@@ -37,33 +30,19 @@ const schema = Yup.object().shape({
   // schedule: yup.number().required().positive().integer(),
   slug: schemas.slug(),
   name: schemas.name(),
-  duration_in_hours: schemas.nonZeroPositiveNumber('Total hours'),
-  week_hours: schemas.nonZeroPositiveNumber('Weekly hours'),
-  duration_in_days: schemas.nonZeroPositiveNumber('Total days'),
-  github_url: Yup.string()
-    .url('Invalid github url')
-    .nullable(true)
-    .test(
-      'invalid-github-url',
-      'URL must start with https://github.com',
-      (value) => /^(https?:\/\/github\.com\/)?/i.test(value)
-    ),
-  logo: Yup.string().url('Invalid logo url').nullable(true),
-  // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
 
 
 
-const StudentDetails = ({ syllabus, onSubmit }) => {
+const EventTypeDetails = ({ eventype, onSubmit }) => {
   const [status, setStatus] = useState({ color: "", message: "" });
   const session = getSession();
-  const academyOwner = session.academy.id
-  const syllabusId = syllabus.academy_owner.id
-
+  const academyOwner = session.academy.id;
+  const eventypeAcademyId = eventype.academy.id;
 
   useEffect(() => {
-    if (syllabusId !== academyOwner) {
-      setStatus({ color: "warning", message: `This syllabus is owned by another academy, you can not make changes to its basic information.` });
+    if (eventypeAcademyId !== academyOwner) {
+      setStatus({ color: "warning", message: `This Event Type is owned by another academy, you can not make changes to its basic information.` });
     } else {
       "";
     }
@@ -72,19 +51,19 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
   return (
 
     <Card elevation={3}>
-      {syllabusId !== academyOwner && (<Alert severity={status.color}>
+      {eventypeAcademyId !== academyOwner && (<Alert severity={status.color}>
 
-        <AlertTitle>{syllabusPropTypes.id !== academyOwner
+        <AlertTitle>{eventypePropTypes.id !== academyOwner
           ? (<>{status.message}</>)
           : ""}
         </AlertTitle>
       </Alert>)}
 
-      {syllabus.private && (
+      {eventype.private && (
         <Grid item md={12} sm={12} xs={12}>
           <Alert severity="warning">
-            <AlertTitle className="m-auto" cy-data="syllabus-private-alert">
-              This syllabus is private
+            <AlertTitle className="m-auto" cy-data="eventype-private-alert">
+              This event type is private
             </AlertTitle>
           </Alert>
         </Grid>
@@ -92,7 +71,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
 
 
       <Formik
-        initialValues={syllabus}
+        initialValues={eventype}
         validationSchema={schema}
         onSubmit={(values, { setSubmitting }) => {
           onSubmit(values);
@@ -100,7 +79,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
         }}
       >
 
-        {syllabusId !== academyOwner ? (
+        {eventypeAcademyId !== academyOwner ? (
           <Grid className="p-4" container spacing={1} alignItems="center">
             <Field
               type="text"
@@ -115,22 +94,20 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
               disabled
             />
             <Field
-              type="number"
-              label="Total hours"
-              name="duration_in_hours"
-              placeholder="12345"
+              type="text"
+              name="Description"
+              placeholder="123456"
               disabled
             />
           </Grid>
         ) : (
-          ({ isSubmitting }) => (
+          ({ values, isSubmitting, setFieldValue, handleChange }) => (
             <Form className="p-4">
               <Grid container spacing={3} alignItems="center">
                 <Field
                   type="text"
                   name="Slug"
                   placeholder="full-stack-pt"
-                  disabled
                   required
                 />
                 <Field
@@ -140,38 +117,50 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
                   required
                 />
                 <Field
-                  type="number"
-                  label="Total hours"
-                  name="duration_in_hours"
-                  placeholder="12345"
-                  required
-                />
-
-                <Field
-                  type="number"
-                  label="Weekly hours"
-                  name="week_hours"
-                  placeholder="12345"
-                  required
-                />
-                <Field
-                  type="number"
-                  label="Total Days"
-                  name="duration_in_days"
-                  placeholder="12345"
-                  required
-                />
-                <Field
                   type="text"
-                  label="Github URL"
-                  name="github_url"
-                  placeholder="https://github.com/user/repo"
+                  label="Description"
+                  name="description"
+                  placeholder="12345"
+                  required
                 />
-                <Field
-                  type="text"
-                  name="logo"
-                  placeholder="https://storage.googleapis.com/bucket/filename"
-                />
+                <Grid item md={5} sm={4} xs={12}>
+                Language
+              </Grid>
+              <Grid item md={7} sm={8} xs={12}>
+                <TextField
+                  label="Language"
+                  data-cy="language"
+                  size="small"
+                  fullWidth
+                  variant="outlined"
+                  value={values.language}
+                  onChange={(e) => {
+                    setFieldValue('language', e.target.value);
+                  }}
+                  select
+                >
+                  {['es', 'en'].map((item) => (
+                    <MenuItem value={item} key={item}>
+                      {item.toUpperCase()}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        className="text-right"
+                        checked={values.shared}
+                        onChange={handleChange}
+                        name="shared_creation"
+                        data-cy="shared_creation"
+                        color="primary"
+                      />
+                    }
+                    label="Allow Shared Creation"
+                  />
+                </Grid>
                 <div className="flex-column items-start px-4 mb-4">
                   <Button
                     color="primary"
@@ -180,7 +169,7 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
                     data-cy="submit"
                     disabled={isSubmitting}
                   >
-                    Save Syllabus Details
+                    Save Event type Details
                   </Button>
                 </div>
               </Grid>
@@ -191,6 +180,6 @@ const StudentDetails = ({ syllabus, onSubmit }) => {
   )
 };
 
-StudentDetails.propTypes = propTypes;
+EventTypeDetails.propTypes = propTypes;
 
-export default StudentDetails;
+export default EventTypeDetails;

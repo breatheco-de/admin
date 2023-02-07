@@ -66,6 +66,7 @@ const EventForm = () => {
           if (data.slug) setSlug(data.slug);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
           if (data.venue) setVenue({ ...data.venue });
+          if (data.description) setVenue({ ...data.description });
 
         })
         .catch((error) => error);
@@ -421,7 +422,7 @@ const EventForm = () => {
                       <TextField {...params} label="Event Type" placeholder="Event Type" />
                     )}
                   />
-                  <small className="text-muted"><a href='/events/type/list'>Manage Event Types</a></small>
+                  <small className="text-muted"><a href='/events/eventype'>Manage Event Types</a></small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Event Description

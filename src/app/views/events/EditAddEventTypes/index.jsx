@@ -13,9 +13,10 @@ import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
-import SchedulesList from './SchedulesList';
-import SyllabusDetails from './SyllabusDetails';
+import EventTypeDetails from './EventTypeDetails';
+import JoinEvents from './JoinEvents';
 import DowndownMenu from '../../../components/DropdownMenu';
+import { Breadcrumb } from '../../../../matx';
 import { MatxLoading } from '../../../../matx';
 import ConfirmAlert from '../../../components/ConfirmAlert';
 import { getSession } from '../../../redux/actions/SessionActions';
@@ -32,23 +33,22 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(LocalizedFormat);
 
 const Student = () => {
-  const { syllabusSlug } = useParams();
+  const { slug } = useParams();
   const session = getSession();
-  const [syllabus, setSyllabus] = useState(null);
-  const [schedules, setSchedules] = useState([]);
+  const [eventype, setEventype] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const options = [
-    { label: `Make ${syllabus?.private ? 'public' : 'private'}`, value: 'make_public' },
-    { label: 'Edit Syllabus Content', value: 'edit_syllabus' },
+    { label: `Make ${eventype?.private ? 'public' : 'private'}`, value: 'make_public' },
+    { label: 'Edit Event Type Content', value: 'edit_eventype' },
   ];
 
-  const fetchSyllabus = async () => {
+  const fetchEventype = async () => {
     try {
-      const response = await bc.admissions().getSyllabus(syllabusSlug);
-      setSyllabus(response.data);
+      const response = await bc.events().getAcademyEventTypeSlug(slug);
+      setEventype(response.data);
     } catch (error) {
       console.error(error);
       return false;
@@ -58,25 +58,20 @@ const Student = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const fetchSyllabusPromise = fetchSyllabus();
-    fetchSyllabusPromise.then(() => setIsLoading(false));
+    const fetchEventypePromise = fetchEventype();
+    fetchEventypePromise.then(() => setIsLoading(false));
   }, []);
 
-  const updateSyllabus = async (values) => {
+  const updateEventype = async (values) => {
     try {
-      await bc.admissions().updateSyllabus(syllabus?.id, values);
-      fetchSyllabus();
+      await bc.events().updateAcademyEventTypeSlug(slug, values);
+      fetchEventype();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const howManyDaysAgo = () => {
-    if (!syllabus) return 0;
-    return dayjs().diff(syllabus.created_at, 'days');
-  };
-
-  const onAccept = () => updateSyllabus({ private: !syllabus.private });
+  const onAccept = () => updateEventype({ private: !eventype.private });
 
   return (
     <div className="m-sm-30">
@@ -89,61 +84,42 @@ const Student = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">
-            Add new Schedule to the syllabus
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              New Schedule
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color="primary">
-              Close
-            </Button>
-            <Button color="primary" autoFocus>
-              Send
-            </Button>
-          </DialogActions>
         </Dialog>
         <div>
-          <h3 className="mt-0 mb-4 font-medium text-28">
-            {syllabus?.name}
+        <div className='my-3'>
+            <Breadcrumb routeSegments={[{ name: 'Event List', path: '/events/list' }, { name: 'Event Types', path: '/events/eventype' }, { name: 'Event Type' }]} />
+        </div>
+          <h3 className="mt-2 mb-2 font-medium text-28">
+            {eventype?.slug}
           </h3>
-          <div className="flex" data-cy="how-many-days-ago">
-            {`Created at: ${howManyDaysAgo()} days ago`}
-          </div>
         </div>
         <DowndownMenu
           options={options}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if (value === 'edit_syllabus') {
-              window.open(`https://syllabus.4geeks.com/?academy=${session.academy.id}&syllabus=${syllabus?.slug}&token=${session.token}`, '_blank');
+            if (value === 'edit_eventtype') {
+              window.open(`https://eventype.4geeks.com/?academy=${academy.id}&events/?eventype=${eventype?.slug}&token=${session.token}`, '_blank');
             } else if (value === 'make_public') {
               setMakePublicDialog(true);
             }
           }}
         >
-          <Button data-cy="additional-actions">
-            <Icon>playlist_add</Icon>
-            Additional Actions
-          </Button>
         </DowndownMenu>
       </div>
 
-      {syllabus ? (
+      {eventype ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <SyllabusDetails syllabus={syllabus} onSubmit={updateSyllabus} />
+            <EventTypeDetails eventype={eventype}  onSubmit={updateEventype} />
           </Grid>
+      
           <Grid item xs={12} md={6}>
-            <SchedulesList syllabus={syllabus} />
+            <JoinEvents eventype={eventype}  onSubmit={updateEventype} />
           </Grid>
         </Grid>
       ) : ''}
       <ConfirmAlert
-        title={`Are you sure you want to make ${syllabus?.private ? 'public' : 'private'} this syllabus`}
+        title={`Are you sure you want to make ${eventype?.private ? 'public' : 'private'} this eventype`}
         isOpen={makePublicDialog}
         setIsOpen={setMakePublicDialog}
         onOpen={onAccept}

@@ -776,15 +776,27 @@ class BreatheCodeClient {
                     "Academy event",
                     `${this.host}/events/academy/organizer`
                 ),
+            addAcademyEventType: (payload) =>
+                axios.bcPost(
+                    "Academy event type",
+                    `${this.host}/events/academy/eventype`,
+                    payload
+            ),
             getAcademyEventType: () =>
                 axios.bcGet(
                     "Event Type",
                     `${this.host}/events/academy/eventype`
                 ),
-            getAcademyEventTypeSlug: () =>
+            getAcademyEventTypeSlug: (slug) =>
                 axios.bcGet(
-                    "Event Type",
-                    `${this.host}/events/academy/eventype/${eventtype_slug}`
+                    "Event Type Slug",
+                    `${this.host}/events/academy/eventype/${slug}`
+                ),
+            updateAcademyEventTypeSlug: (slug, payload) =>
+                axios.bcPut(
+                    "Event Type Slug",
+                    `${this.host}/events/academy/eventype/${slug}`,
+                    payload
                 ),
             postAcademyEventOrganization: (payload) =>
                 axios.bcPost(
