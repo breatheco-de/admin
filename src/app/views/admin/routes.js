@@ -16,19 +16,7 @@ const routes = [
         exact: true,
         component: React.lazy(() => import("./staff")),
     },
-    {
-        path: "/admissions/syllabus",
-        exact: true,
-        component: React.lazy(() => import("../admissions/syllabus")),
-    },
-    {
-        path: "/admissions/syllabus/new",
-        component: React.lazy(() => import("../admissions/syllabus-form/NewSyllabus")),
-    },
-    {
-        path: "/admissions/syllabus/:syllabusSlug",
-        component: React.lazy(() => import("../admissions/syllabus-form")),
-    },
+    
     {
         path: "/admin/invites",
         exact: true,
