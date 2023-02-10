@@ -60,10 +60,9 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-
+          
           setTitle(data.title);
-          setLiveStreamUrl(data.liveStreamUrl)
-
+          
           if (data.tags !== "") setTags(data.tags.split(","));
           if (data.slug) setSlug(data.slug);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
