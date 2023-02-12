@@ -197,13 +197,19 @@ const ComposeAsset = () => {
 
   }
 
+  const updateAlert = async () => {
+    toast.warning(`Asset is out of sync, please push your changes.`)
+  }
+
   const handleUpdateCategory = async (category) => {
     if (category) {
       if (isCreating) setAsset({...asset, category})
       else partialUpdateAsset(asset.slug, { category: category.id || category })
     }
     setUpdateCategory(false);
+    updateAlert();
   }
+
 
   if (!asset) return <MatxLoading />;
 
@@ -273,7 +279,7 @@ const ComposeAsset = () => {
           <div className="flex flex-wrap justify-between mb-6">
             <Grid item xs={12} sm={8}>
               <EditableTextField defaultValue={asset.title} onChange={(_v) => {
-                if (!isCreating) partialUpdateAsset(asset.slug, { title: _v });
+                if (!isCreating) partialUpdateAsset(asset.slug, { title: _v }), updateAlert();
                 else setAsset({ ...asset, title: _v })
               }}>
                 <h3 className="my-0 font-medium text-28">{asset.title}</h3>
@@ -287,8 +293,8 @@ const ComposeAsset = () => {
                   return available;
                 }}
                 onChange={(_v) => {
-                  if (!isCreating) partialUpdateAsset(asset.slug, { slug: slugify(_v) });
-                  else setAsset({ ...asset, slug: slugify(_v) })
+                  if (!isCreating) partialUpdateAsset(asset.slug, { slug: slugify(_v) }), updateAlert();
+                  else setAsset({ ...asset, slug: slugify(_v) }), updateAlert();
                 }}
               >
                 <p className="my-0">{asset.slug}</p>
@@ -297,7 +303,9 @@ const ComposeAsset = () => {
 
               <div className="flex">
                 <div className={`px-3 text-11 py-3px border-radius-4 text-white ${statusColors[asset.status]} mr-3 pointer`}
-                  onClick={() => setUpdateStatus(true)}>
+                  onClick={() => setUpdateStatus(true)
+                  }
+                  >
                   {asset.status}
                 </div>
                 <div className={`px-3 text-11 py-3px border-radius-4 text-white ${visibilityColors[asset.visibility]} mr-3 pointer`}
@@ -309,6 +317,7 @@ const ComposeAsset = () => {
                   onClick={() => {
                     setUpdateType(true)
                     setErrors({ ...errors, asset_type: null })
+                 ;
                   }}
                 >
                   {asset.asset_type ? asset.asset_type : "NOT TYPE SPECIFIED"}
@@ -358,7 +367,7 @@ const ComposeAsset = () => {
                   const _errors = await saveAsset();
                   if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   else {
-                    if (value == 'push') handleAction('push');
+                    if (value == 'push') handleAction('push'), updateAlert();
                   }
                 }}
               >
@@ -382,20 +391,20 @@ const ComposeAsset = () => {
       <DialogPicker
         onClose={opt => {
           if (opt) {
-            if (isCreating) setAsset({ ...asset, visibility: opt })
-            else partialUpdateAsset(asset.slug, { visibility: opt });
+            if (isCreating) setAsset({ ...asset, visibility: opt });
+            else partialUpdateAsset(asset.slug, { visibility: opt }), updateAlert();
           }
           setUpdateVisibility(false)
         }}
         open={updateVisibility}
         title="Select a visibility"
-        options={['PUBLIC', "UNLISTED", 'PRIVATE']}
+        options={['PUBLIC', "UNLISTED", 'PRIVATE']}s
       />
       <DialogPicker
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, asset_type: opt })
-            else partialUpdateAsset(asset.slug, { asset_type: opt });
+            else partialUpdateAsset(asset.slug, { asset_type: opt }), updateAlert();
           }
           setUpdateType(false)
         }}
@@ -407,7 +416,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, status: opt })
-            else partialUpdateAsset(asset.slug, { status: opt });
+            else partialUpdateAsset(asset.slug, { status: opt }), updateAlert();
           }
           setUpdateStatus(false)
         }}
@@ -419,7 +428,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, lang: opt.value })
-            else partialUpdateAsset(asset.slug, { lang: opt.value });
+            else partialUpdateAsset(asset.slug, { lang: opt.value }), updateAlert();
           }
           setUpdateLanguage(false)
         }}
