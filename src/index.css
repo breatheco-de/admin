@@ -17,7 +17,9 @@
 .MuiTableCell-root {
   word-break: unset !important;
 }
-
+.no-list-style li{
+  list-style: none;
+}
 .underline {
   text-decoration: underline;
 }

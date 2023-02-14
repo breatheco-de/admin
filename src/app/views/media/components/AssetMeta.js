@@ -103,7 +103,6 @@ const LangCard = ({ asset, onAction }) => {
 
   const handleAddTranslation = async () => {
     const resp = await API.registry().createAsset(addTranslation);
-    console.log("resppppp", resp)
     if(resp.status == 201){
       setAddTranslation(null);
       history.push(`./${resp.data.slug}`);

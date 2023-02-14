@@ -34,6 +34,10 @@ const toastOption = {
   autoClose: 8000,
 };
 
+import dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
+
 const statusColors = {
   "DRAFT": "bg-error",
   "UNASSIGNED": "bg-error",
@@ -333,39 +337,45 @@ const ComposeAsset = () => {
             </Grid>
 
             <Grid item xs={6} sm={4} align="right">
-              <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
-              <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
-                <Icon><OpenInBrowser /></Icon>
-              </IconButton>
-              <DowndownMenu
-                options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ?
-                  [
-                    { label: 'Only save to 4Geeks.com', value: 'only_save' },
-                    { label: 'Also commit markdown to github', value: 'push' }
-                  ]
-                  :
-                  [
-                    {
-                      label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here',
-                      style: { width: "200px" },
-                      value: null
-                    },
-                  ]
-                }
-                icon="more_horiz"
-                onSelect={async ({ value }) => {
-                  if (!value) return null;
-                  const _errors = await saveAsset();
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                  else {
-                    if (value == 'push') handleAction('push');
+              <div>
+                <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
+                <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
+                  <Icon><OpenInBrowser /></Icon>
+                </IconButton>
+                <DowndownMenu
+                  options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ?
+                    [
+                      { label: 'Only save to 4Geeks.com', value: 'only_save' },
+                      { label: 'Also commit markdown to github', value: 'push' }
+                    ]
+                    :
+                    [
+                      {
+                        label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here',
+                        style: { width: "200px" },
+                        value: null
+                      },
+                    ]
                   }
-                }}
-              >
-                <Button variant="contained" color="primary">
-                  {isCreating ? `Create asset` : `Update asset`}
-                </Button>
-              </DowndownMenu>
+                  icon="more_horiz"
+                  onSelect={async ({ value }) => {
+                    if (!value) return null;
+                    const _errors = await saveAsset();
+                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                    else {
+                      if (value == 'push') handleAction('push');
+                    }
+                  }}
+                >
+                  <Button variant="contained" color="primary">
+                    {isCreating ? `Create asset` : `Update asset`}
+                  </Button>
+                </DowndownMenu>
+              </div>
+              <ul className="no-list-style mt-0">
+                <li><small>Published at: {asset.published_at ? dayjs(asset.published_at).fromNow() : "Never"}</small></li>
+                <li><small>Last update: {asset.updated_at ? dayjs(asset.updated_at).fromNow() : "Never"}</small></li>
+              </ul>
             </Grid>
           </div>
 
