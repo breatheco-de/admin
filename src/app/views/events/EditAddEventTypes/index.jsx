@@ -32,13 +32,21 @@ const LocalizedFormat = require('dayjs/plugin/localizedFormat');
 
 dayjs.extend(LocalizedFormat);
 
-const Student = () => {
+const Eventtype = () => {
   const { slug } = useParams();
   const session = getSession();
   const [eventype, setEventype] = useState(null);
+  
   const [openDialog, setOpenDialog] = useState(false);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+//  const howManyDaysAgo = () => {
+//    if (!eventype) return 0;
+ //   return dayjs().diff(eventype.created_at, 'days');
+
+//  };
+  
 
   const options = [
     { label: `Make ${eventype?.private ? 'public' : 'private'}`, value: 'make_public' },
@@ -64,6 +72,7 @@ const Student = () => {
 
   const updateEventype = async (values) => {
     try {
+      values.academy = values.academy.id
       await bc.events().updateAcademyEventTypeSlug(slug, values);
       fetchEventype();
     } catch (error) {
@@ -98,7 +107,7 @@ const Student = () => {
           icon="more_horiz"
           onSelect={({ value }) => {
             if (value === 'edit_eventtype') {
-              window.open(`https://eventype.4geeks.com/?academy=${academy.id}&events/?eventype=${eventype?.slug}&token=${session.token}`, '_blank');
+              window.open(`https://eventype.4geeks.com/?academy=${session.academy.id}&events/?eventype=${eventype?.slug}&token=${session.token}`, '_blank');
             } else if (value === 'make_public') {
               setMakePublicDialog(true);
             }
@@ -113,9 +122,11 @@ const Student = () => {
             <EventTypeDetails eventype={eventype}  onSubmit={updateEventype} />
           </Grid>
       
+
           <Grid item xs={12} md={6}>
             <JoinEvents eventype={eventype}  onSubmit={updateEventype} />
           </Grid>
+
         </Grid>
       ) : ''}
       <ConfirmAlert
@@ -128,4 +139,4 @@ const Student = () => {
   );
 };
 
-export default Student;
+export default Eventtype;

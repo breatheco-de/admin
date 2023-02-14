@@ -37,6 +37,11 @@ const routes = [
     exact: true,
     component: React.lazy(() => import('./EditAddEventTypes/index')),
   },
+  {
+    path: '/events/NewEventType',
+    exact: true,
+    component: React.lazy(() => import('./EditAddEventTypes/NewEventType')),
+  },
 ];
 
 export default routes;

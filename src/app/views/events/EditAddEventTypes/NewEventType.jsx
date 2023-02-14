@@ -1,17 +1,22 @@
 import React from 'react';
-import { Formik } from 'formik';
 import {
   Grid,
   Card,
+  TextField,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
   Divider,
   Button,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
+import { Formik, Form } from 'formik';
 import bc from '../../../services/breathecode';
 import Field from '../../../components/Field';
 import { Breadcrumb } from '../../../../matx';
 import { schemas } from '../../../utils';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 const schema = Yup.object().shape({
   // academy: yup.number().required().positive().integer(),
@@ -21,15 +26,17 @@ const schema = Yup.object().shape({
   // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
 
-const NewSyllabus = () => {
+const NewEventype = () => {
   const history = useHistory();
+  const session = getSession();
 
   const addEventType = async (values, { setSubmitting }) => {
     try {
-      const response = await bc.events().addAcademyEventType(values);
+      const response = await bc.events().addAcademyEventType({...values, academy: session.academy.id});
+      console.log(session.academy)
       if (response.status === 201) {
         setSubmitting(false);
-        history.push('/events/academy/eventype');
+        history.push('/events/eventype');
       }
     } catch (error) {
       console.error(error);
@@ -39,12 +46,10 @@ const NewSyllabus = () => {
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
-        <Breadcrumb
-          routeSegments={[
-            { name: 'Events', path: '/events' },
-            { name: 'Event Type', path: '/events/eventtype' },
-            { name: 'New Event Type' },
-          ]}
+        <Breadcrumb routeSegments={[
+          { name: 'Event List', path: '/events/list' },
+          { name: 'Event Types', path: '/events/eventype' },
+          { name: 'Add Event Type' }]}
         />
       </div>
 
@@ -60,15 +65,20 @@ const NewSyllabus = () => {
           onSubmit={addEventType}
         >
           {({
-            handleSubmit, isSubmitting,
+            values, setFieldValue, isSubmitting, handleChange
           }) => (
-            <form className="p-4" onSubmit={handleSubmit}>
+            <Form className="p-4">
               <Grid container spacing={3} alignItems="center">
               <Field
                   type="text"
+                  name="Academy"
+                  placeholder={values.academy}
+                  disabled
+                />
+                <Field
+                  type="text"
                   name="Slug"
                   placeholder="full-stack-pt"
-                  disabled
                   required
                 />
                 <Field
@@ -81,23 +91,54 @@ const NewSyllabus = () => {
                   type="text"
                   label="Description"
                   name="description"
-                  placeholder="12345"
+                  placeholder="This is a description"
                   required
                 />
-                <Field
-                  type="checkbox"
-                  label="Allow Shared Creation"
-                  name="allow_shared"
-                  placeholder="true"
-                  required
-                />
+                <Grid item md={5} sm={4} xs={12}>
+                  Language
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    label="Language"
+                    data-cy="lang"
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={values.lang}
+                    onChange={(e) => {
+                      setFieldValue('lang', e.target.value);
+                    }}
+                    select
+                  >
+                    {['','es', 'en'].map((item) => (
+                      <MenuItem value={item} key={item}>
+                        {item.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        className="text-right"
+                        checked={values.shared}
+                        onChange={handleChange}
+                        name="shared_creation"
+                        data-cy="shared_creation"
+                        color="primary"
+                      />
+                    }
+                    label="Allow Shared Creation"
+                  />
+                </Grid>
+                <div className="flex-column items-start px-4 mb-4">
+                  <Button color="primary" variant="contained" type="submit" data-cy="submit" disabled={isSubmitting}>
+                    Create
+                  </Button>
+                </div>
               </Grid>
-              <div className="flex-column items-start px-4 mb-4">
-                <Button color="primary" variant="contained" type="submit" data-cy="submit" disabled={isSubmitting}>
-                  Create
-                </Button>
-              </div>
-            </form>
+            </Form>
           )}
         </Formik>
       </Card>
@@ -105,4 +146,4 @@ const NewSyllabus = () => {
   );
 };
 
-export default NewSyllabus;
+export default NewEventype;

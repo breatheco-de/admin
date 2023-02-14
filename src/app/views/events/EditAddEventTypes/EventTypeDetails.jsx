@@ -96,7 +96,7 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
             <Field
               type="text"
               name="Description"
-              placeholder="123456"
+              placeholder="Description"
               disabled
             />
           </Grid>
@@ -120,31 +120,32 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                   type="text"
                   label="Description"
                   name="description"
-                  placeholder="12345"
+                  placeholder="This is a description"
                   required
                 />
                 <Grid item md={5} sm={4} xs={12}>
-                Language
-              </Grid>
-              <Grid item md={7} sm={8} xs={12}>
-                <TextField
-                  label="Language"
-                  data-cy="language"
-                  size="small"
-                  fullWidth
-                  variant="outlined"
-                  value={values.language}
-                  onChange={(e) => {
-                    setFieldValue('language', e.target.value);
-                  }}
-                  select
-                >
-                  {['es', 'en'].map((item) => (
-                    <MenuItem value={item} key={item}>
-                      {item.toUpperCase()}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  Language
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    label="Language"
+                    type="text"
+                    data-cy="language"
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={values.lang}
+                    onChange={(e) => {
+                      setFieldValue('lang', e.target.value);
+                    }}
+                    select
+                  >
+                    {['es', 'en'].map((item) => (
+                      <MenuItem value={item} key={item}>
+                        {item?.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel

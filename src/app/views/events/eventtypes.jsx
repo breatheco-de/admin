@@ -17,7 +17,6 @@ import A from '@material-ui/core/Link';
 import ReactCountryFlag from "react-country-flag"
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { createTheme } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
 import { Breadcrumb } from '../../../matx';
 import { getSession } from '../../redux/actions/SessionActions';
@@ -80,6 +79,12 @@ const EventTypeList = () => {
                 <small className={`border-radius-4 px-2 pt-2px ${item?.description}`}>
                   {item?.description}
                 </small>
+                <ReactCountryFlag className="text-muted mr-2"
+                  countryCode={item?.lang.toUpperCase()} 
+                  style={{
+                    fontSize: '10px',
+                  }}
+                />
                 <br />
               </div>
             </div>
@@ -88,8 +93,8 @@ const EventTypeList = () => {
       },
     },
     {
-      name: 'language', // field name in the row object
-      label: 'Language', // column title that will be shown in table
+      name: 'academy', // field name in the row object
+      label: 'Academy', // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
@@ -97,12 +102,9 @@ const EventTypeList = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-              <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={item.lang?.toUpperCase()}
-                  style={{
-                    fontSize: '10px',
-                  }}
-                />
+                <small className={`border-radius-4 px-2 pt-2px ${item?.academy.name}`}>
+                  {item?.academy.name}
+                </small>
                 <br />
               </div>
             </div>
@@ -137,9 +139,8 @@ const EventTypeList = () => {
             <div>
               <Breadcrumb routeSegments={[{ name: 'Event', path: '/' }, { name: 'Event Types' }]} />
             </div>
-
             <div className="">
-              <Link to="/events/NewEvent" color="primary" className="btn btn-primary">
+              <Link to="/events/NewEventType" color="primary" className="btn btn-primary">
                 <Button variant="contained" color="primary">
                   Add Event Type
                 </Button>

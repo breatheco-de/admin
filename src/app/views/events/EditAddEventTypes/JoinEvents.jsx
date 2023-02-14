@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Grid, Icon, IconButton, TextField } from '@material-ui/core';
+import { Button, Card, Grid, Icon, IconButton, TextField, List, ListItem, ListItemText } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { Formik, Form } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import * as Yup from 'yup';
@@ -10,6 +11,7 @@ import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
+import bc from "../../../services/breathecode";
 import { getSession } from '../../../redux/actions/SessionActions';
 
 
@@ -20,11 +22,6 @@ const eventypePropTypes = {
   academy_owner: PropTypes.number,
 };
 
-const propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  eventype: PropTypes.shape(eventypePropTypes).isRequired,
-};
-
 const schema = Yup.object().shape({
   // academy: yup.number().required().positive().integer(),
   // schedule: yup.number().required().positive().integer(),
@@ -33,20 +30,20 @@ const schema = Yup.object().shape({
 });
 
 
+const propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  eventype: PropTypes.shape(eventypePropTypes).isRequired,
+};
+
 
 const JoinEvents = ({ eventype, onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-
-  const session = getSession();
-  const academyOwner = session.academy.id;
-  const eventypeAcademyId = eventype.academy.id;
-  const eventTypeVisbility = eventype.visibility_settings
-
-  const [open, setOpen] = React.useState(false);
+  const eventTypeVisbility = eventype.visibility_settings[0]
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [syllabus, setSyllabus] = useState(null);
+
+  const [open, setOpen] = React.useState(false);
 
   const style = {
     position: 'absolute',
@@ -59,6 +56,8 @@ const JoinEvents = ({ eventype, onSubmit }) => {
     boxShadow: 24,
     p: 4,
   };
+
+
 
   return (
 
@@ -75,153 +74,153 @@ const JoinEvents = ({ eventype, onSubmit }) => {
       )}
 
 
-      <Formik
-        initialValues={eventype}
-        validationSchema={schema}
-        onSubmit={(values, { setSubmitting }) => {
-          onSubmit(values);
-          setSubmitting(false);
-        }}
-      >
+      <h1 className="ml-2 mt-2 mb-4 font-medium text-28">Who can join these events?</h1>
 
-        {eventypeAcademyId == academyOwner ? (
-          <>
-            <h1 className="ml-2 mt-2 mb-4 font-medium text-28">Who can join these events?</h1>
-            <Grid className="p-4" container spacing={1} alignItems="center">
-              <div className="overflow-auto">
-                {isLoading && <MatxLoading />}
-                <div className="min-w-600">
-                  {eventTypeVisbility.length > 0
-                    ? eventTypeVisbility.map((s, i) => (
-                      ({ values, setFieldValue, handleChange }) => (
-                        <div>
-                          <Grid item lg={6} md={6} sm={6} xs={6}>
+      <Grid className="p-4" container spacing={1} alignItems="center">
+        <div className="overflow-auto">
 
-                            {visibility_settings.academy !== '' ? (
-                              <TextField
-                                size="small"
-                                data-cy="academy"
-                                fullWidth
-                                variant="outlined"
-                                value={values.visibility_settings.academy}
-                              >
-                                Everyone at the academy {value}.
-                              </TextField>
-                            ) : ('')}
+          {isLoading && <MatxLoading />}
 
-                            {visibility_settings.syllabus !== '' ? (
-                              <TextField
-                                size="small"
-                                data-cy="syllabus"
-                                fullWidth
-                                variant="outlined"
-                                value={values.visibility_settings.syllabus}
-                              >
-                                Only students from {eventype.academy} with access to {value} syllabus.
-                              </TextField>
-                            ) : ('')}
+          <div className="min-w-600">
+            <>
+              {eventTypeVisbility != null ? eventype.visibility_settings.map((visibility, i) => (
+                <Grid key={i} item lg={12} md={12} sm={12} xs={12}>
+                  <div>
+                    <Grid className='m-2' item md={12} sm={12} xs={12}>
+                      <List>
+                        <ListItem>
+                        <div className='m-2'>
+                          {!visibility?.academy ? '' : `Everyone at the academy ${visibility?.academy.name}`}
+                        </div>
+                        </ListItem>
+                        <ListItem>
+                          <div className='m-2'>
+                          {!visibility?.academy
+                            || !visibility?.syllabus ? ''
+                            : `Only students from ${visibility.academy.name} with access to ${visibility.syllabus.name} syllabus.`}
+                            </div>
+                        </ListItem>
 
-                            {visibility_settings.cohort !== '' ? (
-                              <TextField
-                                size="small"
-                                data-cy="cohort"
-                                fullWidth
-                                variant="outlined"
-                                value={values.visibility_settings.cohort}
-                              >
-                                Only students from {eventype.academy} with access to {eventTypeVisbility.syllabus} syllabus from cohorts {value}
-                              </TextField>
-                            ) : ('')}
+                        <ListItem>
+                          <div className='m-2'>
+                          {!visibility?.academy
+                            || !visibility?.syllabus
+                            || visibility?.cohort
+                            ? '' : `From cohort ${visibility?.cohort.name}`}
+                            </div>
+                        </ListItem>
+                      </List>
+
+                    </Grid>
+
+                    <Formik
+                      initialValues={{ eventype }}
+                      validationSchema={schema}
+                      onSubmit={(values, { setSubmitting }) => {
+                        onSubmit(values);
+                        setSubmitting(false);
+                      }}
+                    >
+                      <Grid item xs={12} md={6}>
 
 
-                            <IconButton onClick={handleOpen}>
-                              <Icon fontSize="small">
-                                add_circle
-                              </Icon>
-                            </IconButton>
-                            <Modal
-                              open={open}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
+                        <IconButton onClick={() => {
+                          handleOpen()
+                        }}>
+                          <Icon fontSize="small">
+                            add_circle
+                          </Icon>
+                        </IconButton>
+                        {({ values, isSubmitting, handleChange, handleSubmit, setFieldValue }) => (
+                          <Modal open={open} onClose={handleClose}>
+                            <form className="p-4" onSubmit={handleSubmit}>
+
                               <Box sx={style}>
                                 <Form className="p-4">
                                   <Grid item md={7} sm={8} xs={12}>
-                                    <TextField
-                                      label="Select Academy"
-                                      size="small"
-                                      data-cy="academy"
-                                      fullWidth
-                                      variant="outlined"
-                                      value={values.visibility_settings.academy}
-                                      onChange={(e) => {
-                                        setFieldValue('academy', e.target.value);
-                                      }}
-                                      select
-                                    >
-                                      {['', eventTypeVisbility.academy].map((item) => (
-                                        <MenuItem value={item} key={item}>
-                                          {item.toUpperCase()}
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
-                                    <TextField
-                                      label="Select Cohort"
-                                      size="small"
-                                      data-cy="cohort"
-                                      fullWidth
-                                      variant="outlined"
-                                      value={values.visibility_settings.cohort}
-                                      onChange={(e) => {
-                                        setFieldValue('cohort', e.target.value);
-                                      }}
-                                      select
-                                    >
-                                      {['', eventTypeVisbility.cohort].map((item) => (
-                                        <MenuItem value={item} key={item}>
-                                          {item.toUpperCase()}
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
-                                    <TextField
-                                      label="Select Syllabus"
-                                      size="small"
-                                      data-cy="syllabus"
-                                      fullWidth
-                                      variant="outlined"
-                                      value={values.visibility_settings.syllabus}
-                                      onChange={(e) => {
-                                        setFieldValue('syllabus', e.target.value);
-                                      }}
-                                      select
-                                    >
-                                      {['', eventTypeVisbility.syllabus].map((item) => (
-                                        <MenuItem value={item} key={item}>
-                                          {item.toUpperCase()}
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
+
+                                    <Grid item md={2} sm={4} xs={12}>
+                                      Syllabus
+                                    </Grid>
+
+                                    <Grid item md={12} sm={12} xs={12}>
+                                      <div className="flex flex-wrap">
+                                        <AsyncAutocomplete
+                                          debounced={false}
+                                          onChange={(x) => setSyllabus(x)}
+                                          width="100%"
+                                          className="m-4"
+                                          asyncSearch={() => bc.admissions().getAllSyllabus()}
+                                          size="small"
+                                          data-cy="syllabus"
+                                          label="syllabus"
+                                          required
+                                          getOptionLabel={(option) => `${option.name}`}
+                                          value={syllabus}
+                                        />
+                                        {syllabus ? (
+                                          <AsyncAutocomplete
+                                            className="m-4"
+                                            debounced={false}
+                                            onChange={(v) => setVersion(v)}
+                                            width="30%"
+                                            key={syllabus.slug}
+                                            asyncSearch={() =>
+                                              bc.admissions().getAllCourseSyllabus(syllabus.slug)
+                                            }
+                                            size="small"
+                                            data-cy="version"
+                                            label="Version"
+                                            required
+                                            getOptionLabel={(option) =>
+                                              option.status === "PUBLISHED"
+                                                ? `${option.version}`
+                                                : "⚠️ " +
+                                                option.version +
+                                                " (" +
+                                                option.status +
+                                                ")"
+                                            }
+                                            value={version}
+                                          />
+                                        ) : (
+                                          ""
+                                        )}
+                                      </div>
+                                    </Grid>
+                                    <Grid item md={2} sm={4} xs={12}>
+                                      Cohort
+                                    </Grid>
                                   </Grid>
+                                  <div className="flex-column items-start px-4 mb-4">
+                                    <Button
+                                      color="primary"
+                                      variant="contained"
+                                      type="submit"
+                                      data-cy="submit"
+                                      disabled={isSubmitting}>
+                                      Create
+                                    </Button>
+                                  </div>
                                 </Form>
                               </Box>
-                            </Modal>
-                          </Grid>
-                        </div>
-                      ))) : (
-                        <div><h5>There are no shared settings</h5></div>
-                        )}
-                </div>
-              </div>
-            </Grid>
-          </>
-        ) : (
-          <>
-            <h3>There are no shared settings</h3></>
-        )}
-      </Formik>
+                            </form>
 
-    </Card>
+                          </Modal>
+                        )}
+                      </Grid>
+                    </Formik>
+                  </div>
+                </Grid>
+              )) : (
+                <div><h5>There are no shared settings</h5></div>
+              )}
+            </>
+          </div>
+
+        </div>
+      </Grid >
+    </Card >
   )
 };
 
