@@ -88,9 +88,9 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
           </Grid>
         </div>
         :
-        <p className="m-0">No preview image has been generatd for this asset.  
+        <p className="m-0">No preview image for this asset.  
             <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
-            <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
+            <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().createAssetPreview(asset.slug).then((_a) => setPreview(_a.preview))}>{' '}automatically generate it.</a>
         </p>
       }
   </Card>;

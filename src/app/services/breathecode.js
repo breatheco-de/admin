@@ -1108,6 +1108,12 @@ class BreatheCodeClient {
                     `${this.host}/registry/asset/thumbnail/${slug}`,
                     options
                 ),
+            createAssetPreview: async (slug, options) =>
+                await axios.bcPost(
+                    "Asset",
+                    `${this.host}/registry/asset/thumbnail/${slug}`,
+                    options
+                ),
             getAsset: async (associatedSlug, options) =>
                 await axios.bcGet(
                     "Asset",
