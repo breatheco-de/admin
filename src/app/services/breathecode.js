@@ -472,7 +472,17 @@ class BreatheCodeClient {
                 return axios.bcPut(
                     "Send to CRM",
                     `${this.host}/marketing/academy/lead/process?id=${qs}`
-                )},
+                )
+            },
+            bulkUpdateLead: (ids, payload) => {
+                const idsString = ids.join(",");
+
+                return axios.bcPut(
+                    "Update Lead",
+                    `${this.host}/marketing/academy/lead?id=${idsString}`,
+                    payload
+                )
+            },
         };
     }
 
