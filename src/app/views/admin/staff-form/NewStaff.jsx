@@ -116,16 +116,15 @@ const NewStaff = () => {
                     value={user}
                     label="User"
                     debounced
-                    filterOptions={(options) => options}
                     renderOption={(option) => (option.newUser
                       ? option.newUser
                       : `${option.first_name} ${option.last_name}, (${option.email})`)}
                     getOptionLabel={(option) => option.first_name}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
-                    getOptions={(options, params) => {
-                      const filtered = filter(options, params);
+                    filterOptions={(options, params) => {
+                      // const filtered = filter(options, params);
                       if (params.inputValue !== '') {
-                        filtered.push({
+                        options.push({
                           newUser: (
                             <div
                               onClick={(e) => {
@@ -141,7 +140,7 @@ const NewStaff = () => {
                           ),
                         });
                       }
-                      return filtered;
+                      return options;
                     }}
                   />
                 </Grid>
