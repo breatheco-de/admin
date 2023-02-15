@@ -165,7 +165,7 @@ const NewLead = () => {
 
   // VALIDACIONES FORM\\
 
-  const phoneRegExp = /^[+]?([0-9]{11,15})$/;
+  const phoneRegExp = /^[+]?([0-9]{10,15})$/;
 
   const ProfileSchema = Yup.object().shape({
     first_name: Yup.string()
