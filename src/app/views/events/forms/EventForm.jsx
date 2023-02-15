@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {
-  Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
+  Grid, Card, Divider, TextField, MenuItem, Button, Checkbox, styled,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
 import { useParams, useHistory } from 'react-router-dom';
@@ -48,6 +48,7 @@ const EventForm = () => {
   useEffect(() => {
     if (!id) setSlug(slugify(title).toLowerCase());
   }, [title]);
+
 
   useEffect(() => {
     if (id) {
@@ -422,7 +423,7 @@ const EventForm = () => {
                       <TextField {...params} label="Event Type" placeholder="Event Type" />
                     )}
                   />
-                  <small className="text-muted"><a href='/events/eventype'>Manage Event Types</a></small>
+                  <small className="text-primary" ><a href='/events/eventype' >Manage Event Types</a></small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Event Description

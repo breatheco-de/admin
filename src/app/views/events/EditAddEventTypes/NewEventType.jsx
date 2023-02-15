@@ -69,12 +69,7 @@ const NewEventype = () => {
           }) => (
             <Form className="p-4">
               <Grid container spacing={3} alignItems="center">
-              <Field
-                  type="text"
-                  name="Academy"
-                  placeholder={values.academy}
-                  disabled
-                />
+
                 <Field
                   type="text"
                   name="Slug"

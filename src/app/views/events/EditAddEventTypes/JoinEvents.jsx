@@ -73,6 +73,93 @@ const JoinEvents = ({ eventype, onSubmit }) => {
         </Grid>
       )}
 
+      <Formik
+        initialValues={{ eventype }}
+        validationSchema={schema}
+        onSubmit={(values, { setSubmitting }) => {
+          onSubmit(values);
+          setSubmitting(false);
+        }}
+      >
+          {({ values, isSubmitting, handleChange, handleSubmit, setFieldValue }) => (
+            <Modal open={open} onClose={handleClose}>
+              <form className="p-4" onSubmit={handleSubmit}>
+
+                <Box sx={style}>
+                  <Form className="p-4">
+                    <Grid item md={7} sm={8} xs={12}>
+
+                      <Grid item md={2} sm={4} xs={12}>
+                        Syllabus
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <div className="flex flex-wrap">
+                          <AsyncAutocomplete
+                            debounced={false}
+                            onChange={(x) => setSyllabus(x)}
+                            width="100%"
+                            className="m-4"
+                            asyncSearch={() => bc.admissions().getAllSyllabus()}
+                            size="small"
+                            data-cy="syllabus"
+                            label="syllabus"
+                            required
+                            getOptionLabel={(option) => `${option.name}`}
+                            value={syllabus}
+                          />
+                          {syllabus ? (
+                            <AsyncAutocomplete
+                              className="m-4"
+                              debounced={false}
+                              onChange={(v) => setVersion(v)}
+                              width="30%"
+                              key={syllabus.slug}
+                              asyncSearch={() =>
+                                bc.admissions().getAllCourseSyllabus(syllabus.slug)
+                              }
+                              size="small"
+                              data-cy="version"
+                              label="Version"
+                              required
+                              getOptionLabel={(option) =>
+                                option.status === "PUBLISHED"
+                                  ? `${option.version}`
+                                  : "⚠️ " +
+                                  option.version +
+                                  " (" +
+                                  option.status +
+                                  ")"
+                              }
+                              value={version}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </Grid>
+                      <Grid item md={2} sm={4} xs={12}>
+                        Cohort
+                      </Grid>
+                    </Grid>
+                    <div className="flex-column items-start px-4 mb-4">
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        data-cy="submit"
+                        disabled={isSubmitting}>
+                        Create
+                      </Button>
+                    </div>
+                  </Form>
+                </Box>
+              </form>
+
+            </Modal>
+          )}
+      </Formik>
+
 
       <h1 className="ml-2 mt-2 mb-4 font-medium text-28">Who can join these events?</h1>
 
@@ -89,131 +176,49 @@ const JoinEvents = ({ eventype, onSubmit }) => {
                     <Grid className='m-2' item md={12} sm={12} xs={12}>
                       <List>
                         <ListItem>
-                        <div className='m-2'>
-                          {!visibility?.academy ? '' : `Everyone at the academy ${visibility?.academy.name}`}
-                        </div>
+                          <div className='m-2'>
+                            {!visibility?.academy ? '' : `Everyone at the academy` + `${visibility?.academy.name}`}
+                          </div>
                         </ListItem>
                         <ListItem>
                           <div className='m-2'>
-                          {!visibility?.academy
-                            || !visibility?.syllabus ? ''
-                            : `Only students from ${visibility.academy.name} with access to ${visibility.syllabus.name} syllabus.`}
-                            </div>
+                            {!visibility?.academy
+                              || !visibility?.syllabus ? ''
+                              : `Only students from ${visibility.academy.name} with access to ${visibility.syllabus.name} syllabus.`}
+                          </div>
                         </ListItem>
 
                         <ListItem>
                           <div className='m-2'>
-                          {!visibility?.academy
-                            || !visibility?.syllabus
-                            || visibility?.cohort
-                            ? '' : `From cohort ${visibility?.cohort.name}`}
-                            </div>
+                            {!visibility?.academy
+                              || !visibility?.syllabus
+                              || visibility?.cohort
+                              ? '' : `From cohort ${visibility?.cohort.name}`}
+                          </div>
                         </ListItem>
                       </List>
-
+                      <IconButton onClick={() => {
+                        handleOpen()
+                      }}>
+                        <Icon fontSize="small">
+                          add_circle
+                        </Icon>
+                      </IconButton>
                     </Grid>
-
-                    <Formik
-                      initialValues={{ eventype }}
-                      validationSchema={schema}
-                      onSubmit={(values, { setSubmitting }) => {
-                        onSubmit(values);
-                        setSubmitting(false);
-                      }}
-                    >
-                      <Grid item xs={12} md={6}>
-
-
-                        <IconButton onClick={() => {
-                          handleOpen()
-                        }}>
-                          <Icon fontSize="small">
-                            add_circle
-                          </Icon>
-                        </IconButton>
-                        {({ values, isSubmitting, handleChange, handleSubmit, setFieldValue }) => (
-                          <Modal open={open} onClose={handleClose}>
-                            <form className="p-4" onSubmit={handleSubmit}>
-
-                              <Box sx={style}>
-                                <Form className="p-4">
-                                  <Grid item md={7} sm={8} xs={12}>
-
-                                    <Grid item md={2} sm={4} xs={12}>
-                                      Syllabus
-                                    </Grid>
-
-                                    <Grid item md={12} sm={12} xs={12}>
-                                      <div className="flex flex-wrap">
-                                        <AsyncAutocomplete
-                                          debounced={false}
-                                          onChange={(x) => setSyllabus(x)}
-                                          width="100%"
-                                          className="m-4"
-                                          asyncSearch={() => bc.admissions().getAllSyllabus()}
-                                          size="small"
-                                          data-cy="syllabus"
-                                          label="syllabus"
-                                          required
-                                          getOptionLabel={(option) => `${option.name}`}
-                                          value={syllabus}
-                                        />
-                                        {syllabus ? (
-                                          <AsyncAutocomplete
-                                            className="m-4"
-                                            debounced={false}
-                                            onChange={(v) => setVersion(v)}
-                                            width="30%"
-                                            key={syllabus.slug}
-                                            asyncSearch={() =>
-                                              bc.admissions().getAllCourseSyllabus(syllabus.slug)
-                                            }
-                                            size="small"
-                                            data-cy="version"
-                                            label="Version"
-                                            required
-                                            getOptionLabel={(option) =>
-                                              option.status === "PUBLISHED"
-                                                ? `${option.version}`
-                                                : "⚠️ " +
-                                                option.version +
-                                                " (" +
-                                                option.status +
-                                                ")"
-                                            }
-                                            value={version}
-                                          />
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
-                                    </Grid>
-                                    <Grid item md={2} sm={4} xs={12}>
-                                      Cohort
-                                    </Grid>
-                                  </Grid>
-                                  <div className="flex-column items-start px-4 mb-4">
-                                    <Button
-                                      color="primary"
-                                      variant="contained"
-                                      type="submit"
-                                      data-cy="submit"
-                                      disabled={isSubmitting}>
-                                      Create
-                                    </Button>
-                                  </div>
-                                </Form>
-                              </Box>
-                            </form>
-
-                          </Modal>
-                        )}
-                      </Grid>
-                    </Formik>
                   </div>
                 </Grid>
               )) : (
-                <div><h5>There are no shared settings</h5></div>
+                <>
+                  <div><h5>There are no shared settings</h5></div>
+
+                  <IconButton onClick={() => {
+                    handleOpen()
+                  }}>
+                    <Icon fontSize="small">
+                      add_circle
+                    </Icon>
+                  </IconButton>
+                </>
               )}
             </>
           </div>
