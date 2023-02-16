@@ -219,7 +219,7 @@ const NewLead = () => {
             };
             let res;
             if (!id) res = await bc.marketing().addNewLead({ ...payload });
-            else res = await bc.marketing().updateAcademyLead(id, { ...payload });
+            else res = await bc.marketing().updateAcademyLead(id, { ...payload, academy: undefined, lead_generation_app: undefined });
 
             if (res.ok) history.goBack();
           }}
