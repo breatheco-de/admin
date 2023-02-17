@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Card,
@@ -18,6 +18,8 @@ import { Breadcrumb } from '../../../../matx';
 import { schemas } from '../../../utils';
 import { getSession } from '../../../redux/actions/SessionActions';
 
+const slugify = require('slugify');
+
 const schema = Yup.object().shape({
   // academy: yup.number().required().positive().integer(),
   // schedule: yup.number().required().positive().integer(),
@@ -29,10 +31,11 @@ const schema = Yup.object().shape({
 const NewEventype = () => {
   const history = useHistory();
   const session = getSession();
+  const [name, setName] = useState('')
 
   const addEventType = async (values, { setSubmitting }) => {
     try {
-      const response = await bc.events().addAcademyEventType({...values, academy: session.academy.id});
+      const response = await bc.events().addAcademyEventType({ ...values, academy: session.academy.id });
       console.log(session.academy)
       if (response.status === 201) {
         setSubmitting(false);
@@ -69,26 +72,63 @@ const NewEventype = () => {
           }) => (
             <Form className="p-4">
               <Grid container spacing={3} alignItems="center">
-
-                <Field
-                  type="text"
-                  name="Slug"
-                  placeholder="full-stack-pt"
-                  required
-                />
-                <Field
-                  type="text"
-                  name="Name"
-                  placeholder="Full Stack PT"
-                  required
-                />
-                <Field
-                  type="text"
-                  label="Description"
-                  name="description"
-                  placeholder="This is a description"
-                  required
-                />
+                <Grid item md={5} sm={4} xs={12}>
+                  Name
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    aria-label="Javascript Beginner"
+                    minRows={1}
+                    placeholder="Javascript Beginner"
+                    label="Javascript Beginner"
+                    multiline
+                    fullWidth
+                    name="name"
+                    type="text"
+                    variant="outlined"
+                    onChange={e => setName(e.target.value)}
+                    required
+                  />
+                </Grid>
+               
+                <Grid item md={5} sm={4} xs={12}>
+                  Slug
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    aria-label="javascript-beginner"
+                    minRows={1}
+                    placeholder="javascript-beginner"
+                    label="javascript-beginner"
+                    multiline
+                    fullWidth
+                    name="slug"
+                    type="text"
+                    variant="outlined"
+                    onChange={handleChange}
+                    value={slugify(name).toLowerCase()}
+                    required
+                  />
+                </Grid>
+                <Grid item md={5} sm={4} xs={12}>
+                  Description
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    aria-label="description"
+                    minRows={5}
+                    placeholder="Description"
+                    label="Description"
+                    multiline
+                    fullWidth
+                    name="description"
+                    type="text"
+                    variant="outlined"
+                    onChange={handleChange}
+                    value={values.description}
+                    required
+                  />
+                </Grid>
                 <Grid item md={5} sm={4} xs={12}>
                   Language
                 </Grid>
@@ -105,7 +145,7 @@ const NewEventype = () => {
                     }}
                     select
                   >
-                    {['','es', 'en'].map((item) => (
+                    {['', 'es', 'en'].map((item) => (
                       <MenuItem value={item} key={item}>
                         {item.toUpperCase()}
                       </MenuItem>

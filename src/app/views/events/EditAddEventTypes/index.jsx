@@ -36,17 +36,18 @@ const Eventtype = () => {
   const { slug } = useParams();
   const session = getSession();
   const [eventype, setEventype] = useState(null);
-  
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogDeleteVisibility, setOpenDialogDeleteVisibility] = useState(false);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [visibilitySetting, setVisibilitySetting] = useState(null)
 
-//  const howManyDaysAgo = () => {
-//    if (!eventype) return 0;
- //   return dayjs().diff(eventype.created_at, 'days');
+  //  const howManyDaysAgo = () => {
+  //    if (!eventype) return 0;
+  //   return dayjs().diff(eventype.created_at, 'days');
 
-//  };
-  
+  //  };
+
 
   const options = [
     { label: `Make ${eventype?.private ? 'public' : 'private'}`, value: 'make_public' },
@@ -94,10 +95,31 @@ const Eventtype = () => {
           aria-describedby="alert-dialog-description"
         >
         </Dialog>
+        <Dialog
+          open={openDialogDeleteVisibility}
+          onClose={() => setOpenDialogDeleteVisibility(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Are you sure you want to delete this Visibility Setting from the Event Type?
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={() => setOpenDialogDeleteVisibility(false)} color="primary">
+              Disagree
+            </Button>
+            <Button color="primary" autoFocus onClick={() => {
+              setVisibilitySetting(null);
+              setOpenDialogDeleteVisibility(false);
+            }}>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
         <div>
-        <div className='my-3'>
-            <Breadcrumb routeSegments={[{ name: 'Event List', path: '/events/list' }, { name: 'Event Types', path: '/events/eventype' }, { name: 'Event Type' }]} />
-        </div>
+          <div className='my-3'>
+          <Breadcrumb routeSegments={[{ name: 'Event List', path: '/events/list' }, { name: 'Event Types', path: '/events/eventype' }, { name: `${eventype?.slug}` }]} />
+          </div>
           <h3 className="mt-2 mb-2 font-medium text-28">
             {eventype?.slug}
           </h3>
@@ -119,12 +141,12 @@ const Eventtype = () => {
       {eventype ? (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <EventTypeDetails eventype={eventype}  onSubmit={updateEventype} />
+            <EventTypeDetails eventype={eventype} onSubmit={updateEventype} />
           </Grid>
-      
+
 
           <Grid item xs={12} md={6}>
-            <JoinEvents eventype={eventype}  onSubmit={updateEventype} />
+            <JoinEvents eventype={eventype} onSubmit={updateEventype} openDialogDeleteVisibility={openDialogDeleteVisibility} setOpenDialogDeleteVisibility={setOpenDialogDeleteVisibility} setVisibilitySetting={setVisibilitySetting} />
           </Grid>
 
         </Grid>

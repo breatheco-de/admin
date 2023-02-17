@@ -83,14 +83,14 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
           <Grid className="p-4" container spacing={1} alignItems="center">
             <Field
               type="text"
-              name="Slug"
-              placeholder="full-stack-pt"
+              name="Name"
+              placeholder="Full Stack PT"
               disabled
             />
             <Field
               type="text"
-              name="Name"
-              placeholder="Full Stack PT"
+              name="Slug"
+              placeholder="full-stack-pt"
               disabled
             />
             <Field
@@ -106,14 +106,15 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
               <Grid container spacing={3} alignItems="center">
                 <Field
                   type="text"
-                  name="Slug"
-                  placeholder="full-stack-pt"
+                  name="Name"
+                  placeholder="Full Stack PT"
                   required
                 />
                 <Field
                   type="text"
-                  name="Name"
-                  placeholder="Full Stack PT"
+                  name="Slug"
+                  placeholder="full-stack-pt"
+                  disabled
                   required
                 />
                 <Field
