@@ -197,8 +197,12 @@ const ComposeAsset = () => {
 
   }
 
+  let alertHasChanged = false;
+
   const updateAlert = async () => {
-    toast.warning(`Asset is out of sync, please push your changes.`)
+    if (!alertHasChanged) {
+    toast.warning(`You've modified the asset and it's now out of sync, please push your changes.`);
+    alertHasChanged = true;}
   }
 
   const handleUpdateCategory = async (category) => {
@@ -380,7 +384,7 @@ const ComposeAsset = () => {
 
           <Grid container spacing={3}>
             <Grid item md={8} xs={12}>
-              <AssetMarkdown asset={asset} value={content} onChange={(c) => setContent(c)} />
+              <AssetMarkdown asset={asset} value={content} onChange={(c) => {updateAlert(); setContent(c.target.value)}} />
             </Grid>
             <Grid item md={4} xs={12}>
               <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(asset_slug, a)} />

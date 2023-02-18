@@ -1,13 +1,16 @@
-import React, {useState, useEffect} from "react";
-import { Table, TableCell, TableRow, Card, MenuItem, DialogContent, 
+import React, { useState, useEffect } from "react";
+import {
+  Table, TableCell, TableRow, Card, MenuItem, DialogContent,
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
-  TableBody } from "@material-ui/core";
+  TableBody
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag"
 import { Rating } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import {availableLanguages} from "../../../../utils"
+import { availableLanguages } from "../../../../utils"
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 import bc from 'app/services/breathecode';
 import { PickKeywordModal } from './PickKeywordModal';
 import tz from 'dayjs/plugin/timezone';
@@ -17,6 +20,7 @@ import DowndownMenu from '../../../components/DropdownMenu';
 import { PickTechnologyModal } from './PickTechnologyModal';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from "../../../components/HelpIcon";
+import ConfirmAlert from "app/components/ConfirmAlert";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
 import { MediaInput } from '../../../components/MediaInput';
@@ -24,6 +28,14 @@ import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
 
+let hasChanged = false;
+
+const updateAlert = async () => {
+  if (!hasChanged) {
+    toast.warning(`You've modified the asset and it's now out of sync, please push your changes.`);
+    hasChanged = true;
+  }
+}
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -33,43 +45,44 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 }));
 
 const ThumbnailCard = ({ asset, onChange, onAction }) => {
-  const [ preview, setPreview ] = useState(null);
-  const [ previewURL, setPreviewURL ] = useState(null);
-  const [ edit, setEdit ] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [edit, setEdit] = useState(null);
 
   useEffect(() => {
     setPreview(asset.preview)
     setPreviewURL(asset.preview)
-  },[asset.preview])
+  }, [asset.preview])
+
 
   return <Card className="p-4 mb-4">
-      {edit ? 
+    {edit ?
+      <div className="flex">
+        <MediaInput
+          size="small"
+          placeholder="Image URL"
+          value={previewURL}
+          handleChange={(k, v) => setPreviewURL(v)}
+          name="preview_url"
+          fullWidth
+          inputProps={{ style: { padding: '10px' } }}
+        />
+        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ preview: previewURL }).then(() => setEdit(false))}>
+          <Icon fontSize="small">check</Icon>
+        </Button>
+        <Button variant="contained" color="primary" size="small" onClick={() => setEdit(false)}>
+          <Icon fontSize="small">cancel</Icon>
+        </Button>
+      </div>
+      : preview ?
         <div className="flex">
-          <MediaInput
-            size="small"
-            placeholder="Image URL"
-            value={previewURL}
-            handleChange={(k,v) => setPreviewURL(v)}
-            name="preview_url"
-            fullWidth
-            inputProps={{ style: { padding: '10px' } }}
-          />
-          <Button variant="contained" color="primary" size="small" onClick={() => onChange({ preview: previewURL }).then(() => setEdit(false))}>
-            <Icon fontSize="small">check</Icon>
-          </Button>
-          <Button variant="contained" color="primary" size="small" onClick={() => setEdit(false)}>
-            <Icon fontSize="small">cancel</Icon>
-          </Button>
-        </div>
-        : preview ? 
-        <div className="flex">
-          <div style={{ 
-            height: "70px", width: "100px", 
-            backgroundPosition: "center center", 
-            backgroundSize: "contain", 
+          <div style={{
+            height: "70px", width: "100px",
+            backgroundPosition: "center center",
+            backgroundSize: "contain",
             border: "1px solid #BDBDBD",
-            backgroundRepeat: "no-repeat", 
-            backgroundImage: `url(${preview})` 
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `url(${preview})`
           }} className="text-center pt-5">
           </div>
           <Grid className="pl-3">
@@ -79,39 +92,40 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
             <Tooltip title="Remove Thumbnail"><Icon className="pointer" fontSize="small" onClick={() => onChange({ preview: null })}>delete</Icon></Tooltip>
             <Tooltip title="Remove and generate thumbnail again">
               <Icon className="pointer" fontSize="small" onClick={() => {
-                  onChange({ preview: null })
-                    .then(() => getAssetPreview(asset.slug))
-                    .then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))
-                }}>sync</Icon>
+                onChange({ preview: null })
+                  .then(() => getAssetPreview(asset.slug))
+                  .then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))
+              }}>sync</Icon>
             </Tooltip>
             <Tooltip title="Open in new window"><Icon className="pointer" fontSize="small" onClick={() => window.open(preview)}>launch</Icon></Tooltip>
           </Grid>
         </div>
         :
-        <p className="m-0">No preview image has been generatd for this asset.  
-            <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
-            <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
+        <p className="m-0">No preview image has been generatd for this asset.
+          <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
+          <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
         </p>
-      }
+    }
   </Card>;
 }
 
 const LangCard = ({ asset, onAction }) => {
-  const [ addTranslation, setAddTranslation ] = useState(null);
+  const [addTranslation, setAddTranslation] = useState(null);
   const assetTranslations = Object.keys(asset.translations);
   const allLangs = Object.keys(availableLanguages);
+
 
   const handleAddTranslation = async () => {
     const resp = await API.registry().createAsset(addTranslation);
     console.log("resppppp", resp)
-    if(resp.status == 201){
+    if (resp.status == 201) {
       setAddTranslation(null);
       history.push(`./${resp.data.slug}`);
     }
   }
 
   return <Card className="p-4 mb-4">
-    {addTranslation ? 
+    {addTranslation ?
       <div>
         <h3 className="m-0">Add translation:</h3>
         <small className="p-0 mb-1">Select a language and lesson, you can also type the title for a new lesson on he dropdown:</small>
@@ -132,52 +146,52 @@ const LangCard = ({ asset, onAction }) => {
             </MenuItem>
           ))}
         </TextField>
-      {!addTranslation?.lang ?
-        <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
-          Cancel
-        </Button>
-        : <>
-          <AsyncAutocomplete
-            width="100%"
-            className="my-2"
-            onChange={(x) => {
-                if(x.value === 'new_asset') setAddTranslation({ 
-                  title: x.title.replace("New: ", ""), 
+        {!addTranslation?.lang ?
+          <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+            Cancel
+          </Button>
+          : <>
+            <AsyncAutocomplete
+              width="100%"
+              className="my-2"
+              onChange={(x) => {
+                if (x.value === 'new_asset') setAddTranslation({
+                  title: x.title.replace("New: ", ""),
                   asset_type: asset.asset_type,
                   lang: addTranslation.lang,
                   slug: slugify(x.title.replace("New: ", "")),
-                  all_translations: [asset.slug, ...assetTranslations.map(t=> asset.translations[t])]
+                  all_translations: [asset.slug, ...assetTranslations.map(t => asset.translations[t])]
                 })
                 else setAddTranslation(x)
-            }}
-            size="small"
-            label="Search or create Asset"
-            value={addTranslation.asset}
-            getOptionLabel={(option) => option.title || `Start typing here...`}
-            asyncSearch={async (searchTerm) => {
+              }}
+              size="small"
+              label="Search or create Asset"
+              value={addTranslation.asset}
+              getOptionLabel={(option) => option.title || `Start typing here...`}
+              asyncSearch={async (searchTerm) => {
                 const resp = await bc.registry().getAllAssets({ lang: addTranslation.lang, asset_type: asset.asset_type })
-                if(resp.status === 200){
-                    resp.data = [{title: 'New: '+searchTerm, value: 'new_asset'}, ...resp.data]
-                    return resp
+                if (resp.status === 200) {
+                  resp.data = [{ title: 'New: ' + searchTerm, value: 'new_asset' }, ...resp.data]
+                  return resp
                 }
                 else return resp
-            }}
-          />
-          <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleAddTranslation}>
-            Add
-          </Button>
-          <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
-            Cancel
-          </Button>
-        </>}
+              }}
+            />
+            <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleAddTranslation}>
+              Add
+            </Button>
+            <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => setAddTranslation(null)}>
+              Cancel
+            </Button>
+          </>}
       </div>
       :
       <div className="flex justify-between items-center">
-        <h4 className="m-0 font-medium" style={{ width: '100%'}}>Other langs: </h4>
-        {assetTranslations.filter(t => t != asset.lang).map(t => 
+        <h4 className="m-0 font-medium" style={{ width: '100%' }}>Other langs: </h4>
+        {assetTranslations.filter(t => t != asset.lang).map(t =>
           <Link to={`./${asset.translations[t]}`} key={t}>
-            <ReactCountryFlag 
-              countryCode={t.toUpperCase()} svg 
+            <ReactCountryFlag
+              countryCode={t.toUpperCase()} svg
               style={{
                 fontSize: '1.7em',
                 height: 'auto',
@@ -187,38 +201,38 @@ const LangCard = ({ asset, onAction }) => {
             />
           </Link>
         )}
-        <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)}/>
+        <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)} />
       </div>
-      }
+    }
   </Card>;
 }
 
 
 const SEOReport = ({ asset, onClose }) => {
 
-  const [ report, setReport ] = useState({ results: [] });
+  const [report, setReport] = useState({ results: [] });
 
   const getReport = async () => {
     const resp = await bc.registry().getAssetReport(asset.slug, {}, {
-      limit: 5, 
+      limit: 5,
       offset: report.results.length
     });
-    if(resp.ok) setReport({ 
-      count: resp.data.count, 
-      next: resp.data.next, 
-      results: report.results.concat(resp.data.results) 
+    if (resp.ok) setReport({
+      count: resp.data.count,
+      next: resp.data.next,
+      results: report.results.concat(resp.data.results)
     });
     else console.error("Error fetching report");
   }
 
   useEffect(() => getReport(), []);
-  
+
   return <Dialog
-      open={true}
-      onClose={() => onClose()}
-      aria-labelledby="form-dialog-title"
-      fullWidth
-    >
+    open={true}
+    onClose={() => onClose()}
+    aria-labelledby="form-dialog-title"
+    fullWidth
+  >
     <DialogContent className="p-0">
 
       <Table>
@@ -249,12 +263,12 @@ const SEOReport = ({ asset, onClose }) => {
               </TableRow>
             );
           })}
-          {report.next && 
-          <TableRow>
-            <TableCell colspan="3" align="center">
-              <small><a href="#" className="anchor" onClick={() => getReport()}>Load more</a></small>
-            </TableCell>
-          </TableRow>}
+          {report.next &&
+            <TableRow>
+              <TableCell colspan="3" align="center">
+                <small><a href="#" className="anchor" onClick={() => getReport()}>Load more</a></small>
+              </TableCell>
+            </TableRow>}
         </TableBody>
       </Table>
     </DialogContent>
@@ -262,21 +276,21 @@ const SEOReport = ({ asset, onClose }) => {
 }
 
 const SEOCard = ({ asset, onAction, onChange }) => {
-  const [ addKeyword, setAddKeyword ] = useState(null);
-  const [ openReport, setOpenReport ] = useState(false);
+  const [addKeyword, setAddKeyword] = useState(null);
+  const [openReport, setOpenReport] = useState(false);
 
   const handleAddKeyword = async (keyword) => {
-    if(keyword) onChange({ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id])})
+    if (keyword) onChange({ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) })
     setAddKeyword(false);
   }
 
   const getOptColor = (value) => {
-    if(value > 80) return "text-success";
-    else if(value > 70) return "text-warning";
+    if (value > 80) return "text-success";
+    else if (value > 70) return "text-warning";
     else return "text-error";
   }
 
-  if(!asset.is_seo_tracked){
+  if (!asset.is_seo_tracked) {
     return <Card className="p-4 mb-4">
       This asset is not being SEO optimized, <small className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: true })}>click here to activate it</small>.
     </Card>
@@ -287,9 +301,9 @@ const SEOCard = ({ asset, onAction, onChange }) => {
       <div>
         <h4 className="m-0 font-medium">SEO: <span className={getOptColor(asset.optimization_rating)}>{asset.optimization_rating || 0}/100</span></h4>
         <div>
-          {!asset.last_seo_scan_at ? 
-            <small>Never analyzed</small> 
-            : 
+          {!asset.last_seo_scan_at ?
+            <small>Never analyzed</small>
+            :
             <p className="m-0 p-0">
               <small className="capitalize">{dayjs(asset.last_seo_scan_at).fromNow()}</small>{" "}
               <small className="pointer underline text-primary" onClick={async () => setOpenReport(true)}>read report</small>
@@ -303,19 +317,19 @@ const SEOCard = ({ asset, onAction, onChange }) => {
     </div>
 
     <Grid item className="flex" xs={12}>
-      {asset.seo_keywords.length == 0 ? 
+      {asset.seo_keywords.length == 0 ?
         <p className="p-0 m-0">Nothing assigned, <span className="underline text-primary pointer" onClick={() => setAddKeyword(true)}>add keywords</span> or <span className="pointer underline text-primary" onClick={async () => onChange({ slug: asset.slug, is_seo_tracked: false })}>disable SEO.</span></p>
-        : 
+        :
         <>
           {asset.seo_keywords.map(k => {
-            return <Chip 
+            return <Chip
               key={k.slug}
-              className="mr-1" size="small" 
-              label={k.title || k} 
-              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => (typeof(k) != "object") ?  _k != k : _k != k.id)})}>delete</Icon>} 
+              className="mr-1" size="small"
+              label={k.title || k}
+              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ seo_keywords: asset.seo_keywords.map(_k => _k.id || _k).filter(_k => (typeof (k) != "object") ? _k != k : _k != k.id) })}>delete</Icon>}
             />
           })}
-          <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddKeyword(true)}/>
+          <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddKeyword(true)} />
         </>
       }
     </Grid>
@@ -327,34 +341,34 @@ const SEOCard = ({ asset, onAction, onChange }) => {
 
 
 const TechCard = ({ asset, onChange }) => {
-  const [ addTechnology, setAddTechnology ] = useState(null);
+  const [addTechnology, setAddTechnology] = useState(null);
 
   const handleAddTechnology = async (techonolgies) => {
-    if(techonolgies && techonolgies.length>0) onChange({ slug: asset.slug, technologies: asset.technologies.map(t => t.slug || t).concat(techonolgies.map(t => t.slug || t))})
+    if (techonolgies && techonolgies.length > 0) onChange({ slug: asset.slug, technologies: asset.technologies.map(t => t.slug || t).concat(techonolgies.map(t => t.slug || t)) })
     setAddTechnology(false);
   }
 
   return <Card className="p-4 mb-4">
-      <h4 className="m-0 font-medium">Technologies</h4>
-      {asset.technologies.length == 0 ? 
-        <small className="p-0 m-0">No technologies assigned, <span className="underline text-primary pointer" onClick={() => setAddTechnology(true)}>add technologies</span></small>
-        : 
-        <>
-          {asset.technologies.map(t => 
-            <Chip 
-              key={t.slug}
-              className="mr-1" size="small" 
-              label={t.title || t} 
-              icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ technologies: asset.technologies.map(_t => _t.id || _t).filter(_t => _t != t)})}>delete</Icon>} 
-            />
-          )}
-          <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)}/>
-        </>
-      }
-    {addTechnology && <PickTechnologyModal 
-      onClose={handleAddTechnology} 
-      lang={asset.lang} 
-      query={{ include_children: false }} 
+    <h4 className="m-0 font-medium">Technologies</h4>
+    {asset.technologies.length == 0 ?
+      <small className="p-0 m-0">No technologies assigned, <span className="underline text-primary pointer" onClick={() => setAddTechnology(true)}>add technologies</span></small>
+      :
+      <>
+        {asset.technologies.map(t =>
+          <Chip
+            key={t.slug}
+            className="mr-1" size="small"
+            label={t.title || t}
+            icon={<Icon className="pointer" fontSize="small" onClick={() => onChange({ technologies: asset.technologies.map(_t => _t.id || _t).filter(_t => _t != t) })}>delete</Icon>}
+          />
+        )}
+        <Chip size="small" align="center" label="add" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTechnology(true)} />
+      </>
+    }
+    {addTechnology && <PickTechnologyModal
+      onClose={handleAddTechnology}
+      lang={asset.lang}
+      query={{ include_children: false }}
       hint="Only parent technologies will show here"
     />}
   </Card>;
@@ -365,39 +379,55 @@ const syncColor = {
   'WARNING': 'warning',
   'OK': 'success'
 }
+
+
 const GithubCard = ({ asset, onAction, onChange }) => {
-  const [ githubUrl, setGithubUrl ] = useState(asset.readme_url);
+  const [githubUrl, setGithubUrl] = useState(asset.readme_url);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
+
+  const confirmAlertModal = () => {
+    <ConfirmAlert
+    title={`Are you sure you want to Pull?`}
+    isOpen={makePublicDialog}
+    setIsOpen={setMakePublicDialog}
+    onOpen={onAction('pull')}
+  />
+  }
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
-        {asset.sync_status != 'OK' && 
+        {asset.sync_status != 'OK' &&
           <Tooltip title={`${asset.sync_status}: ${asset.status_text}`}><Icon color={syncColor[asset.sync_status]}>warning</Icon></Tooltip>
         }
         <h4 className="m-0 font-medium d-inline">Github</h4>
       </div>
-      {asset.readme_url!=githubUrl ?
+      {asset.readme_url != githubUrl ?
         <Button variant="contained" color="primary" size="small" onClick={() => onChange({ readme_url: githubUrl })}>
           Save URL
         </Button>
         :
         <DowndownMenu
           options={[
-            { label: 'Only content', value: 'only_content'},
-            { label: 'Also override metainfo', value: 'override'}
+            { label: 'Only content', value: 'only_content' },
+            { label: 'Also override metainfo', value: 'override' }
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if(value == 'only_content') onAction('pull');
-            else if(value == 'override') onAction('pull', { override_meta: true });
-          }}
+            if (asset.readme_updated_at > asset.last_synch_at) {
+              if (value == 'only_content') onAction(confirmAlertModal());
+              else if (value == 'override') onAction(confirmAlertModal(), { override_meta: true });
+            }}
+            }
         >
           <Button variant="contained" color="primary" size="small">
             Pull
           </Button>
         </DowndownMenu>
+
       }
+
     </div>
 
     <Grid item className="flex" xs={12}>
@@ -405,7 +435,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         Status:
       </Grid>
       <Grid item xs={8}>
-        <Chip size="small" label={asset.sync_status} className={`mr-2 bg-${syncColor[asset.sync_status]}`}/> 
+        <Chip size="small" label={asset.sync_status} className={`mr-2 bg-${syncColor[asset.sync_status]}`} />
         <small>{!asset.last_synch_at ? "Never synched" : dayjs(asset.last_synch_at).fromNow()}</small>
       </Grid>
     </Grid>
@@ -415,7 +445,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
-        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => setGithubUrl(e.target.value)} />
+        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); updateAlert() }} />
         {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
       </Grid>
     </Grid>
@@ -425,13 +455,13 @@ const GithubCard = ({ asset, onAction, onChange }) => {
       </Grid>
       <Grid item xs={8}>
         <AsyncAutocomplete
-            width="100%"
-            size="small"
-            onChange={(owner) => onChange({ owner: owner?.id || null })}
-            label="Search among users"
-            value={asset.owner}
-            getOptionLabel={(option) => `${option.first_name || "No name"} ${option.last_name || "No last"}`}
-            asyncSearch={(searchTerm) => bc.auth().getAllUsers({ github: true, like: searchTerm })}
+          width="100%"
+          size="small"
+          onChange={(owner) => onChange({ owner: owner?.id || null })}
+          label="Search among users"
+          value={asset.owner}
+          getOptionLabel={(option) => `${option.first_name || "No name"} ${option.last_name || "No last"}`}
+          asyncSearch={(searchTerm) => bc.auth().getAllUsers({ github: true, like: searchTerm })}
         />
       </Grid>
     </Grid>
@@ -441,7 +471,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
 const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
   <div className="mb-4 flex justify-between items-center">
     <div className="flex">
-      {asset.test_status != 'OK' && 
+      {asset.test_status != 'OK' &&
         <Tooltip title={`${asset.test_status}: ${asset.status_text}`}><Icon color={syncColor[asset.test_status]}>warning</Icon></Tooltip>
       }
       <h4 className="m-0 font-medium  d-inline">Integrity</h4>
@@ -449,26 +479,26 @@ const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
   </div>
 
   <Grid className="flex mb-2">
-      <div style={{width: "100%"}}>
-        <Chip size="small" label={`Test: ${asset.test_status}`} className={`bg-${syncColor[asset.test_status]} mr-1`}/>
-        <small>{!asset.last_test_at ? "never tested" : dayjs(asset.last_test_at).fromNow()}</small>
-      </div>
-      <div>
-        <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
-          Test
-        </Button>
-      </div>
+    <div style={{ width: "100%" }}>
+      <Chip size="small" label={`Test: ${asset.test_status}`} className={`bg-${syncColor[asset.test_status]} mr-1`} />
+      <small>{!asset.last_test_at ? "never tested" : dayjs(asset.last_test_at).fromNow()}</small>
+    </div>
+    <div>
+      <Button variant="contained" color="primary" size="small" onClick={() => onAction('test')}>
+        Test
+      </Button>
+    </div>
   </Grid>
   <Grid className="flex mb-2">
-      <div style={{width: "100%"}}>
-        <Chip size="small" label={`Cleanup: ${asset.cleaning_status}`} className={`bg-${syncColor[asset.cleaning_status]} mr-1`}/>
-        <small>{!asset.last_cleaning_at ? "never cleaned" : dayjs(asset.last_cleaning_at).fromNow()}</small>
-      </div>
-      <div>
-        <Button variant="contained" color="primary" size="small" onClick={() => onAction('clean')}>
-          Clean
-        </Button>
-      </div>
+    <div style={{ width: "100%" }}>
+      <Chip size="small" label={`Cleanup: ${asset.cleaning_status}`} className={`bg-${syncColor[asset.cleaning_status]} mr-1`} />
+      <small>{!asset.last_cleaning_at ? "never cleaned" : dayjs(asset.last_cleaning_at).fromNow()}</small>
+    </div>
+    <div>
+      <Button variant="contained" color="primary" size="small" onClick={() => onAction('clean')}>
+        Clean
+      </Button>
+    </div>
   </Grid>
 </Card>;
 
@@ -481,7 +511,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      <GithubCard key={asset.id} asset={asset} onAction={(action, payload = null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
