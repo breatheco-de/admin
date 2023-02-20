@@ -61,9 +61,10 @@ const Board = () => {
 
     const _assets = await bc.registry().getAllAssets({ 
       published_before: ago30Days.format('YYYY-MM-DD'), 
-      visibility: "PRIVATE,PUBLIC,UNLISTED"  
+      visibility: "PRIVATE,PUBLIC,UNLISTED",
+      limit: 500
     });
-    setAssets(_assets)
+    setAssets(_assets.results || _assets)
     setBoard(newBoard({
       title: 'New Articles',
       members: members.data.map(m => newMember(m)),
