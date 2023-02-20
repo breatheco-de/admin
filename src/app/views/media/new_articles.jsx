@@ -59,16 +59,19 @@ const Board = () => {
     const members = await bc.auth().getAcademyMembers({ role: 'content_writter' });
     setMemberList(members.data.map(m => newMember(m)));
 
-    const _assets = await bc.registry().getAllAssets({ 
+    let _assets = await bc.registry().getAllAssets({ 
       published_before: ago30Days.format('YYYY-MM-DD'), 
       visibility: "PRIVATE,PUBLIC,UNLISTED",
       limit: 500
     });
-    setAssets(_assets.results || _assets)
+    // if there is pagination, the assets will come inside "results"
+    _assets = _assets.data.results || _assets.data;
+    setAssets(_assets);
+    
     setBoard(newBoard({
       title: 'New Articles',
       members: members.data.map(m => newMember(m)),
-      columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED'].map(c => newColumn(c, c, _assets.data.filter(a => a.status === c).map(a => newCard(a))))
+      columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED'].map(c => newColumn(c, c, _assets.filter(a => a.status === c).map(a => newCard(a))))
     }))
   }, []);
 
