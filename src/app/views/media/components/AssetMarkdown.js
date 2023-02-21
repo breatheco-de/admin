@@ -52,7 +52,7 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
           </ul>
         </div>
         :
-        !readOnly ?
+        !readOnly ? 
           <SimpleMDE value={value} onChange={c => onChange(c)}  />
           :
           <pre className="markdown-preview px-3">{value}</pre>

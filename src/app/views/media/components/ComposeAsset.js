@@ -78,6 +78,7 @@ const ComposeAsset = () => {
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
+  const [alertChanged, setAlertChanged] = useState(false)
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -197,12 +198,11 @@ const ComposeAsset = () => {
 
   }
 
-  let alertHasChanged = false;
 
   const updateAlert = async () => {
-    if (!alertHasChanged) {
+    if (!alertChanged) {
     toast.warning(`You've modified the asset and it's now out of sync, please push your changes.`);
-    alertHasChanged = true;}
+    setAlertChanged(true);}
   }
 
   const handleUpdateCategory = async (category) => {
@@ -384,7 +384,7 @@ const ComposeAsset = () => {
 
           <Grid container spacing={3}>
             <Grid item md={8} xs={12}>
-              <AssetMarkdown asset={asset} value={content} onChange={(c) => {updateAlert(); setContent(c.target.value)}} />
+              <AssetMarkdown asset={asset} value={content} onChange={(c) => {updateAlert(); setContent(c)}} />
             </Grid>
             <Grid item md={4} xs={12}>
               <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(asset_slug, a)} />
@@ -396,7 +396,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, visibility: opt });
-            else partialUpdateAsset(asset.slug, { visibility: opt }), updateAlert();
+            else partialUpdateAsset(asset.slug, { visibility: opt }); 
           }
           setUpdateVisibility(false)
         }}
@@ -420,7 +420,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, status: opt })
-            else partialUpdateAsset(asset.slug, { status: opt }), updateAlert();
+            else partialUpdateAsset(asset.slug, { status: opt }); updateAlert();
           }
           setUpdateStatus(false)
         }}
@@ -432,7 +432,7 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, lang: opt.value })
-            else partialUpdateAsset(asset.slug, { lang: opt.value }), updateAlert();
+            else partialUpdateAsset(asset.slug, { lang: opt.value }); updateAlert();
           }
           setUpdateLanguage(false)
         }}

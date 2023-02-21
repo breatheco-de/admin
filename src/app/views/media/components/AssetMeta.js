@@ -385,15 +385,6 @@ const GithubCard = ({ asset, onAction, onChange }) => {
   const [githubUrl, setGithubUrl] = useState(asset.readme_url);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
 
-  const confirmAlertModal = () => {
-    <ConfirmAlert
-    title={`Are you sure you want to Pull?`}
-    isOpen={makePublicDialog}
-    setIsOpen={setMakePublicDialog}
-    onOpen={onAction('pull')}
-  />
-  }
-
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
@@ -415,15 +406,23 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-            if (asset.readme_updated_at > asset.last_synch_at) {
-              if (value == 'only_content') onAction(confirmAlertModal());
+              if (value == 'only_content') onAction(setMakePublicDialog(true));
               else if (value == 'override') onAction(confirmAlertModal(), { override_meta: true });
-            }}
             }
+            }
+
         >
           <Button variant="contained" color="primary" size="small">
             Pull
           </Button>
+
+          <ConfirmAlert
+    title={`Are you sure you want to Pull?`}
+    isOpen={makePublicDialog}
+    setIsOpen={setMakePublicDialog}
+    onOpen={()=> onAction('pull')}
+  />
+
         </DowndownMenu>
 
       }
