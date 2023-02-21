@@ -165,7 +165,7 @@ const NewLead = () => {
 
   // VALIDACIONES FORM\\
 
-  const phoneRegExp = /^[+]?([0-9]{11,15})$/;
+  const phoneRegExp = /^[+]?([0-9]{10,15})$/;
 
   const ProfileSchema = Yup.object().shape({
     first_name: Yup.string()
@@ -219,7 +219,7 @@ const NewLead = () => {
             };
             let res;
             if (!id) res = await bc.marketing().addNewLead({ ...payload });
-            else res = await bc.marketing().updateAcademyLead(id, { ...payload });
+            else res = await bc.marketing().updateAcademyLead(id, { ...payload, academy: undefined, lead_generation_app: undefined });
 
             if (res.ok) history.goBack();
           }}

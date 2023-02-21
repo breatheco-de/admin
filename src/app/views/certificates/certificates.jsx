@@ -137,7 +137,7 @@ const Certificates = () => {
                     </a>
 
                     <a
-                      href={`https://certificate.breatheco.de/${items[i].preview_url.slice(56)}`}
+                      href={`https://certificate.4geeks.com/${items[i].preview_url.slice(56)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
