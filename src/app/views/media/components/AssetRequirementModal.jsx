@@ -53,6 +53,11 @@ export const AssetRequirementModal = ({
               </MenuItem>
             ))}
           </TextField>
+          <Button size="small" variant="outlined" color="primary" className="ml-3"
+              onClick={() => setUpdateCategory(true)}
+            >
+              {(formData && formData.category) ? formData.category.title || formData.category.slug : `Click to select category`}
+          </Button>
           <TextField
             className="m-2"
             label="Title"
@@ -73,17 +78,14 @@ export const AssetRequirementModal = ({
           />
           <TextField
             className="m-2"
-            label="Requirements"
+            label="Markdown Github URL"
             multiline
             row={5}
             fullWidth
-            value={formData.requirements}
+            value={formData.readme_url}
             variant="outlined"
-            onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, readme_url: e.target.value })}
           />
-            <Button size="small" variant="outlined" color="primary" className="ml-3"
-              onClick={() => setUpdateCategory(true)}
-            >{(formData && formData.category) ? formData.category.title || formData.category.slug : `Click to select`}</Button>
         </DialogContent>
         <DialogActions>
           <Button
