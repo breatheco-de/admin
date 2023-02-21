@@ -60,12 +60,20 @@ const Board = () => {
     setMemberList(members.data.map(m => newMember(m)));
 
     let _assets = await bc.registry().getAllAssets({ 
-      published_before: ago30Days.format('YYYY-MM-DD'), 
+      published_after: ago30Days.format('YYYY-MM-DD'), 
       visibility: "PRIVATE,PUBLIC,UNLISTED",
+      status: "PUBLISHED",
+      limit: 500
+    });
+    let _unpublishedAssets = await bc.registry().getAllAssets({ 
+      visibility: "PRIVATE,PUBLIC,UNLISTED",
+      status: "UNASSIGNED,WRITING,DRAFT",
       limit: 500
     });
     // if there is pagination, the assets will come inside "results"
     _assets = _assets.data.results || _assets.data;
+    // merge with unpublished assets to use one centralized kanban
+    _assets.concat(_unpublishedAssets.data.results || _unpublishedAssets.data)
     setAssets(_assets);
     
     setBoard(newBoard({
