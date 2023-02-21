@@ -20,6 +20,7 @@ const eventypePropTypes = {
   slug: PropTypes.string,
   name: PropTypes.string,
   academy_owner: PropTypes.number,
+  visibility_settings: PropTypes.string,
 };
 
 const schema = Yup.object().shape({
@@ -37,8 +38,8 @@ const propTypes = {
 
 const getVisibilitySettingMessage = (visibility) => {
   if (visibility && visibility?.academy && visibility?.syllabus) {
-    if (visibility.cohort) return <>Everyone at <strong>{visibility.academy.name}</strong> with access to <strong>{visibility.syllabus.name}</strong> syllabus, from cohort {visibility.cohort.name}</>
-    else return <>Everyone at <strong>{visibility.academy.name}</strong> with access to {visibility.syllabus.name} syllabus</>
+    if (visibility.cohort) return <>Everyone at <strong>{visibility.academy.name}</strong> with access to <strong>{visibility.syllabus.name}</strong> syllabus, from cohort <strong>{visibility.cohort.name}</strong></>
+    else return <>Everyone at <strong>{visibility.academy.name}</strong> with access to <strong>{visibility.syllabus.name}</strong> syllabus</>
   } else if (visibility.cohort) return <>Everyone at <strong>{visibility.academy.name}</strong> from cohort <strong>{visibility.cohort.name}</strong></>
   else return <>Everyone at <strong>{visibility.academy.name}</strong></>
 }
@@ -48,7 +49,6 @@ const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDia
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [chooseCohort, setChooseCohort] = useState(null);
-  const [chooseAcademy, setChooseAcademy] = useState(null);
   const [syllabus, setSyllabus] = useState(null);
   const [open, setOpen] = React.useState(false);
 
@@ -88,35 +88,13 @@ const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDia
             setSubmitting(false);
           }}
         >
-          {({ values, isSubmitting, handleChange, handleSubmit, setFieldValue }) => (
+          {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
             <Modal open={open} onClose={handleClose}>
               <form className="p-4" onSubmit={handleSubmit}>
 
                 <Box sx={style}>
                   <Form className="p-4">
                     <Grid item md={12} sm={12} xs={12}>
-
-                    <Grid item md={2} sm={4} xs={12}>
-                        Academy
-                      </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                        <div className="flex flex-wrap">
-                          <AsyncAutocomplete
-                            debounced={false}
-                            onChange={(x) => setChooseAcademy(x)}
-                            width="100%"
-                            className="m-4"
-                            asyncSearch={() => bc.marketing().getAcademyAlias()}
-                            size="small"
-                            data-cy="academy"
-                            label="academy"
-                            
-                            getOptionLabel={(option) => `${option.name}`}
-                            value={chooseAcademy}
-                          />
-                        </div>
-                      </Grid>
 
                       <Grid item md={2} sm={4} xs={12}>
                         Syllabus
