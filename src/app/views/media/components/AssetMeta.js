@@ -417,7 +417,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           </Button>
 
           <ConfirmAlert
-    title={`Are you sure you want to Pull?`}
+    title={`Are you sure you want to Pull from GitHub? You will lose your changes`}
     isOpen={makePublicDialog}
     setIsOpen={setMakePublicDialog}
     onOpen={()=> onAction('pull')}
