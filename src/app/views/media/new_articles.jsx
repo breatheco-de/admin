@@ -73,7 +73,7 @@ const Board = () => {
     // if there is pagination, the assets will come inside "results"
     _assets = _assets.data.results || _assets.data;
     // merge with unpublished assets to use one centralized kanban
-    _assets.concat(_unpublishedAssets.data.results || _unpublishedAssets.data)
+    _assets = _assets.concat(_unpublishedAssets.data.results || _unpublishedAssets.data)
     setAssets(_assets);
     
     setBoard(newBoard({
