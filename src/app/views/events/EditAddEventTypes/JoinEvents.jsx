@@ -173,22 +173,29 @@ const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDia
                             <Grid key={i} className='m-1' item lg={10} md={10} sm={10} xs={10}>
                               {getVisibilitySettingMessage(visibility)}
                             </Grid>
+{/*   
                             <Grid item lg={2} md={2} sm={2} xs={2}>
+                                                      
                               <IconButton
                                 onClick={() => {
                                   setVisibilitySetting(visibility);
                                   setOpenDialogDeleteVisibility(true);
                                 }}
                               >
+
                                 <Icon fontSize="small">delete</Icon>
                               </IconButton>
+
                             </Grid>
+                          */}
                           </ListItem>
                         )) : (
                           <>
                             <div><h5>There are no shared settings</h5></div>
                           </>
                         )}
+                        
+{/*     
                         <IconButton onClick={() => {
                           handleOpen()
                         }}>
@@ -196,6 +203,8 @@ const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDia
                             add_circle
                           </Icon>
                         </IconButton>
+                      */}  
+
                       </Grid>
                     </List>
                   </div>
