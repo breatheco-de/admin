@@ -42,6 +42,7 @@ const statusColors = {
   "DRAFT": "bg-error",
   "UNASSIGNED": "bg-error",
   "WRITING": "bg-warning",
+  "OPTIMIZED": "bg-warning",
   "PUBLISHED": "bg-primary",
 }
 
