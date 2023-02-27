@@ -131,7 +131,7 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                   <TextField
                     label="Language"
                     type="text"
-                    data-cy="language"
+                    data-cy="lang"
                     size="small"
                     fullWidth
                     variant="outlined"
