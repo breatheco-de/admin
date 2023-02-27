@@ -45,7 +45,7 @@ const EventList = () => {
 
   const [items, setItems] = useState([]);
 
-  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}&allow_shared_creation=true`;
+  const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`;
   const columns = [
     {
       name: 'id', // field name in the row object

@@ -44,7 +44,7 @@ const getVisibilitySettingMessage = (visibility) => {
   else return <>Everyone at <strong>{visibility.academy.name}</strong></>
 }
 
-const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDialogDeleteVisibility, setVisibilitySetting }) => {
+const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDialogDeleteVisibility, setVisibilitySetting }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -219,6 +219,6 @@ const JoinEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDia
   )
 };
 
-JoinEvents.propTypes = propTypes;
+ShareEvents.propTypes = propTypes;
 
-export default JoinEvents;
+export default ShareEvents;

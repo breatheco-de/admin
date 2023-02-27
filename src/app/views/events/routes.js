@@ -35,12 +35,12 @@ const routes = [
   {
     path: '/events/eventype/:slug',
     exact: true,
-    component: React.lazy(() => import('./EditAddEventTypes/index')),
+    component: React.lazy(() => import('./EventTypesForm/index')),
   },
   {
     path: '/events/NewEventType',
     exact: true,
-    component: React.lazy(() => import('./EditAddEventTypes/NewEventType')),
+    component: React.lazy(() => import('./EventTypesForm/NewEventType')),
   },
 ];
 

@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bc from '../../../services/breathecode';
 import EventTypeDetails from './EventTypeDetails';
-import JoinEvents from './JoinEvents';
+import JoinEvents from './ShareEventsCard';
 import DowndownMenu from '../../../components/DropdownMenu';
 import { Breadcrumb } from '../../../../matx';
 import { MatxLoading } from '../../../../matx';
