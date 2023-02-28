@@ -18,6 +18,7 @@ import { AsyncAutocomplete } from '../../components/Autocomplete';
 import { useQuery } from '../../hooks/useQuery';
 import axios from '../../../axios';
 
+
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -115,6 +116,22 @@ const Assets = () => {
             </div>
           );
         },
+      },
+    },
+    {
+      name: 'language',
+      label: 'Language',
+      options: {
+        filter: true,
+        display: false,
+        
+        filterList:
+          query.get('language') !== null ? [query.get('language')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['es', 'en']
+        }
       },
     },
     {
