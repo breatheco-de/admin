@@ -57,6 +57,7 @@ function ext(url) {
 const Assets = () => {
   const [assetList, setAssetList] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [categorys, setCategorys] = useState([])
   const query = useQuery();
 
   useEffect(() => {
@@ -124,16 +125,52 @@ const Assets = () => {
       options: {
         filter: true,
         display: false,
-        
         filterList:
           query.get('language') !== null ? [query.get('language')] : [],
         filterType: "dropdown",
         display: false,
         filterOptions: {
-          names: ['es', 'en']
+          names: ['ES', 'EN']
         }
       },
     },
+    {
+      name: 'category',
+      label: 'Category',
+      options: {
+        filter: true,
+        display: false,
+        filterType: 'custom',
+        filterList:
+          query.get('category') !== null ? [query.get('category')] : [],
+          filterOptions: {
+            display: (filterList, onChange, index, column) => {
+              return (
+                <div>
+                  <AsyncAutocomplete
+                    onChange={(newCategoryList) => {
+                      setKeywords(newCategoryList);
+                      const slugs = newCategoryList.map((i) => i.category.map((x) => x.slug).join(',')).join(',');
+                      if (slugs !== '') filterList[index][0] = slugs;
+                      else filterList[index] = []
+                      onChange(filterList[index], index, column);
+                    }}
+                    value={categorys}
+                    size="small"
+                    label="category"
+                    debounced
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    getOptionLabel={(option) => `${option.title}`}
+                    multiple={true}
+                    asyncSearch={async (searchTerm) => await axios.get(`${config.REACT_APP_API_HOST}/v1/registry/academy/asset?category=${searchTerm}`)}
+                  />
+                </div>
+              );
+            }
+          },
+      },
+
+      },
     {
       name: 'keywords',
       label: 'Keywords',
