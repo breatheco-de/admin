@@ -49,18 +49,15 @@ const EventTypeList = () => {
           const item = items[dataIndex];
           return (
             <div className="flex items-center">
-                 <Avatar className="w-48 h-48" src={item?.logo} />
               <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px ${item?.name}`}>
-                  {item?.name}
-                </small>
-                <ReactCountryFlag className="text-muted mr-2"
+              <ReactCountryFlag className="text-muted mr-2"
                   countryCode={item?.lang.toUpperCase()} svg
                   style={{
                     fontSize: '10px',
                   }}
                 />
-                <br />
+                <h5 className="my-0 text-15">{item?.name}</h5>
+                
               </div>
             </div>
           );
@@ -119,26 +116,6 @@ const EventTypeList = () => {
               <div className="ml-3">
                 <small className={`border-radius-4 px-2 pt-2px ${item?.academy.name}`}>
                   {item?.academy.name}
-                </small>
-                <br />
-              </div>
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: 'icon_url', // field name in the row object
-      label: 'URL', // column title that will be shown in table
-      options: {
-        filter: true,
-        customBodyRenderLite: (dataIndex) => {
-          const item = items[dataIndex];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <small className={`border-radius-4 px-2 pt-2px ${item?.icon_url}`}>
-                  {item?.icon_url}
                 </small>
                 <br />
               </div>
