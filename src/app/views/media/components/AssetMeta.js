@@ -12,6 +12,7 @@ import { availableLanguages } from "../../../../utils"
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
 import { PickKeywordModal } from './PickKeywordModal';
+import ConfirmAlert from "app/components/ConfirmAlert";
 import tz from 'dayjs/plugin/timezone';
 import history from "history.js";
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -98,52 +99,49 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
   </Card>;
 }
 
-const DescriptionCard = ({ asset, onChange }) => {
+const DescriptionCard = ({ asset, onChange, onClick }) => {
   const [description, setDescription] = useState(asset.description);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
 
   useEffect(() => setDescription(asset.description), [asset.description])
 
-
   const handleDescription = async () => {
-    const resp = await API.registry().updateDescription(description);
+    const resp = await API.registry().updateAsset(asset.slug, { description: description });
     if (resp.status == 201) {
       history.push(`./${resp.data.slug}`);
     }
   }
 
-  return <Card className="p-4 mb-4">
-    {description ?
-      <>
-        <Grid item md={12} sm={12} xs={12}>
-          <h4 className="mb-2 font-medium d-inline">Description</h4>
-        </Grid>
-        <Grid item md={12} sm={12} xs={12}>
-          <TextField value={description} variant="outlined" fullWidth multiline onChange={(e) => setDescription(e.target.value)} />
-        </Grid>
-        <Button className="mt-2" variant="contained" color="primary" size="small" onClick={handleDescription}>
-          Edit
-        </Button>
-      </>
-      :
-      <>
-        <Grid item md={12} sm={12} xs={12}>
-          <h4 className="mb-2 font-medium d-inline">Description</h4>
-        </Grid>
-        <Grid item md={12} sm={12} xs={12}>
-          <p className="mb-2">
-            This asset doesn't have a description. Add one here:
-          </p>
-          <Grid item md={12} sm={12} xs={12}>
-            <TextField value={''} variant="outlined" fullWidth multiline onChange={(e) => setDescription(e.target.value)} />
-          </Grid>
-          <Button className="mt-2" variant="contained" color="primary" size="small" onClick={handleDescription}>
-            Add
-          </Button>
-        </Grid>
-      </>
-    }
+  const onClickUpdate = () => setMakePublicDialog(true);
+  const onAccept = () => handleDescription();
+
+  return <>
+  <Card className="p-4 mb-4">
+    <Grid item md={12} sm={12} xs={12}>
+      <h4 className="mb-2 font-medium d-inline">Description</h4>
+    </Grid>
+    <Grid item md={12} sm={12} xs={12}>
+      <p className="mb-2">
+        Edit asset's description
+      </p>
+      <TextField value={description} variant="outlined" fullWidth multiline onChange={(e) => setDescription(e.target.value)} />
+    </Grid>
+    <Button className="mt-2" variant="contained" color="primary" size="small" onClick={onClickUpdate}>
+      Update
+    </Button>
+
   </Card>;
+
+   <ConfirmAlert
+   title={`Are you sure you want to update this description?`}
+   isOpen={makePublicDialog}
+   setIsOpen={setMakePublicDialog}
+   onOpen={onAccept}
+ />
+ </>
 }
+
+
 
 const LangCard = ({ asset, onAction }) => {
   const [addTranslation, setAddTranslation] = useState(null);

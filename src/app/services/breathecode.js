@@ -1037,12 +1037,6 @@ class BreatheCodeClient {
                     `${this.host}/registry/academy/keyword/${slug}`,
                     payload
                 ),
-            updateDescription: async (slug, payload) =>
-                await axios.bcPut(
-                    "Description",
-                    `${this.host}/registry/academy/description/${slug}`,
-                    payload
-                ),
             createCluster: async (payload) =>
                 await axios.bcPost(
                     "Cluster",
