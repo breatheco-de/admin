@@ -28,15 +28,6 @@ import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
 
-let hasChanged = false;
-
-const updateAlert = async () => {
-  if (!hasChanged) {
-    toast.warning(`You've modified the asset and it's now out of sync, please push your changes.`);
-    hasChanged = true;
-  }
-}
-
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
     border: "4px solid rgba(var(--body), 0.03)",
@@ -117,7 +108,6 @@ const LangCard = ({ asset, onAction }) => {
 
   const handleAddTranslation = async () => {
     const resp = await API.registry().createAsset(addTranslation);
-    console.log("resppppp", resp)
     if (resp.status == 201) {
       setAddTranslation(null);
       history.push(`./${resp.data.slug}`);
@@ -406,22 +396,21 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-              if (value == 'only_content') onAction(setMakePublicDialog(true));
-              else if (value == 'override') onAction(confirmAlertModal(), { override_meta: true });
+              if (value == 'only_content' ) onAction(setMakePublicDialog(true));
+              else if (value == 'override' ) onAction(setMakePublicDialog(true), { override_meta: true });
             }
             }
-
         >
           <Button variant="contained" color="primary" size="small">
             Pull
           </Button>
 
           <ConfirmAlert
-    title={`Are you sure you want to Pull?`}
-    isOpen={makePublicDialog}
-    setIsOpen={setMakePublicDialog}
-    onOpen={()=> onAction('pull')}
-  />
+            title={`Are you sure you want to pull?`}
+            isOpen={makePublicDialog}
+            setIsOpen={setMakePublicDialog}
+            onOpen={()=> onAction('pull')}
+          />
 
         </DowndownMenu>
 
@@ -444,7 +433,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
-        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); updateAlert() }} />
+        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
         {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
       </Grid>
     </Grid>
