@@ -75,6 +75,12 @@ export const navigations = [
                 iconText: "WATCH",
                 capabilities: ["read_student"],
             },
+            {
+                name: "Syllabus",
+                path: "/admissions/syllabus",
+                iconText: "STA",
+                capabilities: ["read_syllabus"],
+            },
         ],
     },
     {
@@ -146,6 +152,12 @@ export const navigations = [
                 name: "Pipeline",
                 path: "/media/article_issues?limit=10&offset=0&resolved=false",
                 iconText: "PIP",
+                capabilities: ["read_asset"],
+            },
+            {
+                name: "Calendar",
+                path: "/media/calendar",
+                iconText: "CAL",
                 capabilities: ["read_asset"],
             },
             {
@@ -221,12 +233,6 @@ export const navigations = [
                 path: "/admin/gitpod",
                 iconText: "STA",
                 capabilities: ["get_gitpod_user"],
-            },
-            {
-                name: "Syllabus",
-                path: "/admin/syllabus",
-                iconText: "STA",
-                capabilities: ["read_syllabus"],
             },
             {
                 name: "Developer Settings",

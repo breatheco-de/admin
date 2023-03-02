@@ -39,7 +39,7 @@ const Footer = () => {
           <div className="flex items-center container w-full">
             <span className="m-auto" />
             <p className="m-0">
-              <a href="http://breatheco.de">4Geeks LLC</a>
+              <a href="http://4Geeks.com">4Geeks LLC</a>
               , all rights reserved.
             </p>
           </div>

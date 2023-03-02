@@ -38,6 +38,19 @@ const routes = [
         path: "/admissions/watchlist",
         component: React.lazy(() => import("./watchlist")),
     },
+    {
+        path: "/admissions/syllabus",
+        exact: true,
+        component: React.lazy(() => import("./syllabus")),
+      },
+      {
+          path: "/admissions/syllabus/new",
+          component: React.lazy(() => import("../admissions/syllabus-form/NewSyllabus")),
+      },
+      {
+          path: "/admissions/syllabus/:syllabusSlug",
+          component: React.lazy(() => import("../admissions/syllabus-form")),
+      },
 ];
 
 export default routes;

@@ -157,7 +157,7 @@ const ServiceMentors = ({ serviceId, service }) => {
       selectableRows={false}
       view="sevice mentors"
       singlePage=""
-      historyReplace="/admin/syllabus"
+      historyReplace="/admissions/syllabus"
       search={async (querys) => {
         const { data } = await bc.mentorship().getAcademyMentors({ ...querys, services: service.slug });
         setAllServiceMentors(data.results || data);
