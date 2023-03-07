@@ -455,7 +455,7 @@ const NewLead = () => {
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       error={errors.location && touched.location}
-                      onChange={(location) => { setNewLead({ ...newLead, location: location.slug }); }}
+                      onChange={(location) => {setNewLead({ ...newLead, location: location.slug })} }
                       width="35%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.marketing().getAcademyAlias()}

@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
+import dayjs from 'dayjs';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
@@ -22,6 +23,7 @@ import { ConfirmationDialog } from '../../../../matx';
 import EditableTextField from '../../../components/EditableTextField';
 import DialogPicker from '../../../components/DialogPicker';
 import StatCard from "../components/StatCard"
+import ConfirmAlert from "app/components/ConfirmAlert";
 import { PickCategoryModal } from "../components/PickCategoryModal"
 import bc from 'app/services/breathecode';
 import history from "history.js";
@@ -33,6 +35,11 @@ const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
+
+const relativeTime = require('dayjs/plugin/relativeTime');
+
+dayjs.extend(relativeTime);
+
 
 const statusColors = {
   "DRAFT": "bg-error",
@@ -78,6 +85,7 @@ const ComposeAsset = () => {
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -128,6 +136,7 @@ const ComposeAsset = () => {
   }, [asset_slug]);
 
   const handleAction = async (action, payload = null) => {
+
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug: action });
     if (resp.status === 200) {
       if ((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')) {
@@ -164,7 +173,7 @@ const ComposeAsset = () => {
     const _asset = {
       ...asset,
       readme_url,
-      category: (!asset.category || typeof(asset.category) !== "object") ? asset.category : asset.category.id,
+      category: (!asset.category || typeof (asset.category) !== "object") ? asset.category : asset.category.id,
       owner: asset.owner?.id,
       readme_raw: Base64.encode(content),
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
@@ -199,10 +208,19 @@ const ComposeAsset = () => {
 
   const handleUpdateCategory = async (category) => {
     if (category) {
-      if (isCreating) setAsset({...asset, category})
+      if (isCreating) setAsset({ ...asset, category })
       else partialUpdateAsset(asset.slug, { category: category.id || category })
     }
     setUpdateCategory(false);
+  }
+
+  const handleUpdatePublished = async (payload) => {
+    const updatedAt = asset.updated_at
+
+    const resp = await bc.registry().updateAsset(asset_slug, payload);
+      setAsset({ ...asset, published_at: updatedAt }, resp.data.updatedAt)
+      toast.success(`Updated published date`);
+      await getAssetContent();
   }
 
   if (!asset) return <MatxLoading />;
@@ -236,7 +254,7 @@ const ComposeAsset = () => {
                 setUpdateCategory(true)
                 setErrors({ ...errors, category: null })
               }}
-              >{(asset && asset.category) ? asset.category.title || asset.category.slug : `Click to select`}</Button>
+            >{(asset && asset.category) ? asset.category.title || asset.category.slug : `Click to select`}</Button>
           </p>
           {errors["category"] && <small className="text-error">{errors["category"]}</small>}
           <p>Please provied a Github URL to fetch the markdown file from:</p>
@@ -358,15 +376,41 @@ const ComposeAsset = () => {
                   const _errors = await saveAsset();
                   if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   else {
-                    if (value == 'push') handleAction('push');
+                    if (asset.status = ! 'PUBLISHED') {
+                      (value == 'push'); handleAction('push');
+                    }
+                    else
+                      (value == 'push'); handleAction('push');
+                    setMakePublicDialog(true)
                   }
                 }}
               >
+
                 <Button variant="contained" color="primary">
                   {isCreating ? `Create asset` : `Update asset`}
                 </Button>
               </DowndownMenu>
+
+              <ConfirmAlert
+                title={`Do you wish to update the asset published date?`}
+                isOpen={makePublicDialog}
+                setIsOpen={setMakePublicDialog}
+                cancelText={"No,  don't update the published date"}
+                acceptText={'Yes, update the published date'}
+                onOpen={handleUpdatePublished} />
+
+              <Grid item xs={6} sm={4} align="right">
+                <small className="px-1 py-2px text-muted">
+                  {asset.status == "DRAFT" ? 'Published at: Never' : asset.published_at == null ? "" : ('Published at:' + dayjs(asset.published_at).fromNow() )}
+                </small>
+              </Grid>
+              <Grid item xs={6} sm={4} align="right">
+                <small className="px-1 py-2px text-muted">
+                  Last update: {dayjs(asset.updated_at).fromNow()}
+                </small>
+              </Grid>
             </Grid>
+
           </div>
 
           <Grid container spacing={3}>
