@@ -49,7 +49,7 @@ export const navigations = [
     {
         name: "Admissions",
         icon: "school",
-        auth: authRoles.contry_manager,
+        auth: authRoles.country_manager,
         children: [
             {
                 name: "All Cohorts",
@@ -240,6 +240,7 @@ export const navigations = [
                 iconText: "DEV",
                 capabilities: ["get_academy_token"],
             },
+           
         ],
     },
 ];

@@ -131,7 +131,7 @@ const Syllabus = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Syllabus' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Syllabus' }]} />
           </div>
 
           <div className="">
