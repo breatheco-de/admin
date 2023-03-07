@@ -44,7 +44,7 @@ const NewSyllabus = () => {
       const response = await bc.admissions().addSyllabus(values);
       if (response.status === 201) {
         setSubmitting(false);
-        history.push('/admin/syllabus');
+        history.push('/admissions/syllabus');
       }
     } catch (error) {
       console.error(error);

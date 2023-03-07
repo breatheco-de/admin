@@ -16,7 +16,6 @@ const routes = [
         exact: true,
         component: React.lazy(() => import("./staff")),
     },
-    
     {
         path: "/admin/invites",
         exact: true,

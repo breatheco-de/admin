@@ -472,7 +472,17 @@ class BreatheCodeClient {
                 return axios.bcPut(
                     "Send to CRM",
                     `${this.host}/marketing/academy/lead/process?id=${qs}`
-                )},
+                )
+            },
+            bulkUpdateLead: (ids, payload) => {
+                const idsString = ids.join(",");
+
+                return axios.bcPut(
+                    "Update Lead",
+                    `${this.host}/marketing/academy/lead?id=${idsString}`,
+                    payload
+                )
+            },
         };
     }
 
@@ -1106,6 +1116,12 @@ class BreatheCodeClient {
                 await axios.bcGet(
                     "Asset",
                     `${this.host}/registry/asset/thumbnail/${slug}`,
+                    options
+                ),
+            createAssetPreview: async (slug, options) =>
+                await axios.bcPost(
+                    "Asset",
+                    `${this.host}/registry/academy/asset/${slug}/thumbnail`,
                     options
                 ),
             getAsset: async (associatedSlug, options) =>

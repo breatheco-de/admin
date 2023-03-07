@@ -151,7 +151,7 @@ const Syllabus = () => {
             items={list}
             view="syllabus?"
             singlePage=""
-            historyReplace="/admin/syllabus"
+            historyReplace="/admissions/syllabus"
             search={async (querys) => {
               const { data } = await bc.admissions().getAllAcademySyllabus(querys);
               setList(data.results);

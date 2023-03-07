@@ -155,6 +155,12 @@ export const navigations = [
                 capabilities: ["read_asset"],
             },
             {
+                name: "Calendar",
+                path: "/media/calendar",
+                iconText: "CAL",
+                capabilities: ["read_asset"],
+            },
+            {
                 name: "SEO",
                 path: "/media/seo/cluster",
                 iconText: "SEO",
@@ -228,7 +234,6 @@ export const navigations = [
                 iconText: "STA",
                 capabilities: ["get_gitpod_user"],
             },
-           
             {
                 name: "Developer Settings",
                 path: "/admin/dev-settings",
