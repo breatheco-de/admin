@@ -51,7 +51,11 @@ const EventTypeList = () => {
             <div className="flex items-center">
               <div className="ml-3">
               <ReactCountryFlag className="text-muted mr-2"
-                  countryCode={item?.lang.toUpperCase()} svg
+                  countryCode={
+                    (item?.lang.toUpperCase() == 'EN' || item?.lang.toUpperCase() == 'US'  ? 'US'
+                    : 'ES'
+                    )
+                  } svg
                   style={{
                     fontSize: '10px',
                   }}
