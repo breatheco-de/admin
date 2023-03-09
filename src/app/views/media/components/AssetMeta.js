@@ -22,10 +22,18 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from "../../../components/HelpIcon";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
+import { toast } from 'react-toastify';
 import { MediaInput } from '../../../components/MediaInput';
 import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
+
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -99,46 +107,90 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
   </Card>;
 }
 
-const DescriptionCard = ({ asset, onChange, onClick }) => {
-  const [description, setDescription] = useState(asset.description);
-  const [makePublicDialog, setMakePublicDialog] = useState(false);
+const CHARACTER_LIMIT = 200;
 
-  useEffect(() => setDescription(asset.description), [asset.description])
+const DescriptionCard = ({ asset, onChange}) => {
+  const [description, setDescription] = useState(null);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const [newDescription, setNewDescription] = useState(null)
+  const [editButton, setEditButton] = useState(false)
+  const [value, setValue] = useState('');
 
   const handleDescription = async () => {
-    const resp = await API.registry().updateAsset(asset.slug, { description: description });
+    if (newDescription == null && newDescription == '') {
+      setEditButton(false);
+    }       
+    const resp = await API.registry().updateAsset(asset.slug, { description: newDescription });
     if (resp.status == 201) {
       history.push(`./${resp.data.slug}`);
     }
+    setDescription(newDescription);
+    setEditButton(false);
   }
 
-  const onClickUpdate = () => setMakePublicDialog(true);
+  useEffect(() => {
+    setDescription(asset.description)
+  }, [newDescription])
+
+  const onClickUpdate = () => {newDescription != null && newDescription != '' ? setMakePublicDialog(true) : ''};
   const onAccept = () => handleDescription();
 
-  return <>
-  <Card className="p-4 mb-4">
-    <Grid item md={12} sm={12} xs={12}>
-      <h4 className="mb-2 font-medium d-inline">Description</h4>
-    </Grid>
-    <Grid item md={12} sm={12} xs={12}>
-      <p className="mb-2">
-        Edit asset's description
-      </p>
-      <TextField value={description} variant="outlined" fullWidth multiline onChange={(e) => setDescription(e.target.value)} />
-    </Grid>
-    <Button className="mt-2" variant="contained" color="primary" size="small" onClick={onClickUpdate}>
-      Update
-    </Button>
 
-  </Card>;
 
-   <ConfirmAlert
-   title={`Are you sure you want to update this description?`}
-   isOpen={makePublicDialog}
-   setIsOpen={setMakePublicDialog}
-   onOpen={onAccept}
- />
- </>
+  return <Card className="p-4 mb-4">
+    <h3 className="my-2">Description:</h3>
+    <div>
+      {!description ?
+        <>
+          <Grid item md={12} sm={12} xs={12}>
+            <TextField variant="outlined" fullWidth multiline
+            inputProps={{
+              maxLength: CHARACTER_LIMIT
+            }}
+            onChange={(e) => {setNewDescription(e.target.value); setValue(e.target.value)}} 
+            helperText={`${value.length}/${CHARACTER_LIMIT}`}/>
+          </Grid>
+          <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
+            Add
+          </Button>
+       </>
+         :
+         <>
+        {editButton ?
+        <>
+            <TextField placeholder={description} variant="outlined" fullWidth multiline
+              inputProps={{
+                maxLength: CHARACTER_LIMIT
+              }}
+              onChange={(e) => {setNewDescription(e.target.value); setValue(e.target.value)}} 
+              helperText={`${value.length}/${CHARACTER_LIMIT}`} />
+          <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
+            Update
+          </Button>
+          <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => setEditButton(false)}>
+            Cancel
+          </Button>
+          </>
+       :
+       <>
+       <p>
+          {description != asset.description ? newDescription : asset.description}
+       </p>
+        <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
+          Edit
+        </Button>
+        </>
+      }       
+      </>
+    }
+    </div>
+    <ConfirmAlert
+      title={`Are you sure you want to update this description?`}
+      isOpen={makePublicDialog}
+      setIsOpen={setMakePublicDialog}
+      onOpen={onAccept}
+    />
+  </Card >;
 }
 
 
