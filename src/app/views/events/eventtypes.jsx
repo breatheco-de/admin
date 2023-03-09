@@ -53,7 +53,7 @@ const EventTypeList = () => {
               <ReactCountryFlag className="text-muted mr-2"
                   countryCode={
                     (item?.lang.toUpperCase() == 'EN' || item?.lang.toUpperCase() == 'US'  ? 'US'
-                    : 'ES'
+                    : item?.lang.toUpperCase()
                     )
                   } svg
                   style={{
