@@ -18,6 +18,7 @@ import { AsyncAutocomplete } from '../../components/Autocomplete';
 import { useQuery } from '../../hooks/useQuery';
 import axios from '../../../axios';
 
+
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -56,6 +57,7 @@ function ext(url) {
 const Assets = () => {
   const [assetList, setAssetList] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [categorys, setCategorys] = useState([])
   const query = useQuery();
 
   useEffect(() => {
@@ -115,6 +117,21 @@ const Assets = () => {
             </div>
           );
         },
+      },
+    },
+    {
+      name: 'language',
+      label: 'Language',
+      options: {
+        filter: true,
+        display: false,
+        filterList:
+          query.get('language') !== null ? [query.get('language')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['es', 'us']
+        }
       },
     },
     {
