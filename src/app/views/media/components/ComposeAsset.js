@@ -86,8 +86,10 @@ const ComposeAsset = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
-  const [publishedDate, setPublishedDate] = useState(asset.published_at)
   const updatedDate = asset.updated_at;
+  
+  const now = new Date();
+  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -170,7 +172,7 @@ const ComposeAsset = () => {
     return _errors
   }
 
-  const saveAsset = async () => {
+  const saveAsset = async (published_at = null) => {
 
     const readme_url = githubUrl || asset.readme_url;
     const _asset = {
@@ -181,6 +183,9 @@ const ComposeAsset = () => {
       readme_raw: Base64.encode(content),
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
+
+    
+    if (published_at) _asset['published_at'] = published_at;
 
     const _errors = hasErrors(_asset);
     setErrors(_errors);
@@ -209,6 +214,7 @@ const ComposeAsset = () => {
 
   }
 
+
   const handleUpdateCategory = async (category) => {
     if (category) {
       if (isCreating) setAsset({ ...asset, category })
@@ -217,19 +223,10 @@ const ComposeAsset = () => {
     setUpdateCategory(false);
   }
 
-  const handleUpdatePublished = async (payload) => {
-    setPublishedDate(updatedDate);
-    const updatedAt = updatedDate
-  
-    const resp = await bc.registry().updateAsset(asset.slug, {publishedDate : updatedDate});
-    setAsset({ ...asset, published_at: updatedAt }, resp.data.publishedDate)
-    toast.success(`Updated published date`);
-    await getAssetContent();
-  }
 
   if (!asset) return <MatxLoading />;
 
-  const onAccept = () => handleUpdatePublished();
+
 
   return (
     <div className="m-sm-30">
@@ -379,20 +376,12 @@ const ComposeAsset = () => {
                 icon="more_horiz"
                 onSelect={async ({ value }) => {
                   if (!value) return null;
-                  const _errors = await saveAsset();
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                  else {
-                    if (asset.status != 'PUBLISHED') {
-                      (value == 'push' || value == 'only_save' ? handleUpdatePublished() : '');
-                    }
-                    else if (asset.status == 'PUBLISHED' && asset.published_at != null) {
-                      (value == 'push' || value == 'only_save' ? setMakePublicDialog(true) : '');
-                    }
-                    else if (asset.status == 'PUBLISHED' && asset.published_at == null) {
-                      (value == 'push' || value == 'only_save' ? handleUpdatePublished() : '');
-                    }
-                    else ''
-                  }
+                  if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
+
+                  else
+                  {const _errors = await saveAsset();
+                  if (Object.keys(_errors).length > 0) setErrorDialog(true);}
+
                 }}
               >
 
@@ -407,7 +396,8 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={onAccept} />
+                onOpen={()=> saveAsset(formattedDate)}
+                onClose={()=> saveAsset()} />
 
               <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
