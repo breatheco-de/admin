@@ -86,6 +86,8 @@ const ComposeAsset = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const [publishedDate, setPublishedDate] = useState(asset.published_at)
+  const updatedDate = asset.updated_at;
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -134,6 +136,7 @@ const ComposeAsset = () => {
     load();
 
   }, [asset_slug]);
+
 
   const handleAction = async (action, payload = null) => {
 
@@ -215,15 +218,18 @@ const ComposeAsset = () => {
   }
 
   const handleUpdatePublished = async (payload) => {
-    const updatedAt = asset.updated_at
-
-    const resp = await bc.registry().updateAsset(asset_slug, payload);
-      setAsset({ ...asset, published_at: updatedAt }, resp.data.updatedAt)
-      toast.success(`Updated published date`);
-      await getAssetContent();
+    setPublishedDate(updatedDate);
+    const updatedAt = updatedDate
+  
+    const resp = await bc.registry().updateAsset(asset.slug, {publishedDate : updatedDate});
+    setAsset({ ...asset, published_at: updatedAt }, resp.data.publishedDate)
+    toast.success(`Updated published date`);
+    await getAssetContent();
   }
 
   if (!asset) return <MatxLoading />;
+
+  const onAccept = () => handleUpdatePublished();
 
   return (
     <div className="m-sm-30">
@@ -376,12 +382,16 @@ const ComposeAsset = () => {
                   const _errors = await saveAsset();
                   if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   else {
-                    if (asset.status = ! 'PUBLISHED') {
-                      (value == 'push'); handleAction('push');
+                    if (asset.status != 'PUBLISHED') {
+                      (value == 'push' || value == 'only_save' ? handleUpdatePublished() : '');
                     }
-                    else
-                      (value == 'push'); handleAction('push');
-                    setMakePublicDialog(true)
+                    else if (asset.status == 'PUBLISHED' && asset.published_at != null) {
+                      (value == 'push' || value == 'only_save' ? setMakePublicDialog(true) : '');
+                    }
+                    else if (asset.status == 'PUBLISHED' && asset.published_at == null) {
+                      (value == 'push' || value == 'only_save' ? handleUpdatePublished() : '');
+                    }
+                    else ''
                   }
                 }}
               >
@@ -397,16 +407,16 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={handleUpdatePublished} />
+                onOpen={onAccept} />
 
-              <Grid item xs={6} sm={4} align="right">
+              <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
-                  {asset.status == "DRAFT" ? 'Published at: Never' : asset.published_at == null ? "" : ('Published at:' + dayjs(asset.published_at).fromNow() )}
+                  {asset.status == "DRAFT" ? 'Published at: Never' : asset.published_at == null ? 'Published at: Missing publish date' : ('Published at:' + dayjs(asset.published_at).fromNow())}
                 </small>
               </Grid>
               <Grid item xs={6} sm={4} align="right">
                 <small className="px-1 py-2px text-muted">
-                  Last update: {dayjs(asset.updated_at).fromNow()}
+                  Last update: {dayjs(updatedDate).fromNow()}
                 </small>
               </Grid>
             </Grid>
