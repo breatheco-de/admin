@@ -353,7 +353,6 @@ const ComposeAsset = () => {
             </Grid>
 
             <Grid item xs={6} sm={4} align="right">
-
               <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
               <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
                 <Icon><OpenInBrowser /></Icon>
@@ -381,27 +380,13 @@ const ComposeAsset = () => {
                   else {
                     if (value == 'push') handleAction('push');
                     setDirty(false);
-
                   }
-                  icon="more_horiz"
-                  onSelect={async ({ value }) => {
-                    if (!value) return null;
-                    const _errors = await saveAsset();
-                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                    else {
-                      if (value == 'push') handleAction('push');
-                    }
-                  }}
-                >
-                  <Button variant="contained" color="primary">
-                    {isCreating ? `Create asset` : `Update asset`}
-                  </Button>
-                </DowndownMenu>
-              </div>
-              <ul className="no-list-style mt-0">
-                <li><small>Published at: {asset.published_at ? dayjs(asset.published_at).fromNow() : "Never"}</small></li>
-                <li><small>Last update: {asset.updated_at ? dayjs(asset.updated_at).fromNow() : "Never"}</small></li>
-              </ul>
+                }}
+              >
+                <Button variant="contained" color="primary">
+                  {isCreating ? `Create asset` : `Update asset`}
+                </Button>
+              </DowndownMenu>
             </Grid>
           </div>
 
@@ -457,7 +442,7 @@ const ComposeAsset = () => {
         }}
         open={updateStatus}
         title="Select a status"
-        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'OPTIMIZED','PUBLISHED']}
+        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED']}
       />
       <DialogPicker
         onClose={opt => {
