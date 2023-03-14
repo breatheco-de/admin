@@ -141,7 +141,7 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                     }}
                     select
                   >
-                    {['es', 'en'].map((item) => (
+                    {['es', 'en', 'de'].map((item) => (
                       <MenuItem value={item} key={item}>
                         {item?.toUpperCase()}
                       </MenuItem>
