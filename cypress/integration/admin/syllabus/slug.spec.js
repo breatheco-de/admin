@@ -11,7 +11,7 @@ const timeslotStartingAt = '2021-10-12T20:40:07Z';
 const timeslotEndingAt = '2021-10-12T21:40:07Z';
 const timezone = 'Pacific/Pago_Pago';
 
-describe('/admin/syllabus/:slug', () => {
+describe('/admissions/syllabus/:slug', () => {
   beforeEach(() => {
     // cy.auth();
 
@@ -84,7 +84,7 @@ describe('/admin/syllabus/:slug', () => {
       breathecode.admissions.postAcademySchedule();
       breathecode.admissions.postAcademyScheduleIdTimeslot();
 
-      cy.visit('/admin/syllabus/full-stack-ft', {
+      cy.visit('/admissions/syllabus/full-stack-ft', {
         onBeforeLoad(win) {
           cy.stub(win, 'open');
           // debug in cypress.io

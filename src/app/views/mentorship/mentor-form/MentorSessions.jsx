@@ -100,7 +100,7 @@ const MentorSessions = ({ staffId, mentor }) => {
       // selectableRows="multiple"
       view="mentor sessions"
       singlePage=""
-      historyReplace="/admin/syllabus"
+      historyReplace="/admissions/syllabus"
       search={async (querys) => {
         const { data } = await bc.mentorship().getSingleMentorSessions({ ...querys, mentor: staffId });
         setSessions(data.results);

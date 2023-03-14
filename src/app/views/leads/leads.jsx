@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Tooltip, Chip, IconButton, Icon, } from '@material-ui/core';
 import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
+import Report from '@material-ui/icons/Report';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
 import { Link } from 'react-router-dom';
@@ -12,6 +13,7 @@ import config from '../../../config.js';
 import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 import { toast } from "react-toastify";
+import UpdateLeadStatusDialog from './leads-form/UpdateLeadStatusDialog';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -243,7 +245,7 @@ const Leads = () => {
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   getOptionLabel={(option) => `${option.slug}`}
                   multiple={true}
-                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/marketing/academy/tag?like=${searchTerm}`)}
+                  asyncSearch={(searchTerm) => axios.get(`${config.REACT_APP_API_HOST}/v1/marketing/academy/tag?type=STRONG,SOFT,DISCOVERY&like=${searchTerm}`)}
                 />
               </div>
             );
@@ -308,6 +310,7 @@ const Leads = () => {
 
   const SendCRM = ({ ids, setSelectedRows }) => {
 
+    const [ confirmUpdate, setConfirmUpdate ] = useState(false);
     //find the elements in the array
     const positions = ids.map((id) => {
       return items.map((e) => { return e.id; }).indexOf(id);
@@ -324,17 +327,15 @@ const Leads = () => {
 
     return (
       <div>
-        <Tooltip title={!notPending ? "Send to CRM" : "Select Pending leads only"}>
-          <IconButton
-          // disabled={notPending}
-          >
+        <Tooltip title="Send to CRM">
+          <IconButton>
             <ArrowUpwardRounded
               onClick={async () => {
                 if (!notPending) {
                   const { data } = await bc.marketing()
                     .bulkSendToCRM(ids);
-                  setSelectedRows([]);
-                  getLeads({ limit: 10, offset: 0, ...getParams(), });
+                    setSelectedRows([]);
+                    getLeads({ limit: 10, offset: 0, ...getParams(), });
                   return data
                 }
                 else {
@@ -343,6 +344,23 @@ const Leads = () => {
               }}
               
             />
+          </IconButton>
+        </Tooltip>
+        {confirmUpdate && <UpdateLeadStatusDialog status={"ERROR"} onClose={async (msg) => {
+                if (!notPending) {
+                  const { data } = await bc.marketing()
+                    .bulkUpdateLead(ids, { storage_status_text: msg, storage_status: 'ERROR' });
+                    setSelectedRows([]);
+                    getLeads({ limit: 10, offset: 0, ...getParams(), });
+                  return data
+                }
+                else {
+                  return toast.error('Please select ONLY pending leads', toastOption)
+                }
+              }}/>}
+        <Tooltip title="Mark as error">
+          <IconButton>
+            <Report onClick={() => setConfirmUpdate(true)} />
           </IconButton>
         </Tooltip>
       </div>
