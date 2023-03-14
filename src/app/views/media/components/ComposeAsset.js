@@ -396,7 +396,7 @@ const ComposeAsset = () => {
                 <Grid item md={12} sm={12} xs={12}>
                   <Alert severity="warning">
                     <AlertTitle>Asset has been modified</AlertTitle>
-                    Please update the asset in order to save your changes.
+                    Remember to push your changes before pulling or executing any action or they will be lost.
                   </Alert>
                 </Grid>
               ) : ""}
