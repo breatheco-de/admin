@@ -99,6 +99,7 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
           </Grid>
         </div>
         :
+
         <p className="m-0">No preview image has been generated for this asset.
           <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
           <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
@@ -202,8 +203,8 @@ const LangCard = ({ asset, onAction }) => {
 
   const handleAddTranslation = async () => {
     const resp = await API.registry().createAsset(addTranslation);
-    console.log("resppppp", resp)
     if (resp.status == 201) {
+
       setAddTranslation(null);
       history.push(`./${resp.data.slug}`);
     }
@@ -424,6 +425,69 @@ const SEOCard = ({ asset, onAction, onChange }) => {
   </Card>;
 }
 
+const OriginalityCard = ({ asset, onAction }) => {
+
+  const getOptColor = (value) => {
+    if(value > 80) return "text-success";
+    else if(value > 70) return "text-warning";
+    else return "text-error";
+  }
+
+  const [ report, setReport ] = useState(null);
+
+  const getReport = async () => {
+    
+    const resp = await bc.registry().getAssetOriginalityReport(asset.slug, { silent: true }, {
+      limit: 1, 
+      offset: 0,
+    });
+
+    const _data = resp.data.results || resp.data;
+    if(resp.ok && _data.length > 0) setReport({ 
+      ..._data[0], 
+      score_original: Math.round(_data[0].score_original * 100), 
+      score_ai: Math.round(_data[0].score_ai * 100) 
+    });
+    else console.error("Error fetching originality report");
+
+  }
+
+  useEffect(() => getReport(), []);
+
+  const originalColor = report && report.score_original > 50 ? "success" : "danger";
+  const aiColor = report && report.score_ai < 50 ? "success" : "danger";
+
+  return <Card className="p-4 mb-4">
+    <div className="mb-4 flex justify-between items-center">
+      <div>
+        <div className="flex">
+          <h4 className="m-0 font-medium">Originality</h4>
+          {report && report.success ? <Icon color="success" className="mx-2" fontSize="small">sentiment_very_satisfied</Icon> : <Icon className=" mx-2" fontSize="small">sentiment_very_dissatisfied</Icon>}
+          <HelpIcon message={`Originality API is used to detect how original the article, click on this icon to learn more about it`} link={'https://originality.ai/ai-content-detection-score-google/'} />
+        </div>
+        <div>
+          {!report ? 
+            <small>Never analyzed</small> 
+            : 
+            <p className="m-0 p-0">
+              <small className="capitalize">{dayjs(report.created_at).fromNow()}</small>{" "}
+            </p>
+          }
+        </div>
+      </div>
+      <Button variant="contained" color="primary" size="small" onClick={() => onAction('originality').then(()=> getReport())}>
+        Analize
+      </Button>
+    </div>
+    {report &&
+      <Grid item className="flex" xs={12}>
+          <Chip size="small" className={`bg-${originalColor}`} align="center" label={`Original:  ${report.score_original}% `} icon={<Icon fontSize="small">{report.score_original > 50 ? "sentiment_very_satisfied" : "sentiment_very_dissatisfied"}</Icon>} />
+          <Chip size="small" className={`mx-2 bg-${aiColor}`} align="center" label={`AI:  ${report.score_ai}% `} icon={<Icon fontSize="small">{report.score_ai < 50 ? "sentiment_very_satisfied" : "sentiment_very_dissatisfied"}</Icon>} />
+      </Grid>
+    }
+  </Card>;
+}
+
 
 const TechCard = ({ asset, onChange }) => {
   const [addTechnology, setAddTechnology] = useState(null);
@@ -583,7 +647,8 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-      <GithubCard key={asset.id} asset={asset} onAction={(action, payload = null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
