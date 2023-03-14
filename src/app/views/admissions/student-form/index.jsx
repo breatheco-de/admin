@@ -100,7 +100,7 @@ const Student = () => {
         setCopyDialog({
           ...copyDialog,
           openDialog: true,
-          url: `${data.reset_github_url}?url=https://student.breatheco.de/login`,
+          url: `${data.reset_github_url}?url=https://4geeks.com/login`,
         });
       })
       .catch((error) => error);
