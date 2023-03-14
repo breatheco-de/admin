@@ -328,7 +328,7 @@ const NewCohort = () => {
                     value={newCohort.is_hidden_on_prework}
                     onChange={isHiddenOnPreworkCohort}
                     select
-                    helperText="Students will not see this cohort until it's marked as active."
+                    helperText="Students will not have access to the cohort until it starts."
                   >
                     
                     {isHiddenOnPreworkOptions.map((option) => (
