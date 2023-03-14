@@ -36,7 +36,7 @@ const toastOption = {
   autoClose: 8000,
 };
 
-import dayjs from 'dayjs';
+
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
