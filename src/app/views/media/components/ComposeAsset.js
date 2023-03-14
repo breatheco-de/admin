@@ -36,8 +36,8 @@ const toastOption = {
   autoClose: 8000,
 };
 
+import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
-
 dayjs.extend(relativeTime);
 
 
@@ -45,6 +45,7 @@ const statusColors = {
   "DRAFT": "bg-error",
   "UNASSIGNED": "bg-error",
   "WRITING": "bg-warning",
+  "OPTIMIZED": "bg-warning",
   "PUBLISHED": "bg-primary",
 }
 
@@ -357,6 +358,7 @@ const ComposeAsset = () => {
             </Grid>
 
             <Grid item xs={6} sm={4} align="right">
+
               <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
               <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
                 <Icon><OpenInBrowser /></Icon>
@@ -419,6 +421,7 @@ const ComposeAsset = () => {
                   Last update: {dayjs(updatedDate).fromNow()}
                 </small>
               </Grid>
+
             </Grid>
 
           </div>
@@ -467,7 +470,7 @@ const ComposeAsset = () => {
         }}
         open={updateStatus}
         title="Select a status"
-        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED']}
+        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'OPTIMIZED','PUBLISHED']}
       />
       <DialogPicker
         onClose={opt => {
