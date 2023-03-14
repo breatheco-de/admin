@@ -139,6 +139,7 @@ const NewCohort = () => {
   let helpText = `Never ending cohorts don't include functionalities like attendance or cohort calendar. Read more about never ending cohorts by clicking on this help icon.`;
   let helpLink = `https://4geeksacademy.notion.site/About-Never-Ending-cohorts-1c93ee5d61d4466296535ae459cab1ee`;
 
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -314,12 +315,12 @@ const NewCohort = () => {
 
 
                 <Grid item md={2} sm={4} xs={12}>
-                  Is Hidden On Prework?
+                  Hide During Prework?
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     className="m-2"
-                    label="Is Hidden On Prework?"
+                    label="Hide During Prework?"
                     data-cy="is-hidden-on-prework"
                     size="small"
                     style={{ width: "30%" }}
@@ -327,7 +328,9 @@ const NewCohort = () => {
                     value={newCohort.is_hidden_on_prework}
                     onChange={isHiddenOnPreworkCohort}
                     select
+                    helperText="Students will not see this cohort until it's marked as active."
                   >
+                    
                     {isHiddenOnPreworkOptions.map((option) => (
                       <MenuItem
                         value={option.value}
@@ -338,8 +341,8 @@ const NewCohort = () => {
                       </MenuItem>
                     ))}
                   </TextField>
+                  
                 </Grid>
-
                 <Grid item md={2} sm={4} xs={12}>
                   Start date
                 </Grid>
@@ -416,7 +419,26 @@ const NewCohort = () => {
                   />
                   <HelpIcon message={helpText} link={helpLink} />
                 </Grid>
-                <Grid item md={12} sm={12} xs={12}>
+                
+                <Grid item md={2} sm={4} xs={12}>
+                  Live meeting URL
+                </Grid>
+                <Grid item md={4} sm={4} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="URL"
+                    fullWidth
+                    width="100%"
+                    name="online_meeting_url"
+                    data-cy="meetingURL"
+                    size="small"
+                    variant="outlined"
+                    placeholder="https://bluejeans.com/<id>"
+                    value={newCohort.online_meeting_url}
+                    onChange={createCohort}
+                  />
+                </Grid>
+                <Grid item md={6} sm={4} xs={12}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -437,24 +459,6 @@ const NewCohort = () => {
                     label="Enable Remote"
                   />
                 </Grid>
-                <Grid item md={2} sm={4} xs={12}>
-                  Live meeting URL
-                </Grid>
-                <Grid item md={10} sm={8} xs={12}>
-                  <TextField
-                    className="m-2"
-                    label="URL"
-                    width="100%"
-                    name="online_meeting_url"
-                    data-cy="meetingURL"
-                    size="small"
-                    variant="outlined"
-                    placeholder="https://bluejeans.com/<id>"
-                    value={newCohort.online_meeting_url}
-                    onChange={createCohort}
-                  />
-                </Grid>
-
                 <Grid item md={2} sm={4} xs={12}>
                   Timezone
                 </Grid>
