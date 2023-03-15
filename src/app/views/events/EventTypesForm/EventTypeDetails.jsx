@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
 import { getSession } from '../../../redux/actions/SessionActions';
+import { availableLanguages } from 'utils';
 
 
 const eventypePropTypes = {
@@ -141,7 +142,7 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                     }}
                     select
                   >
-                    {['es', 'en', 'de', 'it', 'br'].map((item) => (
+                    {Object.keys(availableLanguages).map((item) => (
                       <MenuItem value={item} key={item}>
                         {item?.toUpperCase()}
                       </MenuItem>

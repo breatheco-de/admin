@@ -785,7 +785,7 @@ class BreatheCodeClient {
             getAcademyEventType: () =>
                 axios.bcGet(
                     "Event Type",
-                    `${this.host}/events/academy/eventype`
+                    `${this.host}/events/academy/eventype?allow_shared_creation=true`
                 ),
             getAcademyEventTypeSlug: (slug) =>
                 axios.bcGet(
