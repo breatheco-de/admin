@@ -17,7 +17,9 @@
 .MuiTableCell-root {
   word-break: unset !important;
 }
-
+.no-list-style li{
+  list-style: none;
+}
 .underline {
   text-decoration: underline;
 }
@@ -99,4 +101,8 @@
 }
 .chip small{
   font-size: 8px;
+}
+
+.rbc-event{
+  background: #1675d2;
 }
