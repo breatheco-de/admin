@@ -114,7 +114,7 @@ const DescriptionCard = ({ asset, onChange}) => {
   const [makePublicDialog, setMakePublicDialog] = useState(false);
   const [newDescription, setNewDescription] = useState(null)
   const [editButton, setEditButton] = useState(false)
-  const [value, setValue] = useState('');
+  const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleDescription = async () => {
     if (newDescription == null && newDescription == '') {
@@ -129,6 +129,13 @@ const DescriptionCard = ({ asset, onChange}) => {
   }
 
   useEffect(() => {
+    const fetchInitialValue = async () => {
+        setTextFieldValue(asset.description);
+    };
+    fetchInitialValue();
+}, []);
+
+  useEffect(() => {
     setDescription(asset.description)
   }, [newDescription])
 
@@ -138,17 +145,18 @@ const DescriptionCard = ({ asset, onChange}) => {
 
 
   return <Card className="p-4 mb-4">
-    <h3 className="my-2">Description:</h3>
+   <h4 className="m-0 font-medium">Description:</h4>
     <div>
       {!description ?
         <>
           <Grid item md={12} sm={12} xs={12}>
-            <TextField variant="outlined" fullWidth multiline
+            <TextField value={textFieldValue} variant="outlined" fullWidth multiline
             inputProps={{
               maxLength: CHARACTER_LIMIT
             }}
-            onChange={(e) => {setNewDescription(e.target.value); setValue(e.target.value)}} 
-            helperText={`${value.length}/${CHARACTER_LIMIT}`}/>
+            onChange={(e) => {setNewDescription(e.target.value); setTextFieldValue(e.target.value)}} 
+            helperText={`${textFieldValue.length}/${CHARACTER_LIMIT}`}
+            />
           </Grid>
           <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
             Add
@@ -158,12 +166,13 @@ const DescriptionCard = ({ asset, onChange}) => {
          <>
         {editButton ?
         <>
-            <TextField placeholder={description} variant="outlined" fullWidth multiline
+            <TextField value={textFieldValue} placeholder={textFieldValue} variant="outlined" fullWidth multiline
               inputProps={{
                 maxLength: CHARACTER_LIMIT
               }}
-              onChange={(e) => {setNewDescription(e.target.value); setValue(e.target.value)}} 
-              helperText={`${value.length}/${CHARACTER_LIMIT}`} />
+              onChange={(e) => {setTextFieldValue(e.target.value); setNewDescription(e.target.value); }} 
+              helperText={`${textFieldValue.length}/${CHARACTER_LIMIT}`}
+           />
           <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
             Update
           </Button>
@@ -176,6 +185,7 @@ const DescriptionCard = ({ asset, onChange}) => {
        <p>
           {description != asset.description ? newDescription : asset.description}
        </p>
+          <small>{asset.description.length}/{CHARACTER_LIMIT}</small>
         <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
           Edit
         </Button>
