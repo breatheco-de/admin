@@ -147,7 +147,7 @@ const DescriptionCard = ({ asset, onChange}) => {
   return <Card className="p-4 mb-4">
    <h4 className="m-0 font-medium">Description:</h4>
     <div>
-      {!description ?
+      {!description  ?
         <>
           <Grid item md={12} sm={12} xs={12}>
             <TextField value={textFieldValue} variant="outlined" fullWidth multiline
@@ -155,7 +155,7 @@ const DescriptionCard = ({ asset, onChange}) => {
               maxLength: CHARACTER_LIMIT
             }}
             onChange={(e) => {setNewDescription(e.target.value); setTextFieldValue(e.target.value)}} 
-            helperText={`${textFieldValue.length}/${CHARACTER_LIMIT}`}
+            helperText={`${textFieldValue != null ? textFieldValue.length : '0' }/${CHARACTER_LIMIT}`}
             />
           </Grid>
           <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
@@ -171,7 +171,7 @@ const DescriptionCard = ({ asset, onChange}) => {
                 maxLength: CHARACTER_LIMIT
               }}
               onChange={(e) => {setTextFieldValue(e.target.value); setNewDescription(e.target.value); }} 
-              helperText={`${textFieldValue.length}/${CHARACTER_LIMIT}`}
+              helperText={`${textFieldValue != null ? textFieldValue.length : '0'}/${CHARACTER_LIMIT}`}
            />
           <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
             Update
@@ -186,7 +186,7 @@ const DescriptionCard = ({ asset, onChange}) => {
        <p>
           {description != asset.description ? newDescription : asset.description}
        </p>
-          <small>{asset.description.length}/{CHARACTER_LIMIT}</small>
+          <small>{asset.description != null ? asset.description.length : '0' }/{CHARACTER_LIMIT}</small>
         <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
           Edit
         </Button>
