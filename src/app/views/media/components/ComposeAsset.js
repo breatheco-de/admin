@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
-import dayjs from 'dayjs';
 import ReactCountryFlag from "react-country-flag"
 const slugify = require('slugify')
 import { toast } from 'react-toastify';
