@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Card, Divider } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { useSelector } from 'react-redux';
 import { Breadcrumb } from "../../../matx";
 import bc from "../../services/breathecode";
@@ -95,6 +96,9 @@ const GithubSettings = () => {
         />
       </div>
       <div>
+        <Alert severity="info">
+          <AlertTitle>Sync your school students in-or-out of your github organization as they are added or removed from the cohorts, <a className="underline" href="https://4geeks.com/lesson/github-organization-user-sync"  target="_blank">you can read more about it here.</a></AlertTitle>
+        </Alert>
         <Grid container spacing={3} className="mt-4">
           { settings.beta && <Grid item md={5} xs={12}>
             <GithubOrganization
