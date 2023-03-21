@@ -326,6 +326,23 @@ class BreatheCodeClient {
                     `${this.host}/auth/academy/gitpod/user/${id}`,
                     user
                 ),
+            getGithubUsers: (query) => {
+                const qs = (typeof(query) == "string") ? query : serializeQuerystring(query);
+                return axios.bcGet(
+                    "Gitpod Users",
+                    `${this.host}/auth/academy/github/user${
+                        query ? `?${qs}` : ""
+                    }`
+                );
+            },
+            updateGithubUser: (id, payload) => {
+                if(Array.isArray(id)) id = `?id=${id.join(",")}`;
+                return axios.bcPut(
+                    "Invite",
+                    `${this.host}/auth/academy/github/user${id}`,
+                    payload
+                    );
+            },
             resendInvite: (user) =>
                 axios.bcPut(
                     "Invite",

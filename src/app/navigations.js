@@ -235,6 +235,12 @@ export const navigations = [
                 capabilities: ["get_gitpod_user"],
             },
             {
+                name: "Github",
+                path: "/admin/github",
+                iconText: "STA",
+                capabilities: ["get_github_user"],
+            },
+            {
                 name: "Developer Settings",
                 path: "/admin/dev-settings",
                 iconText: "DEV",

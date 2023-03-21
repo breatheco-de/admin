@@ -27,6 +27,11 @@ const routes = [
         component: React.lazy(() => import("./gitpod")),
     },
     {
+        path: "/admin/github",
+        exact: true,
+        component: React.lazy(() => import("./github")),
+    },
+    {
         path: '/admin/dev-settings',
         exact: true,
         component: React.lazy(() => import('./developer')),
