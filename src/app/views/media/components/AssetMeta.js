@@ -10,9 +10,9 @@ import { Rating } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { availableLanguages } from "../../../../utils"
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 import bc from 'app/services/breathecode';
 import { PickKeywordModal } from './PickKeywordModal';
-import ConfirmAlert from "app/components/ConfirmAlert";
 import tz from 'dayjs/plugin/timezone';
 import history from "history.js";
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -20,9 +20,9 @@ import DowndownMenu from '../../../components/DropdownMenu';
 import { PickTechnologyModal } from './PickTechnologyModal';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import HelpIcon from "../../../components/HelpIcon";
+import ConfirmAlert from "app/components/ConfirmAlert";
 import utc from 'dayjs/plugin/utc';
 import slugify from "slugify";
-import { toast } from 'react-toastify';
 import { MediaInput } from '../../../components/MediaInput';
 import config from '../../../../config.js';
 import API from "../../../services/breathecode"
@@ -34,7 +34,6 @@ const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
-
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -211,6 +210,7 @@ const LangCard = ({ asset, onAction }) => {
   const [addTranslation, setAddTranslation] = useState(null);
   const assetTranslations = Object.keys(asset.translations);
   const allLangs = Object.keys(availableLanguages);
+
 
   const handleAddTranslation = async () => {
     const resp = await API.registry().createAsset(addTranslation);
@@ -539,8 +539,11 @@ const syncColor = {
   'WARNING': 'warning',
   'OK': 'success'
 }
+
+
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [githubUrl, setGithubUrl] = useState(asset.readme_url);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
 
@@ -572,8 +575,18 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           <Button variant="contained" color="primary" size="small">
             Pull
           </Button>
+
+          <ConfirmAlert
+    title={`Are you sure you want to Pull from GitHub? You will lose your changes`}
+    isOpen={makePublicDialog}
+    setIsOpen={setMakePublicDialog}
+    onOpen={()=> onAction('pull')}
+  />
+
         </DowndownMenu>
+
       }
+
     </div>
 
     <Grid item className="flex" xs={12}>
@@ -591,7 +604,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
-        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => setGithubUrl(e.target.value)} />
+        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
         {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
       </Grid>
     </Grid>
@@ -658,8 +671,10 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+
       <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );

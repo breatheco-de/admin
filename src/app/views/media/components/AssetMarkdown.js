@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Divider,
@@ -17,6 +17,7 @@ import { format } from "date-fns";
 
 const AssetMarkdown = ({ asset, value, onChange }) => {
   const readOnly = !['ARTICLE', 'LESSON'].includes(asset.asset_type);
+
   return (
     <Card>
       {readOnly ?
@@ -24,20 +25,20 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
           <AlertTitle>You cannot manually update this asset</AlertTitle>
           This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
         </Alert>
-        : asset.last_synch_at < asset.readme_updated_at  ?
-        <Alert severity="warning">
-          <AlertTitle>Asset not in sync</AlertTitle>
-          The asset is not synched with GitHub, please push your changes.
-        </Alert>
-         : asset.last_synch_at == null ?
-         <Alert severity="warning">
-         <AlertTitle>Asset never synched</AlertTitle>
-         This asset has never been synched with GitHub, please pull the information from the GitHub repository.
-       </Alert> 
-        : ""
+        : asset.last_synch_at < asset.readme_updated_at ?
+          <Alert severity="warning">
+            <AlertTitle>Asset not in sync</AlertTitle>
+            The asset is not synched with GitHub, please push your changes.
+          </Alert>
+          : asset.last_synch_at == null ?
+            <Alert severity="warning">
+              <AlertTitle>Asset never synched</AlertTitle>
+              This asset has never been synched with GitHub, please pull the information from the GitHub repository.
+            </Alert>
+              : ""
       }
-    
-      {typeof(value) !== "string" ? 
+
+      {typeof (value) !== "string" ?
         <div className="p-4">
           File content its not text-based, you have two possible ways to fix this:
           <ul>
@@ -53,7 +54,7 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
         </div>
         :
         !readOnly ?
-          <SimpleMDE value={value} onChange={c => onChange(c)}  />
+          <SimpleMDE value={value} onChange={c => onChange(c)} />
           :
           <pre className="markdown-preview px-3">{value}</pre>
       }
