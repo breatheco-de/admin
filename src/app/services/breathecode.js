@@ -327,7 +327,7 @@ class BreatheCodeClient {
                     user
                 ),
             getGithubUsers: (query) => {
-                const qs = serializeQuerystring(query);
+                const qs = (typeof(query) == "string") ? query : serializeQuerystring(query);
                 return axios.bcGet(
                     "Gitpod Users",
                     `${this.host}/auth/academy/github/user${
@@ -335,12 +335,14 @@ class BreatheCodeClient {
                     }`
                 );
             },
-            updateGithubUser: (id, user) =>
-                axios.bcPut(
+            updateGithubUser: (id, payload) => {
+                if(Array.isArray(id)) id = `?id=${id.join(",")}`;
+                return axios.bcPut(
                     "Invite",
-                    `${this.host}/auth/academy/github/user/${id}`,
-                    user
-                ),
+                    `${this.host}/auth/academy/github/user${id}`,
+                    payload
+                    );
+            },
             resendInvite: (user) =>
                 axios.bcPut(
                     "Invite",

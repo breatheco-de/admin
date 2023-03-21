@@ -17,7 +17,7 @@ const GithubOrganization = ({organization, status, isCreating, loadingOrganizati
   return (
         <Card elevation={3}>
           <div className="flex p-4">
-            <h4 className="m-0">Eventbrite integrations</h4>
+            <h4 className="m-0">Github Integrations</h4>
           </div>
           <Divider className="mb-2 flex" />
           <div className="m-3">

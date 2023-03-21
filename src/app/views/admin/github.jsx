@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Card, Divider } from "@material-ui/core";
+import { useSelector } from 'react-redux';
 import { Breadcrumb } from "../../../matx";
 import bc from "../../services/breathecode";
 import OrganizationUsers from "./github-form/OrganizationUsers";
@@ -7,6 +8,7 @@ import GithubOrganization from "./github-form/GithubOrganization";
 import { MatxLoading } from 'matx';
 
 const GithubSettings = () => {
+  const { settings } = useSelector(({ layout }) => layout);
   // const [isCreating, setIsCreating] = useState(false);
   // const [isLoadingOrganization, setIsLoadingOrganization] = useState(false);
   // const [status, setStatus] = useState({ color: "success", message: "" });
@@ -94,14 +96,14 @@ const GithubSettings = () => {
       </div>
       <div>
         <Grid container spacing={3} className="mt-4">
-          <Grid item md={5} xs={12}>
+          { settings.beta && <Grid item md={5} xs={12}>
             <GithubOrganization
               // isCreating={isCreating}
               // loadingOrganization={isLoadingOrganization}
               // status={status}
               // organization={organization}
             />
-          </Grid>
+          </Grid>}
           <Grid item md={7} xs={12}>
             <OrganizationUsers className="mt-4" />
           </Grid>
