@@ -44,7 +44,7 @@ const NewSyllabus = () => {
       const response = await bc.admissions().addSyllabus(values);
       if (response.status === 201) {
         setSubmitting(false);
-        history.push('/admin/syllabus');
+        history.push('/admissions/syllabus');
       }
     } catch (error) {
       console.error(error);
@@ -56,8 +56,8 @@ const NewSyllabus = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: 'Admin', path: '/admin' },
-            { name: 'Cohort', path: '/admin/syllabus' },
+            { name: 'Admissions', path: '/' },
+            { name: 'Cohort', path: '/admissions/syllabus' },
             { name: 'New Syllabus' },
           ]}
         />

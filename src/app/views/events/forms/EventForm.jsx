@@ -32,6 +32,7 @@ const EventForm = () => {
     ending_at: '',
     host: '',
     online_event: false,
+    live_stream_url: '',
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
   });
@@ -60,9 +61,9 @@ const EventForm = () => {
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-
+          
           setTitle(data.title);
-
+          
           if (data.tags !== "") setTags(data.tags.split(","));
           if (data.slug) setSlug(data.slug);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
@@ -132,6 +133,7 @@ const EventForm = () => {
               event_type: null,
               venue: null,
               online_event: false,
+              live_stream_url: '',
               sync_with_eventbrite: false,
             });
             history.push('/events/list')
@@ -475,6 +477,22 @@ const EventForm = () => {
                     value={tags}
                   />
                   <small className="text-muted">The specified tags will be applied to this event attendees on active campaign</small>
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Live Stream URL
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <TextField
+                    label="Live Stream URL"
+                    name="live_stream_url"
+                    required={values.online_event}
+                    size="small"
+                    fullWidth
+                    variant="outlined"
+                    value={values.live_stream_url}
+                    onChange={(e) => { setEvent({...event, live_stream_url: e.target.value}) }}
+                  />
+                  <small className="text-muted">In case the event is online, this field is mandatory. It's the meeting URL.</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Online Event

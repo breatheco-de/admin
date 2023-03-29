@@ -65,7 +65,7 @@ const Staff = () => {
         setCopyDialog({
           ...copyDialog,
           openDialog: true,
-          url: `${data.reset_github_url}?url=https://staff.breatheco.de/login`,
+          url: `${data.reset_github_url}?url=https://admin.4geeks.com/login`,
         });
       })
       .catch((error) => error);

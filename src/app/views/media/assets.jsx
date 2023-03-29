@@ -1,5 +1,5 @@
 import {
-  Avatar, Button, Icon,Chip,
+  Avatar, Button, Icon, Chip,
   IconButton, Tooltip, TableCell,
 } from '@material-ui/core';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
@@ -12,10 +12,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AddBulkToAssets from './components/AddBulkToAssets';
+import BulkActionToAssets from './components/BulkActionToAssets';
 import config from '../../../config.js';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
 import { useQuery } from '../../hooks/useQuery';
 import axios from '../../../axios';
+
 
 toast.configure();
 const toastOption = {
@@ -55,11 +57,12 @@ function ext(url) {
 const Assets = () => {
   const [assetList, setAssetList] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [categorys, setCategorys] = useState([])
   const query = useQuery();
 
   useEffect(() => {
     let slugs = query.get('keywords');
-    if(slugs) {
+    if (slugs) {
       const keywordsSlugs = slugs.split(',').map((c) => {
         return { slug: c }
       });
@@ -114,6 +117,21 @@ const Assets = () => {
             </div>
           );
         },
+      },
+    },
+    {
+      name: 'language',
+      label: 'Language',
+      options: {
+        filter: true,
+        display: false,
+        filterList:
+          query.get('language') !== null ? [query.get('language')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['es', 'us']
+        }
       },
     },
     {
@@ -188,12 +206,26 @@ const Assets = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                <Chip size="small" className="mr-2" label={"Sync: "+item?.sync_status} color={stageColors[item?.sync_status]} />
-                <Chip size="small" label={"Test: "+item?.test_status?.substring(0,7)} color={stageColors[item?.test_status]} />
+                <Chip size="small" className="mr-2" label={"Sync: " + item?.sync_status} color={stageColors[item?.sync_status]} />
+                <Chip size="small" label={"Test: " + item?.test_status?.substring(0, 7)} color={stageColors[item?.test_status]} />
               </div>
             </div>
-            );
-          }
+          );
+        }
+      },
+    },
+    {
+      name: 'asset_type',
+      label: 'Asset Type',
+      options: {
+        filter: true,
+        filterList:
+          query.get('asset_type') !== null ? [query.get('asset_type')] : [],
+        filterType: "dropdown",
+        display: false,
+        filterOptions: {
+          names: ['LESSON', 'QUIZ', 'VIDEO', 'ARTICLE', 'EXERCISE', 'PROJECT']
+        }
       },
     },
     {
@@ -263,24 +295,37 @@ const Assets = () => {
           historyReplace="/media/asset"
           options={{
             print: false,
-            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-              <AddBulkToAssets
-                selectedRows={selectedRows}
-                displayData={displayData}
-                setSelectedRows={setSelectedRows}
-                items={assetList}
-                setItems={setAssetList}
-                loadData={loadData}
-              />
-            ),
+            customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+              return (
+                <div className='ml-auto'>
+                  <AddBulkToAssets
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={assetList}
+                    setItems={setAssetList}
+                    loadData={loadData}
+                  />
+                  <BulkActionToAssets
+                    selectedRows={selectedRows}
+                    displayData={displayData}
+                    setSelectedRows={setSelectedRows}
+                    items={assetList}
+                    setItems={setAssetList}
+                    loadData={loadData}
+                  />
+                </div>
+              )
+            }
+            ,
             onFilterChipClose: async (index, removedFilter, filterList) => {
               if (index === 6) setKeywords([]);
-              const querys = getParams();
-              const { data } = await bc.registry().getAllAssets(querys);
-              setAssetList(data.results);
+        const querys = getParams();
+        const {data} = await bc.registry().getAllAssets(querys);
+        setAssetList(data.results);
             },
           }}
-          search={loadData}
+        search={loadData}
         />
       </div>
     </div>
