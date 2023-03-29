@@ -56,7 +56,7 @@ const NewSyllabus = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: 'Admin', path: '/admin' },
+            { name: 'Admissions', path: '/' },
             { name: 'Cohort', path: '/admissions/syllabus' },
             { name: 'New Syllabus' },
           ]}

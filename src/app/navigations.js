@@ -49,7 +49,7 @@ export const navigations = [
     {
         name: "Admissions",
         icon: "school",
-        auth: authRoles.contry_manager,
+        auth: authRoles.country_manager,
         children: [
             {
                 name: "All Cohorts",
@@ -235,11 +235,18 @@ export const navigations = [
                 capabilities: ["get_gitpod_user"],
             },
             {
+                name: "Github",
+                path: "/admin/github",
+                iconText: "STA",
+                capabilities: ["get_github_user"],
+            },
+            {
                 name: "Developer Settings",
                 path: "/admin/dev-settings",
                 iconText: "DEV",
                 capabilities: ["get_academy_token"],
             },
+           
         ],
     },
 ];

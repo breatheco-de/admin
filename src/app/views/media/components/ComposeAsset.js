@@ -16,6 +16,7 @@ import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import DowndownMenu from '../../../components/DropdownMenu';
 import AssetMarkdown from "./AssetMarkdown";
 import { useParams } from 'react-router-dom';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import AssetMeta from "./AssetMeta";
 import { MatxLoading } from '../../../../matx';
 import { ConfirmationDialog } from '../../../../matx';
@@ -29,6 +30,7 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
 import { availableLanguages } from "../../../../utils"
 import config from '../../../../config.js';
+
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
@@ -83,6 +85,13 @@ const ComposeAsset = () => {
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
+  const [dirty, setDirty] = useState(false)
+
+  const handleMarkdownChange = () => {
+    if (asset.updated_at != asset.last_synched_at) {
+      setDirty(true)
+    } 
+  }
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -146,6 +155,7 @@ const ComposeAsset = () => {
       }
       else toast.success(`${action} completed successfully`)
       setAsset(resp.data)
+      setDirty(false)
       await getAssetContent();
     }
   }
@@ -169,7 +179,7 @@ const ComposeAsset = () => {
     const _asset = {
       ...asset,
       readme_url,
-      category: (!asset.category || typeof(asset.category) !== "object") ? asset.category : asset.category.id,
+      category: (!asset.category || typeof (asset.category) !== "object") ? asset.category : asset.category.id,
       owner: asset.owner?.id,
       readme_raw: Base64.encode(content),
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
@@ -202,13 +212,16 @@ const ComposeAsset = () => {
 
   }
 
+
   const handleUpdateCategory = async (category) => {
     if (category) {
-      if (isCreating) setAsset({...asset, category})
+      if (isCreating) setAsset({ ...asset, category })
       else partialUpdateAsset(asset.slug, { category: category.id || category })
     }
     setUpdateCategory(false);
+    setDirty(true);
   }
+
 
   if (!asset) return <MatxLoading />;
 
@@ -241,7 +254,7 @@ const ComposeAsset = () => {
                 setUpdateCategory(true)
                 setErrors({ ...errors, category: null })
               }}
-              >{(asset && asset.category) ? asset.category.title || asset.category.slug : `Click to select`}</Button>
+            >{(asset && asset.category) ? asset.category.title || asset.category.slug : `Click to select`}</Button>
           </p>
           {errors["category"] && <small className="text-error">{errors["category"]}</small>}
           <p>Please provied a Github URL to fetch the markdown file from:</p>
@@ -278,7 +291,7 @@ const ComposeAsset = () => {
           <div className="flex flex-wrap justify-between mb-6">
             <Grid item xs={12} sm={8}>
               <EditableTextField defaultValue={asset.title} onChange={(_v) => {
-                if (!isCreating) partialUpdateAsset(asset.slug, { title: _v });
+                if (!isCreating) partialUpdateAsset(asset.slug, { title: _v }), setDirty(true);
                 else setAsset({ ...asset, title: _v })
               }}>
                 <h3 className="my-0 font-medium text-28">{asset.title}</h3>
@@ -292,8 +305,8 @@ const ComposeAsset = () => {
                   return available;
                 }}
                 onChange={(_v) => {
-                  if (!isCreating) partialUpdateAsset(asset.slug, { slug: slugify(_v) });
-                  else setAsset({ ...asset, slug: slugify(_v) })
+                  if (!isCreating) partialUpdateAsset(asset.slug, { slug: slugify(_v) }), setDirty(true);
+                  else setAsset({ ...asset, slug: slugify(_v) }), setDirty(true);
                 }}
               >
                 <p className="my-0">{asset.slug}</p>
@@ -302,7 +315,9 @@ const ComposeAsset = () => {
 
               <div className="flex">
                 <div className={`px-3 text-11 py-3px border-radius-4 text-white ${statusColors[asset.status]} mr-3 pointer`}
-                  onClick={() => setUpdateStatus(true)}>
+                  onClick={() => setUpdateStatus(true)
+                  }
+                >
                   {asset.status}
                 </div>
                 <div className={`px-3 text-11 py-3px border-radius-4 text-white ${visibilityColors[asset.visibility]} mr-3 pointer`}
@@ -313,7 +328,7 @@ const ComposeAsset = () => {
                 <div className="px-3 text-11 py-3px border-radius-4 text-white bg-dark mr-3 pointer"
                   onClick={() => {
                     setUpdateType(true)
-                    setErrors({ ...errors, asset_type: null })
+                    setErrors({ ...errors, asset_type: null });
                   }}
                 >
                   {asset.asset_type ? asset.asset_type : "NOT TYPE SPECIFIED"}
@@ -338,54 +353,57 @@ const ComposeAsset = () => {
             </Grid>
 
             <Grid item xs={6} sm={4} align="right">
-              <div>
-                <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
-                <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
-                  <Icon><OpenInBrowser /></Icon>
-                </IconButton>
-                <DowndownMenu
-                  options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ?
-                    [
-                      { label: 'Only save to 4Geeks.com', value: 'only_save' },
-                      { label: 'Also commit markdown to github', value: 'push' }
-                    ]
-                    :
-                    [
-                      {
-                        label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here',
-                        style: { width: "200px" },
-                        value: null
-                      },
-                    ]
+              <CommentBar asset={asset} iconName="comment" title="Tasks and Comments" />
+              <IconButton onClick={() => window.open(`${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`)}>
+                <Icon><OpenInBrowser /></Icon>
+              </IconButton>
+              <DowndownMenu
+                options={['LESSON', 'ARTICLE'].includes(asset.asset_type) ?
+                  [
+                    { label: 'Only save to 4Geeks.com', value: 'only_save' },
+                    { label: 'Also commit markdown to github', value: 'push' }
+                  ]
+                  :
+                  [
+                    {
+                      label: 'Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here',
+                      style: { width: "200px" },
+                      value: null
+                    },
+                  ]
+                }
+                icon="more_horiz"
+                onSelect={async ({ value }) => {
+                  if (!value) return null;
+                  const _errors = await saveAsset();
+                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  else {
+                    if (value == 'push') handleAction('push');
+                    setDirty(false);
                   }
-                  icon="more_horiz"
-                  onSelect={async ({ value }) => {
-                    if (!value) return null;
-                    const _errors = await saveAsset();
-                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                    else {
-                      if (value == 'push') handleAction('push');
-                    }
-                  }}
-                >
-                  <Button variant="contained" color="primary">
-                    {isCreating ? `Create asset` : `Update asset`}
-                  </Button>
-                </DowndownMenu>
-              </div>
-              <ul className="no-list-style mt-0">
-                <li><small>Published at: {asset.published_at ? dayjs(asset.published_at).fromNow() : "Never"}</small></li>
-                <li><small>Last update: {asset.updated_at ? dayjs(asset.updated_at).fromNow() : "Never"}</small></li>
-              </ul>
+                }}
+              >
+                <Button variant="contained" color="primary">
+                  {isCreating ? `Create asset` : `Update asset`}
+                </Button>
+              </DowndownMenu>
             </Grid>
           </div>
 
           <Grid container spacing={3}>
             <Grid item md={8} xs={12}>
-              <AssetMarkdown asset={asset} value={content} onChange={(c) => setContent(c)} />
+              {dirty ? (
+                <Grid item md={12} sm={12} xs={12}>
+                  <Alert severity="warning">
+                    <AlertTitle>Asset has been modified</AlertTitle>
+                    Remember to push your changes before pulling or executing any action or they will be lost.
+                  </Alert>
+                </Grid>
+              ) : ""}
+              <AssetMarkdown asset={asset} value={content} onChange={(c) => { handleMarkdownChange(); setContent(c); }} />
             </Grid>
             <Grid item md={4} xs={12}>
-              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={a => partialUpdateAsset(asset_slug, a)} />
+              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => {handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
             </Grid>
           </Grid>
         </>
@@ -393,20 +411,20 @@ const ComposeAsset = () => {
       <DialogPicker
         onClose={opt => {
           if (opt) {
-            if (isCreating) setAsset({ ...asset, visibility: opt })
-            else partialUpdateAsset(asset.slug, { visibility: opt });
+            if (isCreating) setAsset({ ...asset, visibility: opt });
+            else partialUpdateAsset(asset.slug, { visibility: opt }); setDirty(true);
           }
           setUpdateVisibility(false)
         }}
         open={updateVisibility}
         title="Select a visibility"
-        options={['PUBLIC', "UNLISTED", 'PRIVATE']}
+        options={['PUBLIC', "UNLISTED", 'PRIVATE']} s
       />
       <DialogPicker
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, asset_type: opt })
-            else partialUpdateAsset(asset.slug, { asset_type: opt });
+            else partialUpdateAsset(asset.slug, { asset_type: opt }), setDirty(true);
           }
           setUpdateType(false)
         }}
@@ -418,19 +436,19 @@ const ComposeAsset = () => {
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, status: opt })
-            else partialUpdateAsset(asset.slug, { status: opt });
+            else partialUpdateAsset(asset.slug, { status: opt }); setDirty(true);
           }
           setUpdateStatus(false)
         }}
         open={updateStatus}
         title="Select a status"
-        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'OPTIMIZED','PUBLISHED']}
+        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED']}
       />
       <DialogPicker
         onClose={opt => {
           if (opt) {
             if (isCreating) setAsset({ ...asset, lang: opt.value })
-            else partialUpdateAsset(asset.slug, { lang: opt.value });
+            else partialUpdateAsset(asset.slug, { lang: opt.value }); setDirty(true);
           }
           setUpdateLanguage(false)
         }}
