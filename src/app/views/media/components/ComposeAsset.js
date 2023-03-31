@@ -89,18 +89,25 @@ const ComposeAsset = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
+
   const updatedDate = asset.updated_at;
+  const lastSynch = asset.last_synch_at;
 
   const now = new Date();
   const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
 
   const [dirty, setDirty] = useState(false)
 
+    const d1 = Date.parse(updatedDate);
+    const d2 = Date.parse(lastSynch);
+    const diffSeconds = Math.abs((d1 - d2) / 1000);
+
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
       setDirty(true)
     } 
   }
+
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -165,8 +172,8 @@ const ComposeAsset = () => {
         // do nothing
       }
       else toast.success(`${action} completed successfully`)
-      setAsset(resp.data)
-      setDirty(false)
+      setDirty(false);
+      setAsset(resp.data);
       await getAssetContent();
     }
   }
@@ -411,8 +418,8 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={()=> saveAsset(formattedDate)}
-                onClose={()=> saveAsset()} />
+                onOpen={()=>{ saveAsset(formattedDate); setDirty(false)}}
+                onClose={()=> {saveAsset(); setDirty(false)}} />
 
               <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
@@ -431,7 +438,7 @@ const ComposeAsset = () => {
 
           <Grid container spacing={3}>
             <Grid item md={8} xs={12}>
-              {dirty ? (
+              {dirty && diffSeconds > 20 ? (
                 <Grid item md={12} sm={12} xs={12}>
                   <Alert severity="warning">
                     <AlertTitle>Asset has been modified</AlertTitle>
