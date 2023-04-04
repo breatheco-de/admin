@@ -207,7 +207,7 @@ const ComposeAsset = () => {
 
       const resp = isCreating ?
         await bc.registry().createAsset({..._asset, 
-          lang: _asset.category?.lang,})
+          lang: asset.category?.lang,})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
