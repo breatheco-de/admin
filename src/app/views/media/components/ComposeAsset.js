@@ -179,7 +179,7 @@ const ComposeAsset = () => {
     if (!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if (!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
     if (!_asset.category) _errors['category'] = "Choose a category"
-    if (!_asset.lang) _errtos['lang'] = "Choose a language"
+    if (!_asset.lang) _errors['lang'] = "Choose a language"
     if (!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if (!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
 
@@ -299,18 +299,13 @@ const ComposeAsset = () => {
           />
           {errors["owner"] && <small className="text-error">{errors["owner"]}</small>}
           <p>Asset Language:</p>
-          <TextField label="Language" name="lang" size="small" required variant="outlined" select fullWidth={true} 
+          <TextField label={asset.category?.lang} name="lang" size="small" disabled variant="outlined" fullWidth={true} 
             onChange={(e) => {
-              setAsset({ ...asset, lang: e.target.value })
+              setAsset({ ...asset, lang: asset.category?.lang})
               setErrors({ ...errors, lang: "" })
             }
-            } value={asset.lang}
+            } value={asset.category?.lang}
           >
-             {Object.keys(availableLanguages).map((item) => (
-                      <MenuItem value={item} key={item}>
-                        {item?.toUpperCase()}
-                      </MenuItem>
-                    ))}
           </TextField>
           {errors["lang"] && <small className="text-error">{errors["lang"]}</small>}
 
