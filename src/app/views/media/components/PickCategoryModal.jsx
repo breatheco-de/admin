@@ -15,6 +15,7 @@ import bc from 'app/services/breathecode';
 import slugify from "slugify";
 import useAuth from "../../../hooks/useAuth";
 import DialogPicker from '../../../components/DialogPicker';
+import { availableLanguages } from 'utils';
 
 const defaultProps = {
   query: {},
@@ -54,9 +55,10 @@ export const PickCategoryModal = ({
     let _errors = {};
     if (empty('title')) _errors['title'] = "Empty title";
     if (empty('slug')) _errors['slug'] = "Empty slug";
+    if (empty('lang')) _errors['lang'] = "Empty language"
 
     if (Object.keys(_errors).length == 0) {
-      const resp = await bc.registry().createAcademyCategory({ ...newCategory, lang });
+      const resp = await bc.registry().createAcademyCategory({ ...newCategory, newCategory });
       if (resp.status.ok) onClose(resp.data)
     }
 
@@ -95,6 +97,15 @@ export const PickCategoryModal = ({
               {errors["title"] && <small className="text-error d-block">{errors["title"]}</small>}
               <TextField label="Category Slug" className="mt-2" size="small" variant="outlined" fullWidth={true} value={newCategory.slug} onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })} />
               {errors["slug"] && <small className="text-error d-block">{errors["slug"]}</small>}
+              <TextField label="Language" size="small" variant="outlined" select fullWidth={true} onChange={(e) => 
+              setNewCategory({ ...newCategory, lang: e.target.value })} value={newCategory.lang}>
+             {Object.keys(availableLanguages).map((item) => (
+                      <MenuItem value={item} key={item}>
+                        {item?.toUpperCase()}
+                      </MenuItem>
+                    ))}
+          </TextField>
+          {errors["lang"] && <small className="text-error d-block">{errors["lang"]}</small>}
             </Grid>
             :
             <>
@@ -115,7 +126,7 @@ export const PickCategoryModal = ({
                 filter={(a) => a.academy.id === academy.id}
                 getOptionLabel={(option) => option.title || `Type the category title`}
                 asyncSearch={async (searchTerm) => {
-                  const resp = await bc.registry().getAcademyCategories({ ...query, like: searchTerm, lang })
+                  const resp = await bc.registry().getAcademyCategories({ ...query, like: searchTerm })
                   if (resp.status === 200) {
                     resp.data = [{ title: 'New: ' + searchTerm, value: 'new_category', academy }, ...resp.data]
                     return resp

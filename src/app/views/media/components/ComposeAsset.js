@@ -6,6 +6,7 @@ import {
   ListItemText,
   TextField,
   Card,
+  MenuItem,
 } from "@material-ui/core";
 import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
@@ -63,7 +64,7 @@ const defaultAsset = {
   cluster: null,
   url: "",
   readme_url: "",
-  lang: "us",
+  lang: "",
   status: 'DRAFT',
   visibility: 'PRIVATE',
   asset_type: null,
@@ -92,14 +93,14 @@ const ComposeAsset = () => {
   const updatedDate = asset.updated_at;
 
   const now = new Date();
-  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
+  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') + 'Z';
 
   const [dirty, setDirty] = useState(false)
 
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
       setDirty(true)
-    } 
+    }
   }
 
   const partialUpdateAsset = async (_slug, newAsset) => {
@@ -178,6 +179,7 @@ const ComposeAsset = () => {
     if (!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if (!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
     if (!_asset.category) _errors['category'] = "Choose a category"
+    if (!_asset.lang) _errtos['lang'] = "Choose a language"
     if (!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if (!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
 
@@ -196,7 +198,7 @@ const ComposeAsset = () => {
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
-    
+
     if (published_at) _asset['published_at'] = published_at;
 
     const _errors = hasErrors(_asset);
@@ -296,11 +298,29 @@ const ComposeAsset = () => {
             asyncSearch={(searchTerm) => bc.auth().getAllUsers({ github: true, like: searchTerm })}
           />
           {errors["owner"] && <small className="text-error">{errors["owner"]}</small>}
+          <p>Asset Language:</p>
+          <TextField label="Language" name="lang" size="small" required variant="outlined" select fullWidth={true} 
+            onChange={(e) => {
+              setAsset({ ...asset, lang: e.target.value })
+              setErrors({ ...errors, lang: "" })
+            }
+            } value={asset.lang}
+          >
+             {Object.keys(availableLanguages).map((item) => (
+                      <MenuItem value={item} key={item}>
+                        {item?.toUpperCase()}
+                      </MenuItem>
+                    ))}
+          </TextField>
+          {errors["lang"] && <small className="text-error">{errors["lang"]}</small>}
+
+
           <Button className="mt-2" variant="contained" color="primary"
             onClick={() => saveAsset().then(_errors => (Object.keys(_errors).length > 0) && setErrorDialog(true))}
           >
             Create asset
           </Button>
+
         </Card>
         :
         <>
@@ -393,9 +413,10 @@ const ComposeAsset = () => {
                   if (!value) return null;
                   if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
 
-                  else
-                  {const _errors = await saveAsset(formattedDate);
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);}
+                  else {
+                    const _errors = await saveAsset(formattedDate);
+                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  }
 
                 }}
               >
@@ -411,8 +432,8 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={()=> saveAsset(formattedDate)}
-                onClose={()=> saveAsset()} />
+                onOpen={() => saveAsset(formattedDate)}
+                onClose={() => saveAsset()} />
 
               <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
@@ -442,7 +463,7 @@ const ComposeAsset = () => {
               <AssetMarkdown asset={asset} value={content} onChange={(c) => { handleMarkdownChange(); setContent(c); }} />
             </Grid>
             <Grid item md={4} xs={12}>
-              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => {handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
+              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => { handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
             </Grid>
           </Grid>
         </>
