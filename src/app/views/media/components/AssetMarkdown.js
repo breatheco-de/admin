@@ -20,7 +20,7 @@ const AssetMarkdown = ({ asset, value, onChange }) => {
 
   return (
     <Card>
-      {readOnly ?
+      {readOnly || readOnly != null ?
         <Alert severity="warning">
           <AlertTitle>You cannot manually update this asset</AlertTitle>
           This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
