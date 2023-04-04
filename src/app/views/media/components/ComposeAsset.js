@@ -307,8 +307,6 @@ const ComposeAsset = () => {
             } value={asset.category?.lang}
           >
           </TextField>
-          {errors["lang"] && <small className="text-error">{errors["lang"]}</small>}
-
 
           <Button className="mt-2" variant="contained" color="primary"
             onClick={() => saveAsset().then(_errors => (Object.keys(_errors).length > 0) && setErrorDialog(true))}
