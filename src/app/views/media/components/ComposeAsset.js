@@ -179,7 +179,6 @@ const ComposeAsset = () => {
     if (!_asset.owner) _errors['owner'] = "Please pick a github owner"
     if (!_asset.asset_type) _errors['asset_type'] = "Choose an asset type"
     if (!_asset.category) _errors['category'] = "Choose a category"
-    if (!_asset.lang) _errors['lang'] = "Choose a language"
     if (!isCreating && !['LESSON', 'ARTICLE'].includes(_asset.asset_type) && !['OK', 'WARNING'].includes(_asset.sync_status)) _errors['sync_status'] = "Sync with github before saving";
     if (!isCreating && !['OK', 'WARNING'].includes(_asset.test_status)) _errors['test_status'] = "Integrity tests failed";
 
@@ -207,7 +206,8 @@ const ComposeAsset = () => {
     if (Object.keys(_errors).length == 0) {
 
       const resp = isCreating ?
-        await bc.registry().createAsset(_asset)
+        await bc.registry().createAsset({..._asset, 
+          lang: _asset.category?.lang,})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
@@ -298,16 +298,6 @@ const ComposeAsset = () => {
             asyncSearch={(searchTerm) => bc.auth().getAllUsers({ github: true, like: searchTerm })}
           />
           {errors["owner"] && <small className="text-error">{errors["owner"]}</small>}
-          <p>Asset Language:</p>
-          <TextField label={asset.category?.lang} name="lang" size="small" disabled variant="outlined" fullWidth={true} 
-            onChange={(e) => {
-              setAsset({ ...asset, lang: asset.category?.lang})
-              setErrors({ ...errors, lang: "" })
-            }
-            } value={asset.category?.lang}
-          >
-          </TextField>
-
           <Button className="mt-2" variant="contained" color="primary"
             onClick={() => saveAsset().then(_errors => (Object.keys(_errors).length > 0) && setErrorDialog(true))}
           >
