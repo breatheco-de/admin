@@ -45,6 +45,12 @@ const EventForm = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const history = useHistory();
+  const [host, setHost] = useState({
+    id: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+  });
 
   useEffect(() => {
     if (!id) setSlug(slugify(title).toLowerCase());
@@ -378,14 +384,43 @@ const EventForm = () => {
                   Host
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
-                  <TextField
+                  <AsyncAutocomplete
                     label="Host"
+                    id="host"
+                    onChange={(userData) => setHost(userData)}
                     name="host"
                     size="small"
                     fullWidth
                     variant="outlined"
-                    value={values.host}
-                    onChange={handleChange}
+                    value={host}
+                    debounced
+                    filterOptions={(options) => options}
+                    renderOption={(option) => (option.newUser
+                      ? option.newUser
+                      : `${option.first_name} ${option.last_name}, (${option.email})`)}
+                    getOptionLabel={(option) => option.first_name}
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
+                    getOptions={(options, params) => {
+                      const filtered = filter(options, params);
+                      if (params.inputValue !== '') {
+                        filtered.push({
+                          newUser: (
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowForm(true);
+                                values.showForm = true;
+                                if (params.inputValue.includes('@')) setFieldValue('email', params.inputValue);
+                                else setFieldValue('first_name', params.inputValue);
+                              }}
+                            >
+                              {`Invite ${params.inputValue} to 4Geeks.`}
+                            </div>
+                          ),
+                        });
+                      }
+                      return filtered;
+                    }}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
