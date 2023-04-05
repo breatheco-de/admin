@@ -34,14 +34,18 @@ const schema = Yup.object().shape({
 });
 
 
-
 const EventTypeDetails = ({ eventype, onSubmit }) => {
+  console.log('this is eventype', eventype)
   const [status, setStatus] = useState({ color: "", message: "" });
   const session = getSession();
   const academyOwner = session.academy.id;
+  const sessionAcademy = session.academy.slug;
+  const eventypeAcademy = eventype.academy.slug;
   const eventypeAcademyId = eventype.academy.id;
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+
     if (eventypeAcademyId !== academyOwner) {
       setStatus({ color: "warning", message: `This Event Type is owned by another academy, you can not make changes to its basic information.` });
     } else {
@@ -154,8 +158,10 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                     control={
                       <Checkbox
                         className="text-right"
-                        checked={values.shared}
-                        onChange={handleChange}
+                        checked={values.allow_shared_creation}
+                        onChange={(e) => {
+                          setFieldValue('allow_shared_creation', e.target.checked);
+                        }}
                         name="shared_creation"
                         data-cy="shared_creation"
                         color="primary"
