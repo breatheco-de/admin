@@ -228,7 +228,6 @@ const ComposeAsset = () => {
 
   }
 
-
   const handleUpdateCategory = async (category) => {
     if (category) {
       if (isCreating) setAsset({ ...asset, category })
