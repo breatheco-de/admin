@@ -18,14 +18,21 @@ import { format } from "date-fns";
 const AssetMarkdown = ({ asset, value, onChange }) => {
   const readOnly = !['ARTICLE', 'LESSON'].includes(asset.asset_type);
 
+  const updatedDate = asset.updated_at;
+  const lastSynch = asset.last_synch_at;
+
+  const d1 = Date.parse(updatedDate);
+  const d2 = Date.parse(lastSynch);
+  const diffSeconds = Math.abs((d1 - d2) / 1000);
+
   return (
     <Card>
-      {readOnly || readOnly != null ?
+      {readOnly && asset.readme_url != null ?
         <Alert severity="warning">
           <AlertTitle>You cannot manually update this asset</AlertTitle>
           This asset is in synch with github, only pulling from the github repository you will be able to update its markdown content.
         </Alert>
-        : asset.last_synch_at < asset.readme_updated_at ?
+        :  diffSeconds > 20 ?
           <Alert severity="warning">
             <AlertTitle>Asset not in sync</AlertTitle>
             The asset is not synched with GitHub, please push your changes.

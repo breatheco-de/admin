@@ -90,17 +90,12 @@ const ComposeAsset = () => {
   const [content, setContent] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
 
+  const now = new Date();
+  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
   const updatedDate = asset.updated_at;
   const lastSynch = asset.last_synch_at;
 
-  const now = new Date();
-  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
-
   const [dirty, setDirty] = useState(false)
-
-    const d1 = Date.parse(updatedDate);
-    const d2 = Date.parse(lastSynch);
-    const diffSeconds = Math.abs((d1 - d2) / 1000);
 
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
@@ -438,7 +433,7 @@ const ComposeAsset = () => {
 
           <Grid container spacing={3}>
             <Grid item md={8} xs={12}>
-              {dirty && diffSeconds > 20 ? (
+              {dirty ? (
                 <Grid item md={12} sm={12} xs={12}>
                   <Alert severity="warning">
                     <AlertTitle>Asset has been modified</AlertTitle>
