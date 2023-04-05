@@ -17,6 +17,19 @@ const routes = [
         component: React.lazy(() => import("./cohorts")),
     },
     {
+        path: "/admissions/syllabus",
+        exact: true,
+        component: React.lazy(() => import("../admissions/syllabus")),
+    },
+    {
+        path: "/admissions/syllabus/new",
+        component: React.lazy(() => import("../admissions/syllabus-form/NewSyllabus")),
+    },
+    {
+        path: "/admissions/syllabus/:syllabusSlug",
+        component: React.lazy(() => import("../admissions/syllabus-form")),
+    },
+    {
         path: "/admissions/students/new",
         exact: true,
         component: React.lazy(() => import("./student-form/NewStudent")),
@@ -38,6 +51,19 @@ const routes = [
         path: "/admissions/watchlist",
         component: React.lazy(() => import("./watchlist")),
     },
+    {
+        path: "/admissions/syllabus",
+        exact: true,
+        component: React.lazy(() => import("./syllabus")),
+      },
+      {
+          path: "/admissions/syllabus/new",
+          component: React.lazy(() => import("../admissions/syllabus-form/NewSyllabus")),
+      },
+      {
+          path: "/admissions/syllabus/:syllabusSlug",
+          component: React.lazy(() => import("../admissions/syllabus-form")),
+      },
 ];
 
 export default routes;

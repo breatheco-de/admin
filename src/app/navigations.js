@@ -49,7 +49,7 @@ export const navigations = [
     {
         name: "Admissions",
         icon: "school",
-        auth: authRoles.contry_manager,
+        auth: authRoles.country_manager,
         children: [
             {
                 name: "All Cohorts",
@@ -74,6 +74,12 @@ export const navigations = [
                 path: "/admissions/watchlist",
                 iconText: "WATCH",
                 capabilities: ["read_student"],
+            },
+            {
+                name: "Syllabus",
+                path: "/admissions/syllabus",
+                iconText: "STA",
+                capabilities: ["read_syllabus"],
             },
         ],
     },
@@ -146,6 +152,12 @@ export const navigations = [
                 name: "Pipeline",
                 path: "/media/article_issues?limit=10&offset=0&resolved=false",
                 iconText: "PIP",
+                capabilities: ["read_asset"],
+            },
+            {
+                name: "Calendar",
+                path: "/media/calendar",
+                iconText: "CAL",
                 capabilities: ["read_asset"],
             },
             {
@@ -223,10 +235,10 @@ export const navigations = [
                 capabilities: ["get_gitpod_user"],
             },
             {
-                name: "Syllabus",
-                path: "/admin/syllabus",
+                name: "Github",
+                path: "/admin/github",
                 iconText: "STA",
-                capabilities: ["read_syllabus"],
+                capabilities: ["get_github_user"],
             },
             {
                 name: "Developer Settings",
@@ -234,6 +246,7 @@ export const navigations = [
                 iconText: "DEV",
                 capabilities: ["get_academy_token"],
             },
+           
         ],
     },
 ];

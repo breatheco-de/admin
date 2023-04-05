@@ -112,7 +112,7 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
-              <Link to={`/admin/syllabus/${item.slug}`}>
+              <Link to={`/admissions/syllabus/${item.slug}`}>
                 <Tooltip title="Edit">
                   <IconButton>
                     <Icon>edit</Icon>
@@ -131,11 +131,11 @@ const Syllabus = () => {
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
-            <Breadcrumb routeSegments={[{ name: 'Admin', path: '/' }, { name: 'Syllabus' }]} />
+            <Breadcrumb routeSegments={[{ name: 'Admissions', path: '/' }, { name: 'Syllabus' }]} />
           </div>
 
           <div className="">
-            <Link to="/admin/syllabus/new">
+            <Link to="/admissions/syllabus/new">
               <Button variant="contained" color="primary">
                 Add new syllabus
               </Button>
@@ -151,7 +151,7 @@ const Syllabus = () => {
             items={list}
             view="syllabus?"
             singlePage=""
-            historyReplace="/admin/syllabus"
+            historyReplace="/admissions/syllabus"
             search={async (querys) => {
               const { data } = await bc.admissions().getAllAcademySyllabus(querys);
               setList(data.results);
