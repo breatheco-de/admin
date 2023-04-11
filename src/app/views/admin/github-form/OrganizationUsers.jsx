@@ -16,6 +16,7 @@ import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
 import config from '../../../../config.js';
 import { faLastfmSquare } from "@fortawesome/free-brands-svg-icons";
+import { PickCohortUserModal } from "./PickCohortUserModal";
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -56,7 +57,7 @@ const getStatus = (u) => {
 
 const OrganizationUsers = ({ organization }) => {
   const [items, setItems] = useState([]);
-  
+  const [ userToAdd, setUserToAdd] = useState(false);
 
   const columns = [
     {
@@ -68,7 +69,7 @@ const OrganizationUsers = ({ organization }) => {
           return (
             <div>
               {item.user !== null && <h5 className="mb-0"><Link to={"/admissions/students/"+item.user.id}>{item.user.first_name + " " + item.user.last_name}</Link></h5>}
-              <small>{item.username}</small>
+              {item.username ? <small>{item.username}</small> : <small className="bg-danger px-1 border-radius-4">No username found</small>}
             </div>
           );
         },
@@ -105,8 +106,26 @@ const OrganizationUsers = ({ organization }) => {
     return data;
   }
 
+  const addToOrganization = async (cu) => {
+    if(!cu) return false;
+
+    const result = await bc.auth().addGithubUser({ cohort: cu.cohort.id, user: cu.user.id });
+    setUserToAdd(false);
+    loadData();
+  }
+
   return (
     <Grid item md={12} className="mt-2">
+      { userToAdd == true && <PickCohortUserModal 
+        cohortQuery={{ stage: 'STARTED,PREWORK' }} 
+        cohortUserQuery={{ educational_status:'ACTIVE' }} 
+        onClose={(_cu) => addToOrganization(_cu)}
+      />}
+        <div className="text-right">
+          <Button variant="contained" color="primary" onClick={() => setUserToAdd(true)}>
+            Add to the Github Organization
+          </Button>
+        </div>
         <SmartMUIDataTable
             title="All Github Organization Users"
             columns={columns}
