@@ -58,7 +58,7 @@ export const PickCategoryModal = ({
     if (empty('lang')) _errors['lang'] = "Empty language"
 
     if (Object.keys(_errors).length == 0) {
-      const resp = await bc.registry().createAcademyCategory({ ...newCategory, newCategory });
+      const resp = await bc.registry().createAcademyCategory({ ...newCategory, lang });
       if (resp.status.ok) onClose(resp.data)
     }
 
@@ -97,15 +97,15 @@ export const PickCategoryModal = ({
               {errors["title"] && <small className="text-error d-block">{errors["title"]}</small>}
               <TextField label="Category Slug" className="mt-2" size="small" variant="outlined" fullWidth={true} value={newCategory.slug} onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })} />
               {errors["slug"] && <small className="text-error d-block">{errors["slug"]}</small>}
-              <TextField label="Language" size="small" variant="outlined" select fullWidth={true} onChange={(e) => 
-              setNewCategory({ ...newCategory, lang: e.target.value })} value={newCategory.lang}>
-             {Object.keys(availableLanguages).map((item) => (
-                      <MenuItem value={item} key={item}>
-                        {item?.toUpperCase()}
-                      </MenuItem>
-                    ))}
-          </TextField>
-          {errors["lang"] && <small className="text-error d-block">{errors["lang"]}</small>}
+              <TextField label="Language" size="small" variant="outlined" select fullWidth={true} onChange={(e) =>
+                setNewCategory({ ...newCategory, lang: e.target.value })} value={newCategory.lang}>
+                {Object.keys(availableLanguages).map((item) => (
+                  <MenuItem value={item} key={item}>
+                    {item?.toUpperCase()}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {errors["lang"] && <small className="text-error d-block">{errors["lang"]}</small>}
             </Grid>
             :
             <>
@@ -126,13 +126,16 @@ export const PickCategoryModal = ({
                 filter={(a) => a.academy.id === academy.id}
                 getOptionLabel={(option) => option.title || `Type the category title`}
                 asyncSearch={async (searchTerm) => {
-                  const resp = await bc.registry().getAcademyCategories({ ...query, like: searchTerm })
-                  if (resp.status === 200) {
-                    resp.data = [{ title: 'New: ' + searchTerm, value: 'new_category', academy }, ...resp.data]
-                    return resp
-                  }
-                  else return resp
+                    let queries = { ...query, like: searchTerm }
+                    if (lang) queries['lang'] = lang 
+                    const resp = await bc.registry().getAcademyCategories(queries)
+                    if (resp.status === 200) {
+                      resp.data = [{ title: 'New: ' + searchTerm, value: 'new_category', academy }, ...resp.data]
+                      return resp
+                    }
+                    else return resp
                 }}
+
               />
               {hint && <p className="my-2">{hint}</p>}
             </>
