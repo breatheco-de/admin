@@ -11,6 +11,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteOutlineRounded from '@material-ui/icons/DeleteOutlineRounded';
 import AlarmOffRounded from '@material-ui/icons/AlarmOffRounded';
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
+import ConfirmAlert from '../../../components/ConfirmAlert';
 import BulkAction from "./BulkAction"
 import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
@@ -58,6 +59,7 @@ const getStatus = (u) => {
 const OrganizationUsers = ({ organization }) => {
   const [items, setItems] = useState([]);
   const [ userToAdd, setUserToAdd] = useState(false);
+  const [ confirm, setConfirm] = useState(false);
 
   const columns = [
     {
@@ -110,12 +112,22 @@ const OrganizationUsers = ({ organization }) => {
     if(!cu) return false;
 
     const result = await bc.auth().addGithubUser({ cohort: cu.cohort.id, user: cu.user.id });
+    console.log("rrrresult", result);
+    if(result.status == 200){
+      setConfirm(true);
+    }
     setUserToAdd(false);
     loadData();
   }
 
   return (
     <Grid item md={12} className="mt-2">
+      <ConfirmAlert
+        title={`User has been added to the invite queue. Keep in mind that invites are not sent in real time, instead, they are sent at 2AM UTC. Make sure the student has connected its GitHub account by then.`}
+        isOpen={confirm}
+        cancelText="I understand invites are processed later in batch"
+        onOpen={() => setConfirm(false)}
+      />
       { userToAdd == true && <PickCohortUserModal 
         cohortQuery={{ stage: 'STARTED,PREWORK' }} 
         cohortUserQuery={{ educational_status:'ACTIVE' }} 
