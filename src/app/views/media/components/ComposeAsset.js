@@ -207,7 +207,7 @@ const ComposeAsset = () => {
 
       const resp = isCreating ?
         await bc.registry().createAsset({..._asset, 
-          lang: asset.category?.lang,})
+          lang: asset.category?.lang.toLowerCase(),})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
@@ -362,7 +362,7 @@ const ComposeAsset = () => {
                   {availableLanguages[asset.lang] ?
                     <>
                       <ReactCountryFlag className="mr-2" countryCode={asset.lang} svg />
-                      {availableLanguages[asset.lang].toUpperCase()}
+                      {availableLanguages[asset.lang].toLowerCase()}
                     </>
                     : `Uknown language ${asset.lang}`}
                 </div>
