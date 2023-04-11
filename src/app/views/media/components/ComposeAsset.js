@@ -166,9 +166,10 @@ const ComposeAsset = () => {
       else if (action == "analyze_seo") {
         // do nothing
       }
-      else toast.success(`${action} completed successfully`)
-      setDirty(false);
+      else 
+      toast.success(`${action} completed successfully`)
       setAsset(resp.data);
+      setDirty(false);
       await getAssetContent();
     }
   }
