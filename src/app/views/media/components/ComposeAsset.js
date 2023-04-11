@@ -6,6 +6,7 @@ import {
   ListItemText,
   TextField,
   Card,
+  MenuItem,
 } from "@material-ui/core";
 import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
@@ -63,7 +64,7 @@ const defaultAsset = {
   cluster: null,
   url: "",
   readme_url: "",
-  lang: "us",
+  lang: "",
   status: 'DRAFT',
   visibility: 'PRIVATE',
   asset_type: null,
@@ -92,14 +93,14 @@ const ComposeAsset = () => {
   const updatedDate = asset.updated_at;
 
   const now = new Date();
-  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') +  'Z';
+  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') + 'Z';
 
   const [dirty, setDirty] = useState(false)
 
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
       setDirty(true)
-    } 
+    }
   }
 
   const partialUpdateAsset = async (_slug, newAsset) => {
@@ -196,7 +197,7 @@ const ComposeAsset = () => {
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
-    
+
     if (published_at) _asset['published_at'] = published_at;
 
     const _errors = hasErrors(_asset);
@@ -205,7 +206,8 @@ const ComposeAsset = () => {
     if (Object.keys(_errors).length == 0) {
 
       const resp = isCreating ?
-        await bc.registry().createAsset(_asset)
+        await bc.registry().createAsset({..._asset, 
+          lang: asset.category?.lang.toLowerCase(),})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
@@ -225,7 +227,6 @@ const ComposeAsset = () => {
     } else return _errors;
 
   }
-
 
   const handleUpdateCategory = async (category) => {
     if (category) {
@@ -301,6 +302,7 @@ const ComposeAsset = () => {
           >
             Create asset
           </Button>
+
         </Card>
         :
         <>
@@ -393,9 +395,10 @@ const ComposeAsset = () => {
                   if (!value) return null;
                   if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
 
-                  else
-                  {const _errors = await saveAsset(formattedDate);
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);}
+                  else {
+                    const _errors = await saveAsset(formattedDate);
+                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  }
 
                 }}
               >
@@ -411,8 +414,8 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={()=> saveAsset(formattedDate)}
-                onClose={()=> saveAsset()} />
+                onOpen={() => saveAsset(formattedDate)}
+                onClose={() => saveAsset()} />
 
               <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
@@ -442,7 +445,7 @@ const ComposeAsset = () => {
               <AssetMarkdown asset={asset} value={content} onChange={(c) => { handleMarkdownChange(); setContent(c); }} />
             </Grid>
             <Grid item md={4} xs={12}>
-              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => {handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
+              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => { handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
             </Grid>
           </Grid>
         </>
