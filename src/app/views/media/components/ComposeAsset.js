@@ -362,7 +362,7 @@ const ComposeAsset = () => {
                   {availableLanguages[asset.lang] ?
                     <>
                       <ReactCountryFlag className="mr-2" countryCode={asset.lang} svg />
-                      {availableLanguages[asset.lang].toLowerCase()}
+                      {availableLanguages[asset.lang].toUpperCase()}
                     </>
                     : `Uknown language ${asset.lang}`}
                 </div>
