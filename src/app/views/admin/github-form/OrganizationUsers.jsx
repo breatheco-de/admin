@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import config from '../../../../config.js';
 import { faLastfmSquare } from "@fortawesome/free-brands-svg-icons";
 import { PickCohortUserModal } from "./PickCohortUserModal";
+import HelpIcon from '../../../components/HelpIcon';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -70,8 +71,17 @@ const OrganizationUsers = ({ organization }) => {
           const item = items[tableMeta.rowIndex];
           return (
             <div>
-              {item.user !== null && <h5 className="mb-0"><Link to={"/admissions/students/"+item.user.id}>{item.user.first_name + " " + item.user.last_name}</Link></h5>}
-              {item.username ? <small>{item.username}</small> : <small className="bg-danger px-1 border-radius-4">No username found</small>}
+              {item.user !== null && <h5 className="mb-0"><Link to={"/admissions/students/"+item.user.id}>{(item.user.first_name | item.user.email) + " " + item.user.last_name}</Link></h5>}
+              {item.github ? 
+                <small className="px-1 py-2px bg-light-green text-green border-radius-4">{item.github.username}</small> 
+                : item.username ? <>
+                  <small className="bg-warning px-1 border-radius-4">Backup github found: {item.username}</small> 
+                  <HelpIcon message={`User has not github connected but we found a username, probably from a previous connection. We can work with this username but its recommended to ask student to re-connect.`} />
+                </>
+                : <>
+                  <small className="bg-danger px-1 border-radius-4">No username found</small>
+                  <HelpIcon message={`User needs to connect github`} />
+                </>}
             </div>
           );
         },
