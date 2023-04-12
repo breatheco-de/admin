@@ -40,7 +40,7 @@
   margin: 0;
 }
 
-.red {
+.red, .text-danger {
   color: red;
 }
 

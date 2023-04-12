@@ -71,12 +71,16 @@ const OrganizationUsers = ({ organization }) => {
           const item = items[tableMeta.rowIndex];
           return (
             <div>
-              {item.user !== null && <h5 className="mb-0"><Link to={"/admissions/students/"+item.user.id}>{(item.user.first_name | item.user.email) + " " + item.user.last_name}</Link></h5>}
+              {item.user !== null ? 
+                <h5 className="mb-0"><Link to={"/admissions/students/"+item.user.id}>{(item.user.first_name && item.user.first_name != '') ? item.user.first_name + " " + item.user.last_name : item.user.email}</Link></h5>
+                :
+                <h5 className="mb-0 text-danger">Not a 4Geeks user<HelpIcon message={`This user was found on github organization but no matching user was found on 4Geeks.com platform`} /></h5>
+              }
               {item.github ? 
                 <small className="px-1 py-2px bg-light-green text-green border-radius-4">{item.github.username}</small> 
                 : item.username ? <>
                   <small className="bg-warning px-1 border-radius-4">Backup github found: {item.username}</small> 
-                  <HelpIcon message={`User has not github connected but we found a username, probably from a previous connection. We can work with this username but its recommended to ask student to re-connect.`} />
+                  <HelpIcon message={`User has no github connected but we found a username, probably from a previous connection. We can work with this username but its recommended to ask user to re-connect.`} />
                 </>
                 : <>
                   <small className="bg-danger px-1 border-radius-4">No username found</small>
