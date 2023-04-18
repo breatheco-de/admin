@@ -153,6 +153,25 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                     ))}
                   </TextField>
                 </Grid>
+                <Grid item md={5} sm={4} xs={12}>
+                  Icon URL
+                </Grid>
+                <Grid item md={7} sm={8} xs={12}>
+                  <TextField
+                    aria-label="Icon URL"
+                    minRows={2}
+                    placeholder="Icon URL"
+                    label="Icon_Url"
+                    multiline
+                    fullWidth
+                    name="icon_url"
+                    type="text"
+                    variant="outlined"
+                    onChange={handleChange}
+                    value={values.icon_url}
+                    required
+                  />
+                </Grid>
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel
                     control={
