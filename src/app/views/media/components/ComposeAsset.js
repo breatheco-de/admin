@@ -481,7 +481,7 @@ const ComposeAsset = () => {
         }}
         open={updateStatus}
         title="Select a status"
-        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED']}
+        options={['UNASSIGNED', 'WRITING', 'DRAFT', 'OPTIMIZED', 'PUBLISHED']}
       />
       <DialogPicker
         onClose={opt => {

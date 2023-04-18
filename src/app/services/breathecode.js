@@ -343,6 +343,13 @@ class BreatheCodeClient {
                     payload
                     );
             },
+            addGithubUser: (payload) => {
+                return axios.bcPost(
+                    "Invite",
+                    `${this.host}/auth/academy/github/user`,
+                    payload
+                    );
+            },
             resendInvite: (user) =>
                 axios.bcPut(
                     "Invite",
