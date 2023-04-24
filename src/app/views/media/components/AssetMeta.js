@@ -28,6 +28,13 @@ import config from '../../../../config.js';
 import API from "../../../services/breathecode"
 dayjs.extend(relativeTime)
 
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
+
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
     border: "4px solid rgba(var(--body), 0.03)",
@@ -44,7 +51,6 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
     setPreview(asset.preview)
     setPreviewURL(asset.preview)
   }, [asset.preview])
-
 
   return <Card className="p-4 mb-4">
     {edit ?
@@ -93,13 +99,112 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
         </div>
         :
 
-        <p className="m-0">No preview image has been generatd for this asset.
+        <p className="m-0">No preview image has been generated for this asset.
           <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
           <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
         </p>
     }
   </Card>;
 }
+
+const CHARACTER_LIMIT = 200;
+
+const DescriptionCard = ({ asset, onChange}) => {
+  const [description, setDescription] = useState(null);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const [newDescription, setNewDescription] = useState(null)
+  const [editButton, setEditButton] = useState(false)
+  const [textFieldValue, setTextFieldValue] = useState("");
+
+  const handleDescription = async () => {
+    if (newDescription == null && newDescription == '') {
+      setEditButton(false);
+    }       
+    const resp = await API.registry().updateAsset(asset.slug, { description: newDescription });
+    if (resp.status == 201) {
+      history.push(`./${resp.data.slug}`);
+    }
+    setDescription(newDescription);
+    setEditButton(false);
+  }
+
+  useEffect(() => {
+    const fetchInitialValue = async () => {
+        setTextFieldValue(asset.description);
+    };
+    fetchInitialValue();
+}, []);
+
+  useEffect(() => {
+    setDescription(asset.description)
+  }, [newDescription])
+
+  const onClickUpdate = () => {newDescription != null && newDescription != '' ? setMakePublicDialog(true) : ''};
+  const onAccept = () => handleDescription();
+
+
+
+  return <Card className="p-4 mb-4">
+   <h4 className="m-0 font-medium">Description:</h4>
+    <div>
+      {!description  ?
+        <>
+          <Grid item md={12} sm={12} xs={12}>
+            <TextField value={textFieldValue} variant="outlined" fullWidth multiline
+            inputProps={{
+              maxLength: CHARACTER_LIMIT
+            }}
+            onChange={(e) => {setNewDescription(e.target.value); setTextFieldValue(e.target.value)}} 
+            helperText={`${textFieldValue != null ? textFieldValue.length : '0' }/${CHARACTER_LIMIT}`}
+            />
+          </Grid>
+          <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
+            Add
+          </Button>
+       </>
+         :
+         <>
+        {editButton ?
+        <>
+            <TextField value={textFieldValue} placeholder={textFieldValue} variant="outlined" fullWidth multiline
+              inputProps={{
+                maxLength: CHARACTER_LIMIT
+              }}
+              onChange={(e) => {setTextFieldValue(e.target.value); setNewDescription(e.target.value); }} 
+              helperText={`${textFieldValue != null ? textFieldValue.length : '0'}/${CHARACTER_LIMIT}`}
+           />
+          <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
+            Update
+          </Button>
+          <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => setEditButton(false)}>
+            Cancel
+          </Button>
+          
+          </>
+       :
+       <>
+       <p>
+          {description != asset.description ? newDescription : asset.description}
+       </p>
+          <small>{asset.description != null ? asset.description.length : '0' }/{CHARACTER_LIMIT}</small>
+        <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
+          Edit
+        </Button>
+        </>
+      }       
+      </>
+    }
+    </div>
+    <ConfirmAlert
+      title={`Are you sure you want to update this description?`}
+      isOpen={makePublicDialog}
+      setIsOpen={setMakePublicDialog}
+      onOpen={onAccept}
+    />
+  </Card >;
+}
+
+
 
 const LangCard = ({ asset, onAction }) => {
   const [addTranslation, setAddTranslation] = useState(null);
@@ -441,6 +546,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
   const [makePublicDialog, setMakePublicDialog] = useState(false);
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
+
+
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
       <div className="flex">
@@ -461,10 +568,9 @@ const GithubCard = ({ asset, onAction, onChange }) => {
           ]}
           icon="more_horiz"
           onSelect={({ value }) => {
-              if (value == 'only_content' ) onAction(setMakePublicDialog(true));
-              else if (value == 'override' ) onAction(setMakePublicDialog(true), { override_meta: true });
-            }
-            }
+            if (value == 'only_content') onAction('pull');
+            else if (value == 'override') onAction('pull', { override_meta: true });
+          }}
         >
           <Button variant="contained" color="primary" size="small">
             Pull
@@ -563,6 +669,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
+      <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
 
       <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />

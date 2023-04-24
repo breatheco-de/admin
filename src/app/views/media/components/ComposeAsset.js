@@ -6,6 +6,7 @@ import {
   ListItemText,
   TextField,
   Card,
+  MenuItem,
 } from "@material-ui/core";
 import { Base64 } from 'js-base64';
 import { Breadcrumb } from 'matx';
@@ -23,6 +24,7 @@ import { ConfirmationDialog } from '../../../../matx';
 import EditableTextField from '../../../components/EditableTextField';
 import DialogPicker from '../../../components/DialogPicker';
 import StatCard from "../components/StatCard"
+import ConfirmAlert from "app/components/ConfirmAlert";
 import { PickCategoryModal } from "../components/PickCategoryModal"
 import bc from 'app/services/breathecode';
 import history from "history.js";
@@ -30,15 +32,17 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
 import { availableLanguages } from "../../../../utils"
 import config from '../../../../config.js';
+import dayjs from 'dayjs';
 
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
   autoClose: 8000,
 };
 
-import dayjs from 'dayjs';
+
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
+
 
 const statusColors = {
   "DRAFT": "bg-error",
@@ -60,7 +64,7 @@ const defaultAsset = {
   cluster: null,
   url: "",
   readme_url: "",
-  lang: "us",
+  lang: "",
   status: 'DRAFT',
   visibility: 'PRIVATE',
   asset_type: null,
@@ -85,12 +89,18 @@ const ComposeAsset = () => {
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
+  const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const updatedDate = asset.updated_at;
+
+  const now = new Date();
+  const formattedDate = now.toISOString().replace('Z', '').padEnd(23, '0') + 'Z';
+
   const [dirty, setDirty] = useState(false)
 
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
       setDirty(true)
-    } 
+    }
   }
 
   const partialUpdateAsset = async (_slug, newAsset) => {
@@ -141,7 +151,9 @@ const ComposeAsset = () => {
 
   }, [asset_slug]);
 
+
   const handleAction = async (action, payload = null) => {
+
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug: action });
     if (resp.status === 200) {
       if ((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')) {
@@ -173,7 +185,7 @@ const ComposeAsset = () => {
     return _errors
   }
 
-  const saveAsset = async () => {
+  const saveAsset = async (published_at = null) => {
 
     const readme_url = githubUrl || asset.readme_url;
     const _asset = {
@@ -185,13 +197,17 @@ const ComposeAsset = () => {
       url: !['PROJECT', 'EXERCISE'].includes(asset.asset_type) ? readme_url : readme_url.substring(0, readme_url.indexOf("/blob/"))
     };
 
+
+    if (published_at) _asset['published_at'] = published_at;
+
     const _errors = hasErrors(_asset);
     setErrors(_errors);
 
     if (Object.keys(_errors).length == 0) {
 
       const resp = isCreating ?
-        await bc.registry().createAsset(_asset)
+        await bc.registry().createAsset({..._asset, 
+          lang: asset.category?.lang.toLowerCase(),})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
@@ -212,7 +228,6 @@ const ComposeAsset = () => {
 
   }
 
-
   const handleUpdateCategory = async (category) => {
     if (category) {
       if (isCreating) setAsset({ ...asset, category })
@@ -224,6 +239,8 @@ const ComposeAsset = () => {
 
 
   if (!asset) return <MatxLoading />;
+
+
 
   return (
     <div className="m-sm-30">
@@ -285,6 +302,7 @@ const ComposeAsset = () => {
           >
             Create asset
           </Button>
+
         </Card>
         :
         <>
@@ -375,19 +393,43 @@ const ComposeAsset = () => {
                 icon="more_horiz"
                 onSelect={async ({ value }) => {
                   if (!value) return null;
-                  const _errors = await saveAsset();
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
+
                   else {
-                    if (value == 'push') handleAction('push');
-                    setDirty(false);
+                    const _errors = await saveAsset(formattedDate);
+                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   }
+
                 }}
               >
+
                 <Button variant="contained" color="primary">
                   {isCreating ? `Create asset` : `Update asset`}
                 </Button>
               </DowndownMenu>
+
+              <ConfirmAlert
+                title={`Do you wish to update the asset published date?`}
+                isOpen={makePublicDialog}
+                setIsOpen={setMakePublicDialog}
+                cancelText={"No,  don't update the published date"}
+                acceptText={'Yes, update the published date'}
+                onOpen={() => saveAsset(formattedDate)}
+                onClose={() => saveAsset()} />
+
+              <Grid item xs={6} sm={5} align="right">
+                <small className="px-1 py-2px text-muted">
+                  {asset.status == "DRAFT" ? 'Published at: Never' : asset.published_at == null ? 'Published at: Missing publish date' : ('Published at:' + dayjs(asset.published_at).fromNow())}
+                </small>
+              </Grid>
+              <Grid item xs={6} sm={4} align="right">
+                <small className="px-1 py-2px text-muted">
+                  Last update: {dayjs(updatedDate).fromNow()}
+                </small>
+              </Grid>
+
             </Grid>
+
           </div>
 
           <Grid container spacing={3}>
@@ -403,7 +445,7 @@ const ComposeAsset = () => {
               <AssetMarkdown asset={asset} value={content} onChange={(c) => { handleMarkdownChange(); setContent(c); }} />
             </Grid>
             <Grid item md={4} xs={12}>
-              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => {handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
+              <AssetMeta asset={asset} onAction={(action, payload = null) => handleAction(action, payload)} onChange={(a) => { handleMarkdownChange(); partialUpdateAsset(asset_slug, a) }} />
             </Grid>
           </Grid>
         </>
