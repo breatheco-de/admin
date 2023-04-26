@@ -417,7 +417,7 @@ const ComposeAsset = () => {
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
                 onOpen={()=>{ saveAsset(formattedDate); setDirty(false); handleAction('push')}}
-                onClose={()=> {saveAsset(); setDirty(false)}} />
+                onClose={()=> {saveAsset(); setDirty(false); handleAction('push')}} />
 
               <Grid item xs={6} sm={5} align="right">
                 <small className="px-1 py-2px text-muted">
