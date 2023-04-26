@@ -158,7 +158,7 @@ const ComposeAsset = () => {
 
     const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug: action });
     if (resp.status === 200) {
-      if ((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')) {
+      if ((['push', 'pull'].includes(action) && resp.data.sync_status != 'OK')) {
         toast.error(`Sync returned with problems: ${resp.data.status_text}`)
       }
       else if (action == "test" && resp.data.test_status != 'OK') {
@@ -416,7 +416,7 @@ const ComposeAsset = () => {
                 setIsOpen={setMakePublicDialog}
                 cancelText={"No,  don't update the published date"}
                 acceptText={'Yes, update the published date'}
-                onOpen={()=>{ saveAsset(formattedDate); setDirty(false)}}
+                onOpen={()=>{ saveAsset(formattedDate); setDirty(false); handleAction('push')}}
                 onClose={()=> {saveAsset(); setDirty(false)}} />
 
               <Grid item xs={6} sm={5} align="right">
