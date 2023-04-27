@@ -21,6 +21,7 @@ import { MatxLoading } from '../../../../matx';
 import ConfirmAlert from '../../../components/ConfirmAlert';
 import { getSession } from '../../../redux/actions/SessionActions';
 
+
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -81,6 +82,17 @@ const Eventtype = () => {
     }
   };
 
+  const deleteVisibilitySetting = async (visibilitySettingID) => {
+    try {
+      const response = await bc.events().deleteAcademyEventTypeVisibilitySetting(eventype.slug, visibilitySettingID);
+      if (response.status === 204) {
+        await fetchEventype();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const onAccept = () => updateEventype({ private: !eventype.private });
 
   return (
@@ -109,8 +121,9 @@ const Eventtype = () => {
               Disagree
             </Button>
             <Button color="primary" autoFocus onClick={() => {
-              setVisibilitySetting(null);
+              deleteVisibilitySetting(visibilitySetting.id);
               setOpenDialogDeleteVisibility(false);
+              setVisibilitySetting(null);
             }}>
               Agree
             </Button>
@@ -146,7 +159,7 @@ const Eventtype = () => {
 
 
           <Grid item xs={12} md={6}>
-            <JoinEvents eventype={eventype} onSubmit={updateEventype} openDialogDeleteVisibility={openDialogDeleteVisibility} setOpenDialogDeleteVisibility={setOpenDialogDeleteVisibility} setVisibilitySetting={setVisibilitySetting} />
+            <JoinEvents eventype={eventype} fetchEventype={fetchEventype} setEventype={setEventype} openDialogDeleteVisibility={openDialogDeleteVisibility} setOpenDialogDeleteVisibility={setOpenDialogDeleteVisibility} setVisibilitySetting={setVisibilitySetting} />
           </Grid>
 
         </Grid>

@@ -831,6 +831,12 @@ class BreatheCodeClient {
                     `${this.host}/events/academy/organization`,
                     payload
                 ),
+            postAcademyEventTypeVisibilitySetting: (payload, slug) =>
+                axios.bcPost(
+                    "Academy event Type Visibility Setting",
+                    `${this.host}/events/academy/eventype/${slug}/visibilitysetting`,
+                    payload
+                ),   
             putAcademyEventOrganization: (payload) =>
                 axios.bcPut(
                     "Academy event",
@@ -854,7 +860,12 @@ class BreatheCodeClient {
             deleteAcademyEventTypes: (org) =>
                 axios.bcDelete(
                     "Delete Eventtype",
-                    `${this.host}/events/academy/eventype`
+                    `${this.host}/events/academy/`
+                ),
+            deleteAcademyEventTypeVisibilitySetting: (slug, visibilityID) =>
+                axios.bcDelete(
+                    "Delete Visibility Setting",
+                    `${this.host}/events/academy/eventype/${slug}/visibilitysetting/${visibilityID}`
                 ),
             getEventbriteWebhook: (query) => {
                 const qs = serializeQuerystring(query);

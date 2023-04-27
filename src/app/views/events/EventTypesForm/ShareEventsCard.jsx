@@ -32,7 +32,6 @@ const schema = Yup.object().shape({
 
 
 const propTypes = {
-  onSubmit: PropTypes.func.isRequired,
   eventype: PropTypes.shape(eventypePropTypes).isRequired,
 };
 
@@ -44,7 +43,7 @@ const getVisibilitySettingMessage = (visibility) => {
   else return <>Everyone at <strong>{visibility.academy.name}</strong></>
 }
 
-const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDialogDeleteVisibility, setVisibilitySetting }) => {
+const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpenDialogDeleteVisibility, setVisibilitySetting, fetchEventype }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -64,6 +63,19 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
     p: 4,
   };
 
+
+  const addVisibilitySetting = async (values) => {
+    try {
+      const response = await bc.events().postAcademyEventTypeVisibilitySetting({ ...values},  eventype.slug);
+      if (response.status >= 200) {
+        await fetchEventype();
+        setSubmitting(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <h1 className="ml-2 mt-2 mb-4 font-medium text-28">Who can join these events?</h1>
@@ -81,19 +93,18 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
         )}
 
         <Formik
-          initialValues={{ eventype }}
+          initialValues={eventype}
           validationSchema={schema}
-          onSubmit={(values, { setSubmitting }) => {
-            onSubmit(values);
+          onSubmit={() => {
+            addVisibilitySetting({academy: eventype.academy.id, cohort: chooseCohort.id, syllabus: syllabus.id});
             setSubmitting(false);
           }}
         >
-          {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
+          {({ values, isSubmitting, handleSubmit }) => (
             <Modal open={open} onClose={handleClose}>
               <form className="p-4" onSubmit={handleSubmit}>
 
                 <Box sx={style}>
-                  <Form className="p-4">
                     <Grid item md={12} sm={12} xs={12}>
 
                       <Grid item md={2} sm={4} xs={12}>
@@ -103,6 +114,7 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                       <Grid item md={12} sm={12} xs={12}>
                         <div className="flex flex-wrap">
                           <AsyncAutocomplete
+                            name="syllabus"
                             debounced={false}
                             onChange={(x) => setSyllabus(x)}
                             width="100%"
@@ -110,8 +122,7 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                             asyncSearch={() => bc.admissions().getAllSyllabus()}
                             size="small"
                             data-cy="syllabus"
-                            label="syllabus"
-                            
+                            label="syllabus"                            
                             getOptionLabel={(option) => `${option.name}`}
                             value={syllabus}
                           />
@@ -123,6 +134,7 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                       <Grid item md={12} sm={12} xs={12}>
                         <div className="flex flex-wrap">
                           <AsyncAutocomplete
+                            name="cohort"
                             debounced={false}
                             onChange={(x) => setChooseCohort(x)}
                             width="100%"
@@ -131,7 +143,6 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                             size="small"
                             data-cy="cohort"
                             label="cohort"
-                            
                             getOptionLabel={(option) => `${option.name}`}
                             value={chooseCohort}
                           />
@@ -148,7 +159,6 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                         Share
                       </Button>
                     </div>
-                  </Form>
                 </Box>
               </form>
 
@@ -173,7 +183,7 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                             <Grid key={i} className='m-1' item lg={10} md={10} sm={10} xs={10}>
                               {getVisibilitySettingMessage(visibility)}
                             </Grid>
-{/*   
+{
                             <Grid item lg={2} md={2} sm={2} xs={2}>
                                                       
                               <IconButton
@@ -187,15 +197,14 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                               </IconButton>
 
                             </Grid>
-                          */}
+                          }
                           </ListItem>
                         )) : (
                           <>
                             <div><h5>There are no shared settings</h5></div>
                           </>
-                        )}
-                        
-{/*     
+                        )}                   
+{   
                         <IconButton onClick={() => {
                           handleOpen()
                         }}>
@@ -203,7 +212,7 @@ const ShareEvents = ({ eventype, onSubmit, openDialogDeleteVisibility, setOpenDi
                             add_circle
                           </Icon>
                         </IconButton>
-                      */}  
+                    }  
 
                       </Grid>
                     </List>

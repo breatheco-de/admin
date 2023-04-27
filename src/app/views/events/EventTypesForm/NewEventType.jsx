@@ -13,23 +13,17 @@ import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import bc from '../../../services/breathecode';
-import Field from '../../../components/Field';
 import { Breadcrumb } from '../../../../matx';
 import { schemas } from '../../../utils';
 import { getSession } from '../../../redux/actions/SessionActions';
 import { availableLanguages } from 'utils';
+import ThumbnailCard from './ThumbnailCard';
 
 const slugify = require('slugify');
 
 const schema = Yup.object().shape({
-  // academy: yup.number().required().positive().integer(),
-  // schedule: yup.number().required().positive().integer(),
-  slug: schemas.slug(),
   name: schemas.name(),
-  // schedule_type: Yup.mixed().oneOf(scheduleTypes).required(),
 });
-
-
 
 const NewEventype = () => {
   const history = useHistory();
@@ -39,7 +33,7 @@ const NewEventype = () => {
   const addEventType = async (values, { setSubmitting }) => {
     try {
       const response = await bc.events().addAcademyEventType({ ...values, academy: session.academy.id });
-      console.log(session.academy)
+      console.log("this is Values", values)
       if (response.status === 201) {
         setSubmitting(false);
         history.push('/events/eventype');
@@ -66,14 +60,15 @@ const NewEventype = () => {
         <Divider className="mb-2" />
 
         <Formik
-          initialValues={{}}
+          initialValues={{name: '', slug: ''}}
           validationSchema={schema}
-          onSubmit={addEventType} 
+          onSubmit={addEventType}
         >
           {({
-            values, setFieldValue, isSubmitting, 
+            values, setFieldValue, isSubmitting, handleSubmit, errors,
+            touched, handleChange
           }) => (
-            <Form className="p-4">
+            <form onSubmit={handleSubmit} className="p-4">
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={5} sm={4} xs={12}>
                   Name
@@ -89,11 +84,15 @@ const NewEventype = () => {
                     name="name"
                     type="text"
                     variant="outlined"
-                    onChange={e => setName(e.target.value)}
+                    error={errors.name && touched.name}
+                    helperText={touched.name && errors.name}
+                    // onChange={e => setName(e.target.value)}
                     required
+                    value={values.name}
+                    onChange={(e) => {values.slug = slugify(e.target.value).toLowerCase(); handleChange(e)}}
                   />
                 </Grid>
-               
+
                 <Grid item md={5} sm={4} xs={12}>
                   Slug
                 </Grid>
@@ -108,8 +107,8 @@ const NewEventype = () => {
                     name="slug"
                     type="text"
                     variant="outlined"
-                    onChange={e => setFieldValue('slug', e.target.value)}
-                    value={slugify(name).toLowerCase()}
+                    onChange={handleChange}
+                    value={values.slug}
                     required
                   />
                 </Grid>
@@ -135,47 +134,43 @@ const NewEventype = () => {
                   Icon URL
                 </Grid>
                 <Grid item md={7} sm={8} xs={12}>
-                  <TextField
-                    aria-label="Icon URL"
-                    minRows={2}
-                    placeholder="Icon URL"
-                    label="Icon_Url"
-                    multiline
-                    fullWidth
-                    name="icon_url"
-                    type="text"
-                    variant="outlined"
-                    onChange={e => setFieldValue('icon_url', e.target.value)}
-                    required
-                  />
+                  <ThumbnailCard eventype={null} onChange={url => setFieldValue('icon_url', url)}></ThumbnailCard>
                 </Grid>
+
                 <Grid item md={5} sm={4} xs={12}>
                   Language
                 </Grid>
                 <Grid item md={7} sm={8} xs={12}>
-                <TextField
+                  <TextField
                     label="Language"
                     type="text"
                     data-cy="lang"
                     size="small"
                     fullWidth
                     variant="outlined"
-                    onChange={e => setFieldValue('lang', e.target.value)}
+                    value={values.lang}
+                    onChange={(e) => {
+                      setFieldValue('lang', e.target.value);
+                    }}
                     select
                   >
                     {Object.keys(availableLanguages).map((item) => (
                       <MenuItem value={item} key={item}>
-                        {item?.toUpperCase()}
+                        {item}
                       </MenuItem>
                     ))}
+
                   </TextField>
                 </Grid>
                 <Grid item md={12} sm={12} xs={12}>
-                <FormControlLabel
+                  <FormControlLabel
                     control={
                       <Checkbox
                         className="text-right"
-                        onChange={e => setFieldValue('allow_shared_creation', e.target.checked)}
+                        checked={values.allow_shared_creation}
+                        onChange={(e) => {
+                          setFieldValue('allow_shared_creation', e.target.checked);
+                        }}
                         name="shared_creation"
                         data-cy="shared_creation"
                         color="primary"
@@ -184,18 +179,18 @@ const NewEventype = () => {
                     label="Allow Shared Creation"
                   />
                 </Grid>
-                <div className="flex-column items-start px-4 mb-4">
-                  <Button
-                   color="primary"
-                   variant="contained"
-                   type="submit"
-                   data-cy="submit"
-                   disabled={isSubmitting}>
-                    Create
-                  </Button>
-                </div>
               </Grid>
-            </Form>
+              <div className="flex-column items-start px-4 mb-4">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="submit"
+                  data-cy="submit"
+                  disabled={isSubmitting}>
+                  Create
+                </Button>
+              </div>
+            </form>
           )}
         </Formik>
       </Card>

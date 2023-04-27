@@ -12,6 +12,7 @@ import { getSession } from '../../../redux/actions/SessionActions';
 import { availableLanguages } from 'utils';
 
 
+
 const eventypePropTypes = {
   id: PropTypes.number,
   slug: PropTypes.string,
@@ -19,6 +20,7 @@ const eventypePropTypes = {
   language: PropTypes.string,
   onSubmit: PropTypes.func,
   academy_owner: PropTypes.number,
+  visibility_settings: PropTypes.string,
 };
 
 const propTypes = {
@@ -106,7 +108,7 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
             />
           </Grid>
         ) : (
-          ({ values, isSubmitting, setFieldValue, handleChange }) => (
+          ({ values, isSubmitting, setFieldValue }) => (
             <Form className="p-4">
               <Grid container spacing={3} alignItems="center">
                 <Field
@@ -167,7 +169,9 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                     name="icon_url"
                     type="text"
                     variant="outlined"
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      setFieldValue('icon_url', e.target.value);
+                    }}
                     value={values.icon_url}
                     required
                   />
