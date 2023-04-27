@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import config from '../../../../config.js';
 import { faLastfmSquare } from "@fortawesome/free-brands-svg-icons";
 import { PickCohortUserModal } from "./PickCohortUserModal";
+import {CopyDialog} from "../../../components/CopyDialog"
 import HelpIcon from '../../../components/HelpIcon';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -61,6 +62,7 @@ const OrganizationUsers = ({ organization }) => {
   const [items, setItems] = useState([]);
   const [ userToAdd, setUserToAdd] = useState(false);
   const [ confirm, setConfirm] = useState(false);
+  const [copyDialog, setCopyDialog] = useState(false);
 
   const columns = [
     {
@@ -111,6 +113,24 @@ const OrganizationUsers = ({ organization }) => {
         },
       },
     },
+    {
+      name: 'invite_url', // field name in the row object
+      label: 'Invite URL', // column title that will be shown in table
+      options: {
+        customBodyRender: (value, tableMeta) => {
+          const item = items[tableMeta.rowIndex];
+          return (
+            <div className="flex items-center">
+              <Tooltip title={`Copy Invite URL`}>
+                <IconButton onClick={() => setCopyDialog(true)}>
+                  <Icon>assignment</Icon>
+                </IconButton>
+                </Tooltip>
+            </div>
+          );
+        },
+      },
+    },
   ]
 
   const loadData = async (querys=null) => {
@@ -126,7 +146,6 @@ const OrganizationUsers = ({ organization }) => {
     if(!cu) return false;
 
     const result = await bc.auth().addGithubUser({ cohort: cu.cohort.id, user: cu.user.id });
-    console.log("rrrresult", result);
     if(result.status == 200){
       setConfirm(true);
     }
@@ -162,6 +181,13 @@ const OrganizationUsers = ({ organization }) => {
               filter: false,
               download: false,
               viewColumns: false,
+              customToolbar: () => {
+                return <Tooltip title={`Sync organization users`}>
+                  <IconButton onClick={() => null}>
+                    <Icon>refresh</Icon>
+                  </IconButton>
+                </Tooltip>;
+              },
               customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
                 return (
                   <div className='ml-auto'>
@@ -200,6 +226,13 @@ const OrganizationUsers = ({ organization }) => {
             }}
             search={loadData}
         />
+        <CopyDialog
+            title={`Share the following invite URL with the student`}
+            label={"URL"}
+            value={`https://github.com/orgs/4GeeksAcademy/invitation`}
+            isOpened={copyDialog}
+            onClose={() => setCopyDialog(false)}
+          />
     </Grid>
   );
 };
