@@ -119,13 +119,16 @@ const OrganizationUsers = ({ organization }) => {
       options: {
         customBodyRender: (value, tableMeta) => {
           const item = items[tableMeta.rowIndex];
+          console.log("item", item)
           return (
             <div className="flex items-center">
-              <Tooltip title={`Copy Invite URL`}>
-                <IconButton onClick={() => setCopyDialog(true)}>
-                  <Icon>assignment</Icon>
-                </IconButton>
-                </Tooltip>
+              {item.storage_action == 'ADD' && item.storage_status == 'SYNCHED' &&
+                <Tooltip title={`Copy Invite URL`}>
+                  <IconButton onClick={() => setCopyDialog(true)}>
+                    <Icon>assignment</Icon>
+                  </IconButton>
+                  </Tooltip>
+              }
             </div>
           );
         },
