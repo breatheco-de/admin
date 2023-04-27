@@ -6,6 +6,7 @@ import CalendarHeader from "./components/CalendarHeader";
 import * as ReactDOM from "react-dom";
 import { Breadcrumb } from "matx";
 import dayjs from 'dayjs';
+import { useHistory } from 'react-router-dom';
 import bc from 'app/services/breathecode';
 // import EventEditorDialog from "./EventEditorDialog";
 import { makeStyles } from "@material-ui/core/styles";
@@ -56,6 +57,7 @@ const getRanges = (_date=undefined) => {
 
 const MatxCalendar = () => {
   const [events, setEvents] = useState([]);
+  const history = useHistory();
   const [dateRange, setDateRange] = useState(getRanges());
 
   const headerComponentRef = useRef(null);
@@ -100,6 +102,7 @@ const MatxCalendar = () => {
           events={events}
           resizable
           localizer={localizer}
+          onSelectEvent={asset => history.push(`/media/asset/${asset.slug}`)}
           onNavigate={(startingFrom) => setDateRange(getRanges(startingFrom))}
           defaultView={Views.MONTH}
           startAccessor="start"
