@@ -343,6 +343,12 @@ class BreatheCodeClient {
                     payload
                     );
             },
+            syncOrganizationUsers: () => {
+                return axios.bcPut(
+                    "Invite",
+                    `${this.host}/auth/academy/github/user/sync`
+                    );
+            },
             addGithubUser: (payload) => {
                 return axios.bcPost(
                     "Invite",

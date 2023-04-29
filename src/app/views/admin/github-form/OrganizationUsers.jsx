@@ -64,6 +64,10 @@ const OrganizationUsers = ({ organization }) => {
   const [ confirm, setConfirm] = useState(false);
   const [copyDialog, setCopyDialog] = useState(false);
 
+  const syncOrganizationUsers = async () => {
+    const { data } = await bc.auth().syncOrganizationUsers();
+  }
+
   const columns = [
     {
       name: 'name', // field name in the row object
@@ -186,7 +190,7 @@ const OrganizationUsers = ({ organization }) => {
               viewColumns: false,
               customToolbar: () => {
                 return <Tooltip title={`Sync organization users`}>
-                  <IconButton onClick={() => null}>
+                  <IconButton onClick={() => syncOrganizationUsers()}>
                     <Icon>refresh</Icon>
                   </IconButton>
                 </Tooltip>;
