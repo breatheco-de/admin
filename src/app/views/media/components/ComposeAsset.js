@@ -398,7 +398,7 @@ const ComposeAsset = () => {
                   if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
 
                   else {
-                    const _errors = await saveAsset(formattedDate);
+                    const _errors = await saveAsset(formattedDate); handleAction('push');
                     if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   }
 
