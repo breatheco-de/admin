@@ -154,7 +154,7 @@ const ComposeAsset = () => {
 
   const handleAction = async (action, payload = null) => {
 
-    const resp = await bc.registry().assetAction(asset_slug, { ...payload, silent: true, action_slug: action });
+    const resp = await bc.registry().assetAction(asset?.slug, { ...payload, silent: true, action_slug: action });
     if (resp.status === 200) {
       if ((['pull', 'push'].includes(action) && resp.data.sync_status != 'OK')) {
         toast.error(`Sync returned with problems: ${resp.data.status_text}`)
