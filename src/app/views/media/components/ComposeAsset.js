@@ -395,7 +395,7 @@ const ComposeAsset = () => {
                 icon="more_horiz"
                 onSelect={async ({ value }) => {
                   if (!value) return null;
-                  if (value == 'push' && asset.published_at == null) {handleAction('push'); saveAsset(formattedDate);}
+                  if (value == 'push' && asset.published_at == null) {saveAsset(formattedDate); handleAction('push');}
                   else if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
                   
                   else {
