@@ -10,7 +10,7 @@ export const availableLanguages = {
   "us": "English",
   "es": "Spanish",
   "it": "Italian",
-  "ge": "German",
+  "de": "German",
   "po": "Portuguese",
 }
 dayjs.extend(tz);

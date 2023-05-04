@@ -343,6 +343,13 @@ class BreatheCodeClient {
                     payload
                     );
             },
+            addGithubUser: (payload) => {
+                return axios.bcPost(
+                    "Invite",
+                    `${this.host}/auth/academy/github/user`,
+                    payload
+                    );
+            },
             resendInvite: (user) =>
                 axios.bcPut(
                     "Invite",
@@ -803,12 +810,40 @@ class BreatheCodeClient {
                     "Academy event",
                     `${this.host}/events/academy/organizer`
                 ),
+            addAcademyEventType: (payload) =>
+                axios.bcPost(
+                    "Academy event type",
+                    `${this.host}/events/academy/eventype`,
+                    payload
+            ),
+            getAcademyEventType: () =>
+                axios.bcGet(
+                    "Event Type",
+                    `${this.host}/events/academy/eventype?allow_shared_creation=true`
+                ),
+            getAcademyEventTypeSlug: (slug) =>
+                axios.bcGet(
+                    "Event Type Slug",
+                    `${this.host}/events/academy/eventype/${slug}`
+                ),
+            updateAcademyEventTypeSlug: (slug, payload) =>
+                axios.bcPut(
+                    "Event Type Slug",
+                    `${this.host}/events/academy/eventype/${slug}`,
+                    payload
+                ),
             postAcademyEventOrganization: (payload) =>
                 axios.bcPost(
                     "Academy event",
                     `${this.host}/events/academy/organization`,
                     payload
                 ),
+            postAcademyEventTypeVisibilitySetting: (payload, slug) =>
+                axios.bcPost(
+                    "Academy event Type Visibility Setting",
+                    `${this.host}/events/academy/eventype/${slug}/visibilitysetting`,
+                    payload
+                ),   
             putAcademyEventOrganization: (payload) =>
                 axios.bcPut(
                     "Academy event",
@@ -829,6 +864,16 @@ class BreatheCodeClient {
                     "Delete organizer",
                     `${this.host}/events/academy/organization/organizer/${org}`
                 ),
+            deleteAcademyEventTypes: (org) =>
+                axios.bcDelete(
+                    "Delete Eventtype",
+                    `${this.host}/events/academy/`
+                ),
+            deleteAcademyEventTypeVisibilitySetting: (slug, visibilityID) =>
+                axios.bcDelete(
+                    "Delete Visibility Setting",
+                    `${this.host}/events/academy/eventype/${slug}/visibilitysetting/${visibilityID}`
+                ),
             getEventbriteWebhook: (query) => {
                 const qs = serializeQuerystring(query);
                 return axios.bcGet(
@@ -842,11 +887,6 @@ class BreatheCodeClient {
             },
             getAcademyVenues: () =>
                 axios.bcGet("Venues", `${this.host}/events/academy/venues`),
-            getAcademyEventType: () =>
-                axios.bcGet(
-                    "Event Type",
-                    `${this.host}/events/academy/eventype`
-                ),
             downloadCSV: (query) => {
                 const qs = Object.keys(query)
                     .map((key) => `${key}=${query[key]}`)

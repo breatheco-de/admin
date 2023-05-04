@@ -40,7 +40,7 @@
   margin: 0;
 }
 
-.red {
+.red, .text-danger {
   color: red;
 }
 
@@ -54,6 +54,9 @@
 
 .orange {
   background-color: rgb(255, 153, 0);
+}
+.bg-danger {
+  background-color: rgb(241, 71, 71);
 }
 .text-warning{
   color: rgb(255, 153, 0);

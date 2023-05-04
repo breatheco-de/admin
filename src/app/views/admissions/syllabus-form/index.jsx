@@ -34,7 +34,6 @@ dayjs.extend(LocalizedFormat);
 const Student = () => {
   const { syllabusSlug } = useParams();
   const session = getSession();
-  console.log("session", session)
   const [syllabus, setSyllabus] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);

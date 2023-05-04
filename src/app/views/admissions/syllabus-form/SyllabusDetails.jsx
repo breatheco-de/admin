@@ -56,7 +56,6 @@ const schema = Yup.object().shape({
 
 const StudentDetails = ({ syllabus, onSubmit }) => {
   const [status, setStatus] = useState({ color: "", message: "" });
-
   const session = getSession();
   const academyOwner = session.academy.id
   const syllabusId = syllabus.academy_owner.id

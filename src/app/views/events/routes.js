@@ -27,6 +27,21 @@ const routes = [
     exact: true,
     component: React.lazy(() => import('./attendees')),
   },
+  {
+    path: '/events/eventype',
+    exact: true,
+    component: React.lazy(() => import('./eventtypes')),
+  },
+  {
+    path: '/events/eventype/:slug',
+    exact: true,
+    component: React.lazy(() => import('./EventTypesForm/index')),
+  },
+  {
+    path: '/events/NewEventType',
+    exact: true,
+    component: React.lazy(() => import('./EventTypesForm/NewEventType')),
+  },
 ];
 
 export default routes;
