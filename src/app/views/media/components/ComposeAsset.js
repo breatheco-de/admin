@@ -395,10 +395,11 @@ const ComposeAsset = () => {
                 icon="more_horiz"
                 onSelect={async ({ value }) => {
                   if (!value) return null;
-                  if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
-
+                  if (value == 'push' && asset.published_at == null) handleAction('push')
+                  else if (asset.status == 'PUBLISHED' && asset.published_at != null) setMakePublicDialog(true)
+                  
                   else {
-                    const _errors = await saveAsset(formattedDate); handleAction('push');
+                    const _errors = await saveAsset(formattedDate);
                     if (Object.keys(_errors).length > 0) setErrorDialog(true);
                   }
 
