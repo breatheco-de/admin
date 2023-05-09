@@ -4,19 +4,20 @@ import ArrowUpwardRounded from '@material-ui/icons/ArrowUpwardRounded';
 import Report from '@material-ui/icons/Report';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
 import { Breadcrumb } from 'matx';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
-import axios from '../../../axios';
+import axios from '../../../axios'
 import { useQuery } from '../../hooks/useQuery';
 import config from '../../../config.js';
 import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 import { toast } from "react-toastify";
 import UpdateLeadStatusDialog from './leads-form/UpdateLeadStatusDialog';
-
+import AddLeadModal from "../../components/AddLeadModal";
+import DowndownMenu from '../../components/DropdownMenu';
 const relativeTime = require('dayjs/plugin/relativeTime');
-
+// import history from "history.js";
 toast.configure();
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -37,6 +38,7 @@ const statusColors = {
 const defaultBg = 'bg-gray';
 
 const Leads = () => {
+  const history = useHistory();
   const query = useQuery();
   const [items, setItems] = useState([]);
   const [tags, setTags] = useState([]);
@@ -379,21 +381,27 @@ const Leads = () => {
             />
           </div>
           <div className="">
-            <Link
-              to="/growth/sales/new"
-              color="primary"
-              className="btn btn-primary"
-            >
-              <Button variant="contained" color="primary">
-                Add new lead
-              </Button>
-            </Link>
+          <DowndownMenu
+            options={[
+              { label: 'Add single lead', value: 'growth/sales/new'},
+              { label: 'Add leads in bulk', value: 'growth/sales/bulk'}
+            ]}
+            icon="more_horiz"
+            onSelect={({ value }) => {
+              const url = `/${value}`;
+              history.push(url);
+            }}
+          >
+            <Button variant="contained" color="primary" size="small">
+              Switch to another Pipeline
+            </Button>
+          </DowndownMenu>
           </div>
         </div>
       </div>
-      <AlertAcademyAlias />
+      {/* <AlertAcademyAlias /> */}
       <div>
-        <SmartMUIDataTable
+        {/* <SmartMUIDataTable
           title="All Leads"
           columns={columns}
           items={items}
@@ -420,7 +428,7 @@ const Leads = () => {
             return status;
           }}
           bulkActions={SendCRM}
-        />
+        /> */}
       </div>
     </div>
   );
