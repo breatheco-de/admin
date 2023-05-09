@@ -14,7 +14,6 @@ import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 import { toast } from "react-toastify";
 import UpdateLeadStatusDialog from './leads-form/UpdateLeadStatusDialog';
-import AddLeadModal from "../../components/AddLeadModal";
 import DowndownMenu from '../../components/DropdownMenu';
 const relativeTime = require('dayjs/plugin/relativeTime');
 // import history from "history.js";
@@ -393,7 +392,7 @@ const Leads = () => {
             }}
           >
             <Button variant="contained" color="primary" size="small">
-              Switch to another Pipeline
+              Add lead
             </Button>
           </DowndownMenu>
           </div>
