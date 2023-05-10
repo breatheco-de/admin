@@ -47,20 +47,19 @@ const BulkUpload = () => {
       <div className="mb-sm-30">
         <Breadcrumb
           routeSegments={[
-            { name: "Leads", path: "/growth/leads" },
+            { name: "Leads", path: '/growth/leads' },
             { name: "Bulk Upload Manager" },
           ]}
         />
       </div>
       <div>
-
+      
         <BulkActiveCampaignCard 
           status={status}
           defaultAcademy={ACAcademy}
           setACAcademy={setACAcademy}
         />
-        {/* <BulkActiveCampaignCard
-        /> */}
+       
         <div className="mt-4">
           <div >
             <Tags className="mt-4" />

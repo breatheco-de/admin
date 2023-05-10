@@ -398,9 +398,9 @@ const Leads = () => {
           </div>
         </div>
       </div>
-      {/* <AlertAcademyAlias /> */}
+      <AlertAcademyAlias />
       <div>
-        {/* <SmartMUIDataTable
+        <SmartMUIDataTable
           title="All Leads"
           columns={columns}
           items={items}
@@ -427,7 +427,7 @@ const Leads = () => {
             return status;
           }}
           bulkActions={SendCRM}
-        /> */}
+        />
       </div>
     </div>
   );
