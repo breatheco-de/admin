@@ -6,6 +6,7 @@ import { uploadFiles, selectMedia } from "../../../redux/actions/MediaActions";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@mui/material/Grid'
 import { useDispatch } from 'react-redux';
+import {useDropzone} from 'react-dropzone';
 
 
 const BulkDragDrop = (props) => {
@@ -24,20 +25,23 @@ const BulkDragDrop = (props) => {
     console.log("updateAcceptedFileDatffffa", updatedAcceptedFileData);
     setAcceptedFileData(updatedAcceptedFileData);
   }
-  console.log(acceptedFileData,"acceptedfileData")
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+    acceptedFiles,
+  } = useDropzone();
+  console.log(acceptedFiles,"acceptedfileData bulk!!")
   return (
     <div className="bulkContainer">
       <Grid container spacing={3} alignItems="center">
             <Grid item md={4}>
             <div className="ml-4 mr-2 mb-4 ">
-            <BulkDropzone padding="0px 10px" fontSize="10px" updateAcceptedFileData={updateAcceptedFileData} uploadFiles={uploadFiles} hideZone={() => setUpload(false)} />
+            <BulkDropzone padding="0px 10px" fontSize="10px" isDragReject={isDragReject} isDragAccept={isDragAccept} isDragActive={isDragActive} getRootProps={getRootProps} getInputProps={getInputProps}  acceptedFiles={acceptedFiles}   hideZone={() => setUpload(false)} />
 
-          {/* <BulkDropzone
-            padding="0px 10px"
-            fontSize="10px"
-            uploadFiles={uploadFiles}
-            // hideZone={() => setUpload(false)}
-          /> */}
+       
         </div>
             </Grid>
             <Grid item md={4}>
@@ -54,7 +58,7 @@ const BulkDragDrop = (props) => {
             <div className="bulkUpload  ml-2 mr-4 mb-4 ">
           <Button fullWidth color="primary" variant="contained" type="submit"  onClick={(e) => {
             e.stopPropagation();
-            dispatch(uploadFiles(acceptedFileData));
+            dispatch(uploadFiles(acceptedFiles));
             // props.hideZone();
           }}>
             {isUploading ? "Pending" : "Start Upload"}

@@ -33,6 +33,7 @@ export const getCategoryList = () => (dispatch) => {
 };
 
 export const uploadFiles = (files) => (dispatch) => {
+  console.log(files,"bulk files")
   const form = new FormData();
   for (const file of files) form.append('file', file, file.name.split(' ').join('-'));
   bc.media().upload(form).then((res) => {

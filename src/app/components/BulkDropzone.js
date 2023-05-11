@@ -1,5 +1,4 @@
-import React, {useMemo} from 'react';
-import {useDropzone} from 'react-dropzone';
+import React, {useMemo,useEffect} from 'react';
 
 
 
@@ -31,16 +30,10 @@ export function BulkDropzone(props) {
         outline: 'none',
         transition: 'border .24s ease-in-out',
       };
-      const {
-        getRootProps,
-        getInputProps,
-        isDragActive,
-        isDragAccept,
-        isDragReject,
-        acceptedFiles,
-      } = useDropzone({accept:"csv/*"});
+     
+    //   } = useDropzone({accept:"csv/*"});
 
-  const files = acceptedFiles.map(file => (
+  const files = props.acceptedFiles.map(file => (
     <li key={file.path}>
       {file.path} - {file.size} bytes
     </li>
@@ -48,18 +41,22 @@ export function BulkDropzone(props) {
 
   const style = useMemo(() => ({
     ...baseStyle,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {}),
+    ...(props.isDragActive ? activeStyle : {}),
+    ...(props.isDragAccept ? acceptStyle : {}),
+    ...(props.isDragReject ? rejectStyle : {}),
   }), [
-    isDragActive,
-    isDragReject,
-    isDragAccept,
+    props.isDragActive,
+    props.isDragReject,
+    props.isDragAccept,
   ]);
+  
+
+
+  
   return (
     <section className="container" >
-      <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
+      <div {...props.getRootProps({ style })}>
+        <input {...props.getInputProps()} />
         <p>Drag 'n' drop some files here, or click to select files</p>
       </div>
       <aside>
