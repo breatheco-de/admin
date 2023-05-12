@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, TextField, MenuItem } from "@material-ui/core";
 import { BulkDropzone}  from "../../../components/BulkDropzone";
-import { uploadFiles, selectMedia } from "../../../redux/actions/MediaActions";
+import { bulkUploadFiles, selectMedia } from "../../../redux/actions/MediaActions";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@mui/material/Grid'
 import { useDispatch } from 'react-redux';
@@ -21,10 +21,7 @@ const BulkDragDrop = (props) => {
   });
   const classes = useStyles();
   const dispatch = useDispatch();
-  const updateAcceptedFileData = (updatedAcceptedFileData) => {
-    console.log("updateAcceptedFileDatffffa", updatedAcceptedFileData);
-    setAcceptedFileData(updatedAcceptedFileData);
-  }
+  
   const {
     getRootProps,
     getInputProps,
@@ -58,7 +55,7 @@ const BulkDragDrop = (props) => {
             <div className="bulkUpload  ml-2 mr-4 mb-4 ">
           <Button fullWidth color="primary" variant="contained" type="submit"  onClick={(e) => {
             e.stopPropagation();
-            dispatch(uploadFiles(acceptedFiles));
+            dispatch(bulkUploadFiles(acceptedFiles));
             // props.hideZone();
           }}>
             {isUploading ? "Pending" : "Start Upload"}

@@ -874,7 +874,14 @@ class BreatheCodeClient {
                 ),
         };
     }
-
+    bulk_csv(){
+        return{
+            bulk_upload: (payload) =>
+                        axios.bcPut("Media", `${this.host}/marketing/academy/upload`, payload, {
+                            headers: { "Content-Type": "multipart/form-data" },
+                        })
+        }
+    }
     media() {
         return {
             upload: (payload) =>
