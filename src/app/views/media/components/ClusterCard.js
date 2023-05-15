@@ -15,7 +15,7 @@ import history from '../../../../history';
 import bc from 'app/services/breathecode';
 import ReactCountryFlag from "react-country-flag"
 import { AssetRequirementModal } from './AssetRequirementModal';
-import { AssetsList } from './AssetsList';
+import { AssetsList } from './ListAssetsModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { PickKeywordModal } from './PickKeywordModal';
@@ -24,11 +24,10 @@ import clsx from "clsx";
 import { useEffect } from "react";
 
 const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
-    const [ requestAssetModal, setRequestAssetModal ] = useState(null)
     const [ clusterForm, setClusterForm ] = useState(cluster)
     const [ editMode, setEditMode ] = useState(false)
     const [ addKeyword, setAddKeyword ] = useState(false)
-    const [ openAssets, setOpenAssets ] = useState(false)
+    const [ openKeywordAssets, setOpenKeywordAssets ] = useState(false)
     const progress = (() => {
         if(!clusterForm.keywords) return 0;
         const withoutPublished = clusterForm.keywords.filter(k => k.all_assets.find(a => a.status == 'PUBLISHED'));
@@ -49,6 +48,18 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
         }
     }
 
+    const handleAddAsset = async (keyword, asset) => {
+        if(!asset) return false;
+        console.log("keyword", keyword)
+        //{ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) }
+        const resp = await bc
+                            .registry()
+                            .updateAsset(asset.slug, { seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) });
+        if (resp.status >= 200 && resp.status < 300) {
+            getClusterDetails(cluster)
+        }
+      };
+
     const getClusterDetails = async (_c) => {
         const resp = await bc.registry().getCluster(_c.slug);
         if(resp.ok){
@@ -59,30 +70,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
     }
     return (
         <Card className="mb-4 pb-4">
-            {openAssets && <AssetsList assets={openAssets} onClose={() => setOpenAssets(false)} />}
-            {requestAssetModal && 
-                <AssetRequirementModal 
-                    data={requestAssetModal} 
-                    onClose={async _asset => {
-                        if(_asset){
-                            _asset.category = _asset.category.id
-                            const resp = await bc.registry().createAsset(_asset);
-                            if(resp.status >= 200 && resp.status < 300){
-                                setClusterForm({
-                                    ...clusterForm,
-                                    keywords: clusterForm.keywords.map(k => {
-                                        if(_asset.seo_keywords.includes(k.slug)){ 
-                                            k.all_assets = k.all_assets.filter(a => a != _asset.slug).concat([_asset.slug])
-                                        }
-                                        return k
-                                    })
-                                })
-                            }
-                        }
-                        setRequestAssetModal(null);
-                    }} 
-                />
-            }
+            {openKeywordAssets && <AssetsList assets={openKeywordAssets.all_assets} onClose={() => setOpenKeywordAssets(false)} onAddAsset={(asset) => handleAddAsset(openKeywordAssets, asset)} />}
             <div className="p-3">
                 { editMode ? 
                 <Grid container spacing={3} alignItems="center" className="m-2">
@@ -163,7 +151,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                                 "default": "",
                                 undefined: "",
                             }
-                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : setOpenAssets(k.all_assets)}
+                            return <Chip onClick={() => setOpenKeywordAssets(k)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${colors[_status]}`} />;
