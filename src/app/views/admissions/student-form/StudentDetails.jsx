@@ -17,6 +17,7 @@ import {
 } from '@material-ui/core';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
+import HelpIcon from '../../../components/HelpIcon';
 import bc from '../../../services/breathecode';
 
 const propTypes = {
@@ -139,10 +140,12 @@ const StudentDetails = ({
                   <TableCell className="pl-4">Github</TableCell>
                   <TableCell>
                     <div>{user?.user.github?.username}</div>
-                    {user?.user.github === undefined ? (
-                      <small className="px-1 py-2px bg-light-error text-red border-radius-4">
-                        GITHUB UNVERIFIED
-                      </small>
+                    {user?.user.github === undefined || !user?.user.github ? (<>
+                        <small className="px-1 py-2px bg-light-error text-red border-radius-4">
+                          GITHUB UNVERIFIED
+                        </small>
+                        <HelpIcon message={`Ask student to connect github or share the github reset link from the additional accions`} />
+                      </>
                     ) : (
                       <small className="px-1 py-2px bg-light-green text-green border-radius-4">
                         GITHUB VERIFIED
