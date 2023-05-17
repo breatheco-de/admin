@@ -229,12 +229,6 @@ export const navigations = [
                 capabilities: ["read_invite"],
             },
             {
-                name: "Gitpod",
-                path: "/admin/gitpod",
-                iconText: "STA",
-                capabilities: ["get_gitpod_user"],
-            },
-            {
                 name: "Github",
                 path: "/admin/github",
                 iconText: "STA",

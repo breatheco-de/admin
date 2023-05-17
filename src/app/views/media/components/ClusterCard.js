@@ -15,6 +15,7 @@ import history from '../../../../history';
 import bc from 'app/services/breathecode';
 import ReactCountryFlag from "react-country-flag"
 import { AssetRequirementModal } from './AssetRequirementModal';
+import { AssetsList } from './ListAssetsModal';
 import { ErrorOutline, Done, Add } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { PickKeywordModal } from './PickKeywordModal';
@@ -23,15 +24,15 @@ import clsx from "clsx";
 import { useEffect } from "react";
 
 const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
-    const [ requestAssetModal, setRequestAssetModal ] = useState(null)
     const [ clusterForm, setClusterForm ] = useState(cluster)
     const [ editMode, setEditMode ] = useState(false)
     const [ addKeyword, setAddKeyword ] = useState(false)
+    const [ openKeywordAssets, setOpenKeywordAssets ] = useState(false)
     const progress = (() => {
         if(!clusterForm.keywords) return 0;
-        const without = clusterForm.keywords.filter(k => k.published_assets.length == 0).length;
+        const withoutPublished = clusterForm.keywords.filter(k => k.all_assets.find(a => a.status == 'PUBLISHED'));
         const total = clusterForm.keywords.length;
-        return (without == 0 || total == 0) ? "100" : Math.round(100 - (without / total * 100));
+        return (withoutPublished == 0 || total == 0) ? "100" : Math.round(100 - (withoutPublished / total * 100));
     })();
 
     useEffect(() => setEditMode(isEditing), [isEditing])
@@ -47,6 +48,18 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
         }
     }
 
+    const handleAddAsset = async (keyword, asset) => {
+        if(!asset) return false;
+        console.log("keyword", keyword)
+        //{ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) }
+        const resp = await bc
+                            .registry()
+                            .updateAsset(asset.slug, { seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) });
+        if (resp.status >= 200 && resp.status < 300) {
+            getClusterDetails(cluster)
+        }
+      };
+
     const getClusterDetails = async (_c) => {
         const resp = await bc.registry().getCluster(_c.slug);
         if(resp.ok){
@@ -57,29 +70,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
     }
     return (
         <Card className="mb-4 pb-4">
-            {requestAssetModal && 
-                <AssetRequirementModal 
-                    data={requestAssetModal} 
-                    onClose={async _asset => {
-                        if(_asset){
-                            _asset.category = _asset.category.id
-                            const resp = await bc.registry().createAsset(_asset);
-                            if(resp.status >= 200 && resp.status < 300){
-                                setClusterForm({
-                                    ...clusterForm,
-                                    keywords: clusterForm.keywords.map(k => {
-                                        if(_asset.seo_keywords.includes(k.slug)){ 
-                                            k.published_assets = k.published_assets.filter(a => a != _asset.slug).concat([_asset.slug])
-                                        }
-                                        return k
-                                    })
-                                })
-                            }
-                        }
-                        setRequestAssetModal(null);
-                    }} 
-                />
-            }
+            {openKeywordAssets && <AssetsList assets={openKeywordAssets.all_assets} onClose={() => setOpenKeywordAssets(false)} onAddAsset={(asset) => handleAddAsset(openKeywordAssets, asset)} />}
             <div className="p-3">
                 { editMode ? 
                 <Grid container spacing={3} alignItems="center" className="m-2">
@@ -150,11 +141,20 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     </Grid>
                     <Grid item sm={7} xs={12}>
                         {clusterForm.keywords?.map(k => {
-                            const _status = k.published_assets.length == 0 ? "error" : "default";
-                            return <Chip onClick={() => _status === "error" ? setRequestAssetModal({ seo_keywords: [k.slug] }) : history.push(`/media/asset?keyword=${k.slug}`)}
+                            const hasPublished = k.all_assets.filter(a => a.status == 'PUBLISHED').length > 0;
+                            const hasStarted = k.all_assets.filter(a => a.status != 'UNASSIGNED').length > 0;
+                            const _status = hasPublished ? "default" : (hasStarted ? "danger" : "error");
+
+                            const colors = {
+                                "error": "bg-error",
+                                "danger": "bg-warning",
+                                "default": "",
+                                undefined: "",
+                            }
+                            return <Chip onClick={() => setOpenKeywordAssets(k)}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
-                                icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${_status == "error" && 'bg-error'}`} />;
+                                icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${colors[_status]}`} />;
                         })}
                         <Chip size="small" className="pointer mr-2 mb-2" icon={<Add onClick={() => setAddKeyword({ cluster: clusterForm.id })} />} />
                     </Grid>

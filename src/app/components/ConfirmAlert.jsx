@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 const emptyCallback = () => {};
 const defaultProps = {
   onOpen: emptyCallback,
-  onClose: emptyCallback,
+  onClose: null,
   isOpen: false,
   setIsOpen: emptyCallback,
   cancelText: 'Cancel',
@@ -46,7 +46,7 @@ const ConfirmAlert = ({
     <Dialog
       open={isOpen}
       onClose={() => {
-        onClose();
+        onClose && onClose();
         setIsOpen(false);
       }}
       aria-labelledby={titleTestId}
@@ -63,7 +63,7 @@ const ConfirmAlert = ({
         </DialogContent>
       ) : <></>}
       <DialogActions>
-        <Button
+        {onClose && <Button
           data-cy={cancelButtonTestId}
           onClick={() => {
             onClose();
@@ -72,7 +72,7 @@ const ConfirmAlert = ({
           color="primary"
         >
           {cancelText}
-        </Button>
+        </Button>}
         <Button
           color="primary"
           type="submit"
