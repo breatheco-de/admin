@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { useSelector } from 'react-redux';
 import { Breadcrumb } from "../../../matx";
 import bc from "../../services/breathecode";
+import { Link } from 'react-router-dom';
 import OrganizationUsers from "./github-form/OrganizationUsers";
 import GithubOrganization from "./github-form/GithubOrganization";
 import { MatxLoading } from 'matx';
@@ -87,7 +88,7 @@ const GithubSettings = () => {
 
   return (
     <div className="m-sm-30">
-      <div className="mb-sm-30">
+      <div className="flex flex-wrap justify-between mb-6">
         <Breadcrumb
           routeSegments={[
             { name: "Admin", path: "/admin" },

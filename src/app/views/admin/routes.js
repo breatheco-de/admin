@@ -22,11 +22,6 @@ const routes = [
         component: React.lazy(() => import("./invites")),
     },
     {
-        path: "/admin/gitpod",
-        exact: true,
-        component: React.lazy(() => import("./gitpod")),
-    },
-    {
         path: "/admin/github",
         exact: true,
         component: React.lazy(() => import("./github")),
