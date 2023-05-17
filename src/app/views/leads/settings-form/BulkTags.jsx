@@ -162,7 +162,7 @@ export const BulkTags = () => {
     },
     {
       name: 'finished_at',
-      label: 'Finished At',
+      label: 'Finished at',
       options: {
         filter: false,
         customBodyRenderLite: (i) => {
