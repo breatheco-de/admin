@@ -3,7 +3,7 @@ import { Grid, Card, Divider } from "@material-ui/core";
 import { Breadcrumb } from "../../../../matx";
 import bc from "../../../services/breathecode";
 // import BulkActiveCampaignCard from "../settings-form/BulkActiveCampaignCard";
-import { Tags } from "../settings-form/Tags";
+import { BulkTags } from "../settings-form/BulkTags";
 import { Automations } from "../settings-form/Automations";
 // import { MatxLoading } from 'matx';
 import AlertAcademyAlias from "app/components/AlertAcademyAlias";
@@ -62,7 +62,7 @@ const BulkUpload = () => {
        
         <div className="mt-4">
           <div >
-            <Tags className="mt-4" />
+            <BulkTags className="mt-4" />
           </div>
         </div>
       </div>

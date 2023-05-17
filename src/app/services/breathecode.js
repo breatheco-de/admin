@@ -879,7 +879,10 @@ class BreatheCodeClient {
             bulk_upload: (payload) =>
                         axios.bcPut("Media", `${this.host}/marketing/academy/upload`, payload, {
                             headers: { "Content-Type": "multipart/form-data" },
-                        })
+                        }),
+            get_bulk_upload: () =>
+                        axios.bcGet("Media", `${this.host}/marketing/academy/upload`),
+        
         }
     }
     media() {
