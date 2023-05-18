@@ -229,6 +229,13 @@ export function resolveResponse(res) {
   }
 }
 
+export const unSlugifyCapitalize = (str) => (typeof str === 'string' ? str 
+  .replace(/-/g, ' ')
+  .replace(/\w\S*/g,
+  (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase())
+  : '');
+
+
 export function resolveError(error) {
   
   if(axios.silent) return false;

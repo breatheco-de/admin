@@ -30,7 +30,7 @@ import bc from 'app/services/breathecode';
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
-import { availableLanguages } from "../../../../utils"
+import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
 
@@ -207,7 +207,8 @@ const ComposeAsset = () => {
 
       const resp = isCreating ?
         await bc.registry().createAsset({..._asset, 
-          lang: asset.category?.lang.toLowerCase(),})
+          lang: asset.category?.lang.toLowerCase(),
+          title: unSlugifyCapitalize(_asset.slug)})
         :
         await bc.registry().updateAsset(_asset.slug, {
           ..._asset,
