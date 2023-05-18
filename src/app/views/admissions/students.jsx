@@ -57,7 +57,10 @@ const Students = () => {
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          const { user, ...rest } = items[dataIndex];
+          const { user, ... rest} = items[dataIndex];
+          console.log(items,"item")
+          console.log(user,"user")
+          console.log(dataIndex,"dataIndex")
           return (
             <div className="flex items-center">
               <Avatar className="w-48 h-48" src={user?.profile?.avatar_url} />

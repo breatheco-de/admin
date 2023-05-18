@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   TextField,
   Card,
@@ -39,6 +39,7 @@ const tagTpes = [
 export const BulkTags = () => {
   const query = useQuery();
   const [items, setItems] = useState([]);
+  const [bulkItems, setBulkItems] = useState([]);
   const [disputeIndex, setDisputeIndex] = useState(null);
   const [disputedReason, setDisputedReason] = useState('');
 
@@ -64,17 +65,22 @@ export const BulkTags = () => {
   });
 
   const columns = [
+
     {
       name: 'name', // field name in the row object
       label: 'Name', // column title that will be shown in table
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
-          const item = items[dataIndex];
+          const item = bulkItems[dataIndex];
+         console.log(item,"item")
+         console.log(items,"items")
+         console.log(bulkItems,"bulkItems")
+          
           return (
             <>
               <div className="text-center">
-                <p className="mb-1">{item.slug} </p>
+                <p className="mb-1">{item.name} </p>
                 <small className="text-muted">{item.tag_type}</small>
               </div>
             </>
@@ -93,7 +99,7 @@ export const BulkTags = () => {
           names: ['APROVED', 'DISPUTED']
         },
         customBodyRender: (value, tableMeta) => {
-          const item = items[tableMeta.rowIndex];
+          const item = bulkItems[tableMeta.rowIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -130,7 +136,7 @@ export const BulkTags = () => {
           names: ['APROVED', 'DISPUTED']
         },
         customBodyRender: (value, tableMeta) => {
-          const item = items[tableMeta.rowIndex];
+          const item = bulkItems[tableMeta.rowIndex];
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -147,7 +153,7 @@ export const BulkTags = () => {
       options: {
         filter: false,
         customBodyRenderLite: (i) => {
-          const item = items[i];
+          const item =bulkItems[i];
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -166,7 +172,7 @@ export const BulkTags = () => {
       options: {
         filter: false,
         customBodyRenderLite: (i) => {
-          const item = items[i];
+          const item = bulkItems[i];
           return (
             <div className="flex items-center">
               <div className="ml-3">
@@ -208,31 +214,66 @@ export const BulkTags = () => {
     setItems(data.results || data);
     return data;
   };
+  useEffect(() =>{
+  const loadBulkData = async () => {
+    const { data } = await bc.monitoring().get_bulk_upload();
+   
+    setBulkItems(data.results || data);
+    return data;
+  };
+  loadBulkData();
 
+},[])
   return (
     <Card container className="p-4">
-      <SmartMUIDataTable
-        title="Your recent uploads"
-        columns={columns}
-        items={items}
-        historyReplace="/growth/settings"
-        options={{
-          print: false,
-          viewColumns: false,
-          customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-            <BulkUpdateTag
-              selectedRows={selectedRows}
-              displayData={displayData}
-              setSelectedRows={setSelectedRows}
+      {/* <button onClick={()=>{
+        loadBulkData()
+      } 
+      }>click</button> */}
+        <SmartMUIDataTable
+          title="All Students"
+          columns={columns}
+          items={bulkItems}
+          options={{
+            print: false,
+            viewColumns: false,
+            onFilterChipClose: async (index, removedFilter, filterList) => {
+              setCohorts([]);
+              
+              const { data } = await bc.monitoring().get_bulk_upload();
+   
+    setBulkItems(data.results || data);
+            },
+          }}
+          view="student?"
+          historyReplace="/admissions/students"
+          singlePage=""
+          // options={{
+          //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+          //     <AddBulkToCohort
+          //       selectedRows={selectedRows}
+          //       displayData={displayData}
+          //       setSelectedRows={setSelectedRows}
+          //       items={items}
+          //     />
+          //   ),
+          // }}
+          bulkActions={(props) => (
+            <AddBulkToCohort
               items={items}
-              setItems={setItems}
-              loadData={loadData}
-              asyncSearch={getTypes}
+              {...props}
             />
-          ),
-        }}
-        search={loadData}
-      />
+          )}
+          search={async (querys) => {
+            const { data } = await bc.auth().getAcademyStudents(querys);
+            setItems(data.results);
+            return data;
+          }}
+          deleting={async (querys) => {
+            const { status } = await bc.admissions().deleteStudentBulk(querys);
+            return status;
+          }}
+        />
       <Dialog
         onClose={() => {
           setDisputeIndex(null);
