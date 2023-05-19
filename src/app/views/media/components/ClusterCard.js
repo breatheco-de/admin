@@ -142,7 +142,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     <Grid item sm={7} xs={12}>
                         {clusterForm.keywords?.map(k => {
                             const hasPublished = k.all_assets.filter(a => a.lang?.toLowerCase() == clusterForm.lang.toLowerCase() && a.status == 'PUBLISHED').length > 0;
-                            const hasStarted = k.all_assets.filter(a => a.lang?.toLowerCase() == clusterForm.lang.toLowerCase() && a.status != 'NOT_STARTED').length > 0;
+                            const hasStarted = k.all_assets.filter(a => a.lang?.toLowerCase() == clusterForm.lang.toLowerCase()).length > 0;
                             const _status = hasPublished ? "default" : (hasStarted ? "danger" : "error");
 
                             const colors = {
