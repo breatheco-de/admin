@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Card,
@@ -8,32 +8,32 @@ import {
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import dayjs from 'dayjs';
-import { SmartMUIDataTable } from '../../../components/SmartDataTable';
-import bc from '../../../services/breathecode';
-import BulkUpdateTag from './BulkUpdateTag';
-import { useQuery } from '../../../hooks/useQuery';
+import * as Yup from "yup";
+import { Formik } from "formik";
+import dayjs from "dayjs";
+import { SmartMUIDataTable } from "../../../components/SmartDataTable";
+import bc from "../../../services/breathecode";
+import BulkUpdateTag from "./BulkUpdateTag";
+import { useQuery } from "../../../hooks/useQuery";
 
-const relativeTime = require('dayjs/plugin/relativeTime');
+const relativeTime = require("dayjs/plugin/relativeTime");
 
 dayjs.extend(relativeTime);
 
 const statusColors = {
-  ERROR: 'text-white bg-error',
-  PERSISTED: 'text-white bg-green',
-  PENDING: 'text-white bg-secondary',
+  ERROR: "bg-danger text-white",
+  DONE: "text-white bg-green",
+  PENDING: "bg-warning text-dark",
 };
 
 const tagTpes = [
-  'STRONG',
-  'SOFT',
-  'DISCOVERY',
-  'COHORT',
-  'DOWNLOADABLE',
-  'EVENT',
-  'OTHER'
+  "STRONG",
+  "SOFT",
+  "DISCOVERY",
+  "COHORT",
+  "DOWNLOADABLE",
+  "EVENT",
+  "OTHER",
 ];
 
 export const BulkTags = () => {
@@ -41,40 +41,39 @@ export const BulkTags = () => {
   const [items, setItems] = useState([]);
   const [bulkItems, setBulkItems] = useState([]);
   const [disputeIndex, setDisputeIndex] = useState(null);
-  const [disputedReason, setDisputedReason] = useState('');
+  const [disputedReason, setDisputedReason] = useState("");
+  const [isHovering, setIsHovering] = useState(-1);
 
   Date.prototype.addDays = function (days) {
-    const date = new Date(this.valueOf())
-    date.setDate(date.getDate() + days)
-    return date
-  }
+    const date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
 
   const deleteTime = (disputed_at) => {
-
     const disputed = new Date(disputed_at);
     const tenDays = disputed.addDays(10);
 
     if ((tenDays - new Date()) / (1000 * 60 * 60 * 24) > 1) {
       const timeFromNow = dayjs(tenDays).fromNow(true);
       return `Will de deleted in ${timeFromNow}`;
-    } else return 'Will be deleted today';
-  }
+    } else return "Will be deleted today";
+  };
 
   const ProfileSchema = Yup.object().shape({
-    disputedReason: Yup.string().required('Please write the Disputed Reason'),
+    disputedReason: Yup.string().required("Please write the Disputed Reason"),
   });
 
   const columns = [
-
     {
-      name: 'file name', // field name in the row object
-      label: 'File Name', // column title that will be shown in table
+      name: "file name", // field name in the row object
+      label: "File Name", // column title that will be shown in table
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = bulkItems[dataIndex];
-         console.log(item,"item")
-          
+          //  console.log(item,"item")
+
           return (
             <>
               <div className="text-center">
@@ -86,44 +85,58 @@ export const BulkTags = () => {
       },
     },
     {
-      name: 'status', // field name in the row object
-      label: 'Status', // column title that will be shown in table
+      name: "status", // field name in the row object
+      label: "Status", // column title that will be shown in table
       options: {
         filter: true,
         filterType: "dropdown",
-        filterList: query.get('status') !== null ? [query.get('status')] : [],
+        filterList: query.get("status") !== null ? [query.get("status")] : [],
         filterOptions: {
-          names: ['APROVED', 'DISPUTED']
+          names: ["APROVED", "DISPUTED"],
         },
         customBodyRender: (value, tableMeta) => {
           const item = bulkItems[tableMeta.rowIndex];
+          console.log(tableMeta.rowIndex, "rowIndex");
+          console.log(item, "item");
           return (
             <div className="flex items-center">
-              <div className="ml-3">
-              {/* className={`border-radius-4 px-2 pt-2px${statusColors[value]}`} */}
-                  <small >
-                    {item.status}
-                  </small>
-                
+              <div
+                className="ml-3"
+                onMouseOver={() => setIsHovering(tableMeta.rowIndex)}
+                onMouseOut={() => setIsHovering(-1)}
+              >
+                <small
+                  className={`border-radius-4 px-2 py-1 ${statusColors[value]}`}
+                >
+                  {item.status}
+                </small>
+                {isHovering == tableMeta.rowIndex  ? <small
+                  className={`border-radius-4 px-2 py-1 `}
+                >
+                  {item.status_message ? item.status_message : "no status message"}
+                </small> : ""}
+                                
               </div>
             </div>
           );
         },
       },
     },
-    
+
     {
-      name: 'created_at',
-      label: 'Created At',
+      name: "created_at",
+      label: "Created At",
       options: {
         filter: false,
         customBodyRenderLite: (i) => {
-          const item =bulkItems[i];
+          const item = bulkItems[i];
           return (
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {item.created_at ? dayjs(item.created_at).format('MM-DD-YYYY') : '--'}
+                  {item.created_at
+                    ? dayjs(item.created_at).format("MM-DD-YYYY")
+                    : "--"}
                 </h5>
               </div>
             </div>
@@ -131,88 +144,74 @@ export const BulkTags = () => {
         },
       },
     },
-   
-   
-    
   ];
 
   const getTypes = () => {
     return new Promise((resolve, reject) => {
-      setTimeout(()=>{
+      setTimeout(() => {
         resolve(tagTpes);
       }, 500);
     });
-  }
-
-  const loadData = async (querys) => {
-    const { data } = await bc.marketing().getAcademyTags(querys);
-    setItems(data.results || data);
-    return data;
   };
-  useEffect(() =>{
-  const loadBulkData = async () => {
-    const { data } = await bc.monitoring().get_bulk_upload();
-   
-    setBulkItems(data.results || data);
-    return data;
-  };
-  loadBulkData();
 
-},[])
+  useEffect(() => {
+    const loadBulkData = async () => {
+      const { data } = await bc.monitoring().get_bulk_upload();
+
+      setBulkItems(data.results || data);
+      return data;
+    };
+    loadBulkData();
+  }, []);
   return (
     <Card container className="p-4">
       {/* <button onClick={()=>{
         loadBulkData()
       } 
       }>click</button> */}
-        <SmartMUIDataTable
-          title="All Students"
-          columns={columns}
-          items={bulkItems}
-          options={{
-            print: false,
-            viewColumns: false,
-            onFilterChipClose: async (index, removedFilter, filterList) => {
-              setCohorts([]);
-              
-              const { data } = await bc.monitoring().get_bulk_upload();
-   
-    setBulkItems(data.results || data);
-            },
-          }}
-          view="student?"
-          historyReplace="/admissions/students"
-          singlePage=""
-          // options={{
-          //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-          //     <AddBulkToCohort
-          //       selectedRows={selectedRows}
-          //       displayData={displayData}
-          //       setSelectedRows={setSelectedRows}
-          //       items={items}
-          //     />
-          //   ),
-          // }}
-          bulkActions={(props) => (
-            <AddBulkToCohort
-              items={items}
-              {...props}
-            />
-          )}
-          search={async (querys) => {
-            const { data } = await bc.auth().getAcademyStudents(querys);
-            setItems(data.results);
-            return data;
-          }}
-          deleting={async (querys) => {
-            const { status } = await bc.admissions().deleteStudentBulk(querys);
-            return status;
-          }}
-        />
+      <SmartMUIDataTable
+        title="All Students"
+        columns={columns}
+        items={bulkItems}
+        options={{
+          print: false,
+          viewColumns: false,
+          onFilterChipClose: async (index, removedFilter, filterList) => {
+            setCohorts([]);
+
+            const { data } = await bc.monitoring().get_bulk_upload();
+
+            setBulkItems(data.results || data);
+          },
+        }}
+        view="student?"
+        historyReplace="/admissions/students"
+        singlePage=""
+        // options={{
+        //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
+        //     <AddBulkToCohort
+        //       selectedRows={selectedRows}
+        //       displayData={displayData}
+        //       setSelectedRows={setSelectedRows}
+        //       items={items}
+        //     />
+        //   ),
+        // }}
+        bulkActions={(props) => <AddBulkToCohort items={items} {...props} />}
+        search={async (querys) => {
+          const { data } = await bc.auth().getAcademyStudents(querys);
+          setItems(data.results);
+          return data;
+        }}
+        deleting={async (querys) => {
+          const { status } = await bc.admissions().deleteStudentBulk(querys);
+          return status;
+        }}
+      />
       <Dialog
         onClose={() => {
           setDisputeIndex(null);
-          setDisputedReason('');
+          setDisputedReason("");
         }}
         // fullWidth
         // maxWidth="md"
@@ -228,7 +227,6 @@ export const BulkTags = () => {
           enableReinitialize
           validationSchema={ProfileSchema}
           onSubmit={async (values) => {
-
             const tag = items[disputeIndex];
 
             const disputedAt = new Date();
@@ -237,18 +235,20 @@ export const BulkTags = () => {
               disputed_at: disputedAt,
             };
 
-            const result = await bc.marketing().updateAcademyTags(tag.slug, data);
+            const result = await bc
+              .marketing()
+              .updateAcademyTags(tag.slug, data);
 
             if (result.status >= 200 && result.status < 300) {
               const newItems = items;
               newItems[disputeIndex] = {
                 ...newItems[disputeIndex],
-                ...data
+                ...data,
               };
               setItems(newItems);
             }
             setDisputeIndex(null);
-            setDisputedReason('');
+            setDisputedReason("");
           }}
         >
           {({ errors, touched, handleSubmit }) => (
@@ -277,13 +277,13 @@ export const BulkTags = () => {
                 <Button
                   onClick={() => {
                     setDisputeIndex(null);
-                    setDisputedReason('');
+                    setDisputedReason("");
                   }}
                   color="primary"
                 >
                   Cancel
                 </Button>
-                <Button color="primary" type="submit" autoFocus >
+                <Button color="primary" type="submit" autoFocus>
                   Send now
                 </Button>
               </DialogActions>
