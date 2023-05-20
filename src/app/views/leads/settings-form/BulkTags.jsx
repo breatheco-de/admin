@@ -67,8 +67,8 @@ export const BulkTags = () => {
   const columns = [
 
     {
-      name: 'name', // field name in the row object
-      label: 'Name', // column title that will be shown in table
+      name: 'file name', // field name in the row object
+      label: 'File Name', // column title that will be shown in table
       options: {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
@@ -111,28 +111,7 @@ export const BulkTags = () => {
         },
       },
     },
-    {
-      name: 'status_message', // field name in the row object
-      label: 'Status message', // column title that will be shown in table
-      options: {
-        filter: true,
-        filterType: "dropdown",
-        filterList: query.get('status') !== null ? [query.get('status')] : [],
-        filterOptions: {
-          names: ['APROVED', 'DISPUTED']
-        },
-        customBodyRender: (value, tableMeta) => {
-          const item = bulkItems[tableMeta.rowIndex];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-               <p>{item.status_message ? item.status_message : "no message at this time"}</p>
-              </div>
-            </div>
-          );
-        },
-      },
-    },
+    
     {
       name: 'created_at',
       label: 'Created At',
@@ -152,39 +131,9 @@ export const BulkTags = () => {
         },
       },
     },
-    {
-      name: 'finished_at',
-      label: 'Finished at',
-      options: {
-        filter: false,
-        customBodyRenderLite: (i) => {
-          const item = bulkItems[i];
-          return (
-            <div className="flex items-center">
-              <div className="ml-3">
-                <h5 className="my-0 text-15">
-                  {item.finished_at ? dayjs(item.finished_at).format('MM-DD-YYYY') : '--'}
-                </h5>
-              </div>
-            </div>
-          );
-        },
-      },
-    },
    
-    {
-      name: 'type',
-      label: '',
-      options: {
-        display: 'excluded',
-        filter: true,
-        filterType: 'dropdown',
-        filterList: query.get('type') !== null ? [query.get('type')] : [],
-        filterOptions: {
-          names: tagTpes,
-        },
-      },
-    },
+   
+    
   ];
 
   const getTypes = () => {
