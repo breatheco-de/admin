@@ -74,14 +74,11 @@ export const BulkTags = () => {
         customBodyRenderLite: (dataIndex) => {
           const item = bulkItems[dataIndex];
          console.log(item,"item")
-         console.log(items,"items")
-         console.log(bulkItems,"bulkItems")
           
           return (
             <>
               <div className="text-center">
                 <p className="mb-1">{item.name} </p>
-                <small className="text-muted">{item.tag_type}</small>
               </div>
             </>
           );
@@ -103,22 +100,11 @@ export const BulkTags = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-                {item.disputed_at ? (
-                  <>
-                  {/* rendering */}
-                    <Tooltip title={`${item.disputed_reason}. Disputed ${dayjs(item.disputed_at).fromNow()}`}>
-                      <small className={`border-radius-4 px-2 pt-2px text-white bg-error`}>
-                        DISPUTED
-                      </small>
-                    </Tooltip>
-                    <small className="block text-muted">{deleteTime(item.disputed_at)}</small>
-                  </>
-
-                ) : (
-                  <small className={`border-radius-4 px-2 pt-2px${statusColors[value]}`}>
-                    APPROVED
+              {/* className={`border-radius-4 px-2 pt-2px${statusColors[value]}`} */}
+                  <small >
+                    {item.status}
                   </small>
-                )}
+                
               </div>
             </div>
           );
@@ -140,7 +126,7 @@ export const BulkTags = () => {
           return (
             <div className="flex items-center">
               <div className="ml-3">
-               <p>status message is here</p>
+               <p>{item.status_message ? item.status_message : "no message at this time"}</p>
               </div>
             </div>
           );
@@ -177,7 +163,7 @@ export const BulkTags = () => {
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                  {item.created_at ? dayjs(item.created_at).format('MM-DD-YYYY') : '--'}
+                  {item.finished_at ? dayjs(item.finished_at).format('MM-DD-YYYY') : '--'}
                 </h5>
               </div>
             </div>
