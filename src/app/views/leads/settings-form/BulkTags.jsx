@@ -49,6 +49,12 @@ export const BulkTags = () => {
     date.setDate(date.getDate() + days);
     return date;
   };
+  const loadBulkData = async () => {
+    const { data } = await bc.monitoring().get_bulk_upload();
+
+    setBulkItems(data.results || data);
+    return data;
+  };
 
   const deleteTime = (disputed_at) => {
     const disputed = new Date(disputed_at);
@@ -154,13 +160,8 @@ export const BulkTags = () => {
     });
   };
 
+  
   useEffect(() => {
-    const loadBulkData = async () => {
-      const { data } = await bc.monitoring().get_bulk_upload();
-
-      setBulkItems(data.results || data);
-      return data;
-    };
     loadBulkData();
   }, []);
   return (
@@ -176,27 +177,14 @@ export const BulkTags = () => {
         options={{
           print: false,
           viewColumns: false,
-          onFilterChipClose: async (index, removedFilter, filterList) => {
-            setCohorts([]);
-
-            const { data } = await bc.monitoring().get_bulk_upload();
-
-            setBulkItems(data.results || data);
-          },
+          search: false,
+          filter: false,
+      
         }}
         view="student?"
         historyReplace="/admissions/students"
         singlePage=""
-        // options={{
-        //   customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-        //     <AddBulkToCohort
-        //       selectedRows={selectedRows}
-        //       displayData={displayData}
-        //       setSelectedRows={setSelectedRows}
-        //       items={items}
-        //     />
-        //   ),
-        // }}
+      
         bulkActions={(props) => <AddBulkToCohort items={items} {...props} />}
         search={async (querys) => {
           const { data } = await bc.auth().getAcademyStudents(querys);
