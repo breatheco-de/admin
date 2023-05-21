@@ -171,7 +171,7 @@ export const BulkTags = () => {
       } 
       }>click</button> */}
       <SmartMUIDataTable
-        title="All Students"
+        title="Your recent uploads:"
         columns={columns}
         items={bulkItems}
         options={{
@@ -185,18 +185,18 @@ export const BulkTags = () => {
         historyReplace="/admissions/students"
         singlePage=""
       
-        bulkActions={(props) => <AddBulkToCohort items={items} {...props} />}
+        // bulkActions={(props) => <AddBulkToCohort items={items} {...props} />}
         search={async (querys) => {
           const { data } = await bc.auth().getAcademyStudents(querys);
           setItems(data.results);
           return data;
         }}
-        deleting={async (querys) => {
-          const { status } = await bc.admissions().deleteStudentBulk(querys);
-          return status;
-        }}
+        // deleting={async (querys) => {
+        //   const { status } = await bc.admissions().deleteStudentBulk(querys);
+        //   return status;
+        // }}
       />
-      <Dialog
+      {/* <Dialog
         onClose={() => {
           setDisputeIndex(null);
           setDisputedReason("");
@@ -207,8 +207,8 @@ export const BulkTags = () => {
         open={disputeIndex !== null}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-      >
-        <Formik
+      > */}
+        {/* <Formik
           initialValues={{
             disputedReason,
           }}
@@ -278,7 +278,7 @@ export const BulkTags = () => {
             </form>
           )}
         </Formik>
-      </Dialog>
+      </Dialog> */}
     </Card>
   );
 };
