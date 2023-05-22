@@ -58,7 +58,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleDownloadSingle}>Dowload Current Page</MenuItem>
+        <MenuItem onClick={handleDownloadSingle}>Download Current Page</MenuItem>
         <MenuItem onClick={handleDownloadAll}>Download All</MenuItem>
       </Menu>
     </>
