@@ -56,6 +56,7 @@ const BulkDragDrop = (props) => {
           <Button fullWidth color="primary" variant="contained" type="submit"  onClick={(e) => {
             e.stopPropagation();
             dispatch(bulkUploadFiles(acceptedFiles));
+            window.location.reload();
             // props.hideZone();
           }}>
             {isUploading ? "Pending" : "Start Upload"}
