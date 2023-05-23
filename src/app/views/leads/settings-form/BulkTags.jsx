@@ -200,7 +200,7 @@ export const BulkTags = () => {
           viewColumns: false,
           search: false,
           filter: false,
-      
+          customToolbar:false
         }}
         view="student?"
         historyReplace="/admissions/students"
