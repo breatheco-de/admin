@@ -35,7 +35,7 @@ const stageColors = {
   UNLISTED: 'default',
   WRITING: 'secondary',
   WARNING: 'secondary',
-  UNASSIGNED: 'secondary',
+  NOT_STARTED: 'secondary',
   null: 'secondary',
 };
 
