@@ -6,7 +6,7 @@ import {
   Button,
   Dialog,
   DialogTitle,
-  DialogActions,
+  DialogActions, Icon,IconButton
 } from "@material-ui/core";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -143,6 +143,27 @@ export const BulkTags = () => {
                   {item.created_at
                     ? dayjs(item.created_at).format("MM-DD-YYYY")
                     : "--"}
+                </h5>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: "Download file",
+      label: "Download file",
+      options: {
+        filter: false,
+        customBodyRenderLite: (i) => {
+          const item = bulkItems[i];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <h5 className="my-0 text-15">
+                <IconButton size="small" variant="outlined" >
+            <Icon>download</Icon>
+          </IconButton>
                 </h5>
               </div>
             </div>
