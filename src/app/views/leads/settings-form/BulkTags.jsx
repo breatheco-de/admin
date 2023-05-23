@@ -192,7 +192,7 @@ export const BulkTags = () => {
       } 
       }>click</button> */}
       <SmartMUIDataTable
-        title="Your recent uploads:"
+        title="Your recent uploads: "
         columns={columns}
         items={bulkItems}
         options={{
