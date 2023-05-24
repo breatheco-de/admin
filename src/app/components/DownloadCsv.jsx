@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Icon, IconButton, Tooltip, Menu, MenuItem,
 } from '@material-ui/core';
-
+import { downloadFile } from '../utils';
 const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -15,14 +15,7 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
     setAnchorEl(null);
   };
 
-  const downloadFile = (data) => {
-    const url = window.URL.createObjectURL(new Blob([data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'file.csv');
-    document.body.appendChild(link);
-    link.click();
-  };
+  downloadFile(data);
 
   const handleDownloadAll = () => {
     () => {
