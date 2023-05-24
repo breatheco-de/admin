@@ -15,6 +15,8 @@ import { SmartMUIDataTable } from "../../../components/SmartDataTable";
 import bc from "../../../services/breathecode";
 import BulkUpdateTag from "./BulkUpdateTag";
 import { useQuery } from "../../../hooks/useQuery";
+import { downloadFile } from '../../../utils';
+
 
 const relativeTime = require("dayjs/plugin/relativeTime");
 
@@ -78,7 +80,7 @@ export const BulkTags = () => {
         filter: false,
         customBodyRenderLite: (dataIndex) => {
           const item = bulkItems[dataIndex];
-          //  console.log(item,"item")
+         
 
           return (
             <>
@@ -102,8 +104,7 @@ export const BulkTags = () => {
         },
         customBodyRender: (value, tableMeta) => {
           const item = bulkItems[tableMeta.rowIndex];
-          console.log(tableMeta.rowIndex, "rowIndex");
-          console.log(item, "item");
+      
           return (
             <div className="flex items-center">
               <div
@@ -157,13 +158,17 @@ export const BulkTags = () => {
         filter: false,
         customBodyRenderLite: (i) => {
           const item = bulkItems[i];
+          console.log(item,"data item")
           return (
             <div className="flex items-center">
               <div className="ml-3">
                 <h5 className="my-0 text-15">
-                <IconButton size="small" variant="outlined" >
-            <Icon>download</Icon>
-          </IconButton>
+                  <a href={item.url}>
+                     <IconButton size="small" variant="outlined">
+                          <Icon>download</Icon>
+                     </IconButton>
+
+                  </a>
                 </h5>
               </div>
             </div>

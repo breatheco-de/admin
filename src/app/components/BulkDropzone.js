@@ -33,8 +33,11 @@ export function BulkDropzone(props) {
      
     //   } = useDropzone({accept:"csv/*"});
 
-  const files = props.acceptedFiles.map(file => (
-    <li key={file.path}>
+  const files = props.acceptedFiles.map(file =>
+    (
+      
+      <li key={file.path}>
+      
       {file.path} - {file.size} bytes
     </li>
   ));
