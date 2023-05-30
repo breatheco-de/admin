@@ -44,8 +44,7 @@ const BulkDragDrop = (props) => {
             <Grid item md={4}>
             <div className="bulkDropdown mx-2  mb-4 ">
           <TextField className={classes.textField} defaultValue="1" variant="outlined" size="small" select>
-            <MenuItem value="1">Upload type</MenuItem>
-            <MenuItem value="2">Form Entries</MenuItem>
+            <MenuItem value="1">Form Entries</MenuItem>
             {/* <MenuItem value="3">Six Month</MenuItem> */}
             {/* <MenuItem value="4">Last Year</MenuItem> */}
           </TextField>
