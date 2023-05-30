@@ -55,7 +55,7 @@ const AddBulkToCohort = (props) => {
   };
   return (
     <>
-      <Tooltip title="Add bulky to cohort">
+      <Tooltip title="Add bulk to cohort">
         <IconButton
           className={classes.iconButton}
           onClick={() => setOpenDialog(true)}
