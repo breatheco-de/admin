@@ -73,6 +73,9 @@
 .wrap{
   white-space: initial !important;
 }
+.capitalize{
+  text-transform: capitalize;
+}
 
 @media only screen and (max-width : 959px) {
   .MuiTableRow-root td:nth-child(1) {
