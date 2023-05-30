@@ -48,7 +48,7 @@ export const bulkUploadFiles = (files) => (dispatch) => {
 
   const form = new FormData();
   for (const file of files) form.append('file', file, file.name.split(' ').join('-'));
-  bc.monitoring().bulk_upload(form).then((res) => {
+  bc.marketing().bulk_upload(form).then((res) => {
     dispatch({
       type: BULK_UPLOAD_MEDIA_FILE,
       payload: res,
