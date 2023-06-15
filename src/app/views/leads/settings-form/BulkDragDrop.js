@@ -13,7 +13,8 @@ const BulkDragDrop = (props) => {
 // console.log(props, "bulkdrag")
   const [isUploading, setIsUploading] = useState(false);
   const [upload, setUpload] = useState(false);
-  const [acceptedFileData, setAcceptedFileData] = useState("");
+ 
+  
   const useStyles = makeStyles({
    textField:{
     width: '100%',
@@ -45,19 +46,23 @@ const BulkDragDrop = (props) => {
             <div className="bulkDropdown mx-2  mb-4 ">
           <TextField className={classes.textField} defaultValue="1" variant="outlined" size="small" select>
             <MenuItem value="1">Form Entries</MenuItem>
-            {/* <MenuItem value="3">Six Month</MenuItem> */}
-            {/* <MenuItem value="4">Last Year</MenuItem> */}
+        
           </TextField>
         </div>
             </Grid>
             <Grid item md={4}>
             <div className="bulkUpload  ml-2 mr-4 mb-4 ">
-          <Button fullWidth color="primary" variant="contained" type="submit"  onClick={(e) => {
-            e.stopPropagation();
-            dispatch(bulkUploadFiles(acceptedFiles));
-            window.location.reload();
-            // props.hideZone();
-          }}>
+          <Button fullWidth color="primary" variant="contained" type="submit"  onClick={async (e) => {
+    e.stopPropagation();
+    try {
+      await dispatch(bulkUploadFiles(acceptedFiles));
+      sessionStorage.setItem('bulkStatus', true)
+
+      // props.setBulkUpdateStatus(!props.bulkUpdateStatus);
+    } catch (error) {
+      // Handle error if necessary
+    }
+  }}>
             {isUploading ? "Pending" : "Start Upload"}
           </Button>
         </div>

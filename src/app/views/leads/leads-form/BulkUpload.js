@@ -1,47 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Card, Divider } from "@material-ui/core";
+import { Grid, Card, Divider ,CircularProgress, Box, } from "@material-ui/core";
 import { Breadcrumb } from "../../../../matx";
 import bc from "../../../services/breathecode";
-// import BulkActiveCampaignCard from "../settings-form/BulkActiveCampaignCard";
 import { BulkTags } from "../settings-form/BulkTags";
-import { Automations } from "../settings-form/Automations";
-// import { MatxLoading } from 'matx';
-import AlertAcademyAlias from "app/components/AlertAcademyAlias";
-import BulkActiveCampaignCard from "../settings-form/BulkActiveCampaignCard.jsx"
+import BulkDragDrop from "../settings-form/BulkDragDrop"
+
+
 
 const BulkUpload = () => {
-  const [status, setStatus] = useState({ color: "error", message: "No active campaign integration found" });
-  const [ACAcademy, setACAcademy] = useState({
-    id: null,
-    ac_key: "",
-    ac_url: "",
-    status: "",
-    sync_message: "",
-    sync_status: "",
-    last_interaction_at: "",
-    duplicate_leads_delta_avoidance: "",
-  });
-
-  const getAcAcademy = async () => {
-    try {
-      const res = await bc.marketing().getActiveCampaignAcademy();
-      if (res.ok) {
-        setACAcademy(res.data);
-        // setStatus({ color: "success", message: "Active Campaign Integration" })
-      }
-    } catch (e){
-      console.log(e);
-    }
-  }
-
-  useEffect(() => {
-    getAcAcademy();
-  }, []);
-
-  useEffect(() => {
-    if (ACAcademy.id !== null) setStatus({ message: "What are you uploading? Please drag and drop your CSV file and specify what type of entity you are uploading:" });
-  }, [ACAcademy]);
-
+  
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -53,16 +20,23 @@ const BulkUpload = () => {
         />
       </div>
       <div>
-      
-        <BulkActiveCampaignCard 
-          status={status}
-          defaultAcademy={ACAcademy}
-          setACAcademy={setACAcademy}
-        />
+      <Card elevation={3}>
+          <div className="flex p-4">
+            <h4 className="m-0">Bulk Upload</h4>
+          </div>
+          <Divider className="mb-2 flex" />
+          <div className="m-3">
+           {/* <p>{status.message}</p> */}
+          </div>
+          <BulkDragDrop 
+          />
+        </Card>
+
        
         <div className="mt-4">
           <div >
-            <BulkTags className="mt-4" />
+            <BulkTags
+            className="mt-4" />
           </div>
         </div>
       </div>

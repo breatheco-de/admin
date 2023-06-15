@@ -23,9 +23,10 @@ const statusColors = {
 };
 
 
-export const BulkTags = () => {
+export const BulkTags = (props) => {
   const query = useQuery();
   const [bulkItems, setBulkItems] = useState([]);
+ 
   const [isHovering, setIsHovering] = useState(-1);
 
   Date.prototype.addDays = function (days) {
@@ -33,13 +34,14 @@ export const BulkTags = () => {
     date.setDate(date.getDate() + days);
     return date;
   };
+
   const loadBulkData = async () => {
+
     const { data } = await bc.monitoring().get_bulk_upload();
 
     setBulkItems(data.results || data);
     return data;
   };
-
   
 
   
@@ -149,18 +151,33 @@ export const BulkTags = () => {
     },
   ];
 
-  
+
+  let bulkStatus = sessionStorage.getItem('bulkStatus');
+
+  useEffect(() => {
+    if(bulkStatus){
+      loadBulkData();
+      sessionStorage.setItem('bulkStatus', false);
+    }
+  }, [bulkStatus]);
   
   useEffect(() => {
-    loadBulkData();
+      loadBulkData();
   }, []);
+
+  
+
+
+
   return (
     <Card container className="p-4">
+     
   
       <SmartMUIDataTable
-        title="Your recent uploads: "
+        title="Your recent uploads:"
         columns={columns}
         items={bulkItems}
+      
         options={{
           print: false,
           viewColumns: false,
