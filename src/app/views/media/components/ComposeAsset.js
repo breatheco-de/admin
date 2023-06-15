@@ -31,11 +31,11 @@ import ConfirmAlert from "app/components/ConfirmAlert";
 import { PickCategoryModal } from "../components/PickCategoryModal";
 import bc from "app/services/breathecode";
 import history from "history.js";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
-import CommentBar from "./CommentBar";
-import { availableLanguages } from "../../../../utils";
-import config from "../../../../config.js";
-import dayjs from "dayjs";
+import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import CommentBar from "./CommentBar"
+import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
+import config from '../../../../config.js';
+import dayjs from 'dayjs';
 
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -225,18 +225,16 @@ const ComposeAsset = () => {
     setErrors(_errors);
 
     if (Object.keys(_errors).length == 0) {
-      const resp = isCreating
-        ? await bc
-            .registry()
-            .createAsset({
-              ..._asset,
-              lang: asset.category?.lang.toLowerCase(),
-            })
-        : await bc.registry().updateAsset(_asset.slug, {
-            ..._asset,
-            author: undefined,
-            seo_keywords: undefined,
-          });
+      const resp = isCreating ?
+        await bc.registry().createAsset({..._asset, 
+          lang: asset.category?.lang.toLowerCase(),
+          title: unSlugifyCapitalize(_asset.slug)})
+        :
+        await bc.registry().updateAsset(_asset.slug, {
+          ..._asset,
+          author: undefined,
+          seo_keywords: undefined,
+        });
 
       if (resp.ok) {
         if (isCreating) history.push(`./${resp.data.slug}`);
