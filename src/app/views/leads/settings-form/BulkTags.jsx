@@ -38,8 +38,8 @@ export const BulkTags = (props) => {
   const loadBulkData = async () => {
 
     const { data } = await bc.monitoring().get_bulk_upload();
-
-    setBulkItems(data.results || data);
+    let dataSorted = data.reverse();
+    setBulkItems(dataSorted);
     return data;
   };
   
@@ -162,6 +162,7 @@ export const BulkTags = (props) => {
   }, [bulkStatus]);
   
   useEffect(() => {
+
       loadBulkData();
   }, []);
 
