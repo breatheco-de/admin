@@ -67,7 +67,7 @@ const Board = () => {
     });
     let _unpublishedAssets = await bc.registry().getAllAssets({ 
       visibility: "PRIVATE,PUBLIC,UNLISTED",
-      status: "UNASSIGNED,WRITING,DRAFT,OPTIMIZED",
+      status: "NOT_STARTED,WRITING,DRAFT,OPTIMIZED",
       limit: 500
     });
     // if there is pagination, the assets will come inside "results"
@@ -79,7 +79,7 @@ const Board = () => {
     setBoard(newBoard({
       title: 'New Articles',
       members: members.data.map(m => newMember(m)),
-      columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'OPTIMIZED', 'PUBLISHED'].map(c => newColumn(c, c, _assets.filter(a => a.status === c).map(a => newCard(a))))
+      columns: ['NOT_STARTED', 'WRITING', 'DRAFT', 'OPTIMIZED', 'PUBLISHED'].map(c => newColumn(c, c, _assets.filter(a => a.status === c).map(a => newCard(a))))
     }))
   }, []);
 
