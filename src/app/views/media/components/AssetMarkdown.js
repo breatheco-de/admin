@@ -18,7 +18,7 @@ import { format } from "date-fns";
 const AssetMarkdown = ({ asset, value, onChange }) => {
   const readOnly = !['ARTICLE', 'LESSON'].includes(asset.asset_type);
 
-  const updatedDate = asset.updated_at;
+  const updatedDate = asset.readme_updated_at;
   const lastSynch = asset.last_synch_at;
 
   const d1 = Date.parse(updatedDate);
