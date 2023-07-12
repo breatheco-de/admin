@@ -1,6 +1,6 @@
 // <reference types="cypress" />
 
-describe('/admin/syllabus', () => {
+describe('/admissions/syllabus', () => {
   beforeEach(() => {
     // cy.auth();
 
@@ -48,7 +48,7 @@ describe('/admin/syllabus', () => {
       // breathecode.admissions.postAcademySchedule();
       // breathecode.admissions.postAcademyScheduleIdTimeslot();
 
-      cy.visit('/admin/syllabus');
+      cy.visit('/admissions/syllabus');
     });
 
   });

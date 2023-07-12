@@ -1,10 +1,10 @@
 // <reference types="cypress" />
 
-describe('/admin/syllabus/new', () => {
+describe('/admissions/syllabus/new', () => {
   beforeEach(() => {
     cy.auth();
     cy.mockPostAdmissionsSyllabusResponse();
-    cy.visit('/admin/syllabus/new');
+    cy.visit('/admissions/syllabus/new');
   });
   context('Syllabus form', () => {
     it('Slug field validations', () => {
@@ -122,7 +122,7 @@ describe('/admin/syllabus/new', () => {
         cy.wrap(request.body).its('logo').should('eq', 'https://i1.sndcdn.com/avatars-000096076334-121vuv-t500x500.jpg');
       })
 
-      cy.location('pathname').should('eq', '/admin/syllabus');
+      cy.location('pathname').should('eq', '/admissions/syllabus');
     });
   });
 });

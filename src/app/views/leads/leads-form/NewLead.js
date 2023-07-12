@@ -165,7 +165,7 @@ const NewLead = () => {
 
   // VALIDACIONES FORM\\
 
-  const phoneRegExp = /^[+]?([0-9]{11,15})$/;
+  const phoneRegExp = /^[+]?([0-9]{10,15})$/;
 
   const ProfileSchema = Yup.object().shape({
     first_name: Yup.string()
@@ -219,7 +219,7 @@ const NewLead = () => {
             };
             let res;
             if (!id) res = await bc.marketing().addNewLead({ ...payload });
-            else res = await bc.marketing().updateAcademyLead(id, { ...payload });
+            else res = await bc.marketing().updateAcademyLead(id, { ...payload, academy: undefined, lead_generation_app: undefined });
 
             if (res.ok) history.goBack();
           }}
@@ -455,7 +455,7 @@ const NewLead = () => {
                   <div className="flex flex-wrap m--2">
                     <AsyncAutocomplete
                       error={errors.location && touched.location}
-                      onChange={(location) => { setNewLead({ ...newLead, location: location.slug }); }}
+                      onChange={(location) => {setNewLead({ ...newLead, location: location.slug })} }
                       width="35%"
                       className="mr-2 ml-2"
                       asyncSearch={() => bc.marketing().getAcademyAlias()}
@@ -469,7 +469,7 @@ const NewLead = () => {
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Tags Objects
+                  Tags
                 </Grid>
                 <Grid item md={10} sm={8} xs={12} className="mt-2">
                   <div className="flex flex-wrap m--2">
@@ -480,7 +480,7 @@ const NewLead = () => {
                       asyncSearch={(search) => bc.marketing().getAcademyTags({ like: search, type: 'SOFT,STRONG' })}
                       size="small"
                       label="tags"
-                      required={newLead.tag_objects.length === 0}
+                      required={newLead.tag_objects.length==0}
                       multiple={true}
                       debounced={false}
                       getOptionSelected={(option, value) => option.slug === value.slug}
@@ -489,11 +489,11 @@ const NewLead = () => {
                     />
                   </div>
                   <div className="mt-2">
-                    <small className="text-muted d-block">E.g.: request_more_info, website_leads, or any other tag</small>
+                    <small className="text-muted d-block">E.g.: request_more_info, website-lead, or any other tag</small>
                   </div>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Automation Objects
+                  Automations
                 </Grid>
                 <Grid item md={10} sm={8} xs={12} className="mt-2">
                   <div className="flex flex-wrap m--2">

@@ -209,6 +209,7 @@ const Cohort = () => {
               if (value === 'privacy') {
                 makePrivate();
               }
+
               if (value === 'attendance') {
                 window.open(`${STUDENT_HOST}/cohort/${slug}/attendance?token=${token}&academy=${session.academy.id}`);
               } else if (value === 'assignments') {
@@ -238,6 +239,7 @@ const Cohort = () => {
                 isPrivate={cohort.private}
                 timeZone={cohort.timezone}
                 onlineMeetingUrl={cohort.online_meeting_url}
+                isHiddenOnPrework={cohort.is_hidden_on_prework}
                 onSubmit={updateCohort}
               />
             )}

@@ -17,7 +17,9 @@
 .MuiTableCell-root {
   word-break: unset !important;
 }
-
+.no-list-style li{
+  list-style: none;
+}
 .underline {
   text-decoration: underline;
 }
@@ -38,7 +40,7 @@
   margin: 0;
 }
 
-.red {
+.red, .text-danger {
   color: red;
 }
 
@@ -52,6 +54,9 @@
 
 .orange {
   background-color: rgb(255, 153, 0);
+}
+.bg-danger {
+  background-color: rgb(241, 71, 71);
 }
 .text-warning{
   color: rgb(255, 153, 0);
@@ -67,6 +72,9 @@
 
 .wrap{
   white-space: initial !important;
+}
+.capitalize{
+  text-transform: capitalize;
 }
 
 @media only screen and (max-width : 959px) {
@@ -99,4 +107,8 @@
 }
 .chip small{
   font-size: 8px;
+}
+
+.rbc-event{
+  background: #1675d2;
 }

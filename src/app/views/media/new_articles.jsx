@@ -59,15 +59,27 @@ const Board = () => {
     const members = await bc.auth().getAcademyMembers({ role: 'content_writter' });
     setMemberList(members.data.map(m => newMember(m)));
 
-    const _assets = await bc.registry().getAllAssets({ 
-      published_before: ago30Days.format('YYYY-MM-DD'), 
-      visibility: "PRIVATE,PUBLIC,UNLISTED"  
+    let _assets = await bc.registry().getAllAssets({ 
+      published_after: ago30Days.format('YYYY-MM-DD'), 
+      visibility: "PRIVATE,PUBLIC,UNLISTED",
+      status: "PUBLISHED",
+      limit: 500
     });
-    setAssets(_assets)
+    let _unpublishedAssets = await bc.registry().getAllAssets({ 
+      visibility: "PRIVATE,PUBLIC,UNLISTED",
+      status: "NOT_STARTED,WRITING,DRAFT,OPTIMIZED",
+      limit: 500
+    });
+    // if there is pagination, the assets will come inside "results"
+    _assets = _assets.data.results || _assets.data;
+    // merge with unpublished assets to use one centralized kanban
+    _assets = _assets.concat(_unpublishedAssets.data.results || _unpublishedAssets.data)
+    setAssets(_assets);
+    
     setBoard(newBoard({
       title: 'New Articles',
       members: members.data.map(m => newMember(m)),
-      columns: ['UNASSIGNED', 'WRITING', 'DRAFT', 'PUBLISHED'].map(c => newColumn(c, c, _assets.data.filter(a => a.status === c).map(a => newCard(a))))
+      columns: ['NOT_STARTED', 'WRITING', 'DRAFT', 'OPTIMIZED', 'PUBLISHED'].map(c => newColumn(c, c, _assets.filter(a => a.status === c).map(a => newCard(a))))
     }))
   }, []);
 
