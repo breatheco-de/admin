@@ -7,6 +7,7 @@ import bc from "../../services/breathecode";
 import { Link } from 'react-router-dom';
 import OrganizationUsers from "./github-form/OrganizationUsers";
 import GithubOrganization from "./github-form/GithubOrganization";
+import ProvisioningBills from "./github-form/ProvisioningBills";
 import { MatxLoading } from 'matx';
 
 const GithubSettings = () => {
@@ -103,6 +104,12 @@ const GithubSettings = () => {
         <Grid container spacing={3} className="mt-4">
           { settings.beta && <Grid item md={5} xs={12}>
             <GithubOrganization
+              // isCreating={isCreating}
+              // loadingOrganization={isLoadingOrganization}
+              // status={status}
+              // organization={organization}
+            />
+            <ProvisioningBills className="mt-1"
               // isCreating={isCreating}
               // loadingOrganization={isLoadingOrganization}
               // status={status}

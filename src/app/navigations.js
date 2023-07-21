@@ -213,6 +213,18 @@ export const navigations = [
         ]
     },
     {
+        name: "Provisioning",
+        icon: "account_circle",
+        children: [
+            {
+                name: "Github",
+                path: "/provisioning/github",
+                iconText: "STA",
+                capabilities: ["get_github_user"],
+            },
+        ],
+    },
+    {
         name: "Admin",
         icon: "account_circle",
         children: [
@@ -227,12 +239,6 @@ export const navigations = [
                 path: "/admin/invites",
                 iconText: "STA",
                 capabilities: ["read_invite"],
-            },
-            {
-                name: "Github",
-                path: "/admin/github",
-                iconText: "STA",
-                capabilities: ["get_github_user"],
             },
             {
                 name: "Developer Settings",
