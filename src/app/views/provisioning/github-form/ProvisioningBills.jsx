@@ -1,35 +1,87 @@
-import React from "react";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { Card, Divider, CircularProgress, Box, } from "@material-ui/core";
-// import { AddEventbriteOrganization } from "./AddEventbriteOrganization";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import {
+  Grid,
+  IconButton,
+  Icon,
+  Divider,
+  Card,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  CircularProgress,
+  Box,
+} from "@material-ui/core";
+import dayjs from "dayjs";
+const relativeTime = require("dayjs/plugin/relativeTime");
 
+dayjs.extend(relativeTime);
 
-const Bills = ({organization, status, isCreating, loadingOrganization, className}) => {
-  
-    const Loader = () => (
-        <Box sx={{ display: "flex", width: "100%" }}>
-            <CircularProgress />
-        </Box>
-    )
-    
-    if (loadingOrganization) return <Loader />
+export const ProvisioningBills = ({ className, bills }) => {
+
+  const styles = {
+    textAlign: 'center',
+    width: '100%',
+  };
 
   return (
-        <Card elevation={3} className={className}>
-          <div className="flex p-4">
-            <h4 className="m-0">Latest bills</h4>
-          </div>
-          <Divider className="mb-2 flex" />
-          <div className="m-3">
-            {/* <Alert severity={status.color}> */}
-            <Alert>
-              <AlertTitle>Some message</AlertTitle>
-              {/* Please past here you Eventbrite Key to begin the integration */}
-            </Alert>
-          </div>
-          {/* <AddEventbriteOrganization initialValues={organization} isCreating={isCreating} /> */}
-        </Card>
+    <Card container className={`p-4 ${className}`}>
+      <div className="flex p-4">
+        <h4 className="m-0">Provisioning Bills</h4>
+      </div>
+      <Divider className="mb-2 flex" />
+      <Grid item md={12}>
+      The following bills are pending and to be paid.
+      </Grid>
+      <Grid item md={12} className="mt-2">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell className="px-0">Name</TableCell>
+              <TableCell className="px-0">Status</TableCell>
+              <TableCell className="px-0">Amount</TableCell>
+              <TableCell className="px-0">Pay</TableCell>
+            </TableRow>
+          </TableHead>
+            <TableBody>
+              {bills.map((bill) => (
+                <TableRow key={bill.id}>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {bill.name}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {bill.status}
+                  </TableCell>
+                  <TableCell className="pl-0 capitalize" align="left">
+                    {bill.total_amount}
+                  </TableCell>
+                  <TableCell className="pl-0">
+                    <IconButton
+                      onClick={() => {
+                        window.open(bill.stripe_url)
+                      }}
+                    >
+                      <Icon>attach_money</Icon>
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+        </Table>
+        {bills.length === 0 && (
+          <p style={styles}> No provisioning bills found </p>
+        )}
+      </Grid>
+    </Card>
   );
 };
 
-export default Bills;
+ProvisioningBills.propTypes = {
+  className: PropTypes.string,
+};
+
+ProvisioningBills.defaultProps = {
+  className: "",
+};

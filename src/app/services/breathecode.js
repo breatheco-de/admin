@@ -646,6 +646,21 @@ class BreatheCodeClient {
         };
     }
 
+    provisioning() {
+        return {
+            getBills: (query={}) => {
+                // start=${startDate.format('DD/MM/YYYY')}&astatus=ANSWERED
+                const qs = Object.keys(query)
+                    .map((key) => `${key}=${query[key]}`)
+                    .join("&");
+                return axios.bcGet(
+                    "Provisioning Bills",
+                    `${this.host}/provisioning/academy/bill?${qs}`
+                );
+            },
+        }
+    }
+
     feedback() {
         return {
             getAnswers: (query) => {

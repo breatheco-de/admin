@@ -214,7 +214,7 @@ export const navigations = [
     },
     {
         name: "Provisioning",
-        icon: "account_circle",
+        icon: "computer",
         children: [
             {
                 name: "Github",
