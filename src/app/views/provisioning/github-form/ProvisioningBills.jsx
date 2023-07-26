@@ -53,7 +53,8 @@ export const ProvisioningBills = ({ className, bills }) => {
               {bills.map((bill) => (
                 <TableRow key={bill.id}>
                   <TableCell className="pl-0 capitalize" align="left">
-                    {bill.title || "No title provided"}
+                    <p className="m-0 p-0">{bill.title || "No title provided"}</p>
+                    <small className="text-muted">{bill.vendor.name}</small>
                   </TableCell>
                   <TableCell className="pl-0 capitalize" align="left">
                     {bill.status}
