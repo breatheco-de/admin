@@ -4,7 +4,6 @@ import {
   Card,
    Icon,IconButton
 } from "@material-ui/core";
-import * as Yup from "yup";
 import dayjs from "dayjs";
 import { SmartMUIDataTable } from "../../../components/SmartDataTable";
 import bc from "../../../services/breathecode";

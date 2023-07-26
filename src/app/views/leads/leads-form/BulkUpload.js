@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Grid, Card, Divider ,CircularProgress, Box, } from "@material-ui/core";
+import React from "react";
+import {  Card, Divider } from "@material-ui/core";
 import { Breadcrumb } from "../../../../matx";
-import bc from "../../../services/breathecode";
 import { BulkTags } from "../settings-form/BulkTags";
 import BulkDragDrop from "../settings-form/BulkDragDrop"
 
@@ -26,7 +25,6 @@ const BulkUpload = () => {
           </div>
           <Divider className="mb-2 flex" />
           <div className="m-3">
-           {/* <p>{status.message}</p> */}
           </div>
           <BulkDragDrop 
           />

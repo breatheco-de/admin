@@ -9,8 +9,7 @@ import { useDispatch } from 'react-redux';
 import {useDropzone} from 'react-dropzone';
 
 
-const BulkDragDrop = (props) => {
-// console.log(props, "bulkdrag")
+const BulkDragDrop = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [upload, setUpload] = useState(false);
  
@@ -31,7 +30,7 @@ const BulkDragDrop = (props) => {
     isDragReject,
     acceptedFiles,
   } = useDropzone();
-  console.log(acceptedFiles,"acceptedfileData bulk!!")
+
   return (
     <div className="bulkContainer">
       <Grid container spacing={3} alignItems="center">
@@ -57,10 +56,8 @@ const BulkDragDrop = (props) => {
     try {
       await dispatch(bulkUploadFiles(acceptedFiles));
       sessionStorage.setItem('bulkStatus', true)
-
-      // props.setBulkUpdateStatus(!props.bulkUpdateStatus);
     } catch (error) {
-      // Handle error if necessary
+      console.error(error,"bulkUpload Files Error")
     }
   }}>
             {isUploading ? "Pending" : "Start Upload"}
