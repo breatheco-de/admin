@@ -382,8 +382,8 @@ const Leads = () => {
           <div className="">
           <DowndownMenu
             options={[
-              { label: 'Add single lead', value: 'growth/sales/new'},
-              { label: 'Add leads in bulk', value: 'growth/sales/bulk'}
+              { label: 'Add single lead', value: 'growth/lead/new'},
+              { label: 'Add leads in bulk', value: 'growth/lead/bulk'}
             ]}
             icon="more_horiz"
             onSelect={({ value }) => {
