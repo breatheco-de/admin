@@ -13,6 +13,7 @@ import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
 import bc from "../../../services/breathecode";
 import { getSession } from '../../../redux/actions/SessionActions';
+import { SignalCellularNullSharp } from '@material-ui/icons';
 
 
 const eventypePropTypes = {
@@ -49,7 +50,13 @@ const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpe
   const handleClose = () => setOpen(false);
   const [chooseCohort, setChooseCohort] = useState(null);
   const [syllabus, setSyllabus] = useState(null);
+  const [academy, setAcademy] = useState(null);
   const [open, setOpen] = React.useState(false);
+
+  const session = getSession();
+  const eventypeAcademy = eventype.academy?.slug;
+  const eventypeAcademyId = eventype.academy?.id;
+  const academyOwner = session.academy?.id;
 
   const style = {
     position: 'absolute',
@@ -63,13 +70,11 @@ const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpe
     p: 4,
   };
 
-
   const addVisibilitySetting = async (values) => {
     try {
-      const response = await bc.events().postAcademyEventTypeVisibilitySetting({ ...values},  eventype.slug);
+      const response = await bc.events().postAcademyEventTypeVisibilitySetting(values, eventype.slug);
       if (response.status >= 200) {
         await fetchEventype();
-        setSubmitting(false);
       }
     } catch (error) {
       console.error(error);
@@ -80,8 +85,6 @@ const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpe
     <>
       <h1 className="ml-2 mt-2 mb-4 font-medium text-28">Who can join these events?</h1>
       <Card elevation={3}>
-
-
         {eventype.private && (
           <Grid item md={12} sm={12} xs={12}>
             <Alert severity="warning">
@@ -95,70 +98,141 @@ const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpe
         <Formik
           initialValues={eventype}
           validationSchema={schema}
-          onSubmit={() => {
-            addVisibilitySetting({academy: eventype.academy.id, cohort: chooseCohort.id, syllabus: syllabus.id});
+          onSubmit={(values, { setSubmitting }) => {
+
+            let visibilitySettings = { academy: academy?.id };
+            if (academy) visibilitySettings['academy'] = academy.id;
+            if (syllabus) visibilitySettings['syllabus'] = syllabus.id;
+            if (chooseCohort) visibilitySettings['cohort'] = chooseCohort.id;
+
+            addVisibilitySetting(visibilitySettings);
+            handleClose();
             setSubmitting(false);
           }}
         >
           {({ values, isSubmitting, handleSubmit }) => (
             <Modal open={open} onClose={handleClose}>
               <form className="p-4" onSubmit={handleSubmit}>
-
                 <Box sx={style}>
-                    <Grid item md={12} sm={12} xs={12}>
-
-                      <Grid item md={2} sm={4} xs={12}>
-                        Syllabus
-                      </Grid>
-
+                  {academy && academy?.id != eventype?.academy.id ?
+                    <>
                       <Grid item md={12} sm={12} xs={12}>
-                        <div className="flex flex-wrap">
-                          <AsyncAutocomplete
-                            name="syllabus"
-                            debounced={false}
-                            onChange={(x) => setSyllabus(x)}
-                            width="100%"
-                            className="m-4"
-                            asyncSearch={() => bc.admissions().getAllSyllabus()}
-                            size="small"
-                            data-cy="syllabus"
-                            label="syllabus"                            
-                            getOptionLabel={(option) => `${option.name}`}
-                            value={syllabus}
-                          />
-                        </div>
+                        <Grid item md={2} sm={4} xs={12}>
+                          Academy
+                        </Grid>
+
+                        <Grid item md={12} sm={12} xs={12}>
+                          <div className="flex flex-wrap">
+                            <AsyncAutocomplete
+                              name="academy"
+                              debounced={false}
+                              asyncSearch={() => bc.admissions().getAllAcademies()}
+                              onChange={(x) => setAcademy(x)}
+                              width="100%"
+                              className="m-4"
+                              size="small"
+                              data-cy="academy"
+                              label="academy"
+                              getOptionLabel={(option) => `${option.name}`}
+                            />
+                          </div>
+
+                        </Grid>
                       </Grid>
-                      <Grid item md={2} sm={4} xs={12}>
-                        Cohort
-                      </Grid>
+
+                      <div className="flex-column items-start px-4 mb-4">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          type="submit"
+                          data-cy="submit"
+                          disabled={isSubmitting}>
+                          Share
+                          
+                        </Button>
+                      </div>
+                    </>
+
+                    :
+                    <>
                       <Grid item md={12} sm={12} xs={12}>
-                        <div className="flex flex-wrap">
-                          <AsyncAutocomplete
-                            name="cohort"
-                            debounced={false}
-                            onChange={(x) => setChooseCohort(x)}
-                            width="100%"
-                            className="m-4"
-                            asyncSearch={() => bc.admissions().getAllCohorts()}
-                            size="small"
-                            data-cy="cohort"
-                            label="cohort"
-                            getOptionLabel={(option) => `${option.name}`}
-                            value={chooseCohort}
-                          />
-                        </div>
+                        <Grid item md={2} sm={4} xs={12}>
+                          Academy
+                        </Grid>
+
+                        <Grid item md={12} sm={12} xs={12}>
+                          <div className="flex flex-wrap">
+                            <AsyncAutocomplete
+                              name="academy"
+                              debounced={false}
+                              onChange={(x) => setAcademy(x)}
+                              width="100%"
+                              className="m-4"
+                              asyncSearch={() => bc.admissions().getAllAcademies()}
+                              size="small"
+                              data-cy="academy"
+                              label="academy"
+                              getOptionLabel={(option) => `${option.name}`}
+                            />
+                          </div>
+                        </Grid>
+                        <Grid item md={2} sm={4} xs={12}>
+                          Syllabus
+                        </Grid>
+
+                        <Grid item md={12} sm={12} xs={12}>
+                          <div className="flex flex-wrap">
+                            <AsyncAutocomplete
+                              name="syllabus"
+                              debounced={false}
+                              onChange={(x) => setSyllabus(x)}
+                              width="100%"
+                              className="m-4"
+                              asyncSearch={() => bc.admissions().getAllSyllabus()}
+                              size="small"
+                              data-cy="syllabus"
+                              label="syllabus"
+                              getOptionLabel={(option) => `${option.name}`}
+                            />
+                          </div>
+                        </Grid>
+
+                        <Grid item md={2} sm={4} xs={12}>
+                          Cohort
+                        </Grid>
+                        <Grid item md={12} sm={12} xs={12}>
+                          <div className="flex flex-wrap">
+                            <AsyncAutocomplete
+                              name="cohort"
+                              debounced={false}
+                              onChange={(x) => setChooseCohort(x)}
+                              width="100%"
+                              className="m-4"
+                              asyncSearch={() => bc.admissions().getAllCohorts()}
+                              size="small"
+                              data-cy="cohort"
+                              label="cohort"
+                              getOptionLabel={(option) => `${option.name}`}
+                            />
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                    <div className="flex-column items-start px-4 mb-4">
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        type="submit"
-                        data-cy="submit"
-                        disabled={isSubmitting}>
-                        Share
-                      </Button>
-                    </div>
+
+                      <div className="flex-column items-start px-4 mb-4">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          type="submit"
+                          data-cy="submit"
+                          disabled={isSubmitting}
+                         >
+                          Share
+                        </Button>
+                      </div>
+                    </>
+
+                  }
+
                 </Box>
               </form>
 
@@ -183,36 +257,42 @@ const ShareEvents = ({ eventype, setEventype, openDialogDeleteVisibility, setOpe
                             <Grid key={i} className='m-1' item lg={10} md={10} sm={10} xs={10}>
                               {getVisibilitySettingMessage(visibility)}
                             </Grid>
-{
-                            <Grid item lg={2} md={2} sm={2} xs={2}>
-                                                      
-                              <IconButton
-                                onClick={() => {
-                                  setVisibilitySetting(visibility);
-                                  setOpenDialogDeleteVisibility(true);
-                                }}
-                              >
+                            {
+                              <Grid item lg={2} md={2} sm={2} xs={2}>
 
-                                <Icon fontSize="small">delete</Icon>
-                              </IconButton>
+                                <IconButton
+                                  onClick={() => {
+                                    setVisibilitySetting(visibility);
+                                    setOpenDialogDeleteVisibility(true);
+                                  }}
+                                >
 
-                            </Grid>
-                          }
+                                  <Icon fontSize="small">delete</Icon>
+                                </IconButton>
+
+                              </Grid>
+                            }
                           </ListItem>
                         )) : (
                           <>
                             <div><h5>There are no shared settings</h5></div>
                           </>
-                        )}                   
-{   
-                        <IconButton onClick={() => {
-                          handleOpen()
-                        }}>
-                          <Icon fontSize="small">
-                            add_circle
-                          </Icon>
-                        </IconButton>
-                    }  
+                        )}
+                        {eventypeAcademyId !== academyOwner ?
+                          "" :
+                          <>
+                            {
+                              <IconButton onClick={() => {
+                                handleOpen()
+                              }}>
+                                <Icon fontSize="small">
+                                  add_circle
+                                </Icon>
+                              </IconButton>
+                            }
+                          </>
+                        }
+
 
                       </Grid>
                     </List>

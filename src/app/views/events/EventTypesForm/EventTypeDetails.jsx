@@ -10,6 +10,7 @@ import Field from '../../../components/Field';
 import { schemas } from '../../../utils';
 import { getSession } from '../../../redux/actions/SessionActions';
 import { availableLanguages } from 'utils';
+import ThumbnailCard from './ThumbnailCard';
 
 
 
@@ -37,13 +38,12 @@ const schema = Yup.object().shape({
 
 
 const EventTypeDetails = ({ eventype, onSubmit }) => {
-  console.log('this is eventype', eventype)
   const [status, setStatus] = useState({ color: "", message: "" });
   const session = getSession();
   const academyOwner = session.academy.id;
   const sessionAcademy = session.academy.slug;
-  const eventypeAcademy = eventype.academy.slug;
-  const eventypeAcademyId = eventype.academy.id;
+  const eventypeAcademy = eventype.academy?.slug;
+  const eventypeAcademyId = eventype.academy?.id;
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -158,24 +158,12 @@ const EventTypeDetails = ({ eventype, onSubmit }) => {
                 <Grid item md={5} sm={4} xs={12}>
                   Icon URL
                 </Grid>
-                <Grid item md={7} sm={8} xs={12}>
-                  <TextField
-                    aria-label="Icon URL"
-                    minRows={2}
-                    placeholder="Icon URL"
-                    label="Icon_Url"
-                    multiline
-                    fullWidth
-                    name="icon_url"
-                    type="text"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setFieldValue('icon_url', e.target.value);
-                    }}
-                    value={values.icon_url}
-                    required
-                  />
-                </Grid>
+      
+                    <ThumbnailCard item md={7} sm={8} xs={12}
+                      eventype={eventype}
+                      onChange={url => setFieldValue('icon_url', url)}></ThumbnailCard>
+                 ``
+      
                 <Grid item md={12} sm={12} xs={12}>
                   <FormControlLabel
                     control={

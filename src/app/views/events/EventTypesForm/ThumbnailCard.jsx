@@ -23,54 +23,90 @@ const toastOption = {
 };
 
 const eventypePropTypes = {
-    id: PropTypes.number,
-    slug: PropTypes.string,
-    name: PropTypes.string,
-    icon_url: PropTypes.string,
-    academy_owner: PropTypes.number,
-    visibility_settings: PropTypes.string,
-  };
-  
+  id: PropTypes.number,
+  slug: PropTypes.string,
+  name: PropTypes.string,
+  icon_url: PropTypes.string,
+  academy_owner: PropTypes.number,
+  visibility_settings: PropTypes.string,
+};
+
 
 const propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    eventype: PropTypes.shape(eventypePropTypes).isRequired,
-  };
+  onSubmit: PropTypes.func.isRequired,
+  eventype: PropTypes.shape(eventypePropTypes).isRequired,
+};
 
 const ThumbnailCard = ({ eventype, onChange }) => {
-    const [preview, setPreview] = useState(null);
-    const [previewURL, setPreviewURL] = useState(null);
-    const [edit, setEdit] = useState(null);
-  
-    useEffect(() => {
-      setPreview(eventype?.icon_url)
-      setPreviewURL(eventype?.icon_url)
-    }, [eventype?.icon_url])
-  
-    return <Card className="p-4 mb-4">
-      {edit ?
-        <div className="flex">
-          <MediaInput
-            size="small"
-            placeholder="Image URL"
-            value={previewURL}
-            handleChange={(k, v) => {setPreviewURL(v); onChange(v)}}
-            name="icon_url"
-            fullWidth
-            inputProps={{ style: { padding: '10px' } }}
-          />
-          <Button variant="contained" color="primary" size="small" onClick={() => setEdit(false)}>
-            <Icon fontSize="small">cancel</Icon>
-          </Button>
-        </div>
+  const [preview, setPreview] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [edit, setEdit] = useState(null);
+  const [updateIcon, setUpdateIcon] = useState(null);
+
+  useEffect(() => {
+    setPreview(eventype?.icon_url)
+    setPreviewURL(eventype?.icon_url)
+  }, [eventype?.icon_url])
+
+  return <>
+    {eventype != null ?
+      <Grid item md={7} sm={8} xs={12}>
+         <div style={{
+            height: "100px", width: "100px",
+            backgroundPosition: "center center",
+            backgroundSize: "cover",
+            border: "1px solid #BDBDBD",
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `url(${previewURL})`
+          }} className="text-center pt-5">
+          </div>
+        
+        {updateIcon ? 
+              <div className="flex">
+              <MediaInput
+                size="small"
+                placeholder="Image URL"
+                value={previewURL}
+                handleChange={(k, v) => { setPreviewURL(v); onChange(v) }}
+                name="icon_url"
+                fullWidth
+                inputProps={{ style: { padding: '10px' } }}
+              />
+              <Button variant="contained" color="primary" size="small" onClick={() => setUpdateIcon(false)}>
+                <Icon fontSize="small">cancel</Icon>
+              </Button>
+            </div> : 
+            <a href="#" className="anchor text-primary underline" onClick={() => setUpdateIcon(true)}>Change Icon</a>
+            }
+      </Grid>
+      :
+      <div>
+        {edit ?
+          <div className="flex">
+            <MediaInput
+              size="small"
+              placeholder="Image URL"
+              value={previewURL}
+              handleChange={(k, v) => { setPreviewURL(v); onChange(v) }}
+              name="icon_url"
+              fullWidth
+              inputProps={{ style: { padding: '10px' } }}
+            />
+            <Button variant="contained" color="primary" size="small" onClick={() => setEdit(false)}>
+              <Icon fontSize="small">cancel</Icon>
+            </Button>
+          </div>
           :
-          <p className="m-0">No preview image has been generated for this Event Type.
+          <p className="m-0">There is no Icon generated for this Event Type.
             <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}> Set one now</a>
           </p>
-      }
-    </Card>;
-  }
+        }
+      </div>
+    }
 
-  ThumbnailCard.propTypes = propTypes;
+  </>;
+}
+
+ThumbnailCard.propTypes = propTypes;
 
 export default ThumbnailCard;

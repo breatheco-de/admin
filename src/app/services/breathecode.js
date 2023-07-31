@@ -127,9 +127,17 @@ class BreatheCodeClient {
                     payload
                 ),
             getCertificates: () =>
-                axios.bcGet("Certificates", `${this.host}/admissions/syllabus`),
+                axios.bcGet(
+                    "Certificates", 
+                    `${this.host}/admissions/syllabus`),
             getAllSyllabus: () =>
-                axios.bcGet("Syllabus", `${this.host}/admissions/syllabus`),
+                axios.bcGet(
+                    "Syllabus", 
+                    `${this.host}/admissions/syllabus`),
+            getAllAcademies: () =>
+                axios.bcGet(
+                    "Academy", 
+                    `${this.host}/admissions/academy`),
             getAllTimeZone: () =>
                 axios.bcGet(
                     "TimeZone",
