@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useQuery } from "../hooks/useQuery";
-import { DownloadCsv } from "./DownloadCsv";
+import  {DownloadCsv}  from "../components/DownloadCsv";
 import BulkDelete from "./ToolBar/BulkDelete";
 
 const defaultToolbarSelectStyles = {
@@ -40,6 +40,7 @@ export const getParams = (url = window.location) => {
 
     return params;
 };
+
 
 export const SmartMUIDataTable = (props) => {
     const query = useQuery();

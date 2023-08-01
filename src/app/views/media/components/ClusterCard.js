@@ -70,7 +70,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
     }
     return (
         <Card className="mb-4 pb-4">
-            {openKeywordAssets && <AssetsList assets={openKeywordAssets.all_assets} onClose={() => setOpenKeywordAssets(false)} onAddAsset={(asset) => handleAddAsset(openKeywordAssets, asset)} />}
+            {openKeywordAssets && <AssetsList cluster={openKeywordAssets.cluster} assets={openKeywordAssets.keyword.all_assets} onClose={() => setOpenKeywordAssets(false)} onAddAsset={(asset) => handleAddAsset(openKeywordAssets.keyword, asset)} />}
             <div className="p-3">
                 { editMode ? 
                 <Grid container spacing={3} alignItems="center" className="m-2">
@@ -141,8 +141,8 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                     </Grid>
                     <Grid item sm={7} xs={12}>
                         {clusterForm.keywords?.map(k => {
-                            const hasPublished = k.all_assets.filter(a => a.status == 'PUBLISHED').length > 0;
-                            const hasStarted = k.all_assets.filter(a => a.status != 'UNASSIGNED').length > 0;
+                            const hasPublished = k.all_assets.filter(a => a.lang?.toLowerCase() == clusterForm.lang.toLowerCase() && a.status == 'PUBLISHED').length > 0;
+                            const hasStarted = k.all_assets.filter(a => a.lang?.toLowerCase() == clusterForm.lang.toLowerCase()).length > 0;
                             const _status = hasPublished ? "default" : (hasStarted ? "danger" : "error");
 
                             const colors = {
@@ -151,7 +151,7 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                                 "default": "",
                                 undefined: "",
                             }
-                            return <Chip onClick={() => setOpenKeywordAssets(k)}
+                            return <Chip onClick={() => setOpenKeywordAssets({ keyword: k, cluster })}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
                                 icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${colors[_status]}`} />;

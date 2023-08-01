@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Icon, IconButton, Tooltip, Menu, MenuItem,
 } from '@material-ui/core';
-
 const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -23,6 +22,8 @@ const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
     document.body.appendChild(link);
     link.click();
   };
+  
+
 
   const handleDownloadAll = () => {
     () => {

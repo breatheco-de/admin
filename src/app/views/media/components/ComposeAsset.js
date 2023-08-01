@@ -47,7 +47,7 @@ dayjs.extend(relativeTime);
 
 const statusColors = {
   DRAFT: "bg-error",
-  UNASSIGNED: "bg-error",
+  NOT_STARTED: "bg-error",
   WRITING: "bg-warning",
   OPTIMIZED: "bg-warning",
   PUBLISHED: "bg-primary",
@@ -521,11 +521,11 @@ const ComposeAsset = () => {
                   else if (asset.status == "PUBLISHED") {
                     const _errors = await saveAsset(formattedDate);
                     if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                    if (value === "push") handleAction("push");
+                    else if (value === "push") handleAction("push");
                   } else {
                     const _errors = await saveAsset();
                     if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                    if (value === "push") handleAction("push");
+                    else if (value === "push") handleAction("push");
                   }
                 }}
               >
@@ -543,13 +543,13 @@ const ComposeAsset = () => {
                 onOpen={async () => {
                   const _errors = await saveAsset(formattedDate);
                   if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                  if (makePublicDialog.action === "push") handleAction("push");
+                  else if (makePublicDialog.action === "push") handleAction("push");
                   setMakePublicDialog({isOpen: false, action: null});
                 }}
                 onClose={async () => {
                   const _errors = await saveAsset();
                   if (Object.keys(_errors).length > 0) setErrorDialog(true);
-                  if (makePublicDialog.action === "push") handleAction("push");
+                  else if (makePublicDialog.action === "push") handleAction("push");
                   setMakePublicDialog({isOpen: false, action: null});
                 }}
               />
@@ -647,7 +647,7 @@ const ComposeAsset = () => {
         }}
         open={updateStatus}
         title="Select a status"
-        options={["UNASSIGNED", "WRITING", "DRAFT", "OPTIMIZED", "PUBLISHED"]}
+        options={["NOT_STARTED", "WRITING", "DRAFT", "OPTIMIZED", "PUBLISHED"]}
       />
       <DialogPicker
         onClose={(opt) => {

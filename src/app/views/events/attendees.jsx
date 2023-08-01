@@ -11,7 +11,7 @@ import { Breadcrumb, MatxLoading } from '../../../matx';
 import bc from '../../services/breathecode';
 
 import { useQuery } from '../../hooks/useQuery';
-import { DownloadCsv } from '../../components/DownloadCsv';
+import  {DownloadCsv}  from '../../components/DownloadCsv';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
