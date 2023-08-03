@@ -101,7 +101,7 @@ const EventForm = () => {
       const payload = {
         ...restValues,
         title,
-        host_user: hostUser.id,
+        host_user: hostUser && hostUser.id,
         tags: tags.join(","),
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
