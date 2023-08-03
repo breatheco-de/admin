@@ -251,7 +251,7 @@ const EventForm = () => {
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}
-                    onChange={(e) => { setSlug(e.target.value) }}
+                    onChange={(e) => { setSlug(slugify(e.target.value).toLowerCase()) }}
                   />
                   <small className="text-muted">Can only be updated when creating the event</small>
                 </Grid>
