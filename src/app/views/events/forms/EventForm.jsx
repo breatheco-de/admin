@@ -30,13 +30,14 @@ const EventForm = () => {
     capacity: 0,
     starting_at: '',
     ending_at: '',
-    host: '',
+    host_user: null,
     online_event: false,
     live_stream_url: '',
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
   });
   const [venue, setVenue] = useState(null);
+  const [hostUser, setHostUser] = useState(null);
   const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
   const [slug, setSlug] = useState('');
@@ -50,20 +51,20 @@ const EventForm = () => {
     if (id) {
       bc.events()
         .getAcademyEvent(id)
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           setEvent({
             ...data,
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
             ending_at: dayjs(data.ending_at).format("YYYY-MM-DDTHH:mm:ss"),
           });
-          
+
           setTitle(data.title);
-          
+
           if (data.tags !== "") setTags(data.tags.split(","));
           if (data.slug) setSlug(data.slug);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
           if (data.venue) setVenue({ ...data.venue });
-
+          if (data.host_user) setHostUser(data.host_user);
         })
         .catch((error) => error);
     }
@@ -100,12 +101,15 @@ const EventForm = () => {
       const payload = {
         ...restValues,
         title,
-        slug,
+        host_user: hostUser.id,
         tags: tags.join(","),
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
         ...venueAndType,
       }
+
+      payload['slug'] = slug[slug.length - 1] == '-' ? slug.slice(0, -1) : slug;
+
       bc.events()
         .addAcademyEvent({
           ...payload
@@ -123,7 +127,7 @@ const EventForm = () => {
               capacity: 0,
               starting_at: '',
               ending_at: '',
-              host: null,
+              host_user: null,
               event_type: null,
               venue: null,
               online_event: false,
@@ -251,7 +255,7 @@ const EventForm = () => {
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}
-                    onChange={(e) => { setSlug(slugify(e.target.value).toLowerCase()) }}
+                    onChange={(e) => setSlug(slugify(e.target.value, { lower: true, trim: false }))}
                   />
                   <small className="text-muted">Can only be updated when creating the event</small>
                 </Grid>
@@ -375,14 +379,16 @@ const EventForm = () => {
                   Host
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
-                  <TextField
-                    label="Host"
-                    name="host"
+                  <AsyncAutocomplete
+                    id="host_user"
+                    onChange={(userData) => setHostUser(userData)}
                     size="small"
-                    fullWidth
-                    variant="outlined"
-                    value={values.host}
-                    onChange={handleChange}
+                    value={hostUser}
+                    label="Host User"
+                    debounced
+                    renderOption={(option) => `${option.first_name} ${option.last_name}, (${option.email})`}
+                    getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+                    asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
@@ -484,7 +490,7 @@ const EventForm = () => {
                     fullWidth
                     variant="outlined"
                     value={values.live_stream_url}
-                    onChange={(e) => { setEvent({...event, live_stream_url: e.target.value}) }}
+                    onChange={handleChange}
                   />
                   <small className="text-muted">In case the event is online, this field is mandatory. It's the meeting URL.</small>
                 </Grid>
