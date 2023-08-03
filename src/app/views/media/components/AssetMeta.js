@@ -256,7 +256,7 @@ const LangCard = ({ asset, onAction }) => {
                   title: x.title.replace("New: ", ""),
                   asset_type: asset.asset_type,
                   lang: addTranslation.lang,
-                  slug: slugify(x.title.replace("New: ", "")),
+                  slug: slugify(x.title.replace("New: ", "")).toLowerCase(),
                   all_translations: [asset.slug, ...assetTranslations.map(t => asset.translations[t])]
                 })
                 else setAddTranslation(x)

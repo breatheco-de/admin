@@ -21,6 +21,8 @@ import shortLinkRoutes from './views/growth/routes';
 
 import freelanceRoutes from './views/freelance/routes';
 
+import provisioningRoutes from './views/provisioning/routes';
+
 const redirectRoute = [
   {
     path: '/',
@@ -37,6 +39,7 @@ const errorRoute = [
 
 const routes = [
   ...dashboardRoutes,
+  ...provisioningRoutes,
   ...adminRoutes,
   ...admissionsRoutes,
   ...eventsRoutes,

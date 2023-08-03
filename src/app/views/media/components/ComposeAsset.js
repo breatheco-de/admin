@@ -73,10 +73,10 @@ const defaultAsset = {
   new: true,
 };
 
+// Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
-  /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+(:?\.[a-z]{2})?\.md$/g;
+  /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+(?:\.[a-z]{2})?\.(?:md|ipynb)$/g;
 const slugRegex = /[\w\-_]+$/g;
-
 const ComposeAsset = () => {
   const { asset_slug } = useParams();
   const isCreating =
@@ -313,7 +313,7 @@ const ComposeAsset = () => {
           {errors["category"] && (
             <small className="text-error">{errors["category"]}</small>
           )}
-          <p>Please provied a Github URL to fetch the markdown file from:</p>
+          <p>Please provide a Github URL to fetch the markdown/notebook file from:</p>
           <TextField
             variant="outlined"
             size="small"

@@ -47,10 +47,6 @@ const EventForm = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (!id) setSlug(slugify(title).toLowerCase());
-  }, [title]);
-
-  useEffect(() => {
     if (id) {
       bc.events()
         .getAcademyEvent(id)
@@ -251,6 +247,7 @@ const EventForm = () => {
                     name="slug"
                     size="small"
                     fullWidth
+                    required
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}
