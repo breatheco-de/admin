@@ -40,6 +40,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-react-app": "^9.1.2",
     "camelcase": "^5.3.1",
+    "caniuse-lite": "^1.0.30001518",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
     "clsx": "^1.1.1",
     "cross-fetch": "^3.0.5",
