@@ -48,6 +48,10 @@ const EventForm = () => {
   const history = useHistory();
 
   useEffect(() => {
+    if (!id) setSlug(slugify(title).toLowerCase());
+  }, [title]);
+
+  useEffect(() => {
     if (id) {
       bc.events()
         .getAcademyEvent(id)
@@ -84,6 +88,7 @@ const EventForm = () => {
           ...rest,
           title,
           tags: tags.join(","),
+          host_user: hostUser && hostUser.id,
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
@@ -101,14 +106,13 @@ const EventForm = () => {
       const payload = {
         ...restValues,
         title,
+        slug,
         host_user: hostUser && hostUser.id,
         tags: tags.join(","),
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
         ...venueAndType,
       }
-
-      payload['slug'] = slug[slug.length - 1] == '-' ? slug.slice(0, -1) : slug;
 
       bc.events()
         .addAcademyEvent({
@@ -251,7 +255,6 @@ const EventForm = () => {
                     name="slug"
                     size="small"
                     fullWidth
-                    required
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}
