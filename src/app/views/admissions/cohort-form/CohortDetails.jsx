@@ -45,7 +45,7 @@ const propTypes = {
   isPrivate: PropTypes.bool.isRequired,
   timeZone: PropTypes.string.isRequired,
   onlineMeetingUrl: PropTypes.string.isRequired,
-  isHiddenOnPrework: PropTypes.bool.isRequired
+  isHiddenOnPrework: PropTypes.bool
 };
 makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -250,7 +250,7 @@ const CohortDetails = ({
                 </TextField>
               </Grid>
               <Grid item md={3} sm={4} xs={12}>
-                Is Hidden On Prework?
+                Is Hidden On Prework? <HelpIcon message={"You can control the way cohorts show on the students dashboard."} />
               </Grid>
               <Grid item md={9} sm={8} xs={12}>
                 <TextField
