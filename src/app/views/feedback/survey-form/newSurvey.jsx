@@ -142,12 +142,12 @@ const NewSurvey = () => {
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Max assistants of teachers:
+                  Max assistants of teachers or teacher assistants:
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     type="number"
-                    label="Max teachers"
+                    label="Max teachers or TAs"
                     name="max_teachers"
                     size="small"
                     variant="outlined"
