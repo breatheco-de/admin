@@ -50,7 +50,7 @@ export const ProvisioningBills = ({ className, bills }) => {
             </TableRow>
           </TableHead>
             <TableBody>
-              {bills.map((bill) => (
+              {bills?.map((bill) => (
                 <TableRow key={bill.id}>
                   <TableCell className="pl-0 capitalize" align="left">
                     <p className="m-0 p-0">{bill.title || "No title provided"}</p>
@@ -79,7 +79,7 @@ export const ProvisioningBills = ({ className, bills }) => {
               ))}
             </TableBody>
         </Table>
-        {bills.length === 0 && (
+        {bills?.length === 0 && (
           <p style={styles}> No provisioning bills found </p>
         )}
       </Grid>
