@@ -114,8 +114,6 @@ const EventForm = () => {
         ...venueAndType,
       }
 
-      payload['slug'] = slug[slug.length - 1] == '-' ? slug.slice(0, -1) : slug;
-
       bc.events()
         .addAcademyEvent({
           ...payload
@@ -257,7 +255,6 @@ const EventForm = () => {
                     name="slug"
                     size="small"
                     fullWidth
-                    required
                     variant="outlined"
                     disabled={id ? true : false}
                     value={slug}

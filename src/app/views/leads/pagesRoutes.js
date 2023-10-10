@@ -23,9 +23,14 @@ const pagesRoutes = [
     component: React.lazy(() => import('./won.jsx')),
   },
   {
-    path: '/growth/sales/new',
+    path: '/growth/lead/new',
     exact: true,
     component: React.lazy(() => import('./leads-form/NewLead')),
+  },
+  {
+    path: '/growth/lead/bulk',
+    exact: true,
+    component: React.lazy(() => import('./leads-form/BulkUpload')),
   },
   {
     path: '/growth/urls',

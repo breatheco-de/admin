@@ -99,7 +99,6 @@ const BulkUpdateTag = (props) => {
           </DialogActions>
         </form>
       </Dialog>
-      {/* Dialog */}
     </>
   );
 };
