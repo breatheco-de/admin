@@ -52,7 +52,7 @@ const NewSurvey = () => {
   };
 
   useEffect(() => {
-    bc.admissions().getAllCohorts(0)
+    bc.admissions().getAllCohorts({ stage: 'STARTED,FINAL_PROJECT' })
       .then(({ data }) => {
         setListCohort(data);
       });
