@@ -29,6 +29,7 @@ const Leads = () => {
   const [items, setItems] = useState([]);
   const [openDialog, setOpenDialog] = useState({ msg: '', open: false, onSuccess: null });
   const history = useHistory();
+  console.log(items)
 
   const columns = [
     {
@@ -67,6 +68,32 @@ const Leads = () => {
           <span className="ellipsis">
             {items[dataIndex].lead_type
               ? items[dataIndex].lead_type
+              : '---'}
+          </span>
+        ),
+      },
+    },
+    {
+      name: 'created_by',
+      label: 'Created By',
+      options: {
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">
+            {items[dataIndex].created_by
+              ? items[dataIndex].created_by
+              : '---'}
+          </span>
+        ),
+      },
+    },
+    {
+      name: 'date_enrolled',
+      label: 'Date Enrolled',
+      options: {
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">
+            {items[dataIndex].date_enrolled
+              ? items[dataIndex].date_enrolled
               : '---'}
           </span>
         ),
