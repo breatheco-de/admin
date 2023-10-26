@@ -112,6 +112,7 @@ const ComposeAsset = () => {
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
       toast.error("Please create the asset first", toastOption);
+      return false;
     } else {
       const resp = await bc
         .registry()
@@ -120,6 +121,7 @@ const ComposeAsset = () => {
         setAsset(resp.data);
         if (resp.data.slug != asset_slug) history.push(`./${resp.data.slug}`);
       }
+      return resp;
     }
   };
 
@@ -176,6 +178,7 @@ const ComposeAsset = () => {
       setAsset(resp.data);
       setDirty(false);
       await getAssetContent();
+      return resp.data;
     }
   };
 
@@ -599,9 +602,9 @@ const ComposeAsset = () => {
                 onAction={(action, payload = null) =>
                   handleAction(action, payload)
                 }
-                onChange={(a) => {
+                onChange={async (a) => {
                   handleMarkdownChange();
-                  partialUpdateAsset(asset_slug, a);
+                  return await partialUpdateAsset(asset_slug, a);
                 }}
               />
             </Grid>

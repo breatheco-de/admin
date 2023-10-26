@@ -99,10 +99,12 @@ const ThumbnailCard = ({ asset, onChange, onAction }) => {
         </div>
         :
 
-        <p className="m-0">No preview image has been generated for this asset.
+        <div className="m-0">
+          <h4 className="m-0 font-medium">Thumbnail</h4>
+          No preview image has been generated for this asset.
           <a href="#" className="anchor text-primary underline" onClick={() => setEdit(true)}>Set one now</a> or
           <a href="#" className="anchor text-primary underline" onClick={() => bc.registry().getAssetPreview(asset.slug).then(() => setPreview(`${config.REACT_APP_API_HOST}/v1/registry/asset/thumbnail/${asset.slug}`))}>{' '}automatically generate it.</a>
-        </p>
+        </div>
     }
   </Card>;
 }
@@ -206,18 +208,26 @@ const DescriptionCard = ({ asset, onChange}) => {
 
 
 
-const LangCard = ({ asset, onAction }) => {
+const LangCard = ({ asset, onAction, onChange }) => {
   const [addTranslation, setAddTranslation] = useState(null);
   const assetTranslations = Object.keys(asset.translations);
   const allLangs = Object.keys(availableLanguages);
 
 
   const handleAddTranslation = async () => {
-    const resp = await API.registry().createAsset(addTranslation);
-    if (resp.status == 201) {
-
-      setAddTranslation(null);
-      history.push(`./${resp.data.slug}`);
+    if(addTranslation.id){
+      const updateResp = await onChange({
+        all_translations: [addTranslation.slug, ...assetTranslations.map(t => asset.translations[t])]
+      });
+      console.log("updateResp", updateResp)
+      if(updateResp && updateResp.status == 200) setAddTranslation(null);
+    } 
+    else{
+      const resp = await API.registry().createAsset(addTranslation);
+      if (resp.status == 201) {
+        setAddTranslation(null);
+        history.push(`./${resp.data.slug}`);
+      }
     }
   }
 
