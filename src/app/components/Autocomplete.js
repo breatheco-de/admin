@@ -32,7 +32,7 @@ export function AsyncAutocomplete(props) {
       setOptions(cache[searchTerm]);
       setLoading(false);
     } else {
-      asyncSearch(searchTerm)
+      if(asyncSearch) asyncSearch(searchTerm)
         .then((resp) => {
           let data = resp.data || resp;
           setLoading(false);

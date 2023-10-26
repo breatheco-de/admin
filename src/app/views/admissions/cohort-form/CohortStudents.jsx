@@ -17,7 +17,9 @@ import {
   DialogActions,
   Tooltip,
   IconButton,
+  InputAdornment
 } from '@material-ui/core';
+
 import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
@@ -33,6 +35,8 @@ import { MatxLoading } from 'matx';
 import bc from 'app/services/breathecode';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import { useQuery } from '../../../hooks/useQuery';
+import { PickUserModal } from "app/components/PickUserModal";
+import useDebounce from '../../../hooks/useDebounce';
 import { Assessment } from '@material-ui/icons';
 import { countBy } from 'lodash';
 
@@ -63,9 +67,12 @@ const CohortStudents = ({ slug, cohortId }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [studenList, setStudentsList] = useState([]);
   const [currentStd, setCurrentStd] = useState({});
+  const [addNewMember, setAddNewMember] = useState(false);
   const [openRoleDialog, setRoleDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState(null);
   const [listLength, setListlength] = useState(0);
+  const debouncedSearchTerm = useDebounce(searchTerm, 700);
   // Redux actions and store
   
   const query = useQuery();
@@ -80,6 +87,12 @@ const CohortStudents = ({ slug, cohortId }) => {
   useEffect(() => {
     getCohortStudents();
   }, [queryLimit]);
+
+  React.useEffect(() => {
+    if (debouncedSearchTerm || debouncedSearchTerm === "") {
+      getCohortStudents({ like: debouncedSearchTerm });
+    }
+  }, [debouncedSearchTerm]);
 
   const changeStudentStatus = (value, name, studentId) => {
     const student = studenList.find((s) => s.user.id === studentId);
@@ -101,15 +114,16 @@ const CohortStudents = ({ slug, cohortId }) => {
       });
   };
 
-  const getCohortStudents = () => {
+  const getCohortStudents = (query) => {
     setIsLoading(true);
-    const query = {
+    const _baseQuery = {
       cohorts: slug,
       limit: queryLimit,
       offset: 0,
+      ...query,
     };
     bc.admissions()
-      .getAllUserCohorts(query)
+      .getAllUserCohorts(_baseQuery)
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
           const { results, next } = data.data;
@@ -153,6 +167,13 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   return (
     <Card className="p-4">
+      {addNewMember && <PickUserModal 
+        onClose={(profile) => {
+          if(profile) addUserToCohort(profile.id);
+          setAddNewMember(false);
+        }} 
+        hint="Search name or email among your academy members"
+      />}
       {/* This Dialog opens the modal to delete the user in the cohort */}
       <Dialog
         open={openDialog}
@@ -185,25 +206,36 @@ const CohortStudents = ({ slug, cohortId }) => {
           {format(new Date(), 'HH:mm:aa')}
         </div>
       </div>
-      <Divider className="mb-6" />
+      <Divider className="mb-3" />
 
-      <div className="flex mb-6">
-        <AsyncAutocomplete
-          onChange={(user) => setUser(user)}
-          width="100%"
-          label="Search Users"
-          asyncSearch={(searchTerm) => bc.auth().getAcademyMembers({like: searchTerm, include: 'student'})}
-          debounced
-          getOptionLabel={(option) => `${option.first_name} ${option.last_name}, (${option.email})`}
-        >
-          <Button
-            className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre"
-            onClick={() => addUserToCohort(user.user.id)}
-          >
-            Add to cohort
+      <Grid container spacing={3}  className="mb-3">
+        <Grid item xs={8}>
+          <TextField
+            fullWidth
+            label="Type search by student name or email"
+            name="student-name-or-email"
+            size="small"
+            data-cy="student-name-or-email"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {searchTerm && <IconButton edge="end" onClick={() => setSearchTerm("")}>
+                    <Icon>close</Icon>
+                  </IconButton>}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Button fullWidth variant="contained" color="primary" onClick={() => setAddNewMember(true)}>
+            Add student
           </Button>
-        </AsyncAutocomplete>
-      </div>
+        </Grid>
+      </Grid>
 
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
