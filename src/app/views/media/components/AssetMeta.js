@@ -210,7 +210,7 @@ const DescriptionCard = ({ asset, onChange}) => {
 
 const LangCard = ({ asset, onAction, onChange }) => {
   const [addTranslation, setAddTranslation] = useState(null);
-  const assetTranslations = Object.keys(asset.translations);
+  const assetTranslations = asset.translations ? Object.keys(asset.translations) : [];
   const allLangs = Object.keys(availableLanguages);
 
 
