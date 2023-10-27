@@ -58,7 +58,7 @@ function getSlugFromGithubURL(url){
       
 
       // The result can be accessed through the `m`-variable.
-      for (let m of matches) if(!m.includes("http")) pieces.push(m.replace(".", ""));
+      for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
       if(pieces.length > 0) return pieces;
   }
   return ["invalid-url"]
