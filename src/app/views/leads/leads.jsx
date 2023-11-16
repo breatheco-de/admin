@@ -320,7 +320,7 @@ const Leads = () => {
     let notPending = false;
     //check if all of them are pending
     for (let i = 0; i < positions.length; i++) {
-      if (items[positions[i]].storage_status !== 'PENDING') {
+      if (['PENDING', 'ERROR'].includes(items[positions[i]].storage_status)) {
         notPending = true;
         break;
       }
