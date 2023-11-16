@@ -456,7 +456,7 @@ const ComposeAsset = () => {
                   } mr-3 pointer`}
                   onClick={() => setUpdateVisibility(true)}
                 >
-                  {asset.visibility}
+                  Internally {asset.visibility}
                 </div>
                 <div
                   className="px-3 text-11 py-3px border-radius-4 text-white bg-dark mr-3 pointer"
