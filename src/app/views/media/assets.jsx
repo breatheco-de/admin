@@ -12,6 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AddBulkToAssets from './components/AddBulkToAssets';
+import AlertPendingIssues from './components/AlertPendingIssues';
 import BulkActionToAssets from './components/BulkActionToAssets';
 import config from '../../../config.js';
 import { AsyncAutocomplete } from '../../components/Autocomplete';
@@ -285,6 +286,7 @@ const Assets = () => {
         </div>
       </div>
       <div>
+        <AlertPendingIssues />
         <SmartMUIDataTable
           title="All Assets"
           columns={columns}

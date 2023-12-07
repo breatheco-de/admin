@@ -52,7 +52,7 @@ const NewSurvey = () => {
   };
 
   useEffect(() => {
-    bc.admissions().getAllCohorts(0)
+    bc.admissions().getAllCohorts({ stage: 'STARTED,FINAL_PROJECT' })
       .then(({ data }) => {
         setListCohort(data);
       });
@@ -128,12 +128,12 @@ const NewSurvey = () => {
                   </TextField>
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Max assistants to ask:
+                  Max teachers to ask:
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     type="number"
-                    label="Max assistants"
+                    label="Max teachers"
                     name="max_assistants"
                     size="small"
                     variant="outlined"
@@ -142,12 +142,12 @@ const NewSurvey = () => {
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Max assistants of teachers:
+                  Max teacher assistants to ask:
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     type="number"
-                    label="Max teachers"
+                    label="Max TAs"
                     name="max_teachers"
                     size="small"
                     variant="outlined"

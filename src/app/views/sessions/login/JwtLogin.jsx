@@ -117,21 +117,6 @@ const JwtLogin = () => {
                   validators={['required']}
                   errorMessages={['this field is required']}
                 />
-                <FormControlLabel
-                  className="mb-3 min-w-288"
-                  name="agreement"
-                  onChange={handleChange}
-                  control={(
-                    <Checkbox
-                      size="small"
-                      onChange={({ target: { checked } }) => handleChange({
-                        target: { name: 'agreement', value: checked },
-                      })}
-                      checked={userInfo.agreement || true}
-                    />
-                  )}
-                  label="Remeber me"
-                />
 
                 {message && <p className="text-error">{message}</p>}
 

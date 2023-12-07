@@ -56,7 +56,7 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
   };
 
   useEffect(async () => {
-    const resp = await bc.registry().getAssetComments({asset: card.slug })
+    const resp = await bc.registry().getAssetComments({asset: card.slug, resolved: false })
     if (resp.status == 200) setComments(resp.data);
   }, [])
   useEffect(() => { setUrl(card.readme_url || card.url) }, [card.readme_url])
@@ -160,7 +160,7 @@ const CardEditorDialog = ({ open, card, handleClose, handleAction, handleCardUpd
             <div className="comments ml-10">
               {comments.map((comment) => {
                 return (
-                  <div className="mb-4" key={comment.id}>
+                  <div className="mb-4 bg-light-warning" key={comment.id}>
                     <div className="flex items-center mb-2">
                       <Avatar className="avatar size-36" src={comment.author?.profile?.avatar_url} />
                       <div className="ml-3">

@@ -14,14 +14,15 @@ const defaultProps = {
     hint: null,
     onClose: null,
     open: true,
-  };
-
+    academy: null,
+}
 export const PickUserModal = ({
     defaultUser=null,
     query,
     hint,
     onClose,
-    open
+    open,
+    academy=null,
 }) => {
 
     const [formData, setFormData] = useState(defaultUser)
@@ -48,7 +49,7 @@ export const PickUserModal = ({
                         value={formData}
                         getOptionLabel={(option) => `${option.first_name} ${option.last_name} - ${option.email}`}
                         asyncSearch={async (searchTerm) => {
-                            const resp = await bc.auth().getAllUsers({ ...query, like: searchTerm })
+                            const resp = academy ? await bc.auth().getAcademyMembers({like: searchTerm, include: 'student'}) : await bc.auth().getAllUsers({ ...query, like: searchTerm })
                             if(resp.ok) return resp.data
                             else setError("Error fetching users")
                         }}

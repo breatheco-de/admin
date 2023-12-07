@@ -4,6 +4,12 @@ import {
   IconButton,
   Button,
   Card,
+  Tooltip,
+  Grid,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
   TextField,
   InputAdornment,
 } from '@material-ui/core';
@@ -43,6 +49,25 @@ const EventList = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
+
+  const loadData = async (querys) => {
+    const { data } = await bc.events().getAcademyEvents(querys);
+    setItems(data.results);
+    return data;
+  }
+
+  const markEventAsFinished = async (event, dataIndex) => {
+    const now = new Date();
+    const currentTime = now.toISOString();
+    delete event['slug'];
+    const { data } = await bc.events().updateAcademyEvent(event.id, { ...event, event_type: event.event_type?.id, venue: event.venue?.id, ended_at: currentTime });
+    if (data.status_code < 400) {
+      let _items = items;
+      _items[dataIndex].ended_at = currentTime;
+      setItems(_items);
+      toast.success('The event has been marked as ended.')
+    }
+  }
 
   const columns = [
     {
@@ -134,6 +159,21 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
+            {
+              items[dataIndex].ended_at ?
+                (
+                  <IconButton onClick={() => toast.warning('This event has already been marked as finished', toastOption)}>
+                    <Icon>checkmark</Icon>
+                  </IconButton>
+                )
+                :
+                (
+                  <IconButton onClick={() => markEventAsFinished(items[dataIndex], dataIndex)}>
+                    <Icon>checkmark</Icon>
+                  </IconButton>
+                )
+            }
+            <div className="flex-grow" />
             <Link to={`/events/event/${items[dataIndex].id}`}>
               <IconButton>
                 <Icon>edit</Icon>
@@ -166,7 +206,7 @@ const EventList = () => {
         <div className="overflow-auto">
           <Card className="p-6 mb-5 bg-light-primary box-shadow-none">
             <div className="flex items-center">
-              <div style={{width:'100%'}}>
+              <div style={{ width: '100%' }}>
                 <h5 className="mt-0 mb-2 font-medium text-primary">
                   You can add this events to your calendar using this URL:
                 </h5>
@@ -220,11 +260,7 @@ const EventList = () => {
               view="event?"
               historyReplace="/events/list"
               singlePage=""
-              search={async (querys) => {
-                const { data } = await bc.events().getAcademyEvents(querys);
-                setItems(data.results);
-                return data;
-              }}
+              search={loadData}
               deleting={async (querys) => {
                 const { status } = await bc.events().deleteEventsBulk(querys);
                 return status;

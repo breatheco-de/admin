@@ -32,6 +32,7 @@ import { newMember, newBoard, newColumn, newCard } from "./components/initBoard"
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import AlertPendingIssues from "./components/AlertPendingIssues";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -166,6 +167,7 @@ const Board = () => {
         </Grid>
       </div>
       <div className="relative">
+        <AlertPendingIssues />
         <ScrumBoardContainer
           list={board.list}
           // handleAddList={handleAddList}
