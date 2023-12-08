@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import {
   Grid,
@@ -6,80 +6,63 @@ import {
   Divider,
   TextField,
   Button,
-  MenuItem,
   Checkbox,
   FormControlLabel,
 } from "@material-ui/core";
-import { useParams, useHistory } from "react-router-dom";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+import { useParams } from "react-router-dom";
 import * as Yup from "yup";
-import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles } from "@material-ui/core/styles";
 import { Breadcrumb } from "../../../../matx";
 import bc from "../../../services/breathecode";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-
-const slugify = require("slugify");
 
 const Host = () => {
   const { id } = useParams();
-  const [syllabus, setSyllabus] = useState(null);
-  const [version, setVersion] = useState(null);
-  const [schedule, setSchedule] = useState(null);
-  const [neverEnd, setNeverEnd] = useState(true);
-  const [timeZone, setTimeZone] = useState("");
-  const [newCohort, setNewCohort] = useState({
-    name: "",
-    slug: "",
-    language: "",
-    ending_date: null,
-    never_ends: false,
-    remote_available: true,
-    time_zone: "",
-    is_hidden_on_prework: true,
+  const [host, setHost] = useState({
+    avatar_url: '',
+    bio: '',
+    phone: '',
+    show_tutorial: false,
+    twitter_username: '',
+    github_username: '',
+    portfolio_url: '',
+    linkedin_url: '',
+    blog: '',
   });
-  const history = useHistory();
+
+  const getHost = async () => {
+    try {
+      const { data } = await bc.auth().getProfile(id);
+      setHost({ ...data });
+      console.log(data);
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  
+  useEffect(() => {
+    getHost();
+  }, []);
+
+  const phoneRegExp = /^\+?1?\d{9,15}$/;
 
   const ProfileSchema = Yup.object().shape({
-    slug: Yup.string()
-      .required()
-      .matches(/^[a-z0-9]+(?:(-|_)[a-z0-9]+)*$/, "Invalid Slug"),
+    avatar_url: Yup.string().url(),
+    bio: Yup.string().nullable().max(255, 'Maximum length is 255 characters'),
+    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
   });
 
-  const createCohort = (event) => {
-    setNewCohort({
-      ...newCohort,
+  const editHost = (event) => {
+    setHost({
+      ...host,
       [event.target.name]: event.target.value,
     });
   };
 
-  const postCohort = (values) => {
-    bc.admissions()
-      .addCohort({
-        ...values,
-        timezone: `${timeZone}`,
-        syllabus: `${syllabus.slug}.v${version.version}`,
-        schedule: schedule?.id,
-      })
-      .then((data) => {
-        if (data.status === 201) {
-          history.push("/admissions/cohorts");
-        }
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
+  const putHost = async (values) => {
+    try {
+      await bc.auth().updateProfile(id, { ...values, user: id })
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -98,10 +81,14 @@ const Host = () => {
           <h4 className="m-0">Edit Host</h4>
         </div>
         <Divider className="mb-2" />
-
+        {host && host.user && (
+          <div className="p-4">
+            <h4 className="m-0">{`${host.user.first_name} ${host.user.last_name}`}</h4>
+          </div>
+        )}
         <Formik
-          initialValues={newCohort}
-          onSubmit={(newPostCohort) => postCohort(newPostCohort)}
+          initialValues={host}
+          onSubmit={(newPostCohort) => putHost(newPostCohort)}
           enableReinitialize
           validationSchema={ProfileSchema}
         >
@@ -109,89 +96,165 @@ const Host = () => {
             <form className="p-4" onSubmit={handleSubmit}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item md={2} sm={4} xs={12}>
-                  Cohort Name
+                  Avatar url
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     className="m-2"
-                    label="Cohort Name"
-                    data-cy="name"
-                    name="name"
+                    label="Avatar url"
+                    name="avatar_url"
+                    size="small"
+                    style={{ width: "300px" }}
+                    variant="outlined"
+                    value={host.avatar_url}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
+                    error={errors.avatar_url && touched.avatar_url}
+                    helperText={touched.avatar_url && errors.avatar_url}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Bio
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Bio"
+                    name="bio"
+                    multiline
+                    minRows={4}
+                    style={{ width: "300px" }}
+                    variant="outlined"
+                    value={host.bio}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
+                    error={errors.bio && touched.bio}
+                    helperText={touched.bio && errors.bio}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Phone
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Phone"
+                    name="phone"
                     size="small"
                     variant="outlined"
-                    value={newCohort.name}
+                    value={host.phone}
                     onChange={(e) => {
-                      newCohort.slug = slugify(e.target.value).toLowerCase();
-                      createCohort(e);
+                      editHost(e);
+                    }}
+                    error={errors.phone && touched.phone}
+                    helperText={touched.phone && errors.phone}
+                  />
+                </Grid>
+                <Grid item md={12} sm={12} xs={12}>
+                  <FormControlLabel
+                    className="flex-grow"
+                    name="show_tutorial"
+                    onChange={() => {
+                      setHost((host) => ({ ...host, show_tutorial: !host.show_tutorial }));
+                    }}
+                    control={<Checkbox checked={host.show_tutorial} />}
+                    label="Show Tutorial"
+                    style={{ marginRight: "5px" }}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Twitter Username
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Twitter Username"
+                    name="twitter_username"
+                    size="small"
+                    variant="outlined"
+                    value={host.twitter_username}
+                    onChange={(e) => {
+                      editHost(e);
                     }}
                   />
                 </Grid>
                 <Grid item md={2} sm={4} xs={12}>
-                  Cohort Slug
+                  Github Username
                 </Grid>
                 <Grid item md={10} sm={8} xs={12}>
                   <TextField
                     className="m-2"
-                    label="Cohort Slug"
-                    data-cy="slug"
-                    name="slug"
+                    label="Github Username"
+                    name="github_username"
                     size="small"
                     variant="outlined"
-                    value={newCohort.slug}
-                    onChange={createCohort}
-                    error={errors.slug && touched.slug}
-                    helperText={touched.slug && errors.slug}
+                    value={host.github_username}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Portfolio URL
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Portfolio URL"
+                    name="portfolio_url"
+                    size="small"
+                    variant="outlined"
+                    value={host.portfolio_url}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Linkedin URL
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Linkedin URL"
+                    name="linkedin_url"
+                    size="small"
+                    variant="outlined"
+                    value={host.linkedin_url}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
+                  />
+                </Grid>
+                <Grid item md={2} sm={4} xs={12}>
+                  Blog
+                </Grid>
+                <Grid item md={10} sm={8} xs={12}>
+                  <TextField
+                    className="m-2"
+                    label="Blog"
+                    name="blog"
+                    size="small"
+                    variant="outlined"
+                    value={host.blog}
+                    onChange={(e) => {
+                      editHost(e);
+                    }}
                   />
                 </Grid>
               </Grid>
               <div className="mt-6">
                 <Button
                   onClick={() => {
-                    if (neverEnd == false) {
-                      return handleOpen();
-                    } else {
-                      handleSubmit();
-                    }
+                    handleSubmit();
                   }}
                   color="primary"
                   variant="contained"
                 >
-                  Create
+                  Update
                 </Button>
-                <Modal open={open} onClose={handleClose}>
-                  <Box
-                    style={{ position: "absolute", top: "33%", left: "41%" }}
-                    className=" p-6 border-none border-radius-4 w-400 bg-paper "
-                  >
-                    <div className="modalContent text-center">
-                      <h2>Confirm</h2>
-                      <p>
-                        Are you sure you want to create a cohort that doesn't
-                        end? Some functionalities will be limited.
-                      </p>
-
-                      <div className="mb-2">
-                        <Button
-                          variant="outlined"
-                          style={{ color: "blue", borderColor: "blue" }}
-                          className="rounded mr-4"
-                          onClick={handleSubmit}
-                        >
-                          Yes
-                        </Button>
-
-                        <Button
-                          variant="outlined"
-                          style={{ color: "gold", borderColor: "gold" }}
-                          className="rounded "
-                          onClick={handleClose}
-                        >
-                          No
-                        </Button>
-                      </div>
-                    </div>
-                  </Box>
-                </Modal>
               </div>
             </form>
           )}

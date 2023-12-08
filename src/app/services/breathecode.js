@@ -350,6 +350,15 @@ class BreatheCodeClient {
           `${this.host}/auth/member/${userId}/password/reset`,
           payload
         ),
+      getProfile: async (id) => {
+        return await axios.bcGet("Profile", `${this.host}/auth/profile/${id}`);
+      },
+      updateProfile: (id, data) =>
+        axios.bcPut(
+          "Profile",
+          `${this.host}/auth/profile/${id}`,
+          data
+        ),
     };
   }
 
