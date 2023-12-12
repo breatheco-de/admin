@@ -14,7 +14,7 @@ import {
 import { Base64 } from "js-base64";
 import { Breadcrumb } from "matx";
 import ReactCountryFlag from "react-country-flag";
-const slugify = require("slugify");
+const _slugify = require("slugify");
 import { toast } from "react-toastify";
 import OpenInBrowser from "@material-ui/icons/OpenInBrowser";
 import DowndownMenu from "../../../components/DropdownMenu";
@@ -36,6 +36,57 @@ import CommentBar from "./CommentBar"
 import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
+
+function slugify(text) {
+  let slug = _slugify(text, { lower: true, strict: true });
+  if (text.endsWith(' ') || text.endsWith('-')) slug += '-';
+  return slug;
+}
+
+// Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
+const githubUrlRegex =
+/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\w\-]+)(\.[a-z]{2})?\.(?:txt|ipynb|md)/gm;
+  //.     /^https:\/\/github\.com\/.*\/([^\/]+)\.(txt|ipynb|md)(?:\?lang=[a-zA-Z]{2})?$
+function getSlugFromGithubURL(url){
+  let matches;
+  let pieces = [];
+  while ((matches = githubUrlRegex.exec(url)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (matches.index === githubUrlRegex.lastIndex) {
+        githubUrlRegex.lastIndex++;
+      }
+      
+
+      // The result can be accessed through the `m`-variable.
+      for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
+      if(pieces.length > 0) return pieces;
+  }
+  return ["invalid-url"]
+}
+
+const hasErrors = (_asset, isCreating=true) => {
+  const [slug, lang] = getSlugFromGithubURL(_asset.readme_url);
+  console.log("_asset.readme_url", _asset.readme_url)
+  let _errors = {};
+  if (!slug || (slug === 'invalid-url')){
+    _errors["readme_url"] =
+    `The url ${slug} must point to a markdown, txt or notebook file starting with: https://github.com...`;
+  }
+  if (!_asset.owner) _errors["owner"] = "Please pick a github owner";
+  if (!_asset.asset_type) _errors["asset_type"] = "Choose an asset type";
+  if (!_asset.category) _errors["category"] = "Choose a category";
+  if (
+    !isCreating &&
+    !["LESSON", "ARTICLE"].includes(_asset.asset_type) &&
+    !["OK", "WARNING"].includes(_asset.sync_status)
+  )
+    _errors["sync_status"] = "Sync with github before saving";
+  if (!isCreating && !["OK", "WARNING"].includes(_asset.test_status))
+    _errors["test_status"] = "Integrity tests failed";
+
+  console.log("calculating", _errors)
+  return _errors;
+};
 
 const toastOption = {
   position: toast.POSITION.BOTTOM_RIGHT,
@@ -73,21 +124,15 @@ const defaultAsset = {
   new: true,
 };
 
-// Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
-const githubUrlRegex =
-  /https:\/\/github\.com\/[\w\-_]+\/[\w\-_]+\/blob\/\w+\/[\w\-\/]+(?:\.[a-z]{2})?\.(?:md|ipynb)$/g;
-const slugRegex = /[\w\-_]+$/g;
 const ComposeAsset = () => {
   const { asset_slug } = useParams();
-  const isCreating =
-    asset_slug === undefined && (!asset || asset.id === undefined);
-  const [asset, setAsset] = useState(defaultAsset);
+  const isCreating = window.location.pathname.includes("/media/asset/new");
+  const [asset, setAsset] = useState({ ...defaultAsset, slug: asset_slug || "" });
   const [updateVisibility, setUpdateVisibility] = useState(false);
   const [updateCategory, setUpdateCategory] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [updateType, setUpdateType] = useState(false);
   const [updateLanguage, setUpdateLanguage] = useState(false);
-  const [githubUrl, setGithubUrl] = useState(null);
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
   const [content, setContent] = useState(null);
@@ -112,21 +157,23 @@ const ComposeAsset = () => {
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
       toast.error("Please create the asset first", toastOption);
+      return false;
     } else {
       const resp = await bc
         .registry()
         .updateAsset(_slug, { ...newAsset, slug: newAsset.slug });
       if (resp.status >= 200 && resp.status < 300) {
         setAsset(resp.data);
-        if (resp.data.slug != asset_slug) history.push(`./${resp.data.slug}`);
+        if (resp.data.slug != asset.slug) history.push(`./${resp.data.slug}`);
       }
+      return resp;
     }
   };
 
   const getAssetContent = async () => {
     const resp = await bc
       .registry()
-      .getAssetContent(asset_slug, { format: "raw" });
+      .getAssetContent(asset.slug, { format: "raw" });
     if (resp.status >= 200 && resp.status < 300) {
       setContent(resp.data);
     }
@@ -135,15 +182,13 @@ const ComposeAsset = () => {
   useEffect(() => {
     const load = async () => {
       if (isCreating) {
-        setAsset(defaultAsset);
-        setGithubUrl(defaultAsset.readme_url);
+        setAsset({ ...defaultAsset, slug: asset_slug });
         setContent("Write your asset here, use `markdown` syntax");
       } else {
         try {
           const resp = await bc.registry().getAsset(asset_slug);
           if (resp.status >= 200 && resp.status < 300) {
             setAsset({ ...resp.data, lang: resp.data.lang || "us" });
-            setGithubUrl(resp.data.readme_url);
           } else throw Error("Asset could not be retrieved");
 
           await getAssetContent();
@@ -176,38 +221,13 @@ const ComposeAsset = () => {
       setAsset(resp.data);
       setDirty(false);
       await getAssetContent();
+      return resp.data;
     }
   };
 
-  const hasErrors = (_asset) => {
-    let _errors = {};
-    if (!githubUrlRegex.test(_asset.readme_url))
-      _errors["readme_url"] =
-        "The url must point to a markdown file on github usually starting with: https://github.com/[username]/[repo_name]/blob...";
-    if (!slugRegex.test(_asset.slug))
-      _errors[
-        "slug"
-      ] = `Invalid slug, it can only contain letters, numbers - and _`;
-    if (!_asset.owner) _errors["owner"] = "Please pick a github owner";
-    if (!_asset.asset_type) _errors["asset_type"] = "Choose an asset type";
-    if (!_asset.category) _errors["category"] = "Choose a category";
-    if (
-      !isCreating &&
-      !["LESSON", "ARTICLE"].includes(_asset.asset_type) &&
-      !["OK", "WARNING"].includes(_asset.sync_status)
-    )
-      _errors["sync_status"] = "Sync with github before saving";
-    if (!isCreating && !["OK", "WARNING"].includes(_asset.test_status))
-      _errors["test_status"] = "Integrity tests failed";
-
-    return _errors;
-  };
-
   const saveAsset = async (published_at = null) => {
-    const readme_url = githubUrl || asset.readme_url;
     const _asset = {
       ...asset,
-      readme_url,
       category:
         !asset.category || typeof asset.category !== "object"
           ? asset.category
@@ -215,35 +235,30 @@ const ComposeAsset = () => {
       owner: asset.owner?.id,
       readme_raw: Base64.encode(content),
       url: !["PROJECT", "EXERCISE"].includes(asset.asset_type)
-        ? readme_url
-        : readme_url.substring(0, readme_url.indexOf("/blob/")),
+        ? asset.readme_url
+        : asset.readme_url.substring(0, asset.readme_url.indexOf("/blob/")),
     };
 
     if (published_at) _asset["published_at"] = published_at;
 
-    const _errors = hasErrors(_asset);
-    setErrors(_errors);
+    const resp = isCreating ?
+      await bc.registry().createAsset({..._asset, 
+        lang: asset.category?.lang.toLowerCase(),
+        title: unSlugifyCapitalize(_asset.slug)})
+      :
+      await bc.registry().updateAsset(_asset.slug, {
+        ..._asset,
+        author: undefined,
+        seo_keywords: undefined,
+      });
 
-    if (Object.keys(_errors).length == 0) {
-      const resp = isCreating ?
-        await bc.registry().createAsset({..._asset, 
-          lang: asset.category?.lang.toLowerCase(),
-          title: unSlugifyCapitalize(_asset.slug)})
-        :
-        await bc.registry().updateAsset(_asset.slug, {
-          ..._asset,
-          author: undefined,
-          seo_keywords: undefined,
-        });
-
-      if (resp.ok) {
-        if (isCreating) history.push(`./${resp.data.slug}`);
-        else setAsset(resp.data);
-        return true;
-      } else if (resp.status >= 400 && resp.status < 500) {
-        return { details: resp.data.details };
-      } else return { details: "There was an error saving the asset" };
-    } else return _errors;
+    if (resp.ok) {
+      if (isCreating) history.push(`./${resp.data.slug}`);
+      else setAsset(resp.data);
+      return true;
+    } else if (resp.status >= 400 && resp.status < 500) {
+      return { details: resp.data.details };
+    } else return { details: "There was an error saving the asset" };
   };
 
   const handleUpdateCategory = async (category) => {
@@ -256,8 +271,7 @@ const ComposeAsset = () => {
     setDirty(true);
   };
 
-  if (!asset) return <MatxLoading />;
-
+  if (!asset || (!isCreating && !asset.id)) return <MatxLoading />;
   return (
     <div className="m-sm-30">
       <div className="mb-sm-30">
@@ -272,56 +286,22 @@ const ComposeAsset = () => {
           </div>
         </div>
       </div>
-      {asset.readme_url === "" ? (
+      {isCreating ? (
         <Card className="p-4 mt-4">
           <h1>Create a new asset</h1>
-          <p className="p-0 py-2 m-0">
-            Select an asset type:
-            <Button
-              size="small"
-              variant="outlined"
-              color="primary"
-              className="ml-3"
-              onClick={() => {
-                setUpdateType(true);
-                setErrors({ ...errors, asset_type: null });
-              }}
-            >
-              {asset && asset.asset_type ? asset.asset_type : `Click to select`}
-            </Button>
-          </p>
-          {errors["asset_type"] && (
-            <small className="text-error">{errors["asset_type"]}</small>
-          )}
-          <p className="p-0 m-0">
-            Select an asset category:
-            <Button
-              size="small"
-              variant="outlined"
-              color="primary"
-              className="ml-3"
-              onClick={() => {
-                setUpdateCategory(true);
-                setErrors({ ...errors, category: null });
-              }}
-            >
-              {asset && asset.category
-                ? asset.category.title || asset.category.slug
-                : `Click to select`}
-            </Button>
-          </p>
-          {errors["category"] && (
-            <small className="text-error">{errors["category"]}</small>
-          )}
           <p>Please provide a Github URL to fetch the markdown/notebook file from:</p>
           <TextField
             variant="outlined"
             size="small"
-            value={githubUrl}
+            value={asset.readme_url}
             fullWidth={true}
             onChange={(e) => {
-              setGithubUrl(e.target.value);
-              setErrors({ ...errors, readme_url: "" });
+              const [slug, lang] = getSlugFromGithubURL(e.target.value);
+              setAsset({ ...asset, 
+                lang, 
+                readme_url: e.target.value,
+                slug: (!asset.slug || asset.slug === "") ? slug : asset.slug,
+              });
             }}
             placeholder="https://github.com/"
           />
@@ -339,7 +319,6 @@ const ComposeAsset = () => {
                 ...asset,
                 slug: slugify(e.target.value.toLowerCase()),
               });
-              setErrors({ ...errors, slug: "" });
             }}
           />
           {errors["slug"] && (
@@ -362,16 +341,60 @@ const ComposeAsset = () => {
           {errors["owner"] && (
             <small className="text-error">{errors["owner"]}</small>
           )}
+
+          <p className="p-0 py-2 m-0">
+            Select an asset type:
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              className="ml-3"
+              onClick={() => {
+                setUpdateType(true);
+              }}
+            >
+              {asset && asset.asset_type ? asset.asset_type : `Click to select`}
+            </Button>
+          </p>
+          {errors["asset_type"] && (
+            <small className="text-error">{errors["asset_type"]}</small>
+          )}
+          <p className="p-0 m-0">
+            Select an asset category:
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              className="ml-3"
+              onClick={() => {
+                setUpdateCategory(true);
+              }}
+            >
+              {asset && asset.category
+                ? asset.category.title || asset.category.slug
+                : `Click to select`}
+            </Button>
+          </p>
+          {errors["category"] && (
+            <small className="text-error">{errors["category"]}</small>
+          )}
+
           <Button
             className="mt-2"
             variant="contained"
             color="primary"
-            onClick={() =>
-              saveAsset().then(
-                (_errors) =>
-                  Object.keys(_errors).length > 0 && setErrorDialog(true)
-              )
-            }
+            onClick={() => {
+              const _errors = hasErrors(asset, true);
+              console.log(asset, _errors)
+              if(Object.keys(_errors).length == 0) {
+                saveAsset();
+                console.log("saving asset")
+              }
+              else {
+                setErrors(_errors);
+                setErrorDialog(_errors)
+              }
+            }}
           >
             Create asset
           </Button>
@@ -433,13 +456,12 @@ const ComposeAsset = () => {
                   } mr-3 pointer`}
                   onClick={() => setUpdateVisibility(true)}
                 >
-                  {asset.visibility}
+                  Internally {asset.visibility}
                 </div>
                 <div
                   className="px-3 text-11 py-3px border-radius-4 text-white bg-dark mr-3 pointer"
                   onClick={() => {
                     setUpdateType(true);
-                    setErrors({ ...errors, asset_type: null });
                   }}
                 >
                   {asset.asset_type ? asset.asset_type : "NOT TYPE SPECIFIED"}
@@ -520,11 +542,11 @@ const ComposeAsset = () => {
                   if (asset.status == "PUBLISHED" && asset.published_at != null) setMakePublicDialog({ isOpen: true, action: value });
                   else if (asset.status == "PUBLISHED") {
                     const _errors = await saveAsset(formattedDate);
-                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                    if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
                     else if (value === "push") handleAction("push");
                   } else {
                     const _errors = await saveAsset();
-                    if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                    if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
                     else if (value === "push") handleAction("push");
                   }
                 }}
@@ -542,13 +564,13 @@ const ComposeAsset = () => {
                 acceptText={"Yes, update the published date"}
                 onOpen={async () => {
                   const _errors = await saveAsset(formattedDate);
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
                   else if (makePublicDialog.action === "push") handleAction("push");
                   setMakePublicDialog({isOpen: false, action: null});
                 }}
                 onClose={async () => {
                   const _errors = await saveAsset();
-                  if (Object.keys(_errors).length > 0) setErrorDialog(true);
+                  if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
                   else if (makePublicDialog.action === "push") handleAction("push");
                   setMakePublicDialog({isOpen: false, action: null});
                 }}
@@ -599,9 +621,9 @@ const ComposeAsset = () => {
                 onAction={(action, payload = null) =>
                   handleAction(action, payload)
                 }
-                onChange={(a) => {
+                onChange={async (a) => {
                   handleMarkdownChange();
-                  partialUpdateAsset(asset_slug, a);
+                  return await partialUpdateAsset(asset.slug, a);
                 }}
               />
             </Grid>
@@ -665,21 +687,20 @@ const ComposeAsset = () => {
           value: l,
         }))}
       />
-      <ConfirmationDialog
-        open={errorDialog}
+      {errorDialog && <ConfirmationDialog open={true}
         noLabel="Close"
         maxWidth="md"
         onConfirmDialogClose={() => setErrorDialog(false)}
         title="We found some errors"
       >
         <List size="small">
-          {Object.keys(errors).map((e, i) => (
+          {Object.keys(errorDialog).map((e, i) => (
             <ListItem key={i} size="small" className="p-0 m-0">
               <ListItemText className="capitalize" primary={errors[e]} />
             </ListItem>
           ))}
         </List>
-      </ConfirmationDialog>
+      </ConfirmationDialog>}
       {updateCategory && (
         <PickCategoryModal
           onClose={handleUpdateCategory}

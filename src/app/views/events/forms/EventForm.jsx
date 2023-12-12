@@ -5,7 +5,7 @@ import {
   Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import bc from '../../../services/breathecode';
 import { Breadcrumb, ConfirmationDialog } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
@@ -393,6 +393,20 @@ const EventForm = () => {
                     getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
                     asyncSearch={(searchTerm) => bc.auth().getAllUsers({ like: searchTerm || '' })}
                   />
+                  {hostUser && (
+                    <small className="text-muted">
+                      Click here to
+                      {'  '}
+                      <Link
+                        to={`/events/host/${hostUser.id}`}
+                        style={{ textDecoration: 'underline' }}
+                        target="_blank"
+                        className="text-primary"
+                      >
+                        review public host information
+                      </Link>
+                    </small>
+                  )}
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Venue
