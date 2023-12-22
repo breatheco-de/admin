@@ -542,8 +542,6 @@ const EventForm = () => {
                     />
                     <p style={{ whiteSpace: 'nowrap' }}>Free for all</p>
                   </div>
-                  
-                  
                 </Grid>
                 <Grid item md={1} sm={8} xs={12}>
                   <Checkbox
