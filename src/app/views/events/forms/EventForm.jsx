@@ -35,6 +35,7 @@ const EventForm = () => {
     live_stream_url: '',
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
+    free_for_all: false,
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
@@ -530,6 +531,17 @@ const EventForm = () => {
                     checked={values.sync_with_eventbrite}
                     onChange={handleChange}
                     name="sync_with_eventbrite"
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Free for all
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <Checkbox
+                    checked={values.free_for_all}
+                    onChange={handleChange}
+                    name="free_for_all"
                     color="primary"
                   />
                 </Grid>
