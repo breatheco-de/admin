@@ -9,6 +9,7 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import bc from '../../../services/breathecode';
 import { Breadcrumb, ConfirmationDialog } from '../../../../matx';
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
+import HelpIcon from '../../../components/HelpIcon';
 import { MediaInput } from '../../../components/MediaInput';
 import useAuth from '../../../hooks/useAuth';
 
@@ -535,9 +536,16 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
-                  Free for all
+                  <div className="flex" style={{ alignItems: 'center', gap: '5px' }}>
+                    <HelpIcon
+                      message="Events marked as Free for all can be accessed by anyone without consuming their tokens to access workshops"
+                    />
+                    <p style={{ whiteSpace: 'nowrap' }}>Free for all</p>
+                  </div>
+                  
+                  
                 </Grid>
-                <Grid item md={3} sm={8} xs={12}>
+                <Grid item md={1} sm={8} xs={12}>
                   <Checkbox
                     checked={values.free_for_all}
                     onChange={handleChange}
