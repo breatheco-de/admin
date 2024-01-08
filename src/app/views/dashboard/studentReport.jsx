@@ -23,6 +23,7 @@ const options = [
   { label: 'Add new note', value: 'add_note' },
   { label: 'Assignments', value: 'assignments' },
   { label: 'Attendancy', value: 'attendancy' },
+  { label: 'Full report', value: 'full_report' },
 ];
 
 const studentReport = () => {
@@ -198,6 +199,8 @@ const studentReport = () => {
                   window.open(`${STUDENT_HOST}/cohort/${cohortData.slug}/attendance?token=${token}`);
                 } else if (value === 'assignments') {
                   window.open(`${STUDENT_HOST}/cohort/${cohortData.slug}/assignments?token=${token}`);
+                } else if (value === 'full_report') {
+                  window.open(`https://4geeks.com/cohort/${cohortData.slug}/student/${studentData.user.id}?academy=${cohortData.academy.id}`);
                 }
               }}
             >
