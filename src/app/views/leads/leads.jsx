@@ -316,12 +316,12 @@ const Leads = () => {
     const positions = ids.map((id) => {
       return items.map((e) => { return e.id; }).indexOf(id);
     });
-
-    let notPending = false;
+    
+    let isPending = false;
     //check if all of them are pending
     for (let i = 0; i < positions.length; i++) {
       if (['PENDING', 'ERROR'].includes(items[positions[i]].storage_status)) {
-        notPending = true;
+        isPending = true;
         break;
       }
     }
@@ -332,7 +332,7 @@ const Leads = () => {
           <IconButton>
             <ArrowUpwardRounded
               onClick={async () => {
-                if (!notPending) {
+                if (isPending) {
                   const { data } = await bc.marketing()
                     .bulkSendToCRM(ids);
                     setSelectedRows([]);
@@ -348,7 +348,7 @@ const Leads = () => {
           </IconButton>
         </Tooltip>
         {confirmUpdate && <UpdateLeadStatusDialog status={"ERROR"} onClose={async (msg) => {
-                if (!notPending) {
+                if (isPending) {
                   const { data } = await bc.marketing()
                     .bulkUpdateLead(ids, { storage_status_text: msg, storage_status: 'ERROR' });
                     setSelectedRows([]);
