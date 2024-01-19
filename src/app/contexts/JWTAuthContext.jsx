@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }) => {
     } else if (res2.data.roles.length === 1) {
       res2.data.role = res2.data.roles[0];
       res2.data.academy = res2.data.roles[0].academy;
-
+      if (res2.data.role.toLowerCase() == 'student') throw Error('You are not a staff member from any academy');
       const resp = await bc.auth().getSingleRole(res2.data.role);
       capabilities = resp.data.capabilities;
     }
