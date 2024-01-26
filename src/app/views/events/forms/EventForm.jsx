@@ -279,7 +279,7 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
-                  Landing URL
+                  External Signup URL
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <TextField
@@ -291,9 +291,8 @@ const EventForm = () => {
                     onChange={handleChange}
                     name="url"
                     fullWidth
-                    disabled={values.sync_with_eventbrite ? true : false}
                   />
-                  <small className="text-muted">If the event gets published on eventbrite, this field will be filled with the eventbrite public URL</small>
+                  <small className="text-muted">Your event may require attendies to signup thru 3rd party landing</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Capacity
@@ -525,7 +524,10 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
-                  Sync with Eventbrite
+                  <HelpIcon
+                    message="Used by Zapier for synching with Eventbrite and other tools."
+                  />
+                  <p style={{ whiteSpace: 'nowrap' }}>Sync with 3rd party</p>
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <Checkbox
