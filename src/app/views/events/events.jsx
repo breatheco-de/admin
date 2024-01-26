@@ -143,7 +143,7 @@ const EventList = () => {
             <div className="flex-grow" />
             <Link to={`/events/event/${items[dataIndex].id}`}>
               <IconButton>
-                <Icon>edit</Icon>
+                <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Link>
           </div>

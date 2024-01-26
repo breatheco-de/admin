@@ -112,6 +112,12 @@ export const navigations = [
         icon: "event",
         children: [
             {
+                name: "Settings",
+                path: "/events/settings",
+                iconText: "OL",
+                capabilities: ["read_organization"],
+            },
+            {
                 name: "Event List",
                 path: "/events/list",
                 iconText: "OL",

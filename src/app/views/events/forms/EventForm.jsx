@@ -97,7 +97,7 @@ const EventForm = () => {
         })
         .then(({ data }) => {
 
-          if (data.academy !== undefined) history.push('/events/list');
+          if (data.academy !== undefined) history.push(`/events/event/${data.id}`);
         })
         .catch((error) => {
           setShowDialog(false);
