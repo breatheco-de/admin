@@ -161,11 +161,11 @@ const EventList = () => {
                   </IconButton>
                 )
                 :
-                (
+                (<Tooltip title="Mark as finished">
                   <IconButton onClick={() => markEventAsFinished(items[dataIndex], dataIndex)}>
                     <Icon>checkmark</Icon>
                   </IconButton>
-                )
+                </Tooltip>)
             }
             <div className="flex-grow" />
             <Link to={`/events/event/${items[dataIndex].id}`}>
