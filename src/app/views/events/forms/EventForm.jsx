@@ -535,6 +535,7 @@ const EventForm = () => {
                     asyncSearch={async (searchTerm) => {
                       let payload = { asset_type: 'PROJECT', status: 'PUBLISHED', visibility: 'PUBLIC', like: searchTerm || ''}
                       if (event && event.lang !== '') payload.language = event.lang;
+                      else if (values && values.lang !== '') payload.language = event.lang;
                       try {
                         const { data } = await bc.registry().getAllAssets(payload);
                         
