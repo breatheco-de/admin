@@ -12,7 +12,7 @@ import DeleteOutlineRounded from '@material-ui/icons/DeleteOutlineRounded';
 import AlarmOffRounded from '@material-ui/icons/AlarmOffRounded';
 import { SmartMUIDataTable } from '../../../components/SmartDataTable';
 import ConfirmAlert from '../../../components/ConfirmAlert';
-import BulkAction from "./BulkAction"
+import BulkAction from "../../../components/BulkAction"
 import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
 import config from '../../../../config.js';

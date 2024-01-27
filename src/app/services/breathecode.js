@@ -751,10 +751,10 @@ class BreatheCodeClient {
           `${this.host}/events/academy/event`,
           payload
         ),
-      updateAcademyEvent: (event, payload) =>
+      updateAcademyEvent: (slug, payload) =>
         axios.bcPut(
           "Academy event",
-          `${this.host}/events/academy/event/${event}`,
+          `${this.host}/events/academy/event${slug ? `/${slug}` : ""}`,
           payload
         ),
       getAcademyEvents: (query) => {

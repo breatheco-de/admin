@@ -5,9 +5,11 @@ import {
   Button,
   Card,
   TextField,
+  Tooltip,
   InputAdornment,
   Tooltip,
 } from '@material-ui/core';
+import DeleteOutlineRounded from '@material-ui/icons/DeleteOutlineRounded';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import A from '@material-ui/core/Link';
 import { Link } from 'react-router-dom';
@@ -17,6 +19,8 @@ import { Breadcrumb } from '../../../matx';
 import { getSession } from '../../redux/actions/SessionActions';
 import bc from '../../services/breathecode';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
+import BulkAction from '../../components/BulkAction';
+import AddBulkToEvents from './forms/AddBulkToEvents';
 
 toast.configure();
 const toastOption = {
@@ -42,26 +46,10 @@ const EventList = () => {
 
   const thisURL = `https://breathecode.herokuapp.com/v1/events/ical/events?academy=${session.academy.id}`;
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [url, setUrl] = useState('');
-
   const loadData = async (querys) => {
     const { data } = await bc.events().getAcademyEvents(querys);
     setItems(data.results);
     return data;
-  }
-
-  const markEventAsFinished = async (event, dataIndex) => {
-    const now = new Date();
-    const currentTime = now.toISOString();
-    delete event['slug'];
-    const { data } = await bc.events().updateAcademyEvent(event.id, { ...event, event_type: event.event_type?.id, venue: event.venue?.id, ended_at: currentTime });
-    if (data.status_code < 400) {
-      let _items = items;
-      _items[dataIndex].ended_at = currentTime;
-      setItems(_items);
-      toast.success('The event has been marked as ended.')
-    }
   }
 
   const columns = [
@@ -154,24 +142,9 @@ const EventList = () => {
         customBodyRenderLite: (dataIndex) => (
           <div className="flex items-center">
             <div className="flex-grow" />
-            {
-              items[dataIndex].ended_at ?
-                (
-                  <IconButton onClick={() => toast.warning('This event has already been marked as finished', toastOption)}>
-                    <Icon>checkmark</Icon>
-                  </IconButton>
-                )
-                :
-                (<Tooltip title="Mark as finished">
-                  <IconButton onClick={() => markEventAsFinished(items[dataIndex], dataIndex)}>
-                    <Icon>checkmark</Icon>
-                  </IconButton>
-                </Tooltip>)
-            }
-            <div className="flex-grow" />
             <Link to={`/events/event/${items[dataIndex].id}`}>
               <IconButton>
-                <Icon>edit</Icon>
+                <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Link>
           </div>
@@ -256,9 +229,32 @@ const EventList = () => {
               historyReplace="/events/list"
               singlePage=""
               search={loadData}
-              deleting={async (querys) => {
-                const { status } = await bc.events().deleteEventsBulk(querys);
-                return status;
+              options={{
+                print: false,
+                customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+                  return (
+                    <div className='ml-auto'>
+                      <AddBulkToEvents
+                        selectedRows={selectedRows}
+                        displayData={displayData}
+                        setSelectedRows={setSelectedRows}
+                        items={items}
+                        setItems={setItems}
+                        loadData={loadData}
+                      />
+                      <BulkAction
+                        title="Delete event"
+                        iconComponent={DeleteOutlineRounded}
+                        onConfirm={async (ids) => {
+                          const { status } = await bc.events().deleteEventsBulk(ids);
+                          loadData();
+                        }}
+                        selectedRows={selectedRows}
+                        items={items}
+                      />
+                    </div>
+                  )
+                }
               }}
             />
           </div>
