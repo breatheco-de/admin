@@ -102,7 +102,7 @@ const Survey = ({ match }) => {
               </Grid>
               {surveyMentors.map((m) => (
                 <Grid key={m.name} item sm={6} xs={12}>
-                  <StatCard label={m.name} score={m.score} />
+                  <StatCard label={m.name} score={m.score.toFixed(1)} />
                 </Grid>
               ))}
             </Grid>
