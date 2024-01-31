@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }) => {
     let capabilities = [];
     const res2 = await axios.bcGet('User', `${config.REACT_APP_API_HOST}/v1/auth/user/me`);
     const storedSession = JSON.parse(localStorage.getItem('bc-session'));
-    if (!res2.data || res2.data.roles.length === 0) throw Error('You are not a staff member from any academy');
+    if (!res2.data || res2.data.roles.filter(({ role }) => role !== 'student').length === 0) throw Error('You are not a staff member from any academy');
     else if (storedSession && typeof storedSession === 'object') {
       res2.data.role = storedSession.role;
       res2.data.academy = storedSession.academy;
@@ -199,7 +199,7 @@ export const AuthProvider = ({ children }) => {
           const user = response.data;
           let capabilities = [];
           const storedSession = JSON.parse(localStorage.getItem('bc-session'));
-          if (!user || user.roles.length === 0) throw Error('You are not a staff member from any academy');
+          if (!user || user.roles.filter(({ role }) => role !== 'student').length === 0) throw Error('You are not a staff member from any academy');
           else if (urlParams.has('location')) {
             const academyRole = user.roles.find((r) => r.academy.slug === urlParams.get('location'));
             if (!academyRole) throw Error(`You don't have access to academy ${urlParams.get('location')}`);
