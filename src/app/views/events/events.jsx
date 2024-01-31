@@ -8,6 +8,7 @@ import {
   Tooltip,
   InputAdornment,
 } from '@material-ui/core';
+import { getParams } from '../../components/SmartDataTable';
 import DeleteOutlineRounded from '@material-ui/icons/DeleteOutlineRounded';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import A from '@material-ui/core/Link';
@@ -47,7 +48,7 @@ const EventList = () => {
 
   const loadData = async (querys) => {
     const { data } = await bc.events().getAcademyEvents(querys);
-    setItems(data.results);
+    setItems(data.results || data);
     return data;
   }
 
@@ -246,7 +247,7 @@ const EventList = () => {
                         iconComponent={DeleteOutlineRounded}
                         onConfirm={async (ids) => {
                           const { status } = await bc.events().deleteEventsBulk(ids);
-                          loadData();
+                          loadData({ limit: 10, offset: 0, ...getParams() });
                         }}
                         selectedRows={selectedRows}
                         items={items}
