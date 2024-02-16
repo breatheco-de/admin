@@ -745,6 +745,13 @@ class BreatheCodeClient {
           `${this.host}/events/academy/checkin${query ? `?${qs}` : ""}`
         );
       },
+      getEventCheckins: (id, query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Event",
+          `${this.host}/events/event/${id}/checkin${query ? `?${qs}` : ""}`
+        );
+      },
       addAcademyEvent: (payload) =>
         axios.bcPost(
           "Academy event",
