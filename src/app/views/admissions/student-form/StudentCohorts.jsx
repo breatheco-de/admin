@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 import config from '../../../../config.js';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 const propTypes = {
   stdId: PropTypes.number.isRequired,
@@ -52,6 +53,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [openRoleDialog, setRoleDialog] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
+  const session = getSession();
 
   const getStudentCohorts = () => {
     setIsLoading(true);
@@ -283,13 +285,11 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                     >
                       <Icon fontSize="small">delete</Icon>
                     </IconButton>
-                    <Link to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}>
-                      <Tooltip title="Student Report">
-                        <IconButton>
-                          <Icon fontSize="small">assignment_ind</Icon>
-                        </IconButton>
-                      </Tooltip>
-                    </Link>
+                    <Tooltip title="Student Report">
+                      <IconButton onClick={() => window.open(`${process.env.REACT_APP_STUDENT}/cohort/${s.cohort.slug}/student/${s.user.id}?academy=${session.academy.id}&token=${session.token}`)}>
+                        <Icon fontSize="small">assignment_ind</Icon>
+                      </IconButton>
+                    </Tooltip>
                     {s.watching ? 
                           <Tooltip title="This student is being watched, click to stop watching">
                             <IconButton
