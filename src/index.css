@@ -14,6 +14,18 @@
   display: block !important;
 }
 
+.cut-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.cut-text.show-on-hover:hover {
+  text-overflow: none;
+  white-space: inherit;
+  overflow:inherit;
+  width: auto !important;
+}
+
 .MuiTableCell-root {
   word-break: unset !important;
 }

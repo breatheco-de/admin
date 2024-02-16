@@ -5,15 +5,18 @@ import {
   Tooltip,
   Button,
   Dialog,
+  IconButton,
+  Icon,
   DialogTitle,
   DialogActions,
 } from "@material-ui/core";
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import dayjs from 'dayjs';
-import { SmartMUIDataTable } from '../../../components/SmartDataTable';
+import { SmartMUIDataTable, getParams } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
 import BulkUpdateTag from './BulkUpdateTag';
+import { getSession } from '../../../redux/actions/SessionActions';
 import { useQuery } from '../../../hooks/useQuery';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -190,6 +193,12 @@ export const Tags = () => {
     return data;
   };
 
+  const syncTags = async () => {
+    const session = getSession();
+    await bc.marketing().syncAcademyTags(session.academy.id);
+    loadData(getParams())
+  };
+
   return (
     <Card container className="p-4">
       <SmartMUIDataTable
@@ -200,16 +209,24 @@ export const Tags = () => {
         options={{
           print: false,
           viewColumns: false,
+          download: false,
+          customToolbar: () => {
+            return <Tooltip title={`Sync tags with Active Campaign`}>
+              <IconButton onClick={() => syncTags()}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            </Tooltip>;
+          },
           customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-            <BulkUpdateTag
-              selectedRows={selectedRows}
-              displayData={displayData}
-              setSelectedRows={setSelectedRows}
-              items={items}
-              setItems={setItems}
-              loadData={loadData}
-              asyncSearch={getTypes}
-            />
+              <BulkUpdateTag
+                selectedRows={selectedRows}
+                displayData={displayData}
+                setSelectedRows={setSelectedRows}
+                items={items}
+                setItems={setItems}
+                loadData={loadData}
+                asyncSearch={getTypes}
+              />
           ),
         }}
         search={loadData}
