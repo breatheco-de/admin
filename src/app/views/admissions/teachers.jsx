@@ -124,19 +124,25 @@ const Teachers = () => {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
+          const maxCohorts = 4;
           return (
             <div>
-                {item.cohorts.slice(0,2).map(c => {
+                {item.cohorts.slice(0,4).map(c => {
                   const msg = dayjs().isBefore(c.ending_date) ? 
                     `Ends on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`
                     :
+                    !c.ending_date ? `Never ended` :
                     `Ended ${dayjs(c.ending_date).fromNow()}, on ${dayjs(c.ending_date).format('MM-DD-YYYY')}`;
                   return <Tooltip title={msg}>
                     <div className="chip mr-1 mb-1">
-                      <p>{c.name}</p><small>{c.stage}</small>
+                      <p className='cut-text show-on-hover' style={{ width: "80px"}}>{c.name}</p><small>{c.stage}</small>
                     </div>
                   </Tooltip>
                 })}
+                { item.cohorts.length > maxCohorts && <span className="mr-1 mb-1">
+                      {item.cohorts.length} more...
+                    </span>
+                }
             </div>
           );
         },

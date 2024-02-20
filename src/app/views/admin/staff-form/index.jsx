@@ -78,7 +78,6 @@ const Staff = () => {
       title: 'An email to reset password will be sent to',
       action: passwordReset,
     },
-    { label: 'Open student profile', value: 'student_profile', title: '' },
     {
       label: 'Reset Github Link',
       value: 'github_reset',

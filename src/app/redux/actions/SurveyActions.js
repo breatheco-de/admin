@@ -24,12 +24,11 @@ export const getSurveyAnswers = (query) => (distpach) => {
             const cohort_score = {};
             const answered = [];
             const mentors = {};
-            let avg = 0;
             res.data.forEach((item) => {
                 // Only Answers
                 if (item.score) answered.push(item);
                 // Academy overall score
-                if (item.academy && item.score) {
+                if (item.score && !item.cohort && !item.mentor) {
                     if (!academy_score.score && !academy_score.divider) {
                         academy_score.score = 0;
                         academy_score.divider = 0;
@@ -38,7 +37,7 @@ export const getSurveyAnswers = (query) => (distpach) => {
                     academy_score.divider++;
                 }
                 // Cohort overall score
-                if (item.cohort && item.score) {
+                if (item.score && !item.mentor && item.cohort) {
                     if (!cohort_score.score && !cohort_score.divider) {
                         cohort_score.score = 0;
                         cohort_score.divider = 0;
@@ -47,7 +46,7 @@ export const getSurveyAnswers = (query) => (distpach) => {
                     cohort_score.divider++;
                 }
                 // Passing mentor name and score to mentors object
-                if (item.mentor && item.score) {
+                if (item.cohort && item.mentor && item.score) {
                     const mentor = `${item.mentor.first_name} ${item.mentor.last_name}`;
                     if (!mentors[mentor]) mentors[mentor] = {};
                     if (!mentors[mentor].answered) mentors[mentor].answered = 0;
@@ -57,34 +56,30 @@ export const getSurveyAnswers = (query) => (distpach) => {
                 }
             });
             const mentorsArray = Object.keys(mentors).map((item) => {
-                avg += Math.round(mentors[item].score / mentors[item].answered);
                 return {
                     name: item,
-                    score: Math.round(
-                        mentors[item].score / mentors[item].answered
-                    ),
+                    score: mentors[item].score / mentors[item].answered,
                 };
             });
+            
+            let mentorsScore = mentorsArray.reduce((sum, item) => sum + item.score, 0);
+
             // Setting the sum of all scores
             overall_score =
-                Math.round(cohort_score.score / cohort_score.divider) +
-                Math.round(academy_score.score / academy_score.divider) +
-                avg;
+                cohort_score.score +
+                academy_score.score +
+                mentorsScore;
+            
+            
             distpach({
                 type: GET_SURVEY_ANSWERS,
                 payload: {
                     answers: res.data,
-                    avg_cohort_score: Math.round(
-                        cohort_score.score / cohort_score.divider
-                    ),
-                    avg_academy_score: Math.round(
-                        academy_score.score / academy_score.divider
-                    ),
+                    avg_cohort_score: (cohort_score.score / cohort_score.divider).toFixed(1),
+                    avg_academy_score: (academy_score.score / academy_score.divider).toFixed(1),
                     mentors: mentorsArray,
                     answered,
-                    overall_score: Math.round(
-                        Math.round(overall_score) / (mentorsArray.length + 2)
-                    ),
+                    overall_score: (overall_score / (cohort_score.divider + academy_score.divider + mentorsArray.length)).toFixed(1),
                     is_loading: false,
                 },
             });

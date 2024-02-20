@@ -47,7 +47,7 @@ const InfiniteScrollTable = ({ items, setItems, columns, search }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item, i) => {
+          {Array.isArray(items) && items.map((item, i) => {
             return items.length === i +1 ? (
               <TableRow ref={lastElementRef}>
                 {columns.map((column, j) => column.customBodyRender(item, j))}
