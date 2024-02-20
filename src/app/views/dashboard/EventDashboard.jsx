@@ -28,7 +28,7 @@ const stageColors = {
   DELETED: 'light-gray',
 };
 
-const name = (user) => {
+const getAttendeeName = (user) => {
   if (user && user.first_name && user.first_name !== '') return `${user.first_name} ${user.last_name}`;
   return 'No name';
 };
@@ -44,7 +44,7 @@ const EventDashboard = ({ match }) => {
   const [upadteStatus, setUpdateStatus] = useState(false);
   const [updateType, setUpdateType] = useState(false);
   const [eventData, setEventData] = useState({});
-  const [checkingData, setCheckingData] = useState([]);
+  const [checkinData, setcheckinData] = useState([]);
   const [items, setItems] = useState([]);
   const query = useQuery();
 
@@ -60,7 +60,7 @@ const EventDashboard = ({ match }) => {
       setEventData(data);
 
       const checkingRes = await bc.events().getEventCheckins(eventId);
-      setCheckingData(checkingRes.data);
+      setcheckinData(checkingRes.data);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
@@ -94,7 +94,7 @@ const EventDashboard = ({ match }) => {
           return (
             <div className="ml-3">
               <h5 className="my-0 text-15">
-                {attendee !== null ? name(attendee) : `${rest.first_name} ${rest.last_name}`}
+                {getAttendeeName(attendee)}
               </h5>
               <small className="text-muted">{rest?.email || rest.email}</small>
             </div>
@@ -230,7 +230,7 @@ const EventDashboard = ({ match }) => {
                 </AlertTitle>
               </Alert> */}
               <GaugeProgressCard
-                series={[(checkingData.length * 100)/ EventCapacity]}
+                series={[(checkinData.length * 100)/ EventCapacity]}
                 maxValue={EventCapacity}
                 bottomMessage="Users registered for the event"
                 height="auto"
