@@ -3,6 +3,7 @@ import { Card, IconButton, Icon } from '@material-ui/core';
 import Chart from 'react-apexcharts';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
   icon: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const GaugeProgressCard = () => {
+const GaugeProgressCard = ({ series, valueOptions, bottomMessage, height }) => {
   const classes = useStyles();
   const theme = useTheme();
   const options = {
@@ -48,6 +49,7 @@ const GaugeProgressCard = () => {
             offsetY: 38,
             show: true,
             formatter: (val) => `${val * 10}K`,
+            ...valueOptions,
           },
         },
         track: {
@@ -74,21 +76,34 @@ const GaugeProgressCard = () => {
   };
 
   return (
-    <Card elevation={3} className="h-full">
+    <Card elevation={3} className={`h-${height}`}>
       <div className=" px-4 py-3 mb-6 flex justify-between items-center bg-light-gray">
         <span className="font-medium text-muted">STATISTICS</span>
-        <IconButton size="small">
+        {/* <IconButton size="small">
           <Icon>more_horiz</Icon>
-        </IconButton>
+        </IconButton> */}
       </div>
       <div className="relative">
-        <Chart options={options} series={[84.2]} type="radialBar" height={200} />
+        <Chart options={options} series={series} type="radialBar" height={200} />
         <Icon className={clsx('text-muted text-36', classes.icon)}>people</Icon>
       </div>
-      <h5 className="text-center font-medium mb-2">Awesome</h5>
-      <p className="m-0 text-muted text-center">Close to reach 1000k folowers!</p>
+      <h5 className="text-center font-medium mb-4">{bottomMessage}</h5>
+      {/* <p className="m-0 text-muted text-center">Close to reach 1000k folowers!</p> */}
     </Card>
   );
+};
+
+GaugeProgressCard.propTypes = {
+  series: PropTypes.array,
+  valueOptions: PropTypes.object,
+  bottomMessage: PropTypes.string,
+  height: PropTypes.string,
+};
+GaugeProgressCard.defaultProps = {
+  series: [84.2],
+  valueOptions: {},
+  bottomMessage: '',
+  height: 'full',
 };
 
 export default GaugeProgressCard;
