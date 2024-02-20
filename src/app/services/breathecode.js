@@ -398,6 +398,12 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/tag${query ? `?${qs}` : ""}`
         );
       },
+      syncAcademyTags: (academyId) => {
+        return axios.bcGet(
+          "Academy tags",
+          `${this.host}/marketing/academy/${academyId}/tag/sync`
+        );
+      },
       updateAcademyTags: (slug, tag) =>
         axios.bcPut(
           "Academy tags",
@@ -458,6 +464,12 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/automation${query ? `?${qs}` : ""}`
         );
       },
+      updateAcademyAutomation: (id, automation) =>
+        axios.bcPut(
+          "Academy automation",
+          `${this.host}/marketing/academy/automation${id ? `/${id}` : ""}`,
+          automation
+        ),
       getAcademyUtm: () =>
         axios.bcGet("Academy Utm", `${this.host}/marketing/academy/utm`),
       addNewLead: (newLead) =>

@@ -32,6 +32,7 @@ const EventForm = () => {
     starting_at: '',
     ending_at: '',
     host_user: null,
+    asset_slug: null,
     online_event: false,
     live_stream_url: '',
     eventbrite_sync_status: '',
@@ -40,6 +41,7 @@ const EventForm = () => {
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
+  const [assetSlug, setAssetSlug] = useState(null);
   const [tags, setTags] = useState([]);
   const [eventType, setEventType] = useState(null);
   const [slug, setSlug] = useState('');
@@ -67,10 +69,11 @@ const EventForm = () => {
           setTitle(data.title);
 
           if (data.tags !== "") setTags(data.tags.split(","));
-          if (data.slug) setSlug(data.slug);
+          if (data.slug) setSlug(data);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
           if (data.venue) setVenue({ ...data.venue });
           if (data.host_user) setHostUser(data.host_user);
+          if (data.asset_slug) setAssetSlug(data.asset_slug);
         })
         .catch((error) => error);
     }
@@ -91,6 +94,7 @@ const EventForm = () => {
           title,
           tags: tags.join(","),
           host_user: hostUser && hostUser.id,
+          asset_slug: assetSlug,
           starting_at: dayjs(rest.starting_at).utc().format(),
           ending_at: dayjs(rest.ending_at).utc().format(),
           ...venueAndType,
@@ -110,6 +114,7 @@ const EventForm = () => {
         title,
         slug,
         host_user: hostUser && hostUser.id,
+        asset_slug: assetSlug,
         tags: tags.join(","),
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
@@ -134,6 +139,7 @@ const EventForm = () => {
               starting_at: '',
               ending_at: '',
               host_user: null,
+              asset_slug: null,
               event_type: null,
               venue: null,
               online_event: false,
@@ -511,6 +517,37 @@ const EventForm = () => {
                     onChange={handleChange}
                   />
                   <small className="text-muted">In case the event is online, this field is mandatory. It's the meeting URL.</small>
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Asset Slug
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <AsyncAutocomplete
+                    id="asset_slug"
+                    onChange={(assetData) => setAssetSlug(assetData)}
+                    size="small"
+                    value={assetSlug || ''}
+                    label="Asset Slug"
+                    debounced={false}
+                    renderOption={(option) => option || ''}
+                    getOptionLabel={(option) => option || ''}
+                    asyncSearch={async (searchTerm) => {
+                      let payload = { asset_type: 'PROJECT', status: 'PUBLISHED', visibility: 'PUBLIC', like: searchTerm || ''}
+                      if (event && event.lang !== '') payload.language = event.lang;
+                      else if (values && values.lang !== '') payload.language = event.lang;
+                      try {
+                        const { data } = await bc.registry().getAllAssets(payload);
+                        
+                        let slugs = removeDuplicates(data.map((item) => {
+                          return item['slug'];
+                        }));
+
+                        return {data: slugs}
+                      } catch (err) {
+                        return err
+                      }
+                    }}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Online Event
