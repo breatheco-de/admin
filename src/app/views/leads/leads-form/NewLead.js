@@ -136,6 +136,7 @@ const NewLead = () => {
           const index = availableCourses.map((c) => c.slug).indexOf(data.course);
           setNewLead({ 
             ...data,
+            user: data.user?.id || data,
             latitude: data.latitude || 0,
             longitude: data.longitude || 0,
             zip_code: data.zip_code || 0,
