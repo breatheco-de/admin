@@ -4,6 +4,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import {
   Grid, Card, Divider, TextField, MenuItem, Button, Checkbox,
 } from '@material-ui/core';
+import A from '@material-ui/core/Link';
 import dayjs from 'dayjs';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import bc from '../../../services/breathecode';
@@ -191,6 +192,13 @@ const EventForm = () => {
         />
       </div>
       <Card elevation={3}>
+        {id && (
+          <div className="pt-4 px-4">
+            <A href={`/events/event/${id}`}>
+              Go back
+            </A>
+          </div>
+        )}
         <div className="flex p-4">
           <h4 className="m-0">{id ? 'Edit Event' : 'Create a new Event'}</h4>
         </div>
