@@ -70,11 +70,11 @@ const EventForm = () => {
           setTitle(data.title);
 
           if (data.tags !== "") setTags(data.tags.split(","));
-          if (data.slug) setSlug(data);
+          if (data.slug) setSlug(data.slug);
           if (data.event_type) setEventType({ ...data.event_type, academy: data.academy });
           if (data.venue) setVenue({ ...data.venue });
           if (data.host_user) setHostUser(data.host_user);
-          if (data.asset_slug) setAssetSlug(data.asset_slug);
+          if (data.asset) setAssetSlug(data.asset.slug);
         })
         .catch((error) => error);
     }
@@ -87,7 +87,7 @@ const EventForm = () => {
 
     if (id) {
 
-      const { academy, status, slug, ...rest } = values;
+      const { academy, status, slug, author, ...rest } = values;
 
       bc.events()
         .updateAcademyEvent(id, {
@@ -542,7 +542,7 @@ const EventForm = () => {
                     asyncSearch={async (searchTerm) => {
                       let payload = { asset_type: 'PROJECT', status: 'PUBLISHED', visibility: 'PUBLIC', like: searchTerm || ''}
                       if (event && event.lang !== '') payload.language = event.lang;
-                      else if (values && values.lang !== '') payload.language = event.lang;
+                      else if (values && values.lang !== '') payload.language = values.lang;
                       try {
                         const { data } = await bc.registry().getAllAssets(payload);
                         
@@ -568,13 +568,16 @@ const EventForm = () => {
                     color="primary"
                   />
                 </Grid>
-                <Grid item md={1} sm={4} xs={12}>
-                  <HelpIcon
-                    message="Used by Zapier for synching with Eventbrite and other tools."
-                  />
-                  <p style={{ whiteSpace: 'nowrap' }}>Sync with 3rd party</p>
+                <Grid item md={2} sm={4} xs={12}>
+                  <div className="flex items-center" style={{ gap: '5px' }}>
+                    <HelpIcon
+                      message="Used by Zapier for synching with Eventbrite and other tools."
+                    />
+                    <p style={{ whiteSpace: 'nowrap' }}>Sync with 3rd party</p>
+                  </div>
+                  
                 </Grid>
-                <Grid item md={3} sm={8} xs={12}>
+                <Grid item md={2} sm={8} xs={12}>
                   <Checkbox
                     checked={values.sync_with_eventbrite}
                     onChange={handleChange}
