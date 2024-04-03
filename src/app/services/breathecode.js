@@ -869,6 +869,34 @@ class BreatheCodeClient {
         axios.bcGet("Media", `${this.host}/monitoring/upload`),
     };
   }
+
+  assessment() {
+    return {
+      getSingle: (assessment_slug) =>
+        axios.bcGet(
+          "Assessment",
+          `${this.host}/assessment/${assessment_slug}`
+        ),
+        updateSingle: async (assessment_slug, payload) => {
+          return await axios.bcPut(
+            "Assessment",
+            `${this.host}/assessment/${assessment_slug}`,
+            payload
+          );
+        },
+        deleteQuestion: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Question",
+            `${this.host}/assessment/${assessment_slug}/question/${payload.id}`);
+        },
+        deleteOption: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Option",
+            `${this.host}/assessment/${assessment_slug}/option/${payload.id}`);
+        },
+    };
+  }
+
   media() {
     return {
       upload: (payload) =>
@@ -894,6 +922,7 @@ class BreatheCodeClient {
         axios.bcPut("Media", `${this.host}/media/info`, payload),
     };
   }
+
 
   assignments() {
     return {

@@ -680,11 +680,11 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
-      <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-
-      <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      {asset.asset_type != 'QUIZ' && <>
+        <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />}
+        <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      </>}
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
-
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );

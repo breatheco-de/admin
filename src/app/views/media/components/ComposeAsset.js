@@ -33,6 +33,7 @@ import bc from "app/services/breathecode";
 import history from "history.js";
 import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
+import QuizBuilder from "./QuizBuilder"
 import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
@@ -606,14 +607,18 @@ const ComposeAsset = () => {
               ) : (
                 ""
               )}
-              <AssetMarkdown
-                asset={asset}
-                value={content}
-                onChange={(c) => {
-                  handleMarkdownChange();
-                  setContent(c);
-                }}
-              />
+              {asset.asset_type.toLowerCase() == "quiz" ? 
+                <><QuizBuilder asset={asset} /></>
+                :
+                <AssetMarkdown
+                  asset={asset}
+                  value={content}
+                  onChange={(c) => {
+                    handleMarkdownChange();
+                    setContent(c);
+                  }}
+                />
+              }
             </Grid>
             <Grid item md={4} xs={12}>
               <AssetMeta
