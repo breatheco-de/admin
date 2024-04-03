@@ -66,7 +66,10 @@ const QuizBuilder = ({asset}) => {
                 assessment={assessment}
                 question={q} 
                 onChange={(question => updateSingle({ ...assessment, questions: assessment.questions.map(_q => _q.id == question.id ? question : _q)}))}
-                onDelete={question => (question.id && deleteQuestion(question))} 
+                onDelete={async question => {
+                    if(question.id) return await deleteQuestion(question);
+                    else return false;
+                }} 
             />
         )}
         <IconButton size="small" onClick={() => setAssessment({ ...assessment, questions: [ ...assessment.questions, defaultQuestion ]})}>
