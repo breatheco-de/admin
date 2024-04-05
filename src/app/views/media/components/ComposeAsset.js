@@ -46,7 +46,7 @@ function slugify(text) {
 
 // Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
-/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\w\-]+)(\.[a-z]{2})?\.(?:txt|ipynb|md)/gm;
+/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
   //.     /^https:\/\/github\.com\/.*\/([^\/]+)\.(txt|ipynb|md)(?:\?lang=[a-zA-Z]{2})?$
 function getSlugFromGithubURL(url){
   let matches;
@@ -57,6 +57,7 @@ function getSlugFromGithubURL(url){
         githubUrlRegex.lastIndex++;
       }
       
+      console.log("matches", matches)
 
       // The result can be accessed through the `m`-variable.
       for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
@@ -66,7 +67,7 @@ function getSlugFromGithubURL(url){
 }
 
 const hasErrors = (_asset, isCreating=true) => {
-  const [slug, lang] = getSlugFromGithubURL(_asset.readme_url);
+  const [slug, lang, extension] = getSlugFromGithubURL(_asset.readme_url);
   console.log("_asset.readme_url", _asset.readme_url)
   let _errors = {};
   if (!slug || (slug === 'invalid-url')){
@@ -297,10 +298,12 @@ const ComposeAsset = () => {
             value={asset.readme_url}
             fullWidth={true}
             onChange={(e) => {
-              const [slug, lang] = getSlugFromGithubURL(e.target.value);
+              const [slug, lang, extension] = getSlugFromGithubURL(e.target.value);
+              console.log("extension",extension)
               setAsset({ ...asset, 
                 lang, 
                 readme_url: e.target.value,
+                asset_type: extension == 'json' ? 'QUIZ' : undefined,
                 slug: (!asset.slug || asset.slug === "") ? slug : asset.slug,
               });
             }}
@@ -506,9 +509,12 @@ const ComposeAsset = () => {
               />
               <IconButton
                 onClick={() =>
-                  window.open(
-                    `${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`
-                  )
+                  asset.asset_type === 'QUIZ' ?
+                    window.open(asset.url)
+                    :
+                    window.open(
+                      `${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`
+                    )
                 }
               >
                 <Icon>
@@ -608,7 +614,7 @@ const ComposeAsset = () => {
                 ""
               )}
               {asset.asset_type.toLowerCase() == "quiz" ? 
-                <><QuizBuilder asset={asset} /></>
+                <><QuizBuilder asset={asset} onChange={(a) => saveAsset(a)} /></>
                 :
                 <AssetMarkdown
                   asset={asset}

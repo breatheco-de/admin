@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import bc from "app/services/breathecode";
 import { ConfirmationDialog } from '../../../../matx';
+import { PickAssessmentModal } from './PickAssessmentModal';
+import { Alert, AlertTitle } from "@material-ui/lab";
 import {
     Grid,
     Divider,
@@ -10,6 +12,9 @@ import {
     Button,
     IconButton,
   } from "@material-ui/core";
+import dayjs from 'dayjs';
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
 const defaultOption = { title: "", score: 0, position: null }
 const defaultQuestion = { 
@@ -21,7 +26,44 @@ const defaultQuestion = {
     ]
 };
 
-const QuizBuilder = ({asset}) => {
+const AssessmentCard = ({ asset, assignment, onChange }) => {
+    const [assign, setAssign] = useState(null);
+  
+    const handleSetAssignment = async (a) => {
+      if (a) onChange(a)
+      setAssign(false);
+    }
+  
+    if(dayjs().diff(dayjs(asset.created_at), 'minute') <= 1){
+        console.log("pssss", dayjs().diff(dayjs(asset.created_at), 'minute'))
+        return <Grid item md={12} sm={12} xs={12}>
+            <Alert severity="warning">
+                <AlertTitle>Assessment being created</AlertTitle>
+                It may take a few seconds to create the matching assessment for this quiz, please reload in one minute.
+            </Alert>
+        </Grid>
+    }
+
+    return <>
+      {!assignment &&
+        <Grid item md={12} sm={12} xs={12}>
+            <Alert severity="warning">
+                <AlertTitle>No matching assessment</AlertTitle>
+                <p>Quizes must be binded to an assessment and it seems this quiz does not have an assessment pair.</p>
+                <p>If you recently created this asset you should wait a few minutes before moving forward, otherwise you can <span className="underline text-primary pointer" onClick={()=>setAssign(true)}>click here to pick an assessment</span> from this quiz.</p>
+            </Alert>
+        </Grid>
+      }
+      {assign && <PickAssessmentModal
+        onClose={handleSetAssignment}
+        lang={asset.lang}
+        query={{ no_asset: true }}
+        hint="Only assessments without asigned assets will how here"
+      />}
+    </>;
+}
+
+const QuizBuilder = ({asset, onChange}) => {
 
     const getSingle = async () => {
         const assessment = await bc.assessment().getSingle(asset?.assessment?.slug);
@@ -56,7 +98,12 @@ const QuizBuilder = ({asset}) => {
     const [adding, setAdding] = useState(null); 
 
 
-    if(!assessment) return <p>Asset assessment not found</p>;
+    if(!assessment || !assessment.questions) 
+        return <AssessmentCard 
+            assessment={assessment} 
+            asset={asset} 
+            onChange={a => onChange({ id: asset.id, slug: asset.slug, assessment: a })} 
+        />;
 
     return <>
         <h2>{assessment.title}</h2>
@@ -65,14 +112,17 @@ const QuizBuilder = ({asset}) => {
                 key={q.id} 
                 assessment={assessment}
                 question={q} 
-                onChange={(question => updateSingle({ ...assessment, questions: assessment.questions.map(_q => _q.id == question.id ? question : _q)}))}
+                onChange={(question => updateSingle({ questions: assessment.questions.map(_q => _q.id == question.id ? question : _q)}))}
                 onDelete={async question => {
                     if(question.id) return await deleteQuestion(question);
-                    else return false;
+                    else{
+                        setAssessment({ questions: assessment.questions.filter(_q => _q.id) });
+                        return false;
+                    } 
                 }} 
             />
         )}
-        <IconButton size="small" onClick={() => setAssessment({ ...assessment, questions: [ ...assessment.questions, defaultQuestion ]})}>
+        <IconButton size="small" onClick={() => setAssessment({ questions: [ ...assessment.questions, defaultQuestion ]})}>
           <Icon>add</Icon>
         </IconButton>
     </>;

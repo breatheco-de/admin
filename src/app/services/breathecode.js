@@ -872,6 +872,13 @@ class BreatheCodeClient {
 
   assessment() {
     return {
+      getAllAssessments: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Assessesment",
+          `${this.host}/assessment${query ? `?${qs}` : ""}`
+        );
+      },
       getSingle: (assessment_slug) =>
         axios.bcGet(
           "Assessment",
