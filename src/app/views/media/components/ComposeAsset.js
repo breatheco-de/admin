@@ -614,7 +614,14 @@ const ComposeAsset = () => {
                 ""
               )}
               {asset.asset_type.toLowerCase() == "quiz" ? 
-                <><QuizBuilder asset={asset} onChange={(a) => saveAsset(a)} /></>
+                <><QuizBuilder asset={asset} onChange={async (a) => {
+                    const resp = await bc.registry().updateAsset(a.slug, { 
+                      status: asset.status,
+                      visibility: asset.visibility,
+                      assessment: a.assessment.id 
+                    });
+                    if (resp.ok) setAsset(resp.data);
+                }} /></>
                 :
                 <AssetMarkdown
                   asset={asset}

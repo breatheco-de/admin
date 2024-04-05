@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { AsyncAutocomplete } from 'app/components/Autocomplete';
 import bc from 'app/services/breathecode';
+import useAuth from 'app/hooks/useAuth';
 
 const defaultProps = {
     query: {},
@@ -23,6 +24,8 @@ export const PickAssessmentModal = ({
 }) => {
 
     const [formData, setFormData] = useState([])
+    const { user } = useAuth();
+
     return (
         <>
             <Dialog
@@ -42,7 +45,7 @@ export const PickAssessmentModal = ({
                         label="Search assessment"
                         value={formData}
                         getOptionLabel={(option) => option.title || `Type assessment title`}
-                        asyncSearch={(searchTerm) => bc.assessment().getAllAssessments({ ...query, like: searchTerm, lang })}
+                        asyncSearch={(searchTerm) => bc.assessment().getAllAssessments({ ...query, academy: user.academy.id, like: searchTerm, lang })}
                     />
                     <p className="my-2">Only assessments without assigned assess will show in this list</p>
                 </DialogContent>
