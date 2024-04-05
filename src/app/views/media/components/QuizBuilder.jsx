@@ -92,7 +92,7 @@ const QuizBuilder = ({asset, onChange}) => {
     useEffect(() => {
         getSingle();
         
-    }, [asset.slug])
+    }, [asset, asset?.assessment?.id])
 
     const [assessment, setAssessment] = useState(null); 
     const [adding, setAdding] = useState(null); 
