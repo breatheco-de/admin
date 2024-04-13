@@ -114,34 +114,21 @@ const CHARACTER_LIMIT = 200;
 const DescriptionCard = ({ asset, onChange}) => {
   const [description, setDescription] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
-  const [newDescription, setNewDescription] = useState(null)
   const [editButton, setEditButton] = useState(false)
-  const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleDescription = async () => {
-    if (newDescription == null && newDescription == '') {
-      setEditButton(false);
-    }       
-    const resp = await API.registry().updateAsset(asset.slug, { description: newDescription });
+    const resp = await API.registry().updateAsset(asset.slug, { description });
     if (resp.status == 201) {
       history.push(`./${resp.data.slug}`);
     }
-    setDescription(newDescription);
     setEditButton(false);
   }
 
   useEffect(() => {
-    const fetchInitialValue = async () => {
-        setTextFieldValue(asset.description);
-    };
-    fetchInitialValue();
-}, []);
-
-  useEffect(() => {
     setDescription(asset.description)
-  }, [newDescription])
+  }, [asset.description])
 
-  const onClickUpdate = () => {newDescription != null && newDescription != '' ? setMakePublicDialog(true) : ''};
+  const onClickUpdate = () => {description && setMakePublicDialog(true)};
   const onAccept = () => handleDescription();
 
 
@@ -149,32 +136,14 @@ const DescriptionCard = ({ asset, onChange}) => {
   return <Card className="p-4 mb-4">
    <h4 className="m-0 font-medium">Description:</h4>
     <div>
-      {!description  ?
-        <>
-          <Grid item md={12} sm={12} xs={12}>
-            <TextField value={textFieldValue} variant="outlined" fullWidth multiline
-            inputProps={{
-              maxLength: CHARACTER_LIMIT
-            }}
-            onChange={(e) => {setNewDescription(e.target.value); setTextFieldValue(e.target.value)}} 
-            helperText={`${textFieldValue != null ? textFieldValue.length : '0' }/${CHARACTER_LIMIT}`}
-            />
-          </Grid>
-          <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
-            Add
-          </Button>
-       </>
-         :
-         <>
-        {editButton ?
-        <>
-            <TextField value={textFieldValue} placeholder={textFieldValue} variant="outlined" fullWidth multiline
+        {editButton ? <>
+          <TextField value={description} placeholder={"SEO optimized description of your asset"} variant="outlined" fullWidth multiline
               inputProps={{
                 maxLength: CHARACTER_LIMIT
               }}
-              onChange={(e) => {setTextFieldValue(e.target.value); setNewDescription(e.target.value); }} 
-              helperText={`${textFieldValue != null ? textFieldValue.length : '0'}/${CHARACTER_LIMIT}`}
-           />
+              onChange={(e) => setDescription(e.target.value)} 
+              helperText={description ? `${description.length}/${CHARACTER_LIMIT}` : "0"}
+           /> 
           <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
             Update
           </Button>
@@ -184,18 +153,19 @@ const DescriptionCard = ({ asset, onChange}) => {
           
           </>
        :
-       <>
-       <p>
-          {description != asset.description ? newDescription : asset.description}
-       </p>
-          <small>{asset.description != null ? asset.description.length : '0' }/{CHARACTER_LIMIT}</small>
-        <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
-          Edit
-        </Button>
+        description ? 
+        <>
+          <p>{description}</p>
+          <small>{description.length}/{CHARACTER_LIMIT}</small>
+          <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
+            Edit
+          </Button>
         </>
-      }       
-      </>
-    }
+        :
+        <>
+          No description found for this asset, you can automatically generate or <a className="anchor text-primary underline pointer" onClick={() => setEditButton(true)}>manually set a description</a>
+        </> 
+      }
     </div>
     <ConfirmAlert
       title={`Are you sure you want to update this description?`}
@@ -681,7 +651,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       {asset.asset_type != 'QUIZ' && <>
-        <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />}
+        <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
         <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       </>}
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />

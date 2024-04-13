@@ -172,10 +172,10 @@ const ComposeAsset = () => {
     }
   };
 
-  const getAssetContent = async () => {
+  const getAssetContent = async (_slug) => {
     const resp = await bc
       .registry()
-      .getAssetContent(asset.slug, { format: "raw" });
+      .getAssetContent(_slug, { format: "raw" });
     if (resp.status >= 200 && resp.status < 300) {
       setContent(resp.data);
     }
@@ -193,7 +193,7 @@ const ComposeAsset = () => {
             setAsset({ ...resp.data, lang: resp.data.lang || "us" });
           } else throw Error("Asset could not be retrieved");
 
-          await getAssetContent();
+          await getAssetContent(asset_slug);
         } catch (error) {
           console.log("Error log", error);
         }
@@ -222,10 +222,14 @@ const ComposeAsset = () => {
       } else toast.success(`${action} completed successfully`);
       setAsset(resp.data);
       setDirty(false);
-      await getAssetContent();
+      await getAssetContent(resp.data.slug);
       return resp.data;
+    } else {
+      toast.error(
+        `Integrity test returned with problems: ${resp.data.detail}`
+      );
     }
-  };
+  }
 
   const saveAsset = async (published_at = null) => {
     const _asset = {
