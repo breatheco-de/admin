@@ -163,7 +163,7 @@ const DescriptionCard = ({ asset, onChange}) => {
         </>
         :
         <>
-          No description found for this asset, you can automatically generate or <a className="anchor text-primary underline pointer" onClick={() => setEditButton(true)}>manually set a description</a>
+          No description found for this asset, you can <a className="anchor text-primary underline pointer" onClick={() => setEditButton(true)}>manually set a description here</a>
         </> 
       }
     </div>
