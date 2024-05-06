@@ -22,7 +22,7 @@ const SessionBill = ({ session }) => {
             }
             {session?.extra_time && <small style={{ display: 'block', fontSize: '8px' }} className="text-danger">overtime</small>}
             <small>
-                Lasted: {getDuration(session.started_at, session.ended_at)}
+                Lasted: {session.status === "ERROR" ? "Check error" : getDuration(session.started_at, session.ended_at)}
             </small>
         </div>
     )
