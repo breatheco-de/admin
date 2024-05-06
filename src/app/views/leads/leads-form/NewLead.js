@@ -37,6 +37,7 @@ const availableCourses = [
   { slug: 'software-engineering', name: 'Software Engineering' },
   { slug: 'machine-learning-engineering', name: 'Machine Learning Engineering' },
   { slug: 'node-js', name: 'Node JS' },
+  { slug: 'applied-ai', name: 'Applied AI' },
 ]
 
 const NewLead = () => {
