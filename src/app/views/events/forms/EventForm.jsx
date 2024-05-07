@@ -489,6 +489,7 @@ const EventForm = () => {
                     variant="outlined"
                     value={values.excerpt}
                     onChange={handleChange}
+                    inputProps={{ maxLength: 140 }}
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
