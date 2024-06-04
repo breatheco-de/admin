@@ -95,7 +95,6 @@ export const AssetAliases = withStyles(dialogStyles)(({
                 {a.slug}
                 {a.slug != asset.slug && <Chip
                 className="ml-1" size="small"
-                label={"Unlink"}
                 icon={<Icon className="pointer" fontSize="small" 
                 onClick={() => deleteAlias(a.slug)}
                 >delete</Icon>}
