@@ -1022,6 +1022,13 @@ class BreatheCodeClient {
           `${this.host}/registry/academy/keyword${query ? `?${qs}` : ""}`
         );
       },
+      getAllAlias: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Keyword",
+          `${this.host}/registry/academy/asset/alias${query ? `?${qs}` : ""}`
+        );
+      },
       getAllClusters: async (query) => {
         const qs = serializeQuerystring(query);
         return await axios.bcGet(
@@ -1138,6 +1145,11 @@ class BreatheCodeClient {
           "Comment",
           `${this.host}/registry/academy/asset/comment/${id}`
         ),
+      deleteAlias: async (id) =>
+        await axios.bcDelete(
+          "Alias",
+          `${this.host}/registry/academy/asset/alias/${id}`
+        ),
       getAssetPreview: async (slug, options) =>
         await axios.bcGet(
           "Asset",
@@ -1169,6 +1181,13 @@ class BreatheCodeClient {
           "Asset",
           `${this.host}/registry/academy/asset/${associatedSlug}/originality`,
           options
+        );
+      },
+      getAssetSuperseders: async (slug, query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset",
+          `${this.host}/registry/asset/${slug}/supersedes${query ? `?${qs}` : ""}`
         );
       },
       getCluster: async (associatedSlug, options) =>

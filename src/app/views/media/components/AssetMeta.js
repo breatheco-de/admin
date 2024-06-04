@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   Table, TableCell, TableRow, Card, MenuItem, DialogContent,
-  Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
+  Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead, IconButton, Badge,
   TableBody
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -189,7 +189,6 @@ const LangCard = ({ asset, onAction, onChange }) => {
       const updateResp = await onChange({
         all_translations: [addTranslation.slug, ...assetTranslations.map(t => asset.translations[t])]
       });
-      console.log("updateResp", updateResp)
       if(updateResp && updateResp.status == 200) setAddTranslation(null);
     } 
     else{
@@ -280,6 +279,174 @@ const LangCard = ({ asset, onAction, onChange }) => {
         )}
         <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)} />
       </div>
+    }
+  </Card>;
+}
+
+const RevisionsCard = ({ asset, onAction, onChange }) => {
+
+  const [addRevision, setAddRevision] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(null);
+  const [ revisionHistory, setRevisionHistory] = useState({ supersedes: [], previous: [] });
+
+  const closeAll = () => {
+    setAddRevision(null);
+    setIsExpanded(false);
+  }
+
+  const setSuperseder = async (slug, superseder) => {
+    const resp = await API.registry().updateAsset(slug, { superseded_by: superseder?.id || superseder });
+    if (resp.status == 200) {
+      setAddRevision(null);
+      loadAssetRevisionHistory();
+    }
+  }
+  const handleSetRevision = async () => {
+    if(addRevision.supersedes) setSuperseder(asset.slug, addRevision.supersedes.id);
+    else if(addRevision.previous) setSuperseder(addRevision.previous.slug, asset.id);
+  }
+
+  const loadAssetRevisionHistory = async () => {
+    const resp = await API.registry().getAssetSuperseders(asset.slug);
+    if (resp.status == 200) setRevisionHistory(resp.data);
+  }
+  useEffect(() => {
+    console.log("wele asset", asset)
+    loadAssetRevisionHistory();
+  }, [asset.id])
+
+  return <Card className="p-4 mb-4">
+    {!isExpanded ?
+      <div className="flex justify-between items-center">
+      <h4 className="m-0 font-medium" style={{ width: '100%' }}>Other versions:</h4>
+      <IconButton
+        onClick={() => setIsExpanded(true)}
+      >
+        <Badge color="secondary" badgeContent={revisionHistory.supersedes.length + revisionHistory.previous.length}>
+          <Icon>device_hub</Icon>
+        </Badge>
+      </IconButton>
+    </div>
+      : !addRevision ?
+      <div>
+        <h4 className="m-0 font-medium" style={{ width: '100%' }}>Other versions: </h4>
+        <h6 className="mt-2 flex items-center">
+          <Icon fontSize="small">arrow_upward</Icon> 
+          Superseders 
+          <HelpIcon className="ml-2" message={"Newer versions of the current asset"} />
+        </h6>
+        <div>
+          {revisionHistory.supersedes.length == 0 && <>
+          <small>There are no newer versions of the current asset </small>
+          <small className="anchor text-primary underline pointer" onClick={() => setAddRevision({ supersedes: true })}>you can add one here</small>
+          </>}
+        </div>
+        <ul className="no-list-style p-0">
+        {revisionHistory.supersedes.map(a => 
+            <li key={a.slug}>
+              <Link to={`./${a.slug}`}>{a.title}</Link> 
+              <Chip
+                className="ml-1" size="small"
+                label={"Unlink"}
+                icon={<Icon className="pointer" fontSize="small" 
+                  onClick={() => setSuperseder(asset.slug, null)}
+                >delete</Icon>}
+              />
+            </li>
+          )}
+        </ul>
+        <h6 className="mt-2 flex items-center">
+          <Icon fontSize="small">arrow_downward</Icon> 
+          Previous 
+          <HelpIcon className="ml-2" message={"Older versions of the current asset"} />
+        </h6>
+        <div>
+          {revisionHistory.previous.length == 0 && <>
+          <small>There are no older versions of the current asset </small>
+          <small className="anchor text-primary underline pointer" onClick={() => setAddRevision({ previous: true })}>you can add more here</small>
+          </>}
+        </div>
+        <ul className="no-list-style p-0">
+          {revisionHistory.previous.map(a => 
+            <li key={a.slug}>
+              <Link to={`./${a.slug}`}>{a.title}</Link> 
+              <Chip
+                className="ml-1" size="small"
+                label={"Unlink"}
+                icon={<Icon className="pointer" fontSize="small" 
+                  onClick={() => setSuperseder(a.slug, null)}
+                >delete</Icon>}
+              />
+            </li>
+          )}
+        </ul>
+      </div>
+      : addRevision?.supersedes ?
+      <div>
+        <h3 className="m-0">Specify an newer version:</h3>
+        <AsyncAutocomplete
+          width="100%"
+          className="my-2"
+          onChange={(x) => setAddRevision({ supersedes: x })}
+          size="small"
+          label="Search Asset"
+          value={addRevision.supersedes}
+          getOptionLabel={(option) => option.title || `Start typing here...`}
+          asyncSearch={async (searchTerm) => {
+                                                        // get only assets without superseders
+            const resp = await bc.registry().getAllAssets({ 
+              asset_type: asset.asset_type, 
+              previous_version: 'null', 
+              language: asset.lang,
+              like: searchTerm,
+            })
+
+            if (resp.status === 200) {
+              return resp
+            }
+            else return resp
+          }}
+        />
+        <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleSetRevision}>
+          See superseder
+        </Button>
+        <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => closeAll()}>
+          Cancel
+        </Button>
+      </div>
+      : addRevision?.previous ?
+      <div>
+        <h3 className="m-0">Specify an older version:</h3>
+        <AsyncAutocomplete
+          width="100%"
+          className="my-2"
+          onChange={(x) => setAddRevision({ previous: x })}
+          size="small"
+          label="Search Asset"
+          value={addRevision.previous}
+          getOptionLabel={(option) => option.title || `Start typing here...`}
+          asyncSearch={async (searchTerm) => {
+                                                        // get only assets without superseders
+            const resp = await bc.registry().getAllAssets({ 
+              asset_type: asset.asset_type, 
+              superseded_by: 'null', 
+              language: asset.lang,
+              like: searchTerm,
+            })
+            if (resp.status === 200) {
+              return resp
+            }
+            else return resp
+          }}
+        />
+        <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleSetRevision}>
+          Set older version
+        </Button>
+        <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => closeAll()}>
+          Cancel
+        </Button>
+      </div>
+      : <></>
     }
   </Card>;
 }
@@ -647,6 +814,7 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
   return (
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <RevisionsCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />

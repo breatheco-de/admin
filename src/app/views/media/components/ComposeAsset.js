@@ -22,6 +22,7 @@ import AssetMarkdown from "./AssetMarkdown";
 import { useParams } from "react-router-dom";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import AssetMeta from "./AssetMeta";
+import { AssetAliases } from "./AssetAliases";
 import { MatxLoading } from "../../../../matx";
 import { ConfirmationDialog } from "../../../../matx";
 import EditableTextField from "../../../components/EditableTextField";
@@ -57,8 +58,6 @@ function getSlugFromGithubURL(url){
         githubUrlRegex.lastIndex++;
       }
       
-      console.log("matches", matches)
-
       // The result can be accessed through the `m`-variable.
       for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
       if(pieces.length > 0) return pieces;
@@ -68,7 +67,7 @@ function getSlugFromGithubURL(url){
 
 const hasErrors = (_asset, isCreating=true) => {
   const [slug, lang, extension] = getSlugFromGithubURL(_asset.readme_url);
-  console.log("_asset.readme_url", _asset.readme_url)
+
   let _errors = {};
   if (!slug || (slug === 'invalid-url')){
     _errors["readme_url"] =
@@ -86,7 +85,6 @@ const hasErrors = (_asset, isCreating=true) => {
   if (!isCreating && !["OK", "WARNING"].includes(_asset.test_status))
     _errors["test_status"] = "Integrity tests failed";
 
-  console.log("calculating", _errors)
   return _errors;
 };
 
@@ -137,6 +135,7 @@ const ComposeAsset = () => {
   const [updateLanguage, setUpdateLanguage] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorDialog, setErrorDialog] = useState(false);
+  const [openAliases, setOpenAliases] = useState(null);
   const [content, setContent] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState({
     isOpen: false,
@@ -195,7 +194,7 @@ const ComposeAsset = () => {
 
           await getAssetContent(asset_slug);
         } catch (error) {
-          console.log("Error log", error);
+          console.error("Error log", error);
         }
       }
     };
@@ -278,8 +277,10 @@ const ComposeAsset = () => {
   };
 
   if (!asset || (!isCreating && !asset.id)) return <MatxLoading />;
+  
   return (
     <div className="m-sm-30">
+      {openAliases && <AssetAliases asset={asset} onClose={() => setOpenAliases(false)} />}
       <div className="mb-sm-30">
         <div className="flex flex-wrap justify-between mb-6">
           <div>
@@ -303,7 +304,6 @@ const ComposeAsset = () => {
             fullWidth={true}
             onChange={(e) => {
               const [slug, lang, extension] = getSlugFromGithubURL(e.target.value);
-              console.log("extension",extension)
               setAsset({ ...asset, 
                 lang, 
                 readme_url: e.target.value,
@@ -393,10 +393,8 @@ const ComposeAsset = () => {
             color="primary"
             onClick={() => {
               const _errors = hasErrors(asset, true);
-              console.log(asset, _errors)
               if(Object.keys(_errors).length == 0) {
                 saveAsset();
-                console.log("saving asset")
               }
               else {
                 setErrors(_errors);
@@ -447,6 +445,9 @@ const ComposeAsset = () => {
                 }}
               >
                 <p className="my-0">{asset.slug}</p>
+                <IconButton size="small" variant="outlined" onClick={() => setOpenAliases(true)}>
+                    <Icon>link</Icon>
+                </IconButton>
               </EditableTextField>
 
               <div className="flex">
@@ -639,6 +640,7 @@ const ComposeAsset = () => {
             </Grid>
             <Grid item md={4} xs={12}>
               <AssetMeta
+                key={asset.id}
                 asset={asset}
                 onAction={(action, payload = null) =>
                   handleAction(action, payload)
