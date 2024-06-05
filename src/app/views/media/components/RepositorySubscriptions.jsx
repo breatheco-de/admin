@@ -61,12 +61,12 @@ const Modal = withStyles(dialogStyles)(({
 }) => {
 
   const [ _subs, setSubs ] = useState([])
-  const { repoUrl } = getRepoUrlFromFilePath(repo_url);
+  const url = getRepoUrlFromFilePath(repo_url);
 
   const loadSubscriptions = async () => {
     const resp = await bc
       .monitoring()
-      .getAllRepoSubscriptions({ repository: repoUrl });
+      .getAllRepoSubscriptions({ repository: url?.repo });
       
     if (resp.status >= 200 && resp.status < 300) {
       setSubs(resp.data);
@@ -85,7 +85,7 @@ const Modal = withStyles(dialogStyles)(({
   }
 
   const createSubscription = async () => {
-    const resp = await bc.monitoring().createRepoSubscription({ repository: repoUrl })
+    const resp = await bc.monitoring().createRepoSubscription({ repository: url?.repo })
     if(resp.status == 201) {
       loadSubscriptions();
       return true;
@@ -113,6 +113,11 @@ const Modal = withStyles(dialogStyles)(({
         </DialogTitle>
         <DialogContent className='mb-3'>
             {_subs.length == 0 ? 
+              !repo_url ? 
+              <p>
+                This asset is not associated with any repository, please specify the README or JSON file URL on Github.
+              </p>
+              :
               <p>
                 The asset repository does not have any subscription associated with this academy, {" "}
                 <span className='anchor underline pointer' onClick={() => createSubscription()}>click here to create a subscription</span>
@@ -147,7 +152,7 @@ const Modal = withStyles(dialogStyles)(({
                   </h6>
                   {s.status == "CRITICAL" && <small className='d-block'>{s.status_message}</small>}
                   <small className='d-block anchor underline pointer'>
-                    <a target="_blank" href={`${repoUrl}/settings/hooks/${s.hook_id || ""}`}>{s.repository}</a>
+                    <a target="_blank" href={`${url?.repo}/settings/hooks/${s.hook_id || ""}`}>{s.repository}</a>
                   </small>
                 </Card>
             )}
@@ -160,14 +165,17 @@ const Modal = withStyles(dialogStyles)(({
 
 export const RepositorySubscriptionIcon = ({ repo_url }) => {
 
-  const { repoUrl } = getRepoUrlFromFilePath(repo_url);
+  const url = getRepoUrlFromFilePath(repo_url);
   const [syncWebhooks, setSyncWebhooks] = useState([]);
   const [openSyncWebhooks, setOpenSyncWebooks] = useState(null);
 
   const loadWebhooks = async () => {
+    
+    if(!url?.repo) return false;
+    
     const resp = await bc
       .monitoring()
-      .getAllRepoSubscriptions({ repository: repoUrl });
+      .getAllRepoSubscriptions({ repository: url.repo });
       
     if (resp.status >= 200 && resp.status < 300) {
       setSyncWebhooks(resp.data);
@@ -175,14 +183,14 @@ export const RepositorySubscriptionIcon = ({ repo_url }) => {
   };
 
   useEffect(() => {
-    loadWebhooks();
+    if(repo_url) loadWebhooks();
   }, [repo_url])
 
   const critical = syncWebhooks.filter(sbs => ['CRITICAL', 'DISABLED'].includes(sbs.status));
   return <>
     {openSyncWebhooks && <Modal 
       subscriptions={syncWebhooks} 
-      repo_url={repoUrl}
+      repo_url={url?.repo}
       onClose={() => setOpenSyncWebooks(false)} 
       autoSync={false} // it will not fetch for subscriptions on its own
     />}

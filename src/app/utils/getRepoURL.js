@@ -1,20 +1,23 @@
 
 
 function getRepoUrlFromFilePath(githubFilePath) {
+
+    if(!githubFilePath) return null;
+
     const filePathPattern = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.*)/;
     const repoPattern = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/?/;
     
     let match = githubFilePath.match(filePathPattern);
     if (match) {
-      const [fullMatch, user, repo, branch, filePath] = match;
-      const repoUrl = `https://github.com/${user}/${repo}`;
+      const [fullMatch, user, repoName, branch, filePath] = match;
+      const repo = `https://github.com/${user}/${repoName}`;
       return {
         type: 'file',
         user,
-        repo,
+        repoName,
         branch,
         filePath,
-        repoUrl
+        repo
       };
     }
   
@@ -29,8 +32,7 @@ function getRepoUrlFromFilePath(githubFilePath) {
         repoUrl
       };
     }
-  
-    throw new Error("Invalid GitHub URL");
+    return null;
 }
 
   export default getRepoUrlFromFilePath;

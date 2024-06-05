@@ -46,6 +46,44 @@ function slugify(text) {
   return slug;
 }
 
+const createButtonLabel = {
+  "LESSON": {
+    "label": "Save Markdown",
+    "options": [
+      {
+        label: "Only save to 4Geeks.com",
+        value: "only_save",
+      },
+      {
+        label: "Also commit markdown to github",
+        value: "push",
+      },
+    ]
+  },
+  "ARTICLE": {
+    "label": "Save Markdown",
+    "options": [
+      {
+        label: "Only save to 4Geeks.com",
+        value: "only_save",
+      },
+      {
+        label: "Also commit markdown to GitHub",
+        value: "push",
+      },
+    ]
+  },
+  "QUIZ": {
+    "label": "Save to Github",
+    "options": [
+      {
+        label: "Commit JSON to GitHub",
+        value: "push",
+      },
+    ]
+  },
+}
+
 // Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
 /https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
@@ -235,6 +273,7 @@ const ComposeAsset = () => {
   const saveAsset = async (published_at = null) => {
     const _asset = {
       ...asset,
+      assessment: asset.assessment?.id || asset.assessment,
       category:
         !asset.category || typeof asset.category !== "object"
           ? asset.category
@@ -507,105 +546,95 @@ const ComposeAsset = () => {
                 <small className="text-error">{errors["asset_type"]}</small>
               )}
             </Grid>
+            <div>
+              <Grid item align="right">
+                <CommentBar
+                  asset={asset}
+                  iconName="comment"
+                  title="Tasks and Comments"
+                />
+                <IconButton
+                  onClick={() =>
+                    asset.asset_type === 'QUIZ' ?
+                      window.open(asset.url)
+                      :
+                      window.open(
+                        `${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`
+                      )
+                  }
+                >
+                  <Icon>
+                    <OpenInBrowser />
+                  </Icon>
+                </IconButton>
+                <RepositorySubscriptionIcon repo_url={asset.readme_url} />
+                <DowndownMenu
+                  options={
+                    createButtonLabel[asset.asset_type]?.options ||
+                    [
+                      {
+                        label:
+                          "Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here",
+                        style: { width: "200px" },
+                        value: null,
+                      },
+                    ]
+                  }
+                  icon="more_horiz"
+                  onSelect={async ({ value }) => {
+                    if (!value) return null;
+                    if (asset.status == "PUBLISHED" && asset.published_at != null) setMakePublicDialog({ isOpen: true, action: value });
+                    else if (asset.status == "PUBLISHED") {
+                      const _errors = await saveAsset(formattedDate);
+                      if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
+                      else if (value === "push") handleAction("push");
+                    } else {
+                      const _errors = await saveAsset();
+                      if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
+                      else if (value === "push") handleAction("push");
+                    }
+                  }}
+                >
+                {createButtonLabel[asset.asset_type] && <Button variant="contained" color="primary">
+                    {isCreating ? `Create asset` : createButtonLabel[asset.asset_type].label}
+                  </Button>}
+                </DowndownMenu>
 
-            <Grid item xs={6} sm={4} align="right">
-              <CommentBar
-                asset={asset}
-                iconName="comment"
-                title="Tasks and Comments"
-              />
-              <IconButton
-                onClick={() =>
-                  asset.asset_type === 'QUIZ' ?
-                    window.open(asset.url)
-                    :
-                    window.open(
-                      `${config.REACT_APP_API_HOST}/v1/registry/asset/preview/${asset.slug}`
-                    )
-                }
-              >
-                <Icon>
-                  <OpenInBrowser />
-                </Icon>
-              </IconButton>
-              <RepositorySubscriptionIcon repo_url={asset.readme_url} />
-              <DowndownMenu
-                options={
-                  ["LESSON", "ARTICLE"].includes(asset.asset_type)
-                    ? [
-                        {
-                          label: "Only save to 4Geeks.com",
-                          value: "only_save",
-                        },
-                        {
-                          label: "Also commit markdown to github",
-                          value: "push",
-                        },
-                      ]
-                    : [
-                        {
-                          label:
-                            "Only lessons and articles can be saved. For other types of assets you need to update the markdown or learn.json file directoly on Github and pull from here",
-                          style: { width: "200px" },
-                          value: null,
-                        },
-                      ]
-                }
-                icon="more_horiz"
-                onSelect={async ({ value }) => {
-                  if (!value) return null;
-                  if (asset.status == "PUBLISHED" && asset.published_at != null) setMakePublicDialog({ isOpen: true, action: value });
-                  else if (asset.status == "PUBLISHED") {
+                <ConfirmAlert
+                  title={`Do you wish to update the asset published date?`}
+                  isOpen={makePublicDialog.isOpen}
+                  setIsOpen={setMakePublicDialog.isOpen}
+                  cancelText={"No,  don't update the published date"}
+                  acceptText={"Yes, update the published date"}
+                  onOpen={async () => {
                     const _errors = await saveAsset(formattedDate);
                     if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
-                    else if (value === "push") handleAction("push");
-                  } else {
+                    else if (makePublicDialog.action === "push") handleAction("push");
+                    setMakePublicDialog({isOpen: false, action: null});
+                  }}
+                  onClose={async () => {
                     const _errors = await saveAsset();
                     if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
-                    else if (value === "push") handleAction("push");
-                  }
-                }}
-              >
-                <Button variant="contained" color="primary">
-                  {isCreating ? `Create asset` : `Update asset`}
-                </Button>
-              </DowndownMenu>
-
-              <ConfirmAlert
-                title={`Do you wish to update the asset published date?`}
-                isOpen={makePublicDialog.isOpen}
-                setIsOpen={setMakePublicDialog.isOpen}
-                cancelText={"No,  don't update the published date"}
-                acceptText={"Yes, update the published date"}
-                onOpen={async () => {
-                  const _errors = await saveAsset(formattedDate);
-                  if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
-                  else if (makePublicDialog.action === "push") handleAction("push");
-                  setMakePublicDialog({isOpen: false, action: null});
-                }}
-                onClose={async () => {
-                  const _errors = await saveAsset();
-                  if (Object.keys(_errors).length > 0) setErrorDialog(_errors);
-                  else if (makePublicDialog.action === "push") handleAction("push");
-                  setMakePublicDialog({isOpen: false, action: null});
-                }}
-              />
-
-              <Grid item xs={6} sm={5} align="right">
-                <small className="px-1 py-2px text-muted">
-                  {asset.status == "DRAFT"
-                    ? "Published at: Never"
-                    : asset.published_at == null
-                    ? "Published at: Missing publish date"
-                    : "Published at:" + dayjs(asset.published_at).fromNow()}
-                </small>
+                    else if (makePublicDialog.action === "push") handleAction("push");
+                    setMakePublicDialog({isOpen: false, action: null});
+                  }}
+                />
               </Grid>
-              <Grid item xs={6} sm={4} align="right">
-                <small className="px-1 py-2px text-muted">
-                  Last update: {dayjs(updatedDate).fromNow()}
-                </small>
-              </Grid>
-            </Grid>
+              <Grid item align="right">
+                  <small style={{ minWidth: "200px" }} className="px-1 py-2px text-muted">
+                    {asset.status == "DRAFT"
+                      ? "Never Published"
+                      : asset.published_at == null
+                      ? "Published at: Missing publish date"
+                      : "Published " + dayjs(asset.published_at).fromNow()}
+                  </small>
+                </Grid>
+                <Grid item align="right">
+                  <small className="px-1 py-2px text-muted">
+                    Last update {dayjs(updatedDate).fromNow()}
+                  </small>
+                </Grid>
+              </div>
           </div>
 
           <Grid container spacing={3}>
