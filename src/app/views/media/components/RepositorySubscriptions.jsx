@@ -191,7 +191,15 @@ export const RepositorySubscriptionIcon = ({ repo_url }) => {
       className={syncWebhooks.length == 0 || critical.length > 0 ? "red" : "green"}
     >
       <Badge color="secondary" badgeContent={critical.length}>
-        {syncWebhooks.length == 0 || critical.length > 0 ? <Icon>sync_disabled</Icon> : <Icon>sync</Icon>}
+        {syncWebhooks.length == 0 || critical.length > 0 ? 
+          <Tooltip title="Not in sync: Updates on github will not be automatically synched on this asset">
+            <Icon>sync_disabled</Icon> 
+          </Tooltip>
+          : 
+          <Tooltip title="Synched: Updates on github will automatically update this asset">
+            <Icon>sync</Icon>
+          </Tooltip>
+          }
       </Badge>
     </IconButton>
   </>
