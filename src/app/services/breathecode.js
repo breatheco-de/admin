@@ -867,6 +867,16 @@ class BreatheCodeClient {
     return {
       get_bulk_upload: () =>
         axios.bcGet("Media", `${this.host}/monitoring/upload`),
+      getAllRepoSubscriptions: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet("Repo Subscription", `${this.host}/monitoring/reposubscription${query ? `?${qs}` : ""}`)
+      },
+      updateRepoSubscription: async (id, payload) => {
+        return await axios.bcPut("Repo Subscription", `${this.host}/monitoring/reposubscription/${id}`, payload)
+      },
+      createRepoSubscription: async (payload) => {
+        return await axios.bcPost("Repo Subscription", `${this.host}/monitoring/reposubscription`, payload)
+      }
     };
   }
 

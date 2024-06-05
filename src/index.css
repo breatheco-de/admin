@@ -53,11 +53,11 @@
 }
 
 .red, .text-danger {
-  color: red;
+  color: red !important;
 }
 
 .green {
-  color: green;
+  color: green !important;
 }
 
 .yellow {
@@ -68,7 +68,7 @@
   background-color: rgb(255, 153, 0);
 }
 .bg-danger {
-  background-color: rgb(241, 71, 71);
+  background-color: rgb(241, 71, 71) !important;
 }
 .text-warning{
   color: rgb(255, 153, 0);

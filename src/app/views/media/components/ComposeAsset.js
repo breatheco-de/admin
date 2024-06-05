@@ -36,6 +36,7 @@ import { AsyncAutocomplete } from '../../../components/Autocomplete';
 import CommentBar from "./CommentBar"
 import QuizBuilder from "./QuizBuilder"
 import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
+import { RepositorySubscriptionIcon } from "./RepositorySubscriptions";
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
 
@@ -134,6 +135,7 @@ const ComposeAsset = () => {
   const [updateType, setUpdateType] = useState(false);
   const [updateLanguage, setUpdateLanguage] = useState(false);
   const [errors, setErrors] = useState({});
+
   const [errorDialog, setErrorDialog] = useState(false);
   const [openAliases, setOpenAliases] = useState(null);
   const [content, setContent] = useState(null);
@@ -526,6 +528,7 @@ const ComposeAsset = () => {
                   <OpenInBrowser />
                 </Icon>
               </IconButton>
+              <RepositorySubscriptionIcon repo_url={asset.readme_url} />
               <DowndownMenu
                 options={
                   ["LESSON", "ARTICLE"].includes(asset.asset_type)
