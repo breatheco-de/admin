@@ -17,7 +17,7 @@ npm install --g --production windows-build-tools
 5. Install the packages: `npm install`
 6. Start the development server: `npm run start`
 
-## Runing the tests
+## Running the tests
 
 This section is under development.
 
