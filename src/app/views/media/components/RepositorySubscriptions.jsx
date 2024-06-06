@@ -8,6 +8,7 @@ import {
   IconButton,
   Badge,
   Card,
+  TextField,
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -84,8 +85,8 @@ const Modal = withStyles(dialogStyles)(({
     }
   }
 
-  const createSubscription = async () => {
-    const resp = await bc.monitoring().createRepoSubscription({ repository: url?.repo })
+  const createSubscription = async (_url) => {
+    const resp = await bc.monitoring().createRepoSubscription({ repository: _url })
     if(resp.status == 201) {
       loadSubscriptions();
       return true;
@@ -119,8 +120,18 @@ const Modal = withStyles(dialogStyles)(({
               </p>
               :
               <p>
-                The asset repository does not have any subscription associated with this academy, {" "}
-                <span className='anchor underline pointer' onClick={() => createSubscription()}>click here to create a subscription</span>
+                The asset repository does not have any subscription associated with this academy.
+                <TextField
+                  label="Repository URL"
+                  name="url"
+                  size="medium"
+                  disabled
+                  fullWidth
+                  margin='normal'
+                  variant="outlined"
+                  value={repo_url}
+                />
+                <Button variant="contained" color='primary' fullWidth onClick={() => createSubscription(repo_url)}>Create a subscription for this repo</Button>
               </p>
               :
               _subs.map(s => 
