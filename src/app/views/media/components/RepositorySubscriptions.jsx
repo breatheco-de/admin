@@ -20,6 +20,20 @@ import Alert from "../../../components/Alert"
 import ReactCountryFlag from "react-country-flag"
 import getRepoUrlFromFilePath from "../../../utils/getRepoURL";
 import { PickAssetModal } from './PickAssetModal';
+import dayjs from 'dayjs';
+const relativeTime = require("dayjs/plugin/relativeTime");
+dayjs.extend(relativeTime);
+
+let getStatusColor = (status) => {
+  switch(status){
+    case "CRITICAL":
+      return "bg-danger text-white"
+    case "OPERATIONAL":
+      return "bg-success text-white"
+    default:
+      return ""
+  }
+}
 
 const styles = theme => ({
   root: {
@@ -139,7 +153,7 @@ const Modal = withStyles(dialogStyles)(({
                   <h6 className='mb-0'>
                     Subscription {s.id}
                     <Chip
-                      className={`ml-1 ${s.status == "CRITICAL" ? "bg-danger text-white" : ""}`} size="small"
+                      className={`ml-1 ${getStatusColor(s.status)}`} size="small"
                       label={s.status}
                     />
 
@@ -162,8 +176,9 @@ const Modal = withStyles(dialogStyles)(({
                     }
                   </h6>
                   {s.status == "CRITICAL" && <small className='d-block'>{s.status_message}</small>}
+                  <small className='d-block'>{ s.last_call ? dayjs(s.last_call).fromNow() : "Subscription has never been called by GitHub"}</small>
                   <small className='d-block anchor underline pointer'>
-                    <a target="_blank" href={`${url?.repo}/settings/hooks/${s.hook_id || ""}`}>{s.repository}</a>
+                    <a target="_blank" href={`${repo_url}/settings/hooks/${s.hook_id || ""}`}>{s.repository}</a>
                   </small>
                 </Card>
             )}
