@@ -751,7 +751,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
-        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
+        <TextField width="100%" value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
         {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
       </Grid>
     </Grid>
