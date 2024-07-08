@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import InfiniteScrollTable from '../../../components/InfiniteScrollTable';
 import { getParams } from '../../../components/SmartDataTable';
 import bc from '../../../services/breathecode';
+import { getSession } from '../../../redux/actions/SessionActions';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -101,7 +102,9 @@ export const Automations = ({ className }) => {
         <h4 className="m-0">Your automations</h4>
         <Tooltip title={`Sync automations with Active Campaign`}>
               <IconButton onClick={async () => {
-                const result = await bc.marketing().getAcademyAutomations({ limit: 10, offset: 0 })
+                const session = getSession();
+                const { academy } = session;
+                const result = await bc.marketing().syncAutomations(academy)
                 setAutomations(result.data.results || result.data);
               }}>
                 <Icon>refresh</Icon>
