@@ -471,7 +471,7 @@ class BreatheCodeClient {
           automation
         ),
       syncAcademyAutomations: (id) => {
-        axios.bcGet(
+        return axios.bcGet(
           "Sync academy automations",
           `${this.host}/marketing/academy/${id}/automation/sync`
         )
