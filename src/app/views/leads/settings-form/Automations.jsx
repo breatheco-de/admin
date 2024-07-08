@@ -104,7 +104,7 @@ export const Automations = ({ className }) => {
               <IconButton onClick={async () => {
                 const session = getSession();
                 const { academy } = session;
-                const result = await bc.marketing().syncAutomations(academy)
+                const result = await bc.marketing().syncAcademyAutomations(academy)
                 setAutomations(result.data.results || result.data);
               }}>
                 <Icon>refresh</Icon>
