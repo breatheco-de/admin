@@ -105,7 +105,7 @@ export const Automations = ({ className }) => {
                 const session = getSession();
                 const { academy } = session;
                 const result = await bc.marketing().syncAcademyAutomations(academy?.id);
-                setAutomations(result.data.results || result.data);
+                setAutomations(result.automations);
               }}>
                 <Icon>refresh</Icon>
               </IconButton>
