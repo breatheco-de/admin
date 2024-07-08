@@ -470,6 +470,12 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/automation${id ? `/${id}` : ""}`,
           automation
         ),
+      syncAcademyAutomations: (id) => {
+        axios.bcGet(
+          "Sync academy automations",
+          `${this.host}/marketing/academy/${id}/automation/sync`
+        )
+      },
       getAcademyUtm: () =>
         axios.bcGet("Academy Utm", `${this.host}/marketing/academy/utm`),
       addNewLead: (newLead) =>
