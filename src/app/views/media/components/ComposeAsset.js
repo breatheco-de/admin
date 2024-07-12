@@ -86,7 +86,7 @@ const createButtonLabel = {
 
 // Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
-/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
+/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\.\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
   //.     /^https:\/\/github\.com\/.*\/([^\/]+)\.(txt|ipynb|md)(?:\?lang=[a-zA-Z]{2})?$
 function getSlugFromGithubURL(url){
   let matches;
