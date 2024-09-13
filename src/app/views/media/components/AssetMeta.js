@@ -232,10 +232,10 @@ const LangCard = ({ asset, onAction, onChange }) => {
               className="my-2"
               onChange={(x) => {
                 if (x.value === 'new_asset') setAddTranslation({
-                  title: x.title.replace("New: ", ""),
+                  title: x.title.replace("New:", "").trim(),
                   asset_type: asset.asset_type,
                   lang: addTranslation.lang,
-                  slug: slugify(x.title.replace("New: ", "")).toLowerCase(),
+                  slug: slugify(x.title.replace("New: ", "")).replace(/[^a-zA-Z0-9\-_]/g, "").toLowerCase(),
                   all_translations: [asset.slug, ...assetTranslations.map(t => asset.translations[t])]
                 })
                 else setAddTranslation(x)
