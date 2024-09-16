@@ -91,6 +91,33 @@ const MentorSessions = ({ staffId, mentor }) => {
         },
       },
     },
+    {
+      name: 'status',
+      label: 'Status', // column title that will be shown in table
+      options: {
+        filter: true,
+        filterType: "dropdown",
+        filterOptions: {
+          names: ['COMPLETED', 'FAILED', 'STARTED', 'PENDING']
+        },
+        customHeadRender: ({ index, ...column }) => {
+          return (
+            <TableCell key={index} style={{ width: "100px" }}>
+              {column.label}
+            </TableCell>
+          )
+        },
+        customBodyRenderLite: (dataIndex) => {
+          const item = sessions[dataIndex];
+          return (
+            <div>
+              <small style={{borderRadius: '3px'}} className={`p-1 ${statusColors[item.status]}`}>
+                {item?.status}
+              </small>
+            </div>);
+        },
+      },
+    },
   ]
   return (
     <SmartMUIDataTable
@@ -100,7 +127,7 @@ const MentorSessions = ({ staffId, mentor }) => {
       // selectableRows="multiple"
       view="mentor sessions"
       singlePage=""
-      historyReplace="/admissions/syllabus"
+      historyReplace=""
       search={async (querys) => {
         const { data } = await bc.mentorship().getSingleMentorSessions({ ...querys, mentor: staffId });
         setSessions(data.results);
