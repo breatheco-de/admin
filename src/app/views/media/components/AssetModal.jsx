@@ -32,6 +32,7 @@ export const AssetModal = ({
     }
   }, slug);
 
+
   const execute = async (action) => {
     const success = await handleAction(action);
     if (success) {
