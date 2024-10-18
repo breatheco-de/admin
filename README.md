@@ -3,7 +3,7 @@
 ## If you use Windows install it
 
 ```bash
-npm install --g --production windows-build-tools
+npm install --g --production windows-build-tools --legacy-peer-deps
 ```
 
 ## Use Nodejs v12
@@ -14,7 +14,7 @@ npm install --g --production windows-build-tools
 2. Clone your fork repository into your computer `git clone https://github.com/<your_github_username>/admin`
 3. Switch to the development branch:
 4. Create the .env file following the template on .env.example and make sure to use the development API host.
-5. Install the packages: `npm install`
+5. Install the packages: `npm install --legacy-peer-deps`
 6. Start the development server: `npm run start`
 
 ## Running the tests

@@ -175,6 +175,7 @@ const Sessions = () => {
             historyReplace="/mentors/sessions"
             options={{
               print: false,
+              search:false, //disable the search icon for this table
               viewColumns: false,
               onFilterChipClose: async (index, removedFilter, filterList) => {
                 if (index === 1) setStudent(null);

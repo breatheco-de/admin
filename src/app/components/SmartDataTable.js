@@ -107,7 +107,7 @@ export const SmartMUIDataTable = (props) => {
     }, [isAlive]);
 
     const handlePageChange = (page, rowsPerPage, like, sort) => {
-        console.log("####### I excuted");
+
         setIsLoading(true);
         const { limit, offset, ...restParams } = getParams();
         delete restParams.sort;
@@ -311,6 +311,7 @@ export const SmartMUIDataTable = (props) => {
                             </Button>
                         </div>
                     ),
+                    search: false,
                     customSearchRender: () => (
                         <Grow appear in timeout={300}>
                             <TextField

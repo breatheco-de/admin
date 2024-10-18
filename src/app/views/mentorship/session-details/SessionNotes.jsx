@@ -44,7 +44,7 @@ const isMentorLate = (sess) => {
 
   let minutes = date2.diff(date1, 'minute');
 
-  let message = `Mentor Joined ${formatTime(minutes)} late`;
+  let message = `Mentor Joined ${formatTime(minutes)} after the student`;
 
   if (new Date(sess.mentor_joined_at) < new Date(sess.started_at) && minutes >= 4) return message;
   return null;
