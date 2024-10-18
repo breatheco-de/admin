@@ -7,7 +7,7 @@ import {
   TableCell,
 } from '@material-ui/core';
 import SessionDetails from '../session-details/SessionDetails'
-import SessionNotes from '../session-details/SessionNotes'
+import { SessionNotes } from '../session-details/SessionNotes'
 import SessionBill from '../session-details/SessionBill'
 import dayjs from "dayjs";
 const duration = require("dayjs/plugin/duration");

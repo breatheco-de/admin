@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs';
+
 import { Tooltip, Icon } from '@material-ui/core'
 
 const duration = require('dayjs/plugin/duration');
@@ -79,4 +80,4 @@ SessionNotes.propTypes = {
   session: PropTypes.object
 }
 
-export default SessionNotes
+export { SessionNotes, hasExtraTime, isMentorLate }

@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { SmartMUIDataTable, getParams } from 'app/components/SmartDataTable';
+import SessionStatus from 'app/components/SessionStatus';
 import bc from 'app/services/breathecode';
 import { Breadcrumb } from 'matx';
 import dayjs from "dayjs";
+import {
+  Avatar,
+  Icon,
+  IconButton,
+  Button,
+  LinearProgress,
+} from '@material-ui/core';
 import SessionDetails from './session-details/SessionDetails'
-import SessionNotes from './session-details/SessionNotes'
+import { SessionNotes } from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
 import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
 import { useQuery } from '../../hooks/useQuery';
@@ -15,9 +23,15 @@ dayjs.extend(duration)
 const Sessions = () => {
   const query = useQuery();
   const [sessions, setSessions] = useState([]);
+  const [singleSession, setSingleSession] = useState(null);
   const [student, setStudent] = useState(query.get('student') && { slug: query.get('student') });
   const [service, setService] = useState(query.get('service') && { slug: query.get('service') });
   const [mentor, setMentor] = useState(query.get('mentor') && { slug: query.get('mentor') });
+
+  const handleCloseSession = () => {
+    setSingleSession(null);
+  }
+
   const columns = [
     {
       name: 'started_at,created_at',
@@ -151,7 +165,30 @@ const Sessions = () => {
         },
       },
 
-    }
+    },
+    {
+      name: 'action',
+      label: ' ',
+      options: {
+        filter: false,
+        customBodyRenderLite: (dataIndex) => (
+          <>
+            <div className="flex items-center">
+              <div className="flex-grow" />
+              <span>
+                <IconButton
+                  onClick={() => {
+                    setSingleSession(sessions[dataIndex]);
+                  }}
+                >
+                  <Icon>arrow_right_alt</Icon>
+                </IconButton>
+              </span>
+            </div>
+          </>
+        ),
+      },
+    },
   ]
   return (
     <div className="m-sm-30">
@@ -202,6 +239,7 @@ const Sessions = () => {
           />
         </div>
       </div>
+      {singleSession && <SessionStatus session={singleSession} handleClose={handleCloseSession} />}
     </div>
   );
 };
