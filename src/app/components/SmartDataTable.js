@@ -175,6 +175,7 @@ export const SmartMUIDataTable = (props) => {
                     elevation: 0,
                     count: table.count,
                     page: table.page,
+                    search: props.search || true,
                     selectableRowsHeader: false,
                     rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
                     rowsPerPageOptions: [10, 20, 40, 80, 100],
@@ -311,7 +312,6 @@ export const SmartMUIDataTable = (props) => {
                             </Button>
                         </div>
                     ),
-                    search: false,
                     customSearchRender: () => (
                         <Grow appear in timeout={300}>
                             <TextField
@@ -372,5 +372,6 @@ SmartMUIDataTable.propTypes = {
 SmartMUIDataTable.defaultProps = {
     selectableRows: true,
     defaultLimit: 10,
-    downloadCsv: true
+    downloadCsv: true,
+    search: true
 };
