@@ -72,6 +72,11 @@ const SessionNotes = ({ session }) => {
           <Icon fontSize="small" className='red'>directions_run</Icon>
         </Tooltip> : ''
       }
+      {session.rating !== null && session.rating.score !== null ?
+        <Tooltip title={`Student rated with ${session.rating.score} out of 10 with the following comments: ${session.rating.comment}`}>
+          <Icon fontSize="small" className={session.rating.score >= 8 ? `green` : session.rating.score == 7 ? 'green' : 'red'}>filter_{session.rating.score < 10 ? session.rating.score : '9_plus'}</Icon>
+        </Tooltip> : ''
+      }
     </div>
   )
 }

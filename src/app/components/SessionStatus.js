@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -13,19 +13,32 @@ import {
   Divider,
   Card,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import dayjs from 'dayjs';
 import { hasExtraTime, isMentorLate } from '../views/mentorship/session-details/SessionNotes';
+import { openDialog } from 'app/redux/actions/DialogActions';
+import { CopyDialog } from './CopyDialog';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
 const SessionStatus = ({ handleClose, session = {} }) => {
   const extraTimeHelper = hasExtraTime(session);
   const mentorLateHelper = isMentorLate(session)
+  const [copyDialog, setCopyDialog] = useState({
+    title: 'Mentoring Session Survey URL',
+    openDialog: false,
+  });
     return <Dialog
       onClose={handleClose}
       open={true}
       aria-labelledby="simple-dialog-title"
     >
+      <CopyDialog
+        title={copyDialog.title}
+        value={copyDialog.url}
+        isOpened={copyDialog.openDialog}
+        onClose={() => setCopyDialog({ ...copyDialog, openDialog: false })}
+      />
       <div className="px-sm-24 pt-sm-24">
         <div className="flex items-center">
           <div className="flex items-center flex-grow">
@@ -77,17 +90,50 @@ const SessionStatus = ({ handleClose, session = {} }) => {
         </DialogTitle>
         <DialogContent>
           <div>
+            {session?.extra_time !== null && extraTimeHelper &&
+              <p><Icon fontSize="small" className='red'>access_time</Icon> {session.extra_time || extraTimeHelper}</p>
+            }
+            {session?.mentor_late !== null && mentorLateHelper &&
+              <p><Icon fontSize="small" className='red'>directions_run</Icon> {session.mentor_late || mentorLateHelper}</p>
+            }
+          </div>
+          <div>
+          <h3>Mentee comments:</h3>
             <div className="comments">
-              {session?.extra_time !== null && extraTimeHelper &&
-                <p><Icon fontSize="small" className='red'>access_time</Icon> {session.extra_time || extraTimeHelper}</p>
+              {session.rating == null ?
+                <p className='bg-light p-2'>No survey about the session has been found.</p>
+                :
+                session.rating.score == null ?
+                  <div className='bg-light p-2'>Survey was sent, but student has not replied 
+                    <Button
+                      className='ml-2'
+                      variant='outlined'
+                      size='small'
+                      onClick={() => setCopyDialog({ 
+                        ...openDialog,
+                        url: `https://nps.4geeks.com/survey/${session.rating.id}`,
+                        openDialog: true
+                      })}
+                    >
+                      <FileCopyIcon /> Copy the survey link
+                    </Button>  
+                  </div>
+                  :<>
+                    <p>The student gave a <span className={`strong p-1 bg-${session.rating.score >= 8 ? `green` : session.rating.score == 7 ? 'orange' : 'red'}`}>{session.rating.score} / 10</span> rating with the following comments:</p>
+                    <p className='bg-light p-2'>{session.rating.comment}</p>
+                  </>
               }
-              {session?.mentor_late !== null && mentorLateHelper &&
-                <p><Icon fontSize="small" className='red'>directions_run</Icon> {session.mentor_late || mentorLateHelper}</p>
+            </div>
+          </div>
+          <div>
+            <h3>Mentor comments:</h3>
+            <div className="comments">
+              <div className="mb-4 bg-light p-2">
+              {session.summary == null ?
+                <p>The mentor has not provided any feedback about the session.</p>
+                :
+                <p>{session.summary}</p>
               }
-              <div className="mb-4">
-                <div className="mb-2">
-                  <h3 className="m-0"><Icon fontSize="small">speaker_notes</Icon>{session.summary}</h3>
-                </div>
               </div>
             </div>
           </div>
