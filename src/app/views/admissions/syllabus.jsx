@@ -11,6 +11,7 @@ import {
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
+import { toast } from 'react-toastify';
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -112,6 +113,38 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
+                <Tooltip title="Download Syllabus">
+                  <IconButton onClick={() => {
+
+                     bc.admissions().getSyllabusVersionCSV(item.slug)
+                      .then(({data}) => {
+                          console.log("csv", data);
+                          // Create a new Blob object from the response data
+                          const blob = new Blob([data], { type: 'text/csv' });
+
+                          // Create a URL for the Blob and create an anchor to download it
+                          const url = window.URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${item.slug}_export.csv`; // Set the desired file name
+
+                          // Append the anchor to the DOM and trigger the click to start the download
+                          document.body.appendChild(a);
+                          a.click();
+                          
+                          // Clean up by revoking the Object URL and removing the anchor from the DOM
+                          window.URL.revokeObjectURL(url);
+                          document.body.removeChild(a);
+                      })
+                      .catch((error) => {
+                          console.error('There was an error downloading the CSV!', error);
+                          toast.error('There was an error downloading the CSV!');
+                      });
+
+                  }}>
+                  <Icon>download</Icon>
+                </IconButton>
+              </Tooltip>
               <Link to={`/admissions/syllabus/${item.slug}`}>
                 <Tooltip title="Edit">
                   <IconButton>

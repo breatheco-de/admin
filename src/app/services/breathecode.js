@@ -136,6 +136,8 @@ class BreatheCodeClient {
         ),
       getSyllabus: (query) =>
         axios.bcGet("Syllabus", `${this.host}/admissions/syllabus/${query}`),
+      getSyllabusVersionCSV: (syllabus_slug, version='latest') =>
+        axios.bcGet("Syllabus CSV", `${this.host}/admissions/syllabus/${syllabus_slug}/version/${version}.csv`),
       getAllCohorts: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
