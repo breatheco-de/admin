@@ -195,6 +195,7 @@ const ComposeAsset = () => {
     }
   };
 
+
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
       toast.error("Please create the asset first", toastOption);
