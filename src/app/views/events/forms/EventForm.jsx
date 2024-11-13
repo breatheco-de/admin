@@ -569,6 +569,17 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
+                  Is Public
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <Checkbox
+                    // checked={values.online_event}
+                    onChange={handleChange}
+                    name="is_public"
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
                   <HelpIcon
                     message="Used by Zapier for synching with Eventbrite and other tools."
                   />
