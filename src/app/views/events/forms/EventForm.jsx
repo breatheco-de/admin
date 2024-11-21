@@ -90,9 +90,6 @@ const EventForm = () => {
     if (id) {
 
       const { academy, status, slug, ...rest } = values;
-      console.log("*******",values)
-      console.log("++++++++",rest)
-      // TODO: Acá el ... debería ir con el is_public
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
@@ -125,8 +122,6 @@ const EventForm = () => {
         ending_at: dayjs(values.ending_at).utc().format(),
         ...venueAndType,
       }
-
-      // TODO: Acá el payload debería ir con el is_public
 
       bc.events()
         .addAcademyEvent({
