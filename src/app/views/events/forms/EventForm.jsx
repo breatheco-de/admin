@@ -39,6 +39,7 @@ const EventForm = () => {
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
     free_for_all: false,
+    is_public: true
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
@@ -61,6 +62,7 @@ const EventForm = () => {
       bc.events()
         .getAcademyEvent(id)
         .then(async ({ data }) => {
+          console.log("..........", data)
           setEvent({
             ...data,
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
@@ -88,7 +90,6 @@ const EventForm = () => {
     if (id) {
 
       const { academy, status, slug, ...rest } = values;
-
       bc.events()
         .updateAcademyEvent(id, {
           ...rest,
@@ -146,6 +147,7 @@ const EventForm = () => {
               online_event: false,
               live_stream_url: '',
               sync_with_eventbrite: false,
+              is_public: true
             });
             history.push('/events/list')
           }
@@ -228,6 +230,7 @@ const EventForm = () => {
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
+              {console.log("---------", values)}
               <ConfirmationDialog
                 open={showDialog}
                 onConfirmDialogClose={() => setShowDialog(false)}
@@ -565,6 +568,17 @@ const EventForm = () => {
                     checked={values.online_event}
                     onChange={handleChange}
                     name="online_event"
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Is Public
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <Checkbox
+                    checked={values.is_public}
+                    onChange={handleChange}
+                    name="is_public"
                     color="primary"
                   />
                 </Grid>
