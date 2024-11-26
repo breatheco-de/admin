@@ -12,10 +12,11 @@ npm install --g --production windows-build-tools
 
 1. Fork this repository into your account.
 2. Clone your fork repository into your computer `git clone https://github.com/<your_github_username>/admin`
-3. Switch to the development branch:
-4. Create the .env file following the template on .env.example and make sure to use the development API host.
-5. Install the packages: `npm install`
-6. Start the development server: `npm run start`
+3. Switch to the development branch: `git checkout development`.
+4. Remember to move to a new branch when you start a new issue: `git checkout -b <new-branch>`
+5. Create the .env file following the template on .env.example and make sure to use the development API host. You can use this command: `cp .env.example .env`
+6. Install the packages: `npm install --legacy-peer-deps`
+7. Start the development server: `npm run start`
 
 ## Runing the tests
 
