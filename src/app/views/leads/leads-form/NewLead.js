@@ -135,10 +135,7 @@ const NewLead = () => {
       bc.marketing().getAcademySingleLead(id)
         .then(({ data }) => {
           const indexCustomField = availableCourses.map((c) => c.slug).indexOf(data.custom_fields?.utm_course);
-          console.log("indexCustomField", indexCustomField)
           const index = availableCourses.map((c) => c.slug).indexOf(data.course);
-          console.log("index", index)
-          console.log("data", data.custom_fields?.utm_course)
           setNewLead({ 
             ...data,
             user: data.user?.id || data.user,
