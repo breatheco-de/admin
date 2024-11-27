@@ -88,7 +88,7 @@ const NewLead = () => {
   const createLead = (event) => {
     setNewLead({ ...newLead, [event.target.name]: event.target.value });
   };
-
+  
   const selectTypeLead = (event) => {
     setNewLead({
       ...newLead, lead_type: event.target.value,
@@ -116,6 +116,7 @@ const NewLead = () => {
     });
   };
 
+
   const languages = [
     {
       value: 'es',
@@ -133,6 +134,7 @@ const NewLead = () => {
     if (id) {
       bc.marketing().getAcademySingleLead(id)
         .then(({ data }) => {
+          const indexCustomField = availableCourses.map((c) => c.slug).indexOf(data.custom_fields?.utm_course);
           const index = availableCourses.map((c) => c.slug).indexOf(data.course);
           setNewLead({ 
             ...data,
@@ -141,7 +143,7 @@ const NewLead = () => {
             longitude: data.longitude || 0,
             zip_code: data.zip_code || 0,
             lead_type: data.lead_type || '',
-            course: { ...availableCourses[index] }
+            course: { ...availableCourses[indexCustomField !== -1 ? indexCustomField : index] }
           });
         })
         .catch((e) => console.log(e))
