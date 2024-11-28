@@ -7,6 +7,9 @@ import {
     Button,
     Icon,
     TablePagination,
+    TextField,
+    Hidden,
+    InputAdornment,
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from "matx";
@@ -18,6 +21,8 @@ const UserList3 = () => {
     const [clusters, setClusters] = useState(null);
     const [addCluster, setAddCluster] = useState(null);
     const [technologies, setTechnologies] = useState([]);
+
+    // const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
@@ -74,6 +79,29 @@ const UserList3 = () => {
                                 }}
                             />
                         </Grid>}
+                        <div className="pl-4 flex items-center mb-4 mt-2">
+                        <TextField
+                            className="bg-paper flex-grow mr-4"
+                            size="small"
+                            margin="none"
+                            name="query"
+                            variant="outlined"
+                            placeholder="Search here..."
+                            // value={query}
+                            // onChange={(e) => handleSearch(e.target.value)}
+                            InputProps={{
+                                // startAdornment: (
+                                // <InputAdornment position="start">
+                                //     <Icon fontSize="small">search</Icon>
+                                // </InputAdornment>
+                                // ),
+                            }}
+                            fullWidth
+                            />
+                            {/* <Hidden smUp> */}
+                            <Icon onClick={() => console.log('click')}>clear</Icon>
+                            {/* </Hidden> */}
+                        </div>
                         {clusters?.results
                             .map((c) => (
                                 <Grid key={c.slug} item sm={12} xs={12}>
