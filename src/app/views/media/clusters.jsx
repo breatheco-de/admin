@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     Grid,
     Card,
@@ -11,18 +11,30 @@ import {
     Hidden,
     InputAdornment,
 } from "@material-ui/core";
+
+import { getProductList } from "../../redux/actions/MediaActions";
+
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import bc from 'app/services/breathecode';
 import ClusterCard from "./components/ClusterCard";
 import SEOMenu from "./components/SEOMenu";
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useQuery } from "app/hooks/useQuery";
+import { debounce } from 'lodash';
 
 const UserList3 = () => {
     const [clusters, setClusters] = useState(null);
     const [addCluster, setAddCluster] = useState(null);
     const [technologies, setTechnologies] = useState([]);
 
-    // const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
+    const pgQuery = useQuery()
+    const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
+    const { pagination } = useSelector((state) => state.ecommerce);
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const { productList = [] } = useSelector((state) => state.ecommerce);
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
@@ -35,6 +47,52 @@ const UserList3 = () => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    const handleSearch = (value) => {
+        setQuery(value); 
+        search(query);
+        console.log('Searching for:', value);
+        console.log('Buscando a ', query)
+      };
+
+      const search = useCallback(
+        debounce((query) => {
+          if (query === '') {
+            delete pagination.like;
+            dispatch(getProductList(pagination));
+            history.replace(
+              `/media/seo/cluster?${Object.keys(pagination) 
+                .map((key) => `${key}=${pagination[key]}`)
+                .join('&')}`,
+            );
+          } else {
+            dispatch(
+              getProductList({
+                ...pagination,
+                like: query,
+              }),
+            );
+            history.replace(
+              `/media/seo/cluster?${Object.keys({
+                ...pagination,
+                like: query,
+              })
+                .map(
+                  (key) => `${key}=${
+                    {
+                      ...pagination,
+                      like: query,
+                    }[key]
+                  }`,
+                )
+                .join('&')}`,
+            );
+          }
+        }, 300),
+        [productList],
+      );
+
+
 
     useEffect(async () => {
         const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
@@ -87,20 +145,20 @@ const UserList3 = () => {
                             name="query"
                             variant="outlined"
                             placeholder="Search here..."
-                            // value={query}
-                            // onChange={(e) => handleSearch(e.target.value)}
+                            value={query}
+                            onChange={(e) => handleSearch(e.target.value)}
                             InputProps={{
-                                // startAdornment: (
-                                // <InputAdornment position="start">
-                                //     <Icon fontSize="small">search</Icon>
-                                // </InputAdornment>
-                                // ),
+                                startAdornment: (
+                                <InputAdornment position="start">
+                                    <Icon fontSize="small">search</Icon>
+                                </InputAdornment>
+                                ),
                             }}
                             fullWidth
                             />
-                            {/* <Hidden smUp> */}
+                            <Hidden smUp>
                             <Icon onClick={() => console.log('click')}>clear</Icon>
-                            {/* </Hidden> */}
+                            </Hidden>
                         </div>
                         {clusters?.results
                             .map((c) => (
