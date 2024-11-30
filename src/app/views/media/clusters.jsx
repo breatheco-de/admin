@@ -12,8 +12,6 @@ import {
     InputAdornment,
 } from "@material-ui/core";
 
-import { getProductList } from "../../redux/actions/MediaActions";
-
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from "matx";
 import bc from 'app/services/breathecode';
@@ -23,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from "app/hooks/useQuery";
 import { debounce } from 'lodash';
+import { set } from "date-fns";
 
 const UserList3 = () => {
     const [clusters, setClusters] = useState(null);
@@ -31,10 +30,11 @@ const UserList3 = () => {
 
     const pgQuery = useQuery()
     const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
-    const { pagination } = useSelector((state) => state.ecommerce);
+    // const [rowsPerPage, setRowsPerPage] = useState(
+    //     pgQuery.get('limit') !== null ? pgQuery.get('limit') : 10,
+    //   );
     const dispatch = useDispatch();
     const history = useHistory();
-    const { productList = [] } = useSelector((state) => state.ecommerce);
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
@@ -50,46 +50,45 @@ const UserList3 = () => {
 
     const handleSearch = (value) => {
         setQuery(value); 
-        search(query);
+        search(value);
         console.log('Searching for:', value);
-        console.log('Buscando a ', query)
       };
 
       const search = useCallback(
         debounce((query) => {
-          if (query === '') {
-            delete pagination.like;
-            dispatch(getProductList(pagination));
-            history.replace(
-              `/media/seo/cluster?${Object.keys(pagination) 
-                .map((key) => `${key}=${pagination[key]}`)
-                .join('&')}`,
-            );
-          } else {
-            dispatch(
-              getProductList({
-                ...pagination,
-                like: query,
-              }),
-            );
+        //   if (query === '') {
+        //     bc.registry()
+        //         .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage })
+        //         .then((res) => {
+        //         console.log("Esto es res cluster",res)
+        //         setClusters(res.data)
+        //     });
+        //     history.replace(
+        //       `/media/seo/cluster?${Object.keys(pagination) 
+        //         .map((key) => `${key}=${pagination[key]}`)
+        //         .join('&')}`
+        //     );
+        //   } else {
+        console.log('debounce', query)
+            bc.registry()
+                .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage, like: query })
+                .then((res) =>{
+                console.log('Esto es res cluster con búsqueda', res, page, rowsPerPage);
+                setClusters(res.data)
+            });
             history.replace(
               `/media/seo/cluster?${Object.keys({
-                ...pagination,
+                limit: rowsPerPage,
+                offset: page * rowsPerPage,
                 like: query,
               })
                 .map(
-                  (key) => `${key}=${
-                    {
-                      ...pagination,
-                      like: query,
-                    }[key]
-                  }`,
-                )
-                .join('&')}`,
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query }[key]}`)
+                .join('&')}`
             );
-          }
+        //   }
         }, 300),
-        [productList],
+        [clusters]
       );
 
 
