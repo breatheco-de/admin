@@ -8,8 +8,8 @@ import {
     Icon,
     TablePagination,
     TextField,
-    Hidden,
     InputAdornment,
+    deleteFile,
 } from "@material-ui/core";
 
 import { Link } from 'react-router-dom';
@@ -75,6 +75,7 @@ const UserList3 = () => {
                 .then((res) =>{
                 console.log('Esto es res cluster con búsqueda', res, page, rowsPerPage);
                 setClusters(res.data)
+                console.log("useState after getallcluster", clusters)
             });
             history.replace(
               `/media/seo/cluster?${Object.keys({
@@ -93,10 +94,20 @@ const UserList3 = () => {
 
 
 
-    useEffect(async () => {
-        const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
-        if (resp.status == 200) setClusters(resp.data)
+      useEffect(() => {
+        setQuery('');
+        const fetchClusters = async () => {
+            const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
+            if (resp.status == 200) setClusters(resp.data);
+            console.log("resp use effect", clusters);
+        };
+        fetchClusters();
     }, [rowsPerPage, page]);
+
+    useEffect(() => {
+        console.log('useEffect', clusters)
+    }, [clusters])
+    
 
     return (
         <div className="m-sm-30">
@@ -136,9 +147,9 @@ const UserList3 = () => {
                                 }}
                             />
                         </Grid>}
-                        <div className="pl-4 flex items-center mb-4 mt-2">
+                        <div className="flex flex-col items-center w-full mb-4 mt-2">
                         <TextField
-                            className="bg-paper flex-grow mr-4"
+                            className="bg-paper w-full"
                             size="small"
                             margin="none"
                             name="query"
@@ -154,15 +165,13 @@ const UserList3 = () => {
                                 ),
                             }}
                             fullWidth
-                            />
-                            <Hidden smUp>
-                            <Icon onClick={() => console.log('click')}>clear</Icon>
-                            </Hidden>
+                        />
                         </div>
                         {clusters?.results
-                            .map((c) => (
-                                <Grid key={c.slug} item sm={12} xs={12}>
-                                    <ClusterCard cluster={c}
+                            .map((cluster) => (
+                                <Grid key={cluster.slug} item sm={12} xs={12}>
+                                    {console.log("clusters", cluster)}
+                                    <ClusterCard cluster={cluster}
                                         onSubmit={async (_cluster) => {
                                             const resp = await bc.registry().updateCluster(c.slug, _cluster)
                                             if (resp.status === 200) return resp.data;
