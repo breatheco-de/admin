@@ -51,31 +51,14 @@ const UserList3 = () => {
     const handleSearch = (value) => {
         setQuery(value); 
         search(value);
-        console.log('Searching for:', value);
       };
 
       const search = useCallback(
         debounce((query) => {
-        //   if (query === '') {
-        //     bc.registry()
-        //         .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage })
-        //         .then((res) => {
-        //         console.log("Esto es res cluster",res)
-        //         setClusters(res.data)
-        //     });
-        //     history.replace(
-        //       `/media/seo/cluster?${Object.keys(pagination) 
-        //         .map((key) => `${key}=${pagination[key]}`)
-        //         .join('&')}`
-        //     );
-        //   } else {
-        console.log('debounce', query)
             bc.registry()
                 .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage, like: query })
                 .then((res) =>{
-                console.log('Esto es res cluster con búsqueda', res, page, rowsPerPage);
                 setClusters(res.data)
-                console.log("useState after getallcluster", clusters)
             });
             history.replace(
               `/media/seo/cluster?${Object.keys({
@@ -99,15 +82,9 @@ const UserList3 = () => {
         const fetchClusters = async () => {
             const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
             if (resp.status == 200) setClusters(resp.data);
-            console.log("resp use effect", clusters);
         };
         fetchClusters();
     }, [rowsPerPage, page]);
-
-    useEffect(() => {
-        console.log('useEffect', clusters)
-    }, [clusters])
-    
 
     return (
         <div className="m-sm-30">
@@ -169,8 +146,7 @@ const UserList3 = () => {
                         </div>
                         {clusters?.results
                             .map((cluster) => (
-                                <Grid key={cluster.slug} item sm={12} xs={12}>
-                                    {console.log("clusters", cluster)}
+                                <Grid key={cluster.id} item sm={12} xs={12}>
                                     <ClusterCard cluster={cluster}
                                         onSubmit={async (_cluster) => {
                                             const resp = await bc.registry().updateCluster(c.slug, _cluster)

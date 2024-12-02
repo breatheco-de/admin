@@ -190,7 +190,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             onClick={async () => {
                                 const data = await onSubmit(clusterForm)
                                 if(data){
-                                    console.log("onsubmit", data)
                                     setEditMode(null)
                                     setClusterForm(data)
                                 }
