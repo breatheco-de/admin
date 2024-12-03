@@ -55,6 +55,11 @@ const UserList3 = () => {
         search(value);
       };
 
+    const languages = [
+        {label: "Español", value: "Es"},
+        {label: "English", value: "Us"},
+    ]
+
       const search = useCallback(
         debounce((query) => {
             bc.registry()
@@ -148,21 +153,17 @@ const UserList3 = () => {
                         </div>
                         <div className="relative p-4 mb-4">
                             <h5 className="m-0 mb-4">Languages</h5>
-                            
-                            {clusters?.results.map((cluster) => cluster.lang.toLowerCase())
-                            .filter((lang, index, self) => self.indexOf(lang) === index)
-                            .map((lang) =>(
-                                <div key={lang} className="flex items-center justify-between">
-                                    <FormControlLabel
+                            {languages.map(({ label, value }) => (
+                                <div key={value} className="flex items-center justify-between">
+                                <FormControlLabel
                                     className="flex-grow"
-                                    name={lang}
+                                    name={value}
                                     control={<Checkbox />}
-                                    label={<span className="capitalize">{lang}</span>}
-                                    />
+                                    label={<span className="capitalize">{label}</span>}
+                                />
                                 </div>
                             ))}
-                            {console.log("Cluster lang", clusters)}
-                        </div>
+                            </div>
                         {clusters?.results
                             .map((cluster) => (
                                 <Grid key={cluster.id} item sm={12} xs={12}>
