@@ -10,6 +10,8 @@ import {
     TextField,
     InputAdornment,
     deleteFile,
+    Checkbox,
+    FormControlLabel,
 } from "@material-ui/core";
 
 import { Link } from 'react-router-dom';
@@ -144,9 +146,27 @@ const UserList3 = () => {
                             fullWidth
                         />
                         </div>
+                        <div className="relative p-4 mb-4">
+                            <h5 className="m-0 mb-4">Languages</h5>
+                            
+                            {clusters?.results.map((cluster) => cluster.lang.toLowerCase())
+                            .filter((lang, index, self) => self.indexOf(lang) === index)
+                            .map((lang) =>(
+                                <div key={lang} className="flex items-center justify-between">
+                                    <FormControlLabel
+                                    className="flex-grow"
+                                    name={lang}
+                                    control={<Checkbox />}
+                                    label={<span className="capitalize">{lang}</span>}
+                                    />
+                                </div>
+                            ))}
+                            {console.log("Cluster lang", clusters)}
+                        </div>
                         {clusters?.results
                             .map((cluster) => (
                                 <Grid key={cluster.id} item sm={12} xs={12}>
+
                                     <ClusterCard cluster={cluster}
                                         onSubmit={async (_cluster) => {
                                             const resp = await bc.registry().updateCluster(c.slug, _cluster)
