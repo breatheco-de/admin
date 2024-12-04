@@ -41,6 +41,8 @@ const UserList3 = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
 
+    const [selectedLangs, setSelectedLangs] = useState([])
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -56,9 +58,23 @@ const UserList3 = () => {
       };
 
     const languages = [
-        {label: "Español", value: "Es"},
-        {label: "English", value: "Us"},
+        {label: "Español", value: "es"},
+        {label: "English", value: "us"},
     ]
+
+    const handleLanguageByFilter = (event) =>{
+        const lang = event.target.name
+        const isChecked = event.target.checked
+
+        const updatedLangs = isChecked ? [...selectedLangs, lang] : selectedLangs.filter((selectedLangs) => selectedLangs !== lang)
+
+        setSelectedLangs(updatedLangs)
+
+        const filteredClusters = clusters?.results.filter((cluster) => updatedLangs.includes(cluster.lang.toLowerCase()));
+        // setClusters(filteredClusters)
+        console.log("filteredCluster", filteredClusters)
+        console.log("selectedLangs", updatedLangs)
+    }
 
       const search = useCallback(
         debounce((query) => {
@@ -158,12 +174,13 @@ const UserList3 = () => {
                                 <FormControlLabel
                                     className="flex-grow"
                                     name={value}
+                                    onChange={handleLanguageByFilter}
                                     control={<Checkbox />}
                                     label={<span className="capitalize">{label}</span>}
                                 />
                                 </div>
                             ))}
-                            </div>
+                        </div>
                         {clusters?.results
                             .map((cluster) => (
                                 <Grid key={cluster.id} item sm={12} xs={12}>
