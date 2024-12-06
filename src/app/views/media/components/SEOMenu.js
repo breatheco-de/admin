@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import history from "history.js";
 
-const SEOMenu = ({languages, handleLanguageByFilter}) => (
+const SEOMenu = ({languages, handleLanguageByFilter, selectedLangs}) => (
     <>
         <Card className="pb-8">
             <div className="p-3 flex-column">
@@ -55,14 +55,14 @@ const SEOMenu = ({languages, handleLanguageByFilter}) => (
         </Card>
         <Card className="mt-4">
             <div className="relative p-4 mb-4">
-                <h5 className="m-0 mb-4">Languages</h5>
+                <p className="text-muted m-0 mb-4">Languages</p>
                 {languages.map(({ label, value }) => (
                     <div key={value} className="flex items-center justify-between">
                         <FormControlLabel
                             className="flex-grow"
                             name={value}
                             onChange={handleLanguageByFilter}
-                            control={<Checkbox />}
+                            control={<Checkbox checked={selectedLangs.includes(value)}/>}
                             label={<span className="capitalize">{label}</span>}
                         />
                     </div>

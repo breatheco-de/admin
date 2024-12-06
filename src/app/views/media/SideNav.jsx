@@ -130,7 +130,6 @@ const Sidenav = ({
                 control={<Checkbox checked={categories.includes(category.id.toString())} />}
                 label={<span className="capitalize">{category.name}</span>}
                 />
-                {console.log("Category", categoryList)}
               {/* <small className="badge bg-light-primary text-primary">
                 {category.medias}
               </small> */}

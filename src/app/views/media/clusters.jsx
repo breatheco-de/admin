@@ -30,9 +30,7 @@ const UserList3 = () => {
 
     const pgQuery = useQuery()
     const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
-    // const [rowsPerPage, setRowsPerPage] = useState(
-    //     pgQuery.get('limit') !== null ? pgQuery.get('limit') : 10,
-    //   );
+
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -55,11 +53,10 @@ const UserList3 = () => {
     const handleSearch = (value) => {
         setQuery(value); 
         search(value);
-        console.log("valueee", value.length)
         if (value.length === 0){
-            
+            setSelectedLangs([])
         }
-      };
+    };
 
     const languages = [
         {label: "Español", value: "es"},
@@ -84,12 +81,9 @@ const UserList3 = () => {
             ...clusters,
             results: filtered || [],
         });
-
-        console.log("filteredCluster", filteredClusters)
-        console.log("selectedLangs", updatedLangs)
     }
 
-      const search = useCallback(
+    const search = useCallback(
         debounce((query) => {
             bc.registry()
                 .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage, like: query })
@@ -99,11 +93,11 @@ const UserList3 = () => {
 
             });
             history.replace(
-              `/media/seo/cluster?${Object.keys({
+            `/media/seo/cluster?${Object.keys({
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
                 like: query,
-              })
+            })
                 .map(
                   (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query }[key]}`)
                 .join('&')}`
@@ -111,7 +105,7 @@ const UserList3 = () => {
         //   }
         }, 300),
         [rowsPerPage, page, history]
-      );
+    );
 
 
 
@@ -121,16 +115,12 @@ const UserList3 = () => {
             const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
             if (resp.status == 200) {
                 setClusters(resp.data);
-                // setFilteredClusters(resp.data)
-                console.log("nomas")
             }
-
         };
         fetchClusters();
     }, [rowsPerPage, page]);
 
     useEffect(() => {
-        console.log("1111111")
         if (selectedLangs.length > 0) {
             const filtered = selectedLangs.length > 0
             ? clusters?.results.filter((cluster) =>
@@ -142,10 +132,8 @@ const UserList3 = () => {
                 ...clusters,
                 results: filtered || [],
             });
-            console.log("2222222222", clusters)
         } else {
             setFilteredClusters(clusters)
-            console.log("33333")
         }
     }, [rowsPerPage, page, clusters])
 
@@ -167,7 +155,7 @@ const UserList3 = () => {
             </div>
             <Grid container spacing={2}>
                 <Grid item md={3} sm={12} xs={12}>
-                    <SEOMenu languages={languages} handleLanguageByFilter={handleLanguageByFilter} />
+                    <SEOMenu languages={languages} handleLanguageByFilter={handleLanguageByFilter} selectedLangs={selectedLangs} />
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <Grid container spacing={2}>
@@ -206,21 +194,19 @@ const UserList3 = () => {
                             }}
                             fullWidth
                         />
-                        </div>
-                        
+                        </div>    
                         {filteredClusters?.results 
-                          .map((cluster) => (
-                              <Grid key={cluster.id} item sm={12} xs={12}>
-
-                                  <ClusterCard cluster={cluster}
-                                      onSubmit={async (_cluster) => {
-                                          const resp = await bc.registry().updateCluster(cluster.slug, _cluster)
-                                          if (resp.status === 200) return resp.data;
-                                          else return false;
-                                      }}
-                                  />
-                              </Grid>
-                          ))} 
+                        .map((cluster) => (
+                            <Grid key={cluster.id} item sm={12} xs={12}>
+                                <ClusterCard cluster={cluster}
+                                    onSubmit={async (_cluster) => {
+                                        const resp = await bc.registry().updateCluster(cluster.slug, _cluster)
+                                        if (resp.status === 200) return resp.data;
+                                        else return false;
+                                    }}
+                                />
+                            </Grid>
+                        ))} 
                     </Grid>
                     <div className="mt-4">
                         <TablePagination
