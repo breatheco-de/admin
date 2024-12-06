@@ -9,7 +9,6 @@ import {
     TablePagination,
     TextField,
     InputAdornment,
-    deleteFile,
 } from "@material-ui/core";
 
 import { Link } from 'react-router-dom';
@@ -17,11 +16,9 @@ import { Breadcrumb } from "matx";
 import bc from 'app/services/breathecode';
 import ClusterCard from "./components/ClusterCard";
 import SEOMenu from "./components/SEOMenu";
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from "app/hooks/useQuery";
 import { debounce } from 'lodash';
-import { set } from "date-fns";
 
 const UserList3 = () => {
     const [clusters, setClusters] = useState(null);
@@ -31,7 +28,6 @@ const UserList3 = () => {
     const pgQuery = useQuery()
     const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
 
-    const dispatch = useDispatch();
     const history = useHistory();
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -102,7 +98,6 @@ const UserList3 = () => {
                   (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query }[key]}`)
                 .join('&')}`
             );
-        //   }
         }, 300),
         [rowsPerPage, page, history]
     );
