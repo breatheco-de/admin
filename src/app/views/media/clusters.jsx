@@ -10,8 +10,6 @@ import {
     TextField,
     InputAdornment,
     deleteFile,
-    Checkbox,
-    FormControlLabel,
 } from "@material-ui/core";
 
 import { Link } from 'react-router-dom';
@@ -43,6 +41,8 @@ const UserList3 = () => {
 
     const [selectedLangs, setSelectedLangs] = useState([])
 
+    const [filteredClusters, setFilteredClusters] = useState(null)
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -55,6 +55,10 @@ const UserList3 = () => {
     const handleSearch = (value) => {
         setQuery(value); 
         search(value);
+        console.log("valueee", value.length)
+        if (value.length === 0){
+            
+        }
       };
 
     const languages = [
@@ -70,8 +74,17 @@ const UserList3 = () => {
 
         setSelectedLangs(updatedLangs)
 
-        const filteredClusters = clusters?.results.filter((cluster) => updatedLangs.includes(cluster.lang.toLowerCase()));
-        // setClusters(filteredClusters)
+        const filtered = updatedLangs.length > 0
+        ? clusters?.results.filter((cluster) =>
+            updatedLangs.includes(cluster.lang.toLowerCase())
+        )
+        : clusters?.results;
+
+        setFilteredClusters({
+            ...clusters,
+            results: filtered || [],
+        });
+
         console.log("filteredCluster", filteredClusters)
         console.log("selectedLangs", updatedLangs)
     }
@@ -82,6 +95,8 @@ const UserList3 = () => {
                 .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage, like: query })
                 .then((res) =>{
                 setClusters(res.data)
+                setFilteredClusters(res.data);
+
             });
             history.replace(
               `/media/seo/cluster?${Object.keys({
@@ -95,19 +110,44 @@ const UserList3 = () => {
             );
         //   }
         }, 300),
-        [clusters]
+        [rowsPerPage, page, history]
       );
 
 
 
-      useEffect(() => {
+    useEffect(() => {
         setQuery('');
         const fetchClusters = async () => {
             const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
-            if (resp.status == 200) setClusters(resp.data);
+            if (resp.status == 200) {
+                setClusters(resp.data);
+                // setFilteredClusters(resp.data)
+                console.log("nomas")
+            }
+
         };
         fetchClusters();
     }, [rowsPerPage, page]);
+
+    useEffect(() => {
+        console.log("1111111")
+        if (selectedLangs.length > 0) {
+            const filtered = selectedLangs.length > 0
+            ? clusters?.results.filter((cluster) =>
+                selectedLangs.includes(cluster.lang.toLowerCase())
+            )
+            : clusters?.results;
+
+            setFilteredClusters({
+                ...clusters,
+                results: filtered || [],
+            });
+            console.log("2222222222", clusters)
+        } else {
+            setFilteredClusters(clusters)
+            console.log("33333")
+        }
+    }, [rowsPerPage, page, clusters])
 
     return (
         <div className="m-sm-30">
@@ -127,7 +167,7 @@ const UserList3 = () => {
             </div>
             <Grid container spacing={2}>
                 <Grid item md={3} sm={12} xs={12}>
-                    <SEOMenu />
+                    <SEOMenu languages={languages} handleLanguageByFilter={handleLanguageByFilter} />
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <Grid container spacing={2}>
@@ -167,33 +207,20 @@ const UserList3 = () => {
                             fullWidth
                         />
                         </div>
-                        <div className="relative p-4 mb-4">
-                            <h5 className="m-0 mb-4">Languages</h5>
-                            {languages.map(({ label, value }) => (
-                                <div key={value} className="flex items-center justify-between">
-                                <FormControlLabel
-                                    className="flex-grow"
-                                    name={value}
-                                    onChange={handleLanguageByFilter}
-                                    control={<Checkbox />}
-                                    label={<span className="capitalize">{label}</span>}
-                                />
-                                </div>
-                            ))}
-                        </div>
-                        {clusters?.results
-                            .map((cluster) => (
-                                <Grid key={cluster.id} item sm={12} xs={12}>
+                        
+                        {filteredClusters?.results 
+                          .map((cluster) => (
+                              <Grid key={cluster.id} item sm={12} xs={12}>
 
-                                    <ClusterCard cluster={cluster}
-                                        onSubmit={async (_cluster) => {
-                                            const resp = await bc.registry().updateCluster(c.slug, _cluster)
-                                            if (resp.status === 200) return resp.data;
-                                            else return false;
-                                        }}
-                                    />
-                                </Grid>
-                            ))}
+                                  <ClusterCard cluster={cluster}
+                                      onSubmit={async (_cluster) => {
+                                          const resp = await bc.registry().updateCluster(cluster.slug, _cluster)
+                                          if (resp.status === 200) return resp.data;
+                                          else return false;
+                                      }}
+                                  />
+                              </Grid>
+                          ))} 
                     </Grid>
                     <div className="mt-4">
                         <TablePagination
