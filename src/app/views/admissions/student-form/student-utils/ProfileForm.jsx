@@ -18,6 +18,7 @@ export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
+  const [plans, setPlans] = useState([])
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
@@ -164,7 +165,6 @@ export const ProfileForm = ({ initialValues }) => {
                 }}
                 
                 // name="cohort"
-                console
                 error={errors.cohort && touched.cohort}
                 helperText={touched.cohort && errors.cohort}
                 width="30%"
@@ -179,14 +179,51 @@ export const ProfileForm = ({ initialValues }) => {
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
 
+
               {availableAsSaas === true && (
                 <div className='m-3'>
                   <Alert severity='warning'>
                     <AlertTitle> On adding a new cohort</AlertTitle>
-                    "You are selecting a cohort that is available as saas, in order to add him/she to this cohort, you should select the plan that you want to add him to"
+                    "You are selecting a cohort that is available as saas, in order to add him/her to this cohort, you should select the plan that you want to add him to"
                   </Alert>
+
+                  <AsyncAutocomplete
+                    onChange={(newPlan) => {
+                      console.log("NEWCOHORT", newPlan);
+                      // setCohort(setPlans);
+                    }}
+                    // options={plans}
+                    // error={errors.cohort && touched.cohort}
+                    // helperText={touched.cohort && errors.cohort}
+                    width="30%"
+                    size="small"
+                    label="Select a plan"
+                    // required={cohort.length === 0}
+                    debounced={false}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}  
+                    getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                    multiple={true}
+                    asyncSearch={() => {
+                      const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
+                      console.log("cohort", cohort)
+                      if (selectedCohortSlug) {
+                        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
+                          .then((response) => {
+                            console.log("Plans:", response.data);
+                            return response.data
+                          })
+                          .catch((error) => {
+                            console.error("Error fetching plans:", error);
+                            return [];
+                          });
+                      } else {
+                        return [];
+                      }
+                    }}
+                  />
                 </div>
               )}
+
             
             </Grid>
           </Grid>
