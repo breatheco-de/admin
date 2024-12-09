@@ -8,6 +8,7 @@ import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
 import config from '../../../../../config.js';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -16,6 +17,7 @@ const propTypes = {
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
+  const [availableAsSaas, setAvailableAsSaas] = useState(false)
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
@@ -152,8 +154,17 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                onChange={(newCohort) => setCohort(newCohort)}
+                onChange={(newCohort) => {
+                  console.log("NEWCOHORT", newCohort);
+                  setCohort(newCohort)
+                  
+                  // const isAvailableAsSaas = newCohort.some(cohort => cohort.availableAsSaas);
+                  // setAvailableAsSaas(isAvailableAsSaas)
+                  setAvailableAsSaas(true)
+                }}
+                
                 // name="cohort"
+                console
                 error={errors.cohort && touched.cohort}
                 helperText={touched.cohort && errors.cohort}
                 width="30%"
@@ -167,6 +178,16 @@ export const ProfileForm = ({ initialValues }) => {
                 asyncSearch={() => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED,ACTIVE`)}
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
+
+              {availableAsSaas === true && (
+                <div className='m-3'>
+                  <Alert severity='warning'>
+                    <AlertTitle> On adding a new cohort</AlertTitle>
+                    "You are selecting a cohort that is available as saas, in order to add him/she to this cohort, you should select the plan that you want to add him to"
+                  </Alert>
+                </div>
+              )}
+            
             </Grid>
           </Grid>
           <div className="mt-6">
