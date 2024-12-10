@@ -134,8 +134,15 @@ const NewLead = () => {
     if (id) {
       bc.marketing().getAcademySingleLead(id)
         .then(({ data }) => {
-          const indexCustomField = availableCourses.map((c) => c.slug).indexOf(data.custom_fields?.utm_course);
-          const index = availableCourses.map((c) => c.slug).indexOf(data.course);
+          if (!availableCourses || availableCourses.length === 0){
+            console.error("AvailableCourses is empty")
+            return
+          }
+
+          const course = 
+            availableCourses.find((c) => c.slug === data.custom_fields?.utm_course || c.slug === data.course
+          ) || { slug: "default", name: "Course by default"};
+        
           setNewLead({ 
             ...data,
             user: data.user?.id || data.user,
@@ -143,12 +150,12 @@ const NewLead = () => {
             longitude: data.longitude || 0,
             zip_code: data.zip_code || 0,
             lead_type: data.lead_type || '',
-            course: { ...availableCourses[indexCustomField !== -1 ? indexCustomField : index] }
+            course,
           });
         })
         .catch((e) => console.log(e))
     }
-  }, []);
+  }, [id, availableCourses]);
 
   const getCourses = () => {
     return new Promise((resolve, reject) => {
