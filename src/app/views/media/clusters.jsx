@@ -132,6 +132,24 @@ const UserList3 = () => {
         }
     }, [rowsPerPage, page, clusters])
 
+    const renderClusters = (clusters) => {
+        if (!clusters?.results)
+            return null
+        return clusters.results.map((cluster) =>{
+            return(
+                <Grid key={cluster.id} item sm={12} xs={12}>
+                    <ClusterCard 
+                        cluster={cluster}
+                        onSubmit={async (_cluster) =>{
+                            const resp = await bc.registry().updateCluster(cluster.slug, _cluster);
+                            return resp.status === 200 ? resp.data : false
+                        }}
+                        />
+                </Grid>
+            )
+        })
+    }
+
     return (
         <div className="m-sm-30">
             <div className="flex flex-wrap justify-between mb-6">
@@ -190,7 +208,7 @@ const UserList3 = () => {
                             fullWidth
                         />
                         </div>    
-                        {filteredClusters?.results 
+                        {/* {filteredClusters?.results 
                         .map((cluster) => (
                             <Grid key={cluster.id} item sm={12} xs={12}>
                                 <ClusterCard cluster={cluster}
@@ -201,7 +219,10 @@ const UserList3 = () => {
                                     }}
                                 />
                             </Grid>
-                        ))} 
+                        ))}  */}
+                        <Grid container spacing={2}>
+                            {renderClusters(filteredClusters)}
+                        </Grid>
                     </Grid>
                     <div className="mt-4">
                         <TablePagination
