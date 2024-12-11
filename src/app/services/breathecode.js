@@ -1234,6 +1234,14 @@ class BreatheCodeClient {
           `${this.host}/registry/academy/asset/comment?${qs}`
         );
       },
+      getAssetErrors: async (query) => {
+        if (!query.sort) query.sort = "-created_at";
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?${qs}`
+        );
+      },
     };
   }
 

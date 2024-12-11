@@ -13,7 +13,9 @@
 .d-block {
   display: block !important;
 }
-
+.d-flex {
+  display: flex !important;
+}
 .cut-text {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,6 +75,10 @@
   background-color: rgb(241, 71, 71) !important;
   color: white;
 }
+.bg-danger-light, .bg-red-light, .bg-error-light {
+  background-color: #e3bcbc !important;
+  color: black;
+}
 .bg-success, .bg-green {
   background-color: rgb(0, 124, 2) !important;
   color: white;
@@ -92,6 +98,9 @@
 }
 .bg-light-warning{
   background: rgb(253, 245, 234) !important;
+}
+.no-decoration {
+  text-decoration: none !important;
 }
 .text-light-success {
   color: #64c88f !important; }
