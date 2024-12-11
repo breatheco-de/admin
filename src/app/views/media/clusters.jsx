@@ -67,47 +67,63 @@ const UserList3 = () => {
 
         setSelectedLangs(updatedLangs)
 
-        const filtered = updatedLangs.length > 0
-        ? clusters?.results.filter((cluster) =>
-            updatedLangs.includes(cluster.lang.toLowerCase())
-        )
-        : clusters?.results;
+        bc.registry()
+                .getAllClusters({ limit: rowsPerPage, 
+                    offset: page * rowsPerPage, 
+                    like: query, 
+                    lang: updatedLangs.join(",")
+                })
+                .then((res) =>{
+                setClusters(res.data)
+                setFilteredClusters(res.data);
+            });
 
-        setFilteredClusters({
-            ...clusters,
-            results: filtered || [],
-        });
+        // const filtered = updatedLangs.length > 0
+        // ? clusters?.results.filter((cluster) =>
+        //     updatedLangs.includes(cluster.lang.toLowerCase())
+        // )
+        // : clusters?.results;
+
+        // setFilteredClusters({
+        //     ...clusters,
+        //     results: filtered || [],
+        // });
     }
 
     const search = useCallback(
         debounce((query) => {
             bc.registry()
-                .getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage, like: query })
+                .getAllClusters({ limit: rowsPerPage, 
+                    offset: page * rowsPerPage, 
+                    like: query, 
+                    lang: selectedLangs.join(",")
+                })
                 .then((res) =>{
                 setClusters(res.data)
                 setFilteredClusters(res.data);
-
             });
             history.replace(
             `/media/seo/cluster?${Object.keys({
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
                 like: query,
+                lang: selectedLangs.join(",")
             })
                 .map(
-                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query }[key]}`)
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query, lang:selectedLangs.join(",") }[key]}`)
                 .join('&')}`
             );
         }, 300),
-        [rowsPerPage, page, history]
+        [rowsPerPage, page, history, selectedLangs]
     );
-
-
 
     useEffect(() => {
         setQuery('');
         const fetchClusters = async () => {
-            const resp = await bc.registry().getAllClusters({ limit: rowsPerPage, offset: page * rowsPerPage });
+            const resp = await bc.registry().getAllClusters({ 
+                limit: rowsPerPage, 
+                offset: page * rowsPerPage 
+            });
             if (resp.status == 200) {
                 setClusters(resp.data);
             }
@@ -116,21 +132,19 @@ const UserList3 = () => {
     }, [rowsPerPage, page]);
 
     useEffect(() => {
-        if (selectedLangs.length > 0) {
-            const filtered = selectedLangs.length > 0
-            ? clusters?.results.filter((cluster) =>
-                selectedLangs.includes(cluster.lang.toLowerCase())
-            )
-            : clusters?.results;
+        // if (selectedLangs.length > 0) {
+        //     const filtered = clusters?.results.filter((cluster) =>
+        //         selectedLangs.includes(cluster.lang.toLowerCase())
+        //     )
 
-            setFilteredClusters({
-                ...clusters,
-                results: filtered || [],
-            });
-        } else {
-            setFilteredClusters(clusters)
-        }
-    }, [rowsPerPage, page, clusters])
+        //     setFilteredClusters({
+        //         ...clusters,
+        //         results: filtered || [],
+        //     });
+      // } else {
+          setFilteredClusters(clusters)
+        //  }
+    }, [clusters])
 
     const renderClusters = (clusters) => {
         if (!clusters?.results)
