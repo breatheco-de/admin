@@ -50,7 +50,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
 
     const handleAddAsset = async (keyword, asset) => {
         if(!asset) return false;
-        console.log("keyword", keyword)
         //{ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) }
         const resp = await bc
                             .registry()
@@ -190,7 +189,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             onClick={async () => {
                                 const data = await onSubmit(clusterForm)
                                 if(data){
-                                    console.log("onsubmit", data)
                                     setEditMode(null)
                                     setClusterForm(data)
                                 }
