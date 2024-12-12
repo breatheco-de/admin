@@ -33,9 +33,7 @@ const UserList3 = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
 
-    const [selectedLangs, setSelectedLangs] = useState([])
-
-    const [filteredClusters, setFilteredClusters] = useState(null)
+    const [selectedLangs, setSelectedLangs] = useState(pgQuery.get('lang') !== null ? pgQuery.get('lang').split(','):[])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -49,9 +47,6 @@ const UserList3 = () => {
     const handleSearch = (value) => {
         setQuery(value); 
         search(value);
-        if (value.length === 0){
-            setSelectedLangs([])
-        }
     };
 
     const languages = [
@@ -67,6 +62,17 @@ const UserList3 = () => {
 
         setSelectedLangs(updatedLangs)
 
+        history.replace(
+            `/media/seo/cluster?${Object.keys({
+                limit: rowsPerPage,
+                offset: page * rowsPerPage,
+                like: query,
+                lang: updatedLangs.join(",")
+            })
+                .map(
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query, lang:updatedLangs.join(",") }[key]}`)
+                .join('&')}`
+            );
         bc.registry()
                 .getAllClusters({ limit: rowsPerPage, 
                     offset: page * rowsPerPage, 
@@ -75,19 +81,7 @@ const UserList3 = () => {
                 })
                 .then((res) =>{
                 setClusters(res.data)
-                setFilteredClusters(res.data);
             });
-
-        // const filtered = updatedLangs.length > 0
-        // ? clusters?.results.filter((cluster) =>
-        //     updatedLangs.includes(cluster.lang.toLowerCase())
-        // )
-        // : clusters?.results;
-
-        // setFilteredClusters({
-        //     ...clusters,
-        //     results: filtered || [],
-        // });
     }
 
     const search = useCallback(
@@ -100,7 +94,6 @@ const UserList3 = () => {
                 })
                 .then((res) =>{
                 setClusters(res.data)
-                setFilteredClusters(res.data);
             });
             history.replace(
             `/media/seo/cluster?${Object.keys({
@@ -118,33 +111,20 @@ const UserList3 = () => {
     );
 
     useEffect(() => {
-        setQuery('');
         const fetchClusters = async () => {
             const resp = await bc.registry().getAllClusters({ 
                 limit: rowsPerPage, 
-                offset: page * rowsPerPage 
+                offset: page * rowsPerPage, 
+                like: query,
+                lang: selectedLangs.join(",") 
+
             });
             if (resp.status == 200) {
                 setClusters(resp.data);
             }
         };
         fetchClusters();
-    }, [rowsPerPage, page]);
-
-    useEffect(() => {
-        // if (selectedLangs.length > 0) {
-        //     const filtered = clusters?.results.filter((cluster) =>
-        //         selectedLangs.includes(cluster.lang.toLowerCase())
-        //     )
-
-        //     setFilteredClusters({
-        //         ...clusters,
-        //         results: filtered || [],
-        //     });
-      // } else {
-          setFilteredClusters(clusters)
-        //  }
-    }, [clusters])
+    }, [rowsPerPage, page, selectedLangs]);
 
     const renderClusters = (clusters) => {
         if (!clusters?.results)
@@ -186,22 +166,6 @@ const UserList3 = () => {
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <Grid container spacing={2}>
-                        {addCluster && <Grid item sm={12} xs={12}>
-                            <ClusterCard isEditing
-                                cluster={{
-                                    title: 'Sample cluster',
-                                    slug: 'sample-cluster',
-                                    lang: 'us',
-                                    isDeprecated: false,
-                                    keywords: []
-                                }}
-                                onSubmit={async (_cluster) => {
-                                    const resp = await bc.registry().createCluster(_cluster)
-                                    if (resp.ok) return resp.data;
-                                    else return false;
-                                }}
-                            />
-                        </Grid>}
                         <div className="flex flex-col items-center w-full mb-4 mt-2">
                         <TextField
                             className="bg-paper w-full"
@@ -222,21 +186,32 @@ const UserList3 = () => {
                             fullWidth
                         />
                         </div>    
-                        {/* {filteredClusters?.results 
-                        .map((cluster) => (
-                            <Grid key={cluster.id} item sm={12} xs={12}>
-                                <ClusterCard cluster={cluster}
-                                    onSubmit={async (_cluster) => {
-                                        const resp = await bc.registry().updateCluster(cluster.slug, _cluster)
-                                        if (resp.status === 200) return resp.data;
-                                        else return false;
-                                    }}
-                                />
-                            </Grid>
-                        ))}  */}
                         <Grid container spacing={2}>
-                            {renderClusters(filteredClusters)}
-                        </Grid>
+                        {addCluster && (
+                            <ClusterCard isEditing
+                                cluster={{
+                                    title: 'Sample cluster',
+                                    slug: 'sample-cluster',
+                                    lang: 'us',
+                                    isDeprecated: false,
+                                    keywords: []
+                                }}
+                                onSubmit={async (_cluster) => {
+                                    const resp = await bc.registry().createCluster(_cluster)
+                                    if (resp.ok) {
+                                        setClusters({
+                                            ...clusters,
+                                            results: [resp.data, ...clusters.results],
+                                        })
+                                        setAddCluster(false)
+                                        return resp.data;
+                                    }
+                                    else return false;
+                                }}
+                            />
+                        )}
+                        {renderClusters(clusters)}
+                    </Grid>
                     </Grid>
                     <div className="mt-4">
                         <TablePagination
