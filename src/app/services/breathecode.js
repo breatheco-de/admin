@@ -1242,6 +1242,19 @@ class BreatheCodeClient {
           `${this.host}/registry/academy/asset/error?${qs}`
         );
       },
+      deleteAssetErrorBulk: (query) => {
+        const qs = query.join(",");
+        return axios.bcDelete(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?id=${qs}`
+        );
+      },
+      updateAssetError: async (slug, payload) =>
+        await axios.bcPut(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error${slug ? `/${slug}` : ""}`,
+          payload
+        ),
     };
   }
 

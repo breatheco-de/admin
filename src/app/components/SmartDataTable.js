@@ -19,12 +19,15 @@ const defaultToolbarSelectStyles = {
     },
 };
 
-const DefaultToobar = ({ children, ...props }) => (
+const DefaultToobar = ({ children, ...props }) => {
+    return (
     <div className={props.classes.iconContainer}>
         <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
-        {children}
-    </div>
-);
+        {React.Children.map(children, Child => 
+            <Child { ...props } />
+        )}
+    </div>)
+};
 
 const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
     name: "SmartMUIDataTable",
@@ -60,7 +63,6 @@ export const SmartMUIDataTable = (props) => {
     });
 
     if (!Array.isArray(props.items)) {
-        console.log("SmartMUIDataTable.props.items:", props.items);
         throw Error("Property items must be an array on SmartMUIDataTable");
     }
 
