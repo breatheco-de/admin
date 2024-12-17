@@ -62,7 +62,6 @@ const EventForm = () => {
       bc.events()
         .getAcademyEvent(id)
         .then(async ({ data }) => {
-          console.log("..........", data)
           setEvent({
             ...data,
             starting_at: dayjs(data.starting_at).format("YYYY-MM-DDTHH:mm:ss"),
@@ -230,7 +229,6 @@ const EventForm = () => {
             setFieldValue,
           }) => (
             <form className="p-4" onSubmit={handleSubmit}>
-              {console.log("---------", values)}
               <ConfirmationDialog
                 open={showDialog}
                 onConfirmDialogClose={() => setShowDialog(false)}
