@@ -52,7 +52,6 @@ const Gallery = () => {
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage, rowsPerPage, event.target);
     dispatch(getProductList({ ...pagination, limit: rowsPerPage, offset: newPage * rowsPerPage }));
     const pg = { ...pagination, limit: rowsPerPage, offset: newPage * rowsPerPage };
     history.replace(
