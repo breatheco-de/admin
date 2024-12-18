@@ -25,15 +25,15 @@ const UserList3 = () => {
     const [addCluster, setAddCluster] = useState(null);
     const [technologies, setTechnologies] = useState([]);
 
-    const pgQuery = useQuery()
-    const [query, setQuery] = useState(pgQuery.get('like') !== null ? pgQuery.get('like') : '');
+    const query = useQuery()
+    const [search, setSearch] = useState(query.get('like') !== null ? query.get('like') : '');
 
     const history = useHistory();
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
 
-    const [selectedLangs, setSelectedLangs] = useState(pgQuery.get('lang') !== null ? pgQuery.get('lang').split(','):[])
+    const [selectedLangs, setSelectedLangs] = useState(query.get('lang') !== null ? query.get('lang').split(','):[])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -45,8 +45,8 @@ const UserList3 = () => {
     };
 
     const handleSearch = (value) => {
-        setQuery(value); 
-        search(value);
+        setSearch(value); 
+        perfomSearch(value);
     };
 
     const languages = [
@@ -66,17 +66,17 @@ const UserList3 = () => {
             `/media/seo/cluster?${Object.keys({
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
-                like: query,
+                like: search,
                 lang: updatedLangs.join(",")
             })
                 .map(
-                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query, lang:updatedLangs.join(",") }[key]}`)
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:updatedLangs.join(",") }[key]}`)
                 .join('&')}`
             );
         bc.registry()
                 .getAllClusters({ limit: rowsPerPage, 
                     offset: page * rowsPerPage, 
-                    like: query, 
+                    like: search, 
                     lang: updatedLangs.join(",")
                 })
                 .then((res) =>{
@@ -84,12 +84,12 @@ const UserList3 = () => {
             });
     }
 
-    const search = useCallback(
-        debounce((query) => {
+    const perfomSearch = useCallback(
+        debounce((search) => {
             bc.registry()
                 .getAllClusters({ limit: rowsPerPage, 
                     offset: page * rowsPerPage, 
-                    like: query, 
+                    like: search, 
                     lang: selectedLangs.join(",")
                 })
                 .then((res) =>{
@@ -99,11 +99,11 @@ const UserList3 = () => {
             `/media/seo/cluster?${Object.keys({
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
-                like: query,
+                like: search,
                 lang: selectedLangs.join(",")
             })
                 .map(
-                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: query, lang:selectedLangs.join(",") }[key]}`)
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:selectedLangs.join(",") }[key]}`)
                 .join('&')}`
             );
         }, 300),
@@ -115,7 +115,7 @@ const UserList3 = () => {
             const resp = await bc.registry().getAllClusters({ 
                 limit: rowsPerPage, 
                 offset: page * rowsPerPage, 
-                like: query,
+                like: search,
                 lang: selectedLangs.join(",") 
 
             });
@@ -171,10 +171,10 @@ const UserList3 = () => {
                             className="bg-paper w-full"
                             size="small"
                             margin="none"
-                            name="query"
+                            name="search"
                             variant="outlined"
                             placeholder="Search here..."
-                            value={query}
+                            value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             InputProps={{
                                 startAdornment: (
