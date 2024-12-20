@@ -15,18 +15,18 @@ const propTypes = {
 };
 
 export const ProfileForm = ({ initialValues }) => {
+  console.log("initialValues", initialValues)
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
-  const [plans, setPlans] = useState([])
+  const [selectedPlans, setSelectedPlans] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
-
     let cohortId = cohort.map(c => {
       return c.id 
     });
-
+    
     let requestValues = { ...values, 
       cohort: cohort.length > 0 ? cohortId : undefined 
     };
@@ -63,7 +63,10 @@ export const ProfileForm = ({ initialValues }) => {
     <Formik
     
       initialValues={initialValues}
-      onSubmit={(values) => postAcademyStudentProfile(values)}
+      onSubmit={(values) => {
+        // console.log("values", values)
+        postAcademyStudentProfile(values)}
+      } 
       enableReinitialize
       validate={(values)=>{
         let errors = {}
@@ -78,6 +81,7 @@ export const ProfileForm = ({ initialValues }) => {
       
       {({ values, errors, touched, handleChange, handleSubmit }) => (
         <form className="p-4" onSubmit={handleSubmit}>
+          {/* {console.log("values", values)} */}
           <ToastContainer/>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={1} sm={4} xs={12}>
@@ -159,9 +163,8 @@ export const ProfileForm = ({ initialValues }) => {
                   console.log("NEWCOHORT", newCohort);
                   setCohort(newCohort)
                   
-                  // const isAvailableAsSaas = newCohort.some(cohort => cohort.availableAsSaas);
-                  // setAvailableAsSaas(isAvailableAsSaas)
-                  setAvailableAsSaas(true)
+                  const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
+                  setAvailableAsSaas(isAvailableAsSaas)
                 }}
                 
                 // name="cohort"
@@ -179,6 +182,7 @@ export const ProfileForm = ({ initialValues }) => {
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
 
+              {console.log("values", values)}
 
               {availableAsSaas === true && (
                 <div className='m-3'>
@@ -190,21 +194,18 @@ export const ProfileForm = ({ initialValues }) => {
                   <AsyncAutocomplete
                     onChange={(newPlan) => {
                       console.log("NEWCOHORT", newPlan);
-                      // setCohort(setPlans);
+                      setSelectedPlans(selectedPlans);
                     }}
-                    // options={plans}
-                    // error={errors.cohort && touched.cohort}
-                    // helperText={touched.cohort && errors.cohort}
                     width="30%"
                     size="small"
                     label="Select a plan"
-                    // required={cohort.length === 0}
                     debounced={false}
                     isOptionEqualToValue={(option, value) => option.id === value.id}  
-                    getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                    getOptionLabel={(option) => `${option.slug}`}
                     multiple={true}
                     asyncSearch={() => {
                       const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
+                      console.log("selectedCohortSlug", selectedCohortSlug)  
                       console.log("cohort", cohort)
                       if (selectedCohortSlug) {
                         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
