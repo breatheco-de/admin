@@ -1184,7 +1184,7 @@ class BreatheCodeClient {
 
   payments() {
     return {
-      addAcademyPlanSubscription: (planSlug, payload) =>
+      addAcademyPlanSlugSubscription: (planSlug, payload) =>
         axios.bcPost(
           "Academy Plan Subscription",
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,

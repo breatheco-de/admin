@@ -58,7 +58,7 @@ export const ProfileForm = ({ initialValues }) => {
               user: values.id,
               payment_method: 5,
             }
-            bc.payments().addAcademyPlanSubscription(planSlug, payload)
+            bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
             .then((response) => {
               console.log("Subscription created", response.data);
             })
@@ -178,7 +178,6 @@ export const ProfileForm = ({ initialValues }) => {
                 onChange={(newCohort) => {
                   console.log("NEWCOHORT", newCohort);
                   setCohort(newCohort)
-                  
                   const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
                   setAvailableAsSaas(isAvailableAsSaas)
                 }}
@@ -240,8 +239,7 @@ export const ProfileForm = ({ initialValues }) => {
                   />
                 </div>
               )}
-
-            
+          
             </Grid>
           </Grid>
           <div className="mt-6">
