@@ -50,12 +50,28 @@ export const ProfileForm = ({ initialValues }) => {
       .then((data) => {
         console.log("addAcademyStudent", data, data.ok)
         if (data !== undefined && data.ok) {
-           history.push('/admissions/students');
+          if (availableAsSaas && selectedPlans) {
+            const planSlug = selectedPlans[0]?.slug
+            const payload ={
+              provided_payment_details: "Added on admin",
+              reference: "Added on admin",
+              user: values.id,
+              payment_method: 5,
+            }
+            bc.payments().addAcademyPlanSubscription(planSlug, payload)
+            .then((response) => {
+              console.log("Subscription created", response.data);
+            })
+            .catch((error) => {
+              console.error("Error creating subscription", error);
+            });
+          }
+          history.push('/admissions/students');
         }
       })
       .catch((error) => console.error(error));
+      console.log("*******", availableAsSaas, selectedPlans)
     }
-    
   };
   
   return (
@@ -194,7 +210,7 @@ export const ProfileForm = ({ initialValues }) => {
                   <AsyncAutocomplete
                     onChange={(newPlan) => {
                       console.log("NEWCOHORT", newPlan);
-                      setSelectedPlans(selectedPlans);
+                      setSelectedPlans(newPlan);
                     }}
                     width="30%"
                     size="small"
