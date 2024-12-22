@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, Divider } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import bc from '../../../../services/breathecode';
@@ -177,7 +177,7 @@ export const ProfileForm = ({ initialValues }) => {
               <AsyncAutocomplete
                 onChange={(newCohort) => {
                   console.log("NEWCOHORT", newCohort);
-                  setCohort(newCohort)
+                  setCohort(newCohort)            
                   const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
                   setAvailableAsSaas(isAvailableAsSaas)
                 }}
@@ -198,49 +198,54 @@ export const ProfileForm = ({ initialValues }) => {
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
 
               {console.log("values", values)}
-
-              {availableAsSaas === true && (
-                <div className='m-3'>
-                  <Alert severity='warning'>
-                    <AlertTitle> On adding a new cohort</AlertTitle>
-                    "You are selecting a cohort that is available as saas, in order to add him/her to this cohort, you should select the plan that you want to add him to"
-                  </Alert>
-
-                  <AsyncAutocomplete
-                    onChange={(newPlan) => {
-                      console.log("NEWCOHORT", newPlan);
-                      setSelectedPlans(newPlan);
-                    }}
-                    width="30%"
-                    size="small"
-                    label="Select a plan"
-                    debounced={false}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}  
-                    getOptionLabel={(option) => `${option.slug}`}
-                    multiple={true}
-                    asyncSearch={() => {
-                      const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
-                      console.log("selectedCohortSlug", selectedCohortSlug)  
-                      console.log("cohort", cohort)
-                      if (selectedCohortSlug) {
-                        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
-                          .then((response) => {
-                            console.log("Plans:", response.data);
-                            return response.data
-                          })
-                          .catch((error) => {
-                            console.error("Error fetching plans:", error);
-                            return [];
-                          });
-                      } else {
-                        return [];
-                      }
-                    }}
-                  />
-                </div>
-              )}
-          
             </Grid>
+            {availableAsSaas === true && (
+            <>
+            <Divider className="mb-2" />
+              <Grid item md={12} sm={12} xs={12}>
+                <Alert severity='warning'>
+                  <AlertTitle> On adding a new cohort</AlertTitle>
+                  You are selecting a cohort that is available as saas, in order to add him/her to this cohort, you should select the plan that you want to add him to
+                </Alert>
+              </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Plan
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <AsyncAutocomplete
+                onChange={(newPlan) => {
+                  console.log("NEWCOHORT", newPlan);
+                  setSelectedPlans(newPlan);
+                }}
+                width="30%"
+                size="small"
+                label="Select a plan"
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.id === value.id}  
+                getOptionLabel={(option) => `${option.slug}`}
+                multiple={true}
+                asyncSearch={() => {
+                  const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
+                  console.log("selectedCohortSlug", selectedCohortSlug)  
+                  console.log("cohort", cohort)
+                  if (selectedCohortSlug) {
+                    return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
+                      .then((response) => {
+                        console.log("Plans:", response.data);
+                        return response.data
+                      })
+                      .catch((error) => {
+                        console.error("Error fetching plans:", error);
+                        return [];
+                      });
+                  } else {
+                    return [];
+                  }
+                }}
+              />
+            </Grid>
+            </>
+            )}
           </Grid>
           <div className="mt-6">
             <Button color="primary" variant="contained" type="submit">
