@@ -15,7 +15,6 @@ const propTypes = {
 };
 
 export const ProfileForm = ({ initialValues }) => {
-  // console.log("initialValues", initialValues)
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
@@ -50,16 +49,13 @@ export const ProfileForm = ({ initialValues }) => {
       .then((data) => {
         console.log("addAcademyStudent", data, data.ok)
         if (data !== undefined && data.ok) {
-          // Obtener el ID del usuario recién creado
-          const userId = data?.id; // Verifica dónde se encuentra el ID en la respuesta
-          console.log("ID del estudiante", userId)
-          if (availableAsSaas && selectedPlans.length > 0 && userId) {
-            console.log("initial_values", initialValues);
-            const planSlug = selectedPlans[0]?.slug;
+          const userId = data.data?.id;
+          if (availableAsSaas && selectedPlans?.slug) {
+            const planSlug = selectedPlans?.slug;
             const payload = {
               provided_payment_details: "Added on admin",
               reference: "Added on admin",
-              user: userId, // Utiliza el ID obtenido
+              user: userId,
               payment_method: 5,
             };
             bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
@@ -74,7 +70,6 @@ export const ProfileForm = ({ initialValues }) => {
         }
       })
       .catch((error) => console.error(error));
-      // console.log("*******", availableAsSaas, selectedPlans)
     }
   };
   
@@ -84,7 +79,6 @@ export const ProfileForm = ({ initialValues }) => {
     
       initialValues={initialValues}
       onSubmit={(values) => {
-        // console.log("values", values)
         if (!selectedPlans || selectedPlans.lenght === 0){
           console.error("You must select at leats one plan before submitting")
           toast.error("You must select at leats one plan before submitting")
@@ -109,7 +103,6 @@ export const ProfileForm = ({ initialValues }) => {
       
       {({ values, errors, touched, handleChange, handleSubmit }) => (
         <form className="p-4" onSubmit={handleSubmit}>
-          {/* {console.log("values", values)} */}
           <ToastContainer/>
           <Grid container spacing={3} alignItems="center">
             <Grid item md={1} sm={4} xs={12}>
@@ -188,7 +181,6 @@ export const ProfileForm = ({ initialValues }) => {
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
                 onChange={(newCohort) => {
-                  // console.log("NEWCOHORT", newCohort);
                   setCohort(newCohort)            
                   const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
                   setAvailableAsSaas(isAvailableAsSaas)
@@ -208,8 +200,6 @@ export const ProfileForm = ({ initialValues }) => {
                 asyncSearch={() => axios.get(`${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort?stage=PREWORK,STARTED,ACTIVE`)}
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
-
-              {/* {console.log("values", values)} */}
             </Grid>
             {availableAsSaas === true && (
             <>
@@ -226,7 +216,6 @@ export const ProfileForm = ({ initialValues }) => {
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
                 onChange={(newPlan) => {
-                  // console.log("NEWCOHORT", newPlan);
                   setSelectedPlans(newPlan);
                 }}
                 width="30%"
@@ -238,8 +227,6 @@ export const ProfileForm = ({ initialValues }) => {
                 multiple={false}
                 asyncSearch={() => {
                   const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
-                  // console.log("selectedCohortSlug", selectedCohortSlug)  
-                  // console.log("cohort", cohort)
                   if (selectedCohortSlug) {
                     return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
                       .then((response) => {
