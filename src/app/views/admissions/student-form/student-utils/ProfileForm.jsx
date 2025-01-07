@@ -79,7 +79,7 @@ export const ProfileForm = ({ initialValues }) => {
     
       initialValues={initialValues}
       onSubmit={(values) => {
-        if (!selectedPlans || selectedPlans.lenght === 0){
+        if (!selectedPlans || selectedPlans.length === 0){
           console.error("You must select at leats one plan before submitting")
           toast.error("You must select at leats one plan before submitting")
           return;
@@ -228,7 +228,7 @@ export const ProfileForm = ({ initialValues }) => {
                 asyncSearch={() => {
                   const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
                   if (selectedCohortSlug) {
-                    return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${selectedCohortSlug}`)
+                    return bc.payments().getPlanByCohort(selectedCohortSlug)
                       .then((response) => {
                         console.log("Plans:", response.data);
                         return response.data

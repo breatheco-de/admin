@@ -1189,8 +1189,10 @@ class BreatheCodeClient {
           "Academy Plan Subscription",
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
           payload
-        ), 
-    }
+        ),
+      getPlanByCohort: (cohortSlug) =>
+        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
+    };
   }
 
   getItem(key) {
