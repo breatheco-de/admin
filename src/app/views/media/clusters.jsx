@@ -126,23 +126,23 @@ const UserList3 = () => {
         fetchClusters();
     }, [rowsPerPage, page, selectedLangs]);
 
-    const renderClusters = (clusters) => {
-        if (!clusters?.results)
-            return null
-        return clusters.results.map((cluster) =>{
-            return(
-                <Grid key={cluster.id} item sm={12} xs={12}>
-                    <ClusterCard 
-                        cluster={cluster}
-                        onSubmit={async (_cluster) =>{
-                            const resp = await bc.registry().updateCluster(cluster.slug, _cluster);
-                            return resp.status === 200 ? resp.data : false
-                        }}
-                        />
-                </Grid>
-            )
-        })
-    }
+    // const renderClusters = (clusters) => {
+    //     if (!clusters?.results)
+    //         return null
+    //     return clusters.results.map((cluster) =>{
+    //         return(
+    //             <Grid key={cluster.id} item sm={12} xs={12}>
+    //                 <ClusterCard 
+    //                     cluster={cluster}
+    //                     onSubmit={async (_cluster) =>{
+    //                         const resp = await bc.registry().updateCluster(cluster.slug, _cluster);
+    //                         return resp.status === 200 ? resp.data : false
+    //                     }}
+    //                     />
+    //             </Grid>
+    //         )
+    //     })
+    // }
 
     return (
         <div className="m-sm-30">
@@ -210,7 +210,19 @@ const UserList3 = () => {
                                 }}
                             />
                         )}
-                        {renderClusters(clusters)}
+                        {clusters?.results?.map((cluster) => {
+                            return(
+                                <Grid key={cluster.id} item sm={12} xs={12}>
+                                    <ClusterCard 
+                                        cluster={cluster}
+                                        onSubmit={async (_cluster) =>{
+                                            const resp = await bc.registry().updateCluster(cluster.slug, _cluster);
+                                            return resp.status === 200 ? resp.data : false
+                                        }}
+                                        />
+                                </Grid>
+                            )
+                        })}
                     </Grid>
                     </Grid>
                     <div className="mt-4">
