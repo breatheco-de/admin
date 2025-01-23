@@ -89,6 +89,16 @@ const Assets = () => {
   //   window.history.pushState({}, '', url); // Update the URL without reloading the page
   // };
 
+  useEffect(() => {
+    let slugs = query.get("categorys");
+    if (slugs) {
+      const categorySlugs = slugs.split(",").map((c) => {
+        return { slug: c };
+      });
+      setCategorys(categorySlugs);
+    }
+  }, [query]);
+
   const columns = [
     {
       name: "title", // field name in the row object
@@ -222,8 +232,55 @@ const Assets = () => {
       },
     },
     {
-      name: "sync_status",
-      label: "Sync Status",
+      name: "category",
+      label: "Category",
+      options: {
+        filter: true,
+        filterType: "custom",
+        filterList:
+          query.get("categorys") !== null ? [query.get("categorys")] : [],
+        display: false,
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div style={{ width: "180px" }}>
+                <AsyncAutocomplete
+                  onChange={(newCategorys) => {
+                    setCategorys(newCategorys);
+                    const slugs = newCategorys.map((i) => i.slug).join(",");
+                    if (slugs !== '') filterList[index][0] = slugs;
+                    else filterList[index] = []
+                    onChange(filterList[index], index, column);
+                  }}
+                  value={categorys}
+                  size="small"
+                  label="Category"
+                  debounced
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  getOptionLabel={(option) => `${option.title}`}
+                  multiple={true}
+                  asyncSearch={async (searchTerm) =>
+                    await axios.get(
+                      `${config.REACT_APP_API_HOST}/v1/registry/academy/category?like=${searchTerm}`
+                    )
+                  }
+                />
+              </div>
+            );
+          },
+        },
+        customBodyRenderLite: (dataIndex) => (
+          <span className="ellipsis">
+            {assetList[dataIndex].category ? assetList[dataIndex].category.slug : "---"}
+          </span>
+        ),
+      },
+    },
+    {
+      name: 'sync_status',
+      label: 'Sync Status',
       options: {
         filter: true,
         filterList:
