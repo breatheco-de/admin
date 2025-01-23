@@ -7,10 +7,24 @@ import {
   IconButton,
   Button,
   Tooltip,
+  Grid,
+  DialogTitle,
+  Dialog,
+  TextField,
+  DialogActions,
+  DialogContent,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import bc from 'app/services/breathecode';
+import { toast } from 'react-toastify';
+import { openDialog } from 'app/redux/actions/DialogActions';
+
+toast.configure();
+const toastOption = {
+  position: toast.POSITION.BOTTOM_RIGHT,
+  autoClose: 8000,
+};
 
 const relativeTime = require('dayjs/plugin/relativeTime');
 
@@ -26,6 +40,7 @@ const roleColors = {
 
 const Syllabus = () => {
   const [list, setList] = useState([]);
+  const [exportDialog, setExportDialog] = useState(false);
 
   const columns = [
     {
@@ -112,6 +127,11 @@ const Syllabus = () => {
           return (
             <div className="flex items-center">
               <div className="flex-grow" />
+                <Tooltip title="Download Syllabus">
+                  <IconButton onClick={() => setExportDialog({ item, class_days_per_week: 3 })}>
+                  <Icon>download</Icon>
+                </IconButton>
+              </Tooltip>
               <Link to={`/admissions/syllabus/${item.slug}`}>
                 <Tooltip title="Edit">
                   <IconButton>
@@ -125,6 +145,29 @@ const Syllabus = () => {
       },
     },
   ];
+
+  const downloadSyllabus = async (_export) => {
+
+      const { data } = await bc.admissions().getSyllabusVersionCSV(_export.item.slug, 'latest', { class_days_per_week: _export.class_days_per_week });
+      console.log("csv", data);
+      // Create a new Blob object from the response data
+      const blob = new Blob([data], { type: 'text/csv' });
+  
+      // Create a URL for the Blob and create an anchor to download it
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${_export.item.slug}_export.csv`; // Set the desired file name
+  
+      // Append the anchor to the DOM and trigger the click to start the download
+      document.body.appendChild(a);
+      a.click();
+      // Clean up by revoking the Object URL and removing the anchor from the DOM
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      return true
+  }
 
   return (
     <div className="m-sm-30">
@@ -166,6 +209,57 @@ const Syllabus = () => {
           />
         </div>
       </div>
+      <Dialog
+        open={exportDialog}
+        onClose={() => setExportDialog(false)}
+        aria-labelledby="form-dialog-title"
+        fullWidth
+      >
+        <form className="p-4">
+          <DialogTitle id="form-dialog-title">Download Syllabus as CSV</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item md={12} sm={12} xs={10}>
+                <TextField
+                  label="How many classes per week?"
+                  name="class_days_per_week"
+                  type="number"
+                  size="medium"
+                  fullWidth
+                  variant="outlined"
+                  onChange={(e) => {
+                    setExportDialog({ ...exportDialog, class_days_per_week: e.target.value });
+                  }}
+                  value={exportDialog.class_days_per_week}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <Grid className="p-2">
+            <DialogActions>
+              <Button
+                className="bg-primary text-white"
+                onClick={() => {
+                  downloadSyllabus(exportDialog)
+                    .then(() => {
+                      toast.success('Download Started Successfully', toastOption);
+                    })
+                    .catch((error) => {
+                      console.error('There was an error downloading the CSV!', error);
+                      toast.error('There was an error downloading the CSV!');
+                    });
+                }}
+                autoFocus
+              >
+                Download
+              </Button>
+              <Button color="danger" variant="contained" onClick={() => setExportDialog(false)}>
+                Close
+              </Button>
+            </DialogActions>
+          </Grid>
+        </form>
+      </Dialog>
     </div>
   );
 };

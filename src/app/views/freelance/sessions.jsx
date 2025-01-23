@@ -9,7 +9,7 @@ import {
   TextField,
  } from '@material-ui/core';
 import SessionDetails from './session-details/SessionDetails'
-import SessionNotes from './session-details/SessionNotes'
+import { SessionNotes } from './session-details/SessionNotes'
 import SessionBill from './session-details/SessionBill'
 import AddServiceInBulk from './mentor-form/mentor-utils/AddServiceInBulk';
 import dayjs from "dayjs";

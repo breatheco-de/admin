@@ -32,9 +32,14 @@ const routes = [
     component: React.lazy(() => import('./media_calendar')),
   },
   {
-    path: '/media/article_issues',
+    path: '/media/article_comments',
     exact: true,
-    component: React.lazy(() => import('./article_issues')),
+    component: React.lazy(() => import('./article_comments')),
+  },
+  {
+    path: '/media/article_errors',
+    exact: true,
+    component: React.lazy(() => import('./article_errors')),
   },
   {
     path: '/media/seo/cluster',

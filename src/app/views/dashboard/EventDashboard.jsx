@@ -187,7 +187,7 @@ const EventDashboard = ({ match }) => {
               </DialogTitle>
               <DialogContent>
                 <AsyncAutocomplete
-                  defaultValue={eventData.event_type.name}
+                  defaultValue={eventData.event_type?.name}
                   onChange={async (opt) => {
                     const result = await bc
                       .events()
@@ -198,9 +198,9 @@ const EventDashboard = ({ match }) => {
                   }}
                   width="100%"
                   label="Select Event Type"
-                  value={eventData.event_type.name}
+                  value={eventData.event_type?.name}
                   debounced={false}
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => option?.name}
                   asyncSearch={() => bc.events().getAcademyEventType()}
                 />
               </DialogContent>

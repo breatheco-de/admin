@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs';
+
 import { Tooltip, Icon } from '@material-ui/core'
 
 const duration = require('dayjs/plugin/duration');
@@ -44,7 +45,7 @@ const isMentorLate = (sess) => {
 
   let minutes = date2.diff(date1, 'minute');
 
-  let message = `Mentor Joined ${formatTime(minutes)} late`;
+  let message = `Mentor Joined ${formatTime(minutes)} after the student`;
 
   if (new Date(sess.mentor_joined_at) < new Date(sess.started_at) && minutes >= 4) return message;
   return null;
@@ -71,6 +72,11 @@ const SessionNotes = ({ session }) => {
           <Icon fontSize="small" className='red'>directions_run</Icon>
         </Tooltip> : ''
       }
+      {session.rating !== null && session.rating.score !== null ?
+        <Tooltip title={`Student rated with ${session.rating.score} out of 10 with the following comments: ${session.rating.comment}`}>
+          <Icon fontSize="small" className={session.rating.score >= 8 ? `green` : session.rating.score == 7 ? 'green' : 'red'}>filter_{session.rating.score < 10 ? session.rating.score : '9_plus'}</Icon>
+        </Tooltip> : ''
+      }
     </div>
   )
 }
@@ -79,4 +85,4 @@ SessionNotes.propTypes = {
   session: PropTypes.object
 }
 
-export default SessionNotes
+export { SessionNotes, hasExtraTime, isMentorLate }

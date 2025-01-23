@@ -19,17 +19,19 @@ const SessionDetails = ({ session }) => {
     let now = dayjs.utc();
     // now.format();
     // now.local().format();
-    let daysAgo = dayjs(session?.started_at).from(now);
-
+    let startDate = session?.starts_at || null;
+    let joiningDate = session?.started_at || session?.mentor_joined_at;
+    let daysAgo = dayjs(startDate || joiningDate).from(now);
 
     return (
         <div>
             <p className='no-margin'>
-                {dayjs(session?.started_at).format('lll')} with <strong>
+                {startDate ? dayjs(startDate).format('lll') : joiningDate ? dayjs(joiningDate).format('lll') : 'Never started'} with <strong>
                     {session?.mentee?.first_name} {session?.mentee?.last_name}</strong>
             </p>
             <small>
-                {daysAgo}
+                {startDate || joiningDate && daysAgo}{' '}
+                {!joiningDate && <span className='red'>Neither the mentor or mentee every joined</span>}
             </small>
         </div>
     )

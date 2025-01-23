@@ -3,7 +3,7 @@
 ## If you use Windows install it
 
 ```bash
-npm install --g --production windows-build-tools
+npm install --g --production windows-build-tools --legacy-peer-deps
 ```
 
 ## Use Nodejs v12
@@ -18,7 +18,7 @@ npm install --g --production windows-build-tools
 6. Install the packages: `npm install --legacy-peer-deps`
 7. Start the development server: `npm run start`
 
-## Runing the tests
+## Running the tests
 
 This section is under development.
 

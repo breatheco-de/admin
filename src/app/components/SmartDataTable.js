@@ -19,12 +19,15 @@ const defaultToolbarSelectStyles = {
     },
 };
 
-const DefaultToobar = ({ children, ...props }) => (
+const DefaultToobar = ({ children, ...props }) => {
+    return (
     <div className={props.classes.iconContainer}>
         <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
-        {children}
-    </div>
-);
+        {React.Children.map(children, Child => 
+            <Child { ...props } />
+        )}
+    </div>)
+};
 
 const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
     name: "SmartMUIDataTable",
@@ -60,7 +63,6 @@ export const SmartMUIDataTable = (props) => {
     });
 
     if (!Array.isArray(props.items)) {
-        console.log("SmartMUIDataTable.props.items:", props.items);
         throw Error("Property items must be an array on SmartMUIDataTable");
     }
 
@@ -107,7 +109,7 @@ export const SmartMUIDataTable = (props) => {
     }, [isAlive]);
 
     const handlePageChange = (page, rowsPerPage, like, sort) => {
-        console.log("####### I excuted");
+
         setIsLoading(true);
         const { limit, offset, ...restParams } = getParams();
         delete restParams.sort;
@@ -175,6 +177,7 @@ export const SmartMUIDataTable = (props) => {
                     elevation: 0,
                     count: table.count,
                     page: table.page,
+                    search: props.search || true,
                     selectableRowsHeader: false,
                     rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
                     rowsPerPageOptions: [10, 20, 40, 80, 100],
@@ -371,5 +374,6 @@ SmartMUIDataTable.propTypes = {
 SmartMUIDataTable.defaultProps = {
     selectableRows: true,
     defaultLimit: 10,
-    downloadCsv: true
+    downloadCsv: true,
+    search: true
 };

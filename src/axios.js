@@ -66,7 +66,7 @@ function printAxiosResponse(object) {
         }
     }
 
-    console.log(...log);
+    //console.log(...log);
 }
 
 axiosInstance.interceptors.response.use(

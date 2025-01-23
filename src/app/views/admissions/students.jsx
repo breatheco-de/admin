@@ -173,7 +173,6 @@ const Students = () => {
                   onChange={(newCohort) => {
                     setCohorts(newCohort);
                     const slugs = newCohort.map((i) => i.slug).join(',');
-
                     if (slugs !== '') filterList[index][0] = slugs;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);

@@ -136,6 +136,12 @@ class BreatheCodeClient {
         ),
       getSyllabus: (query) =>
         axios.bcGet("Syllabus", `${this.host}/admissions/syllabus/${query}`),
+      getSyllabusVersionCSV: (syllabus_slug, version='latest', query) =>
+        axios.bcGet(
+          "Syllabus CSV", 
+          `${this.host}/admissions/syllabus/${syllabus_slug}/version/${version}.csv?${serializeQuerystring(query)}`,
+          { responseType: 'text' }
+        ),
       getAllCohorts: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
@@ -470,6 +476,12 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/automation${id ? `/${id}` : ""}`,
           automation
         ),
+      syncAcademyAutomations: (id) => {
+        return axios.bcGet(
+          "Sync academy automations",
+          `${this.host}/marketing/academy/${id}/automation/sync`
+        )
+      },
       getAcademyUtm: () =>
         axios.bcGet("Academy Utm", `${this.host}/marketing/academy/utm`),
       addNewLead: (newLead) =>
@@ -867,8 +879,53 @@ class BreatheCodeClient {
     return {
       get_bulk_upload: () =>
         axios.bcGet("Media", `${this.host}/monitoring/upload`),
+      getAllRepoSubscriptions: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet("Repo Subscription", `${this.host}/monitoring/reposubscription${query ? `?${qs}` : ""}`)
+      },
+      updateRepoSubscription: async (id, payload) => {
+        return await axios.bcPut("Repo Subscription", `${this.host}/monitoring/reposubscription/${id}`, payload)
+      },
+      createRepoSubscription: async (payload) => {
+        return await axios.bcPost("Repo Subscription", `${this.host}/monitoring/reposubscription`, payload)
+      }
     };
   }
+
+  assessment() {
+    return {
+      getAllAssessments: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Assessesment",
+          `${this.host}/assessment${query ? `?${qs}` : ""}`
+        );
+      },
+      getSingle: (assessment_slug) =>
+        axios.bcGet(
+          "Assessment",
+          `${this.host}/assessment/${assessment_slug}`
+        ),
+        updateSingle: async (assessment_slug, payload) => {
+          return await axios.bcPut(
+            "Assessment",
+            `${this.host}/assessment/${assessment_slug}`,
+            payload
+          );
+        },
+        deleteQuestion: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Question",
+            `${this.host}/assessment/${assessment_slug}/question/${payload.id}`);
+        },
+        deleteOption: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Option",
+            `${this.host}/assessment/${assessment_slug}/option/${payload.id}`);
+        },
+    };
+  }
+
   media() {
     return {
       upload: (payload) =>
@@ -894,6 +951,7 @@ class BreatheCodeClient {
         axios.bcPut("Media", `${this.host}/media/info`, payload),
     };
   }
+
 
   assignments() {
     return {
@@ -984,6 +1042,13 @@ class BreatheCodeClient {
         return axios.bcGet(
           "Keyword",
           `${this.host}/registry/academy/keyword${query ? `?${qs}` : ""}`
+        );
+      },
+      getAllAlias: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Keyword",
+          `${this.host}/registry/academy/asset/alias${query ? `?${qs}` : ""}`
         );
       },
       getAllClusters: async (query) => {
@@ -1102,6 +1167,11 @@ class BreatheCodeClient {
           "Comment",
           `${this.host}/registry/academy/asset/comment/${id}`
         ),
+      deleteAlias: async (id) =>
+        await axios.bcDelete(
+          "Alias",
+          `${this.host}/registry/academy/asset/alias/${id}`
+        ),
       getAssetPreview: async (slug, options) =>
         await axios.bcGet(
           "Asset",
@@ -1135,6 +1205,13 @@ class BreatheCodeClient {
           options
         );
       },
+      getAssetSuperseders: async (slug, query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset",
+          `${this.host}/registry/asset/${slug}/supersedes${query ? `?${qs}` : ""}`
+        );
+      },
       getCluster: async (associatedSlug, options) =>
         await axios.bcGet(
           "Asset",
@@ -1157,6 +1234,27 @@ class BreatheCodeClient {
           `${this.host}/registry/academy/asset/comment?${qs}`
         );
       },
+      getAssetErrors: async (query) => {
+        if (!query.sort) query.sort = "-created_at";
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?${qs}`
+        );
+      },
+      deleteAssetErrorBulk: (query) => {
+        const qs = query.join(",");
+        return axios.bcDelete(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?id=${qs}`
+        );
+      },
+      updateAssetError: async (slug, payload) =>
+        await axios.bcPut(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error${slug ? `/${slug}` : ""}`,
+          payload
+        ),
     };
   }
 

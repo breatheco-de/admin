@@ -13,7 +13,9 @@
 .d-block {
   display: block !important;
 }
-
+.d-flex {
+  display: flex !important;
+}
 .cut-text {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -25,7 +27,9 @@
   overflow:inherit;
   width: auto !important;
 }
-
+.strong{
+  font-weight: bold;
+}
 .MuiTableCell-root {
   word-break: unset !important;
 }
@@ -53,11 +57,11 @@
 }
 
 .red, .text-danger {
-  color: red;
+  color: red !important;
 }
 
 .green {
-  color: green;
+  color: green !important;
 }
 
 .yellow {
@@ -67,8 +71,21 @@
 .orange {
   background-color: rgb(255, 153, 0);
 }
-.bg-danger {
-  background-color: rgb(241, 71, 71);
+.bg-danger, .bg-red {
+  background-color: rgb(241, 71, 71) !important;
+  color: white;
+}
+.bg-danger-light, .bg-red-light, .bg-error-light {
+  background-color: #e3bcbc !important;
+  color: black;
+}
+.bg-success, .bg-green {
+  background-color: rgb(0, 124, 2) !important;
+  color: white;
+}
+.bg-warning, .bg-orange {
+  background-color: rgb(184, 123, 0) !important;
+  color: white;
 }
 .text-warning{
   color: rgb(255, 153, 0);
@@ -76,8 +93,14 @@
 .p-inherit{
   position: inherit !important;
 }
+.bg-light{
+  background: rgb(255, 251, 247) !important;
+}
 .bg-light-warning{
   background: rgb(253, 245, 234) !important;
+}
+.no-decoration {
+  text-decoration: none !important;
 }
 .text-light-success {
   color: #64c88f !important; }
