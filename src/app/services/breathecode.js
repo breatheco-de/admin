@@ -268,7 +268,7 @@ class BreatheCodeClient {
           "Academy student",
           `${this.host}/auth/academy/student`,
           payload
-        ),
+        ), 
       getAcademyMembers: async (query) => {
         const qs = serializeQuerystring(query);
         return await axios.bcGet(
@@ -1277,6 +1277,19 @@ class BreatheCodeClient {
         ),
       getActivityTypes: () =>
         axios.bcGet("Cohort Activity Type", `${this.host}/activity/type`),
+    };
+  }
+
+  payments() {
+    return {
+      addAcademyPlanSlugSubscription: (planSlug, payload) =>
+        axios.bcPost(
+          "Academy Plan Subscription",
+          `${this.host}/payments/academy/plan/${planSlug}/subscription`,
+          payload
+        ),
+      getPlanByCohort: (cohortSlug) =>
+        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
     };
   }
 

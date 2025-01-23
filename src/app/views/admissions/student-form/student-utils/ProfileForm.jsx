@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, Divider } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import bc from '../../../../services/breathecode';
@@ -8,6 +8,7 @@ import axios from '../../../../../axios';
 import { AsyncAutocomplete } from '../../../../components/Autocomplete';
 import { ToastContainer, toast, Zoom, Bounce } from 'react-toastify';
 import config from '../../../../../config.js';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
@@ -16,14 +17,15 @@ const propTypes = {
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
+  const [availableAsSaas, setAvailableAsSaas] = useState(false)
+  const [selectedPlans, setSelectedPlans] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
-
     let cohortId = cohort.map(c => {
       return c.id 
     });
-
+    
     let requestValues = { ...values, 
       cohort: cohort.length > 0 ? cohortId : undefined 
     };
@@ -47,12 +49,28 @@ export const ProfileForm = ({ initialValues }) => {
       .then((data) => {
         console.log("addAcademyStudent", data, data.ok)
         if (data !== undefined && data.ok) {
-           history.push('/admissions/students');
+          const userId = data.data?.id;
+          if (availableAsSaas && selectedPlans?.slug) {
+            const planSlug = selectedPlans?.slug;
+            const payload = {
+              provided_payment_details: "Added on admin",
+              reference: "Added on admin",
+              user: userId,
+              payment_method: 5,
+            };
+            bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
+            .then((response) => {
+              console.log("Subscription created", response.data);
+            })
+            .catch((error) => {
+              console.error("Error creating subscription", error);
+            });
+          }
+          history.push('/admissions/students');
         }
       })
       .catch((error) => console.error(error));
     }
-    
   };
   
   return (
@@ -60,15 +78,25 @@ export const ProfileForm = ({ initialValues }) => {
     <Formik
     
       initialValues={initialValues}
-      onSubmit={(values) => postAcademyStudentProfile(values)}
+      onSubmit={(values) => {
+        if (!selectedPlans || selectedPlans.length === 0){
+          console.error("You must select at leats one plan before submitting")
+          toast.error("You must select at leats one plan before submitting")
+          return;
+        }
+        if (selectedPlans.lenght > 1){
+          console.error("You can only select one plan")
+          toast.error("You can only select one plan")
+          return;
+        }
+        postAcademyStudentProfile(values)}
+      } 
       enableReinitialize
       validate={(values)=>{
         let errors = {}
-
         if (cohort.length === 0) {
           errors.cohort = 'You must select at least one cohort'
         }
-
         return errors
       }}
     >
@@ -152,7 +180,12 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                onChange={(newCohort) => setCohort(newCohort)}
+                onChange={(newCohort) => {
+                  setCohort(newCohort)            
+                  const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
+                  setAvailableAsSaas(isAvailableAsSaas)
+                }}
+                
                 // name="cohort"
                 error={errors.cohort && touched.cohort}
                 helperText={touched.cohort && errors.cohort}
@@ -168,6 +201,50 @@ export const ProfileForm = ({ initialValues }) => {
               />
               <small>Only cohorts with stage PREWORK or STARTED will be shown here</small>
             </Grid>
+            {availableAsSaas === true && (
+            <>
+            <Divider className="mb-2" />
+              <Grid item md={12} sm={12} xs={12}>
+                <Alert severity='warning'>
+                  <AlertTitle> On adding a new cohort</AlertTitle>
+                  You are selecting a cohort that is available as saas, in order to add him/her to this cohort, you should select the plan that you want to add him to
+                </Alert>
+              </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Plan
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <AsyncAutocomplete
+                onChange={(newPlan) => {
+                  setSelectedPlans(newPlan);
+                }}
+                width="30%"
+                size="small"
+                label="Select a plan"
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.id === value.id}  
+                getOptionLabel={(option) => `${option.slug}`}
+                multiple={false}
+                asyncSearch={() => {
+                  const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
+                  if (selectedCohortSlug) {
+                    return bc.payments().getPlanByCohort(selectedCohortSlug)
+                      .then((response) => {
+                        console.log("Plans:", response.data);
+                        return response.data
+                      })
+                      .catch((error) => {
+                        console.error("Error fetching plans:", error);
+                        return [];
+                      });
+                  } else {
+                    return [];
+                  }
+                }}
+              />
+            </Grid>
+            </>
+            )}
           </Grid>
           <div className="mt-6">
             <Button color="primary" variant="contained" type="submit">

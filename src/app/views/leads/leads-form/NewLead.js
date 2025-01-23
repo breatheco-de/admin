@@ -137,7 +137,6 @@ const NewLead = () => {
       bc.marketing().getAcademySingleLead(id)
         .then(({ data }) => {
           if (!availableCourses || availableCourses.length === 0){
-            console.error("AvailableCourses is empty")
             return
           }
 
