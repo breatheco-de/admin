@@ -1288,8 +1288,10 @@ class BreatheCodeClient {
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
           payload
         ),
-      getPlanByCohort: (cohortSlug) =>
-        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
+      getPlan: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
+      }
     };
   }
 

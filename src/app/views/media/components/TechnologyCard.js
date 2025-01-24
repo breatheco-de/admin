@@ -6,6 +6,8 @@ import {
     Chip,
     TextField,
     Divider,
+    IconButton, 
+    Icon
 } from "@material-ui/core";
 import Field from '../../../components/Field';
 import { GoogleIcon } from "matx";
@@ -26,13 +28,24 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
     },
 }));
 
+const parseDescription = (description) => {
+    try{
+        return JSON.parse(description || null) ||  { "us": description || "", "es": "" }
+    }
+    catch{
+        return description
+    }
+}
+
 const TechnologyCard = ({ technology, onRefresh }) => {
     const classes = useStyles();
     const [ edit, setEdit ] = useState(false)
+    const [ priority, setPriority ] = useState(technology.sort_priority)
     const [ lessons, setLessons ] = useState(false) // opens list of lessons
     const [ assetSlug, setAssetSlug ] = useState(null) //opens modal for asset
     const [ addAlias, setAddAlias ] = useState(false)
-    const [ descriptions, setDescriptions ] = useState(JSON.parse(technology.description || null) ||  { "us": technology.description || "", "es": "" })
+
+    const [ descriptions, setDescriptions ] = useState(parseDescription(technology.description))
 
     const handleAddAlias = async (techs) => {
         console.log("handleAddAlias", techs)
@@ -62,6 +75,22 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                                 <p className="mb-0 mt-2 text-muted font-normal">
                                     {technology.slug?.toLowerCase()}
                                 </p>
+                                <div className="mb-0 mt-2 text-muted font-normal flex">
+                                    Priority: 
+                                    <TextField
+                                        type="number"
+                                        value={priority}
+                                        onChange={(e) => 
+                                            bc.registry().updateTechnology(technology.slug, { sort_priority: e.target.value })
+                                                .then(resp => {
+                                                    resp.status == 200 &&
+                                                    setPriority(resp.data.sort_priority || e.target.value)
+                                                })
+                                        }
+                                        size="small"
+                                        variant="outlined"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </Grid>
@@ -74,8 +103,16 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                         </Grid>
                         : 
                         <Grid item sm={8} xs={12}>
-                            <strong className="m-0">Alias</strong><p className="mb-0 mt-2 text-muted font-normal capitalize">
-                                {technology.alias.map(a => <Chip key={a} size="small" label={a} className="mr-1 mb-1" /> )}
+                            <strong className="m-0">Alias (or children)</strong><p className="mb-0 mt-2 text-muted font-normal capitalize">
+                                {technology.alias.map(a => (
+                                    <Chip 
+                                        key={a} 
+                                        size="small" 
+                                        label={a} 
+                                        className="mr-1 mb-1" 
+                                        onDelete={() => bc.registry().updateTechnology(a, { parent: null }).then(() => onRefresh())}
+                                    />
+                                ))}
                                 <Chip size="small" className="pointer" icon={<Add onClick={() => setAddAlias(technology.alias)} />} />
                             </p>
                         </Grid>
@@ -95,7 +132,7 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                 {Object.keys(descriptions).map(lang => 
                     <Grid key={lang} container className="mt-2">
                         <TextField
-                            label={`Language: ${lang}`}
+                            label={`Description in: ${lang}`}
                             value={descriptions[lang]}
                             multiline
                             fullWidth={true}
@@ -117,7 +154,7 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                             onClick={() => setEdit(true)}
                             className="bg-light-primary hover-bg-primary text-primary px-5 mr-1"
                         >
-                            Edit Technology
+                            Edit Descriptions
                         </Button>
                         :
                         <>
@@ -145,7 +182,7 @@ const TechnologyCard = ({ technology, onRefresh }) => {
                             }}
                             className="bg-light-primary hover-bg-primary text-primary px-5 mr-1"
                         >
-                            Lessons
+                            Associated Lessons
                         </Button>
                         :
                         <Button
