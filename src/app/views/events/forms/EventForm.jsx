@@ -364,7 +364,6 @@ const EventForm = () => {
                     value={values.recording_url}
                     onChange={handleChange}
                   />
-                  <small className="text-muted">Enter the URL for the event recording, if applicable</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Ending At
