@@ -39,7 +39,8 @@ const EventForm = () => {
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
     free_for_all: false,
-    is_public: true
+    is_public: true, 
+    recording_url: ''
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
@@ -348,6 +349,21 @@ const EventForm = () => {
                     }}
                   />
                   <small className="text-muted">{`The event timezone will be the same as the academy timezone ${user?.academy.timezone}`}</small>
+                </Grid>
+                <Grid item md={1} sm={4} xs={12}>
+                  Recording URL
+                </Grid>
+                <Grid item md={3} sm={8} xs={12}>
+                  <TextField
+                    label="Recording URL"
+                    name="recording_url"
+                    size="small"
+                    type="url"
+                    fullWidth
+                    variant="outlined"
+                    value={values.recording_url}
+                    onChange={handleChange}
+                  />
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   Ending At
