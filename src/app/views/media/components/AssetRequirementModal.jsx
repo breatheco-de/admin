@@ -47,7 +47,7 @@ export const AssetRequirementModal = ({
             onChange={(e) => setFormData({ ...formData, asset_type: e.target.value })}
             select
           >
-            {['LESSON', 'EXERCISE', 'PROJECT', 'ARTICLE', 'QUIZ', 'VIDEO'].map((item) => (
+            {['LESSON', 'EXERCISE', 'PROJECT', 'ARTICLE', 'QUIZ', 'VIDEO', 'STARTER'].map((item) => (
               <MenuItem value={item} key={item}>
                 {item.toUpperCase().replace('_', ' ')}
               </MenuItem>
