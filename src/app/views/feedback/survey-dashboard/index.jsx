@@ -92,13 +92,13 @@ const Survey = ({ match }) => {
             <Alert severity="warning" className="mb-3">
               <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
             </Alert>
-            <GaugeProgressCard score={survey.scores?.total || overallScore} />
+            <GaugeProgressCard score={survey.scores?.total ? parseFloat(survey.scores?.total.toFixed(1)) : overallScore} />
             <Grid container spacing={2}>
               <Grid item sm={6} xs={12}>
-                <StatCard label={'Cohort Score'} score={survey.scores?.cohort || avgCohortScore} />
+                <StatCard label={'Cohort Score'} score={survey.scores?.cohort ? parseFloat(survey.scores?.cohort.toFixed(1)) : avgCohortScore} />
               </Grid>
               <Grid item sm={6} xs={12}>
-                <StatCard label={'Academy Score'} score={survey.scores?.academy || avgAcademyScore} />
+                <StatCard label={'Academy Score'} score={survey.scores?.academy ? parseFloat(survey.scores?.academy.toFixed(1)) : avgAcademyScore} />
               </Grid>
               {surveyMentors.map((m) => (
                 <Grid key={m.name} item sm={6} xs={12}>
