@@ -24,7 +24,10 @@ This section is under development.
 
 ## For environments problems
 
-1. When your environment variable has problems. You can use this command: `source .env`
+1. When your environment variable has problems. You can use this commands:
+   a. `source .env`
+   b. `echo $REACT_APP_API_HOST`
+   c. `npm run start`
 
 ## for nvm problems
 
