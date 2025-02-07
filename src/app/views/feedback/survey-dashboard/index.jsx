@@ -87,8 +87,9 @@ const Survey = ({ match }) => {
           </Button>
         </DowndownMenu>
       </div>
-        {answered && answered.length > 0 ? (
+        {/* {(answered && answered.length > 0 && !survey.scores) || (survey.scores && !answered?.length) || (answered?.length > 0 && survey?.scores) ? ( */}
           <Grid container spacing={2}>
+            {console.log("anwered", answered, answers)}
           {console.log("cohort",survey.scores?.cohort, "cohortType", typeof survey.scores?.cohort)};
             {console.log("avg", avgCohortScore, "avgType", typeof avgCohortScore)}
             {console.log("overallScore", overallScore, "overallScore", typeof overallScore)}
@@ -96,26 +97,29 @@ const Survey = ({ match }) => {
               <Alert severity="warning" className="mb-3">
                 <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
               </Alert>
-              <GaugeProgressCard label={survey.scores?.total ? 'Total Score' : 'No score yet'} score={survey.scores?.total && Number(survey.scores?.total.toFixed(1))} />
+              <GaugeProgressCard label={survey.scores?.total ? 'Total Score' : 'No score yet'} score={survey.scores?.total ? Number(survey.scores?.total.toFixed(1)) : 0} />
               <Grid container spacing={2}>
                 <Grid item sm={6} xs={12}>
-                  <StatCard label={survey.scores?.cohort ? 'Cohort Score' : 'No score yet'} score={survey.scores?.cohort && Number(survey.scores?.cohort.toFixed(1))} />
+                  <StatCard label={survey.scores?.cohort ? 'Cohort Score' : 'No cohort score yet'} score={survey.scores?.cohort ? Number(survey.scores?.cohort.toFixed(1)) : 0} />
                 </Grid>
                 <Grid item sm={6} xs={12}>
-                  <StatCard label={survey.scores?.academy ? 'Academy Score' : 'No score yet'} score={survey.scores?.academy && Number(survey.scores?.academy.toFixed(1))} />
+                  <StatCard label={survey.scores?.academy ? 'Academy Score' : 'No academy score yet'} score={survey.scores?.academy ? Number(survey.scores?.academy.toFixed(1)) : 0} />
                 </Grid>
-                {surveyMentors.map((m) => (
+                {surveyMentors && surveyMentors?.length > 0 && surveyMentors.map((m) => (
                   <Grid key={m.name} item sm={6} xs={12}>
                     <StatCard label={m.name} score={m.score.toFixed(1)} />
                   </Grid>
                 ))}
               </Grid>
             </Grid>
-            <Grid item md={8} xs={12}>
-              <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
-            </Grid>
+            {answered && answered?.length > 0 && (
+              <Grid item md={8} xs={12}>
+                <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
+              </Grid>
+            )}
           </Grid>
-        ) : (
+        {/* )  */}
+        {/* : (
           <Grid container spacing={2}>
           <Grid item md={4} xs={12}>
             <Alert severity="warning" className="mb-3">
@@ -144,7 +148,7 @@ const Survey = ({ match }) => {
             mentors={mentors}/>
           </Grid>
           </Grid>
-        )}
+        )} */}
       </>
       }
       <CopyDialog
