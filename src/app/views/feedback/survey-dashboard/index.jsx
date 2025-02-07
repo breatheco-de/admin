@@ -87,12 +87,7 @@ const Survey = ({ match }) => {
           </Button>
         </DowndownMenu>
       </div>
-        {/* {(answered && answered.length > 0 && !survey.scores) || (survey.scores && !answered?.length) || (answered?.length > 0 && survey?.scores) ? ( */}
           <Grid container spacing={2}>
-            {console.log("anwered", answered, answers)}
-          {console.log("cohort",survey.scores?.cohort, "cohortType", typeof survey.scores?.cohort)};
-            {console.log("avg", avgCohortScore, "avgType", typeof avgCohortScore)}
-            {console.log("overallScore", overallScore, "overallScore", typeof overallScore)}
             <Grid item md={4} xs={12}>
               <Alert severity="warning" className="mb-3">
                 <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
@@ -118,37 +113,6 @@ const Survey = ({ match }) => {
               </Grid>
             )}
           </Grid>
-        {/* )  */}
-        {/* : (
-          <Grid container spacing={2}>
-          <Grid item md={4} xs={12}>
-            <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expired ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
-            </Alert>
-            <GaugeProgressCard score={0} />
-            <Grid container spacing={2}>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'No score yet'} score={0} />
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'No score yet'} score={0} />
-              </Grid>
-              {mentors.map((m) => (
-                <Grid key={m.name} item sm={6} xs={12}>
-                  <StatCard label={'No score yet'} score={0} />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          <Grid item md={8} xs={12}>
-            <Answers 
-            answered={answered} 
-            filteredAnswers={filteredAnswers} 
-            sortBy={sortBy} filter={filter} 
-            mentors={mentors}/>
-          </Grid>
-          </Grid>
-        )} */}
       </>
       }
       <CopyDialog
