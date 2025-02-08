@@ -79,15 +79,17 @@ export const ProfileForm = ({ initialValues }) => {
     
       initialValues={initialValues}
       onSubmit={(values) => {
-        if (!selectedPlans || selectedPlans.length === 0){
-          console.error("You must select at leats one plan before submitting")
-          toast.error("You must select at leats one plan before submitting")
-          return;
-        }
-        if (selectedPlans.lenght > 1){
-          console.error("You can only select one plan")
-          toast.error("You can only select one plan")
-          return;
+        if (availableAsSaas ){
+          if ( !selectedPlans || selectedPlans.length === 0){
+            console.error("You must select at leats one plan before submitting")
+            toast.error("You must select at leats one plan before submitting")
+            return;
+          }
+          if (selectedPlans.lenght > 1){
+            console.error("You can only select one plan")
+            toast.error("You can only select one plan")
+            return;
+          }
         }
         postAcademyStudentProfile(values)}
       } 
@@ -97,6 +99,7 @@ export const ProfileForm = ({ initialValues }) => {
         if (cohort.length === 0) {
           errors.cohort = 'You must select at least one cohort'
         }
+        console.log("Validation Errors:", errors);
         return errors
       }}
     >
@@ -181,6 +184,8 @@ export const ProfileForm = ({ initialValues }) => {
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
                 onChange={(newCohort) => {
+                  console.log("NewCohort AVAILABLE_AS_SAAS", newCohort[0]?.available_as_saas);
+                  console.log("NewCohort", newCohort)
                   setCohort(newCohort)            
                   const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
                   setAvailableAsSaas(isAvailableAsSaas)
@@ -243,6 +248,71 @@ export const ProfileForm = ({ initialValues }) => {
                 }}
               />
             </Grid>
+            {selectedPlans && (
+              <>
+            <Grid item md={2} sm={4} xs={12}>
+              Payments
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <AsyncAutocomplete
+                onChange={(newPlan) => {
+                  setSelectedPlans(newPlan);
+                }}
+                width="30%"
+                size="small"
+                label="Select a plan"
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.id === value.id}  
+                getOptionLabel={(option) => `${option.slug}`}
+                multiple={false}
+                asyncSearch={() => {
+                  const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
+                  if (selectedCohortSlug) {
+                    return bc.payments().getPlanByCohort(selectedCohortSlug)
+                      .then((response) => {
+                        console.log("Plans:", response.data);
+                        return response.data
+                      })
+                      .catch((error) => {
+                        console.error("Error fetching payments:", error);
+                        return [];
+                      });
+                  } else {
+                    return [];
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Payment Details
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                label="Address"
+                name="address"
+                size="small"
+                type="text"
+                variant="outlined"
+                value={values.address}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Reference
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                label="Address"
+                name="address"
+                size="small"
+                type="text"
+                variant="outlined"
+                value={values.address}
+                onChange={handleChange}
+              />
+            </Grid>
+              </>
+            )}
             </>
             )}
           </Grid>
