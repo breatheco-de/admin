@@ -1290,6 +1290,8 @@ class BreatheCodeClient {
         ),
       getPlanByCohort: (cohortSlug) =>
         axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
+      getPaymentsMethods: () =>
+        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods`),
     };
   }
 

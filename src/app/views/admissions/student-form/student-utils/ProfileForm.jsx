@@ -19,15 +19,21 @@ export const ProfileForm = ({ initialValues }) => {
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
   const [selectedPlans, setSelectedPlans] = useState(null)
+  const [paymentMethods, setPaymentMethods] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
+    console.log("VALUES POST", values)
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
     let cohortId = cohort.map(c => {
       return c.id 
     });
+    let planId = selectedPlans ? selectedPlans.id : undefined;
+    let paymentMethodsId = paymentMethods ? paymentMethods.id : undefined;
     
     let requestValues = { ...values, 
-      cohort: cohort.length > 0 ? cohortId : undefined 
+      cohort: cohort.length > 0 ? cohortId : undefined, 
+      plan: planId,
+      payment_method: paymentMethodsId 
     };
     if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
@@ -255,31 +261,29 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                onChange={(newPlan) => {
-                  setSelectedPlans(newPlan);
+                onChange={(paymentMethod) => {
+                  setPaymentMethods(paymentMethod);
                 }}
                 width="30%"
                 size="small"
-                label="Select a plan"
+                label="Select a payment"
                 debounced={false}
                 isOptionEqualToValue={(option, value) => option.id === value.id}  
-                getOptionLabel={(option) => `${option.slug}`}
+                getOptionLabel={(option) => `${option.title}`}
                 multiple={false}
                 asyncSearch={() => {
-                  const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
-                  if (selectedCohortSlug) {
-                    return bc.payments().getPlanByCohort(selectedCohortSlug)
-                      .then((response) => {
-                        console.log("Plans:", response.data);
-                        return response.data
-                      })
-                      .catch((error) => {
-                        console.error("Error fetching payments:", error);
-                        return [];
-                      });
-                  } else {
+                  return bc.payments().getPaymentsMethods()
+                  .then((response) => {
+                    console.log("Payment Methods:", response.data);
+                    const uniqueMethods = Array.from(
+                      new Map(response.data.map(method => [method.title, method])).values()
+                    );
+                    return uniqueMethods;
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching payments methods:", error);
                     return [];
-                  }
+                  });
                 }}
               />
             </Grid>
@@ -288,12 +292,12 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                label="Address"
-                name="address"
+                label="Payment Details"
+                name="payment_details"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.address}
+                value={values.paymentDetails}
                 onChange={handleChange}
               />
             </Grid>
@@ -302,12 +306,12 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <TextField
-                label="Address"
-                name="address"
+                label="Reference"
+                name="payment_reference"
                 size="small"
                 type="text"
                 variant="outlined"
-                value={values.address}
+                value={values.reference}
                 onChange={handleChange}
               />
             </Grid>
