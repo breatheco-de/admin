@@ -39,7 +39,8 @@ const EventForm = () => {
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
     free_for_all: false,
-    is_public: true
+    is_public: true, 
+    recording_url: null
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
