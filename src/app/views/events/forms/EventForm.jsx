@@ -39,8 +39,7 @@ const EventForm = () => {
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
     free_for_all: false,
-    is_public: true, 
-    recording_url: ''
+    is_public: true
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
@@ -89,7 +88,7 @@ const EventForm = () => {
 
     if (id) {
 
-      const { academy, status, slug, author, ...rest } = values;
+      const { academy, status, slug, author, recording_url, ...rest } = values;
 
       bc.events()
         .updateAcademyEvent(id, {
