@@ -40,7 +40,7 @@ const EventForm = () => {
     sync_with_eventbrite: true,
     free_for_all: false,
     is_public: true, 
-    recording_url: null
+    recording_url: ''
   });
   const [venue, setVenue] = useState(null);
   const [hostUser, setHostUser] = useState(null);
@@ -89,19 +89,23 @@ const EventForm = () => {
 
     if (id) {
 
-      const { academy, status, slug, author, ...rest } = values;
+      const { academy, status, slug, author, recording_url, ...rest } = values;
+
+      let payload = {
+        ...rest,
+        title,
+        tags: tags.join(","),
+        host_user: hostUser && hostUser.id,
+        asset_slug: assetSlug,
+        starting_at: dayjs(rest.starting_at).utc().format(),
+        ending_at: dayjs(rest.ending_at).utc().format(),
+        ...venueAndType,
+      }
+
+      if (recording_url !== '') payload["recording_url"] = recording_url;
 
       bc.events()
-        .updateAcademyEvent(id, {
-          ...rest,
-          title,
-          tags: tags.join(","),
-          host_user: hostUser && hostUser.id,
-          asset_slug: assetSlug,
-          starting_at: dayjs(rest.starting_at).utc().format(),
-          ending_at: dayjs(rest.ending_at).utc().format(),
-          ...venueAndType,
-        })
+        .updateAcademyEvent(id, payload)
         .then(({ data }) => {
 
           if (data.academy !== undefined) history.push(`/events/event/${data.id}`);
