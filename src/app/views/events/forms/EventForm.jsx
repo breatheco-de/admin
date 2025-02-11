@@ -102,7 +102,7 @@ const EventForm = () => {
         ...venueAndType,
       }
 
-      if (recording_url !== '') payload["recording_url"] = recording_url;
+      if (recording_url === '') delete payload["recording_url"];
 
       bc.events()
         .updateAcademyEvent(id, payload)
