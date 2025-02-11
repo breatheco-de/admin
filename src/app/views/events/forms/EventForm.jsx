@@ -89,7 +89,7 @@ const EventForm = () => {
 
     if (id) {
 
-      const { academy, status, slug, author, recording_url, ...rest } = values;
+      const { academy, status, slug, author, ...rest } = values;
 
       bc.events()
         .updateAcademyEvent(id, {
