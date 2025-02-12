@@ -15,10 +15,8 @@ const propTypes = {
 };
 
 const defaultPlan = { id: "default", name: "Do not assign plan yet" };
-console.log("DEFAULT PLAN", defaultPlan)
 
 export const ProfileForm = ({ initialValues }) => {
-  console.log("INITIAL VALUES", initialValues)
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
@@ -26,7 +24,6 @@ export const ProfileForm = ({ initialValues }) => {
   const [paymentMethods, setPaymentMethods] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
-    console.log("VALUES", values)
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
     let cohortId = cohort.map(c => {
       return c.id 
@@ -71,7 +68,6 @@ export const ProfileForm = ({ initialValues }) => {
         if (data !== undefined && data.ok) {
           const userId = data.data?.id;
           if (availableAsSaas && selectedPlans?.slug && selectedPlans?.slug !== defaultPlan?.name) {
-            console.log("defaultPlan", defaultPlan)
             const planSlug = selectedPlans?.slug;
             
             const payloadPlanSubscription = {
