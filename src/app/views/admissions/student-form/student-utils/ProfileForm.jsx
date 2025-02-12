@@ -14,6 +14,8 @@ const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
+const defaultPlan = { id: "default", slug: "Do-not-assign-plan-yet" };
+
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
@@ -53,16 +55,16 @@ export const ProfileForm = ({ initialValues }) => {
       bc.auth()
       .addAcademyStudent(requestValues)
       .then((data) => {
-        console.log("addAcademyStudent", data, data.ok)
+        console.log("addAcademyStudent", requestValues)
         if (data !== undefined && data.ok) {
           const userId = data.data?.id;
-          if (availableAsSaas && selectedPlans?.slug) {
+          if (availableAsSaas && selectedPlans?.slug && selectedPlans.slug !== defaultPlan.slug) {
             const planSlug = selectedPlans?.slug;
             const payload = {
-              provided_payment_details: "Added on admin",
-              reference: "Added on admin",
+              provided_payment_details: requestValues.payment_details,
+              reference: requestValues.payment_reference,
               user: userId,
-              payment_method: 5,
+              payment_method: requestValues.payment_method,
             };
             bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
             .then((response) => {
@@ -226,6 +228,7 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
+                value={defaultPlan}
                 onChange={(newPlan) => {
                   setSelectedPlans(newPlan);
                 }}
@@ -242,11 +245,14 @@ export const ProfileForm = ({ initialValues }) => {
                     return bc.payments().getPlanByCohort(selectedCohortSlug)
                       .then((response) => {
                         console.log("Plans:", response.data);
-                        return response.data
+                        return [
+                          defaultPlan,
+                          ...response.data
+                        ];
                       })
                       .catch((error) => {
                         console.error("Error fetching plans:", error);
-                        return [];
+                        return [defaultPlan];
                       });
                   } else {
                     return [];
@@ -271,6 +277,8 @@ export const ProfileForm = ({ initialValues }) => {
                 isOptionEqualToValue={(option, value) => option.id === value.id}  
                 getOptionLabel={(option) => `${option.title}`}
                 multiple={false}
+                required
+                variant="outlined"
                 asyncSearch={() => {
                   return bc.payments().getPaymentsMethods()
                   .then((response) => {
@@ -296,6 +304,7 @@ export const ProfileForm = ({ initialValues }) => {
                 name="payment_details"
                 size="small"
                 type="text"
+                required
                 variant="outlined"
                 value={values.paymentDetails}
                 onChange={handleChange}
@@ -310,6 +319,7 @@ export const ProfileForm = ({ initialValues }) => {
                 name="payment_reference"
                 size="small"
                 type="text"
+                required
                 variant="outlined"
                 value={values.reference}
                 onChange={handleChange}
