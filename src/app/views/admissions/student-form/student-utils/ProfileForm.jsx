@@ -24,7 +24,6 @@ export const ProfileForm = ({ initialValues }) => {
   const [paymentMethods, setPaymentMethods] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
-    console.log("VALUES POST", values)
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
     let cohortId = cohort.map(c => {
       return c.id 
@@ -118,7 +117,6 @@ export const ProfileForm = ({ initialValues }) => {
         if (cohort.length === 0) {
           errors.cohort = 'You must select at least one cohort'
         }
-        console.log("Validation Errors:", errors);
         return errors
       }}
     >
