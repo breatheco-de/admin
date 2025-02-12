@@ -20,7 +20,7 @@ export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
-  const [selectedPlans, setSelectedPlans] = useState(null)
+  const [selectedPlans, setSelectedPlans] = useState(defaultPlan)
   const [paymentMethods, setPaymentMethods] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
@@ -32,7 +32,8 @@ export const ProfileForm = ({ initialValues }) => {
     let planId = selectedPlans ? selectedPlans.id : undefined;
     let paymentMethodsId = paymentMethods ? paymentMethods.id : undefined;
     
-    let requestValues = { ...values, 
+    let requestValues = {
+      ...values, 
       cohort: cohort.length > 0 ? cohortId : undefined, 
       plan: planId,
       payment_method: paymentMethodsId 
@@ -52,21 +53,31 @@ export const ProfileForm = ({ initialValues }) => {
       toast.error("The number entered has formatting errors (insert more than 10 and less than 15)")
     }
     else {
+      const payload = {
+        address: requestValues.address,
+        cohort: cohortId,
+        email: requestValues.email,
+        first_name: requestValues.first_name,
+        last_name: requestValues.last_name,
+        phone: requestValues.phone,
+        invite: requestValues.invite,
+      };
+      
       bc.auth()
-      .addAcademyStudent(requestValues)
+      .addAcademyStudent(payload)
       .then((data) => {
-        console.log("addAcademyStudent", requestValues)
         if (data !== undefined && data.ok) {
           const userId = data.data?.id;
-          if (availableAsSaas && selectedPlans?.slug && selectedPlans.slug !== defaultPlan.slug) {
+          if (availableAsSaas && selectedPlans?.slug && selectedPlans?.slug !== defaultPlan?.slug) {
             const planSlug = selectedPlans?.slug;
-            const payload = {
+            
+            const payloadPlanSubscription = {
               provided_payment_details: requestValues.payment_details,
               reference: requestValues.payment_reference,
               user: userId,
               payment_method: requestValues.payment_method,
             };
-            bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
+            bc.payments().addAcademyPlanSlugSubscription(planSlug, payloadPlanSubscription)
             .then((response) => {
               console.log("Subscription created", response.data);
             })
@@ -192,8 +203,6 @@ export const ProfileForm = ({ initialValues }) => {
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
                 onChange={(newCohort) => {
-                  console.log("NewCohort AVAILABLE_AS_SAAS", newCohort[0]?.available_as_saas);
-                  console.log("NewCohort", newCohort)
                   setCohort(newCohort)            
                   const isAvailableAsSaas = newCohort.some(cohort => cohort.available_as_saas);
                   setAvailableAsSaas(isAvailableAsSaas)
@@ -228,7 +237,7 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
-                value={defaultPlan}
+                value={selectedPlans}
                 onChange={(newPlan) => {
                   setSelectedPlans(newPlan);
                 }}
@@ -244,7 +253,6 @@ export const ProfileForm = ({ initialValues }) => {
                   if (selectedCohortSlug) {
                     return bc.payments().getPlanByCohort(selectedCohortSlug)
                       .then((response) => {
-                        console.log("Plans:", response.data);
                         return [
                           defaultPlan,
                           ...response.data
@@ -260,7 +268,7 @@ export const ProfileForm = ({ initialValues }) => {
                 }}
               />
             </Grid>
-            {selectedPlans && (
+            {selectedPlans && selectedPlans.id !== "default" &&(
               <>
             <Grid item md={2} sm={4} xs={12}>
               Payments
@@ -282,7 +290,6 @@ export const ProfileForm = ({ initialValues }) => {
                 asyncSearch={() => {
                   return bc.payments().getPaymentsMethods()
                   .then((response) => {
-                    console.log("Payment Methods:", response.data);
                     const uniqueMethods = Array.from(
                       new Map(response.data.map(method => [method.title, method])).values()
                     );
