@@ -14,9 +14,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
 
       
   const downloadFile = (data) => {
-    console.log('descargando archivo', data);
     const url = window.URL.createObjectURL(new Blob([data]));
-    console.log('url generada', url);
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', 'file.csv');
@@ -25,11 +23,9 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   };
 
   const handleDownloadAll = () => {
-    console.log('iniciando descarga', getAllPagesCSV);
     (() => {
       getAllPagesCSV()
         .then((data) => {
-          console.log('datos recibidos', data);
           downloadFile(data);
         })
         .catch((error) => console.error('error en getAllPagesCsv',error));
@@ -38,11 +34,9 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
   };
 
   const handleDownloadSingle = () => {
-    console.log('iniciando descarga de página actual', getSinglePageCSV);
     (() => {
       getSinglePageCSV()
         .then((data) => {
-          console.log('datos recibidos', data);
           downloadFile(data);
         })
         .catch((error) => console.error('error en getSinglePageCSV',error));
