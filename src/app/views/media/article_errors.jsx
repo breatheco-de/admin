@@ -93,13 +93,13 @@ const Board = () => {
         filterType: 'dropdown',
         // filterList: query.get('status') !== 'ERROR' ? [query.get('status')] : [],
         filterOptions: {
-          names: ['ERROR', 'SOLVED', 'IGNORED'],
+          names: ['ERROR', 'FIXED', 'IGNORED'],
         },
         customBodyRenderLite: (dataIndex) => {
           const item = issueList[dataIndex];
             return (
             <div>
-              <small className={`border-radius-4 p-1 ${statusColors[item.status == "ERROR" ? "resolved" : item.status == "SOLVED" ? "delivered" : "pending"]}`}>
+              <small className={`border-radius-4 p-1 ${statusColors[item.status == "ERROR" ? "resolved" : item.status == "FIXED" ? "delivered" : "pending"]}`}>
               {item.status}
               </small>
               {item.status_text && (
@@ -181,12 +181,15 @@ const Board = () => {
           singlePage=""
           historyReplace="/media/asset_errors"
           options={{
+            print: false,
             onFilterChipClose: async (index, removedFilter, filterList) => {
-              if (index === 1) setOwner(null);
-              else if (index === 2) setAuthor(null);
-              const querys = getParams();
-              const { data } = await bc.registry().getAssetComments(querys);
-              setIssueList(data.results);
+              console.log("wwewewe");
+              // if (index === 1) setOwner(null);
+              // else if (index === 2) setAuthor(null);
+              // const querys = getParams();
+              // console.log(querys)
+              //const { data } = await bc.registry().getAssetComments(querys);
+              //setIssueList(data.results);
             },
           }}
           search={loadData}

@@ -713,7 +713,7 @@ const ComposeAsset = () => {
         }}
         open={updateType}
         title="Select a type"
-        options={["LESSON", "ARTICLE", "PROJECT", "EXERCISE", "VIDEO", "QUIZ"]}
+        options={["LESSON", "ARTICLE", "PROJECT", "EXERCISE", "VIDEO", "QUIZ", "STARTER"]}
       />
       <DialogPicker
         onClose={(opt) => {

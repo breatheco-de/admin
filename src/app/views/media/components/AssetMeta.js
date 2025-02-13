@@ -234,6 +234,10 @@ const LangCard = ({ asset, onAction, onChange }) => {
                 if (x.value === 'new_asset') setAddTranslation({
                   title: x.title.replace("New:", "").trim(),
                   asset_type: asset.asset_type,
+                  readme_url: asset.readme_url.replace(/README(\.[a-z]{2})?\.md$/, `README.${['us', 'en'].includes(addTranslation.lang) ? '' : addTranslation.lang + '.'}md`),
+                  learnpack_deploy_url: asset.learnpack_deploy_url,
+                  owner: asset.owner?.id || asset.owner,
+                  author: asset.author?.id || asset.author,
                   lang: addTranslation.lang,
                   slug: slugify(x.title.replace("New: ", "")).replace(/[^a-zA-Z0-9\-_]/g, "").toLowerCase(),
                   all_translations: [asset.slug, ...assetTranslations.map(t => asset.translations[t])]

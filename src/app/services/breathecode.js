@@ -1305,6 +1305,10 @@ class BreatheCodeClient {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
       },
+      getPlan: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
+      }
     };
   }
 

@@ -37,7 +37,7 @@ const routes = [
     component: React.lazy(() => import('./article_comments')),
   },
   {
-    path: '/media/article_errors',
+    path: '/media/asset_errors',
     exact: true,
     component: React.lazy(() => import('./article_errors')),
   },
