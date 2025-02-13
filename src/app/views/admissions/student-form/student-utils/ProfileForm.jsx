@@ -325,7 +325,7 @@ export const ProfileForm = ({ initialValues }) => {
                         required
                         variant="outlined"
                         asyncSearch={() => {
-                          return bc.payments().getPaymentsMethods()
+                          return bc.payments().getPaymentsMethods({ academy_id: user.academy.id })
                             .then((response) => {
                               const uniqueMethods = Array.from(
                                 new Map(response.data.map(method => [method.title, method])).values()
