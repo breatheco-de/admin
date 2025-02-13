@@ -14,20 +14,28 @@ const propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
+const defaultPlan = { id: "default", name: "Do not assign plan yet" };
+
 export const ProfileForm = ({ initialValues }) => {
   const [cohort, setCohort] = useState([]);
   const history = useHistory();
   const [availableAsSaas, setAvailableAsSaas] = useState(false)
-  const [selectedPlans, setSelectedPlans] = useState(null)
+  const [selectedPlans, setSelectedPlans] = useState(defaultPlan)
+  const [paymentMethods, setPaymentMethods] = useState(null)
 
   const postAcademyStudentProfile = (values) => {
     if (typeof (values.invite) === 'undefined' || !values.invite) values.user = values.id;
     let cohortId = cohort.map(c => {
       return c.id 
     });
+    let planId = selectedPlans ? selectedPlans.id : undefined;
+    let paymentMethodsId = paymentMethods ? paymentMethods.id : undefined;
     
-    let requestValues = { ...values, 
-      cohort: cohort.length > 0 ? cohortId : undefined 
+    let requestValues = {
+      ...values, 
+      cohort: cohort.length > 0 ? cohortId : undefined, 
+      plan: planId,
+      payment_method: paymentMethodsId 
     };
     if (typeof (requestValues.invite) === 'undefined' || !requestValues.invite) requestValues.user = requestValues.id;
 
@@ -44,21 +52,31 @@ export const ProfileForm = ({ initialValues }) => {
       toast.error("The number entered has formatting errors (insert more than 10 and less than 15)")
     }
     else {
+      const payload = {
+        address: requestValues.address,
+        cohort: cohortId,
+        email: requestValues.email,
+        first_name: requestValues.first_name,
+        last_name: requestValues.last_name,
+        phone: requestValues.phone,
+        invite: requestValues.invite,
+      };
+      
       bc.auth()
-      .addAcademyStudent(requestValues)
+      .addAcademyStudent(payload)
       .then((data) => {
-        console.log("addAcademyStudent", data, data.ok)
         if (data !== undefined && data.ok) {
           const userId = data.data?.id;
-          if (availableAsSaas && selectedPlans?.slug) {
+          if (availableAsSaas && selectedPlans?.slug && selectedPlans?.slug !== defaultPlan?.name) {
             const planSlug = selectedPlans?.slug;
-            const payload = {
-              provided_payment_details: "Added on admin",
-              reference: "Added on admin",
+            
+            const payloadPlanSubscription = {
+              provided_payment_details: requestValues.payment_details,
+              reference: requestValues.payment_reference,
               user: userId,
-              payment_method: 5,
+              payment_method: requestValues.payment_method,
             };
-            bc.payments().addAcademyPlanSlugSubscription(planSlug, payload)
+            bc.payments().addAcademyPlanSlugSubscription(planSlug, payloadPlanSubscription)
             .then((response) => {
               console.log("Subscription created", response.data);
             })
@@ -79,15 +97,17 @@ export const ProfileForm = ({ initialValues }) => {
     
       initialValues={initialValues}
       onSubmit={(values) => {
-        if (!selectedPlans || selectedPlans.length === 0){
-          console.error("You must select at leats one plan before submitting")
-          toast.error("You must select at leats one plan before submitting")
-          return;
-        }
-        if (selectedPlans.lenght > 1){
-          console.error("You can only select one plan")
-          toast.error("You can only select one plan")
-          return;
+        if (availableAsSaas ){
+          if ( !selectedPlans || selectedPlans.length === 0){
+            console.error("You must select at leats one plan before submitting")
+            toast.error("You must select at leats one plan before submitting")
+            return;
+          }
+          if (selectedPlans.lenght > 1){
+            console.error("You can only select one plan")
+            toast.error("You can only select one plan")
+            return;
+          }
         }
         postAcademyStudentProfile(values)}
       } 
@@ -215,6 +235,7 @@ export const ProfileForm = ({ initialValues }) => {
             </Grid>
             <Grid item md={10} sm={8} xs={12}>
               <AsyncAutocomplete
+                value={selectedPlans}
                 onChange={(newPlan) => {
                   setSelectedPlans(newPlan);
                 }}
@@ -223,19 +244,21 @@ export const ProfileForm = ({ initialValues }) => {
                 label="Select a plan"
                 debounced={false}
                 isOptionEqualToValue={(option, value) => option.id === value.id}  
-                getOptionLabel={(option) => `${option.slug}`}
+                getOptionLabel={(option) => option.id === "default" ? option.name : option.slug}
                 multiple={false}
                 asyncSearch={() => {
                   const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
                   if (selectedCohortSlug) {
-                    return bc.payments().getPlanByCohort(selectedCohortSlug)
+                    return bc.payments().getPlanByCohort({ cohort: selectedCohortSlug })
                       .then((response) => {
-                        console.log("Plans:", response.data);
-                        return response.data
+                        return [
+                          defaultPlan,
+                          ...response.data
+                        ];
                       })
                       .catch((error) => {
                         console.error("Error fetching plans:", error);
-                        return [];
+                        return [defaultPlan];
                       });
                   } else {
                     return [];
@@ -243,6 +266,72 @@ export const ProfileForm = ({ initialValues }) => {
                 }}
               />
             </Grid>
+            {selectedPlans && selectedPlans.id !== "default" &&(
+              <>
+            <Grid item md={2} sm={4} xs={12}>
+              Payments
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <AsyncAutocomplete
+                onChange={(paymentMethod) => {
+                  setPaymentMethods(paymentMethod);
+                }}
+                width="30%"
+                size="small"
+                label="Select a payment"
+                debounced={false}
+                isOptionEqualToValue={(option, value) => option.id === value.id}  
+                getOptionLabel={(option) => `${option.title}`}
+                multiple={false}
+                required
+                variant="outlined"
+                asyncSearch={() => {
+                  return bc.payments().getPaymentsMethods()
+                  .then((response) => {
+                    const uniqueMethods = Array.from(
+                      new Map(response.data.map(method => [method.title, method])).values()
+                    );
+                    return uniqueMethods;
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching payments methods:", error);
+                    return [];
+                  });
+                }}
+              />
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Payment Details
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                label="Payment Details"
+                name="payment_details"
+                size="small"
+                type="text"
+                required
+                variant="outlined"
+                value={values.paymentDetails}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item md={2} sm={4} xs={12}>
+              Reference
+            </Grid>
+            <Grid item md={10} sm={8} xs={12}>
+              <TextField
+                label="Reference"
+                name="payment_reference"
+                size="small"
+                type="text"
+                required
+                variant="outlined"
+                value={values.reference}
+                onChange={handleChange}
+              />
+            </Grid>
+              </>
+            )}
             </>
             )}
           </Grid>

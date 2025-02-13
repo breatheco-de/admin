@@ -1282,14 +1282,20 @@ class BreatheCodeClient {
 
   payments() {
     return {
-      addAcademyPlanSlugSubscription: (planSlug, payload) =>
+      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription) =>
         axios.bcPost(
           "Academy Plan Subscription",
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
-          payload
+          payloadPlanSubscription
         ),
-      getPlanByCohort: (cohortSlug) =>
-        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
+      getPlanByCohort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  
+      },
+      getPaymentsMethods: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
+      },
     };
   }
 
