@@ -28,7 +28,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         .then((data) => {
           downloadFile(data);
         })
-        .catch((error) => console.error('error en getAllPagesCsv',error));
+        .catch((error) => console.error(error));
     })();
     handleClose();
   };
@@ -39,7 +39,7 @@ export const DownloadCsv = ({ getSinglePageCSV, getAllPagesCSV }) => {
         .then((data) => {
           downloadFile(data);
         })
-        .catch((error) => console.error('error en getSinglePageCSV',error));
+        .catch((error) => console.error(error));
     })();
     handleClose();
   };
