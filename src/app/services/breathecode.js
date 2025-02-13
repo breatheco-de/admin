@@ -1,3 +1,4 @@
+import { Language } from "@material-ui/icons";
 import axios from "../../axios";
 import config from "../../config.js";
 
@@ -11,6 +12,8 @@ function serializeQuerystring(object) {
       : "";
   return querystring;
 }
+
+axios.defaults.headers.common["Accept-Language"] = "en";
 
 class BreatheCodeClient {
   constructor() {
@@ -222,6 +225,12 @@ class BreatheCodeClient {
         axios.bcPost(
           "Academy student",
           `${this.host}/auth/academy/student`,
+          payload
+        ),
+      addSaasStudent: (payload) =>
+        axios.bcPost(
+          "Add saas student",
+          `${this.host}/auth/subscribe/`,
           payload
         ),
       getUserByEmail: (email) =>
@@ -1282,12 +1291,20 @@ class BreatheCodeClient {
 
   payments() {
     return {
-      addAcademyPlanSlugSubscription: (planSlug, payload) =>
+      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription) =>
         axios.bcPost(
           "Academy Plan Subscription",
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
-          payload
+          payloadPlanSubscription
         ),
+      getPlanByCohort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  
+      },
+      getPaymentsMethods: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
+      },
       getPlan: (query) => {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
