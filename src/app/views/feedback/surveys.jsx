@@ -174,7 +174,7 @@ const SurveyList = () => {
         filter: true,
         customBodyRenderLite: (i) => {
           console.log("scores", items[i].scores)
-          const avg_score = items[i].scores?.total || null;
+          const avg_score = items[i].scores?.total ? parseFloat(items[i].scores?.total.toFixed(1)) : null;
           const color =
             avg_score > 7
               ? "text-green"
