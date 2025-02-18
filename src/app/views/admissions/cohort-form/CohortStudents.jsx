@@ -39,6 +39,7 @@ import { PickUserModal } from "app/components/PickUserModal";
 import useDebounce from '../../../hooks/useDebounce';
 import { Assessment } from '@material-ui/icons';
 import { countBy } from 'lodash';
+import { ca } from 'date-fns/locale';
 
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -52,12 +53,14 @@ const actionController = {
   message: {
     educational_status: 'Educational Status',
     finantial_status: 'Finantial Status',
-    role: 'Cohort Role'
+    role: 'Cohort Role', 
+    plan: 'Plan'
   },
   options: {
     educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', 'NOT_COMPLETING'],
     finantial_status: ['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''],
-    role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT']
+    role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'],
+    plan: ['']
   }
 }
 
@@ -84,8 +87,26 @@ const CohortStudents = ({ slug, cohortId }) => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
+  const [plans, setPlans] = useState([]);
+
+  const fetchPlans = async (query) => {
+    try {
+      const response = await bc.payments().getPlanByCohort({ cohort: query});
+      const plansNames = response.data.map(plan => plan.slug);
+      setPlans(response.data);
+      console.log("responsedara", response.data)
+      actionController.options.plan = plansNames;
+      console.log("plansNames", plansNames)
+    } catch (error) {
+      console.error("Error fetching plans: ", error);
+    }
+  };
+
   useEffect(() => {
     getCohortStudents();
+    fetchPlans();
+    // fetch de getPlanByCohort
+    // En el then de este fetch, actualizar el actionsController con los planes
   }, [queryLimit]);
 
   React.useEffect(() => {
@@ -243,6 +264,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         {personsList.length > 0
             && personsList.map((s, i) => (
               <div key={i} className="py-4">
+                {console.log("SSSSSSSS",s)}
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
                     <div className="flex">
@@ -294,7 +316,21 @@ const CohortStudents = ({ slug, cohortId }) => {
                             style={{ cursor: 'pointer', margin:'0 3px' }}
                           >
                             {s.educational_status}
-                          </small></>}
+                          </small>
+                          <small
+                            aria-hidden="true"
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan' });
+                            }}
+                            className="border-radius-4 px-2 pt-2px bg-secondary"
+                            style={{ cursor: 'pointer', margin:'0 3px' }}
+                          >
+                            {s.plan_name || 'PLAN'}
+                          </small>
+                          
+                          </>
+                          }
                         </p>
                       </div>
                     </div>
