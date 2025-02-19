@@ -41,6 +41,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import { Assessment } from "@material-ui/icons";
 import { countBy } from "lodash";
 import { ca } from "date-fns/locale";
+import PlansDialog from "./PlansDialog";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   avatar: {
@@ -95,14 +96,12 @@ const CohortStudents = ({ slug, cohortId }) => {
   };
 
   const [plansDialog, setPlansDialog] = useState([]);
-  const [plan, setPlan] = useState("");
   const [payments, setPayments] = useState([]);
-  const [selectedPayment, setSelectedPayment] = useState("");
+  
 
   const fetchPayment = async (query) => {
     try {
       const response = await bc.payments().getPaymentsMethods(query);
-      console.log("responsePAYMENT", response.data);
       setPayments(response.data);
     } catch (error) {
       console.error("Error fetching payments: ", error);
@@ -489,81 +488,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         <DialogContent>
           {currentStd.action === "plan" ? (
             <>
-              <Grid item md={9} sm={8} xs={12}>
-                <TextField
-                  className="m-2"
-                  label="Plan"
-                  size="small"
-                  fullWidth
-                  variant="outlined"
-                  value={plan}
-                  onChange={(e) => setPlan(e.target.value)}
-                  select
-                >
-                  {plansDialog.map((plan) => (
-                    <MenuItem key={plan.slug} value={plan.slug}>
-                      {plan.slug}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              {plan?.length > 0 && (
-                <>
-                  {console.log("PAYMENTS", payments)}
-                  <Grid item md={2} sm={4} xs={12}>
-                    Payment
-                  </Grid>
-                  <Grid item md={9} sm={8} xs={12}>
-                    <TextField
-                      label="Payment"
-                      name="payment"
-                      size="small"
-                      required
-                      variant="outlined"
-                      select
-                      value={selectedPayment}
-                      onChange={(e) => setSelectedPayment(e.target.value)}
-                    >
-                      {payments.map((payment) => (
-                        <MenuItem key={payment.id} value={payment.title}>
-                          {payment.title}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item md={2} sm={4} xs={12}>
-                    Payment Details
-                  </Grid>
-                  <Grid item md={10} sm={8} xs={12}>
-                    <TextField
-                      label="Payment Details"
-                      name="payment_details"
-                      size="small"
-                      type="text"
-                      required
-                      variant="outlined"
-                      // value={values.paymentDetails}
-                      // onChange={handleChange}
-                    />
-                  </Grid>
-                  <Grid item md={2} sm={4} xs={12}>
-                    Payment Reference
-                  </Grid>
-                  <Grid item md={10} sm={8} xs={12}>
-                    <TextField
-                      label="Payment Details"
-                      name="payment_details"
-                      size="small"
-                      type="text"
-                      required
-                      variant="outlined"
-                      // value={values.paymentDetails}
-                      // onChange={handleChange}
-                    />
-                  </Grid>
-                </>
-              )}
+              <PlansDialog plansDialog={plansDialog} payments={payments}/>
             </>
           ) : (
             <List>
