@@ -5,12 +5,13 @@ import { toast } from 'react-toastify';
 import bc from 'app/services/breathecode';
 
 
-const PlansDialog = ({ plansDialog, payments }) => {
+const PlansDialog = ({ plansDialog, payments, userId }) => {
     const [initialValues, setInitialValues] = useState({
         plan: "",
         payment: "",
         payment_details: "",
-        payment_reference: ""
+        payment_reference: "",
+        user: userId,
     });
 
     const textFieldStyle = {
@@ -26,6 +27,11 @@ const PlansDialog = ({ plansDialog, payments }) => {
         padding: "0px 45px"
     };
 
+        //user.id pasarlo por props, agregarlo al payload del handleSubmit
+        //ARREGLAR EL QUERY DEL COHORT AL GET PLAN
+
+      // TODO: ADD USEEFFECT TO FETCH PAYMENTS AND PLANS
+
     const handleSubmit = async (values) => {
         console.log("values", values);
 
@@ -34,7 +40,8 @@ const PlansDialog = ({ plansDialog, payments }) => {
                 plan: values.plan,
                 payment: values.payment,
                 payment_details: values.payment_details,
-                payment_reference: values.payment_reference
+                payment_reference: values.payment_reference,
+                user: values.user,
             };
             await bc.payments().addAcademyPlanSlugSubscription(values.plan, payload);
             toast.success("Subscription created successfully");
@@ -56,7 +63,7 @@ const PlansDialog = ({ plansDialog, payments }) => {
                 handleSubmit,
                 setFieldValue,
             }) => (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} style={{ width: "400px" }}>
                     {console.log("VALUES", values)}
                     <Grid item md={2} sm={4} xs={12} style={labelStyle}>
                         {/* Plans */}
@@ -64,7 +71,7 @@ const PlansDialog = ({ plansDialog, payments }) => {
                     <Grid item md={9} sm={8} xs={12}>
                         <TextField
                             style={textFieldStyle}
-                            className="m-2"
+                            className=""
                             label="Plan"
                             size="medium"
                             fullWidth

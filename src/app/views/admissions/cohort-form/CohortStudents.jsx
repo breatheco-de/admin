@@ -38,7 +38,7 @@ import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { useQuery } from "../../../hooks/useQuery";
 import { PickUserModal } from "app/components/PickUserModal";
 import useDebounce from "../../../hooks/useDebounce";
-import { Assessment } from "@material-ui/icons";
+import { Assessment, CodeOutlined } from "@material-ui/icons";
 import { countBy } from "lodash";
 import { ca } from "date-fns/locale";
 import PlansDialog from "./PlansDialog";
@@ -110,6 +110,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const fetchPlans = async (query) => {
     try {
+      console.log("cohortID recibido:", query);
       const response = await bc.payments().getPlanByCohort({ cohort: query });
       const plansNames = response.data.map((plan) => plan.slug);
       setPlansDialog(response.data);
@@ -121,9 +122,9 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   useEffect(() => {
     getCohortStudents();
-    fetchPlans();
+    if (cohortId) fetchPlans(cohortId);
     fetchPayment();
-  }, [queryLimit]);
+  }, [queryLimit, cohortId]);
 
   React.useEffect(() => {
     if (debouncedSearchTerm || debouncedSearchTerm === "") {
@@ -486,10 +487,9 @@ const CohortStudents = ({ slug, cohortId }) => {
             : `Select a ${actionController.message[currentStd.action]}`}
         </DialogTitle>
         <DialogContent>
+          {/* plans Dialog */}
           {currentStd.action === "plan" ? (
-            <>
-              <PlansDialog plansDialog={plansDialog} payments={payments}/>
-            </>
+            <PlansDialog plansDialog={plansDialog} payments={payments} userId={currentStd.id}/>
           ) : (
             <List>
               {currentStd.action &&
