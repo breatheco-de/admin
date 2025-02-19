@@ -38,6 +38,7 @@ const PlansDialog = ({ plansDialog, payments }) => {
             };
             await bc.payments().addAcademyPlanSlugSubscription(values.plan, payload);
             toast.success("Subscription created successfully");
+            onclose();
         }
         catch (error) {
             console.error("error", error);
