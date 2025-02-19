@@ -481,7 +481,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         open={openRoleDialog}
         aria-labelledby="simple-dialog-title"
       >
-        <DialogTitle>
+        <DialogTitle style={{ textAlign: "center" }}>
           {currentStd.action === "plan"
             ? "Selecciona un Plan"
             : `Select a ${actionController.message[currentStd.action]}`}
@@ -489,7 +489,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         <DialogContent>
           {/* plans Dialog */}
           {currentStd.action === "plan" ? (
-            <PlansDialog plansDialog={plansDialog} payments={payments} userId={currentStd.id}/>
+            <PlansDialog plansDialog={plansDialog} payments={payments} userId={currentStd.id} onClose={() => setRoleDialog(false)}/>
           ) : (
             <List>
               {currentStd.action &&
