@@ -94,26 +94,36 @@ const CohortStudents = ({ slug, cohortId }) => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
-  const [plans, setPlans] = useState([plans]);
+  const [plansDialog, setPlansDialog] = useState([]);
+  const [plan, setPlan] = useState("");
+  const [payments, setPayments] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState("");
+
+  const fetchPayment = async (query) => {
+    try {
+      const response = await bc.payments().getPaymentsMethods(query);
+      console.log("responsePAYMENT", response.data);
+      setPayments(response.data);
+    } catch (error) {
+      console.error("Error fetching payments: ", error);
+    }
+  };
 
   const fetchPlans = async (query) => {
     try {
       const response = await bc.payments().getPlanByCohort({ cohort: query });
       const plansNames = response.data.map((plan) => plan.slug);
-      setPlans(response.data);
-      console.log("responsedara", response.data);
+      setPlansDialog(response.data);
       actionController.options.plan = plansNames;
-      console.log("plansNames", plansNames);
     } catch (error) {
-      console.error("Error fetching plans: ", error);
+      console.error("Error fetching plansDialog: ", error);
     }
   };
 
   useEffect(() => {
     getCohortStudents();
     fetchPlans();
-    // fetch de getPlanByCohort
-    // En el then de este fetch, actualizar el actionsController con los planes
+    fetchPayment();
   }, [queryLimit]);
 
   React.useEffect(() => {
@@ -124,7 +134,6 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const changeStudentStatus = (value, name, studentId) => {
     const student = studenList.find((s) => s.user.id === studentId);
-    console.log("value", value, "name", name, "studentId", studentId);
     const sStatus = {
       role: student.role,
       finantial_status: student.finantial_status,
@@ -469,7 +478,7 @@ const CohortStudents = ({ slug, cohortId }) => {
       {/* This Dialog opens the modal for the user role in the cohort */}
       <Dialog
         onClose={() => setRoleDialog(false)}
-        open={currentStd.action === "plan" ? openRoleDialog : openRoleDialog}
+        open={openRoleDialog}
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle>
@@ -477,44 +486,101 @@ const CohortStudents = ({ slug, cohortId }) => {
             ? "Selecciona un Plan"
             : `Select a ${actionController.message[currentStd.action]}`}
         </DialogTitle>
-        {console.log("currentStdAction", currentStd.action)}
         <DialogContent>
           {currentStd.action === "plan" ? (
-            <Grid item md={9} sm={8} xs={12}>
-            <TextField
-              className="m-2"
-              label="Plan"
-              size="small"
-              fullWidth
-              variant="outlined"
-              value={plans.length > 0 ? plans[0].slug : ""}
-              onChange={(e) => setPlans(e.target.value)}
-              select
-            >
-              {plans.map((plan) => (
-                console.log("plan", plan),
-                <MenuItem key={plan.slug} value={plan.slug}>
-                  {plan.slug}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          ) : (        
+            <>
+              <Grid item md={9} sm={8} xs={12}>
+                <TextField
+                  className="m-2"
+                  label="Plan"
+                  size="small"
+                  fullWidth
+                  variant="outlined"
+                  value={plan}
+                  onChange={(e) => setPlan(e.target.value)}
+                  select
+                >
+                  {plansDialog.map((plan) => (
+                    <MenuItem key={plan.slug} value={plan.slug}>
+                      {plan.slug}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+
+              {plan?.length > 0 && (
+                <>
+                  {console.log("PAYMENTS", payments)}
+                  <Grid item md={2} sm={4} xs={12}>
+                    Payment
+                  </Grid>
+                  <Grid item md={9} sm={8} xs={12}>
+                    <TextField
+                      label="Payment"
+                      name="payment"
+                      size="small"
+                      required
+                      variant="outlined"
+                      select
+                      value={selectedPayment}
+                      onChange={(e) => setSelectedPayment(e.target.value)}
+                    >
+                      {payments.map((payment) => (
+                        <MenuItem key={payment.id} value={payment.title}>
+                          {payment.title}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item md={2} sm={4} xs={12}>
+                    Payment Details
+                  </Grid>
+                  <Grid item md={10} sm={8} xs={12}>
+                    <TextField
+                      label="Payment Details"
+                      name="payment_details"
+                      size="small"
+                      type="text"
+                      required
+                      variant="outlined"
+                      // value={values.paymentDetails}
+                      // onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item md={2} sm={4} xs={12}>
+                    Payment Reference
+                  </Grid>
+                  <Grid item md={10} sm={8} xs={12}>
+                    <TextField
+                      label="Payment Details"
+                      name="payment_details"
+                      size="small"
+                      type="text"
+                      required
+                      variant="outlined"
+                      // value={values.paymentDetails}
+                      // onChange={handleChange}
+                    />
+                  </Grid>
+                </>
+              )}
+            </>
+          ) : (
             <List>
               {currentStd.action &&
                 actionController.options[currentStd.action].map((opt, i) => (
                   <ListItem
-                  button
-                  onClick={() => {
-                    changeStudentStatus(
-                      opt,
-                      currentStd.action,
-                      currentStd.id,
-                      currentStd.positionInArray
-                    );
-                    setRoleDialog(false);
-                  }}
-                  key={i}
+                    button
+                    onClick={() => {
+                      changeStudentStatus(
+                        opt,
+                        currentStd.action,
+                        currentStd.id,
+                        currentStd.positionInArray
+                      );
+                      setRoleDialog(false);
+                    }}
+                    key={i}
                   >
                     <ListItemText primary={opt} />
                   </ListItem>
