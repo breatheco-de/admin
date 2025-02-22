@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { Grid, MenuItem, TextField, Button } from "@material-ui/core";
 import { Formik } from 'formik';
 import { toast } from 'react-toastify';
+import { useParams } from "react-router-dom";
 import bc from 'app/services/breathecode';
 
 
 const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
+    const { slug } = useParams();
     const [initialValues, setInitialValues] = useState({
         plan: "",
         payment_method: "",
         payment_details: "",
         reference: "",
         user: userId,
-        how_many_installments: 0,
     });
 
     const textFieldStyle = {
@@ -37,7 +38,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                 payment_details: values.payment_details,
                 reference: values.reference,
                 user: values.user,
-                how_many_installments: Number(values.how_many_installments)
+                cohorts: [slug]
             };
             await bc.payments().addAcademyPlanSlugSubscription(values.plan, payload);
             onClose();
@@ -109,20 +110,6 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                                             </MenuItem>
                                         ))}
                                     </TextField>
-                                </Grid>
-                                <Grid item md={10} sm={8} xs={12}>
-                                    <TextField
-                                        style={textFieldStyle}
-                                        label="How Many Installments"
-                                        name="how_many_installments"
-                                        size="medium"
-                                        fullWidth
-                                        type="text"
-                                        required
-                                        variant="outlined"
-                                        value={values.how_many_installments}
-                                        onChange={handleChange}
-                                    />
                                 </Grid>
                                 <Grid item md={10} sm={8} xs={12}>
                                     <TextField

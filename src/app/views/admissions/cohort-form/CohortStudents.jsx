@@ -110,7 +110,6 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const fetchPlans = async (query) => {
     try {
-      console.log("cohortID recibido:", query);
       const response = await bc.payments().getPlanByCohort({ cohort: query });
       const plansNames = response.data.map((plan) => plan.slug);
       setPlansDialog(response.data);
@@ -158,6 +157,7 @@ const CohortStudents = ({ slug, cohortId }) => {
       cohorts: slug,
       limit: queryLimit,
       offset: 0,
+      plans: true,
       ...query,
     };
     bc.admissions()
@@ -387,7 +387,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                 className="border-radius-4 px-2 pt-2px bg-secondary"
                                 style={{ cursor: "pointer", margin: "0 3px" }}
                               >
-                                {s.plan_name || "PLAN"}
+                                {s.plans || "PLAN"}
                               </small>
                             </>
                           )}
