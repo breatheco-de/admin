@@ -1308,6 +1308,12 @@ class BreatheCodeClient {
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
           payloadPlanSubscription
         ),
+      updateAcademyPlanSlugSubscription: (subscriptionId, payload) =>
+        axios.bcPut(
+          "Update Academy Plan Subscription",
+          `${this.host}/payments/academy/subscription/${subscriptionId}`,
+          payload
+        ),
       getPlanByCohort: (query) => {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  

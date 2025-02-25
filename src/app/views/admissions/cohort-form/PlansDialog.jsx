@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, MenuItem, TextField, Button } from "@material-ui/core";
-import { Formik } from 'formik';
-import { toast } from 'react-toastify';
+import { Formik } from "formik";
+import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import bc from 'app/services/breathecode';
-
+import bc from "app/services/breathecode";
+import { sub } from "date-fns";
 
 const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
     const { slug } = useParams();
@@ -14,11 +14,13 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
         payment_details: "",
         reference: "",
         user: userId,
+        subscriptionId: null, //2002
     });
+    console.log("Initial Values:", initialValues);
 
     const textFieldStyle = {
         margin: "10px 0",
-        fontSize: "1rem"
+        fontSize: "1rem",
     };
 
     const labelStyle = {
@@ -26,11 +28,11 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
         marginTop: "10px",
         display: "contents",
         alignItems: "center",
-        padding: "0px 45px"
+        padding: "0px 45px",
     };
 
     const handleSubmit = async (values) => {
-
+        console.log("Submitting values:", values);
         try {
             const payload = {
                 plan: values.plan,
@@ -38,33 +40,54 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                 payment_details: values.payment_details,
                 reference: values.reference,
                 user: values.user,
-                cohorts: [slug]
+                cohorts: [slug],
+                subscriptionId: values.subscriptionId,
             };
-            await bc.payments().addAcademyPlanSlugSubscription(values.plan, payload);
-            onClose();
-            toast.success("Subscription created successfully");
-        }
-        catch (error) {
+            if (values.subscriptionId) {
+                await bc
+                    .payments()
+                    .updateAcademyPlanSlugSubscription(values.subscriptionId, payload);
+                toast.success("Subscription updated successfully");
+                return onClose();
+            } else {
+                await bc
+                    .payments()
+                    .addAcademyPlanSlugSubscription(values.plan, payload);
+                toast.success("Subscription created successfully");
+                return onClose();
+            }
+        } catch (error) {
             console.error("error", error);
         }
-    }
+    };
 
     const uniquePayments = Array.from(
-        new Map(payments.map(method => [method.title, method])).values()
+        new Map(payments.map((method) => [method.title, method])).values()
     );
 
+    useEffect(() => {
+        if (plansDialog && plansDialog.length > 0) {
+            const currentSubscription = plansDialog.find((plan) => plan.is_active);
+            if (currentSubscription) {
+                setInitialValues({
+                    plan: currentSubscription.slug,
+                    payment_method: currentSubscription.payment_method || "",
+                    payment_details: currentSubscription.payment_details || "",
+                    reference: currentSubscription.reference || "",
+                    user: userId,
+                    subscriptionId: currentSubscription.id || null,
+                });
+            }
+        }
+    }, [plansDialog, userId]);
+
     return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-        >
-            {({
-                values,
-                handleChange,
-                handleSubmit,
-                setFieldValue,
-            }) => (
-                <form onSubmit={handleSubmit} style={{ maxWidth: "400px", width:"90%", margin: "0 auto" }}>
+        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
+            {({ values, handleChange, handleSubmit, setFieldValue }) => (
+                <form
+                    onSubmit={handleSubmit}
+                    style={{ maxWidth: "400px", width: "90%", margin: "0 auto" }}
+                >
                     <Grid container justifyContent="center">
                         <Grid item md={10} sm={8} xs={12} style={labelStyle}>
                             {/* Plans */}
@@ -104,7 +127,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                                         value={values.payment_method}
                                         onChange={handleChange}
                                     >
-                                        {uniquePayments.map(payment => (
+                                        {uniquePayments.map((payment) => (
                                             <MenuItem key={payment.id} value={payment.id}>
                                                 {payment.title}
                                             </MenuItem>
@@ -140,7 +163,15 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                                     />
                                 </Grid>
                                 <Grid container justifyContent="center">
-                                    <Grid item xs={4} style={{ display: "flex", justifyContent: "flex-end", marginTop: "15px" }}>
+                                    <Grid
+                                        item
+                                        xs={4}
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                            marginTop: "15px",
+                                        }}
+                                    >
                                         <Button
                                             fullWidth
                                             variant="contained"

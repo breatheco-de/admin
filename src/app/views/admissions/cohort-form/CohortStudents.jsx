@@ -30,7 +30,7 @@ dayjs.extend(tz);
 dayjs.extend(utc);
 dayjs.tz.guess();
 
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import clsx from "clsx";
 import { MatxLoading } from "matx";
 import bc from "app/services/breathecode";
@@ -97,7 +97,6 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
-  
 
   const fetchPayment = async (query) => {
     try {
@@ -387,7 +386,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                 className="border-radius-4 px-2 pt-2px bg-secondary"
                                 style={{ cursor: "pointer", margin: "0 3px" }}
                               >
-                                {s.plans || "PLAN"}
+                                {s?.plans[0]?.slug?.toUpperCase() || "PLAN"}
                               </small>
                             </>
                           )}
@@ -414,6 +413,18 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </IconButton>
                       {s.role === "STUDENT" && (
                         <>
+                          <IconButton
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({
+                                id: s.user.id,
+                                positionInArray: i,
+                                action: "plan",
+                              });
+                            }}
+                          >
+                            <Icon fontSize="small">edit</Icon>
+                          </IconButton>
                           <Link
                             to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}
                           >
@@ -489,7 +500,12 @@ const CohortStudents = ({ slug, cohortId }) => {
         <DialogContent>
           {/* plans Dialog */}
           {currentStd.action === "plan" ? (
-            <PlansDialog plansDialog={plansDialog} payments={payments} userId={currentStd.id} onClose={() => setRoleDialog(false)}/>
+            <PlansDialog
+              plansDialog={plansDialog}
+              payments={payments}
+              userId={currentStd.id}
+              onClose={() => setRoleDialog(false)}
+            />
           ) : (
             <List>
               {currentStd.action &&
