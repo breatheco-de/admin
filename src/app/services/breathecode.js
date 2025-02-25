@@ -875,6 +875,11 @@ class BreatheCodeClient {
           }
         );
       },
+      getLiveClasses: (cohortId) =>
+        axios.bcGet(
+          "Live Classes",
+          `${this.host}/events/academy/event/liveclass?cohort=${cohortId}`
+        ),
     };
   }
 

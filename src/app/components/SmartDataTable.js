@@ -62,10 +62,6 @@ export const SmartMUIDataTable = (props) => {
         offset: query.get("offset") || 0,
     });
 
-    if (!Array.isArray(props.items)) {
-        throw Error("Property items must be an array on SmartMUIDataTable");
-    }
-
     let getSort = () => {
         let sort = {};
         let value = query.get("sort");
@@ -161,12 +157,17 @@ export const SmartMUIDataTable = (props) => {
         });
         handlePageChange(0, querys.limit);
     };
+
+    if (!Array.isArray(props.items)) {
+        console.error("Property items must be an array on SmartMUIDataTable");
+    }
+
     return (
         <>
             {isLoading && <MatxLoading />}
             <MUIDataTable
                 title={props.title}
-                data={props.items}
+                data={props.items.details ? [] : props.items}
                 columns={props.columns}
                 options={{
                     sortOrder: getSort(),

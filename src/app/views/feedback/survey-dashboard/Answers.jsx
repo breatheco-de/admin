@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import AnswerStatus from '../../../components/AnswerStatus';
 import { npsScoreColors } from '../../../../utils';
+import dayjs from 'dayjs';
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
   productTable: {
@@ -74,9 +75,16 @@ const Answers = ({
     setOpen(false);
   };
   const getAboutStr = (item) => {
-    if (!item.cohort && !item.mentor) return 'About Academy';
-    if (item.cohort && !item.mentor) return 'About Cohort';
+    return item.title;
+    if (item.event) return 'About event ' + item.event.title;
+    if (item.live_class) {
+      const endedAt = dayjs(item.live_class.ended_at).format('MMM D');
+      if (item.mentor) return `About the teacher during the class on ${endedAt}`;
+      return `About the live class on ${endedAt}`;
+    }
     if (item.mentor) return `About ${item.mentor.first_name} ${item.mentor.last_name}`;
+    if (item.cohort) return 'About Cohort';
+    if (item.academy) return 'About Academy';
   };
   return (
     <Card elevation={3} className="pt-5 mb-6">
@@ -87,6 +95,7 @@ const Answers = ({
           <MenuItem value="all">Include unanswered</MenuItem>
           <MenuItem value="cohort">Only Cohort</MenuItem>
           <MenuItem value="academy">Only Academy</MenuItem>
+          <MenuItem value="live_class">Only Live Class</MenuItem>
           {mentors.map((m) => (
             <MenuItem value={m.name} key={m.name}>
               Only
@@ -118,8 +127,8 @@ const Answers = ({
                     <div className="flex items-center">
                       <Avatar src={a.imgUrl} />
                       <div>
-                        <p className="m-0 ml-8">{`${a.user.first_name} ${a.user.last_name}`}</p>
-                        <span className={clsx(classes.about, 'm-0 ml-8 text-muted')}>{getAboutStr(a)}</span>
+                        <p className="m-0 ml-8">To:{`${a.user.first_name} ${a.user.last_name}`}</p>
+                        <span style={{fontSize: "12px" }} className={clsx(classes.about, 'm-0 ml-8 text-muted')}>{getAboutStr(a)}</span>
                       </div>
                     </div>
                   </TableCell>

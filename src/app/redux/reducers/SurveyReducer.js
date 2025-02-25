@@ -9,6 +9,7 @@ const initialState = {
   answers: [],
   avgCohortScore: 0,
   avgAcademyScore: 0,
+  avgLiveClassScore: 0,
   mentors: [],
   answered: [],
   filteredAnswers: [],
@@ -25,6 +26,7 @@ const SurveyReducer = function (state = initialState, action) {
         answers: action.payload.answers,
         avgCohortScore: action.payload.avg_cohort_score,
         avgAcademyScore: action.payload.avg_academy_score,
+        avgLiveClassScore: action.payload.avg_liveclass_score,
         mentors: action.payload.mentors,
         answered: action.payload.answered,
         overallScore: action.payload.overall_score,
@@ -49,6 +51,7 @@ const SurveyReducer = function (state = initialState, action) {
         ...state,
         filteredAnswers: state.answers.filter((item) => {
           if (action.payload.query === 'all') return true;
+          if (action.payload.query === 'live_class' && item.live_class && !item.mentor) return true;
           if (action.payload.query === 'academy' && !item.cohort && !item.mentor) return true;
           if (action.payload.query === 'cohort' && item.cohort && item.mentor === null) return true;
           if (action.payload.query !== 'academy' && action.payload.query !== 'cohort' && item.mentor !== null) {

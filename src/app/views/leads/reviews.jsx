@@ -17,6 +17,7 @@ import {
   DialogContentText,
   TextField,
 } from '@material-ui/core';
+import { MatxLoading } from "matx";
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
@@ -285,6 +286,8 @@ const Reviews = () => {
       },
     },
   ];
+
+  if(!items) return <MatxLoading />
 
   return (
     <div className="m-sm-30">
