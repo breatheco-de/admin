@@ -374,6 +374,17 @@ class BreatheCodeClient {
           `${this.host}/auth/profile/${id}`,
           data
         ),
+      downloadCSV: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "All Pages Table CSV",
+          `${this.host}/auth/academy/student${query ? `?${qs}` : ""}`,
+          {
+            headers: { Accept: "text/csv" },
+            responseType: "blob",
+          }
+        );
+      },
     };
   }
 
