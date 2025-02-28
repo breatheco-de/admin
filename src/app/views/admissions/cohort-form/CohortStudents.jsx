@@ -56,6 +56,7 @@ const actionController = {
     finantial_status: "Finantial Status",
     role: "Cohort Role",
     plan: "Plan",
+    subscriptions_status: "Subscription Status"
   },
   options: {
     educational_status: [
@@ -69,6 +70,15 @@ const actionController = {
     finantial_status: ["FULLY_PAID", "UP_TO_DATE", "LATE", ""],
     role: ["TEACHER", "ASSISTANT", "REVIEWER", "STUDENT"],
     plan: [""],
+    subscriptions_status: [
+      "FREE_TRIAL",
+      "ACTIVE", 
+      "CANCELLED", 
+      "DEPRECATED", 
+      "PAYMENT_ISSUE", 
+      "ERROR", 
+      "FULLY_PAID", 
+      "EXPIRED"],
   },
 };
 
@@ -136,6 +146,7 @@ const CohortStudents = ({ slug, cohortId }) => {
       role: student.role,
       finantial_status: student.finantial_status,
       educational_status: student.educational_status,
+      subscriptions_status: student.subscriptions_status,
     };
     bc.admissions()
       .updateCohortUserInfo(cohortId, studentId, {
@@ -149,6 +160,30 @@ const CohortStudents = ({ slug, cohortId }) => {
         console.log(error);
       });
   };
+
+  const getSubscriptionsStatus = (planSlug, query) => {
+    setIsLoading(true);
+    const _baseQuery = {
+      plans: true,
+      limit: queryLimit,
+      offset: 0,
+      ...query,
+    };
+    bc.payments()
+    .getPlanSlugBySubscriptionStatus(planSlug, _baseQuery)
+    .then((response) => {
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Plan Data:", response.data);
+        setPlanData(response.data);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching plan data:", error);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+  }
 
   const getCohortStudents = (query) => {
     setIsLoading(true);
@@ -380,13 +415,13 @@ const CohortStudents = ({ slug, cohortId }) => {
                                   setCurrentStd({
                                     id: s.user.id,
                                     positionInArray: i,
-                                    action: "plan",
+                                    action: "subscriptions_status",
                                   });
                                 }}
                                 className="border-radius-4 px-2 pt-2px bg-secondary"
                                 style={{ cursor: "pointer", margin: "0 3px" }}
                               >
-                                {s?.plans[0]?.slug?.toUpperCase() || "PLAN"}
+                                {s?.subscription?.status?.toUpperCase() || "NO STATUS"}
                               </small>
                             </>
                           )}
@@ -413,6 +448,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </IconButton>
                       {s.role === "STUDENT" && (
                         <>
+                        <Tooltip title="Create plan">
                           <IconButton
                             onClick={() => {
                               setRoleDialog(true);
@@ -423,8 +459,9 @@ const CohortStudents = ({ slug, cohortId }) => {
                               });
                             }}
                           >
-                            <Icon fontSize="small">edit</Icon>
+                            <Icon fontSize="small">money</Icon>
                           </IconButton>
+                        </Tooltip>
                           <Link
                             to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}
                           >

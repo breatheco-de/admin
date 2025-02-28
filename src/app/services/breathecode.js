@@ -1308,6 +1308,10 @@ class BreatheCodeClient {
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
           payloadPlanSubscription
         ),
+        getPlanSlugBySubscriptionStatus: (planSlug, query) => {
+          const qs = serializeQuerystring(query);
+          return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/plan/${planSlug}?${qs}`);
+      },
       updateAcademyPlanSlugSubscription: (subscriptionId, payload) =>
         axios.bcPut(
           "Update Academy Plan Subscription",
@@ -1325,7 +1329,7 @@ class BreatheCodeClient {
       getPlan: (query) => {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
-      }
+      },
     };
   }
 
