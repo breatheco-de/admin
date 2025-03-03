@@ -193,18 +193,24 @@ const OrganizationUsers = () => {
           <Icon>close</Icon>
         </IconButton>
         <DialogContent>
-          <div style={{ background: '#2d2d2d', borderRadius: '5px', padding: '10px' }}>
-            {githubLog.map((elem) => (
-              <p className="text-white">
-                <span className="text-primary">
-                {'[+] '}
-                  {dayjs(elem.at).format('M/D/YYYY h:mm A')}
-                </span>
-                {' '}
-                {elem.msg}
-              </p>
-            ))}
-          </div>
+          {githubLog.length > 0 ? (
+            <div style={{ background: '#2d2d2d', borderRadius: '5px', padding: '10px' }}>
+              {githubLog.map((elem) => (
+                <p className="text-white">
+                  <span className="text-primary">
+                  {'[+] '}
+                    {dayjs(elem.at).format('M/D/YYYY h:mm A')}
+                  </span>
+                  {' '}
+                  {elem.msg}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p>
+              No error logs on this academy
+            </p>
+          )}
         </DialogContent>
       </Dialog>
       <ConfirmAlert
