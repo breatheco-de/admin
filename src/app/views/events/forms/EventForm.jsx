@@ -100,6 +100,7 @@ const EventForm = () => {
         starting_at: dayjs(rest.starting_at).utc().format(),
         ending_at: dayjs(rest.ending_at).utc().format(),
         ...venueAndType,
+        recording_url: values.recording_url
       }
 
       if (recording_url === '') delete payload["recording_url"];
@@ -365,7 +366,7 @@ const EventForm = () => {
                     type="url"
                     fullWidth
                     variant="outlined"
-                    value={values.recording_url}
+                    value={values?.recording_url}
                     onChange={handleChange}
                   />
                 </Grid>
