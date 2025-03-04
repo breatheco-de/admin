@@ -178,7 +178,7 @@ const InvoiceDetail = () => {
                   <TableRow>
                     <TableCell className="pl-0 capitalize" align="left">
                       <p className='mb-0'>
-                        {`${session?.started_at ? dayjs(session.started_at.slice(0, -1)).format('MMMM D, YYYY, h:mm a') : (mentor_joined_at ? dayjs(session.mentor_joined_at.slice(0, -1)).format('MMMM D, YYYY, h:mm a') : "")}  with ${session.mentee?.first_name} ${session.mentee?.last_name}`}
+                        {`${session?.started_at ? dayjs(session.started_at.slice(0, -1)).format('MMMM D, YYYY, h:mm a') : (session?.mentor_joined_at ? dayjs(session.mentor_joined_at.slice(0, -1)).format('MMMM D, YYYY, h:mm a') : "")}  with ${session.mentee?.first_name} ${session.mentee?.last_name}`}
                       </p>
                       <small className="text-muted">{`Meeting lasted: ${session?.duration_string}`}</small>
                     </TableCell>
