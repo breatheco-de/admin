@@ -150,10 +150,18 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                                 "default": "",
                                 undefined: "",
                             }
+
+                            const textColors = {
+                                "error": "text-light",
+                                "danger": "text-light",
+                                "default": "",
+                                undefined: "",
+                            }
+                    
                             return <Chip onClick={() => setOpenKeywordAssets({ keyword: k, cluster })}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
-                                icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${colors[_status]}`} />;
+                                icon={_status == "default" ? <Done /> : <ErrorOutline className={textColors[_status]} />} className={`mr-2 mb-2 ${colors[_status]}`} />;
                         })}
                         <Chip size="small" className="pointer mr-2 mb-2" icon={<Add onClick={() => setAddKeyword({ cluster: clusterForm.id })} />} />
                     </Grid>
