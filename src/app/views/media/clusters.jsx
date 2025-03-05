@@ -57,27 +57,25 @@ const UserList3 = () => {
     const handleLanguageByFilter = (event) =>{
         const lang = event.target.name
         const isChecked = event.target.checked
-
-        const updatedLangs = isChecked ? [...selectedLangs, lang] : selectedLangs.filter((selectedLangs) => selectedLangs !== lang)
-
-        setSelectedLangs(updatedLangs)
+        const updatedLang = isChecked ? lang : ""
+        setSelectedLangs(updatedLang)
 
         history.replace(
             `/media/seo/cluster?${Object.keys({
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
                 like: search,
-                lang: updatedLangs.join(",")
+                lang: updatedLang,
             })
                 .map(
-                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:updatedLangs.join(",") }[key]}`)
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:updatedLang }[key]}`)
                 .join('&')}`
             );
         bc.registry()
                 .getAllClusters({ limit: rowsPerPage, 
                     offset: page * rowsPerPage, 
                     like: search, 
-                    lang: updatedLangs.join(",")
+                    lang: updatedLang,
                 })
                 .then((res) =>{
                 setClusters(res.data)
@@ -90,7 +88,7 @@ const UserList3 = () => {
                 .getAllClusters({ limit: rowsPerPage, 
                     offset: page * rowsPerPage, 
                     like: search, 
-                    lang: selectedLangs.join(",")
+                    lang: selectedLangs,
                 })
                 .then((res) =>{
                 setClusters(res.data)
@@ -100,10 +98,10 @@ const UserList3 = () => {
                 limit: rowsPerPage,
                 offset: page * rowsPerPage,
                 like: search,
-                lang: selectedLangs.join(",")
+                lang: selectedLangs
             })
                 .map(
-                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:selectedLangs.join(",") }[key]}`)
+                  (key) => `${key}=${{ limit: rowsPerPage, offset: page * rowsPerPage, like: search, lang:selectedLangs }[key]}`)
                 .join('&')}`
             );
         }, 300),
@@ -112,37 +110,21 @@ const UserList3 = () => {
 
     useEffect(() => {
         const fetchClusters = async () => {
+
             const resp = await bc.registry().getAllClusters({ 
                 limit: rowsPerPage, 
                 offset: page * rowsPerPage, 
                 like: search,
-                lang: selectedLangs.join(",") 
+                lang: selectedLangs || undefined,
 
             });
             if (resp.status == 200) {
+                console.log('Data recibida:', resp.data);
                 setClusters(resp.data);
             }
         };
         fetchClusters();
     }, [rowsPerPage, page, selectedLangs]);
-
-    // const renderClusters = (clusters) => {
-    //     if (!clusters?.results)
-    //         return null
-    //     return clusters.results.map((cluster) =>{
-    //         return(
-    //             <Grid key={cluster.id} item sm={12} xs={12}>
-    //                 <ClusterCard 
-    //                     cluster={cluster}
-    //                     onSubmit={async (_cluster) =>{
-    //                         const resp = await bc.registry().updateCluster(cluster.slug, _cluster);
-    //                         return resp.status === 200 ? resp.data : false
-    //                     }}
-    //                     />
-    //             </Grid>
-    //         )
-    //     })
-    // }
 
     return (
         <div className="m-sm-30">
@@ -162,7 +144,7 @@ const UserList3 = () => {
             </div>
             <Grid container spacing={2}>
                 <Grid item md={3} sm={12} xs={12}>
-                    <SEOMenu languages={languages} handleLanguageByFilter={handleLanguageByFilter} selectedLangs={selectedLangs} />
+                    <SEOMenu languages={languages} handleLanguageByFilter={handleLanguageByFilter} selectedLang={selectedLangs} />
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <Grid container spacing={2}>

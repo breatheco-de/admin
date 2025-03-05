@@ -14,6 +14,7 @@ import {
   DialogContent,
   TextField,
 } from '@material-ui/core';
+import { MatxLoading } from "matx";
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { addHours } from 'date-fns';
@@ -246,9 +247,7 @@ const SurveyList = () => {
     },
   ];
 
-  if (items.length > 0) {
-    console.log(JSON.parse(items[0].status_json));
-  }
+  if (!items) return <MatxLoading />;
 
   return (
     <>

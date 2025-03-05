@@ -24,6 +24,7 @@ const Survey = ({ match }) => {
     answers = [],
     avgCohortScore = 0,
     avgAcademyScore = 0,
+    avgLiveClassScore = 0,
     mentors = [],
     answered = [],
     overallScore = 0,
@@ -67,7 +68,7 @@ const Survey = ({ match }) => {
               className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
               style={{ cursor: 'pointer' }}
             >
-              PENDING
+              {survey.status}
             </div>
             <div className="px-3 text-11 py-3px border-radius-4 " style={{ cursor: 'pointer' }}>
               Cohort: {match.params.cohort}
