@@ -107,6 +107,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
 
   const fetchPayment = async (query) => {
     try {
@@ -161,30 +162,6 @@ const CohortStudents = ({ slug, cohortId }) => {
       });
   };
 
-  const getSubscriptionsStatus = (planSlug, query) => {
-    setIsLoading(true);
-    const _baseQuery = {
-      plans: true,
-      limit: queryLimit,
-      offset: 0,
-      ...query,
-    };
-    bc.payments()
-    .getPlanSlugBySubscriptionStatus(planSlug, _baseQuery)
-    .then((response) => {
-      if (response.status >= 200 && response.status < 300) {
-        console.log("Plan Data:", response.data);
-        setPlanData(response.data);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching plan data:", error);
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
-  }
-
   const getCohortStudents = (query) => {
     setIsLoading(true);
     const _baseQuery = {
@@ -206,6 +183,15 @@ const CohortStudents = ({ slug, cohortId }) => {
         }
       })
       .catch((error) => error);
+    bc.payments()
+      .getSubscription()
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          console.log("result", data)
+          setSubscriptions(data.data);
+        }
+      })
+      .catch((error) => error)
   };
 
   const addUserToCohort = (user_id) => {
@@ -239,6 +225,22 @@ const CohortStudents = ({ slug, cohortId }) => {
       studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
       studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
     );
+
+    const [userSubscription, setUserSubscription] = useState([]);
+
+    useEffect(() => {
+      const updatedSubscriptions = personsList?.map(person => {
+        const plan = subscriptions
+          ?.filter(sub => sub?.user.email === person?.user.email)
+          .map(sub => sub?.plans[0].slug);
+        
+        return { ...person, subscriptions_status: plan };
+      });
+    
+      setUserSubscription(updatedSubscriptions);
+    }, [personsList, subscriptions]);
+    
+    // console.log(userSubscription)
 
   return (
     <Card className="p-4">
@@ -324,8 +326,8 @@ const CohortStudents = ({ slug, cohortId }) => {
       <div className="overflow-auto">
         {isLoading && <MatxLoading />}
         <div className="min-w-600">
-          {personsList.length > 0 &&
-            personsList.map((s, i) => (
+          {userSubscription?.length > 0 &&
+            userSubscription?.map((s, i) => (
               <div key={i} className="py-4">
                 <Grid container alignItems="center">
                   <Grid item lg={6} md={6} sm={6} xs={6}>
@@ -421,7 +423,9 @@ const CohortStudents = ({ slug, cohortId }) => {
                                 className="border-radius-4 px-2 pt-2px bg-secondary"
                                 style={{ cursor: "pointer", margin: "0 3px" }}
                               >
-                                {s?.subscription?.status?.toUpperCase() || "NO STATUS"}
+                                {s.subscriptions_status?.length > 0 
+                                  ? s.subscriptions_status.map(status => status.toUpperCase()).join(", ") 
+                                  : "NO STATUS"}
                               </small>
                             </>
                           )}

@@ -66,7 +66,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
     );
 
     useEffect(() => {
-        if (plansDialog && plansDialog.length > 0) {
+        if (plansDialog && plansDialog?.length > 0) {
             const currentSubscription = plansDialog.find((plan) => plan.is_active);
             if (currentSubscription) {
                 setInitialValues({
@@ -104,7 +104,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                                 onChange={(e) => setFieldValue("plan", e.target.value)}
                                 select
                             >
-                                {plansDialog.map((plan) => (
+                                {plansDialog?.map((plan) => (
                                     <MenuItem key={plan.slug} value={plan.slug}>
                                         {plan.slug}
                                     </MenuItem>
