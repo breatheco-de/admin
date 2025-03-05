@@ -1,3 +1,4 @@
+import { Language } from "@material-ui/icons";
 import axios from "../../axios";
 import config from "../../config.js";
 
@@ -11,6 +12,8 @@ function serializeQuerystring(object) {
       : "";
   return querystring;
 }
+
+axios.defaults.headers.common["Accept-Language"] = "en";
 
 class BreatheCodeClient {
   constructor() {
@@ -224,6 +227,12 @@ class BreatheCodeClient {
           `${this.host}/auth/academy/student`,
           payload
         ),
+      addSaasStudent: (payload) =>
+        axios.bcPost(
+          "Add saas student",
+          `${this.host}/auth/subscribe/`,
+          payload
+        ),
       getUserByEmail: (email) =>
         axios.bcGet("User", `${this.host}/auth/user/${email}`),
       getAllUsers: (query) => {
@@ -365,6 +374,17 @@ class BreatheCodeClient {
           `${this.host}/auth/profile/${id}`,
           data
         ),
+      downloadCSV: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "All Pages Table CSV",
+          `${this.host}/auth/academy/student${query ? `?${qs}` : ""}`,
+          {
+            headers: { Accept: "text/csv" },
+            responseType: "blob",
+          }
+        );
+      },
     };
   }
 
@@ -1282,14 +1302,24 @@ class BreatheCodeClient {
 
   payments() {
     return {
-      addAcademyPlanSlugSubscription: (planSlug, payload) =>
+      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription) =>
         axios.bcPost(
           "Academy Plan Subscription",
           `${this.host}/payments/academy/plan/${planSlug}/subscription`,
-          payload
+          payloadPlanSubscription
         ),
-      getPlanByCohort: (cohortSlug) =>
-        axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?cohort=${cohortSlug}`),   
+      getPlanByCohort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  
+      },
+      getPaymentsMethods: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
+      },
+      getPlan: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
+      }
     };
   }
 

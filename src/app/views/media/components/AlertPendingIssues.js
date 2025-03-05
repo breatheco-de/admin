@@ -56,7 +56,7 @@ const AlertPendingIssues = () => {
               variant="contained"
               color="error"
               component={Link}
-              to='/media/article_errors?limit=10&offset=0&status=ERROR'
+              to='/media/asset_errors?limit=10&offset=0&status=ERROR'
             >
               Review {assetErrors.count | 0} Errors
             </Button>
