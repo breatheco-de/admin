@@ -104,10 +104,11 @@ const CohortStudents = ({ slug, cohortId }) => {
   const handlePaginationNextPage = () => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
-
+  
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
+  const [userSubscription, setUserSubscription] = useState([]);
 
   const fetchPayment = async (query) => {
     try {
@@ -140,6 +141,18 @@ const CohortStudents = ({ slug, cohortId }) => {
       getCohortStudents({ like: debouncedSearchTerm });
     }
   }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    bc.payments()
+      .getSubscription()
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          console.log("result", data)
+          setSubscriptions(data.data);
+        }
+      })
+      .catch((error) => error)
+  },[])
 
   const changeStudentStatus = (value, name, studentId) => {
     const student = studenList.find((s) => s.user.id === studentId);
@@ -183,15 +196,6 @@ const CohortStudents = ({ slug, cohortId }) => {
         }
       })
       .catch((error) => error);
-    bc.payments()
-      .getSubscription()
-      .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
-          console.log("result", data)
-          setSubscriptions(data.data);
-        }
-      })
-      .catch((error) => error)
   };
 
   const addUserToCohort = (user_id) => {
@@ -218,17 +222,16 @@ const CohortStudents = ({ slug, cohortId }) => {
     setOpenDialog(false);
   };
 
-  const personsList = studenList
-    .filter((p) => p.role?.toUpperCase() == "TEACHER")
-    .concat(
-      studenList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
-      studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
-      studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
-    );
-
-    const [userSubscription, setUserSubscription] = useState([]);
-
-    useEffect(() => {
+  
+  
+  useEffect(() => {
+      const personsList = studenList
+        .filter((p) => p.role?.toUpperCase() == "TEACHER")
+        .concat(
+          studenList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
+          studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
+          studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
+        );
       const updatedSubscriptions = personsList?.map(person => {
         const plan = subscriptions
           ?.filter(sub => sub?.user.email === person?.user.email)
@@ -238,9 +241,8 @@ const CohortStudents = ({ slug, cohortId }) => {
       });
     
       setUserSubscription(updatedSubscriptions);
-    }, [personsList, subscriptions]);
-    
-    // console.log(userSubscription)
+      console.log("userSubscription", userSubscription)
+    }, [studenList, subscriptions]);
 
   return (
     <Card className="p-4">

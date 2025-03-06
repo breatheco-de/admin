@@ -14,7 +14,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
         payment_details: "",
         reference: "",
         user: userId,
-        subscriptionId: null, //2002
+        // subscriptionId: null, //2002
     });
     console.log("Initial Values:", initialValues);
 
@@ -41,22 +41,15 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                 reference: values.reference,
                 user: values.user,
                 cohorts: [slug],
-                subscriptionId: values.subscriptionId,
+                // subscriptionId: values.subscriptionId,
             };
-            if (values.subscriptionId) {
-                await bc
-                    .payments()
-                    .updateAcademyPlanSlugSubscription(values.subscriptionId, payload);
-                toast.success("Subscription updated successfully");
-                return onClose();
-            } else {
                 await bc
                     .payments()
                     .addAcademyPlanSlugSubscription(values.plan, payload);
                 toast.success("Subscription created successfully");
                 return onClose();
             }
-        } catch (error) {
+        catch (error) {
             console.error("error", error);
         }
     };
@@ -75,7 +68,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                     payment_details: currentSubscription.payment_details || "",
                     reference: currentSubscription.reference || "",
                     user: userId,
-                    subscriptionId: currentSubscription.id || null,
+                    // subscriptionId: currentSubscription.id || null,
                 });
             }
         }
