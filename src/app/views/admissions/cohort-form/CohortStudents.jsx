@@ -87,7 +87,7 @@ const CohortStudents = ({ slug, cohortId }) => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [studenList, setStudentsList] = useState([]);
+  const [studentList, setStudentsList] = useState([]);
   const [currentStd, setCurrentStd] = useState({});
   const [addNewMember, setAddNewMember] = useState(false);
   const [openRoleDialog, setRoleDialog] = useState(false);
@@ -156,7 +156,7 @@ const CohortStudents = ({ slug, cohortId }) => {
   }, []);
 
   const changeStudentStatus = (value, name, studentId) => {
-    const student = studenList.find((s) => s.user.id === studentId);
+    const student = studentList.find((s) => s.user.id === studentId);
     const sStatus = {
       role: student.role,
       finantial_status: student.finantial_status,
@@ -232,12 +232,12 @@ const CohortStudents = ({ slug, cohortId }) => {
   };
 
   useEffect(() => {
-    const personsList = studenList
+    const personsList = studentList
       .filter((p) => p.role?.toUpperCase() == "TEACHER")
       .concat(
-        studenList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
-        studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
-        studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
+        studentList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
+        studentList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
+        studentList.filter((p) => p.role?.toUpperCase() == "STUDENT")
       );
     const updatedSubscriptions = personsList?.map((person) => {
       const plan = subscriptions
@@ -252,7 +252,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
     setUserSubscription(updatedSubscriptions);
     console.log("userSubscription", userSubscription);
-  }, [studenList, subscriptions]);
+  }, [studentList, subscriptions]);
 
   return (
     <Card className="p-4">
@@ -441,7 +441,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                       margin: "0 3px",
                                     }}
                                   >
-                                    {status.slug.toUpperCase()}
+                                    {status.slug?.toUpperCase()}
                                   </small>
                                 ))
                               ) : (
