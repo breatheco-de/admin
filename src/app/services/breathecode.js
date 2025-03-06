@@ -292,6 +292,13 @@ class BreatheCodeClient {
           `${this.host}/auth/academy/user/invite${query ? `?${qs}` : ""}`
         );
       },
+      getAcademySettingsLog: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Academy settings log",
+          `${this.host}/auth/academy/settings/log${query ? `?${qs}` : ""}`
+        );
+      },
       deleteAcademyInvites: (query) => {
         const qs = query.join(",");
         return axios.bcDelete(
@@ -886,6 +893,11 @@ class BreatheCodeClient {
           }
         );
       },
+      getLiveClasses: (cohortId) =>
+        axios.bcGet(
+          "Live Classes",
+          `${this.host}/events/academy/event/liveclass?cohort=${cohortId}`
+        ),
     };
   }
 

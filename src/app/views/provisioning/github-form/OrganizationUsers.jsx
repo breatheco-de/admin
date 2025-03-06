@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Icon,
   IconButton,
   Button,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -15,8 +18,6 @@ import ConfirmAlert from '../../../components/ConfirmAlert';
 import BulkAction from "../../../components/BulkAction"
 import bc from '../../../services/breathecode';
 import dayjs from 'dayjs';
-import config from '../../../../config.js';
-import { faLastfmSquare } from "@fortawesome/free-brands-svg-icons";
 import { PickCohortUserModal } from "./PickCohortUserModal";
 import {CopyDialog} from "../../../components/CopyDialog"
 import HelpIcon from '../../../components/HelpIcon';
@@ -58,14 +59,17 @@ const getStatus = (u) => {
   return u.storage_status + " -> " + u.storage_action
 }
 
-const OrganizationUsers = ({ organization }) => {
+const OrganizationUsers = () => {
   const [items, setItems] = useState([]);
-  const [ userToAdd, setUserToAdd] = useState(false);
-  const [ confirm, setConfirm] = useState(false);
+  const [userToAdd, setUserToAdd] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const [copyDialog, setCopyDialog] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
+  const [githubLog, setGithubLog] = useState([]);
+
 
   const syncOrganizationUsers = async () => {
-    const { data } = await bc.auth().syncOrganizationUsers();
+    await bc.auth().syncOrganizationUsers();
   }
 
   const columns = [
@@ -160,86 +164,142 @@ const OrganizationUsers = ({ organization }) => {
     loadData();
   }
 
+  const getGithubLog = async () => {
+    try {
+      const { data } = await bc.auth().getAcademySettingsLog();
+      if (Array.isArray(data)) setGithubLog(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getGithubLog();
+  }, []);
+
   return (
     <Grid item md={12} className="mt-2">
+      <Dialog
+        open={showLogs}
+        onClose={() => setShowLogs(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth="md"
+      >
+        <DialogTitle className="ml-2" id="alert-dialog-title">
+          Github error log
+        </DialogTitle>
+        <IconButton size="small" style={{ position: "absolute", top: "16px", right: "20px" }} onClick={() => setShowLogs(false)}>
+          <Icon>close</Icon>
+        </IconButton>
+        <DialogContent>
+          {githubLog.length > 0 ? (
+            <div style={{ background: '#2d2d2d', borderRadius: '5px', padding: '10px' }}>
+              {githubLog.map((elem) => (
+                <p className="text-white">
+                  <span className="text-primary">
+                  {'[+] '}
+                    {dayjs(elem.at).format('M/D/YYYY h:mm A')}
+                  </span>
+                  {' '}
+                  {elem.msg}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p>
+              No error logs on this academy
+            </p>
+          )}
+        </DialogContent>
+      </Dialog>
       <ConfirmAlert
-        title={`User has been added to the invite queue. Keep in mind that invites are not sent in real time, instead, they are sent at 2AM UTC. Make sure the student has connected its GitHub account by then.`}
+        title="User has been added to the invite queue. Keep in mind that invites are not sent in real time, instead, they are sent at 2AM UTC. Make sure the student has connected its GitHub account by then."
         isOpen={confirm}
         cancelText="I understand invites are processed later in batch"
         onOpen={() => setConfirm(false)}
       />
-      { userToAdd == true && <PickCohortUserModal 
-        cohortQuery={{ stage: 'STARTED,PREWORK' }} 
-        cohortUserQuery={{ educational_status:'ACTIVE' }} 
-        onClose={(_cu) => addToOrganization(_cu)}
-      />}
-        <div className="text-right">
-          <Button variant="contained" color="primary" onClick={() => setUserToAdd(true)}>
-            Add to the Github Organization
-          </Button>
-        </div>
-        <SmartMUIDataTable
-            title="All Github Organization Users"
-            columns={columns}
-            items={items}
-            options={{
-              print: false,
-              search: true,
-              filter: false,
-              download: false,
-              viewColumns: false,
-              customToolbar: () => {
-                return <Tooltip title={`Sync organization users`}>
-                  <IconButton onClick={() => syncOrganizationUsers()}>
-                    <Icon>refresh</Icon>
-                  </IconButton>
-                </Tooltip>;
-              },
-              customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
-                return (
-                  <div className='ml-auto'>
-                    <BulkAction
-                      title="Add users to Github"
-                      iconComponent={AddCircleOutlineIcon}
-                      onConfirm={(ids) => 
-                        bc.auth().updateGithubUser(ids,{ storage_action: 'ADD' })
-                          .then(() => loadData())
-                      }
-                      selectedRows={selectedRows}
-                      items={items}
-                    />
-                    <BulkAction
-                      title="Delete users from Github"
-                      iconComponent={DeleteOutlineRounded}
-                      onConfirm={(ids) => 
-                        bc.auth().updateGithubUser(ids,{ storage_action: 'DELETE' })
-                          .then(() => loadData())
-                      }
-                      selectedRows={selectedRows}
-                      items={items}
-                    />
-                    <BulkAction
-                      title="Ignore Github user"
-                      iconComponent={AlarmOffRounded}
-                      onConfirm={(ids) => 
-                        bc.auth().updateGithubUser(ids,{ storage_action: 'IGNORE' })
-                          .then(() => loadData())
-                      }
-                      selectedRows={selectedRows}
-                      items={items}
-                    />
-                  </div>);
-              }
-            }}
-            search={loadData}
+      {userToAdd == true && (
+        <PickCohortUserModal 
+          cohortQuery={{ stage: 'STARTED,PREWORK' }} 
+          cohortUserQuery={{ educational_status:'ACTIVE' }} 
+          onClose={(_cu) => addToOrganization(_cu)}
         />
-        <CopyDialog
-            title={`Share the following invite URL with the student`}
-            label={"URL"}
-            value={`https://github.com/orgs/4GeeksAcademy/invitation`}
-            isOpened={copyDialog}
-            onClose={() => setCopyDialog(false)}
-          />
+      )}
+      <div className="text-right">
+        <Button variant="contained" color="primary" onClick={() => setUserToAdd(true)}>
+          Add to the Github Organization
+        </Button>
+      </div>
+      <SmartMUIDataTable
+        title="All Github Organization Users"
+        columns={columns}
+        items={items}
+        options={{
+          print: false,
+          search: true,
+          filter: false,
+          download: false,
+          viewColumns: false,
+          customToolbar: () => (
+            <>
+              <Tooltip title="Sync organization users">
+                <IconButton onClick={() => syncOrganizationUsers()}>
+                  <Icon>refresh</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Show error log">
+                <IconButton onClick={() => setShowLogs(true)}>
+                  <Icon>error</Icon>
+                </IconButton>
+              </Tooltip>
+            </>
+          ),
+          customToolbarSelect: (selectedRows, displayData, setSelectedRows) => {
+            return (
+              <div className='ml-auto'>
+                <BulkAction
+                  title="Add users to Github"
+                  iconComponent={AddCircleOutlineIcon}
+                  onConfirm={(ids) => 
+                    bc.auth().updateGithubUser(ids,{ storage_action: 'ADD' })
+                      .then(() => loadData())
+                  }
+                  selectedRows={selectedRows}
+                  items={items}
+                />
+                <BulkAction
+                  title="Delete users from Github"
+                  iconComponent={DeleteOutlineRounded}
+                  onConfirm={(ids) => 
+                    bc.auth().updateGithubUser(ids,{ storage_action: 'DELETE' })
+                      .then(() => loadData())
+                  }
+                  selectedRows={selectedRows}
+                  items={items}
+                />
+                <BulkAction
+                  title="Ignore Github user"
+                  iconComponent={AlarmOffRounded}
+                  onConfirm={(ids) => 
+                    bc.auth().updateGithubUser(ids,{ storage_action: 'IGNORE' })
+                      .then(() => loadData())
+                  }
+                  selectedRows={selectedRows}
+                  items={items}
+                />
+              </div>);
+          }
+        }}
+        search={loadData}
+      />
+      <CopyDialog
+        title="Share the following invite URL with the student"
+        label="URL"
+        value="https://github.com/orgs/4GeeksAcademy/invitation"
+        isOpened={copyDialog}
+        onClose={() => setCopyDialog(false)}
+      />
     </Grid>
   );
 };
