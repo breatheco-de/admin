@@ -56,7 +56,7 @@ const actionController = {
     finantial_status: "Finantial Status",
     role: "Cohort Role",
     plan: "Plan",
-    subscriptions_status: "Subscription Status"
+    subscriptions_status: "Subscription Status",
   },
   options: {
     educational_status: [
@@ -72,13 +72,14 @@ const actionController = {
     plan: [""],
     subscriptions_status: [
       "FREE_TRIAL",
-      "ACTIVE", 
-      "CANCELLED", 
-      "DEPRECATED", 
-      "PAYMENT_ISSUE", 
-      "ERROR", 
-      "FULLY_PAID", 
-      "EXPIRED"],
+      "ACTIVE",
+      "CANCELLED",
+      "DEPRECATED",
+      "PAYMENT_ISSUE",
+      "ERROR",
+      "FULLY_PAID",
+      "EXPIRED",
+    ],
   },
 };
 
@@ -104,7 +105,7 @@ const CohortStudents = ({ slug, cohortId }) => {
   const handlePaginationNextPage = () => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
-  
+
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
@@ -147,12 +148,12 @@ const CohortStudents = ({ slug, cohortId }) => {
       .getSubscription()
       .then((data) => {
         if (data.status >= 200 && data.status < 300) {
-          console.log("result", data)
+          console.log("result", data);
           setSubscriptions(data.data);
         }
       })
-      .catch((error) => error)
-  },[])
+      .catch((error) => error);
+  }, []);
 
   const changeStudentStatus = (value, name, studentId) => {
     const student = studenList.find((s) => s.user.id === studentId);
@@ -162,6 +163,7 @@ const CohortStudents = ({ slug, cohortId }) => {
       educational_status: student.educational_status,
       subscriptions_status: student.subscriptions_status,
     };
+    console.log("NAAAAAAMEEEEEEE", name, value, studentId);
     bc.admissions()
       .updateCohortUserInfo(cohortId, studentId, {
         ...sStatus,
@@ -222,27 +224,35 @@ const CohortStudents = ({ slug, cohortId }) => {
     setOpenDialog(false);
   };
 
-  
-  
+  const updatedSubscriptionsStatus = (subscriptionId, payload) => {
+    bc.payments()
+      .updatedSubscription(subscriptionId, payload)
+      .then((response) => console.log("Update success:", response))
+      .catch((error) => console.error("Update failed:", error));
+  };
+
   useEffect(() => {
-      const personsList = studenList
-        .filter((p) => p.role?.toUpperCase() == "TEACHER")
-        .concat(
-          studenList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
-          studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
-          studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
-        );
-      const updatedSubscriptions = personsList?.map(person => {
-        const plan = subscriptions
-          ?.filter(sub => sub?.user.email === person?.user.email)
-          .map(sub => sub?.plans[0].slug);
-        
-        return { ...person, subscriptions_status: plan };
-      });
-    
-      setUserSubscription(updatedSubscriptions);
-      console.log("userSubscription", userSubscription)
-    }, [studenList, subscriptions]);
+    const personsList = studenList
+      .filter((p) => p.role?.toUpperCase() == "TEACHER")
+      .concat(
+        studenList.filter((p) => p.role?.toUpperCase() == "ASSISTANT"),
+        studenList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
+        studenList.filter((p) => p.role?.toUpperCase() == "STUDENT")
+      );
+    const updatedSubscriptions = personsList?.map((person) => {
+      const plan = subscriptions
+        ?.filter((sub) => {
+          console.log("sub:", sub);
+          return sub?.user.email === person?.user.email;
+        })
+        .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id }));
+
+      return { ...person, subscriptions_status: plan };
+    });
+
+    setUserSubscription(updatedSubscriptions);
+    console.log("userSubscription", userSubscription);
+  }, [studenList, subscriptions]);
 
   return (
     <Card className="p-4">
@@ -412,23 +422,33 @@ const CohortStudents = ({ slug, cohortId }) => {
                               >
                                 {s.educational_status}
                               </small>
-                              <small
-                                aria-hidden="true"
-                                onClick={() => {
-                                  setRoleDialog(true);
-                                  setCurrentStd({
-                                    id: s.user.id,
-                                    positionInArray: i,
-                                    action: "subscriptions_status",
-                                  });
-                                }}
-                                className="border-radius-4 px-2 pt-2px bg-secondary"
-                                style={{ cursor: "pointer", margin: "0 3px" }}
-                              >
-                                {s.subscriptions_status?.length > 0 
-                                  ? s.subscriptions_status.map(status => status.toUpperCase()).join(", ") 
-                                  : "NO STATUS"}
-                              </small>
+                              {s.subscriptions_status?.length > 0 ? (
+                                s.subscriptions_status.map((status) => (
+                                  <small
+                                    key={status.slug}
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                      setRoleDialog(true);
+                                      setCurrentStd({
+                                        id: s.user.id,
+                                        positionInArray: i,
+                                        action: "subscriptions_status",
+                                      });
+                                    }}
+                                    className="border-radius-4 px-2 pt-2px bg-secondary"
+                                    style={{
+                                      cursor: "pointer",
+                                      margin: "0 3px",
+                                    }}
+                                  >
+                                    {status.slug.toUpperCase()}
+                                  </small>
+                                ))
+                              ) : (
+                                <small className="border-radius-4 px-2 pt-2px bg-secondary">
+                                  NO STATUS
+                                </small>
+                              )}
                             </>
                           )}
                         </p>
@@ -454,20 +474,20 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </IconButton>
                       {s.role === "STUDENT" && (
                         <>
-                        <Tooltip title="Create plan">
-                          <IconButton
-                            onClick={() => {
-                              setRoleDialog(true);
-                              setCurrentStd({
-                                id: s.user.id,
-                                positionInArray: i,
-                                action: "plan",
-                              });
-                            }}
-                          >
-                            <Icon fontSize="small">money</Icon>
-                          </IconButton>
-                        </Tooltip>
+                          <Tooltip title="Create plan">
+                            <IconButton
+                              onClick={() => {
+                                setRoleDialog(true);
+                                setCurrentStd({
+                                  id: s.user.id,
+                                  positionInArray: i,
+                                  action: "plan",
+                                });
+                              }}
+                            >
+                              <Icon fontSize="small">money</Icon>
+                            </IconButton>
+                          </Tooltip>
                           <Link
                             to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}
                           >

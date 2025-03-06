@@ -14,9 +14,7 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
         payment_details: "",
         reference: "",
         user: userId,
-        // subscriptionId: null, //2002
     });
-    console.log("Initial Values:", initialValues);
 
     const textFieldStyle = {
         margin: "10px 0",
@@ -32,7 +30,6 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
     };
 
     const handleSubmit = async (values) => {
-        console.log("Submitting values:", values);
         try {
             const payload = {
                 plan: values.plan,
@@ -41,7 +38,6 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                 reference: values.reference,
                 user: values.user,
                 cohorts: [slug],
-                // subscriptionId: values.subscriptionId,
             };
                 await bc
                     .payments()
