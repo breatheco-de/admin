@@ -428,7 +428,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                               >
                                 {s.educational_status}
                               </small>
-                              {s.subscriptions_status?.length > 0 (
+                              {s.subscriptions_status?.length > 0 && (
                                 s.subscriptions_status.map((status, index) => (
                                   <small
                                     key={status.slug + index}
@@ -560,7 +560,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle style={{ textAlign: "center" }}>
-            {`Select a ${actionController.message[currentStd.action]}`}
+            {`Select a ${actionController.message[currentStd.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
         </DialogTitle>
         <DialogContent>
           {/* plans Dialog */}
@@ -591,23 +591,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                     <ListItemText primary={opt} />
                   </ListItem>
                 ))}
-                {currentStd?.status && (
-                <div style={{ marginTop: "10px" }}>
-                <label style={{ fontWeight: "bold" }}>Slug</label>
-                <input 
-                  type="text" 
-                  value={currentStd.status.slug} 
-                  readOnly 
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: "5px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                  }}
-                />
-              </div>
-              )}
             </List>
           )}
         </DialogContent>
