@@ -144,37 +144,41 @@ const CohortStudents = ({ slug, cohortId }) => {
   }, [debouncedSearchTerm]);
 
   useEffect(() => {
-    bc.payments()
-      .getSubscription()
-      .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
-          console.log("result", data);
-          setSubscriptions(data.data);
-        }
-      })
-      .catch((error) => error);
+    getSubscription()
   }, []);
 
-  const changeStudentStatus = (value, name, studentId) => {
+  const changeStudentStatus = (
+    value,
+    name,
+    studentId,
+    subscriptionId,
+  ) => {
     const student = studentList.find((s) => s.user.id === studentId);
+    if (!student) return console.error("Student not found");
+
     const sStatus = {
       role: student.role,
       finantial_status: student.finantial_status,
       educational_status: student.educational_status,
       subscriptions_status: student.subscriptions_status,
     };
-    console.log("NAAAAAAMEEEEEEE", name, value, studentId);
-    bc.admissions()
-      .updateCohortUserInfo(cohortId, studentId, {
-        ...sStatus,
-        [name]: value,
-      })
-      .then((data) => {
-        if (data.status >= 200) getCohortStudents();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    if (name === "subscriptions_status") {
+      bc.payments()
+        .updatedSubscription(subscriptionId, { status: value })
+        .then(() => getSubscription())
+        .catch((error) => console.error("Update failed:", error));
+    } else {
+      bc.admissions()
+        .updateCohortUserInfo(cohortId, studentId, {
+          ...sStatus,
+          [name]: value,
+        })
+        .then((data) => {
+          if (data.status >= 200) getCohortStudents();
+        })
+        .catch((error) => console.error(error));
+    }
   };
 
   const getCohortStudents = (query) => {
@@ -200,6 +204,17 @@ const CohortStudents = ({ slug, cohortId }) => {
       .catch((error) => error);
   };
 
+  const getSubscription = () => {
+    bc.payments()
+    .getSubscription()
+    .then((data) => {
+      if (data.status >= 200 && data.status < 300) {
+        setSubscriptions(data.data);
+      }
+    })
+    .catch((error) => error);
+  }
+
   const addUserToCohort = (user_id) => {
     bc.admissions()
       .addUserCohort(cohortId, {
@@ -224,13 +239,6 @@ const CohortStudents = ({ slug, cohortId }) => {
     setOpenDialog(false);
   };
 
-  const updatedSubscriptionsStatus = (subscriptionId, payload) => {
-    bc.payments()
-      .updatedSubscription(subscriptionId, payload)
-      .then((response) => console.log("Update success:", response))
-      .catch((error) => console.error("Update failed:", error));
-  };
-
   useEffect(() => {
     const personsList = studentList
       .filter((p) => p.role?.toUpperCase() == "TEACHER")
@@ -242,16 +250,14 @@ const CohortStudents = ({ slug, cohortId }) => {
     const updatedSubscriptions = personsList?.map((person) => {
       const plan = subscriptions
         ?.filter((sub) => {
-          console.log("sub:", sub);
           return sub?.user.email === person?.user.email;
         })
-        .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id }));
+        .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id, status:sub?.status }));
 
       return { ...person, subscriptions_status: plan };
     });
 
     setUserSubscription(updatedSubscriptions);
-    console.log("userSubscription", userSubscription);
   }, [studentList, subscriptions]);
 
   return (
@@ -422,10 +428,10 @@ const CohortStudents = ({ slug, cohortId }) => {
                               >
                                 {s.educational_status}
                               </small>
-                              {s.subscriptions_status?.length > 0 ? (
-                                s.subscriptions_status.map((status) => (
+                              {s.subscriptions_status?.length > 0 (
+                                s.subscriptions_status.map((status, index) => (
                                   <small
-                                    key={status.slug}
+                                    key={status.slug + index}
                                     aria-hidden="true"
                                     onClick={() => {
                                       setRoleDialog(true);
@@ -433,6 +439,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                                         id: s.user.id,
                                         positionInArray: i,
                                         action: "subscriptions_status",
+                                        status,
+                                        subscriptionId: status.subscription_id,
                                       });
                                     }}
                                     className="border-radius-4 px-2 pt-2px bg-secondary"
@@ -441,13 +449,9 @@ const CohortStudents = ({ slug, cohortId }) => {
                                       margin: "0 3px",
                                     }}
                                   >
-                                    {status.slug?.toUpperCase()}
+                                    {status.status?.toUpperCase()}
                                   </small>
                                 ))
-                              ) : (
-                                <small className="border-radius-4 px-2 pt-2px bg-secondary">
-                                  NO STATUS
-                                </small>
                               )}
                             </>
                           )}
@@ -556,9 +560,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle style={{ textAlign: "center" }}>
-          {currentStd.action === "plan"
-            ? "Selecciona un Plan"
-            : `Select a ${actionController.message[currentStd.action]}`}
+            {`Select a ${actionController.message[currentStd.action]}`}
         </DialogTitle>
         <DialogContent>
           {/* plans Dialog */}
@@ -580,7 +582,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                         opt,
                         currentStd.action,
                         currentStd.id,
-                        currentStd.positionInArray
+                        currentStd?.subscriptionId
                       );
                       setRoleDialog(false);
                     }}
@@ -589,6 +591,23 @@ const CohortStudents = ({ slug, cohortId }) => {
                     <ListItemText primary={opt} />
                   </ListItem>
                 ))}
+                {currentStd?.status && (
+                <div style={{ marginTop: "10px" }}>
+                <label style={{ fontWeight: "bold" }}>Slug</label>
+                <input 
+                  type="text" 
+                  value={currentStd.status.slug} 
+                  readOnly 
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    marginTop: "5px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                  }}
+                />
+              </div>
+              )}
             </List>
           )}
         </DialogContent>
