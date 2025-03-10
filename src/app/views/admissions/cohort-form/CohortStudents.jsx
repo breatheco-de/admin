@@ -73,12 +73,7 @@ const actionController = {
     subscriptions_status: [
       "FREE_TRIAL",
       "ACTIVE",
-      "CANCELLED",
-      "DEPRECATED",
-      "PAYMENT_ISSUE",
       "ERROR",
-      "FULLY_PAID",
-      "EXPIRED",
     ],
   },
 };
@@ -155,6 +150,7 @@ const CohortStudents = ({ slug, cohortId }) => {
   ) => {
     const student = studentList.find((s) => s.user.id === studentId);
     if (!student) return console.error("Student not found");
+    console.log("STUDENT", student)
 
     const sStatus = {
       role: student.role,
@@ -434,6 +430,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                     key={status.slug + index}
                                     aria-hidden="true"
                                     onClick={() => {
+                                      console.log("STATUSSSSSSSS", status)
                                       setRoleDialog(true);
                                       setCurrentStd({
                                         id: s.user.id,
@@ -449,7 +446,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                       margin: "0 3px",
                                     }}
                                   >
-                                    {status.status?.toUpperCase()}
+                                    {status.slug?.toUpperCase()}
                                   </small>
                                 ))
                               )}
@@ -573,6 +570,7 @@ const CohortStudents = ({ slug, cohortId }) => {
             />
           ) : (
             <List>
+              {console.log("currentStd", currentStd?.status?.slug)}
               {currentStd.action &&
                 actionController.options[currentStd.action].map((opt, i) => (
                   <ListItem
@@ -582,7 +580,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                         opt,
                         currentStd.action,
                         currentStd.id,
-                        currentStd?.subscriptionId
+                        currentStd.subscriptionId
                       );
                       setRoleDialog(false);
                     }}
