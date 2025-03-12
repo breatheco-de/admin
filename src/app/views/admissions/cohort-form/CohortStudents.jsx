@@ -189,11 +189,11 @@ const CohortStudents = ({ slug, cohortId }) => {
     bc.admissions()
       .getAllUserCohorts(_baseQuery)
       .then((data) => {
-        if (data.status >= 200 && data.status < 300) {
+        if (data?.status >= 200 && data?.status < 300) {
           const { results, next } = data.data;
           setHasMore(next !== null);
           setIsLoading(false);
-          setListlength(data.data.count);
+          setListlength(data?.data?.count);
           results.length < 1 ? setStudentsList([]) : setStudentsList(results);
         }
       })
@@ -227,7 +227,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const deleteUserFromCohort = () => {
     bc.admissions()
-      .deleteUserCohort(cohortId, currentStd.id)
+      .deleteUserCohort(cohortId, currentStd?.id)
       .then((data) => {
         if (data.ok) getCohortStudents();
       })
@@ -467,7 +467,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                     <div className="flex justify-end items-center">
                       <IconButton
                         onClick={() => {
-                          setCurrentStd({ id: s.user.id, positionInArray: i });
+                          setCurrentStd({ id: s.user?.id, positionInArray: i });
                           setOpenDialog(true);
                         }}
                       >
@@ -557,22 +557,22 @@ const CohortStudents = ({ slug, cohortId }) => {
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle style={{ textAlign: "center" }}>
-            {`Select a ${actionController.message[currentStd.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
+            {`Select a ${actionController.message[currentStd?.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
         </DialogTitle>
         <DialogContent>
           {/* plans Dialog */}
-          {currentStd.action === "plan" ? (
+          {currentStd?.action === "plan" ? (
             <PlansDialog
               plansDialog={plansDialog}
               payments={payments}
-              userId={currentStd.id}
+              userId={currentStd?.id}
               onClose={() => setRoleDialog(false)}
             />
           ) : (
             <List>
               {console.log("currentStd", currentStd?.status?.slug)}
-              {currentStd.action &&
-                actionController.options[currentStd.action].map((opt, i) => (
+              {currentStd?.action &&
+                actionController.options[currentStd?.action].map((opt, i) => (
                   <ListItem
                     button
                     onClick={() => {
