@@ -255,6 +255,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
     setUserSubscription(updatedSubscriptions);
   }, [studentList, subscriptions]);
+  
 
   return (
     <Card className="p-4">
@@ -427,10 +428,11 @@ const CohortStudents = ({ slug, cohortId }) => {
                               {s.subscriptions_status?.length > 0 && (
                                 s.subscriptions_status.map((status, index) => (
                                   <small
-                                    key={status.slug + index}
-                                    aria-hidden="true"
-                                    onClick={() => {
-                                      console.log("STATUSSSSSSSS", status)
+                                  key={status.slug + index}
+                                  aria-hidden="true"
+                                  onClick={() => {
+                                      // console.log("subscriptions_status", s.subscriptions_status)
+                                      // console.log("STATUSSSSSSSS", status)
                                       setRoleDialog(true);
                                       setCurrentStd({
                                         id: s.user.id,
@@ -444,6 +446,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                                     style={{
                                       cursor: "pointer",
                                       margin: "0 3px",
+                                      color: "white", 
                                     }}
                                   >
                                     {status.slug?.toUpperCase()}
@@ -570,7 +573,7 @@ const CohortStudents = ({ slug, cohortId }) => {
             />
           ) : (
             <List>
-              {console.log("currentStd", currentStd?.status?.slug)}
+              {/* {console.log("currentStd", currentStd?.status?.slug)} */}
               {currentStd?.action &&
                 actionController.options[currentStd?.action].map((opt, i) => (
                   <ListItem

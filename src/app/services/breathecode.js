@@ -1324,6 +1324,10 @@ class BreatheCodeClient {
           const qs = serializeQuerystring(query);
           return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/subscription?${qs}`);
       },
+      getPlanFinancing: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/planfinancing?${qs}`);
+    },
       updatedSubscription: (subscriptionId, payload) =>
         axios.bcPut(
           "Update Academy Plan Subscription",

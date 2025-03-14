@@ -57,6 +57,8 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const session = getSession();
+  const [planFinancingSlugs, setPlanFinancingSlugs] = useState([]);
+  const [subscriptionSlugs, setSubscriptionSlugs] = useState([]);
 
   const getStudentCohorts = () => {
     setIsLoading(true);
@@ -77,10 +79,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       })
       .catch((error) => error);
   };
-
-  useEffect(() => {
-    getStudentCohorts();
-  }, []);
 
   const changeStudentStatus = (value, name, studentId, i) => {
     const sStatus = {
@@ -138,6 +136,57 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       label: 'Plans',
     },
   ];
+
+
+  const getSubscriptionStatus = () => {
+    setIsLoading(true);
+    bc.payments()
+      .getSubscription({ user: stdId })
+      .then(({ data }) => {
+        setIsLoading(false);
+        console.log("Raw Subscription Data:", data);
+        if (data.length > 0) {
+          const slugs = data.map(subscription => ({
+            plan: subscription.plans[0]?.slug || 'N/A',  
+            status: subscription.status,
+          }));
+          setSubscriptionSlugs(slugs);
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error(error);
+      });
+  };
+
+
+  const getPlanFinancing = () => {
+    setIsLoading(true);
+    bc.payments()
+      .getPlanFinancing({ user: stdId })
+      .then(({ data }) => {
+        setIsLoading(false);
+        console.log("Raw PlanFinancing Data:", data);
+        if (data.length > 0) {
+          const slugs = data.map(planFinancing => ({
+            plan: planFinancing.plans[0]?.slug || 'N/A',  
+            status: planFinancing.status,
+          }));
+          setPlanFinancingSlugs(slugs);
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error(error);
+      });
+  };
+  
+  useEffect(() => {
+    getStudentCohorts();
+    getSubscriptionStatus();
+    getPlanFinancing()
+  }, []);
+  
 
   return (
     <>
@@ -232,10 +281,11 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                             }}
                             role="none"
                             className="border-radius-4 px-2 pt-2px bg-secondary"
-                            style={{ cursor: 'pointer', margin: '0 3px' }}
+                            style={{ cursor: 'pointer', margin: '0 3px', color:"white" }}
                           >
-                            {s.subscriptions_status ? s.subscriptions_status : 'SUBSCRIPTION STATUS'}
+                            {subscriptionSlugs[i]?.plan?.toUpperCase() || 'SUBSCRIPTION SLUG'}
                           </small>
+
                           <small
                             onClick={() => {
                               setRoleDialog(true);
@@ -247,9 +297,9 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                             }}
                             role="none"
                             className="border-radius-4 px-2 pt-2px bg-secondary"
-                            style={{ cursor: 'pointer', margin: '0 3px' }}
+                            style={{ cursor: 'pointer', margin: '0 3px', color:'red' }}
                           >
-                            {s.subscriptions_status ? s.subscriptions_status : 'PLAN FINANCING'}
+                            {planFinancingSlugs[i]?.plan?.toUpperCase() || 'PLAN FINANCING SLUG'}
                           </small>
                         </p>
                       </div>
