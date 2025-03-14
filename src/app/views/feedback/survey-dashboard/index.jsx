@@ -24,6 +24,7 @@ const Survey = ({ match }) => {
     answers = [],
     avgCohortScore = 0,
     avgAcademyScore = 0,
+    avgLiveClassScore = 0,
     mentors = [],
     answered = [],
     overallScore = 0,
@@ -67,7 +68,7 @@ const Survey = ({ match }) => {
               className="px-3 text-11 py-3px border-radius-4 text-white bg-green"
               style={{ cursor: 'pointer' }}
             >
-              PENDING
+              {survey.status}
             </div>
             <div className="px-3 text-11 py-3px border-radius-4 " style={{ cursor: 'pointer' }}>
               Cohort: {match.params.cohort}
@@ -92,13 +93,16 @@ const Survey = ({ match }) => {
             <Alert severity="warning" className="mb-3">
               <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
             </Alert>
-            <GaugeProgressCard score={survey.scores?.total || overallScore} />
+            <GaugeProgressCard score={survey.scores?.total || overallScore || 0} />
             <Grid container spacing={2}>
               <Grid item sm={6} xs={12}>
-                <StatCard label={'Cohort Score'} score={survey.scores?.cohort || avgCohortScore} />
+                <StatCard label={'Cohort Score'} score={survey.scores?.cohort || avgCohortScore || 0} />
               </Grid>
               <Grid item sm={6} xs={12}>
-                <StatCard label={'Academy Score'} score={survey.scores?.academy || avgAcademyScore} />
+                <StatCard label={'Academy Score'} score={survey.scores?.academy || avgAcademyScore || 0} />
+              </Grid>
+              <Grid item sm={6} xs={12}>
+                <StatCard label={'Live CLass Score'} score={survey.scores?.live_class || avgLiveClassScore || 0} />
               </Grid>
               {surveyMentors.map((m) => (
                 <Grid key={m.name} item sm={6} xs={12}>

@@ -19,12 +19,15 @@ const defaultToolbarSelectStyles = {
     },
 };
 
-const DefaultToobar = ({ children, ...props }) => (
+const DefaultToobar = ({ children, ...props }) => {
+    return (
     <div className={props.classes.iconContainer}>
         <BulkDelete onBulkDelete={props.onBulkDelete} {...props} />
-        {children}
-    </div>
-);
+        {React.Children.map(children, Child => 
+            <Child { ...props } />
+        )}
+    </div>)
+};
 
 const StyledDefaultToobar = withStyles(defaultToolbarSelectStyles, {
     name: "SmartMUIDataTable",
@@ -58,11 +61,6 @@ export const SmartMUIDataTable = (props) => {
         limit: query.get("limit") || props.defaultLimit || 10,
         offset: query.get("offset") || 0,
     });
-
-    if (!Array.isArray(props.items)) {
-        console.log("SmartMUIDataTable.props.items:", props.items);
-        throw Error("Property items must be an array on SmartMUIDataTable");
-    }
 
     let getSort = () => {
         let sort = {};
@@ -107,7 +105,7 @@ export const SmartMUIDataTable = (props) => {
     }, [isAlive]);
 
     const handlePageChange = (page, rowsPerPage, like, sort) => {
-        console.log("####### I excuted");
+
         setIsLoading(true);
         const { limit, offset, ...restParams } = getParams();
         delete restParams.sort;
@@ -159,12 +157,17 @@ export const SmartMUIDataTable = (props) => {
         });
         handlePageChange(0, querys.limit);
     };
+
+    if (!Array.isArray(props.items)) {
+        console.error("Property items must be an array on SmartMUIDataTable");
+    }
+
     return (
         <>
             {isLoading && <MatxLoading />}
             <MUIDataTable
                 title={props.title}
-                data={props.items}
+                data={props.items.details ? [] : props.items}
                 columns={props.columns}
                 options={{
                     sortOrder: getSort(),
@@ -175,6 +178,7 @@ export const SmartMUIDataTable = (props) => {
                     elevation: 0,
                     count: table.count,
                     page: table.page,
+                    search: props.search || true,
                     selectableRowsHeader: false,
                     rowsPerPage: querys.limit === undefined ? 10 : querys.limit,
                     rowsPerPageOptions: [10, 20, 40, 80, 100],
@@ -205,10 +209,15 @@ export const SmartMUIDataTable = (props) => {
                     },
                     customToolbar: () => (
                         <DownloadCsv
-                            getAllPagesCSV={() =>
-                                props.downloadCSV(querys.like)
+                            getAllPagesCSV={() => {
+                                const newQuerysAll = {...querys.like, envelope:false}
+                                return props.downloadCSV(newQuerysAll)
+                            }}
+                            getSinglePageCSV={() => {
+                                const newQuerysSingle = {...querys, envelope:false}
+                                return props.downloadCSV(newQuerysSingle)
                             }
-                            getSinglePageCSV={() => props.downloadCSV(querys)}
+                            }
                         />
                     ),
 
@@ -371,5 +380,6 @@ SmartMUIDataTable.propTypes = {
 SmartMUIDataTable.defaultProps = {
     selectableRows: true,
     defaultLimit: 10,
-    downloadCsv: true
+    downloadCsv: true,
+    search: true
 };

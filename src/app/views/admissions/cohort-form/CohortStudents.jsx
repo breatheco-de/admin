@@ -55,7 +55,7 @@ const actionController = {
     role: 'Cohort Role'
   },
   options: {
-    educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', ''],
+    educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', 'NOT_COMPLETING'],
     finantial_status: ['FULLY_PAID', 'UP_TO_DATE', 'LATE', ''],
     role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT']
   }

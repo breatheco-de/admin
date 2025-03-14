@@ -50,7 +50,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
 
     const handleAddAsset = async (keyword, asset) => {
         if(!asset) return false;
-        console.log("keyword", keyword)
         //{ slug: asset.slug, seo_keywords: asset.seo_keywords.map(k => k.id || k).concat([keyword.id]) }
         const resp = await bc
                             .registry()
@@ -151,10 +150,18 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                                 "default": "",
                                 undefined: "",
                             }
+
+                            const textColors = {
+                                "error": "text-light",
+                                "danger": "text-light",
+                                "default": "",
+                                undefined: "",
+                            }
+                    
                             return <Chip onClick={() => setOpenKeywordAssets({ keyword: k, cluster })}
                                 key={k.slug} size="small" label={k.slug} 
                                 color={_status}
-                                icon={_status == "default" ? <Done /> : <ErrorOutline />} className={`mr-2 mb-2 ${colors[_status]}`} />;
+                                icon={_status == "default" ? <Done /> : <ErrorOutline className={textColors[_status]} />} className={`mr-2 mb-2 ${colors[_status]}`} />;
                         })}
                         <Chip size="small" className="pointer mr-2 mb-2" icon={<Add onClick={() => setAddKeyword({ cluster: clusterForm.id })} />} />
                     </Grid>
@@ -190,7 +197,6 @@ const ClusterCard = ({ cluster, isEditing, onSubmit }) => {
                             onClick={async () => {
                                 const data = await onSubmit(clusterForm)
                                 if(data){
-                                    console.log("onsubmit", data)
                                     setEditMode(null)
                                     setClusterForm(data)
                                 }

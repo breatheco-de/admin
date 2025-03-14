@@ -1,3 +1,4 @@
+import { Language } from "@material-ui/icons";
 import axios from "../../axios";
 import config from "../../config.js";
 
@@ -11,6 +12,8 @@ function serializeQuerystring(object) {
       : "";
   return querystring;
 }
+
+axios.defaults.headers.common["Accept-Language"] = "en";
 
 class BreatheCodeClient {
   constructor() {
@@ -136,6 +139,12 @@ class BreatheCodeClient {
         ),
       getSyllabus: (query) =>
         axios.bcGet("Syllabus", `${this.host}/admissions/syllabus/${query}`),
+      getSyllabusVersionCSV: (syllabus_slug, version='latest', query) =>
+        axios.bcGet(
+          "Syllabus CSV", 
+          `${this.host}/admissions/syllabus/${syllabus_slug}/version/${version}.csv?${serializeQuerystring(query)}`,
+          { responseType: 'text' }
+        ),
       getAllCohorts: (query) => {
         const qs = serializeQuerystring(query);
         return axios.bcGet(
@@ -218,6 +227,12 @@ class BreatheCodeClient {
           `${this.host}/auth/academy/student`,
           payload
         ),
+      addSaasStudent: (payload) =>
+        axios.bcPost(
+          "Add saas student",
+          `${this.host}/auth/subscribe/`,
+          payload
+        ),
       getUserByEmail: (email) =>
         axios.bcGet("User", `${this.host}/auth/user/${email}`),
       getAllUsers: (query) => {
@@ -262,7 +277,7 @@ class BreatheCodeClient {
           "Academy student",
           `${this.host}/auth/academy/student`,
           payload
-        ),
+        ), 
       getAcademyMembers: async (query) => {
         const qs = serializeQuerystring(query);
         return await axios.bcGet(
@@ -275,6 +290,13 @@ class BreatheCodeClient {
         return axios.bcGet(
           "Academy member",
           `${this.host}/auth/academy/user/invite${query ? `?${qs}` : ""}`
+        );
+      },
+      getAcademySettingsLog: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Academy settings log",
+          `${this.host}/auth/academy/settings/log${query ? `?${qs}` : ""}`
         );
       },
       deleteAcademyInvites: (query) => {
@@ -359,6 +381,17 @@ class BreatheCodeClient {
           `${this.host}/auth/profile/${id}`,
           data
         ),
+      downloadCSV: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "All Pages Table CSV",
+          `${this.host}/auth/academy/student${query ? `?${qs}` : ""}`,
+          {
+            headers: { Accept: "text/csv" },
+            responseType: "blob",
+          }
+        );
+      },
     };
   }
 
@@ -470,6 +503,12 @@ class BreatheCodeClient {
           `${this.host}/marketing/academy/automation${id ? `/${id}` : ""}`,
           automation
         ),
+      syncAcademyAutomations: (id) => {
+        return axios.bcGet(
+          "Sync academy automations",
+          `${this.host}/marketing/academy/${id}/automation/sync`
+        )
+      },
       getAcademyUtm: () =>
         axios.bcGet("Academy Utm", `${this.host}/marketing/academy/utm`),
       addNewLead: (newLead) =>
@@ -854,6 +893,11 @@ class BreatheCodeClient {
           }
         );
       },
+      getLiveClasses: (cohortId) =>
+        axios.bcGet(
+          "Live Classes",
+          `${this.host}/events/academy/event/liveclass?cohort=${cohortId}`
+        ),
     };
   }
 
@@ -867,8 +911,53 @@ class BreatheCodeClient {
     return {
       get_bulk_upload: () =>
         axios.bcGet("Media", `${this.host}/monitoring/upload`),
+      getAllRepoSubscriptions: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet("Repo Subscription", `${this.host}/monitoring/reposubscription${query ? `?${qs}` : ""}`)
+      },
+      updateRepoSubscription: async (id, payload) => {
+        return await axios.bcPut("Repo Subscription", `${this.host}/monitoring/reposubscription/${id}`, payload)
+      },
+      createRepoSubscription: async (payload) => {
+        return await axios.bcPost("Repo Subscription", `${this.host}/monitoring/reposubscription`, payload)
+      }
     };
   }
+
+  assessment() {
+    return {
+      getAllAssessments: async (query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Assessesment",
+          `${this.host}/assessment${query ? `?${qs}` : ""}`
+        );
+      },
+      getSingle: (assessment_slug) =>
+        axios.bcGet(
+          "Assessment",
+          `${this.host}/assessment/${assessment_slug}`
+        ),
+        updateSingle: async (assessment_slug, payload) => {
+          return await axios.bcPut(
+            "Assessment",
+            `${this.host}/assessment/${assessment_slug}`,
+            payload
+          );
+        },
+        deleteQuestion: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Question",
+            `${this.host}/assessment/${assessment_slug}/question/${payload.id}`);
+        },
+        deleteOption: async (assessment_slug, payload) => {
+          return await axios.bcDelete(
+            "Option",
+            `${this.host}/assessment/${assessment_slug}/option/${payload.id}`);
+        },
+    };
+  }
+
   media() {
     return {
       upload: (payload) =>
@@ -894,6 +983,7 @@ class BreatheCodeClient {
         axios.bcPut("Media", `${this.host}/media/info`, payload),
     };
   }
+
 
   assignments() {
     return {
@@ -984,6 +1074,13 @@ class BreatheCodeClient {
         return axios.bcGet(
           "Keyword",
           `${this.host}/registry/academy/keyword${query ? `?${qs}` : ""}`
+        );
+      },
+      getAllAlias: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.bcGet(
+          "Keyword",
+          `${this.host}/registry/academy/asset/alias${query ? `?${qs}` : ""}`
         );
       },
       getAllClusters: async (query) => {
@@ -1102,6 +1199,11 @@ class BreatheCodeClient {
           "Comment",
           `${this.host}/registry/academy/asset/comment/${id}`
         ),
+      deleteAlias: async (id) =>
+        await axios.bcDelete(
+          "Alias",
+          `${this.host}/registry/academy/asset/alias/${id}`
+        ),
       getAssetPreview: async (slug, options) =>
         await axios.bcGet(
           "Asset",
@@ -1135,6 +1237,13 @@ class BreatheCodeClient {
           options
         );
       },
+      getAssetSuperseders: async (slug, query) => {
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset",
+          `${this.host}/registry/asset/${slug}/supersedes${query ? `?${qs}` : ""}`
+        );
+      },
       getCluster: async (associatedSlug, options) =>
         await axios.bcGet(
           "Asset",
@@ -1157,6 +1266,27 @@ class BreatheCodeClient {
           `${this.host}/registry/academy/asset/comment?${qs}`
         );
       },
+      getAssetErrors: async (query) => {
+        if (!query.sort) query.sort = "-created_at";
+        const qs = serializeQuerystring(query);
+        return await axios.bcGet(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?${qs}`
+        );
+      },
+      deleteAssetErrorBulk: (query) => {
+        const qs = query.join(",");
+        return axios.bcDelete(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error?id=${qs}`
+        );
+      },
+      updateAssetError: async (slug, payload) =>
+        await axios.bcPut(
+          "Asset Error",
+          `${this.host}/registry/academy/asset/error${slug ? `/${slug}` : ""}`,
+          payload
+        ),
     };
   }
 
@@ -1179,6 +1309,29 @@ class BreatheCodeClient {
         ),
       getActivityTypes: () =>
         axios.bcGet("Cohort Activity Type", `${this.host}/activity/type`),
+    };
+  }
+
+  payments() {
+    return {
+      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription) =>
+        axios.bcPost(
+          "Academy Plan Subscription",
+          `${this.host}/payments/academy/plan/${planSlug}/subscription`,
+          payloadPlanSubscription
+        ),
+      getPlanByCohort: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  
+      },
+      getPaymentsMethods: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
+      },
+      getPlan: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
+      }
     };
   }
 

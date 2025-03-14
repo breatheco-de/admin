@@ -173,7 +173,6 @@ const Students = () => {
                   onChange={(newCohort) => {
                     setCohorts(newCohort);
                     const slugs = newCohort.map((i) => i.slug).join(',');
-
                     if (slugs !== '') filterList[index][0] = slugs;
                     else filterList[index] = []
                     onChange(filterList[index], index, column);
@@ -256,6 +255,10 @@ const Students = () => {
           deleting={async (querys) => {
             const { status } = await bc.admissions().deleteStudentBulk(querys);
             return status;
+          }}
+          downloadCSV={async (querys) => {
+            const { data } = await bc.auth().downloadCSV({ ...querys, download: "csv" });
+            return data;
           }}
         />
       </div>

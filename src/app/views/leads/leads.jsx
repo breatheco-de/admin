@@ -14,6 +14,7 @@ import bc from '../../services/breathecode';
 import AlertAcademyAlias from 'app/components/AlertAcademyAlias';
 import { toast } from "react-toastify";
 import UpdateLeadStatusDialog from './leads-form/UpdateLeadStatusDialog';
+import AlertLeadErrors from './components/AlertLeadErrors';
 import DowndownMenu from '../../components/DropdownMenu';
 const relativeTime = require('dayjs/plugin/relativeTime');
 // import history from "history.js";
@@ -302,8 +303,7 @@ const Leads = () => {
   ];
 
    const getLeads = async (querys) => {
-    const { data } = await bc.marketing()
-      .getAcademyLeads(querys);
+    const { data } = await bc.marketing().getAcademyLeads(querys);
     setItems(data.results);
     return data
   }
@@ -398,6 +398,7 @@ const Leads = () => {
           </div>
         </div>
       </div>
+      <AlertLeadErrors onClick={(_q) => getLeads(_q)} />
       <AlertAcademyAlias />
       <div>
         <SmartMUIDataTable

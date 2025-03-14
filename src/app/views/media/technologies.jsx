@@ -14,6 +14,12 @@ import TechnologyCard from "./components/TechnologyCard";
 import SEOMenu from "./components/SEOMenu";
 import { useQuery } from '../../hooks/useQuery';
 
+const languages = [
+    {label: "Only Spanish", value: "es"},
+    {label: "Only English", value: "us"},
+    {label: "Multilang", value: "us,es"},
+]
+
 const UserList3 = () => {
     const [technologies, setTechnologies] = useState([]);
     const [total, setTotal] = useState(0);
@@ -26,6 +32,7 @@ const UserList3 = () => {
         like: pgQuery.get('like') !== null ? pgQuery.get('like') : '',
         include_children: pgQuery.get('include_children') !== null ? pgQuery.get('include_children') : false,
     });
+    const [selectedLang, setSelectedLang] = useState([])
 
     const getTechnologies = async () => {
         const resp = await bc.registry().getAllTechnologies(query);
@@ -36,7 +43,7 @@ const UserList3 = () => {
     }
 
     useEffect(() => {
-        getTechnologies();
+        getTechnologies(query);
         history.replace(
             `${window.location.pathname}?${Object.keys(query)
                 .map((key) => `${key}=${query[key]}`)
@@ -57,7 +64,15 @@ const UserList3 = () => {
             </div>
             <Grid container spacing={2}>
                 <Grid item md={3} sm={12} xs={12}>
-                    <SEOMenu />
+                    <SEOMenu languages={languages} handleLanguageByFilter={(event) => {
+                        const lang = event.target.name;
+                        const isChecked = event.target.checked;
+                        if(isChecked) setSelectedLang(lang);
+                        else setSelectedLang(null);
+
+                        setQuery({ ...query, only_lang: lang.includes(",") ? undefined : lang });
+                    }} 
+                    selectedLang={selectedLang} />
                 </Grid>
                 <Grid item md={9} sm={12} xs={12}>
                     <div className="flex items-center mb-4 mt-2">

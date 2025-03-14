@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   Table, TableCell, TableRow, Card, MenuItem, DialogContent,
-  Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
+  Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead, IconButton, Badge,
   TableBody, FormControlLabel, Switch
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -114,34 +114,21 @@ const CHARACTER_LIMIT = 200;
 const DescriptionCard = ({ asset, onChange}) => {
   const [description, setDescription] = useState(null);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
-  const [newDescription, setNewDescription] = useState(null)
   const [editButton, setEditButton] = useState(false)
-  const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleDescription = async () => {
-    if (newDescription == null && newDescription == '') {
-      setEditButton(false);
-    }       
-    const resp = await API.registry().updateAsset(asset.slug, { description: newDescription });
+    const resp = await API.registry().updateAsset(asset.slug, { description });
     if (resp.status == 201) {
       history.push(`./${resp.data.slug}`);
     }
-    setDescription(newDescription);
     setEditButton(false);
   }
 
   useEffect(() => {
-    const fetchInitialValue = async () => {
-        setTextFieldValue(asset.description);
-    };
-    fetchInitialValue();
-}, []);
-
-  useEffect(() => {
     setDescription(asset.description)
-  }, [newDescription])
+  }, [asset.description])
 
-  const onClickUpdate = () => {newDescription != null && newDescription != '' ? setMakePublicDialog(true) : ''};
+  const onClickUpdate = () => {description && setMakePublicDialog(true)};
   const onAccept = () => handleDescription();
 
 
@@ -149,32 +136,14 @@ const DescriptionCard = ({ asset, onChange}) => {
   return <Card className="p-4 mb-4">
    <h4 className="m-0 font-medium">Description:</h4>
     <div>
-      {!description  ?
-        <>
-          <Grid item md={12} sm={12} xs={12}>
-            <TextField value={textFieldValue} variant="outlined" fullWidth multiline
-            inputProps={{
-              maxLength: CHARACTER_LIMIT
-            }}
-            onChange={(e) => {setNewDescription(e.target.value); setTextFieldValue(e.target.value)}} 
-            helperText={`${textFieldValue != null ? textFieldValue.length : '0' }/${CHARACTER_LIMIT}`}
-            />
-          </Grid>
-          <Button style={{ width: "100%", marginTop: "5px" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
-            Add
-          </Button>
-       </>
-         :
-         <>
-        {editButton ?
-        <>
-            <TextField value={textFieldValue} placeholder={textFieldValue} variant="outlined" fullWidth multiline
+        {editButton ? <>
+          <TextField value={description} placeholder={"SEO optimized description of your asset"} variant="outlined" fullWidth multiline
               inputProps={{
                 maxLength: CHARACTER_LIMIT
               }}
-              onChange={(e) => {setTextFieldValue(e.target.value); setNewDescription(e.target.value); }} 
-              helperText={`${textFieldValue != null ? textFieldValue.length : '0'}/${CHARACTER_LIMIT}`}
-           />
+              onChange={(e) => setDescription(e.target.value)} 
+              helperText={description ? `${description.length}/${CHARACTER_LIMIT}` : "0"}
+           /> 
           <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={onClickUpdate}>
             Update
           </Button>
@@ -184,18 +153,19 @@ const DescriptionCard = ({ asset, onChange}) => {
           
           </>
        :
-       <>
-       <p>
-          {description != asset.description ? newDescription : asset.description}
-       </p>
-          <small>{asset.description != null ? asset.description.length : '0' }/{CHARACTER_LIMIT}</small>
-        <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
-          Edit
-        </Button>
+        description ? 
+        <>
+          <p>{description}</p>
+          <small>{description.length}/{CHARACTER_LIMIT}</small>
+          <Button style={{ width: "100%" }} variant="contained" color="primary" size="small" onClick={() => setEditButton(true)}>
+            Edit
+          </Button>
         </>
-      }       
-      </>
-    }
+        :
+        <>
+          No description found for this asset, you can <a className="anchor text-primary underline pointer" onClick={() => setEditButton(true)}>manually set a description here</a>
+        </> 
+      }
     </div>
     <ConfirmAlert
       title={`Are you sure you want to update this description?`}
@@ -219,7 +189,6 @@ const LangCard = ({ asset, onAction, onChange }) => {
       const updateResp = await onChange({
         all_translations: [addTranslation.slug, ...assetTranslations.map(t => asset.translations[t])]
       });
-      console.log("updateResp", updateResp)
       if(updateResp && updateResp.status == 200) setAddTranslation(null);
     } 
     else{
@@ -263,10 +232,14 @@ const LangCard = ({ asset, onAction, onChange }) => {
               className="my-2"
               onChange={(x) => {
                 if (x.value === 'new_asset') setAddTranslation({
-                  title: x.title.replace("New: ", ""),
+                  title: x.title.replace("New:", "").trim(),
                   asset_type: asset.asset_type,
+                  readme_url: asset.readme_url.replace(/README(\.[a-z]{2})?\.md$/, `README.${['us', 'en'].includes(addTranslation.lang) ? '' : addTranslation.lang + '.'}md`),
+                  learnpack_deploy_url: asset.learnpack_deploy_url,
+                  owner: asset.owner?.id || asset.owner,
+                  author: asset.author?.id || asset.author,
                   lang: addTranslation.lang,
-                  slug: slugify(x.title.replace("New: ", "")).toLowerCase(),
+                  slug: slugify(x.title.replace("New: ", "")).replace(/[^a-zA-Z0-9\-_]/g, "").toLowerCase(),
                   all_translations: [asset.slug, ...assetTranslations.map(t => asset.translations[t])]
                 })
                 else setAddTranslation(x)
@@ -310,6 +283,174 @@ const LangCard = ({ asset, onAction, onChange }) => {
         )}
         <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)} />
       </div>
+    }
+  </Card>;
+}
+
+const RevisionsCard = ({ asset, onAction, onChange }) => {
+
+  const [addRevision, setAddRevision] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(null);
+  const [ revisionHistory, setRevisionHistory] = useState({ supersedes: [], previous: [] });
+
+  const closeAll = () => {
+    setAddRevision(null);
+    setIsExpanded(false);
+  }
+
+  const setSuperseder = async (slug, superseder) => {
+    const resp = await API.registry().updateAsset(slug, { superseded_by: superseder?.id || superseder });
+    if (resp.status == 200) {
+      setAddRevision(null);
+      loadAssetRevisionHistory();
+    }
+  }
+  const handleSetRevision = async () => {
+    if(addRevision.supersedes) setSuperseder(asset.slug, addRevision.supersedes.id);
+    else if(addRevision.previous) setSuperseder(addRevision.previous.slug, asset.id);
+  }
+
+  const loadAssetRevisionHistory = async () => {
+    const resp = await API.registry().getAssetSuperseders(asset.slug);
+    if (resp.status == 200) setRevisionHistory(resp.data);
+  }
+  useEffect(() => {
+    console.log("wele asset", asset)
+    loadAssetRevisionHistory();
+  }, [asset.id])
+
+  return <Card className="p-4 mb-4">
+    {!isExpanded ?
+      <div className="flex justify-between items-center">
+      <h4 className="m-0 font-medium" style={{ width: '100%' }}>Other versions:</h4>
+      <IconButton
+        onClick={() => setIsExpanded(true)}
+      >
+        <Badge color="secondary" badgeContent={revisionHistory.supersedes.length + revisionHistory.previous.length}>
+          <Icon>device_hub</Icon>
+        </Badge>
+      </IconButton>
+    </div>
+      : !addRevision ?
+      <div>
+        <h4 className="m-0 font-medium" style={{ width: '100%' }}>Other versions: </h4>
+        <h6 className="mt-2 flex items-center">
+          <Icon fontSize="small">arrow_upward</Icon> 
+          Superseders 
+          <HelpIcon className="ml-2" message={"Newer versions of the current asset"} />
+        </h6>
+        <div>
+          {revisionHistory.supersedes.length == 0 && <>
+          <small>There are no newer versions of the current asset </small>
+          <small className="anchor text-primary underline pointer" onClick={() => setAddRevision({ supersedes: true })}>you can add one here</small>
+          </>}
+        </div>
+        <ul className="no-list-style p-0">
+        {revisionHistory.supersedes.map(a => 
+            <li key={a.slug}>
+              <Link to={`./${a.slug}`}>{a.title}</Link> 
+              <Chip
+                className="ml-1" size="small"
+                label={"Unlink"}
+                icon={<Icon className="pointer" fontSize="small" 
+                  onClick={() => setSuperseder(asset.slug, null)}
+                >delete</Icon>}
+              />
+            </li>
+          )}
+        </ul>
+        <h6 className="mt-2 flex items-center">
+          <Icon fontSize="small">arrow_downward</Icon> 
+          Previous 
+          <HelpIcon className="ml-2" message={"Older versions of the current asset"} />
+        </h6>
+        <div>
+          {revisionHistory.previous.length == 0 && <>
+          <small>There are no older versions of the current asset </small>
+          <small className="anchor text-primary underline pointer" onClick={() => setAddRevision({ previous: true })}>you can add more here</small>
+          </>}
+        </div>
+        <ul className="no-list-style p-0">
+          {revisionHistory.previous.map(a => 
+            <li key={a.slug}>
+              <Link to={`./${a.slug}`}>{a.title}</Link> 
+              <Chip
+                className="ml-1" size="small"
+                label={"Unlink"}
+                icon={<Icon className="pointer" fontSize="small" 
+                  onClick={() => setSuperseder(a.slug, null)}
+                >delete</Icon>}
+              />
+            </li>
+          )}
+        </ul>
+      </div>
+      : addRevision?.supersedes ?
+      <div>
+        <h3 className="m-0">Specify an newer version:</h3>
+        <AsyncAutocomplete
+          width="100%"
+          className="my-2"
+          onChange={(x) => setAddRevision({ supersedes: x })}
+          size="small"
+          label="Search Asset"
+          value={addRevision.supersedes}
+          getOptionLabel={(option) => option.title || `Start typing here...`}
+          asyncSearch={async (searchTerm) => {
+                                                        // get only assets without superseders
+            const resp = await bc.registry().getAllAssets({ 
+              asset_type: asset.asset_type, 
+              previous_version: 'null', 
+              language: asset.lang,
+              like: searchTerm,
+            })
+
+            if (resp.status === 200) {
+              return resp
+            }
+            else return resp
+          }}
+        />
+        <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleSetRevision}>
+          See superseder
+        </Button>
+        <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => closeAll()}>
+          Cancel
+        </Button>
+      </div>
+      : addRevision?.previous ?
+      <div>
+        <h3 className="m-0">Specify an older version:</h3>
+        <AsyncAutocomplete
+          width="100%"
+          className="my-2"
+          onChange={(x) => setAddRevision({ previous: x })}
+          size="small"
+          label="Search Asset"
+          value={addRevision.previous}
+          getOptionLabel={(option) => option.title || `Start typing here...`}
+          asyncSearch={async (searchTerm) => {
+                                                        // get only assets without superseders
+            const resp = await bc.registry().getAllAssets({ 
+              asset_type: asset.asset_type, 
+              superseded_by: 'null', 
+              language: asset.lang,
+              like: searchTerm,
+            })
+            if (resp.status === 200) {
+              return resp
+            }
+            else return resp
+          }}
+        />
+        <Button style={{ width: "50%" }} variant="contained" color="primary" size="small" onClick={handleSetRevision}>
+          Set older version
+        </Button>
+        <Button style={{ width: "50%" }} variant="contained" color="grey" size="small" onClick={() => closeAll()}>
+          Cancel
+        </Button>
+      </div>
+      : <></>
     }
   </Card>;
 }
@@ -614,7 +755,7 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <a href={asset.readme_url} target="_blank" className="small text-primary d-block">open</a>
       </Grid>
       <Grid item xs={8}>
-        <TextField value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
+        <TextField width="100%" value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
         {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
       </Grid>
     </Grid>
@@ -720,14 +861,15 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <FeatureCard asset={asset} onChange={a => onChange(a)} />
+      <RevisionsCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
-      <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-
-      <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      {asset.asset_type != 'QUIZ' && <>
+        <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+        <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      </>}
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
-
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
