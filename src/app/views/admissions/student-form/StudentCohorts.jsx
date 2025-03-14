@@ -37,12 +37,14 @@ const actionController = {
   message: {
     educational_status: 'Educational Status',
     finantial_status: 'Finantial Status',
-    role: 'Cohort Role'
+    role: 'Cohort Role', 
+    subscriptions_status: 'Subscription Status'
   },
   options: {
     educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', 'NOT_COMPLETING'],
     finantial_status: ['FULLY_PAID', 'UP_TO_DATE', 'LATE'],
-    role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT']
+    role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'],
+    subscriptions_status: ['ACTIVE', 'ERROR', 'FREE_TRIAL']
   }
 }
 
@@ -65,8 +67,10 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       .then(({ data }) => {
         setIsLoading(false);
         if (data.length < 1) {
+          console.log("dataaaaaa", data)
           setStdCohorts([]);
         } else {
+          console.log("dataaaaaaDOSSSS", data)
           setStdCohorts(data);
           setCohortOptions(data);
         }
@@ -83,12 +87,15 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       role: stdCohorts[i].role.toUpperCase(),
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status,
+      subscriptions_status: stdCohorts[i].subscriptions_status,
       [name]: value,
     };
+    console.log("SSSSSSTATTTTUSSSS", sStatus)
 
     bc.admissions()
       .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, sStatus)
       .then((data) => {
+        console.log("DATAAAAAAATRESSSSSSSS", data)
         if (data.status >= 200) getStudentCohorts();
       })
       .catch((error) => error);
@@ -213,6 +220,36 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                             style={{ cursor: 'pointer', margin:'0 3px' }}
                           >
                             {s.educational_status}
+                          </small>
+                          <small
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'subscriptions_status' });
+                            }}
+                            onKeyDown={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'subscriptions_status' });
+                            }}
+                            role="none"
+                            className="border-radius-4 px-2 pt-2px bg-secondary"
+                            style={{ cursor: 'pointer', margin: '0 3px' }}
+                          >
+                            {s.subscriptions_status ? s.subscriptions_status : 'SUBSCRIPTION STATUS'}
+                          </small>
+                          <small
+                            onClick={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing' });
+                            }}
+                            onKeyDown={() => {
+                              setRoleDialog(true);
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing' });
+                            }}
+                            role="none"
+                            className="border-radius-4 px-2 pt-2px bg-secondary"
+                            style={{ cursor: 'pointer', margin: '0 3px' }}
+                          >
+                            {s.subscriptions_status ? s.subscriptions_status : 'PLAN FINANCING'}
                           </small>
                         </p>
                       </div>
