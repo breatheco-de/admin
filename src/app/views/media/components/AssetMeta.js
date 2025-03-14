@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Table, TableCell, TableRow, Card, MenuItem, DialogContent,
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead,
-  TableBody
+  TableBody, FormControlLabel, Switch
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag"
@@ -671,12 +671,55 @@ const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
   </Grid>
 </Card>;
 
+const FeatureCard = ({ asset, onChange }) => {
+  const [isFeatured, setIsFeatured] = useState(asset.feature || false);
+  const [loading, setLoading] = useState(false);
+
+  const handleToggleFeature = async () => {
+    setLoading(true);
+    try {
+      const updatedAsset = await API.registry().updateAsset(asset.slug, { feature: !isFeatured });
+
+      if (updatedAsset.status === 200) {
+        setIsFeatured(!isFeatured);
+        onChange({ feature: !isFeatured });
+        toast.success(`Asset ${!isFeatured ? "marked as featured" : "removed from featured"} successfully!`);
+      } else {
+        toast.error("Error updating feature status.");
+      }
+    } catch (error) {
+      toast.error("Failed to update feature status.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Card className="p-4 mb-4">
+      <h4 className="m-0 font-medium">Feature Asset</h4>
+      <Tooltip title="If enabled, this asset will be shown in the landing pages for marketing purposes.">
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isFeatured}
+              onChange={handleToggleFeature}
+              color="primary"
+              disabled={loading}
+            />
+          }
+          label={isFeatured ? "Featured" : "Not Featured"}
+        />
+      </Tooltip>
+    </Card>
+  );
+};
+
 const AssetMeta = ({ asset, onAction, onChange }) => {
   const classes = useStyles();
 
   return (
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <FeatureCard asset={asset} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
