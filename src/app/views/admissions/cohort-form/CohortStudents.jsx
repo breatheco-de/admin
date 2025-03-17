@@ -57,6 +57,7 @@ const actionController = {
     role: "Cohort Role",
     plan: "Plan",
     subscriptions_status: "Subscription Status",
+    plan_financing_status: "Plan Financing Status"
   },
   options: {
     educational_status: [
@@ -75,6 +76,10 @@ const actionController = {
       "ACTIVE",
       "ERROR",
     ],
+    plan_financing_status: [
+      "FREE_TRIAL",
+      "ACTIVE",
+      "ERROR",],
   },
 };
 
@@ -104,7 +109,9 @@ const CohortStudents = ({ slug, cohortId }) => {
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
+  const [planFinancings, setPlanFinancings] = useState([]);
   const [userSubscription, setUserSubscription] = useState([]);
+  // const [userPlanFinancing, setUserPlanFinancing] = useState([]);
 
   const fetchPayment = async (query) => {
     try {
@@ -140,6 +147,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   useEffect(() => {
     getSubscription()
+    getPlanFinancing()
   }, []);
 
   const changeStudentStatus = (
@@ -147,21 +155,29 @@ const CohortStudents = ({ slug, cohortId }) => {
     name,
     studentId,
     subscriptionId,
+    financing_id,
   ) => {
     const student = studentList.find((s) => s.user.id === studentId);
     if (!student) return console.error("Student not found");
-    console.log("STUDENT", student)
+    // console.log("STUDENT", student)
 
     const sStatus = {
       role: student.role,
       finantial_status: student.finantial_status,
       educational_status: student.educational_status,
       subscriptions_status: student.subscriptions_status,
+      plan_financing_status: student.plan_financing_status,
     };
 
     if (name === "subscriptions_status") {
       bc.payments()
         .updatedSubscription(subscriptionId, { status: value })
+        .then(() => getSubscription())
+        .catch((error) => console.error("Update failed:", error));
+    }
+    if (name === "plan_financing_status") {
+      bc.payments()
+        .updatedPlanFinancing(financing_id, { status: value })
         .then(() => getSubscription())
         .catch((error) => console.error("Update failed:", error));
     } else {
@@ -211,6 +227,17 @@ const CohortStudents = ({ slug, cohortId }) => {
     .catch((error) => error);
   }
 
+  const getPlanFinancing = () => {
+    bc.payments()
+    .getPlanFinancing()
+    .then((data) => {
+      if (data.status >= 200 && data.status < 300) {
+        setPlanFinancings(data.data);
+      }
+    })
+    .catch((error) => error);
+  }
+
   const addUserToCohort = (user_id) => {
     bc.admissions()
       .addUserCohort(cohortId, {
@@ -243,18 +270,24 @@ const CohortStudents = ({ slug, cohortId }) => {
         studentList.filter((p) => p.role?.toUpperCase() == "REVIEWER"),
         studentList.filter((p) => p.role?.toUpperCase() == "STUDENT")
       );
-    const updatedSubscriptions = personsList?.map((person) => {
-      const plan = subscriptions
+    const allInfoPlanFilterUsers = personsList?.map((person) => {
+      const subscriptionPlan = subscriptions
         ?.filter((sub) => {
           return sub?.user.email === person?.user.email;
         })
         .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id, status:sub?.status }));
 
-      return { ...person, subscriptions_status: plan };
+        const planFinancing = planFinancings
+        ?.filter((planF) => {
+          return planF?.user.email === person?.user.email;
+        })
+        .map((planF) => ({ slug: planF?.plans[0].slug, plan_financing_id: planF?.id, plan_financing_status:planF?.status }));
+
+      return { ...person, subscriptions_status: subscriptionPlan, plan_financing_status: planFinancing };
     });
 
-    setUserSubscription(updatedSubscriptions);
-  }, [studentList, subscriptions]);
+    setUserSubscription(allInfoPlanFilterUsers);
+  }, [studentList, subscriptions, planFinancings]);
   
 
   return (
@@ -453,6 +486,34 @@ const CohortStudents = ({ slug, cohortId }) => {
                                   </small>
                                 ))
                               )}
+                              {s.plan_financing_status?.length > 0 && (
+                                s.plan_financing_status.map((planFinancingStatus, index) => (
+                                  <small
+                                  key={planFinancingStatus.slug + index}
+                                  aria-hidden="true"
+                                  onClick={() => {
+                                      // console.log("plan_financing", s.plan_financing_status)
+                                      // console.log("STATUSSSSSSSS", planFinancingStatus)
+                                      setRoleDialog(true);
+                                      setCurrentStd({
+                                        id: s.user.id,
+                                        positionInArray: i,
+                                        action: "plan_financing_status",
+                                        planFinancingStatus,
+                                        financing_id: planFinancingStatus.plan_financing_id,
+                                      });
+                                    }}
+                                    className="border-radius-4 px-2 pt-2px bg-secondary"
+                                    style={{
+                                      cursor: "pointer",
+                                      margin: "0 3px",
+                                      color: "red", 
+                                    }}
+                                  >
+                                    {planFinancingStatus.slug?.toUpperCase()}
+                                  </small>
+                                ))
+                              )}
                             </>
                           )}
                         </p>
@@ -583,7 +644,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                         opt,
                         currentStd.action,
                         currentStd.id,
-                        currentStd.subscriptionId
+                        currentStd.subscriptionId,
+                        currentStd.financing_id
                       );
                       setRoleDialog(false);
                     }}

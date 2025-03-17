@@ -69,7 +69,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       .then(({ data }) => {
         setIsLoading(false);
         if (data.length < 1) {
-          console.log("dataaaaaa", data)
+          // console.log("dataaaaaa", data)
           setStdCohorts([]);
         } else {
           console.log("dataaaaaaDOSSSS", data)
@@ -141,15 +141,15 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const getSubscriptionStatus = () => {
     setIsLoading(true);
     bc.payments()
-      .getSubscription({ user: stdId })
+      .getSubscription({ users: stdId })
       .then(({ data }) => {
         setIsLoading(false);
         console.log("Raw Subscription Data:", data);
         if (data.length > 0) {
           const slugs = data.map(subscription => ({
-            plan: subscription.plans[0]?.slug || 'N/A',  
-            status: subscription.status,
+            plans: subscription?.plans
           }));
+          console.log("SLUGS SUBSCRIPTION", slugs)
           setSubscriptionSlugs(slugs);
         }
       })
@@ -163,7 +163,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const getPlanFinancing = () => {
     setIsLoading(true);
     bc.payments()
-      .getPlanFinancing({ user: stdId })
+      .getPlanFinancing({ users: stdId })
       .then(({ data }) => {
         setIsLoading(false);
         console.log("Raw PlanFinancing Data:", data);
