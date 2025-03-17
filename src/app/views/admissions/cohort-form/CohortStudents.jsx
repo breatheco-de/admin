@@ -79,7 +79,8 @@ const actionController = {
     plan_financing_status: [
       "FREE_TRIAL",
       "ACTIVE",
-      "ERROR",],
+      "ERROR",
+    ],
   },
 };
 

@@ -38,13 +38,19 @@ const actionController = {
     educational_status: 'Educational Status',
     finantial_status: 'Finantial Status',
     role: 'Cohort Role', 
-    subscriptions_status: 'Subscription Status'
+    subscriptions_status: 'Subscription Status' ,
+    plan_financing_status: "Plan Financing Status"
   },
   options: {
     educational_status: ['ACTIVE', 'POSTPONED', 'SUSPENDED', 'GRADUATED', 'DROPPED', 'NOT_COMPLETING'],
     finantial_status: ['FULLY_PAID', 'UP_TO_DATE', 'LATE'],
     role: ['TEACHER', 'ASSISTANT', 'REVIEWER', 'STUDENT'],
-    subscriptions_status: ['ACTIVE', 'ERROR', 'FREE_TRIAL']
+    subscriptions_status: ['ACTIVE', 'ERROR', 'FREE_TRIAL'],
+    plan_financing_status: [
+      "FREE_TRIAL",
+      "ACTIVE",
+      "ERROR",
+    ],
   }
 }
 
@@ -59,6 +65,8 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const session = getSession();
   const [planFinancingSlugs, setPlanFinancingSlugs] = useState([]);
   const [subscriptionSlugs, setSubscriptionSlugs] = useState([]);
+  const [openPlanDialog, setOpenPlanDialog] = useState(false);
+
 
   const getStudentCohorts = () => {
     setIsLoading(true);
@@ -72,7 +80,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
           // console.log("dataaaaaa", data)
           setStdCohorts([]);
         } else {
-          console.log("dataaaaaaDOSSSS", data)
+          // console.log("dataaaaaaDOSSSS", data)
           setStdCohorts(data);
           setCohortOptions(data);
         }
@@ -86,6 +94,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       finantial_status: stdCohorts[i].finantial_status,
       educational_status: stdCohorts[i].educational_status,
       subscriptions_status: stdCohorts[i].subscriptions_status,
+      plan_financing_status: stdCohorts[i].plan_financing_status,
       [name]: value,
     };
     console.log("SSSSSSTATTTTUSSSS", sStatus)
@@ -201,10 +210,32 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         <h4 className="m-0 font-medium"></h4>
         <Button
           className="px-7 font-medium text-primary bg-light-primary whitespace-pre"
-          onClick={() => addUserToCohort()}
+          onClick={() => setOpenPlanDialog(true)}
         >
           Add to plan
         </Button> 
+
+        <Dialog
+          onClose={() => setOpenPlanDialog(false)}
+          open={openPlanDialog}
+          aria-labelledby="plan-dialog-title"
+        >
+          <DialogTitle id="plan-dialog-title">Plan Selection</DialogTitle>
+          <List>
+            {plans.map((plan) => (
+              <ListItem
+                button
+                onClick={() => {
+                  selectPlan(plan);
+                  setOpenPlanDialog(false);
+                }}
+              >
+                <ListItemText primary={plan.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Dialog>
+      
       </div>
         <div className="overflow-auto">
           <div className="min-w-600">
@@ -289,11 +320,11 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
                           <small
                             onClick={() => {
                               setRoleDialog(true);
-                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing' });
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing_status' });
                             }}
                             onKeyDown={() => {
                               setRoleDialog(true);
-                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing' });
+                              setCurrentStd({ id: s.user.id, positionInArray: i, action: 'plan_financing_status' });
                             }}
                             role="none"
                             className="border-radius-4 px-2 pt-2px bg-secondary"
