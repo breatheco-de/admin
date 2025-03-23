@@ -280,6 +280,7 @@ const CohortStudents = ({ slug, cohortId }) => {
 
         const planFinancing = planFinancings
         ?.filter((planF) => {
+          console.log("planFinancing", planF?.user.email, person?.user.email)
           return planF?.user.email === person?.user.email;
         })
         .map((planF) => ({ slug: planF?.plans[0].slug, plan_financing_id: planF?.id, plan_financing_status:planF?.status }));
@@ -493,8 +494,8 @@ const CohortStudents = ({ slug, cohortId }) => {
                                   key={planFinancingStatus.slug + index}
                                   aria-hidden="true"
                                   onClick={() => {
-                                      // console.log("plan_financing", s.plan_financing_status)
-                                      // console.log("STATUSSSSSSSS", planFinancingStatus)
+                                      console.log("plan_financing", s.plan_financing_status)
+                                      console.log("STATUSSSSSSSS", planFinancingStatus)
                                       setRoleDialog(true);
                                       setCurrentStd({
                                         id: s.user.id,

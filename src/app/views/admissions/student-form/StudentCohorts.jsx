@@ -51,8 +51,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [payments, setPayments] = useState([]);
   const params = useParams();
 
-  console.log("PARAMS", params);
-
   const getStudentCohorts = () => {
     setIsLoading(true);
     bc.admissions()
@@ -100,28 +98,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
     }
   };
 
-  const tabs = [
-    {
-      disabled: false,
-      component: (
-        <Cohorts 
-          stdCohorts={stdCohorts} 
-          subscriptionSlugs={subscriptionSlugs}
-          planFinancingSlugs={planFinancingSlugs}
-          getStudentCohorts={getStudentCohorts}
-        />
-      ),
-      label: "Cohorts",
-    },
-    {
-      disabled: false,
-      component: (
-        <Plans stdId={params.stdId} stdCohorts={stdCohorts} />
-      ),
-      label: "Plans",
-    },
-  ];
-
   const getSubscriptionStatus = () => {
     setIsLoading(true);
     bc.payments()
@@ -133,7 +109,8 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
           const slugs = data.map((subscription) => ({
             plans: subscription?.plans,
             cohorts: subscription?.selected_cohort_set?.cohorts,
-            id: subscription?.id
+            id: subscription?.id,
+            status: subscription?.status
           }));
           console.log("SLUGS SUBSCRIPTION", slugs);
           setSubscriptionSlugs(slugs);
@@ -154,8 +131,10 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         console.log("Raw PlanFinancing Data:", data);
         if (data.length > 0) {
           const slugs = data.map((planFinancing) => ({
-            plan: planFinancing.plans[0]?.slug || "N/A",
-            status: planFinancing.status,
+            plans: planFinancing?.plans,
+            cohorts: planFinancing?.selected_cohort_set?.cohorts,
+            id: planFinancing?.id,
+            status: planFinancing?.status
           }));
           setPlanFinancingSlugs(slugs);
         }
@@ -171,6 +150,30 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
     getSubscriptionStatus();
     getPlanFinancing();
   }, []);
+
+  const tabs = [
+    {
+      disabled: false,
+      component: (
+        <Cohorts 
+          stdCohorts={stdCohorts} 
+          subscriptionSlugs={subscriptionSlugs}
+          planFinancingSlugs={planFinancingSlugs}
+          getStudentCohorts={getStudentCohorts}
+          getPlanFinancing={getPlanFinancing}
+          getSubscriptionStatus={getSubscriptionStatus}
+        />
+      ),
+      label: "Cohorts",
+    },
+    {
+      disabled: false,
+      component: (
+        <Plans stdId={params.stdId} stdCohorts={stdCohorts} />
+      ),
+      label: "Plans",
+    },
+  ];
 
   return (
     <>

@@ -36,23 +36,37 @@ const actionController = {
 };
 
 
-const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudentCohorts }) => {
+const Cohorts = ({ 
+    stdCohorts,
+    subscriptionSlugs,
+    planFinancingSlugs,
+    getStudentCohorts,
+    getPlanFinancing,
+    getSubscriptionStatus
+}) => {
     const [openRoleDialog, setRoleDialog] = useState(false);
     const [currentStd, setCurrentStd] = useState({});
 
-    console.log("currentstd", currentStd)
+    console.log("planFinancingSlugs", planFinancingSlugs)
 
     const getSlugSubscriptionByCohort = (cohortId) => {
-        const suscriptionSlug = subscriptionSlugs
+        const subscriptionSlug = subscriptionSlugs
             .filter(subscriptionSlug =>
                 subscriptionSlug.cohorts?.some(cohort => cohort.id === cohortId)
             )
-        console.log("subscriptionslugarriba", subscriptionSlugs)
-        return suscriptionSlug[0]
+        return subscriptionSlug[0]
+    };
+
+    const getSlugPlanFinancingByCohort = (cohortId) => {
+        const planFinancingSlug = planFinancingSlugs
+            .filter(planFinancingSlug =>
+                planFinancingSlug.cohorts?.some(cohort => cohort.id === cohortId)
+            )
+        return planFinancingSlug[0]
     };
 
 
-    const changeStudentStatus = (value, name, studentId, i, subscriptionId) => {
+    const changeStudentStatus = ({ value, name, studentId, i, subscriptionId, planFinancingId }) => {
         const sStatus = {
             role: stdCohorts[i].role.toUpperCase(),
             finantial_status: stdCohorts[i].finantial_status,
@@ -64,22 +78,22 @@ const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudent
         if (name === "subscriptions_status") {
             bc.payments()
                 .updatedSubscription(subscriptionId, { status: value })
-                // .then(() => getSubscription())
+                .then(() => getSubscriptionStatus())
                 .catch((error) => console.error("Update failed:", error));
-        }
-        if (name === "plan_financing_status") {
+        } else if (name === "plan_financing_status") {
             bc.payments()
-                .updatedPlanFinancing(financing_id, { status: value })
-                // .then(() => getSubscription())
+                .updatedPlanFinancing(planFinancingId, { status: value })
+                .then(() => getPlanFinancing())
                 .catch((error) => console.error("Update failed:", error));
+        } else {
+            bc.admissions()
+                .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, sStatus)
+                .then((data) => {
+                    if (data.status >= 200) getStudentCohorts();
+                })
+                .catch((error) => error);
         }
 
-        bc.admissions()
-            .updateCohortUserInfo(stdCohorts[i].cohort.id, studentId, sStatus)
-            .then((data) => {
-                if (data.status >= 200) getStudentCohorts();
-            })
-            .catch((error) => error);
     };
 
 
@@ -189,7 +203,8 @@ const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudent
                                                                 id: s.user.id,
                                                                 positionInArray: i,
                                                                 action: "subscriptions_status",
-                                                                subscriptionId: getSlugSubscriptionByCohort(s.cohort?.id).id
+                                                                subscriptionId: getSlugSubscriptionByCohort(s.cohort?.id).id,
+                                                                status: getSlugSubscriptionByCohort(s.cohort?.id).status
                                                             });
                                                         }}
                                                         onKeyDown={() => {
@@ -198,7 +213,8 @@ const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudent
                                                                 id: s.user.id,
                                                                 positionInArray: i,
                                                                 action: "subscriptions_status",
-
+                                                                subscriptionId: getSlugSubscriptionByCohort(s.cohort?.id).id,
+                                                                status: getSlugSubscriptionByCohort(s.cohort?.id).status
                                                             });
                                                         }}
                                                         role="none"
@@ -208,41 +224,43 @@ const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudent
                                                             margin: "0 3px",
                                                             color: "white",
                                                         }}
-                                                    >   {console.log("este", subscription)}
-                                                        {subscription?.slug.toUpperCase() ||
-                                                            "SUBSCRIPTION SLUG"}
+                                                    >  
+                                                        {subscription?.slug.toUpperCase() || "SUBSCRIPTION SLUG"}
                                                     </small>
                                                 ))}
-                                                {/* {console.log("sdñdskfñldskfñ",getSlugSubscriptionByCohort(s.cohort?.id))} */}
-
-                                                <small
-                                                    onClick={() => {
-                                                        setRoleDialog(true);
-                                                        setCurrentStd({
-                                                            id: s.user.id,
-                                                            positionInArray: i,
-                                                            action: "plan_financing_status",
-                                                        });
-                                                    }}
-                                                    onKeyDown={() => {
-                                                        setRoleDialog(true);
-                                                        setCurrentStd({
-                                                            id: s.user.id,
-                                                            positionInArray: i,
-                                                            action: "plan_financing_status",
-                                                        });
-                                                    }}
-                                                    role="none"
-                                                    className="border-radius-4 px-2 pt-2px bg-secondary"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                        margin: "0 3px",
-                                                        color: "red",
-                                                    }}
-                                                >
-                                                    {planFinancingSlugs[i]?.plan?.toUpperCase() ||
-                                                        "PLAN FINANCING SLUG"}
-                                                </small>
+                                                {getSlugPlanFinancingByCohort(s.cohort?.id)?.plans?.map((planFinancing) => (
+                                                    <small
+                                                        onClick={() => {
+                                                            setRoleDialog(true);
+                                                            setCurrentStd({
+                                                                id: s.user.id,
+                                                                positionInArray: i,
+                                                                action: "plan_financing_status",
+                                                                planFinancingId: getSlugPlanFinancingByCohort(s.cohort?.id).id,
+                                                                status: getSlugPlanFinancingByCohort(s.cohort?.id).status
+                                                            });
+                                                        }}
+                                                        onKeyDown={() => {
+                                                            setRoleDialog(true);
+                                                            setCurrentStd({
+                                                                id: s.user.id,
+                                                                positionInArray: i,
+                                                                action: "plan_financing_status",
+                                                                planFinancingId: getSlugPlanFinancingByCohort(s.cohort?.id).id,
+                                                                status: getSlugPlanFinancingByCohort(s.cohort?.id).status
+                                                            });
+                                                        }}
+                                                        role="none"
+                                                        className="border-radius-4 px-2 pt-2px bg-secondary"
+                                                        style={{
+                                                            cursor: "pointer",
+                                                            margin: "0 3px",
+                                                            color: "red",
+                                                        }}
+                                                    >   
+                                                        {planFinancing?.slug.toUpperCase() || "PLAN FINANCING SLUG"}
+                                                    </small>
+                                                ))}
                                             </p>
                                         </div>
                                     </div>
@@ -264,18 +282,23 @@ const Cohorts = ({ stdCohorts, subscriptionSlugs, planFinancingSlugs, getStudent
                     {currentStd.action &&
                         actionController.options[currentStd.action].map((opt) => (
                             <ListItem
+                                key={opt}
                                 button
+                                // style={{ backgroundColor: currentStd.status === opt ? "lightgray" : null }}
+                                disabled={currentStd.status === opt}
                                 onClick={() => {
-                                    changeStudentStatus(
-                                        opt,
-                                        currentStd.action,
-                                        currentStd.id,
-                                        currentStd.positionInArray,
-                                        currentStd.subscriptionId
-                                    );
+                                    changeStudentStatus({
+                                        value: opt,
+                                        name: currentStd.action,
+                                        studentId: currentStd.id,
+                                        i: currentStd.positionInArray,
+                                        subscriptionId: currentStd.subscriptionId,
+                                        planFinancingId: currentStd.planFinancingId
+                                    });
                                     setRoleDialog(false);
                                 }}
-                            >
+                            >   
+                                {console.log("algo", opt, currentStd)}
                                 <ListItemText primary={opt} />
                             </ListItem>
                         ))}
