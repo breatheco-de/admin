@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
 import {
@@ -103,6 +102,10 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                 onClose={() => setOpenPlanDialog(false)}
                 open={openPlanDialog}
                 aria-labelledby="simple-dialog-title"
+                fullWidth
+                PaperProps={{
+                    style: { width: "calc(51% - 54px)" },
+                }}
             >
                 <DialogTitle style={{ textAlign: "center" }}>
                 </DialogTitle>

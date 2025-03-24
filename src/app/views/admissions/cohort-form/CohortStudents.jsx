@@ -213,24 +213,24 @@ const CohortStudents = ({ slug, cohortId }) => {
 
   const getSubscription = () => {
     bc.payments()
-    .getSubscription()
-    .then((data) => {
-      if (data.status >= 200 && data.status < 300) {
-        setSubscriptions(data.data);
-      }
-    })
-    .catch((error) => error);
+      .getSubscription()
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          setSubscriptions(data.data);
+        }
+      })
+      .catch((error) => error);
   }
 
   const getPlanFinancing = () => {
     bc.payments()
-    .getPlanFinancing()
-    .then((data) => {
-      if (data.status >= 200 && data.status < 300) {
-        setPlanFinancings(data.data);
-      }
-    })
-    .catch((error) => error);
+      .getPlanFinancing()
+      .then((data) => {
+        if (data.status >= 200 && data.status < 300) {
+          setPlanFinancings(data.data);
+        }
+      })
+      .catch((error) => error);
   }
 
   const addUserToCohort = (user_id) => {
@@ -270,20 +270,20 @@ const CohortStudents = ({ slug, cohortId }) => {
         ?.filter((sub) => {
           return sub?.user.email === person?.user.email;
         })
-        .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id, status:sub?.status }));
+        .map((sub) => ({ slug: sub?.plans[0].slug, subscription_id: sub?.id, status: sub?.status }));
 
-        const planFinancing = planFinancings
+      const planFinancing = planFinancings
         ?.filter((planF) => {
           return planF?.user.email === person?.user.email;
         })
-        .map((planF) => ({ slug: planF?.plans[0].slug, plan_financing_id: planF?.id, plan_financing_status:planF?.status }));
+        .map((planF) => ({ slug: planF?.plans[0].slug, plan_financing_id: planF?.id, plan_financing_status: planF?.status }));
 
       return { ...person, subscriptions_status: subscriptionPlan, plan_financing_status: planFinancing };
     });
 
     setUserSubscription(allInfoPlanFilterUsers);
   }, [studentList, subscriptions, planFinancings]);
-  
+
 
   return (
     <Card className="p-4">
@@ -388,11 +388,10 @@ const CohortStudents = ({ slug, cohortId }) => {
                       />
                       <div className="flex-grow">
                         <Link
-                          to={`/${
-                            s.role === "STUDENT"
+                          to={`/${s.role === "STUDENT"
                               ? "admissions/students"
                               : "admin/staff"
-                          }/${s.user.id}`}
+                            }/${s.user.id}`}
                         >
                           <h6 className="mt-0 mb-0 text-15 text-primary">
                             {s.user.first_name} {s.user.last_name}
@@ -453,58 +452,42 @@ const CohortStudents = ({ slug, cohortId }) => {
                               >
                                 {s.educational_status}
                               </small>
-                              {s.subscriptions_status?.length > 0 && (
-                                s.subscriptions_status.map((status, index) => (
-                                  <small
-                                  key={status.slug + index}
-                                  aria-hidden="true"
-                                  onClick={() => {
-                                      setRoleDialog(true);
-                                      setCurrentStd({
-                                        id: s.user.id,
-                                        positionInArray: i,
-                                        action: "subscriptions_status",
-                                        status,
-                                        subscriptionId: status.subscription_id,
-                                      });
-                                    }}
-                                    className="border-radius-4 px-2 pt-2px bg-secondary"
-                                    style={{
-                                      cursor: "pointer",
-                                      margin: "0 3px",
-                                      color: "white", 
-                                    }}
-                                  >
-                                    {status.slug?.toUpperCase()}
-                                  </small>
-                                ))
-                              )}
-                              {s.plan_financing_status?.length > 0 && (
-                                s.plan_financing_status.map((planFinancingStatus, index) => (
-                                  <small
-                                  key={planFinancingStatus.slug + index}
-                                  aria-hidden="true"
-                                  onClick={() => {
-                                      setRoleDialog(true);
-                                      setCurrentStd({
-                                        id: s.user.id,
-                                        positionInArray: i,
-                                        action: "plan_financing_status",
-                                        planFinancingStatus,
-                                        financing_id: planFinancingStatus.plan_financing_id,
-                                      });
-                                    }}
-                                    className="border-radius-4 px-2 pt-2px bg-secondary"
-                                    style={{
-                                      cursor: "pointer",
-                                      margin: "0 3px",
-                                      color: "red", 
-                                    }}
-                                  >
-                                    {planFinancingStatus.slug?.toUpperCase()}
-                                  </small>
-                                ))
-                              )}
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                {s.subscriptions_status?.length > 0 &&
+                                  s.subscriptions_status.map((status, index) => (
+                                    <Tooltip title="Subscription Slug" key={status.slug + index}>
+                                      <small
+                                        className="border-radius-4 px-2 pt-2px bg-secondary"
+                                        style={{
+                                          cursor: "pointer",
+                                          margin: "0 3px",
+                                          display: "inline-block",
+                                          whiteSpace: "normal",
+                                        }}
+                                      >
+                                        {status.slug?.toUpperCase()}
+                                      </small>
+                                    </Tooltip>
+                                  ))}
+
+                                {s.plan_financing_status?.length > 0 &&
+                                  s.plan_financing_status.map((planFinancingStatus, index) => (
+                                    <Tooltip title="Plan Financing Slug" key={planFinancingStatus.slug + index}>
+                                      <small
+                                        className="border-radius-4 px-2 pt-2px bg-secondary"
+                                        style={{
+                                          cursor: "pointer",
+                                          margin: "0 3px",
+                                          display: "inline-block",
+                                          whiteSpace: "normal",
+                                        }}
+                                      >
+                                        {planFinancingStatus.slug?.toUpperCase()}
+                                      </small>
+                                    </Tooltip>
+                                  ))}
+                              </div>
+
                             </>
                           )}
                         </p>
@@ -612,7 +595,7 @@ const CohortStudents = ({ slug, cohortId }) => {
         aria-labelledby="simple-dialog-title"
       >
         <DialogTitle style={{ textAlign: "center" }}>
-            {`Select a ${actionController.message[currentStd?.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
+          {`Select a ${actionController.message[currentStd?.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
         </DialogTitle>
         <DialogContent>
           {/* plans Dialog */}

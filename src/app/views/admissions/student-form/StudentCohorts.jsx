@@ -101,7 +101,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
             plans: subscription?.plans,
             cohorts: subscription?.selected_cohort_set?.cohorts,
             id: subscription?.id,
-            status: subscription?.status
+            status: subscription?.status,
           }));
           setSubscriptionSlugs(slugs);
         }
@@ -121,7 +121,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         if (data.length > 0) {
           const slugs = data.map((planFinancing) => ({
             cohorts: planFinancing?.selected_cohort_set?.cohorts,
-            ...planFinancing,            
+            ...planFinancing,
           }));
           setPlanFinancing(slugs);
         }
@@ -142,21 +142,29 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
     {
       disabled: false,
       component: (
-        <Cohorts 
-          stdCohorts={stdCohorts} 
-          subscriptionSlugs={subscriptionSlugs}
-          planFinancing={planFinancing}
-          getStudentCohorts={getStudentCohorts}
-          getPlanFinancing={getPlanFinancing}
-          getSubscriptionStatus={getSubscriptionStatus}
-        />
+        <Card className="p-4" style={{ height: "100%" }}>
+          <Cohorts
+            stdCohorts={stdCohorts}
+            subscriptionSlugs={subscriptionSlugs}
+            planFinancing={planFinancing}
+            getStudentCohorts={getStudentCohorts}
+            getPlanFinancing={getPlanFinancing}
+            getSubscriptionStatus={getSubscriptionStatus}
+          />
+        </Card>
       ),
       label: "Cohorts",
     },
     {
       disabled: false,
       component: (
-        <Plans stdId={params.stdId} stdCohorts={stdCohorts} planFinancing={planFinancing} />
+        <Card className="p-4" style={{ height: "100%" }}>
+          <Plans
+            stdId={params.stdId}
+            stdCohorts={stdCohorts}
+            planFinancing={planFinancing}
+          />
+        </Card>
       ),
       label: "Plans",
     },
@@ -164,14 +172,12 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item md={7} xs={12}>
-          <BasicTabs tabs={tabs} />
+      <Grid container spacing={3} style={{ width: "100%", height: "100vh" }}>
+        <Grid item xs={12} style={{ height: "100%" }}>
+          <BasicTabs tabs={tabs} style={{ height: "100%" }} />
         </Grid>
       </Grid>
-      <Card className="p-4">
-        {isLoading && <MatxLoading />}
-      </Card>
+      {isLoading && <MatxLoading />}
     </>
   );
 };
