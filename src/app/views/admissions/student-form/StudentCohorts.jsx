@@ -45,7 +45,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const session = getSession();
-  const [planFinancingSlugs, setPlanFinancingSlugs] = useState([]);
+  const [planFinancing, setPlanFinancing] = useState([]);
   const [subscriptionSlugs, setSubscriptionSlugs] = useState([]);
   const [plansDialog, setPlansDialog] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -131,12 +131,10 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         console.log("Raw PlanFinancing Data:", data);
         if (data.length > 0) {
           const slugs = data.map((planFinancing) => ({
-            plans: planFinancing?.plans,
             cohorts: planFinancing?.selected_cohort_set?.cohorts,
-            id: planFinancing?.id,
-            status: planFinancing?.status
+            ...planFinancing,            
           }));
-          setPlanFinancingSlugs(slugs);
+          setPlanFinancing(slugs);
         }
       })
       .catch((error) => {
@@ -158,7 +156,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         <Cohorts 
           stdCohorts={stdCohorts} 
           subscriptionSlugs={subscriptionSlugs}
-          planFinancingSlugs={planFinancingSlugs}
+          planFinancing={planFinancing}
           getStudentCohorts={getStudentCohorts}
           getPlanFinancing={getPlanFinancing}
           getSubscriptionStatus={getSubscriptionStatus}
@@ -169,7 +167,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
     {
       disabled: false,
       component: (
-        <Plans stdId={params.stdId} stdCohorts={stdCohorts} />
+        <Plans stdId={params.stdId} stdCohorts={stdCohorts} planFinancing={planFinancing} />
       ),
       label: "Plans",
     },
