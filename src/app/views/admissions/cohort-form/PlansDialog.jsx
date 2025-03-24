@@ -4,29 +4,21 @@ import { Formik } from "formik";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import bc from "app/services/breathecode";
-import { sub } from "date-fns";
 
-const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
+const PlansDialog = ({ plansDialog, payments, userId, onClose, stdCohorts, setCohortId }) => {
     const { slug } = useParams();
     const [initialValues, setInitialValues] = useState({
         plan: "",
         payment_method: "",
         payment_details: "",
         reference: "",
-        user: userId,
+        user: Number(userId),
+        cohort: "",
     });
 
     const textFieldStyle = {
         margin: "10px 0",
         fontSize: "1rem",
-    };
-
-    const labelStyle = {
-        fontSize: "15px",
-        marginTop: "10px",
-        display: "contents",
-        alignItems: "center",
-        padding: "0px 45px",
     };
 
     const handleSubmit = async (values) => {
@@ -37,14 +29,14 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                 payment_details: values.payment_details,
                 reference: values.reference,
                 user: values.user,
-                cohorts: [slug],
+                cohorts: [values.cohort || slug],
             };
-                await bc
-                    .payments()
-                    .addAcademyPlanSlugSubscription(values.plan, payload);
-                toast.success("Subscription created successfully");
-                return onClose();
-            }
+            await bc
+                .payments()
+                .addAcademyPlanSlugSubscription(values.plan, payload);
+            toast.success("Subscription created successfully");
+            return onClose();
+        }
         catch (error) {
             console.error("error", error);
         }
@@ -64,7 +56,6 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                     payment_details: currentSubscription.payment_details || "",
                     reference: currentSubscription.reference || "",
                     user: userId,
-                    // subscriptionId: currentSubscription.id || null,
                 });
             }
         }
@@ -78,28 +69,54 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                     style={{ maxWidth: "400px", width: "90%", margin: "0 auto" }}
                 >
                     <Grid container justifyContent="center">
-                        <Grid item md={10} sm={8} xs={12} style={labelStyle}>
-                            {/* Plans */}
-                        </Grid>
-                        <Grid item md={10} sm={8} xs={12}>
-                            <TextField
-                                style={textFieldStyle}
-                                className=""
-                                label="Plan"
-                                size="medium"
-                                fullWidth
-                                variant="outlined"
-                                value={values.plan}
-                                onChange={(e) => setFieldValue("plan", e.target.value)}
-                                select
-                            >
-                                {plansDialog?.map((plan) => (
-                                    <MenuItem key={plan.slug} value={plan.slug}>
-                                        {plan.slug}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
+                        {stdCohorts && (
+                            <Grid item md={10} sm={8} xs={12}>
+                                <TextField
+                                    style={textFieldStyle}
+                                    label="Cohort"
+                                    name="cohort"
+                                    size="medium"
+                                    fullWidth
+                                    required
+                                    variant="outlined"
+                                    select
+                                    value={values.cohort}
+                                    onChange={(e) => {
+                                        console.log("e.target.value", e.target.value);
+                                        setFieldValue("cohort", e.target.value)
+                                        setCohortId(e.target.value);
+                                        console.log("values.cohort", values.cohort); 
+                                    }}
+                                >
+                                    {stdCohorts.map(({ cohort }) => (
+                                        <MenuItem key={cohort.id} value={cohort.slug}>
+                                            {cohort.name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        )}
+                        {(values.cohort || slug) && (
+                            <Grid item md={10} sm={8} xs={12}>
+                                <TextField
+                                    style={textFieldStyle}
+                                    className=""
+                                    label="Plan"
+                                    size="medium"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={values.plan}
+                                    onChange={(e) => setFieldValue("plan", e.target.value)}
+                                    select
+                                >
+                                    {plansDialog?.map((plan) => (
+                                        <MenuItem key={plan.slug} value={plan.slug}>
+                                            {plan.slug}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                        )}
 
                         {values.plan && (
                             <>

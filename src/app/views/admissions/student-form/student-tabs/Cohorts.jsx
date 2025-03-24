@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
     DialogTitle,
@@ -305,7 +305,6 @@ const Cohorts = ({
                             <ListItem
                                 key={opt}
                                 button
-                                // style={{ backgroundColor: currentStd.status === opt ? "lightgray" : null }}
                                 disabled={currentStd.status === opt}
                                 onClick={() => {
                                     changeStudentStatus({

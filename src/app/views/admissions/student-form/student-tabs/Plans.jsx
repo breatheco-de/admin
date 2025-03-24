@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
@@ -16,13 +16,12 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
     const [plansDialog, setPlansDialog] = useState([]);
     const [payments, setPayments] = useState([]);
     const [openPlanDialog, setOpenPlanDialog] = useState(false);
+    const [cohortId, setCohortId] = useState(null);
 
     const fetchPlans = async (query) => {
         try {
             const response = await bc.payments().getPlanByCohort({ cohort: query });
-            const plansNames = response.data.map((plan) => plan.slug);
             setPlansDialog(response.data);
-            // actionController.options.plan = plansNames;
         } catch (error) {
             console.error("Error fetching plansDialog: ", error);
         }
@@ -38,12 +37,9 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
     };
 
     useEffect(() => {
-        // if (stdCohorts) fetchPlans(stdCohorts);
-        if (stdCohorts) fetchPlans(641);
+        if (stdCohorts) fetchPlans(cohortId);
         fetchPayment();
-    }, [stdCohorts]);
-
-    console.log("planFinancing", planFinancing);
+    }, [cohortId]);
 
     return (
         <>
@@ -64,27 +60,36 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                                 <Grid item lg={4} md={4} sm={6} xs={6}>
                                     <div className="flex">
                                         <div className="flex-grow">
-                                            <Link to={`/admissions/cohorts/${planF.id}`}>
-                                                <h6 className="mt-0 mb-0 text-15 text-primary">
-                                                    {planF.status}
-                                                    <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
-                                                        {planF.status}
-                                                    </small>
-                                                </h6>
-                                            </Link>
-                                            <p className="mt-0 mb-6px text-13">
-                                                <span className="font-medium">
-                                                    {dayjs(planF.valid_until).format("DD MMMM, YYYY")}
-                                                </span>
-                                                <small>
-                                                    , {dayjs(planF.valid_until).fromNow()}
+                                            <h6>
+                                                How Many Installments:
+                                                <small className="ml-2 px-1 pt-2px">
+                                                    {planF.how_many_installments}
                                                 </small>
-                                            </p>
-                                            <p className="mt-0 mb-6px text-13"><small>{planF.how_many_installments}</small></p>
-                                            <p className="mt-0 mb-6px text-13"><small>{planF.monthly_price}</small></p>
-                                            <p className="mt-0 mb-6px text-13"><small>Next payment at: {dayjs(planF.next_payment_at).format("DD/MM/YYYY")}</small></p>
-                                            <p className="mt-0 mb-6px text-13"><small>Plan expires at: {dayjs(planF.plan_expires_at).format("DD/MM/YYYY")}</small></p>
-
+                                            </h6>
+                                            <h6>
+                                                Monthly Price:
+                                                <small className="ml-2 px-1 pt-2px">
+                                                    {planF.monthly_price}
+                                                </small>
+                                            </h6>
+                                            <h6>
+                                                Next Payment At:
+                                                <small className="ml-2 px-1 pt-2px">
+                                                    {dayjs(planF.next_payment_at).format("DD/MM/YYYY")}
+                                                </small>
+                                            </h6>
+                                            <h6>
+                                                Plan Expires At:
+                                                <small className="ml-2 px-1 pt-2px">
+                                                    {dayjs(planF.plan_expires_at).format("DD/MM/YYYY")}
+                                                </small>
+                                            </h6>
+                                            <h6>
+                                                Valid Until:
+                                                <small className="ml-2 px-1 pt-2px">
+                                                    {dayjs(planF.valid_until).format("DD/MM/YYYY")}
+                                                </small>
+                                            </h6>
                                         </div>
                                     </div>
                                 </Grid>
@@ -93,15 +98,13 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                     ))}
                 </div>
             </div>
-            
+
             <Dialog
                 onClose={() => setOpenPlanDialog(false)}
                 open={openPlanDialog}
                 aria-labelledby="simple-dialog-title"
             >
                 <DialogTitle style={{ textAlign: "center" }}>
-                    {/* {`Select a ${actionController.message[currentStd?.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ""
-                        }`} */}
                 </DialogTitle>
                 <DialogContent>
                     {/* plans Dialog */}
@@ -109,6 +112,8 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                         plansDialog={plansDialog}
                         payments={payments}
                         userId={stdId}
+                        stdCohorts={stdCohorts}
+                        setCohortId={setCohortId}
                         onClose={() => setOpenPlanDialog(false)}
                     />
                 </DialogContent>

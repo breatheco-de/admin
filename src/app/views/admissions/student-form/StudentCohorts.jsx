@@ -20,13 +20,10 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { MatxLoading } from "../../../../matx";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import bc from "../../../services/breathecode";
-import axios from "../../../../axios";
 import dayjs from "dayjs";
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
-import config from "../../../../config.js";
 import { getSession } from "../../../redux/actions/SessionActions";
 import BasicTabs from "app/components/smartTabs";
 import Plans from "./student-tabs/Plans";
@@ -41,14 +38,11 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
   const [currentStd, setCurrentStd] = useState({});
-  const [openPlanDialog, setOpenPlanDialog] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [cohort, setCohort] = useState(null);
   const session = getSession();
   const [planFinancing, setPlanFinancing] = useState([]);
   const [subscriptionSlugs, setSubscriptionSlugs] = useState([]);
-  const [plansDialog, setPlansDialog] = useState([]);
-  const [payments, setPayments] = useState([]);
   const params = useParams();
 
   const getStudentCohorts = () => {
@@ -60,10 +54,8 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       .then(({ data }) => {
         setIsLoading(false);
         if (data.length < 1) {
-          // console.log("dataaaaaa", data)
           setStdCohorts([]);
         } else {
-          // console.log("dataaaaaaDOSSSS", data)
           setStdCohorts(data);
           setCohortOptions(data);
         }
@@ -104,7 +96,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       .getSubscription({ users: stdId })
       .then(({ data }) => {
         setIsLoading(false);
-        console.log("Raw Subscription Data:", data);
         if (data.length > 0) {
           const slugs = data.map((subscription) => ({
             plans: subscription?.plans,
@@ -112,7 +103,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
             id: subscription?.id,
             status: subscription?.status
           }));
-          console.log("SLUGS SUBSCRIPTION", slugs);
           setSubscriptionSlugs(slugs);
         }
       })
@@ -128,7 +118,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       .getPlanFinancing({ users: stdId })
       .then(({ data }) => {
         setIsLoading(false);
-        console.log("Raw PlanFinancing Data:", data);
         if (data.length > 0) {
           const slugs = data.map((planFinancing) => ({
             cohorts: planFinancing?.selected_cohort_set?.cohorts,
@@ -182,8 +171,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       </Grid>
       <Card className="p-4">
         {isLoading && <MatxLoading />}
-
-
       </Card>
     </>
   );

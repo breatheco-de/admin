@@ -34,13 +34,9 @@ import { format, set } from "date-fns";
 import clsx from "clsx";
 import { MatxLoading } from "matx";
 import bc from "app/services/breathecode";
-import { AsyncAutocomplete } from "../../../components/Autocomplete";
 import { useQuery } from "../../../hooks/useQuery";
 import { PickUserModal } from "app/components/PickUserModal";
 import useDebounce from "../../../hooks/useDebounce";
-import { Assessment, CodeOutlined } from "@material-ui/icons";
-import { countBy } from "lodash";
-import { ca } from "date-fns/locale";
 import PlansDialog from "./PlansDialog";
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
@@ -112,7 +108,6 @@ const CohortStudents = ({ slug, cohortId }) => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [planFinancings, setPlanFinancings] = useState([]);
   const [userSubscription, setUserSubscription] = useState([]);
-  // const [userPlanFinancing, setUserPlanFinancing] = useState([]);
 
   const fetchPayment = async (query) => {
     try {
@@ -160,7 +155,6 @@ const CohortStudents = ({ slug, cohortId }) => {
   ) => {
     const student = studentList.find((s) => s.user.id === studentId);
     if (!student) return console.error("Student not found");
-    // console.log("STUDENT", student)
 
     const sStatus = {
       role: student.role,
@@ -280,7 +274,6 @@ const CohortStudents = ({ slug, cohortId }) => {
 
         const planFinancing = planFinancings
         ?.filter((planF) => {
-          console.log("planFinancing", planF?.user.email, person?.user.email)
           return planF?.user.email === person?.user.email;
         })
         .map((planF) => ({ slug: planF?.plans[0].slug, plan_financing_id: planF?.id, plan_financing_status:planF?.status }));
@@ -466,8 +459,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                                   key={status.slug + index}
                                   aria-hidden="true"
                                   onClick={() => {
-                                      // console.log("subscriptions_status", s.subscriptions_status)
-                                      // console.log("STATUSSSSSSSS", status)
                                       setRoleDialog(true);
                                       setCurrentStd({
                                         id: s.user.id,
@@ -494,8 +485,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                                   key={planFinancingStatus.slug + index}
                                   aria-hidden="true"
                                   onClick={() => {
-                                      console.log("plan_financing", s.plan_financing_status)
-                                      console.log("STATUSSSSSSSS", planFinancingStatus)
                                       setRoleDialog(true);
                                       setCurrentStd({
                                         id: s.user.id,
@@ -636,7 +625,6 @@ const CohortStudents = ({ slug, cohortId }) => {
             />
           ) : (
             <List>
-              {/* {console.log("currentStd", currentStd?.status?.slug)} */}
               {currentStd?.action &&
                 actionController.options[currentStd?.action].map((opt, i) => (
                   <ListItem
