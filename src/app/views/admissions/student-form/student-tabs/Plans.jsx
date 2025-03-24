@@ -103,9 +103,6 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                 open={openPlanDialog}
                 aria-labelledby="simple-dialog-title"
                 fullWidth
-                PaperProps={{
-                    style: { width: "calc(51% - 54px)" },
-                }}
             >
                 <DialogTitle style={{ textAlign: "center" }}>
                 </DialogTitle>
