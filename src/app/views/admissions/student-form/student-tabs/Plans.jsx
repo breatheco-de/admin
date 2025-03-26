@@ -55,49 +55,63 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                 <div className="min-w-600">
                     {planFinancing.map((planF, i) => (
                         <div key={planF.id} className="py-4">
-                            <Grid container alignItems="center">
-                                <Grid item lg={4} md={4} sm={6} xs={6}>
-                                    <div className="flex">
-                                        <div className="flex-grow">
-                                            <h6>
-                                                How Many Installments:
-                                                <small className="ml-2 px-1 pt-2px">
-                                                    {planF.how_many_installments}
-                                                </small>
-                                            </h6>
-                                            <h6>
-                                                Monthly Price:
-                                                <small className="ml-2 px-1 pt-2px">
-                                                    {planF.monthly_price}
-                                                </small>
-                                            </h6>
-                                            <h6>
-                                                Next Payment At:
-                                                <small className="ml-2 px-1 pt-2px">
-                                                    {dayjs(planF.next_payment_at).format("DD/MM/YYYY")}
-                                                </small>
-                                            </h6>
-                                            <h6>
-                                                Plan Expires At:
-                                                <small className="ml-2 px-1 pt-2px">
-                                                    {dayjs(planF.plan_expires_at).format("DD/MM/YYYY")}
-                                                </small>
-                                            </h6>
-                                            <h6>
-                                                Valid Until:
-                                                <small className="ml-2 px-1 pt-2px">
-                                                    {dayjs(planF.valid_until).format("DD/MM/YYYY")}
-                                                </small>
-                                            </h6>
-                                        </div>
+                            <Grid container alignItems="center" justifyContent="start">
+                                <Grid item lg={6} md={6} sm={12} xs={12}>
+                                    <div className="flex-grow w-full">
+                                        <h6 className="mt-2 mb-2 text-15 text-primary flex items-center">
+                                            How Many Installments:
+                                            <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
+                                                {planF.how_many_installments}
+                                            </small>
+                                        </h6>
+
+                                        <h6 className="mt-2 mb-2 text-15 text-primary flex items-center">
+                                            Monthly Price:
+                                            <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
+                                                {planF.monthly_price}
+                                            </small>
+                                            <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
+                                                {planF.financing_options?.[0]?.currency?.code ?? ""}
+                                            </small>
+                                        </h6>
+
+                                        <h6 className="mt-2 mb-2 text-15 text-primary flex items-center">
+                                            Next Payment At:
+                                            <small className="border-radius-4 ml-2 px-1 pt-2px text-black" style={{ fontWeight: 500, fontSize: "13px", background: "none" }}>
+                                                {dayjs(planF.next_payment_at).format("DD MMMM, YYYY")}
+                                            </small>
+                                            <small className="ml-1 text-black" style={{ fontWeight: 400, fontSize: "10px" }}>
+                                                , {dayjs(planF.next_payment_at).fromNow()}
+                                            </small>
+                                        </h6>
+
+                                        <h6 className="mt-2 mb-2 text-15 text-primary flex items-center">
+                                            Plan Expires At:
+                                            <span className="ml-2 text-black" style={{ fontWeight: 500, fontSize: "13px" }}>
+                                                {dayjs(planF.plan_expires_at).format("DD MMMM, YYYY")}
+                                            </span>
+                                            <small className="ml-1 text-black" style={{ fontWeight: 400, fontSize: "10px" }}>
+                                                , {dayjs(planF.plan_expires_at).fromNow()}
+                                            </small>
+                                        </h6>
+
+                                        <h6 className="mt-2 mb-2 text-15 text-primary flex items-center">
+                                            Valid Until:
+                                            <span className="ml-2 text-black" style={{ fontWeight: 500, fontSize: "13px" }}>
+                                                {dayjs(planF.valid_until).format("DD MMMM, YYYY")}
+                                            </span>
+                                            <small className="ml-1 text-black" style={{ fontWeight: 400, fontSize: "10px" }}>
+                                                , {dayjs(planF.valid_until).fromNow()}
+                                            </small>
+                                        </h6>
                                     </div>
                                 </Grid>
                             </Grid>
                         </div>
                     ))}
+
                 </div>
             </div>
-
             <Dialog
                 onClose={() => setOpenPlanDialog(false)}
                 open={openPlanDialog}

@@ -513,7 +513,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </IconButton>
                       {s.role === "STUDENT" && (
                         <>
-                          <Tooltip title="Create plan">
+                          {/* <Tooltip title="Create plan">
                             <IconButton
                               onClick={() => {
                                 setRoleDialog(true);
@@ -526,7 +526,7 @@ const CohortStudents = ({ slug, cohortId }) => {
                             >
                               <Icon fontSize="small">money</Icon>
                             </IconButton>
-                          </Tooltip>
+                          </Tooltip> */}
                           <Link
                             to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}
                           >
