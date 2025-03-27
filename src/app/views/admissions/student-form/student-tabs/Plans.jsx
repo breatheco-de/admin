@@ -70,8 +70,8 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                                             <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
                                                 {planF.monthly_price}
                                             </small>
-                                            <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
-                                                {planF.financing_options?.[0]?.currency?.code ?? ""}
+                                            <small className="ml-1 text-black">
+                                                {planF.plans[0]?.financing_options?.[0]?.currency?.code ?? ""}
                                             </small>
                                         </h6>
 
