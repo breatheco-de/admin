@@ -2,18 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Grid, MenuItem, TextField, Button } from "@material-ui/core";
 import { Formik } from "formik";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
 import bc from "app/services/breathecode";
 
-const PlansDialog = ({ plansDialog, payments, userId, onClose, stdCohorts, setCohortId }) => {
-    const { slug } = useParams();
+const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
     const [initialValues, setInitialValues] = useState({
         plan: "",
         payment_method: "",
         payment_details: "",
         reference: "",
         user: Number(userId),
-        cohort: "",
     });
 
     const textFieldStyle = {
@@ -29,7 +26,6 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose, stdCohorts, setCo
                 payment_details: values.payment_details,
                 reference: values.reference,
                 user: values.user,
-                cohorts: [values.cohort || slug],
             };
             await bc
                 .payments()
@@ -69,54 +65,25 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose, stdCohorts, setCo
                     style={{ maxWidth: "400px", width: "90%", margin: "0 auto" }}
                 >
                     <Grid container justifyContent="center">
-                        {stdCohorts && (
-                            <Grid item md={10} sm={8} xs={12}>
-                                <TextField
-                                    style={textFieldStyle}
-                                    label="Cohort"
-                                    name="cohort"
-                                    size="medium"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    select
-                                    value={values.cohort}
-                                    onChange={(e) => {
-                                        console.log("e.target.value", e.target.value);
-                                        setFieldValue("cohort", e.target.value)
-                                        setCohortId(e.target.value);
-                                        console.log("values.cohort", values.cohort); 
-                                    }}
-                                >
-                                    {stdCohorts.map(({ cohort }) => (
-                                        <MenuItem key={cohort.id} value={cohort.slug}>
-                                            {cohort.name}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                        )}
-                        {(values.cohort || slug) && (
-                            <Grid item md={10} sm={8} xs={12}>
-                                <TextField
-                                    style={textFieldStyle}
-                                    className=""
-                                    label="Plan"
-                                    size="medium"
-                                    fullWidth
-                                    variant="outlined"
-                                    value={values.plan}
-                                    onChange={(e) => setFieldValue("plan", e.target.value)}
-                                    select
-                                >
-                                    {plansDialog?.map((plan) => (
-                                        <MenuItem key={plan.slug} value={plan.slug}>
-                                            {plan.slug}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                        )}
+                        <Grid item md={10} sm={8} xs={12}>
+                            <TextField
+                                style={textFieldStyle}
+                                className=""
+                                label="Plan"
+                                size="medium"
+                                fullWidth
+                                variant="outlined"
+                                value={values.plan}
+                                onChange={(e) => setFieldValue("plan", e.target.value)}
+                                select
+                            >
+                                {plansDialog?.map((plan) => (
+                                    <MenuItem key={plan.slug} value={plan.slug}>
+                                        {plan.slug}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
                         {values.plan && (
                             <>

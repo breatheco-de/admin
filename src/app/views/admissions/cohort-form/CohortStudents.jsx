@@ -51,7 +51,6 @@ const actionController = {
     educational_status: "Educational Status",
     finantial_status: "Finantial Status",
     role: "Cohort Role",
-    plan: "Plan",
     subscriptions_status: "Subscription Status",
     plan_financing_status: "Plan Financing Status"
   },
@@ -66,7 +65,6 @@ const actionController = {
     ],
     finantial_status: ["FULLY_PAID", "UP_TO_DATE", "LATE", ""],
     role: ["TEACHER", "ASSISTANT", "REVIEWER", "STUDENT"],
-    plan: [""],
     subscriptions_status: [
       "FREE_TRIAL",
       "ACTIVE",
@@ -103,36 +101,12 @@ const CohortStudents = ({ slug, cohortId }) => {
     setQueryLimit((prevQueryLimit) => prevQueryLimit + 10);
   };
 
-  const [plansDialog, setPlansDialog] = useState([]);
-  const [payments, setPayments] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [planFinancings, setPlanFinancings] = useState([]);
   const [userSubscription, setUserSubscription] = useState([]);
 
-  const fetchPayment = async (query) => {
-    try {
-      const response = await bc.payments().getPaymentsMethods(query);
-      setPayments(response.data);
-    } catch (error) {
-      console.error("Error fetching payments: ", error);
-    }
-  };
-
-  const fetchPlans = async (query) => {
-    try {
-      const response = await bc.payments().getPlanByCohort({ cohort: query });
-      const plansNames = response.data.map((plan) => plan.slug);
-      setPlansDialog(response.data);
-      actionController.options.plan = plansNames;
-    } catch (error) {
-      console.error("Error fetching plansDialog: ", error);
-    }
-  };
-
   useEffect(() => {
     getCohortStudents();
-    if (cohortId) fetchPlans(cohortId);
-    fetchPayment();
   }, [queryLimit, cohortId]);
 
   React.useEffect(() => {
@@ -513,20 +487,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                       </IconButton>
                       {s.role === "STUDENT" && (
                         <>
-                          {/* <Tooltip title="Create plan">
-                            <IconButton
-                              onClick={() => {
-                                setRoleDialog(true);
-                                setCurrentStd({
-                                  id: s.user.id,
-                                  positionInArray: i,
-                                  action: "plan",
-                                });
-                              }}
-                            >
-                              <Icon fontSize="small">money</Icon>
-                            </IconButton>
-                          </Tooltip> */}
                           <Link
                             to={`/dashboard/student/${s.user.id}/cohort/${s.cohort.id}`}
                           >
@@ -598,15 +558,6 @@ const CohortStudents = ({ slug, cohortId }) => {
           {`Select a ${actionController.message[currentStd?.action]} ${currentStd?.status?.slug ? `for ${currentStd?.status?.slug}` : ''}`}
         </DialogTitle>
         <DialogContent>
-          {/* plans Dialog */}
-          {currentStd?.action === "plan" ? (
-            <PlansDialog
-              plansDialog={plansDialog}
-              payments={payments}
-              userId={currentStd?.id}
-              onClose={() => setRoleDialog(false)}
-            />
-          ) : (
             <List>
               {currentStd?.action &&
                 actionController.options[currentStd?.action].map((opt, i) => (
@@ -628,7 +579,6 @@ const CohortStudents = ({ slug, cohortId }) => {
                   </ListItem>
                 ))}
             </List>
-          )}
         </DialogContent>
       </Dialog>
     </Card>

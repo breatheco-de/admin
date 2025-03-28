@@ -19,7 +19,7 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
 
     const fetchPlans = async (query) => {
         try {
-            const response = await bc.payments().getPlanByCohort({ cohort: query });
+            const response = await bc.payments().getPlan({ cohort: query });
             setPlansDialog(response.data);
         } catch (error) {
             console.error("Error fetching plansDialog: ", error);
@@ -126,8 +126,6 @@ const Plans = ({ stdId, stdCohorts, planFinancing }) => {
                         plansDialog={plansDialog}
                         payments={payments}
                         userId={stdId}
-                        stdCohorts={stdCohorts}
-                        setCohortId={setCohortId}
                         onClose={() => setOpenPlanDialog(false)}
                     />
                 </DialogContent>

@@ -47,8 +47,6 @@ const Cohorts = ({
     const [openRoleDialog, setRoleDialog] = useState(false);
     const [currentStd, setCurrentStd] = useState({});
 
-    console.log("planFinancing", planFinancing);
-
     const getSlugSubscriptionByCohort = (cohortId) => {
         const subscriptionSlug = subscriptionSlugs.filter((subscriptionSlug) =>
             subscriptionSlug.cohorts?.some((cohort) => cohort.id === cohortId)
