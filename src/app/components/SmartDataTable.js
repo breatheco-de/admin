@@ -209,10 +209,15 @@ export const SmartMUIDataTable = (props) => {
                     },
                     customToolbar: () => (
                         <DownloadCsv
-                            getAllPagesCSV={() =>
-                                props.downloadCSV(querys.like)
+                            getAllPagesCSV={() => {
+                                const newQuerysAll = {...querys.like, envelope:false}
+                                return props.downloadCSV(newQuerysAll)
+                            }}
+                            getSinglePageCSV={() => {
+                                const newQuerysSingle = {...querys, envelope:false}
+                                return props.downloadCSV(newQuerysSingle)
                             }
-                            getSinglePageCSV={() => props.downloadCSV(querys)}
+                            }
                         />
                     ),
 
