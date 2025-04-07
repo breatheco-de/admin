@@ -201,6 +201,33 @@ const SurveyList = () => {
       },
     },
     {
+      name: "response_rate", // field name in the row object
+      label: "Response Rate", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (dataIndex) => {
+          const item = items[dataIndex];
+          const responseRate = item.response_rate; // Assuming response_rate is a number between 0 and 1
+  
+          const formattedResponseRate = responseRate !== undefined && responseRate !== null
+          ? (responseRate).toFixed(2) + "%" // Convert to percentage and format to 2 decimal places
+          : "N/A"; // Handle undefined or null values
+         
+  
+          return (
+            <div className="flex items-center">
+              <div className="ml-3">
+                <small>
+                  {formattedResponseRate}
+                </small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+
+    {
       name: "action",
       label: " ",
       options: {
