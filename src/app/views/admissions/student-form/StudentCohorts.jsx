@@ -34,13 +34,8 @@ const propTypes = {
 };
 
 const StudentCohorts = ({ stdId, setCohortOptions }) => {
-  const [setMsg] = useState({ alert: false, type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [stdCohorts, setStdCohorts] = useState([]);
-  const [currentStd, setCurrentStd] = useState({});
-  const [openDialog, setOpenDialog] = useState(false);
-  const [cohort, setCohort] = useState(null);
-  const session = getSession();
   const [planFinancing, setPlanFinancing] = useState([]);
   const [subscriptionSlugs, setSubscriptionSlugs] = useState([]);
   const params = useParams();
@@ -61,33 +56,6 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
         }
       })
       .catch((error) => error);
-  };
-
-  const deleteUserFromCohort = () => {
-    bc.admissions()
-      .deleteUserCohort(currentStd.cohort_id, currentStd.id)
-      .then((data) => {
-        if (data.status === 204) getStudentCohorts();
-      })
-      .catch((error) => error);
-    setOpenDialog(false);
-  };
-  const addUserToCohort = () => {
-    if (cohort === null)
-      setMsg({ alert: true, type: "warning", text: "Select a cohort" });
-    else {
-      bc.admissions()
-        .addUserCohort(cohort.id, {
-          user: stdId,
-          role: "STUDENT",
-          finantial_status: null,
-          educational_status: "ACTIVE",
-        })
-        .then((data) => {
-          if (data.status >= 200) getStudentCohorts();
-        })
-        .catch((error) => error);
-    }
   };
 
   const getSubscriptionStatus = () => {
@@ -138,6 +106,8 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
     getPlanFinancing();
   }, []);
 
+  console.log(subscriptionSlugs)
+
   const tabs = [
     {
       disabled: false,
@@ -163,6 +133,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
             stdId={params.stdId}
             stdCohorts={stdCohorts}
             planFinancing={planFinancing}
+            subscriptions={subscriptionSlugs}
           />
         </Card>
       ),

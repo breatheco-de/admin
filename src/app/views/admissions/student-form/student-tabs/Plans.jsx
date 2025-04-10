@@ -58,26 +58,34 @@ const Plans = ({ stdId, planFinancing, subscriptions = [] }) => {
                 <div className="min-w-600">
                     {subscriptions && subscriptions.length > 0 && (
                         <>
-                            <h5 className="mt-4 mb-2 font-medium">Subscriptions</h5>
-                            {subscriptions.map((sub, i) => (
-                                <div key={`sub-${sub.id}`} className="py-2">
-                                    <Grid container alignItems="center" justifyContent="start">
-                                        <Grid item lg={6} md={6} sm={12} xs={12}>
-                                            <div className="flex-grow w-full mt-2">
-                                                <h5 className="text-15 text-primary flex items-center">
-                                                    Plan: {sub.plans && sub.plans.length > 0 ? sub.plans[0].slug : "N/A"}
-                                                </h5>
-                                                <h6 className="text-15 text-primary flex items-center">
-                                                    Status:
-                                                    <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
-                                                        {sub.status}
-                                                    </small>
-                                                </h6>
-                                            </div>
+                            <h5 className="mt-4 mb-2 text-18 font-medium">Subscriptions</h5>
+                            {subscriptions.map((sub, i) => {
+                                const plan = sub.plans && sub.plans.length > 0 ? sub.plans[0] : null;
+                                return (
+                                    <div key={`sub-${sub.id}`} className="py-2">
+                                        <Grid container alignItems="center" justifyContent="start">
+                                            <Grid item lg={6} md={6} sm={12} xs={12}>
+                                                <div className="flex-grow w-full">
+                                                    <h6 className="mt-0 mb-2 text-16 text-primary">
+                                                        {plan?.slug}
+                                                        <small className="border-radius-4 ml-2 px-1 pt-2px bg-dark">
+                                                            {sub.status}
+                                                        </small>
+                                                    </h6>
+                                                    {plan.trial_duration > 0 &&
+                                                        <h6 className="ml-2 text-black" style={{ fontWeight: 500, fontSize: "13px" }}>
+                                                            Trial: {plan.trial_duration} {plan.trial_duration_unit}(s)
+                                                        </h6>
+                                                    }
+                                                    <h6 className="ml-2 text-black" style={{ fontWeight: 500, fontSize: "13px" }}>
+                                                        Duration: {plan.time_of_life} {plan.time_of_life_unit}(s)
+                                                    </h6>
+                                                </div>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </div>
-                            ))}
+                                    </div>
+                                );
+                            })}
                         </>
                     )}
 
