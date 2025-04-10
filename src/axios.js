@@ -84,10 +84,9 @@ axiosInstance.interceptors.response.use(
         error.response.ok = false;  // <- this will always be used as reference for failure
         printAxiosResponse(error.response);
         resolveError(error);
-        Promise.reject(
+        return Promise.reject(
             (error.response && error.response.data) || "Something went wrong!"
         );
-        return error.response;
     }
 );
 
