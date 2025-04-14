@@ -88,61 +88,32 @@ const Survey = ({ match }) => {
           </Button>
         </DowndownMenu>
       </div>
-        {answered && answered.length > 0 ? <Grid container spacing={2}>
-          <Grid item md={4} xs={12}>
-            <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
-            </Alert>
-            <GaugeProgressCard score={survey.scores?.total || overallScore || 0} />
-            <Grid container spacing={2}>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'Cohort Score'} score={survey.scores?.cohort || avgCohortScore || 0} />
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'Academy Score'} score={survey.scores?.academy || avgAcademyScore || 0} />
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'Live CLass Score'} score={survey.scores?.live_class || avgLiveClassScore || 0} />
-              </Grid>
-              {surveyMentors.map((m) => (
-                <Grid key={m.name} item sm={6} xs={12}>
-                  <StatCard label={m.name} score={m.score.toFixed(1)} />
+          <Grid container spacing={2}>
+            <Grid item md={4} xs={12}>
+              <Alert severity="warning" className="mb-3">
+                <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expires ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
+              </Alert>
+              <GaugeProgressCard label={survey.scores?.total ? 'Total Score' : 'No score yet'} score={survey.scores?.total ? Number(survey.scores?.total.toFixed(1)) : 0} />
+              <Grid container spacing={2}>
+                <Grid item sm={6} xs={12}>
+                  <StatCard label={survey.scores?.cohort ? 'Cohort Score' : 'No cohort score yet'} score={survey.scores?.cohort ? Number(survey.scores?.cohort.toFixed(1)) : 0} />
                 </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          <Grid item md={8} xs={12}>
-            <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
-          </Grid>
-        </Grid>:<Grid container spacing={2}>
-          <Grid item md={4} xs={12}>
-            <Alert severity="warning" className="mb-3">
-              <AlertTitle className="m-auto">{survey && survey.expired < 0 ? `This survey expired ${Math.round(survey.expired/24)*-1} days ago`: `This survey expires in ${survey.expired} hours`}</AlertTitle>
-            </Alert>
-            <GaugeProgressCard score={0} />
-            <Grid container spacing={2}>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'No score yet'} score={0} />
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <StatCard label={'No score yet'} score={0} />
-              </Grid>
-              {mentors.map((m) => (
-                <Grid key={m.name} item sm={6} xs={12}>
-                  <StatCard label={'No score yet'} score={0} />
+                <Grid item sm={6} xs={12}>
+                  <StatCard label={survey.scores?.academy ? 'Academy Score' : 'No academy score yet'} score={survey.scores?.academy ? Number(survey.scores?.academy.toFixed(1)) : 0} />
                 </Grid>
-              ))}
+                {surveyMentors && surveyMentors?.length > 0 && surveyMentors.map((m) => (
+                  <Grid key={m.name} item sm={6} xs={12}>
+                    <StatCard label={m.name} score={m.score.toFixed(1)} />
+                  </Grid>
+                ))}
+              </Grid>
             </Grid>
+            {answered && answered?.length > 0 && (
+              <Grid item md={8} xs={12}>
+                <Answers answered={answered} filteredAnswers={filteredAnswers} sortBy={sortBy} filter={filter} mentors={mentors}/>
+              </Grid>
+            )}
           </Grid>
-          <Grid item md={8} xs={12}>
-            <Answers 
-            answered={answered} 
-            filteredAnswers={filteredAnswers} 
-            sortBy={sortBy} filter={filter} 
-            mentors={mentors}/>
-          </Grid>
-        </Grid>
-        }
       </>
       }
       <CopyDialog

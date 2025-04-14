@@ -22,17 +22,25 @@ npm install --g --production windows-build-tools --legacy-peer-deps
 
 This section is under development.
 
+## For environments problems
 
-## for nvm problems 
+1. When your environment variable has problems. You can use this commands:
+   a. `source .env`
+   b. `echo $REACT_APP_API_HOST`
+   c. `npm run start`
+
+## for nvm problems
+
 use:
+
 ```
 npm --build-from-source install node-pre-gyp
 ```
 
-
 ## Prettify:
 
 To format document with eslintrc rules run:
+
 ```bash
 npm run lint:fix
 ```
