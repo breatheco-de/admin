@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Icon,
@@ -13,6 +13,10 @@ import {
   DialogActions,
   DialogContent,
   TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core';
 import { MatxLoading } from "matx";
 import { Link } from 'react-router-dom';
@@ -24,6 +28,9 @@ import { Breadcrumb } from '../../../matx';
 import { SmartMUIDataTable } from '../../components/SmartDataTable';
 import SingleDelete from '../../components/ToolBar/ConfirmationDialog';
 import StatusTable from './StatusTable';
+import axios from '../../../axios';
+import { useQuery } from '../../hooks/useQuery';
+import config from '../../../config.js';
 
 toast.configure();
 const toastOption = {
@@ -52,12 +59,27 @@ const defaultBg = 'bg-gray';
 const SurveyList = () => {
   const { settings } = useSelector(({ layout }) => layout);
   const [items, setItems] = useState([]);
+  const query = useQuery();
+  const [templates, setTemplates] = useState([]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
 
   const [toResend, setToResend] = useState(null);
   const [status, setStatus] = useState({ open: false, value: null });
+
+  // Load all templates when component mounts
+  useEffect(() => {
+    axios.get(`${config.REACT_APP_API_HOST}/v1/feedback/academy/survey/template?is_shared=true&lang=en`)
+      .then(response => {
+        console.log("Templates loaded:", response.data);
+        // The API returns the templates directly as an array
+        if (response.data) {
+          setTemplates(response.data);
+        }
+      })
+      .catch(error => console.error("Error loading templates:", error));
+  }, []);
 
   const resendSurvey = (survey) => {
     bc.feedback()
@@ -98,6 +120,24 @@ const SurveyList = () => {
       },
     },
     {
+      name: "title", // field name in the row object
+      label: "Survey Title", // column title that will be shown in table
+      options: {
+        filter: true,
+        customBodyRenderLite: (i) => {
+          const item = items[i];
+          return (
+            <div className="flex items-center">
+              <div className="ml-3" style={{ width: "100%" }}>
+                <h5 className="my-0 text-18 font-weight-bold">{item?.title || "Untitled Survey"}</h5>
+                <small className="text-muted">{item?.template_slug || "No template"}</small>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "cohort", // field name in the row object
       label: "Cohort", // column title that will be shown in table
       options: {
@@ -121,8 +161,8 @@ const SurveyList = () => {
       },
     },
     {
-      name: "status", // field name in the row object
-      label: "Status", // column title that will be shown in table
+      name: "status_and_date", // Combined field
+      label: "Status / Date",
       options: {
         filter: true,
         customBodyRenderLite: (dataIndex) => {
@@ -137,35 +177,21 @@ const SurveyList = () => {
                   onClick={() => { showStatus(item) }}
                 >
                   <small
-                    className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status] || defaultBg
-                      }`}
+                    className={`border-radius-4 px-2 pt-2px text-white ${stageColors[item?.status] || defaultBg}`}
                   >
                     {statusMsg(item)}
                   </small>
                 </Tooltip>
+                {item.sent_at && (
+                  <div className="mt-1">
+                    <small className="text-muted">{dayjs(item.sent_at).format("MM-DD-YYYY")}</small>
+                    <small className="text-muted ml-2">({dayjs(item.sent_at).fromNow()})</small>
+                  </div>
+                )}
               </div>
             </div>
           );
         },
-      },
-    },
-    {
-      name: "sent_at",
-      label: "Sent date",
-      options: {
-        filter: true,
-        customBodyRenderLite: (i) => (
-          <div className="flex items-center" style={{ width: "80%" }}>
-            <div className="ml-3">
-              <h5 className="my-0 text-15">
-                {dayjs(items[i].sent_at).format("MM-DD-YYYY")}
-              </h5>
-              <small className="text-muted">
-                {dayjs(items[i].sent_at).fromNow()}
-              </small>
-            </div>
-          </div>
-        ),
       },
     },
     {
@@ -174,7 +200,6 @@ const SurveyList = () => {
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
-          console.log("scores", items[i].scores)
           const avg_score = items[i].scores?.total || null;
           const color =
             avg_score > 7
@@ -197,6 +222,45 @@ const SurveyList = () => {
             );
           }
           return "No avg yet";
+        },
+      },
+    },
+    {
+      name: "template_slug",
+      label: "Template",
+      options: {
+        filter: true,
+        filterType: 'custom',
+        filterList: query.get('template_slug') !== null ? [query.get('template_slug')] : [],
+        display: false,
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div style={{ width: '180px' }}>
+                <FormControl variant="outlined" size="small" fullWidth>
+                  <InputLabel id="template-select-label">Template</InputLabel>
+                  <Select
+                    labelId="template-select-label"
+                    value={filterList[index][0] || ''}
+                    onChange={(e) => {
+                      filterList[index] = e.target.value ? [e.target.value] : [];
+                      onChange(filterList[index], index, column);
+                    }}
+                    label="Template"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {templates.map((template) => (
+                      <MenuItem key={template.id} value={template.slug}>
+                        {template.slug}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            );
+          }
         },
       },
     },
@@ -282,6 +346,16 @@ const SurveyList = () => {
             view="survey?"
             historyReplace="/feedback/surveys"
             singlePage=""
+            options={{
+              print: false,
+              viewColumns: false,
+              onFilterChipClose: async (index, removedFilter, filterList) => {
+                setTemplates([]);
+                const querys = {};
+                const { data } = await bc.feedback().getSurveys(querys);
+                setItems(data.results);
+              },
+            }}
             search={async (querys) => {
               const { data } = await bc.feedback().getSurveys(querys);
               setItems(data.results);

@@ -138,7 +138,7 @@
     }
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider node scripts/start.js",
     "build": "NODE_OPTIONS=--openssl-legacy-provider node scripts/build.js",
     "serve": "npx serve -s build",
     "test": "node scripts/test.js",

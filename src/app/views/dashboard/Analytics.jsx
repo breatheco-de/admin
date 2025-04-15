@@ -61,36 +61,6 @@ const Analytics = () => {
     const { academy } = session;
     if (!academy) return null;
 
-    BC.marketing()
-      .getLeads({
-        start: params.start.format('YYYY-MM-DD'),
-        end: params.end.format('YYYY-MM-DD'),
-        academy: academy.slug,
-        by: 'location,created_at__date,course',
-      })
-      .then(({ data }) => {
-        // console.log('data', data);
-        const series = [];
-        const xAxis = [];
-        let total = 0;
-        let max = 0;
-        let min = 0;
-        console.log('GET_LEADS BY COURSE', data);
-        data.forEach((stamp) => {
-          series.push(stamp.total_leads);
-          xAxis.push(dayjs(stamp.created_at__date).format('MM-DD'));
-          total += stamp.total_leads;
-          if (stamp.total_leads > max) max = stamp.total_leads;
-          if (stamp.total_leads < min) min = stamp.total_leads;
-        });
-        setLeads({
-          series,
-          xAxis,
-          total,
-          max,
-          min,
-        });
-      });
 
     BC.marketing()
       .getLeads({
