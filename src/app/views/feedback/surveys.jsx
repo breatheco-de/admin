@@ -61,6 +61,7 @@ const SurveyList = () => {
   const [items, setItems] = useState([]);
   const query = useQuery();
   const [templates, setTemplates] = useState([]);
+  const [scoreFilter, setScoreFilter] = useState({ operator: 'gt', value: 7 });
 
   const [openDialog, setOpenDialog] = useState(false);
   const [url, setUrl] = useState('');
@@ -113,13 +114,6 @@ const SurveyList = () => {
 
   const columns = [
     {
-      name: "id", // field name in the row object
-      label: "ID", // column title that will be shown in table
-      options: {
-        filter: true,
-      },
-    },
-    {
       name: "title", // field name in the row object
       label: "Survey Title", // column title that will be shown in table
       options: {
@@ -139,7 +133,7 @@ const SurveyList = () => {
     },
     {
       name: "cohort", // field name in the row object
-      label: "Cohort", // column title that will be shown in table
+      label: "Cohort Slug", // column title that will be shown in table
       options: {
         filter: true,
         customBodyRenderLite: (i) => {
@@ -161,10 +155,40 @@ const SurveyList = () => {
       },
     },
     {
-      name: "status_and_date", // Combined field
-      label: "Status / Date",
+      name: "status", // Combined field
+      label: "Status",
       options: {
         filter: true,
+        filterType: 'custom',
+        filterList: query.get('status') !== null ? [query.get('status')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            return (
+              <div style={{ width: '100%' }}>
+                <FormControl variant="outlined" size="small" fullWidth>
+                  <InputLabel id="status-select-label">Status</InputLabel>
+                  <Select
+                    labelId="status-select-label"
+                    value={filterList[index][0] || ''}
+                    onChange={(e) => {
+                      filterList[index] = e.target.value ? [e.target.value] : [];
+                      onChange(filterList[index], index, column);
+                    }}
+                    label="Status"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value="PENDING">PENDING</MenuItem>
+                    <MenuItem value="SENT">SENT</MenuItem>
+                    <MenuItem value="PARTIAL">PARTIAL</MenuItem>
+                    <MenuItem value="FATAL">FATAL</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            );
+          }
+        },
         customBodyRenderLite: (dataIndex) => {
           const item = items[dataIndex];
           
@@ -195,10 +219,85 @@ const SurveyList = () => {
       },
     },
     {
-      name: "avg_score",
+      name: "total_score",
       label: "Score",
       options: {
         filter: true,
+        filterType: 'custom',
+        filterList: query.get('total_score') !== null ? [query.get('total_score')] : [],
+        filterOptions: {
+          display: (filterList, onChange, index, column) => {
+            // Parse initial filter value if any
+            const currentFilter = filterList[index][0] || '';
+            const initOperator = currentFilter.endsWith('+') ? 'gt' : 
+                                currentFilter.endsWith('-') ? 'lt' : 'eq';
+            const initValue = parseInt(currentFilter.replace(/[+-]/g, '')) || 7;
+            
+            // Initialize state if not already set
+            if (scoreFilter.value !== initValue || scoreFilter.operator !== initOperator) {
+              setScoreFilter({ operator: initOperator, value: initValue });
+            }
+            
+            return (
+              <div style={{ width: '100%' }}>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item xs={6}>
+                    <FormControl variant="outlined" size="small" fullWidth>
+                      <InputLabel id="score-operator-label">Operator</InputLabel>
+                      <Select
+                        labelId="score-operator-label"
+                        value={scoreFilter.operator}
+                        onChange={(e) => {
+                          const newScoreFilter = { ...scoreFilter, operator: e.target.value };
+                          setScoreFilter(newScoreFilter);
+                          
+                          // Format for total_score query param
+                          let filterValue = `${newScoreFilter.operator}:${newScoreFilter.value}`;
+                          filterList[index] = [filterValue];
+                          onChange(filterList[index], index, column);
+                        }}
+                        label="Operator"
+                      >
+                        <MenuItem value="gt">Greater than</MenuItem>
+                        <MenuItem value="lt">Less than</MenuItem>
+                        <MenuItem value="eq">Equal to</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Value"
+                      type="number"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      value={scoreFilter.value}
+                      inputProps={{ min: 1, max: 10, step: 1 }}
+                      onChange={(e) => {
+                        const value = Math.min(Math.max(parseInt(e.target.value) || 1, 1), 10);
+                        const newScoreFilter = { ...scoreFilter, value };
+                        setScoreFilter(newScoreFilter);
+                        
+                        // Format for total_score query param
+                        let filterValue;
+                        if (newScoreFilter.operator === 'gt') {
+                          filterValue = `${value}+`;
+                        } else if (newScoreFilter.operator === 'lt') {
+                          filterValue = `${value}-`;
+                        } else {
+                          filterValue = `${value}`;
+                        }
+                        
+                        filterList[index] = [filterValue];
+                        onChange(filterList[index], index, column);
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            );
+          }
+        },
         customBodyRenderLite: (i) => {
           const avg_score = items[i].scores?.total || null;
           const color =
@@ -236,7 +335,7 @@ const SurveyList = () => {
         filterOptions: {
           display: (filterList, onChange, index, column) => {
             return (
-              <div style={{ width: '180px' }}>
+              <div style={{ width: '100%' }}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <InputLabel id="template-select-label">Template</InputLabel>
                   <Select
@@ -251,7 +350,7 @@ const SurveyList = () => {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    {templates.map((template) => (
+                    {Array.isArray(templates) && templates.map((template) => (
                       <MenuItem key={template.id} value={template.slug}>
                         {template.slug}
                       </MenuItem>
