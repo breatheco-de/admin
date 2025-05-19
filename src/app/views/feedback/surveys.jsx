@@ -124,7 +124,10 @@ const SurveyList = () => {
             <div className="flex items-center">
               <div className="ml-3" style={{ width: "100%" }}>
                 <h5 className="my-0 text-18 font-weight-bold">{item?.title || "Untitled Survey"}</h5>
-                <small className="text-muted">{item?.template_slug || "No template"}</small>
+                <div className='flex items-center'>
+                  <small className='bg-gray rounded  mr-1' style={{ padding: '0px 5px' }}>{item?.id}</small>
+                  <small className="text-muted">{item?.template_slug || "No template"}</small>
+                </div>
               </div>
             </div>
           );
