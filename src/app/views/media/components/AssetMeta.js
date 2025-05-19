@@ -26,6 +26,7 @@ import slugify from "slugify";
 import { MediaInput } from '../../../components/MediaInput';
 import config from '../../../../config.js';
 import API from "../../../services/breathecode"
+import FlagsCard from "./FlagsCard";
 dayjs.extend(relativeTime)
 
 
@@ -869,6 +870,9 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
         <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
         <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       </>}
+      {asset.asset_type == 'PROJECT' && asset.config &&
+        <FlagsCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
+      }
       <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
