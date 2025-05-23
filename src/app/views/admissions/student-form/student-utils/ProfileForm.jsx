@@ -288,7 +288,7 @@ export const ProfileForm = ({ initialValues }) => {
                     asyncSearch={() => {
                       const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
                       if (selectedCohortSlug) {
-                        return bc.payments().getPlanByCohort({ cohort: selectedCohortSlug })
+                        return bc.payments().getPlanByCohort({ cohort: selectedCohortSlug, academy: user.academy.id })
                           .then((response) => {
                             return [
                               defaultPlan,
