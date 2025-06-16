@@ -330,6 +330,7 @@ const ComposeAsset = () => {
               routeSegments={[
                 { name: "Assets", path: "/media/asset" },
                 { name: "Single Asset" },
+                { name: asset.id ? asset.id : "New Asset" },
               ]}
             />
           </div>
