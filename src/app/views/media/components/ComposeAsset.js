@@ -39,6 +39,7 @@ import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
 import { RepositorySubscriptionIcon } from "./RepositorySubscriptions";
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
+import AssetAcademyGuard from "./AssetAcademyGuard";
 
 function slugify(text) {
   let slug = _slugify(text, { lower: true, strict: true });
@@ -321,6 +322,11 @@ const ComposeAsset = () => {
   if (!asset || (!isCreating && !asset.id)) return <MatxLoading />;
   
   return (
+    <AssetAcademyGuard 
+      asset={asset} 
+      isCreating={isCreating} 
+      onAssetUpdate={setAsset}
+    >
     <div className="m-sm-30">
       {openAliases && <AssetAliases asset={asset} onClose={() => setOpenAliases(false)} />}
       <div className="mb-sm-30">
@@ -766,6 +772,7 @@ const ComposeAsset = () => {
         />
       )}
     </div>
+    </AssetAcademyGuard>
   );
 };
 
