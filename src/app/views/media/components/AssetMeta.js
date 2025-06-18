@@ -181,6 +181,7 @@ const DescriptionCard = ({ asset, onChange}) => {
 
 const LangCard = ({ asset, onAction, onChange }) => {
   const [addTranslation, setAddTranslation] = useState(null);
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
   const assetTranslations = asset.translations ? Object.keys(asset.translations) : [];
   const allLangs = Object.keys(availableLanguages);
 
@@ -193,10 +194,20 @@ const LangCard = ({ asset, onAction, onChange }) => {
       if(updateResp && updateResp.status == 200) setAddTranslation(null);
     } 
     else{
+      // Show loading modal
+      setShowLoadingModal(true);
+      
       const resp = await API.registry().createAsset(addTranslation);
       if (resp.status == 201) {
-        setAddTranslation(null);
-        history.push(`./${resp.data.slug}`);
+        // Wait 2 seconds before redirecting
+        setTimeout(() => {
+          setShowLoadingModal(false);
+          setAddTranslation(null);
+          history.push(`./${resp.data.slug}`);
+        }, 2000);
+      } else {
+        // Hide modal immediately if there's an error
+        setShowLoadingModal(false);
       }
     }
   }
@@ -285,6 +296,22 @@ const LangCard = ({ asset, onAction, onChange }) => {
         <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)} />
       </div>
     }
+    
+    {/* Loading Modal */}
+    <Dialog
+      open={showLoadingModal}
+      aria-labelledby="loading-dialog-title"
+      disableBackdropClick
+      disableEscapeKeyDown
+    >
+      <DialogContent className="p-6 text-center">
+        <div className="flex flex-col items-center">
+          <Icon className="animate-spin mb-4" fontSize="large">autorenew</Icon>
+          <h4 className="m-0 mb-2">Creating Translation</h4>
+          <p className="m-0">Waiting for asset translation to be created...</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   </Card>;
 }
 
