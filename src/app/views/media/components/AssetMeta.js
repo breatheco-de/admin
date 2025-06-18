@@ -693,12 +693,72 @@ const syncColor = {
 }
 
 
+const NoRepositoryCard = ({ asset, onAction, onChange }) => {
+  const [githubUrl, setGithubUrl] = useState('');
+  const [showInput, setShowInput] = useState(false);
+  const [createRepoDialog, setCreateRepoDialog] = useState(false);
+
+  return <Card className="p-4 mb-4">
+    <h4 className="m-0 font-medium">Github</h4>
+    <div className="mt-2">
+      <p>There is no repository associated to this asset, you can <span className="anchor text-primary underline pointer" onClick={() => setShowInput(true)}>click here to set a repo</span>
+      {asset.asset_type === 'PROJECT' && 
+        <> or <span className="anchor text-primary underline pointer" onClick={() => setCreateRepoDialog(true)}>create a new repo</span></>
+      }.
+      </p>
+      
+      {showInput && (
+        <div className="mt-2">
+          <TextField 
+            width="100%" 
+            value={githubUrl} 
+            variant="outlined" 
+            size="small" 
+            placeholder="Enter GitHub repository URL..."
+            onChange={(e) => setGithubUrl(e.target.value)} 
+          />
+          {githubUrl && !githubUrl.includes("https://github") && <small className="text-error d-block">Must be github.com</small>}
+          <div className="mt-2">
+            <Button 
+              variant="contained" 
+              color="primary" 
+              size="small" 
+              disabled={!githubUrl || !githubUrl.includes("https://github")}
+              onClick={() => onChange({ readme_url: githubUrl })}
+            >
+              Save URL
+            </Button>
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              size="small" 
+              className="ml-2"
+              onClick={() => setShowInput(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <ConfirmAlert
+      title={`Create a new GitHub repository for this ${asset.asset_type.toLowerCase()}?`}
+      description={`This will create a new repository on GitHub under the academy organization and automatically bind it to this asset. The repository will be set up with the appropriate template and structure for a ${asset.asset_type.toLowerCase()}.`}
+      isOpen={createRepoDialog}
+      setIsOpen={setCreateRepoDialog}
+      onOpen={() => onAction('create_repo')}
+      acceptText="Yes, create repository"
+      cancelText="Cancel"
+    />
+  </Card>;
+}
+
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [githubUrl, setGithubUrl] = useState(asset.readme_url);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
-
 
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
@@ -868,12 +928,16 @@ const AssetMeta = ({ asset, onAction, onChange }) => {
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       {asset.asset_type != 'QUIZ' && <>
         <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-        <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+        {/* <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} /> */}
       </>}
       {asset.asset_type == 'PROJECT' && asset.config &&
         <FlagsCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       }
-      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      {asset.readme_url ? 
+        <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+        :
+        <NoRepositoryCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      }
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );
