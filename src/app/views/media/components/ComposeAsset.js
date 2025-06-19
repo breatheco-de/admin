@@ -10,6 +10,9 @@ import {
   TextField,
   Card,
   MenuItem,
+  Switch,
+  FormControlLabel,
+  Tooltip,
 } from "@material-ui/core";
 import { Base64 } from "js-base64";
 import { Breadcrumb } from "matx";
@@ -189,6 +192,8 @@ const ComposeAsset = () => {
     now.toISOString().replace("Z", "").padEnd(23, "0") + "Z";
 
   const [dirty, setDirty] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [featureLoading, setFeatureLoading] = useState(false);
 
   const handleMarkdownChange = () => {
     if (asset.updated_at != asset.last_synched_at) {
@@ -196,6 +201,23 @@ const ComposeAsset = () => {
     }
   };
 
+  const handleToggleFeature = async () => {
+    setFeatureLoading(true);
+    try {
+      const resp = await bc.registry().updateAsset(asset.slug, { feature: !isFeatured });
+
+      if (resp.status === 200) {
+        setIsFeatured(!isFeatured);
+        setAsset({ ...asset, feature: !isFeatured });
+        toast.success(`Asset ${!isFeatured ? "marked as featured" : "removed from featured"} successfully!`);
+      } else {
+        toast.error("Error updating feature status.");
+      }
+    } catch (error) {
+      toast.error("Failed to update feature status.");
+    }
+    setFeatureLoading(false);
+  };
 
   const partialUpdateAsset = async (_slug, newAsset) => {
     if (isCreating) {
@@ -232,6 +254,7 @@ const ComposeAsset = () => {
           const resp = await bc.registry().getAsset(asset_slug);
           if (resp.status >= 200 && resp.status < 300) {
             setAsset({ ...resp.data, lang: resp.data.lang || "us" });
+            setIsFeatured(resp.data.feature || false);
           } else throw Error("Asset could not be retrieved");
 
           await getAssetContent(asset_slug);
@@ -547,6 +570,26 @@ const ComposeAsset = () => {
                   ) : (
                     `Uknown language ${asset.lang}`
                   )}
+                </div>
+                <div className="flex items-center ml-3">
+                  <Tooltip title="If enabled, this asset will be shown in the landing pages for marketing purposes.">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={isFeatured}
+                          onChange={handleToggleFeature}
+                          color="primary"
+                          disabled={featureLoading}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <span className="text-11">
+                          {isFeatured ? "Featured" : "Not Featured"}
+                        </span>
+                      }
+                    />
+                  </Tooltip>
                 </div>
               </div>
               {errors["asset_type"] && (

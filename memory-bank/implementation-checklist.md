@@ -29,6 +29,22 @@
 - [x] Verified all imports and dependencies are correctly resolved
 - [x] Build completed with no compilation errors
 
+### ✅ Feature Toggle Movement
+- **Task**: Move FeatureCard toggle from AssetMeta component to main asset information area next to language selector
+- **Status**: COMPLETED
+- **Details**: 
+  - Removed FeatureCard component from AssetMeta.js
+  - Added feature toggle functionality directly to ComposeAsset.js
+  - Integrated toggle next to language selector in the main badge area
+  - Added proper state management (isFeatured, featureLoading)
+  - Added handleToggleFeature function with API integration
+  - Added proper initialization when asset loads
+  - Maintained same functionality and styling as original FeatureCard
+- **Files Modified**:
+  - `src/app/views/media/components/AssetMeta.js` - Removed FeatureCard component and its usage
+  - `src/app/views/media/components/ComposeAsset.js` - Added feature toggle functionality and UI
+- **Location**: The toggle now appears in the flex container next to the language badge at: `Grid item xs={12} sm={8} > div.flex > div (after language selector)`
+
 ## 📋 Implementation Details
 
 ### Navigation Structure:
@@ -67,3 +83,9 @@ The implementation is now complete and ready for testing. The new navigation str
 4. Filter and search within each section independently
 
 All code follows the existing patterns and conventions used throughout the application. 
+
+## Notes
+- Both files pass syntax validation
+- Feature toggle maintains same API integration and toast notifications
+- Uses appropriate Material-UI components (Switch, FormControlLabel, Tooltip)
+- Properly integrated with existing state management 
