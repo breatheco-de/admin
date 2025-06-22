@@ -111,7 +111,7 @@ export const PickKeywordModal = ({
                             value={formData}
                             getOptionLabel={(option) => option.title || `Search keywords or type a new one`}
                             asyncSearch={async (searchTerm) => {
-                                const resp = await bc.registry().getAllKeywords({ ...query, like: searchTerm })
+                                const resp = await bc.registry().getAllKeywords({ ...query, like: searchTerm, lang: lang })
                                 if(resp.status === 200){
                                     resp.data = [{title: 'Add keyword: '+searchTerm, value: 'new_keyword'}, ...resp.data]
                                     return resp
