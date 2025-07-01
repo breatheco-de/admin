@@ -10,6 +10,9 @@ import {
   TextField,
   Card,
   MenuItem,
+  Switch,
+  FormControlLabel,
+  Tooltip,
 } from "@material-ui/core";
 import { Base64 } from "js-base64";
 import { Breadcrumb } from "matx";
@@ -547,6 +550,37 @@ const ComposeAsset = () => {
                   ) : (
                     `Uknown language ${asset.lang}`
                   )}
+                </div>
+                {/* Feature Asset Toggle */}
+                <div className="flex items-center ml-auto">
+                  <Tooltip title="If enabled, this asset will be shown in the landing pages for marketing purposes.">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={asset.feature || false}
+                          onChange={async () => {
+                            const resp = await bc.registry().updateAsset(asset.slug, { 
+                              feature: !asset.feature 
+                            });
+                            if (resp.ok) {
+                              setAsset(resp.data);
+                              toast.success(`Asset ${!asset.feature ? "marked as featured" : "removed from featured"} successfully!`);
+                            } else {
+                              toast.error("Error updating feature status.");
+                            }
+                          }}
+                          color="primary"
+                          size="small"
+                        />
+                      }
+                      label={
+                        <span className="text-11">
+                          {asset.feature ? "Featured" : "Not Featured"}
+                        </span>
+                      }
+                      labelPlacement="start"
+                    />
+                  </Tooltip>
                 </div>
               </div>
               {errors["asset_type"] && (
