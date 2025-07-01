@@ -26,7 +26,7 @@ export const colorStyles = makeStyles(({ palette, ...theme }) => ({
         },
         ".bg-white": { background: "#fff !important", color: "inherit" },
         ".bg-default": {
-            background: `${palette.background.default} !important`,
+            background: "#1976d2 !important",
         },
         ".bg-paper": { background: `${palette.background.paper}` },
         ".bg-gray": { background: "rgba(0, 0, 0, 0.15) !important" },
