@@ -725,10 +725,16 @@ const NoRepositoryCard = ({ asset, onAction, onChange }) => {
   const [showInput, setShowInput] = useState(false);
   const [createRepoDialog, setCreateRepoDialog] = useState(false);
 
+  const valid_extension = (url) => {
+    console.log(`valid_extension: ${url}`);
+    const validExtensions = ['.md', '.mdx', '.markdown', '.json', '.ipynb'];
+    return validExtensions.some(ext => url.toLowerCase().endsWith(ext));
+  };
+
   return <Card className="p-4 mb-4">
     <h4 className="m-0 font-medium">Github</h4>
     <div className="mt-2">
-      <p>There is no repository associated to this asset, you can <span className="anchor text-primary underline pointer" onClick={() => setShowInput(true)}>click here to set a repo</span>
+      <p>There is no repo markdown or json associated to this asset, you can <span className="anchor text-primary underline pointer" onClick={() => setShowInput(true)}>click here to set a repo</span>
       {asset.asset_type === 'PROJECT' && 
         <> or <span className="anchor text-primary underline pointer" onClick={() => setCreateRepoDialog(true)}>create a new repo</span></>
       }.
@@ -741,16 +747,18 @@ const NoRepositoryCard = ({ asset, onAction, onChange }) => {
             value={githubUrl} 
             variant="outlined" 
             size="small" 
-            placeholder="Enter GitHub repository URL..."
+            placeholder="Github markdown or json URL..."
             onChange={(e) => setGithubUrl(e.target.value)} 
           />
           {githubUrl && !githubUrl.includes("https://github") && <small className="text-error d-block">Must be github.com</small>}
+          {githubUrl && !valid_extension(githubUrl) && <small className="text-error d-block">URL must end with .md, .mdx, .markdown, .json, or .ipynb</small>}
+          
           <div className="mt-2">
             <Button 
               variant="contained" 
               color="primary" 
               size="small" 
-              disabled={!githubUrl || !githubUrl.includes("https://github")}
+              disabled={!githubUrl || !githubUrl.includes("https://github") || !valid_extension(githubUrl)}
               onClick={() => onChange({ readme_url: githubUrl })}
             >
               Save URL
@@ -784,6 +792,38 @@ const NoRepositoryCard = ({ asset, onAction, onChange }) => {
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [githubUrl, setGithubUrl] = useState(asset.readme_url);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const [validationDialog, setValidationDialog] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
+
+  const valid_extension = (url) => {
+    console.log(`valid_extension: ${url}`);
+    const validExtensions = ['.md', '.mdx', '.markdown', '.json', '.ipynb'];
+    return validExtensions.some(ext => url.toLowerCase().endsWith(ext));
+  };
+
+  const validateUrl = () => {
+    const errors = [];
+    if (!githubUrl) {
+      errors.push("URL cannot be empty");
+    }
+    if (githubUrl && !githubUrl.includes("https://github")) {
+      errors.push("URL must be from github.com");
+    }
+    if (githubUrl && !valid_extension(githubUrl)) {
+      errors.push("URL must end with .md, .mdx, .markdown, .json, or .ipynb");
+    }
+    return errors;
+  };
+
+  const handleSaveUrl = () => {
+    const errors = validateUrl();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setValidationDialog(true);
+    } else {
+      onChange({ readme_url: githubUrl });
+    }
+  };
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
 
@@ -796,7 +836,12 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <h4 className="m-0 font-medium d-inline">Github</h4>
       </div>
       {asset.readme_url != githubUrl ?
-        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ readme_url: githubUrl })}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          size="small" 
+          onClick={handleSaveUrl}
+        >
           Save URL
         </Button>
         :
@@ -844,7 +889,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
       </Grid>
       <Grid item xs={8}>
         <TextField width="100%" value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
-        {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
+        {githubUrl && !githubUrl.includes("https://github") && <small className="text-error d-block">Must be github.com</small>}
+        {githubUrl && !valid_extension(githubUrl) && <small className="text-error d-block">URL must end with .md, .mdx, .markdown, .json, or .ipynb</small>}
       </Grid>
     </Grid>
     <Grid item className="flex mt-2" xs={12}>
@@ -863,6 +909,31 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         />
       </Grid>
     </Grid>
+
+    {/* Validation Error Modal */}
+    <Dialog
+      open={validationDialog}
+      onClose={() => setValidationDialog(false)}
+      aria-labelledby="validation-dialog-title"
+    >
+      <DialogContent className="p-6">
+        <h4 className="m-0 mb-4 text-error">Invalid URL</h4>
+        <ul className="m-0 p-0" style={{ listStyle: "none" }}>
+          {validationErrors.map((error, index) => (
+            <li key={index} className="mb-2 text-error">• {error}</li>
+          ))}
+        </ul>
+        <div className="mt-4 text-right">
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => setValidationDialog(false)}
+          >
+            OK
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   </Card>;
 }
 
@@ -924,7 +995,7 @@ const FeatureCard = ({ asset, onChange }) => {
 
   return (
     <Card className="p-4 mb-4">
-      <h4 className="m-0 font-medium">Feature Asset</h4>
+      <h4 className="m-0 font-medium">How to feature this asset</h4>
       <Tooltip title="If enabled, this asset will be shown in the landing pages for marketing purposes.">
         <FormControlLabel
           control={
@@ -935,7 +1006,7 @@ const FeatureCard = ({ asset, onChange }) => {
               disabled={loading}
             />
           }
-          label={isFeatured ? "Featured" : "Not Featured"}
+          label={`Show in the landing pages`}
         />
       </Tooltip>
     </Card>
