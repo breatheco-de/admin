@@ -1314,16 +1314,39 @@ class BreatheCodeClient {
 
   payments() {
     return {
-      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription) =>
-        axios.bcPost(
+      addAcademyPlanSlugSubscription: (planSlug, payloadPlanSubscription, how_many_installments = 0) => {
+        let url = `${this.host}/payments/academy/plan/${planSlug}/subscription`;
+
+        if (how_many_installments && Number(how_many_installments) > 0) {
+            url += `?how_many_installments=${encodeURIComponent(how_many_installments)}`;
+        }
+
+        return axios.bcPost(
           "Academy Plan Subscription",
-          `${this.host}/payments/academy/plan/${planSlug}/subscription`,
+          url,
           payloadPlanSubscription
-        ),
-      getPlanByCohort: (query) => {
-        const qs = serializeQuerystring(query);
-        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`)  
+        );
       },
+      getSubscription: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/subscription?${qs}`);
+      },
+      getPlanFinancing: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/planfinancing?${qs}`);
+      },
+      updatedSubscription: (subscriptionId, payload) =>
+        axios.bcPut(
+          "Update Academy Plan Subscription",
+          `${this.host}/payments/academy/subscription/${subscriptionId}`,
+          payload
+        ),
+      updatedPlanFinancing: (financing_id, payload) =>
+        axios.bcPut(
+          "Update Academy Plan Financing",
+          `${this.host}/payments/academy/planfinancing/${financing_id}`,
+          payload
+        ),
       getPaymentsMethods: (query) => {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/methods?${qs}`)
@@ -1331,7 +1354,11 @@ class BreatheCodeClient {
       getPlan: (query) => {
         const qs = serializeQuerystring(query);
         return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/plan?${qs}`); 
-      }
+      },
+      getAcademyPlans: (query) => {
+        const qs = serializeQuerystring(query);
+        return axios.get(`${config.REACT_APP_API_HOST}/v1/payments/academy/plan?${qs}`);
+      },
     };
   }
 

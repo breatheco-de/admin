@@ -139,12 +139,10 @@ export const ProfileForm = ({ initialValues }) => {
       initialValues={initialValues}
       onSubmit={(values) => {
         if (availableAsSaas && !selectedPlans || selectedPlans?.length === 0){
-          console.error("You must select at leats one plan before submitting")
           toast.error("You must select at leats one plan before submitting")
           return;
         }
         if (availableAsSaas && selectedPlans && selectedPlans.length > 1){
-          console.error("You can only select one plan")
           toast.error("You can only select one plan")
           return;
         }
@@ -288,7 +286,7 @@ export const ProfileForm = ({ initialValues }) => {
                     asyncSearch={() => {
                       const selectedCohortSlug = cohort.length > 0 ? cohort[0].slug : null;
                       if (selectedCohortSlug) {
-                        return bc.payments().getPlanByCohort({ academy_id: user.academy.id })
+                        return bc.payments().getPlan({ cohort: selectedCohortSlug })
                           .then((response) => {
                             return [
                               defaultPlan,
