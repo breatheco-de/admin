@@ -316,9 +316,17 @@ const Assets = () => {
                 />
                 <Chip
                   size="small"
+                  className="mr-2"
                   label={"Test: " + item?.test_status?.substring(0, 7)}
                   color={stageColors[item?.test_status]}
                 />
+                {!item?.academy && (
+                  <Chip
+                    size="small"
+                    label="Missing academy"
+                    style={{ backgroundColor: '#f44336', color: 'white' }}
+                  />
+                )}
               </div>
             </div>
           );

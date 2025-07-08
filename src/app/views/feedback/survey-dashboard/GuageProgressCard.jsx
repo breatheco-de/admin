@@ -14,10 +14,10 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 }));
 
 const feedback = {
-  0: 'This average score is unacceptable, meet with each student and lets turn ir around ASAP',
-  7: 'We need to work harder to improve this, some of your students are not feeling it',
-  8: 'This cohort has 8/10 score. Not bad, but it can be improoved.',
-  9: 'Excelent! Students love this cohort, make sure to keep the formula going on.',
+  0: 'This average score is unacceptable, meet with each student and let\'s turn it around ASAP.',
+  7: 'We need to work harder to improve this, some of your students are not feeling it.',
+  8: 'This cohort has 8/10 score. Not bad, but it can be improved.',
+  9: 'Excellent! Students love this cohort, make sure to keep the formula going on.',
   10: 'We are really impressed, hitting 10/10 is an amazing achievement and you should be proud of yourself',
 };
 
