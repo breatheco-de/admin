@@ -84,7 +84,11 @@ const PlansDialog = ({ plansDialog, payments, userId, onClose }) => {
                                     name="plan"
                                     select
                                 >
-                                    {plansDialog?.map((plan) => (
+                                    {plansDialog?.filter(plan => 
+                                        plan.financing_options && 
+                                        plan.financing_options.length > 0 && 
+                                        plan.financing_options.some(option => option.how_many_months === 1)
+                                    ).map((plan) => (
                                         <MenuItem key={plan.slug} value={plan.slug}>
                                             {plan.slug}
                                         </MenuItem>
