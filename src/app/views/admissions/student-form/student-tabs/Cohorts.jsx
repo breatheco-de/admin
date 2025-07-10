@@ -7,10 +7,19 @@ import {
     List,
     ListItemText,
     ListItem,
+    Button,
+    DialogActions,
+    IconButton,
+    Icon,
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import dayjs from "dayjs";
 import bc from "../../../../services/breathecode";
+import { MatxLoading } from "../../../../../matx";
+import { AsyncAutocomplete } from "../../../../components/Autocomplete";
+import axios from "../../../../../axios";
+import config from "../../../../../config";
+import { getSession } from "../../../../redux/actions/SessionActions";
 
 const actionController = {
     message: {
@@ -43,9 +52,15 @@ const Cohorts = ({
     getStudentCohorts,
     getPlanFinancing,
     getSubscriptionStatus,
+    stdId,
 }) => {
     const [openRoleDialog, setRoleDialog] = useState(false);
     const [currentStd, setCurrentStd] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [cohort, setCohort] = useState(null);
+    const [msg, setMsg] = useState({ alert: false, type: "", text: "" });
+    const session = getSession();
 
     const getSlugSubscriptionByCohort = (cohortId) => {
         const subscriptionSlug = subscriptionSlugs.filter((subscriptionSlug) =>
@@ -59,6 +74,34 @@ const Cohorts = ({
             planF.cohorts?.some((cohort) => cohort.id === cohortId)
         );
         return planFinancingSlug[0];
+    };
+
+    const deleteUserFromCohort = () => {
+        bc.admissions()
+            .deleteUserCohort(currentStd.cohort_id, currentStd.id)
+            .then((data) => {
+                if (data.status === 204) getStudentCohorts();
+            })
+            .catch((error) => error);
+        setOpenDialog(false);
+    };
+
+    const addUserToCohort = () => {
+        if (cohort === null)
+            setMsg({ alert: true, type: "warning", text: "Select a cohort" });
+        else {
+            bc.admissions()
+                .addUserCohort(cohort.id, {
+                    user: stdId,
+                    role: "STUDENT",
+                    finantial_status: null,
+                    educational_status: "ACTIVE",
+                })
+                .then((data) => {
+                    if (data.status >= 200) getStudentCohorts();
+                })
+                .catch((error) => error);
+        }
     };
 
     const changeStudentStatus = ({
@@ -99,6 +142,51 @@ const Cohorts = ({
 
     return (
         <>
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Are you sure you want to delete this user from this cohort?
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
+                        Disagree
+                    </Button>
+                    <Button
+                        color="primary"
+                        autoFocus
+                        onClick={() => deleteUserFromCohort()}
+                    >
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            {isLoading && <MatxLoading />}
+
+            <div className="flex mb-6">
+                <AsyncAutocomplete
+                    onChange={(newCohort) => setCohort(newCohort)}
+                    width="100%"
+                    label="Search Cohorts"
+                    getOptionLabel={(option) => `${option.name}, (${option.slug})`}
+                    asyncSearch={() =>
+                        axios.get(
+                            `${config.REACT_APP_API_HOST}/v1/admissions/academy/cohort`
+                        )
+                    }
+                >
+                    <Button
+                        className="ml-3 px-7 font-medium text-primary bg-light-primary whitespace-pre"
+                        onClick={() => addUserToCohort()}
+                    >
+                        Add to cohort
+                    </Button>
+                </AsyncAutocomplete>
+            </div>
+
             <div className="overflow-auto">
                 <div className="min-w-600">
                     {stdCohorts.map((s, i) => (
@@ -251,6 +339,66 @@ const Cohorts = ({
 
                                             </p>
                                         </div>
+                                    </div>
+                                </Grid>
+                                <Grid item lg={8} md={8} sm={6} xs={6} className="text-center">
+                                    <div className="flex justify-end items-center">
+                                        <IconButton
+                                            onClick={() => {
+                                                setCurrentStd({
+                                                    id: s.user.id,
+                                                    positionInArray: i,
+                                                    cohort_id: s.cohort.id,
+                                                });
+                                                setOpenDialog(true);
+                                            }}
+                                        >
+                                            <Icon fontSize="small">delete</Icon>
+                                        </IconButton>
+                                        <Tooltip title="Student Report">
+                                            <IconButton
+                                                onClick={() =>
+                                                    window.open(
+                                                        `${process.env.REACT_APP_STUDENT}/cohort/${s.cohort.slug}/student/${s.user.id}?academy=${session.academy.id}&token=${session.token}`
+                                                    )
+                                                }
+                                            >
+                                                <Icon fontSize="small">assignment_ind</Icon>
+                                            </IconButton>
+                                        </Tooltip>
+                                        {s.watching ? (
+                                            <Tooltip title="This student is being watched, click to stop watching">
+                                                <IconButton
+                                                    onClick={() => {
+                                                        changeStudentStatus({
+                                                            value: false,
+                                                            name: "watching",
+                                                            studentId: s.user.id,
+                                                            i,
+                                                        });
+                                                    }}
+                                                >
+                                                    <Icon fontSize="small" color="secondary">
+                                                        visibility
+                                                    </Icon>
+                                                </IconButton>
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title="Add this student to the watchlist">
+                                                <IconButton
+                                                    onClick={() => {
+                                                        changeStudentStatus({
+                                                            value: true,
+                                                            name: "watching",
+                                                            studentId: s.user.id,
+                                                            i,
+                                                        });
+                                                    }}
+                                                >
+                                                    <Icon fontSize="small">visibility_off</Icon>
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
                                     </div>
                                 </Grid>
                             </Grid>
