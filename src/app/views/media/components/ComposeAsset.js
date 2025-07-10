@@ -244,31 +244,35 @@ const ComposeAsset = () => {
   }, [asset_slug]);
 
   const handleAction = async (action, payload = null) => {
+    try {
     const resp = await bc
-      .registry()
-      .assetAction(asset?.slug, {
-        ...payload,
-        silent: true,
-        action_slug: action,
-      });
-    if (resp.status === 200) {
-      if (["pull", "push"].includes(action) && resp.data.sync_status != "OK") {
-        toast.error(`Sync returned with problems: ${resp.data.status_text}`);
-      } else if (action == "test" && resp.data.test_status != "OK") {
+        .registry()
+        .assetAction(asset?.slug, {
+          ...payload,
+          silent: true,
+          action_slug: action,
+        });
+      if (resp.status === 200) {
+        if (["pull", "push"].includes(action) && resp.data.sync_status != "OK") {
+          toast.error(`Sync returned with problems: ${resp.data.status_text}`);
+        } else if (action == "test" && resp.data.test_status != "OK") {
+          toast.error(
+            `Integrity test returned with problems: ${resp.data.status_text}`
+          );
+        } else if (action == "analyze_seo") {
+          // do nothing
+        } else toast.success(`${action} completed successfully`);
+        setAsset(resp.data);
+        setDirty(false);
+        await getAssetContent(resp.data.slug);
+        return resp.data;
+      } else {
         toast.error(
-          `Integrity test returned with problems: ${resp.data.status_text}`
+          `Integrity test returned with problems: ${resp.data.detail}`
         );
-      } else if (action == "analyze_seo") {
-        // do nothing
-      } else toast.success(`${action} completed successfully`);
-      setAsset(resp.data);
-      setDirty(false);
-      await getAssetContent(resp.data.slug);
-      return resp.data;
-    } else {
-      toast.error(
-        `Integrity test returned with problems: ${resp.data.detail}`
-      );
+      }
+    } catch (error) {
+      toast.error(`Error performing action: ${error.message || error.detail || error}`);
     }
   }
 
