@@ -114,6 +114,7 @@ const StudentCohorts = ({ stdId, setCohortOptions }) => {
       component: (
         <Card className="p-4" style={{ height: "100%" }}>
           <Cohorts
+            stdId={stdId}
             stdCohorts={stdCohorts}
             subscriptionSlugs={subscriptionSlugs}
             planFinancing={planFinancing}
