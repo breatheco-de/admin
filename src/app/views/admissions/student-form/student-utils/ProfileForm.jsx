@@ -116,11 +116,13 @@ export const ProfileForm = ({ initialValues }) => {
                         console.log("Student added to cohort", response.data);
                       })
                       .catch((error) => {
+                        toast.error(`Error adding student to cohort: ${error.detail || error.data.details || error.message}`)
                         console.error("Error adding student to cohort", error);
                       });
                   })
                 })
                 .catch((error) => {
+                  toast.error(`Error creating subscription: ${error.detail || error.data.details || error.message}`)
                   console.error("Error creating subscription", error);
                 });
             }
