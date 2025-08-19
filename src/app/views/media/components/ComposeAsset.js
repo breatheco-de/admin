@@ -85,24 +85,18 @@ const createButtonLabel = {
   },
 }
 
-// Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
-/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\.\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
-  //.     /^https:\/\/github\.com\/.*\/([^\/]+)\.(txt|ipynb|md)(?:\?lang=[a-zA-Z]{2})?$
-function getSlugFromGithubURL(url){
-  let matches;
-  let pieces = [];
-  while ((matches = githubUrlRegex.exec(url)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (matches.index === githubUrlRegex.lastIndex) {
-        githubUrlRegex.lastIndex++;
-      }
-      
-      // The result can be accessed through the `m`-variable.
-      for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
-      if(pieces.length > 0) return pieces;
-  }
-  return ["invalid-url"]
+  /https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\.\w\-]+?)(?:\.([a-z]{2}))?\.(txt|ipynb|json|md)/i;
+
+function getSlugFromGithubURL(url) {
+  const match = githubUrlRegex.exec(url);
+  if (!match) return ["invalid-url", "us", ""];
+
+  const slug = match[1];
+  const lang = match[2] || "us";   // default "us" if missing
+  const extension = match[3];
+
+  return [slug, lang, extension];
 }
 
 const hasErrors = (_asset, isCreating=true) => {
