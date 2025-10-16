@@ -35,6 +35,8 @@ const EventForm = () => {
     host_user: null,
     asset_slug: null,
     online_event: false,
+    create_meet: false,
+    meet_private: false,
     live_stream_url: '',
     eventbrite_sync_status: '',
     sync_with_eventbrite: true,
@@ -105,6 +107,13 @@ const EventForm = () => {
 
       if (recording_url === '') delete payload["recording_url"];
 
+      if (rest.online_event === true && (!values.live_stream_url || values.live_stream_url.trim() === '')) {
+        if (values.create_meet) {
+          payload.create_meet = String(true);
+          payload.meet_private = String(values.meet_private ?? false);
+        }
+      }
+
       bc.events()
         .updateAcademyEvent(id, payload)
         .then(({ data }) => {
@@ -127,6 +136,13 @@ const EventForm = () => {
         starting_at: dayjs(values.starting_at).utc().format(),
         ending_at: dayjs(values.ending_at).utc().format(),
         ...venueAndType,
+      }
+
+      if (values.online_event === true && (!values.live_stream_url || values.live_stream_url.trim() === '')) {
+        if (values.create_meet) {
+          payload.create_meet = String(true);
+          payload.meet_private = String(values.meet_private ?? false);
+        }
       }
 
       bc.events()
@@ -541,7 +557,7 @@ const EventForm = () => {
                   <TextField
                     label="Live Stream URL"
                     name="live_stream_url"
-                    required={values.online_event}
+                    required={values.online_event && !values.create_meet}
                     size="small"
                     fullWidth
                     variant="outlined"
@@ -550,6 +566,34 @@ const EventForm = () => {
                   />
                   <small className="text-muted">In case the event is online, this field is mandatory. It's the meeting URL.</small>
                 </Grid>
+                {values.online_event && (!values.live_stream_url || values.live_stream_url.trim() === '') && (
+                  <>
+                    <Grid item md={2} sm={6} xs={12}>
+                      <div className="flex items-center" style={{ gap: '8px' }}>
+                        <Checkbox
+                          checked={values.create_meet}
+                          onChange={handleChange}
+                          name="create_meet"
+                          color="primary"
+                        />
+                        <span>Auto create Live Stream URL</span>
+                      </div>
+                    </Grid>
+                    {values.create_meet && (
+                      <Grid item md={2} sm={6} xs={12}>
+                        <div className="flex items-center" style={{ gap: '8px' }}>
+                          <Checkbox
+                            checked={values.meet_private}
+                            onChange={handleChange}
+                            name="meet_private"
+                            color="primary"
+                          />
+                          <span>Live Stream is private?</span>
+                        </div>
+                      </Grid>
+                    )}
+                  </>
+                )}
                 <Grid item md={1} sm={4} xs={12}>
                   Asset Slug
                 </Grid>
