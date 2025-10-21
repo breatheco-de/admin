@@ -37,7 +37,7 @@ const availableCourses = [
   { slug: 'software-engineering', name: 'Software Engineering' },
   { slug: 'machine-learning-engineering', name: 'Machine Learning Engineering' },
   { slug: 'node-js', name: 'Node JS' },
-  { slug: 'cibersecurity', name: 'Cibersecurity'},
+  { slug: 'cybersecurity', name: 'Cibersecurity'},
   { slug: 'applied-ai', name: 'Applied AI'}
 ]
 

@@ -239,6 +239,11 @@ const EventForm = () => {
             if (!dayjs(values.starting_at).isBefore(dayjs(values.ending_at))) {
               errors.ending_at = 'The ending date should be after the starting date'
             }
+            
+            // Require banner when creating a new event
+            if (!id && (!values.banner || values.banner.trim() === '')) {
+              errors.banner = 'Banner URL is required when creating a new event'
+            }
 
             return errors
           }}
@@ -303,7 +308,7 @@ const EventForm = () => {
                   <small className="text-muted">Can only be updated when creating the event</small>
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
-                  Banner URL
+                  Banner URL{!id && <span style={{ color: 'red' }}>*</span>}
                 </Grid>
                 <Grid item md={3} sm={8} xs={12}>
                   <MediaInput
@@ -313,8 +318,12 @@ const EventForm = () => {
                     handleChange={setFieldValue}
                     name="banner"
                     fullWidth
+                    required={!id}
+                    error={errors.banner && touched.banner}
+                    helperText={touched.banner && errors.banner}
                     inputProps={{ style: { padding: '10px' } }}
                   />
+                  {!id && <small className="text-muted">Banner URL is required when creating a new event</small>}
                 </Grid>
                 <Grid item md={1} sm={4} xs={12}>
                   External Signup URL

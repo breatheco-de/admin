@@ -29,10 +29,16 @@ export const navigations = [
                 capabilities: ["read_won_lead"],
             },
             {
-                name: "All Leads",
+                name: "FormEntry Leads",
                 path: "/growth/leads",
-                iconText: "OL",
+                iconText: "FE",
                 capabilities: ["read_lead"],
+            },
+            {
+                name: "SaaS Signups",
+                path: "/growth/invites-signups",
+                iconText: "SU",
+                capabilities: ["read_invite"],
             },
             {
                 name: "URL Shortner",

@@ -39,6 +39,7 @@ import { availableLanguages, unSlugifyCapitalize } from "../../../../utils"
 import { RepositorySubscriptionIcon } from "./RepositorySubscriptions";
 import config from '../../../../config.js';
 import dayjs from 'dayjs';
+import AssetAcademyGuard from "./AssetAcademyGuard";
 
 function slugify(text) {
   let slug = _slugify(text, { lower: true, strict: true });
@@ -84,24 +85,18 @@ const createButtonLabel = {
   },
 }
 
-// Example: https://github.com/4GeeksAcademy/machine-learning-content/blob/master/06-ml_algos/exploring-k-nearest-neighbors.ipynb
 const githubUrlRegex =
-/https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\.\w\-]+)(\.[a-z]{2})?\.(txt|ipynb|json|md)/gm;
-  //.     /^https:\/\/github\.com\/.*\/([^\/]+)\.(txt|ipynb|md)(?:\?lang=[a-zA-Z]{2})?$
-function getSlugFromGithubURL(url){
-  let matches;
-  let pieces = [];
-  while ((matches = githubUrlRegex.exec(url)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (matches.index === githubUrlRegex.lastIndex) {
-        githubUrlRegex.lastIndex++;
-      }
-      
-      // The result can be accessed through the `m`-variable.
-      for (let m of matches) if(!m?.includes("http")) pieces.push(m?.replace(".", ""));
-      if(pieces.length > 0) return pieces;
-  }
-  return ["invalid-url"]
+  /https:\/\/github\.com\/[\w\-_\/]+blob\/[\w\-\/]+\/([\.\w\-]+?)(?:\.([a-z]{2}))?\.(txt|ipynb|json|md)/i;
+
+function getSlugFromGithubURL(url) {
+  const match = githubUrlRegex.exec(url);
+  if (!match) return ["invalid-url", "us", ""];
+
+  const slug = match[1];
+  const lang = match[2] || "us";   // default "us" if missing
+  const extension = match[3];
+
+  return [slug, lang, extension];
 }
 
 const hasErrors = (_asset, isCreating=true) => {
@@ -243,31 +238,35 @@ const ComposeAsset = () => {
   }, [asset_slug]);
 
   const handleAction = async (action, payload = null) => {
+    try {
     const resp = await bc
-      .registry()
-      .assetAction(asset?.slug, {
-        ...payload,
-        silent: true,
-        action_slug: action,
-      });
-    if (resp.status === 200) {
-      if (["pull", "push"].includes(action) && resp.data.sync_status != "OK") {
-        toast.error(`Sync returned with problems: ${resp.data.status_text}`);
-      } else if (action == "test" && resp.data.test_status != "OK") {
+        .registry()
+        .assetAction(asset?.slug, {
+          ...payload,
+          silent: true,
+          action_slug: action,
+        });
+      if (resp.status === 200) {
+        if (["pull", "push"].includes(action) && resp.data.sync_status != "OK") {
+          toast.error(`Sync returned with problems: ${resp.data.status_text}`);
+        } else if (action == "test" && resp.data.test_status != "OK") {
+          toast.error(
+            `Integrity test returned with problems: ${resp.data.status_text}`
+          );
+        } else if (action == "analyze_seo") {
+          // do nothing
+        } else toast.success(`${action} completed successfully`);
+        setAsset(resp.data);
+        setDirty(false);
+        await getAssetContent(resp.data.slug);
+        return resp.data;
+      } else {
         toast.error(
-          `Integrity test returned with problems: ${resp.data.status_text}`
+          `Integrity test returned with problems: ${resp.data.detail}`
         );
-      } else if (action == "analyze_seo") {
-        // do nothing
-      } else toast.success(`${action} completed successfully`);
-      setAsset(resp.data);
-      setDirty(false);
-      await getAssetContent(resp.data.slug);
-      return resp.data;
-    } else {
-      toast.error(
-        `Integrity test returned with problems: ${resp.data.detail}`
-      );
+      }
+    } catch (error) {
+      toast.error(`Error performing action: ${error.message || error.detail || error}`);
     }
   }
 
@@ -321,6 +320,11 @@ const ComposeAsset = () => {
   if (!asset || (!isCreating && !asset.id)) return <MatxLoading />;
   
   return (
+    <AssetAcademyGuard 
+      asset={asset} 
+      isCreating={isCreating} 
+      onAssetUpdate={setAsset}
+    >
     <div className="m-sm-30">
       {openAliases && <AssetAliases asset={asset} onClose={() => setOpenAliases(false)} />}
       <div className="mb-sm-30">
@@ -329,7 +333,7 @@ const ComposeAsset = () => {
             <Breadcrumb
               routeSegments={[
                 { name: "Assets", path: "/media/asset" },
-                { name: "Single Asset" },
+                { name: `Single Asset ${asset?.id || ""}` },
               ]}
             />
           </div>
@@ -766,6 +770,7 @@ const ComposeAsset = () => {
         />
       )}
     </div>
+    </AssetAcademyGuard>
   );
 };
 

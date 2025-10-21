@@ -23,7 +23,6 @@ import { MatxLoading } from '../../../../matx';
 import DowndownMenu from '../../../components/DropdownMenu';
 import CohortDetails from './CohortDetails';
 import CohortStudents from './CohortStudents';
-import CohortAttendance from './CohortAttendance';
 
 const STUDENT_HOST = process.env.REACT_APP_STUDENT;
 
@@ -246,7 +245,6 @@ const Cohort = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {cohort && <CohortAttendance cohortId={cohort.id} />}
             {cohort && <CohortStudents slug={slug} cohortId={cohort.id} />}
           </Grid>
         </Grid>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Table, TableCell, TableRow, Card, MenuItem, DialogContent,
   Grid, Dialog, TextField, Button, Chip, Icon, Tooltip, TableHead, IconButton, Badge,
-  TableBody
+  TableBody, FormControlLabel, Switch
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag"
@@ -26,6 +26,7 @@ import slugify from "slugify";
 import { MediaInput } from '../../../components/MediaInput';
 import config from '../../../../config.js';
 import API from "../../../services/breathecode"
+import FlagsCard from "./FlagsCard";
 dayjs.extend(relativeTime)
 
 
@@ -180,6 +181,7 @@ const DescriptionCard = ({ asset, onChange}) => {
 
 const LangCard = ({ asset, onAction, onChange }) => {
   const [addTranslation, setAddTranslation] = useState(null);
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
   const assetTranslations = asset.translations ? Object.keys(asset.translations) : [];
   const allLangs = Object.keys(availableLanguages);
 
@@ -192,10 +194,20 @@ const LangCard = ({ asset, onAction, onChange }) => {
       if(updateResp && updateResp.status == 200) setAddTranslation(null);
     } 
     else{
+      // Show loading modal
+      setShowLoadingModal(true);
+      
       const resp = await API.registry().createAsset(addTranslation);
       if (resp.status == 201) {
-        setAddTranslation(null);
-        history.push(`./${resp.data.slug}`);
+        // Wait 2 seconds before redirecting
+        setTimeout(() => {
+          setShowLoadingModal(false);
+          setAddTranslation(null);
+          history.push(`./${resp.data.slug}`);
+        }, 2000);
+      } else {
+        // Hide modal immediately if there's an error
+        setShowLoadingModal(false);
       }
     }
   }
@@ -284,6 +296,22 @@ const LangCard = ({ asset, onAction, onChange }) => {
         <Chip className="ml-2" size="small" align="center" icon={<Icon fontSize="small">add</Icon>} onClick={() => setAddTranslation(true)} />
       </div>
     }
+    
+    {/* Loading Modal */}
+    <Dialog
+      open={showLoadingModal}
+      aria-labelledby="loading-dialog-title"
+      disableBackdropClick
+      disableEscapeKeyDown
+    >
+      <DialogContent className="p-6 text-center">
+        <div className="flex flex-col items-center">
+          <Icon className="animate-spin mb-4" fontSize="large">autorenew</Icon>
+          <h4 className="m-0 mb-2">Creating Translation</h4>
+          <p className="m-0">Waiting for asset translation to be created...</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   </Card>;
 }
 
@@ -692,12 +720,112 @@ const syncColor = {
 }
 
 
+const NoRepositoryCard = ({ asset, onAction, onChange }) => {
+  const [githubUrl, setGithubUrl] = useState('');
+  const [showInput, setShowInput] = useState(false);
+  const [createRepoDialog, setCreateRepoDialog] = useState(false);
+
+  const valid_extension = (url) => {
+    console.log(`valid_extension: ${url}`);
+    const validExtensions = ['.md', '.mdx', '.markdown', '.json', '.ipynb'];
+    return validExtensions.some(ext => url.toLowerCase().endsWith(ext));
+  };
+
+  return <Card className="p-4 mb-4">
+    <h4 className="m-0 font-medium">Github</h4>
+    <div className="mt-2">
+      <p>There is no repo markdown or json associated to this asset, you can <span className="anchor text-primary underline pointer" onClick={() => setShowInput(true)}>click here to set a repo</span>
+      {asset.asset_type === 'PROJECT' && 
+        <> or <span className="anchor text-primary underline pointer" onClick={() => setCreateRepoDialog(true)}>create a new repo</span></>
+      }.
+      </p>
+      
+      {showInput && (
+        <div className="mt-2">
+          <TextField 
+            width="100%" 
+            value={githubUrl} 
+            variant="outlined" 
+            size="small" 
+            placeholder="Github markdown or json URL..."
+            onChange={(e) => setGithubUrl(e.target.value)} 
+          />
+          {githubUrl && !githubUrl.includes("https://github") && <small className="text-error d-block">Must be github.com</small>}
+          {githubUrl && !valid_extension(githubUrl) && <small className="text-error d-block">URL must end with .md, .mdx, .markdown, .json, or .ipynb</small>}
+          
+          <div className="mt-2">
+            <Button 
+              variant="contained" 
+              color="primary" 
+              size="small" 
+              disabled={!githubUrl || !githubUrl.includes("https://github") || !valid_extension(githubUrl)}
+              onClick={() => onChange({ readme_url: githubUrl })}
+            >
+              Save URL
+            </Button>
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              size="small" 
+              className="ml-2"
+              onClick={() => setShowInput(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <ConfirmAlert
+      title={`Create a new GitHub repository for this ${asset.asset_type.toLowerCase()}?`}
+      description={`This will create a new repository on GitHub under the academy organization and automatically bind it to this asset. The repository will be set up with the appropriate template and structure for a ${asset.asset_type.toLowerCase()}.`}
+      isOpen={createRepoDialog}
+      setIsOpen={setCreateRepoDialog}
+      onOpen={() => onAction('create_repo')}
+      acceptText="Yes, create repository"
+      cancelText="Cancel"
+    />
+  </Card>;
+}
+
 const GithubCard = ({ asset, onAction, onChange }) => {
   const [githubUrl, setGithubUrl] = useState(asset.readme_url);
   const [makePublicDialog, setMakePublicDialog] = useState(false);
+  const [validationDialog, setValidationDialog] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
+
+  const valid_extension = (url) => {
+    console.log(`valid_extension: ${url}`);
+    const validExtensions = ['.md', '.mdx', '.markdown', '.json', '.ipynb'];
+    return validExtensions.some(ext => url.toLowerCase().endsWith(ext));
+  };
+
+  const validateUrl = () => {
+    const errors = [];
+    if (!githubUrl) {
+      errors.push("URL cannot be empty");
+    }
+    if (githubUrl && !githubUrl.includes("https://github")) {
+      errors.push("URL must be from github.com");
+    }
+    if (githubUrl && !valid_extension(githubUrl)) {
+      errors.push("URL must end with .md, .mdx, .markdown, .json, or .ipynb");
+    }
+    return errors;
+  };
+
+  const handleSaveUrl = () => {
+    const errors = validateUrl();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setValidationDialog(true);
+    } else {
+      onChange({ readme_url: githubUrl });
+    }
+  };
 
   useEffect(() => setGithubUrl(asset.readme_url), [asset.readme_url])
-
 
   return <Card className="p-4 mb-4">
     <div className="mb-4 flex justify-between items-center">
@@ -708,7 +836,12 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         <h4 className="m-0 font-medium d-inline">Github</h4>
       </div>
       {asset.readme_url != githubUrl ?
-        <Button variant="contained" color="primary" size="small" onClick={() => onChange({ readme_url: githubUrl })}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          size="small" 
+          onClick={handleSaveUrl}
+        >
           Save URL
         </Button>
         :
@@ -756,7 +889,8 @@ const GithubCard = ({ asset, onAction, onChange }) => {
       </Grid>
       <Grid item xs={8}>
         <TextField width="100%" value={githubUrl} variant="outlined" size="small" onChange={(e) => { setGithubUrl(e.target.value); }} />
-        {!githubUrl || !githubUrl.includes("https://github") && <small className="text-error">Must be github.com</small>}
+        {githubUrl && !githubUrl.includes("https://github") && <small className="text-error d-block">Must be github.com</small>}
+        {githubUrl && !valid_extension(githubUrl) && <small className="text-error d-block">URL must end with .md, .mdx, .markdown, .json, or .ipynb</small>}
       </Grid>
     </Grid>
     <Grid item className="flex mt-2" xs={12}>
@@ -775,6 +909,31 @@ const GithubCard = ({ asset, onAction, onChange }) => {
         />
       </Grid>
     </Grid>
+
+    {/* Validation Error Modal */}
+    <Dialog
+      open={validationDialog}
+      onClose={() => setValidationDialog(false)}
+      aria-labelledby="validation-dialog-title"
+    >
+      <DialogContent className="p-6">
+        <h4 className="m-0 mb-4 text-error">Invalid URL</h4>
+        <ul className="m-0 p-0" style={{ listStyle: "none" }}>
+          {validationErrors.map((error, index) => (
+            <li key={index} className="mb-2 text-error">• {error}</li>
+          ))}
+        </ul>
+        <div className="mt-4 text-right">
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => setValidationDialog(false)}
+          >
+            OK
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   </Card>;
 }
 
@@ -812,21 +971,71 @@ const TestCard = ({ asset, onAction }) => <Card className="p-4 mb-4">
   </Grid>
 </Card>;
 
+const FeatureCard = ({ asset, onChange }) => {
+  const [isFeatured, setIsFeatured] = useState(asset.feature || false);
+  const [loading, setLoading] = useState(false);
+
+  const handleToggleFeature = async () => {
+    setLoading(true);
+    try {
+      const updatedAsset = await API.registry().updateAsset(asset.slug, { feature: !isFeatured });
+
+      if (updatedAsset.status === 200) {
+        setIsFeatured(!isFeatured);
+        onChange({ feature: !isFeatured });
+        toast.success(`Asset ${!isFeatured ? "marked as featured" : "removed from featured"} successfully!`);
+      } else {
+        toast.error("Error updating feature status.");
+      }
+    } catch (error) {
+      toast.error("Failed to update feature status.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Card className="p-4 mb-4">
+      <h4 className="m-0 font-medium">How to feature this asset</h4>
+      <Tooltip title="If enabled, this asset will be shown in the landing pages for marketing purposes.">
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isFeatured}
+              onChange={handleToggleFeature}
+              color="primary"
+              disabled={loading}
+            />
+          }
+          label={`Show in the landing pages`}
+        />
+      </Tooltip>
+    </Card>
+  );
+};
+
 const AssetMeta = ({ asset, onAction, onChange }) => {
   const classes = useStyles();
 
   return (
     <>
       <LangCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+      <FeatureCard asset={asset} onChange={a => onChange(a)} />
       <RevisionsCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
       <TechCard asset={asset} onChange={a => onChange(a)} />
       <ThumbnailCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       <DescriptionCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
       {asset.asset_type != 'QUIZ' && <>
         <SEOCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
-        <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
+        {/* <OriginalityCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} /> */}
       </>}
-      <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      {asset.asset_type == 'PROJECT' && asset.config &&
+        <FlagsCard asset={asset} onChange={a => onChange(a)} onAction={(action) => onAction(action)} />
+      }
+      {asset.readme_url ? 
+        <GithubCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+        :
+        <NoRepositoryCard key={asset.id} asset={asset} onAction={(action, payload=null) => onAction(action, payload)} onChange={a => onChange(a)} />
+      }
       <TestCard asset={asset} onAction={(action) => onAction(action)} onChange={a => onChange(a)} />
     </>
   );

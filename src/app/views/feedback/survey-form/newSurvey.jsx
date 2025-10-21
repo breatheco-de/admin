@@ -31,8 +31,8 @@ const NewSurvey = () => {
   const [newSurvey, setNewSurvey] = useState(
     {
       cohort: '',
-      max_assistants: 2,
-      max_teachers: 2,
+      max_assistants_to_ask: 2,
+      max_teachers_to_ask: 2,
       duration: '1 00:00:00',
       send_now: false,
     },
@@ -134,10 +134,10 @@ const NewSurvey = () => {
                   <TextField
                     type="number"
                     label="Max teachers"
-                    name="max_assistants"
+                    name="max_teachers_to_ask"
                     size="small"
                     variant="outlined"
-                    defaultValue={newSurvey.max_assistants}
+                    defaultValue={newSurvey.max_teachers_to_ask}
                     onChange={updateSurvey}
                   />
                 </Grid>
@@ -148,10 +148,10 @@ const NewSurvey = () => {
                   <TextField
                     type="number"
                     label="Max TAs"
-                    name="max_teachers"
+                    name="max_assistants_to_ask"
                     size="small"
                     variant="outlined"
-                    defaultValue={newSurvey.max_teachers}
+                    defaultValue={newSurvey.max_assistants_to_ask}
                     onChange={updateSurvey}
                   />
                 </Grid>
