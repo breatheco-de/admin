@@ -243,6 +243,7 @@ export const MentorProfileForm = ({ initialValues, serviceList }) => {
                 type="text"
                 variant="outlined"
                 value={mentorSlug}
+                onChange={(e) => setMentorSlug(e.target.value)}
               />
               <small className="text-muted d-block">
                 Will be suggested from the booking url
